@@ -6,7 +6,7 @@
 
     <groupId>com.sucy.skill</groupId>
     <artifactId>SkillAPI</artifactId>
-    <version>s1.94</version>
+    <version>1.95-beta.1</version>
     <packaging>jar</packaging>
 
     <name>SkillAPI</name>
