@@ -1,7 +1,5 @@
 .idea/
 *.iml
-lib/
-pom.xml
 /*target
 editor/js/data/data generator/Biome.java
 editor/js/data/data generator/EntityDamageEvent.java
