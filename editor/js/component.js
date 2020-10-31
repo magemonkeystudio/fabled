@@ -2275,7 +2275,7 @@ function MechanicProjectile()
 
     this.description = 'Launches a projectile that applies child components on hit. The target supplied will be the struck target.';
 
-    this.data.push(new ListValue('Projectile', 'projectile', [ 'Arrow', 'Egg', 'Ghast Fireball', 'Snowball' ], 'Arrow')
+    this.data.push(new ListValue('Projectile', 'projectile', [ 'Arrow', 'Egg', 'Snowball', 'Fireball', 'Large Fireball', 'Small fireball' ], 'Arrow')
         .setTooltip('The type of projectile to fire')
     );
     this.data.push(new ListValue('Flaming', 'flaming', [ 'True', 'False' ], 'False')
