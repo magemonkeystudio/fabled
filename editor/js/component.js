@@ -2950,7 +2950,7 @@ function addParticleOptions(component) {
         .setTooltip('The radius of the arrangement in blocks')
     );
     component.data.push(new AttributeValue('Amount', 'particles', 20, 0)
-        .setTooltip('The amount of particles to play')
+        .setTooltip('The amount of points that conform the chosen arrangement.')
     );
     
     // Circle arrangement direction
@@ -2964,15 +2964,15 @@ function addParticleOptions(component) {
     );
     component.data.push(new IntValue('Visible Radius', 'visible-radius', 25).setTooltip('How far away players can see the particles from in blocks')
     );
-    component.data.push(new DoubleValue('DX', 'dx', 0).setTooltip('A packet variable that varies between particles. It generally is used for how far from the position a particle can move in the X direction.')
+    component.data.push(new DoubleValue('DX', 'dx', 0).setTooltip('Offset in the X direction, used as the Red value for some particles.')
     );
-    component.data.push(new DoubleValue('DY', 'dy', 0).setTooltip('A packet variable that varies between particles. It generally is used for how far from the position a particle can move in the Y direction.')
+    component.data.push(new DoubleValue('DY', 'dy', 0).setTooltip('Offset in the Y direction, used as the Green value for some particles.')
     );
-    component.data.push(new DoubleValue('DZ', 'dz', 0).setTooltip('A packet variable that varies between particles. It generally is used for how far from the position a particle can move in the Z direction.')
+    component.data.push(new DoubleValue('DZ', 'dz', 0).setTooltip('Offset in the Z direction, used as the Blue value for some particles.')
     );
-    component.data.push(new DoubleValue('Packet Amount', 'amount', 1).setTooltip('A packet variable that varies between particles. Setting this to 0 lets you control the color of some particles.')
+    component.data.push(new DoubleValue('Packet Amount', 'amount', 1).setTooltip('Number of particles to play per point. For "spell" and "effect" particles, set to 0 to control the particle color.')
     );
-    component.data.push(new DoubleValue('Speed', 'speed', 0.1).setTooltip('A packet variable that varies between particles. It generally controlls the color or velocity of the particle.')
+    component.data.push(new DoubleValue('Speed', 'speed', 0.1).setTooltip('Speed of the particle. For some particles controls other parameters, such as size.')
     );
 }
 
@@ -3017,34 +3017,34 @@ function addEffectOptions(component, optional)
         .setTooltip('Number of ticks between playing particles.')
     ));
     component.data.push(opt(new IntValue('View Range', '-view-range', 25)
-        .setTooltip('How far away the effect can be seen from')
+        .setTooltip('How far away the effect can be seen from.')
     ));
     
     component.data.push(opt(new ListValue('Particle', '-particle-type', getParticles, 'Barrier')
-        .setTooltip('The type of particle to use')
+        .setTooltip('The type of particle to use.')
     ));
     component.data.push(opt(new ListValue('Material', '-particle-material', getMaterials, 'Dirt')
         .requireValue('-particle-type', [ 'Item crack', 'Item Crack', 'Block crack', 'Block Crack', 'Block dust', 'Falling dust' ])
-        .setTooltip('The material to use for the particle')
+        .setTooltip('The material to use for the particle.')
     ));
     component.data.push(opt(new IntValue('Data', '-particle-data', 0)
         .requireValue('-particle-type', [ 'Item crack', 'Item Crack' ])
-        .setTooltip('The data value for the material used by the particle. For 1.14+ determines the CustomModelData of the item')
+        .setTooltip('The data value for the material used by the particle. For 1.14+ determines the CustomModelData of the item.')
     ));
     component.data.push(opt(new IntValue('Amount', '-particle-amount', 1)
-        .setTooltip('Number of particles generated per point')
+        .setTooltip('Number of particles to play per point. For "spell" and "effect" particles, set to 0 to control the particle color.')
     ));
     component.data.push(opt(new DoubleValue('DX', '-particle-dx', 0)
-        .setTooltip('Particle DX value, often used for color')
+        .setTooltip('Offset in the X direction, used as the Red value for some particles.)
     ));
     component.data.push(opt(new DoubleValue('DY', '-particle-dy', 0)
-        .setTooltip('Particle DY value, often used for color')
+        .setTooltip('Offset in the Y direction, used as the Green value for some particles.')
     ));
     component.data.push(opt(new DoubleValue('DZ', '-particle-dz', 0)
-        .setTooltip('Particle DZ value, often used for color')
+        .setTooltip('Offset in the Z direction, used as the Blue value for some particles.'')
     ));
     component.data.push(opt(new DoubleValue('Speed', '-particle-speed', 0.1)
-        .setTooltip('Speed value for the particle, sometimes relating to velocity')
+        .setTooltip('Speed of the particle. For some particles controls other parameters, such as size.')
     ));
 }
 
