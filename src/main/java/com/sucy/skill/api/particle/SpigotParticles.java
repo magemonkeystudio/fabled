@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -27,11 +28,26 @@ public class SpigotParticles {
         if (effect == null) return;
         try {
             if (VersionManager.isVersionAtLeast(11300)) {
+                ArrayList<Player> players = new ArrayList<>();
                 for (Player player : loc.getWorld().getPlayers()) {
                     if (loc.distance(player.getLocation()) <= distance) {
-                        player.spawnParticle(effect, loc, count, dx, dy, dz, speed, com.sucy.skill.api.particle.Particle.data(effect, dx, dy, dz, count, material, data));
+                        players.add(player);
                     }
                 }
+                com.sucy.skill.api.particle.Particle.play(
+                        players,
+                        effect,
+                        loc.getX(),
+                        loc.getY(),
+                        loc.getZ(),
+                        count,
+                        dx,
+                        dy,
+                        dy,
+                        speed,
+                        material,
+                        data
+                );
             } else {
                 final Object packet = com.sucy.skill.api.particle.Particle.make(
                         effect.name(), loc.getX(), loc.getY(), loc.getZ(), dx, dy, dz, speed, count, material, 0);

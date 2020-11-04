@@ -34,6 +34,7 @@ import com.sucy.skill.data.formula.Formula;
 import com.sucy.skill.data.formula.IValue;
 import com.sucy.skill.data.formula.value.CustomValue;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -178,7 +179,8 @@ public class ParticleEffect
                 double dy = this.particle.dy;
                 double dz = this.particle.dz;
                 float speed = this.particle.speed;
-                Object data = com.sucy.skill.api.particle.Particle.data(effect, dx, dy, dz, count, this.particle.material, this.particle.data);
+                Material material = this.particle.material;
+                int data = this.particle.data;
 
                 for(int i = frame * this.animation.getCopies(); i < next; ++i) {
                     Point3D p1 = animPoints[i];
@@ -186,9 +188,19 @@ public class ParticleEffect
 
                     for (Point3D p2 : shapePoints) {
                         double size = this.size.compute(t, p, cs.x, cs.y, p2.x, p2.y, p2.z, level);
-                        for (Player player : players) {
-                            player.spawnParticle(effect, p1.x * animSize + this.animDir.rotateX(p2, trig[j]) * size + loc.getX(), p1.y * animSize + this.animDir.rotateY(p2, trig[j]) * size + loc.getY(), p1.z * animSize + this.animDir.rotateZ(p2, trig[j]) * size + loc.getZ(), count, dx, dy, dz, speed, data);
-                        }
+                        Particle.play(
+                                players,
+                                effect,
+                                p1.x * animSize + this.animDir.rotateX(p2, trig[j]) * size + loc.getX(),
+                                p1.y * animSize + this.animDir.rotateY(p2, trig[j]) * size + loc.getY(),
+                                p1.z * animSize + this.animDir.rotateZ(p2, trig[j]) * size + loc.getZ(),
+                                count,
+                                dx,
+                                dy,
+                                dz,
+                                speed,
+                                material,
+                                data);
                     }
                     ++j;
                 }
