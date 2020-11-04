@@ -28,6 +28,10 @@ function getEntities() {
     return DATA.ENTITIES;
 }
 
+function getAnyEntities() {
+    return [ 'Any', ...DATA.ENTITIES ];
+}
+
 function getParticles() {
     return DATA.PARTICLES || [];
 }
