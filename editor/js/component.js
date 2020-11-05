@@ -1,7 +1,5 @@
 var hoverSpace;
 
-var DAMAGE_TYPES = [ 'Block Explosion', 'Contact', 'Cramming', 'Dragon Breath', 'Drowning', 'Entity Attack', 'Entity Explosion', 'Fall', 'Falling Block', 'Fire', 'Fire Tick', 'Fly Into Wall', 'Hot Floor', 'Lava', 'Lightning', 'Magic', 'Melting', 'Poison', 'Projectile', 'Starvation', 'Suffocation', 'Suicide', 'Thorns', 'Void', 'Wither' ];
-
 function canDrop(thing, target) {
     if (thing == target) return false;
 
@@ -663,7 +661,7 @@ function TriggerEnvironmentDamage()
 
     this.description = 'Applies skill effects when a player takes environmental damage.';
 
-    this.data.push(new ListValue('Type', 'type', DAMAGE_TYPES, 'FALL')
+    this.data.push(new ListValue('Type', 'type', getDamageTypes, 'FALL')
         .setTooltip('The source of damage to apply for')
     );
 }
@@ -1653,13 +1651,13 @@ function MechanicCommand()
 {
     this.super('Command', Type.MECHANIC, false);
 
-    this.description ='Executes a command for each of the targets either from them directly by oping them or via the console using their name.';
+    this.description ='Executes a command for each of the targets.';
 
     this.data.push(new StringValue('Command', 'command', '')
         .setTooltip('The command to execute')
     );
-    this.data.push(new ListValue('Execute Type', 'type', [ 'Console', 'OP' ], 'OP')
-        .setTooltip('How to execute the command. Console will execute the command for the console while OP will have the target player execute it while given a temporary OP permission. Use {player} to embed the target player\'s name into the command')
+    this.data.push(new ListValue('Execute Type', 'type', [ 'Console', 'OP', 'Silent Console' ], 'OP')
+        .setTooltip('Console: executes the command from the console. Silent Console: Same, but won\'t send console feedback. OP: Only if the target is a player, will have them execute it while given a temporary OP permission (If server closes in the meantime, the permission might stay, not recommended!!). {player} = caster\'s name, {target} = target\'s name, {targetUUID} = target\'s UUID (useful if targets are non players), &lc: "{", &rc: "}"')
     );
 }
 
@@ -1975,7 +1973,7 @@ function MechanicImmunity()
 
     this.description = 'Provides damage immunity from one source for a duration.'
 
-    this.data.push(new ListValue('Type', 'type', DAMAGE_TYPES, 'Poison')
+    this.data.push(new ListValue('Type', 'type', getDamageTypes, 'Poison')
         .setTooltip('The damage type to give an immunity for')
     );
     this.data.push(new AttributeValue('Seconds', 'seconds', 3, 0)
@@ -2470,7 +2468,7 @@ function MechanicTrigger()
     );
 
     // ENVIRONMENT_DAMAGE
-    this.data.push(new ListValue('Type', 'type', DAMAGE_TYPES, 'FALL')
+    this.data.push(new ListValue('Type', 'type', getDamageTypes, 'FALL')
         .requireValue('trigger', [ 'Environment Damage' ])
         .setTooltip('The source of damage to apply for')
     );
