@@ -43,7 +43,7 @@ public class SpigotParticles {
                         count,
                         dx,
                         dy,
-                        dy,
+                        dz,
                         speed,
                         material,
                         data
