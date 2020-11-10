@@ -184,7 +184,7 @@ public class CommandMechanic extends MechanicComponent {
         public PermissionAttachment addAttachment(Plugin paramPlugin) { return null; }
 
         @Override
-        public Spigot spigot() { return Bukkit.getServer().getConsoleSender().spigot(); }
+        public Spigot spigot() { return null; }
 
         @Override
         public void sendMessage(String[] paramArrayOfString) {}

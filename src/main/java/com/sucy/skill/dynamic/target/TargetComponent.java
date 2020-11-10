@@ -1,7 +1,7 @@
 package com.sucy.skill.dynamic.target;
 
 import com.rit.sucy.config.parse.DataSection;
-import com.rit.sucy.player.TargetHelper;
+import com.sucy.skill.api.TargetHelper;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.cast.CircleIndicator;
 import com.sucy.skill.cast.ConeIndicator;

@@ -26,7 +26,7 @@
  */
 package com.sucy.skill.dynamic.target;
 
-import com.rit.sucy.player.TargetHelper;
+import com.sucy.skill.api.TargetHelper;
 import com.sucy.skill.cast.IIndicator;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
