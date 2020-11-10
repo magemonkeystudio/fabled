@@ -26,7 +26,7 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
-import com.rit.sucy.player.TargetHelper;
+import com.sucy.skill.api.TargetHelper;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;

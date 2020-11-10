@@ -240,10 +240,10 @@ public abstract class EffectComponent {
     protected String filter(LivingEntity caster, LivingEntity target, String text) {
         // Grab values
         int i = text.indexOf('{');
-        if (i < 0) { return text; }
+        if (i < 0) { return filterSpecialChars(text); }
 
         int j = text.indexOf('}', i);
-        if (j < 0) { return text; }
+        if (j < 0) { return filterSpecialChars(text); }
 
         StringBuilder builder = new StringBuilder();
         HashMap<String, Object> data = DynamicSkill.getCastData(caster);
@@ -256,18 +256,23 @@ public abstract class EffectComponent {
                 if (obj instanceof Player) { obj = ((Player) obj).getName(); } else if (obj instanceof LivingEntity) {
                     obj = MobManager.getName((LivingEntity) obj);
                 }
-                builder.append(text.substring(k, i));
+                builder.append(text, k, i);
                 builder.append(obj);
 
                 k = j + 1;
             } else if (key.equals("player")) {
-                builder.append(text.substring(k, i));
+                builder.append(text, k, i);
                 builder.append(caster.getName());
 
                 k = j + 1;
             } else if (key.equals("target")) {
-                builder.append(text.substring(k, i));
+                builder.append(text, k, i);
                 builder.append(target.getName());
+
+                k = j + 1;
+            } else if (key.equals("targetUUID")) {
+                builder.append(text, k, i);
+                builder.append(target.getUniqueId().toString());
 
                 k = j + 1;
             }
@@ -275,6 +280,30 @@ public abstract class EffectComponent {
             j = text.indexOf('}', i);
         }
         builder.append(text.substring(k));
+        return filterSpecialChars(builder.toString());
+    }
+
+    private static String filterSpecialChars(String string) {
+        int i = 0;
+        int j = string.indexOf('&');
+        StringBuilder builder = new StringBuilder();
+        while (j >= 0) {
+            String key = string.substring(j+1,j+3);
+            switch (key) {
+                case "rc":
+                    builder.append(string, i, j);
+                    builder.append('}');
+                    i = j+3;
+                    break;
+                case "lc":
+                    builder.append(string, i, j);
+                    builder.append('{');
+                    i = j+3;
+                    break;
+            }
+            j = string.indexOf('&',i);
+        }
+        builder.append(string.substring(i));
         return builder.toString();
     }
 

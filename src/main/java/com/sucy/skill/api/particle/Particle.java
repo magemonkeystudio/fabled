@@ -39,6 +39,7 @@ import org.bukkit.material.MaterialData;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -273,10 +274,6 @@ public class Particle {
         }
     }
 
-    private static int mapColor(double decimal) {
-        return (int) Math.max(0, Math.min(255, decimal * 255));
-    }
-
     public static boolean usesData(org.bukkit.Particle particle) {
         switch (particle) {
             case REDSTONE:
@@ -289,32 +286,48 @@ public class Particle {
         return false;
     }
 
-    public static Object data(org.bukkit.Particle particle, double dx, double dy, double dz, int amount, Material material, int data) {
-        Object particleData = null;
-        try {
-            switch (particle) {
-                case REDSTONE:
-                    final Color color = Color.fromRGB(mapColor(dx + 1), mapColor(dy), mapColor(dz));
-                    particleData = new org.bukkit.Particle.DustOptions(color, amount);
-                    break;
-                case ITEM_CRACK:
-                    ItemStack item = new ItemStack(material);
-                    try {
-                        ItemMeta.class.getMethod("hasCustomModelData",null);
-                        ItemMeta meta = item.getItemMeta();
-                        meta.setCustomModelData(data);
-                        item.setItemMeta(meta);
-                    } catch (NoSuchMethodException e) {
-                        item.setData(new MaterialData(material, (byte) data));
-                    }
-                    particleData = item;
-                    break;
-                case BLOCK_CRACK:
-                case BLOCK_DUST:
-                case FALLING_DUST:
-                    particleData = material.createBlockData();
-            }
-        } catch (NullPointerException ignored) {}
-        return particleData;
+    // Supported version for 1.13+
+    public static void play(
+            ArrayList<Player> players,
+            org.bukkit.Particle particle,
+            double x,
+            double y,
+            double z,
+            int count,
+            double dx,
+            double dy,
+            double dz,
+            double speed,
+            Material material,
+            int data) {
+        Object object = null;
+        switch (particle) {
+            case REDSTONE:
+                final Color color = Color.fromRGB((int) (255 * dx), (int) (255 * dy), (int) (255 * dz));
+                dx = 0;
+                dy = 0;
+                dz = 0;
+                object = new org.bukkit.Particle.DustOptions(color, (float) speed);
+                break;
+            case ITEM_CRACK:
+                ItemStack item = new ItemStack(material);
+                try {
+                    ItemMeta.class.getMethod("hasCustomModelData",null);
+                    ItemMeta meta = item.getItemMeta();
+                    meta.setCustomModelData(data);
+                    item.setItemMeta(meta);
+                } catch (NoSuchMethodException e) {
+                    item.setData(new MaterialData(material, (byte) data));
+                }
+                object = item;
+                break;
+            case BLOCK_CRACK:
+            case BLOCK_DUST:
+            case FALLING_DUST:
+                object = material.createBlockData();
+        }
+        for (Player player : players) {
+            player.spawnParticle(particle,x,y,z,count,dx,dy,dz,speed,object);
+        }
     }
 }

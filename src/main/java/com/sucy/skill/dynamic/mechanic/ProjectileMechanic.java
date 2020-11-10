@@ -33,14 +33,7 @@ import com.sucy.skill.listener.MechanicListener;
 import com.sucy.skill.task.RemoveTask;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Egg;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LargeFireball;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Snowball;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -95,7 +88,7 @@ public class ProjectileMechanic extends MechanicComponent
         String spread = settings.getString(SPREAD, "cone").toLowerCase();
         String projectile = settings.getString(PROJECTILE, "arrow").toLowerCase();
         String cost = settings.getString(COST, "none").toLowerCase();
-        Class<? extends Projectile> type = PROJECTILES.get(projectile);
+        Class<? extends Projectile> type = getProjectileClass(projectile);
         if (type == null)
         {
             type = Arrow.class;
@@ -136,6 +129,20 @@ public class ProjectileMechanic extends MechanicComponent
                 for (Location loc : locs)
                 {
                     Projectile p = caster.launchProjectile(type);
+                    p.setTicksLived(1180);
+                    if (type.getName().contains("Arrow")) {
+                        // Will fail under 1.12
+                        try {
+                            // Will fail under 1.14
+                            try {
+                                AbstractArrow arrow = (AbstractArrow) p;
+                                arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+                            } catch (NoClassDefFoundError e) {
+                                Arrow arrow = (Arrow) p;
+                                arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+                            }
+                        } catch (NoSuchMethodError ignored) {}
+                    }
                     p.setVelocity(new Vector(0, speed, 0));
                     p.teleport(loc);
                     SkillAPI.setMeta(p, LEVEL, level);
@@ -164,8 +171,20 @@ public class ProjectileMechanic extends MechanicComponent
                 for (Vector d : dirs)
                 {
                     Projectile p = caster.launchProjectile(type);
-                    if (type != Arrow.class)
-                    {
+                    p.setTicksLived(1180);
+                    if (type.getName().contains("Arrow")) {
+                        // Will fail under 1.12
+                        try {
+                            // Will fail under 1.14
+                            try {
+                                AbstractArrow arrow = (AbstractArrow) p;
+                                arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+                            } catch (NoClassDefFoundError e) {
+                                Arrow arrow = (Arrow) p;
+                                arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+                            }
+                        } catch (NoSuchMethodError ignored) {}
+                    } else {
                         p.teleport(target.getLocation().add(looking).add(0, upward + 0.5, 0).add(p.getVelocity()).setDirection(d));
                     }
                     p.setVelocity(d.multiply(speed));
@@ -197,6 +216,18 @@ public class ProjectileMechanic extends MechanicComponent
         executeChildren((LivingEntity) projectile.getShooter(), SkillAPI.getMetaInt(projectile, LEVEL), targets);
         SkillAPI.removeMeta(projectile, MechanicListener.P_CALL);
         projectile.remove();
+    }
+
+    private static Class<? extends Projectile> getProjectileClass(String projectileName) {
+        StringBuilder conditionedName = new StringBuilder();
+        for (String word : projectileName.split(" ")) {
+            conditionedName.append(word.substring(0,1).toUpperCase()).append(word.substring(1).toLowerCase());
+        }
+        try {
+            return (Class<? extends Projectile>) Class.forName("org.bukkit.entity."+conditionedName);
+        } catch (ClassNotFoundException e) {
+            return PROJECTILES.get(projectileName);
+        }
     }
 
     private static final HashMap<String, Class<? extends Projectile>> PROJECTILES = new HashMap<String, Class<? extends Projectile>>()

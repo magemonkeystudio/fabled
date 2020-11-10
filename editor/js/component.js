@@ -1,7 +1,5 @@
 var hoverSpace;
 
-var DAMAGE_TYPES = [ 'Block Explosion', 'Contact', 'Cramming', 'Dragon Breath', 'Drowning', 'Entity Attack', 'Entity Explosion', 'Fall', 'Falling Block', 'Fire', 'Fire Tick', 'Fly Into Wall', 'Hot Floor', 'Lava', 'Lightning', 'Magic', 'Melting', 'Poison', 'Projectile', 'Starvation', 'Suffocation', 'Suicide', 'Thorns', 'Void', 'Wither' ];
-
 function canDrop(thing, target) {
     if (thing == target) return false;
 
@@ -27,18 +25,18 @@ var Type = {
  * Available triggers for activating skill effects
  */
 var Trigger = {
-    BLOCK_BREAK          : { name: 'Block Break',          container: true, construct: TriggerBlockBreak,        premium: true },
-    BLOCK_PLACE          : { name: 'Block Place',          container: true, construct: TriggerBlockPlace,        premium: true },
+    BLOCK_BREAK          : { name: 'Block Break',          container: true, construct: TriggerBlockBreak         },
+    BLOCK_PLACE          : { name: 'Block Place',          container: true, construct: TriggerBlockPlace         },
     CAST                 : { name: 'Cast',                 container: true, construct: TriggerCast               },
     CLEANUP              : { name: 'Cleanup',              container: true, construct: TriggerCleanup            },
     CROUCH               : { name: 'Crouch',               container: true, construct: TriggerCrouch             },
     DEATH                : { name: 'Death',                container: true, construct: TriggerDeath              },
-    ENVIRONMENT_DAMAGE   : { name: 'Environment Damage',   container: true, construct: TriggerEnvironmentDamage, premium: true },
+    ENVIRONMENT_DAMAGE   : { name: 'Environment Damage',   container: true, construct: TriggerEnvironmentDamage  },
     INITIALIZE           : { name: 'Initialize',           container: true, construct: TriggerInitialize         },
     KILL                 : { name: 'Kill',                 container: true, construct: TriggerKill               },
     LAND                 : { name: 'Land',                 container: true, construct: TriggerLand               },
     LAUNCH               : { name: 'Launch',               container: true, construct: TriggerLaunch             },
-    MOVE                 : { name: 'Move',                 container: true, construct: TriggerMove,              premium: true },
+    MOVE                 : { name: 'Move',                 container: true, construct: TriggerMove               },
     PHYSICAL_DAMAGE      : { name: 'Physical Damage',      container: true, construct: TriggerPhysicalDamage     },
     SKILL_DAMAGE         : { name: 'Skill Damage',         container: true, construct: TriggerSkillDamage        },
     TOOK_PHYSICAL_DAMAGE : { name: 'Took Physical Damage', container: true, construct: TriggerTookPhysicalDamage },
@@ -68,7 +66,7 @@ var Condition = {
     ATTRIBUTE:   { name: 'Attribute',   container: true, construct: ConditionAttribute  },
     BIOME:       { name: 'Biome',       container: true, construct: ConditionBiome      },
     BLOCK:       { name: 'Block',       container: true, construct: ConditionBlock      },
-    CEILING:     { name: 'Ceiling',     container: true, construct: ConditionCeiling,   premium: true },
+    CEILING:     { name: 'Ceiling',     container: true, construct: ConditionCeiling    },
     CHANCE:      { name: 'Chance',      container: true, construct: ConditionChance     },
     CLASS:       { name: 'Class',       container: true, construct: ConditionClass      },
     CLASS_LEVEL: { name: 'Class Level', container: true, construct: ConditionClassLevel },
@@ -76,28 +74,30 @@ var Condition = {
     CROUCH:      { name: 'Crouch',      container: true, construct: ConditionCrouch     },
     DIRECTION:   { name: 'Direction',   container: true, construct: ConditionDirection  },
     ELEVATION:   { name: 'Elevation',   container: true, construct: ConditionElevation  },
-    ELSE:        { name: 'Else',        container: true, construct: ConditionElse,      premium: true },
-    ENTITY_TYPE: { name: 'Entity Type', container: true, construct: ConditionEntityType,premium: true },
+    ELSE:        { name: 'Else',        container: true, construct: ConditionElse       },
+    ENTITY_TYPE: { name: 'Entity Type', container: true, construct: ConditionEntityType },
     FIRE:        { name: 'Fire',        container: true, construct: ConditionFire       },
     FLAG:        { name: 'Flag',        container: true, construct: ConditionFlag       },
-    GROUND:      { name: 'Ground',      container: true, construct: ConditionGround,    premium: true },
+    GROUND:      { name: 'Ground',      container: true, construct: ConditionGround     },
     HEALTH:      { name: 'Health',      container: true, construct: ConditionHealth     },
     INVENTORY:   { name: 'Inventory',   container: true, construct: ConditionInventory  },
     ITEM:        { name: 'Item',        container: true, construct: ConditionItem       },
     LIGHT:       { name: 'Light',       container: true, construct: ConditionLight      },
     MANA:        { name: 'Mana',        container: true, construct: ConditionMana       },
+    MOUNTED:     { name: 'Mounted',     container: true, construct: ConditionMounted    },
+    MOUNTING:    { name: 'Mounting',    container: true, construct: ConditionMounting   },
     NAME:        { name: 'Name',        container: true, construct: ConditionName       },
     OFFHAND:     { name: 'Offhand',     container: true, construct: ConditionOffhand    },
-    PERMISSION:  { name: 'Permission',  container: true, construct: ConditionPermission,premium: true },
+    PERMISSION:  { name: 'Permission',  container: true, construct: ConditionPermission },
     POTION:      { name: 'Potion',      container: true, construct: ConditionPotion     },
     SKILL_LEVEL: { name: 'Skill Level', container: true, construct: ConditionSkillLevel },
-    SLOT:        { name: 'Slot',        container: true, construct: ConditionSlot,      premium: true },
+    SLOT:        { name: 'Slot',        container: true, construct: ConditionSlot       },
     STATUS:      { name: 'Status',      container: true, construct: ConditionStatus     },
     TIME:        { name: 'Time',        container: true, construct: ConditionTime       },
     TOOL:        { name: 'Tool',        container: true, construct: ConditionTool       },
     VALUE:       { name: 'Value',       container: true, construct: ConditionValue      },
     WATER:       { name: 'Water',       container: true, construct: ConditionWater      },
-    WEATHER:     { name: 'Weather',     container: true, construct: ConditionWeather,   premium: true }
+    WEATHER:     { name: 'Weather',     container: true, construct: ConditionWeather    }
 };
 
 /**
@@ -106,7 +106,7 @@ var Condition = {
 var Mechanic = {
     ATTRIBUTE:           { name: 'Attribute',           container: false, construct: MechanicAttribute          },
     BLOCK:               { name: 'Block',               container: false, construct: MechanicBlock              },
-    BUFF:                { name: 'Buff',                container: false, construct: MechanicBuff,              premium: true },
+    BUFF:                { name: 'Buff',                container: false, construct: MechanicBuff               },
     CANCEL:              { name: 'Cancel',              container: false, construct: MechanicCancel             },
     CHANNEL:             { name: 'Channel',             container: true,  construct: MechanicChannel            },
     CLEANSE:             { name: 'Cleanse',             container: false, construct: MechanicCleanse            },
@@ -118,17 +118,17 @@ var Mechanic = {
     DEFENSE_BUFF:        { name: 'Defense Buff',        container: false, construct: MechanicDefenseBuff        },
     DELAY:               { name: 'Delay',               container: true,  construct: MechanicDelay              },
     DISGUISE:            { name: 'Disguise',            container: false, construct: MechanicDisguise           },
-    DURABILITY:          { name: 'Durability',          container: false, construct: MechanicDurability,        premium: true },
+    DURABILITY:          { name: 'Durability',          container: false, construct: MechanicDurability         },
     EXPLOSION:           { name: 'Explosion',           container: false, construct: MechanicExplosion          },
     FIRE:                { name: 'Fire',                container: false, construct: MechanicFire               },
     FLAG:                { name: 'Flag',                container: false, construct: MechanicFlag               },
     FLAG_CLEAR:          { name: 'Flag Clear',          container: false, construct: MechanicFlagClear          },
     FLAG_TOGGLE:         { name: 'Flag Toggle',         container: false, construct: MechanicFlagToggle         },
-    FOOD:                { name: 'Food',                container: false, construct: MechanicFood,              premium: true },
-    FORGET_TARGETS:      { name: 'Forget Targets',      container: false, construct: MechanicForgetTargets,     premium: true },
+    FOOD:                { name: 'Food',                container: false, construct: MechanicFood               },
+    FORGET_TARGETS:      { name: 'Forget Targets',      container: false, construct: MechanicForgetTargets      },
     HEAL:                { name: 'Heal',                container: false, construct: MechanicHeal               },
-    HEALTH_SET:          { name: 'Health Set',          container: false, construct: MechanicHealthSet,         premium: true },
-    HELD_ITEM:           { name: 'Held Item',           container: false, construct: MechanicHeldItem,          premium: true },
+    HEALTH_SET:          { name: 'Health Set',          container: false, construct: MechanicHealthSet          },
+    HELD_ITEM:           { name: 'Held Item',           container: false, construct: MechanicHeldItem           },
     IMMUNITY:            { name: 'Immunity',            container: false, construct: MechanicImmunity           },
     INTERRUPT:           { name: 'Interrupt',           container: false, construct: MechanicInterrupt          },
     ITEM:                { name: 'Item',                container: false, construct: MechanicItem               },
@@ -140,8 +140,8 @@ var Mechanic = {
     MESSAGE:             { name: 'Message',             container: false, construct: MechanicMessage            },
     PARTICLE:            { name: 'Particle',            container: false, construct: MechanicParticle           },
     PARTICLE_ANIMATION:  { name: 'Particle Animation',  container: false, construct: MechanicParticleAnimation  },
-    PARTICLE_EFFECT:     { name: 'Particle Effect',     container: false, construct: MechanicParticleEffect,    premium: true },
-    CANCEL_EFFECT:       { name: 'Cancel Effect',       container: false, construct: MechanicCancelEffect,      premium: true },
+    PARTICLE_EFFECT:     { name: 'Particle Effect',     container: false, construct: MechanicParticleEffect     },
+    CANCEL_EFFECT:       { name: 'Cancel Effect',       container: false, construct: MechanicCancelEffect       },
     PARTICLE_PROJECTILE: { name: 'Particle Projectile', container: true,  construct: MechanicParticleProjectile },
     PASSIVE:             { name: 'Passive',             container: true,  construct: MechanicPassive            },
     PERMISSION:          { name: 'Permission',          container: false, construct: MechanicPermission         },
@@ -156,18 +156,18 @@ var Mechanic = {
     SPEED:               { name: 'Speed',               container: false, construct: MechanicSpeed              },
     STATUS:              { name: 'Status',              container: false, construct: MechanicStatus             },
     TAUNT:               { name: 'Taunt',               container: false, construct: MechanicTaunt              },
-    TRIGGER:             { name: 'Trigger',             container: true,  construct: MechanicTrigger,           premium: true },
+    TRIGGER:             { name: 'Trigger',             container: true,  construct: MechanicTrigger            },
     VALUE_ADD:           { name: 'Value Add',           container: false, construct: MechanicValueAdd           },
     VALUE_ATTRIBUTE:     { name: 'Value Attribute',     container: false, construct: MechanicValueAttribute     },
-    VALUE_COPY:          { name: 'Value Copy',          container: false, construct: MechanicValueCopy,         premium: true },
-    VALUE_DISTANCE:      { name: 'Value Distance',      container: false, construct: MechanicValueDistance,     premium: true },
-    VALUE_HEALTH:        { name: 'Value Health',        container: false, construct: MechanicValueHealth,       premium: true },
+    VALUE_COPY:          { name: 'Value Copy',          container: false, construct: MechanicValueCopy          },
+    VALUE_DISTANCE:      { name: 'Value Distance',      container: false, construct: MechanicValueDistance      },
+    VALUE_HEALTH:        { name: 'Value Health',        container: false, construct: MechanicValueHealth        },
     VALUE_LOCATION:      { name: 'Value Location',      container: false, construct: MechanicValueLocation      },
     VALUE_LORE:          { name: 'Value Lore',          container: false, construct: MechanicValueLore          },
-    VALUE_LORE_SLOT:     { name: 'Value Lore Slot',     container: false, construct: MechanicValueLoreSlot,     premium: true},
-    VALUE_MANA:          { name: 'Value Mana',          container: false, construct: MechanicValueMana,         premium: true },
+    VALUE_LORE_SLOT:     { name: 'Value Lore Slot',     container: false, construct: MechanicValueLoreSlot      },
+    VALUE_MANA:          { name: 'Value Mana',          container: false, construct: MechanicValueMana          },
     VALUE_MULTIPLY:      { name: 'Value Multiply',      container: false, construct: MechanicValueMultiply      },
-    VALUE_PLACEHOLDER:   { name: 'Value Placeholder',   container: false, construct: MechanicValuePlaceholder,  premium: true },
+    VALUE_PLACEHOLDER:   { name: 'Value Placeholder',   container: false, construct: MechanicValuePlaceholder   },
     VALUE_RANDOM:        { name: 'Value Random',        container: false, construct: MechanicValueRandom        },
     VALUE_SET:           { name: 'Value Set',           container: false, construct: MechanicValueSet           },
     WARP:                { name: 'Warp',                container: false, construct: MechanicWarp               },
@@ -661,7 +661,7 @@ function TriggerEnvironmentDamage()
 
     this.description = 'Applies skill effects when a player takes environmental damage.';
 
-    this.data.push(new ListValue('Type', 'type', DAMAGE_TYPES, 'FALL')
+    this.data.push(new ListValue('Type', 'type', getDamageTypes, 'FALL')
         .setTooltip('The source of damage to apply for')
     );
 }
@@ -1293,6 +1293,32 @@ function ConditionMana()
     );
 }
 
+extend('ConditionMounted', 'Component');
+function ConditionMounted()
+{
+    this.super('Mounted', Type.CONDITION, true);
+
+    this.description = 'Applies child elements if the target is being mounted by one of the selected entity types'
+
+    this.data.push(new MultiListValue('Types', 'types', getAnyEntities, [ 'Any' ])
+        .setTooltip('The entity types that can be mounting the target')
+    );
+    
+}
+
+extend('ConditionMounting', 'Component');
+function ConditionMounting()
+{
+    this.super('Mounting', Type.CONDITION, true);
+
+    this.description = 'Applies child elements if the target is mounting one of the selected entity types'
+
+    this.data.push(new MultiListValue('Types', 'types', getAnyEntities, [ 'Any' ])
+        .setTooltip('The entity types the target can be mounting')
+    );
+    
+}
+
 extend('ConditionName', 'Component');
 function ConditionName()
 {
@@ -1625,13 +1651,13 @@ function MechanicCommand()
 {
     this.super('Command', Type.MECHANIC, false);
 
-    this.description ='Executes a command for each of the targets either from them directly by oping them or via the console using their name.';
+    this.description ='Executes a command for each of the targets.';
 
     this.data.push(new StringValue('Command', 'command', '')
         .setTooltip('The command to execute')
     );
     this.data.push(new ListValue('Execute Type', 'type', [ 'Console', 'OP' ], 'OP')
-        .setTooltip('How to execute the command. Console will execute the command for the console while OP will have the target player execute it while given a temporary OP permission. Use {player} to embed the target player\'s name into the command')
+        .setTooltip('Console: executes the command from the console. OP: Only if the target is a player, will have them execute it while given a temporary OP permission (If server closes in the meantime, the permission might stay, not recommended!!). {player} = caster\'s name, {target} = target\'s name, {targetUUID} = target\'s UUID (useful if targets are non players), &lc: "{", &rc: "}"')
     );
 }
 
@@ -1947,7 +1973,7 @@ function MechanicImmunity()
 
     this.description = 'Provides damage immunity from one source for a duration.'
 
-    this.data.push(new ListValue('Type', 'type', DAMAGE_TYPES, 'Poison')
+    this.data.push(new ListValue('Type', 'type', getDamageTypes, 'Poison')
         .setTooltip('The damage type to give an immunity for')
     );
     this.data.push(new AttributeValue('Seconds', 'seconds', 3, 0)
@@ -2275,7 +2301,7 @@ function MechanicProjectile()
 
     this.description = 'Launches a projectile that applies child components on hit. The target supplied will be the struck target.';
 
-    this.data.push(new ListValue('Projectile', 'projectile', [ 'Arrow', 'Egg', 'Ghast Fireball', 'Snowball' ], 'Arrow')
+    this.data.push(new ListValue('Projectile', 'projectile', [ 'Arrow', 'Egg', 'Snowball', 'Fireball', 'Large Fireball', 'Small fireball' ], 'Arrow')
         .setTooltip('The type of projectile to fire')
     );
     this.data.push(new ListValue('Flaming', 'flaming', [ 'True', 'False' ], 'False')
@@ -2442,7 +2468,7 @@ function MechanicTrigger()
     );
 
     // ENVIRONMENT_DAMAGE
-    this.data.push(new ListValue('Type', 'type', DAMAGE_TYPES, 'FALL')
+    this.data.push(new ListValue('Type', 'type', getDamageTypes, 'FALL')
         .requireValue('trigger', [ 'Environment Damage' ])
         .setTooltip('The source of damage to apply for')
     );
@@ -2950,7 +2976,7 @@ function addParticleOptions(component) {
         .setTooltip('The radius of the arrangement in blocks')
     );
     component.data.push(new AttributeValue('Amount', 'particles', 20, 0)
-        .setTooltip('The amount of particles to play')
+        .setTooltip('The amount of points that conform the chosen arrangement.')
     );
     
     // Circle arrangement direction
@@ -2964,15 +2990,15 @@ function addParticleOptions(component) {
     );
     component.data.push(new IntValue('Visible Radius', 'visible-radius', 25).setTooltip('How far away players can see the particles from in blocks')
     );
-    component.data.push(new DoubleValue('DX', 'dx', 0).setTooltip('A packet variable that varies between particles. It generally is used for how far from the position a particle can move in the X direction.')
+    component.data.push(new DoubleValue('DX', 'dx', 0).setTooltip('Offset in the X direction, used as the Red value for some particles.')
     );
-    component.data.push(new DoubleValue('DY', 'dy', 0).setTooltip('A packet variable that varies between particles. It generally is used for how far from the position a particle can move in the Y direction.')
+    component.data.push(new DoubleValue('DY', 'dy', 0).setTooltip('Offset in the Y direction, used as the Green value for some particles.')
     );
-    component.data.push(new DoubleValue('DZ', 'dz', 0).setTooltip('A packet variable that varies between particles. It generally is used for how far from the position a particle can move in the Z direction.')
+    component.data.push(new DoubleValue('DZ', 'dz', 0).setTooltip('Offset in the Z direction, used as the Blue value for some particles.')
     );
-    component.data.push(new DoubleValue('Packet Amount', 'amount', 1).setTooltip('A packet variable that varies between particles. Setting this to 0 lets you control the color of some particles.')
+    component.data.push(new DoubleValue('Packet Amount', 'amount', 1).setTooltip('Number of particles to play per point. For "spell" and "effect" particles, set to 0 to control the particle color.')
     );
-    component.data.push(new DoubleValue('Speed', 'speed', 0.1).setTooltip('A packet variable that varies between particles. It generally controlls the color or velocity of the particle.')
+    component.data.push(new DoubleValue('Speed', 'speed', 0.1).setTooltip('Speed of the particle. For some particles controls other parameters, such as size.')
     );
 }
 
@@ -3017,34 +3043,34 @@ function addEffectOptions(component, optional)
         .setTooltip('Number of ticks between playing particles.')
     ));
     component.data.push(opt(new IntValue('View Range', '-view-range', 25)
-        .setTooltip('How far away the effect can be seen from')
+        .setTooltip('How far away the effect can be seen from.')
     ));
     
     component.data.push(opt(new ListValue('Particle', '-particle-type', getParticles, 'Barrier')
-        .setTooltip('The type of particle to use')
+        .setTooltip('The type of particle to use.')
     ));
     component.data.push(opt(new ListValue('Material', '-particle-material', getMaterials, 'Dirt')
         .requireValue('-particle-type', [ 'Item crack', 'Item Crack', 'Block crack', 'Block Crack', 'Block dust', 'Falling dust' ])
-        .setTooltip('The material to use for the particle')
+        .setTooltip('The material to use for the particle.')
     ));
     component.data.push(opt(new IntValue('Data', '-particle-data', 0)
         .requireValue('-particle-type', [ 'Item crack', 'Item Crack' ])
-        .setTooltip('The data value for the material used by the particle. For 1.14+ determines the CustomModelData of the item')
+        .setTooltip('The data value for the material used by the particle. For 1.14+ determines the CustomModelData of the item.')
     ));
     component.data.push(opt(new IntValue('Amount', '-particle-amount', 1)
-        .setTooltip('Number of particles generated per point')
+        .setTooltip('Number of particles to play per point. For "spell" and "effect" particles, set to 0 to control the particle color.')
     ));
     component.data.push(opt(new DoubleValue('DX', '-particle-dx', 0)
-        .setTooltip('Particle DX value, often used for color')
+        .setTooltip('Offset in the X direction, used as the Red value for some particles.')
     ));
     component.data.push(opt(new DoubleValue('DY', '-particle-dy', 0)
-        .setTooltip('Particle DY value, often used for color')
+        .setTooltip('Offset in the Y direction, used as the Green value for some particles.')
     ));
     component.data.push(opt(new DoubleValue('DZ', '-particle-dz', 0)
-        .setTooltip('Particle DZ value, often used for color')
+        .setTooltip('Offset in the Z direction, used as the Blue value for some particles.')
     ));
     component.data.push(opt(new DoubleValue('Speed', '-particle-speed', 0.1)
-        .setTooltip('Speed value for the particle, sometimes relating to velocity')
+        .setTooltip('Speed of the particle. For some particles controls other parameters, such as size.')
     ));
 }
 
