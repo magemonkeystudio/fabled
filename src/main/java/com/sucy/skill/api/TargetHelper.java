@@ -6,11 +6,9 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-public abstract class TargetHelper
-{
+public abstract class TargetHelper {
 
     /**
      * <p>Number of pixels that end up displaying about 1 degree of vision in the client window</p>
@@ -46,16 +44,17 @@ public abstract class TargetHelper
     public static List<LivingEntity> getLivingTargets(LivingEntity source, double range, double tolerance)
     {
         List<Entity> list = source.getNearbyEntities(range, range, range);
-        List<LivingEntity> targets = new ArrayList<LivingEntity>();
+        List<LivingEntity> targets = new ArrayList<>();
 
-        Vector facing = source.getLocation().getDirection();
+        Location sourceLocation = source.getEyeLocation();
+        Vector facing = sourceLocation.getDirection();
         double fLengthSq = facing.lengthSquared();
 
         for (Entity entity : list)
         {
             if (!isInFront(source, entity) || !(entity instanceof LivingEntity)) continue;
 
-            Vector relative = entity.getLocation().subtract(source.getLocation()).toVector();
+            Vector relative = entity.getLocation().clone().add(0,entity.getBoundingBox().getHeight()*0.5,0).subtract(sourceLocation).toVector();
             double dot = relative.dot(facing);
             double rLengthSq = relative.lengthSquared();
             double cosSquared = (dot * dot) / (rLengthSq * fLengthSq);
@@ -97,11 +96,12 @@ public abstract class TargetHelper
     {
         List<LivingEntity> targets = getLivingTargets(source, range, tolerance);
         if (targets.size() == 0) return null;
+        Location sourceLocation = source.getEyeLocation();
         LivingEntity target = targets.get(0);
-        double minDistance = target.getLocation().distanceSquared(source.getLocation());
+        double minDistance = target.getLocation().clone().add(0,target.getBoundingBox().getHeight()*0.5,0).distanceSquared(sourceLocation);
         for (LivingEntity entity : targets)
         {
-            double distance = entity.getLocation().distanceSquared(source.getLocation());
+            double distance = entity.getLocation().distanceSquared(sourceLocation);
             if (distance < minDistance)
             {
                 minDistance = distance;
@@ -122,12 +122,13 @@ public abstract class TargetHelper
      */
     public static List<LivingEntity> getConeTargets(LivingEntity source, double arc, double range)
     {
-        List<LivingEntity> targets = new ArrayList<LivingEntity>();
+        List<LivingEntity> targets = new ArrayList<>();
         List<Entity> list = source.getNearbyEntities(range, range, range);
         if (arc <= 0) return targets;
 
         // Initialize values
-        Vector dir = source.getLocation().getDirection();
+        Location sourceLocation = source.getEyeLocation();
+        Vector dir = sourceLocation.getDirection();
         dir.setY(0);
         double cos = Math.cos(arc * Math.PI / 180);
         double cosSq = cos * cos;
@@ -147,7 +148,7 @@ public abstract class TargetHelper
                 // Otherwise, select targets based on dot product
                 else
                 {
-                    Vector relative = entity.getLocation().subtract(source.getLocation()).toVector();
+                    Vector relative = entity.getLocation().clone().add(0,entity.getBoundingBox().getHeight()*0.5,0).subtract(sourceLocation).toVector();
                     relative.setY(0);
                     double dot = relative.dot(dir);
                     double value = dot * dot / relative.lengthSquared();
@@ -173,7 +174,7 @@ public abstract class TargetHelper
 
         // Get the necessary vectors
         Vector facing = entity.getLocation().getDirection();
-        Vector relative = target.getLocation().subtract(entity.getLocation()).toVector();
+        Vector relative = target.getLocation().clone().add(0,target.getBoundingBox().getHeight()*0.5,0).subtract(entity.getLocation()).toVector();
 
         // If the dot product is positive, the target is in front
         return facing.dot(relative) >= 0;
@@ -196,7 +197,7 @@ public abstract class TargetHelper
         // Get the necessary data
         double dotTarget = Math.cos(angle);
         Vector facing = entity.getLocation().getDirection();
-        Vector relative = target.getLocation().subtract(entity.getLocation()).toVector().normalize();
+        Vector relative = target.getLocation().clone().add(0,target.getBoundingBox().getHeight()*0.5,0).subtract(entity.getLocation()).toVector().normalize();
 
         // Compare the target dot product with the actual result
         return facing.dot(relative) >= dotTarget;
@@ -232,7 +233,7 @@ public abstract class TargetHelper
         // Get the necessary data
         double dotTarget = Math.cos(angle);
         Vector facing = entity.getLocation().getDirection();
-        Vector relative = entity.getLocation().subtract(target.getLocation()).toVector().normalize();
+        Vector relative = entity.getLocation().clone().add(0,entity.getBoundingBox().getHeight()*0.5,0).subtract(target.getLocation()).toVector().normalize();
 
         // Compare the target dot product and the actual result
         return facing.dot(relative) >= dotTarget;
