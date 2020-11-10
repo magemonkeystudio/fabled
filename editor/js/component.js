@@ -1657,7 +1657,7 @@ function MechanicCommand()
         .setTooltip('The command to execute')
     );
     this.data.push(new ListValue('Execute Type', 'type', [ 'Console', 'OP' ], 'OP')
-        .setTooltip('Console: executes the command from the console. Silent Console: Same, but won\'t send console feedback. OP: Only if the target is a player, will have them execute it while given a temporary OP permission (If server closes in the meantime, the permission might stay, not recommended!!). {player} = caster\'s name, {target} = target\'s name, {targetUUID} = target\'s UUID (useful if targets are non players), &lc: "{", &rc: "}"')
+        .setTooltip('Console: executes the command from the console. OP: Only if the target is a player, will have them execute it while given a temporary OP permission (If server closes in the meantime, the permission might stay, not recommended!!). {player} = caster\'s name, {target} = target\'s name, {targetUUID} = target\'s UUID (useful if targets are non players), &lc: "{", &rc: "}"')
     );
 }
 
