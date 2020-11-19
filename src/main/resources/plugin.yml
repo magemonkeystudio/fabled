@@ -1,7 +1,7 @@
 name: SkillAPI
 main: com.sucy.skill.SkillAPI
-version: 1.95
-author: Eniripsa96
+version: s1.96
+authors: [Eniripsa96, Sentropic]
 depend: [MCCore]
 softdepend: [Vault, ProtocolLib, Parties, RPGInventory, LibsDisguises, PlaceholderAPI, NoCheatPlus, MythicMobs, WorldGuard, WorldEdit]
 loadbefore: [Quests]
