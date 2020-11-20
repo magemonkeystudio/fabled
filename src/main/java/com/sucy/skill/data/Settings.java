@@ -1533,10 +1533,6 @@ public class Settings {
 
         ItemMeta meta = unassigned.getItemMeta();
 
-        if (meta instanceof org.bukkit.inventory.meta.Damageable) {
-            ((Damageable) meta).setDamage((short) icon.getInt("durability", 0));
-        }
-
         final int data = icon.getInt("data", 0);
         if (customModelData) {
             if (data!=0) {
@@ -1551,7 +1547,17 @@ public class Settings {
             meta.setDisplayName(format.remove(0));
             meta.setLore(format);
         } else { meta.setDisplayName(TextFormatter.colorString(icon.getString("text", "&7Unassigned"))); }
-        unassigned.setItemMeta(meta);
+
+        try {
+            Class.forName("org.bukkit.inventory.meta.Damageable");
+            if (meta instanceof org.bukkit.inventory.meta.Damageable) {
+                ((Damageable) meta).setDamage((short) icon.getInt("durability", 0));
+            }
+            unassigned.setItemMeta(meta);
+        } catch (ClassNotFoundException e) {
+            unassigned.setItemMeta(meta);
+            unassigned.setDurability((short) icon.getInt("durability", 0));
+        }
 
         DataSection layout = bar.getSection("layout");
         int skillCount = 0;

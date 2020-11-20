@@ -29,11 +29,8 @@ package com.sucy.skill.api.util;
 import com.rit.sucy.config.parse.DataSection;
 import com.rit.sucy.text.TextFormatter;
 import com.sucy.skill.SkillAPI;
-import com.sucy.skill.data.Settings;
-import org.apache.commons.lang.ObjectUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -60,10 +57,6 @@ public class Data {
 
             final ItemStack item = new ItemStack(material);
             final ItemMeta meta = item.getItemMeta();
-
-            if (meta instanceof Damageable) {
-                ((Damageable) meta).setDamage(dur);
-            }
             if (SkillAPI.getSettings().useCustomModelData()) {
                 if (data!=0) {
                     meta.setCustomModelData(data);
@@ -76,7 +69,16 @@ public class Data {
                 meta.setDisplayName(colored.remove(0));
                 meta.setLore(colored);
             }
-            item.setItemMeta(meta);
+            try {
+                Class.forName("org.bukkit.inventory.meta.Damageable");
+                if (meta instanceof Damageable) {
+                    ((Damageable) meta).setDamage(dur);
+                }
+                item.setItemMeta(meta);
+            } catch (ClassNotFoundException e) {
+                item.setItemMeta(meta);
+                item.setDurability(dur);
+            }
             return DamageLoreRemover.removeAttackDmg(item);
         } catch (final Exception ex) {
             return new ItemStack(Material.JACK_O_LANTERN);
@@ -98,8 +100,13 @@ public class Data {
         } else {
             config.set(DATA, item.getData().getData());
         }
-        if (meta instanceof Damageable) {
-            config.set(DURABILITY, ((Damageable) meta).getDamage());
+        try {
+            Class.forName("org.bukkit.inventory.meta.Damageable");
+            if (meta instanceof Damageable) {
+                config.set(DURABILITY, ((Damageable) meta).getDamage());
+            }
+        } catch (ClassNotFoundException e) {
+            config.set(DURABILITY, item.getDurability());
         }
         if (meta.hasDisplayName()) {
             List<String> lore = item.getItemMeta().getLore();
