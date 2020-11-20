@@ -78,6 +78,10 @@
             <url>https://repo.md-5.net/content/repositories/snapshots/</url>
         </repository>
         <repository>
+            <id>md_5-public</id>
+            <url>http://repo.md-5.net/content/groups/public/</url>
+        </repository>
+        <repository>
             <id>nexus</id>
             <name>Lumine Releases</name>
             <url>https://mvn.lumine.io/repository/maven-public/</url>
@@ -98,6 +102,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-install-plugin</artifactId>
+            <version>3.0.0-M1</version>
+        </dependency>
+        <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.15.2-R0.1-SNAPSHOT</version>
@@ -107,13 +116,15 @@
             <groupId>com.rit.sucy</groupId>
             <artifactId>mccore</artifactId>
             <version>1.67</version>
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/MCCore-1.67.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.sucy.party</groupId>
             <artifactId>parties</artifactId>
             <version>1.13</version>
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/Parties-1.13.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
@@ -125,12 +136,13 @@
             <groupId>ru.endlesscode</groupId>
             <artifactId>rpginventory</artifactId>
             <version>1.0.6</version>
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/RPGInventory-1.0.6.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>LibsDisguises</groupId>
             <artifactId>LibsDisguises</artifactId>
-            <version>10.0.16-SNAPSHOT-b722</version>
+            <version>10.0.19</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
