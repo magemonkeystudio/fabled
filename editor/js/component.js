@@ -104,6 +104,7 @@ var Condition = {
  * Available mechanic component data
  */
 var Mechanic = {
+    ARMOR_STAND:         { name: 'Armor Stand',         container: true,  construct: MechanicArmorStand         },
     ATTRIBUTE:           { name: 'Attribute',           container: false, construct: MechanicAttribute          },
     BLOCK:               { name: 'Block',               container: false, construct: MechanicBlock              },
     BUFF:                { name: 'Buff',                container: false, construct: MechanicBuff               },
@@ -1514,6 +1515,57 @@ function MechanicAttribute()
     );
     this.data.push(new ListValue('Stackable', 'stackable', [ 'True', 'False' ], 'False')
         .setTooltip('[PREM] Whether or not applying multiple times stacks the effects')
+    );
+}
+
+extend('MechanicArmorStand', 'Component');
+function MechanicArmorStand()
+{
+    this.super('Armor Stand', Type.MECHANIC, true);
+
+    this.description = 'Summons an armor stand that can be used as a marker or for item display. Applies child components on the armor stand';
+
+    this.data.push(new StringValue('Armor Stand Key', 'key', 'default')
+        .setTooltip('The key to refer to the armorstand by. Only one armorstand of each key can be active per target at the time')
+    );
+    this.data.push(new AttributeValue('Duration', 'duration', 5, 0)
+        .setTooltip('How long the armorstand lasts before being deleted')
+    );
+    this.data.push(new StringValue('Name', 'name', 'Armor Stand')
+        .setTooltip('The name the armor stand displays')
+    );
+    this.data.push(new ListValue('Name visible', 'name-visible', [ 'True', 'False' ], 'False')
+        .setTooltip('Whether or not the armorstand\'s name should be visible from afar')
+    );
+    this.data.push(new ListValue('Follow target', 'follow', [ 'True', 'False' ], 'False')
+        .setTooltip('Whether or not the armorstand should follow the target')
+    );
+    this.data.push(new ListValue('Apply gravity', 'gravity', [ 'True', 'False' ], 'True')
+        .setTooltip('Whether or not the armorstand should be affected by gravity')
+    );
+    this.data.push(new ListValue('Small', 'tiny', [ 'True', 'False' ], 'False')
+        .setTooltip('Whether or not the armorstand should be small')
+    );
+    this.data.push(new ListValue('Show arms', 'arms', [ 'True', 'False' ], 'False')
+        .setTooltip('Whether or not the armorstand should display its arms')
+    );
+    this.data.push(new ListValue('Show base plate', 'base', [ 'True', 'False' ], 'False')
+        .setTooltip('Whether or not the armorstand should display its base plate')
+    );
+    this.data.push(new ListValue('Visible', 'visible', [ 'True', 'False' ], 'True')
+        .setTooltip('Whether or not the armorstand should be visible')
+    );
+    this.data.push(new ListValue('Marker', 'marker', [ 'True', 'False' ], 'True')
+        .setTooltip('Setting this to true will remove the armor stand\'s hitbox')
+    );
+    this.data.push(new AttributeValue('Forward Offset', 'forward', 0, 0)
+        .setTooltip('How far forward in front of the target the armorstand should be in blocks. A negative value will put it behind.')
+    );
+    this.data.push(new AttributeValue('Upward Offset', 'upward', 0, 0)
+        .setTooltip('How far above the target the armorstand should be in blocks. A negative value will put it below.')
+    );
+    this.data.push(new AttributeValue('Right Offset', 'right', 0, 0)
+        .setTooltip('How far to the right the armorstand should be of the target. A negative value will put it to the left.')
     );
 }
 

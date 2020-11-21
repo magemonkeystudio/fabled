@@ -149,9 +149,8 @@ public abstract class TargetComponent extends EffectComponent {
     }
 
     boolean isValidTarget(final LivingEntity caster, final LivingEntity from, final LivingEntity target) {
-        if (target instanceof TempEntity) {
-            return true;
-        }
+        if (SkillAPI.getMeta(target, "asMechanic") != null) return false;
+        if (target instanceof TempEntity) return true;
 
         return target != caster && SkillAPI.getSettings().isValidTarget(target)
                 && (throughWall || !TargetHelper.isObstructed(from.getEyeLocation(), target.getEyeLocation()))
