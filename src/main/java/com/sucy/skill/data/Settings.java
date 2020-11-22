@@ -91,6 +91,13 @@ public class Settings {
      * and trim any values that aren't supposed to be there.</p>
      */
     public void reload() {
+        try {
+            Class.forName("org.bukkit.inventory.meta.Damageable");
+            OLD_DURABILITY = false;
+        } catch (ClassNotFoundException e) {
+            OLD_DURABILITY = true;
+        }
+
         loadExperienceSettings();
         loadAccountSettings();
         loadClassSettings();
@@ -107,14 +114,6 @@ public class Settings {
         loadSaveSettings();
         loadTargetingSettings();
         loadWorldGuardSettings();
-
-        try {
-            Class.forName("org.bukkit.inventory.meta.Damageable");
-            OLD_DURABILITY = false;
-        } catch (ClassNotFoundException e) {
-            OLD_DURABILITY = true;
-        }
-
     }
 
     public boolean useOldDurability() { return OLD_DURABILITY; }
@@ -1548,7 +1547,7 @@ public class Settings {
         skillBarModelData = bar.getBoolean("use-custommodeldata", false);
         if (skillBarModelData) {
             try {
-                ItemMeta.class.getMethod("hasCustomModelData",null);
+                ItemMeta.class.getMethod("hasCustomModelData");
             } catch (NoSuchMethodException e) {
                 skillBarModelData = false;
                 Logger.log("CustomModelData not supported below 1.14+. Using item durability/data instead.");
@@ -1577,7 +1576,7 @@ public class Settings {
             meta.setLore(format);
         } else { meta.setDisplayName(TextFormatter.colorString(icon.getString("text", "&7Unassigned"))); }
 
-        if (SkillAPI.getSettings().useOldDurability()) {
+        if (OLD_DURABILITY) {
             unassigned.setItemMeta(meta);
             unassigned.setDurability((short) icon.getInt("durability", 0));
         } else {
