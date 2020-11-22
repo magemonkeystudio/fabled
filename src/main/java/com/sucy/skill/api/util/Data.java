@@ -69,15 +69,14 @@ public class Data {
                 meta.setDisplayName(colored.remove(0));
                 meta.setLore(colored);
             }
-            try {
-                Class.forName("org.bukkit.inventory.meta.Damageable");
+            if (SkillAPI.getSettings().useOldDurability()) {
+                item.setItemMeta(meta);
+                item.setDurability(dur);
+            } else {
                 if (meta instanceof Damageable) {
                     ((Damageable) meta).setDamage(dur);
                 }
                 item.setItemMeta(meta);
-            } catch (ClassNotFoundException e) {
-                item.setItemMeta(meta);
-                item.setDurability(dur);
             }
             return DamageLoreRemover.removeAttackDmg(item);
         } catch (final Exception ex) {
@@ -100,14 +99,14 @@ public class Data {
         } else {
             config.set(DATA, item.getData().getData());
         }
-        try {
-            Class.forName("org.bukkit.inventory.meta.Damageable");
-            if (meta instanceof Damageable) {
-                config.set(DURABILITY, ((Damageable) meta).getDamage());
-            }
-        } catch (ClassNotFoundException e) {
+
+        if (SkillAPI.getSettings().useOldDurability()) {
             config.set(DURABILITY, item.getDurability());
+        } else {
+            if (meta instanceof Damageable) config.set(DURABILITY, ((Damageable) meta).getDamage());
+            else config.set(DURABILITY, 0);
         }
+
         if (meta.hasDisplayName()) {
             List<String> lore = item.getItemMeta().getLore();
             if (lore == null) { lore = new ArrayList<>(); }

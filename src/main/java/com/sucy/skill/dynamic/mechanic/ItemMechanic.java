@@ -100,15 +100,14 @@ public class ItemMechanic extends MechanicComponent
         } else {
             item.setData(new MaterialData(material, (byte) data));
         }
-        try {
-            Class.forName("org.bukkit.inventory.meta.Damageable");
+        if (SkillAPI.getSettings().useOldDurability()) {
+            item.setItemMeta(meta);
+            item.setDurability((short) durability);
+        } else {
             if (meta instanceof Damageable) {
                 ((Damageable) meta).setDamage(durability);
             }
             item.setItemMeta(meta);
-        } catch (ClassNotFoundException e) {
-            item.setItemMeta(meta);
-            item.setDurability((short) durability);
         }
 
         boolean worked = false;

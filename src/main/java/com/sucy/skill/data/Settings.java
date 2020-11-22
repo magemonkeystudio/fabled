@@ -66,6 +66,8 @@ public class Settings {
     private SkillAPI    plugin;
     private DataSection config;
 
+    private boolean OLD_DURABILITY;
+
     /**
      * <p>Initializes a new settings manager.</p>
      * <p>This is already set up by SkillAPI and shouldn't be
@@ -105,7 +107,17 @@ public class Settings {
         loadSaveSettings();
         loadTargetingSettings();
         loadWorldGuardSettings();
+
+        try {
+            Class.forName("org.bukkit.inventory.meta.Damageable");
+            OLD_DURABILITY = false;
+        } catch (ClassNotFoundException e) {
+            OLD_DURABILITY = true;
+        }
+
     }
+
+    public boolean useOldDurability() { return OLD_DURABILITY; }
 
     ///////////////////////////////////////////////////////
     //                                                   //
@@ -1565,15 +1577,14 @@ public class Settings {
             meta.setLore(format);
         } else { meta.setDisplayName(TextFormatter.colorString(icon.getString("text", "&7Unassigned"))); }
 
-        try {
-            Class.forName("org.bukkit.inventory.meta.Damageable");
+        if (SkillAPI.getSettings().useOldDurability()) {
+            unassigned.setItemMeta(meta);
+            unassigned.setDurability((short) icon.getInt("durability", 0));
+        } else {
             if (meta instanceof org.bukkit.inventory.meta.Damageable) {
                 ((Damageable) meta).setDamage((short) icon.getInt("durability", 0));
             }
             unassigned.setItemMeta(meta);
-        } catch (ClassNotFoundException e) {
-            unassigned.setItemMeta(meta);
-            unassigned.setDurability((short) icon.getInt("durability", 0));
         }
 
         DataSection layout = bar.getSection("layout");
