@@ -3,6 +3,7 @@ package com.sucy.skill.dynamic.mechanic;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.armorstand.ArmorStandInstance;
 import com.sucy.skill.api.armorstand.ArmorStandManager;
+import com.sucy.skill.listener.MechanicListener;
 import com.sucy.skill.task.RemoveTask;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -33,6 +34,17 @@ public class ArmorStandMechanic extends MechanicComponent {
     private static final String UPWARD = "upward";
     private static final String RIGHT = "right";
 
+    private static boolean LEGACY;
+
+    public ArmorStandMechanic() {
+        try {
+            ArmorStand.class.getMethod("setMarker", boolean.class);
+            LEGACY = false;
+        } catch (NoSuchMethodException e) {
+            LEGACY = true;
+        }
+    }
+
     @Override
     public String getKey() { return "armor stand"; }
 
@@ -61,18 +73,19 @@ public class ArmorStandMechanic extends MechanicComponent {
             loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
 
             ArmorStand armorStand = target.getWorld().spawn(loc, ArmorStand.class, as -> {
-                as.setSilent(true);
-                as.setInvulnerable(true);
+                if (!LEGACY) {
+                    as.setMarker(marker);
+                    as.setInvulnerable(true);
+                }
+                as.setGravity(gravity);
                 as.setCustomName(name);
                 as.setCustomNameVisible(nameVisible);
-                as.setGravity(gravity);
                 as.setSmall(small);
                 as.setArms(arms);
                 as.setBasePlate(base);
                 as.setVisible(visible);
-                as.setMarker(marker);
             });
-            SkillAPI.setMeta(armorStand, "asMechanic", true);
+            SkillAPI.setMeta(armorStand, MechanicListener.ARMOR_STAND, true);
             armorStands.add(armorStand);
 
             ArmorStandInstance instance;
