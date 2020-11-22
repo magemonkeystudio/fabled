@@ -105,6 +105,7 @@ var Condition = {
  */
 var Mechanic = {
     ARMOR_STAND:         { name: 'Armor Stand',         container: true,  construct: MechanicArmorStand         },
+    ARMOR_STAND_POSE:    { name: 'Armor Stand Pose',    container: false, construct: MechanicArmorStandPose     },
     ATTRIBUTE:           { name: 'Attribute',           container: false, construct: MechanicAttribute          },
     BLOCK:               { name: 'Block',               container: false, construct: MechanicBlock              },
     BUFF:                { name: 'Buff',                container: false, construct: MechanicBuff               },
@@ -1566,6 +1567,27 @@ function MechanicArmorStand()
     );
     this.data.push(new AttributeValue('Right Offset', 'right', 0, 0)
         .setTooltip('How far to the right the armorstand should be of the target. A negative value will put it to the left.')
+    );
+}
+
+extend('MechanicArmorStandPose', 'Component');
+function MechanicArmorStandPose()
+{
+    this.super('Armor Stand Pose', Type.MECHANIC, false);
+
+    this.description = 'Sets the pose of an armor stand target. Values should be in the format x,y,z where rotations are in degrees. Example: 0.0,0.0,0.0';
+
+    this.data.push(new StringValue('Head', 'head', '').setTooltip('The pose values of the head. Leave empty if should be ignored')
+    );
+    this.data.push(new StringValue('Body', 'body', '').setTooltip('The pose values of the body. Leave empty if should be ignored')
+    );
+    this.data.push(new StringValue('Left Arm', 'left-arm', '').setTooltip('The pose values of the left arm. Leave empty if should be ignored')
+    );
+    this.data.push(new StringValue('Right Arm', 'right-arm', '').setTooltip('The pose values of the right arm. Leave empty if should be ignored')
+    );
+    this.data.push(new StringValue('Left Leg', 'left-leg', '').setTooltip('The pose values of the left leg. Leave empty if should be ignored')
+    );
+    this.data.push(new StringValue('Right Leg', 'right-leg', '').setTooltip('The pose values of the right leg. Leave empty if should be ignored')
     );
 }
 

@@ -217,6 +217,7 @@ public class ComponentRegistry {
 
         // Mechanics
         register(new ArmorStandMechanic());
+        register(new ArmorStandPoseMechanic());
         register(new AttributeMechanic());
         register(new BlockMechanic());
         register(new BuffMechanic());
