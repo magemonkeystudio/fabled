@@ -1,6 +1,5 @@
 package com.sucy.skill.api.armorstand;
 
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.HashMap;
@@ -55,5 +54,13 @@ public class ArmorStandData {
                 iterator.remove();
             }
         }
+    }
+
+    /**
+     * Removes and unregisters all armor stands for this target
+     */
+    public void stop() {
+        armorStands.values().forEach(ArmorStandInstance::stop);
+        armorStands.clear();
     }
 }

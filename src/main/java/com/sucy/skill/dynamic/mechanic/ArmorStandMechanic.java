@@ -3,7 +3,6 @@ package com.sucy.skill.dynamic.mechanic;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.armorstand.ArmorStandInstance;
 import com.sucy.skill.api.armorstand.ArmorStandManager;
-import com.sucy.skill.dynamic.TempEntity;
 import com.sucy.skill.task.RemoveTask;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -22,7 +21,7 @@ public class ArmorStandMechanic extends MechanicComponent {
     private static final String KEY = "key";
     private static final String DURATION = "duration";
     private static final String NAME = "name";
-    private static final String NAME_VISIBLE = "name_visible";
+    private static final String NAME_VISIBLE = "name-visible";
     private static final String FOLLOW = "follow";
     private static final String GRAVITY = "gravity";
     private static final String SMALL = "tiny";
@@ -48,7 +47,7 @@ public class ArmorStandMechanic extends MechanicComponent {
         boolean small = settings.getBool(SMALL, false);
         boolean arms = settings.getBool(ARMS, false);
         boolean base = settings.getBool(BASE, false);
-        boolean visible = settings.getBool(VISIBLE, false);
+        boolean visible = settings.getBool(VISIBLE, true);
         boolean marker = settings.getBool(MARKER, false);
         double forward = parseValues(caster, FORWARD, level, 0);
         double upward = parseValues(caster, UPWARD, level, 0);

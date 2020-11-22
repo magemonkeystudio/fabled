@@ -71,7 +71,10 @@ public class ArmorStandManager {
         Iterator<ArmorStandData> iterator = instances.values().iterator();
         while (iterator.hasNext()) {
             ArmorStandData data = iterator.next();
-            if (data.isValid()) { data.tick(); } else { iterator.remove(); }
+            if (data.isValid()) { data.tick(); } else {
+                data.stop();
+                iterator.remove();
+            }
         }
     }
 }
