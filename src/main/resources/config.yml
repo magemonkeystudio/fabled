@@ -141,6 +141,10 @@ Skills:
   # by defensive or offesnive buffs and debuffs
   knockback-no-damage: false
   #
+  # Whether the 'data' or 'icon-data' entry in skill mechanics use CustomModelData (1.14+ only).
+  # If false, defaults to material data or durability.
+  use-custommodeldata: false
+  #
   # Blocks to ignore when using the Block mechanic in dynamic skills
   # End values in an * to do all materials containing the value
   block-filter:

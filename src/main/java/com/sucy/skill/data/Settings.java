@@ -695,6 +695,7 @@ public class Settings {
     private static final String SKILL_RADIUS    = SKILL_BASE + "message-radius";
     private static final String SKILL_BLOCKS    = SKILL_BASE + "block-filter";
     private static final String SKILL_KNOCKBACK = SKILL_BASE + "knockback-no-damage";
+    private static final String SKILL_MODEL_DATA = SKILL_BASE+"use-custommodeldata";
 
     private ArrayList<Material> filteredBlocks;
 
@@ -702,6 +703,7 @@ public class Settings {
     private boolean showSkillMessages;
     private boolean knockback;
     private int     messageRadius;
+    private boolean skillModelData;
 
     /**
      * Checks whether or not downgrades are allowed
@@ -738,6 +740,12 @@ public class Settings {
     }
 
     /**
+     * Return whether skill mechanics should use 'data' values as CustomModelData
+     * @return skill mechanics use CustomModelData
+     */
+    public boolean useSkillModelData() { return skillModelData; }
+
+    /**
      * Retrieves the list of filtered blocks
      *
      * @return list of blocks
@@ -751,8 +759,17 @@ public class Settings {
         showSkillMessages = config.getBoolean(SKILL_MESSAGE);
         messageRadius = config.getInt(SKILL_RADIUS);
         knockback = config.getBoolean(SKILL_KNOCKBACK);
+        skillModelData = config.getBoolean(SKILL_MODEL_DATA);
+        if (skillModelData) {
+            try {
+                ItemMeta.class.getMethod("hasCustomModelData",null);
+            } catch (NoSuchMethodException e) {
+                skillModelData = false;
+                Logger.log("CustomModelData not supported below 1.14+. Using item durability/data instead.");
+            }
+        }
 
-        filteredBlocks = new ArrayList<Material>();
+        filteredBlocks = new ArrayList<>();
         List<String> list = config.getList(SKILL_BLOCKS);
         for (String item : list) {
             item = item.toUpperCase().replace(' ', '_');
@@ -1456,7 +1473,7 @@ public class Settings {
     private ItemStack unassigned;
     private boolean[] defaultBarLayout = new boolean[9];
     private boolean[] lockedSlots      = new boolean[9];
-    private boolean customModelData;
+    private boolean skillBarModelData;
 
     /**
      * Checks whether or not the skill bar is enabled
@@ -1508,20 +1525,20 @@ public class Settings {
      *
      * @return true if enabled, false otherwise
      */
-    public boolean useCustomModelData() {
-        return customModelData;
+    public boolean useSkillBarModelData() {
+        return skillBarModelData;
     }
 
     private void loadSkillBarSettings() {
         DataSection bar = config.getSection("Skill Bar");
         skillBarEnabled = bar.getBoolean("enabled", false) && !castEnabled;
         skillBarCooldowns = bar.getBoolean("show-cooldown", true);
-        customModelData = bar.getBoolean("use-custommodeldata", false);
-        if (customModelData) {
+        skillBarModelData = bar.getBoolean("use-custommodeldata", false);
+        if (skillBarModelData) {
             try {
                 ItemMeta.class.getMethod("hasCustomModelData",null);
             } catch (NoSuchMethodException e) {
-                customModelData = false;
+                skillBarModelData = false;
                 Logger.log("CustomModelData not supported below 1.14+. Using item durability/data instead.");
             }
         }
@@ -1534,7 +1551,7 @@ public class Settings {
         ItemMeta meta = unassigned.getItemMeta();
 
         final int data = icon.getInt("data", 0);
-        if (customModelData) {
+        if (skillBarModelData) {
             if (data!=0) {
                 meta.setCustomModelData(data);
             }

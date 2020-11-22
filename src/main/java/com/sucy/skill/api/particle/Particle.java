@@ -28,10 +28,7 @@ package com.sucy.skill.api.particle;
 
 import com.rit.sucy.version.VersionManager;
 import com.sucy.skill.SkillAPI;
-import com.sucy.skill.log.Logger;
 import org.bukkit.*;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -312,7 +309,7 @@ public class Particle {
                 break;
             case ITEM_CRACK:
                 ItemStack item = new ItemStack(material);
-                if (SkillAPI.getSettings().useCustomModelData()) {
+                if (SkillAPI.getSettings().useSkillModelData()) {
                     ItemMeta meta = item.getItemMeta();
                     meta.setCustomModelData(data);
                     item.setItemMeta(meta);
