@@ -39,7 +39,7 @@ public class ArmorStandInstance {
     /**
      * Removes the armor stand
      */
-    public void stop() {
+    public void remove() {
         armorStand.remove();
     }
 

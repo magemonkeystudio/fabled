@@ -35,7 +35,7 @@ public class ArmorStandData {
 
     public void register(ArmorStandInstance armorStand, String key) {
         ArmorStandInstance oldArmorStand = armorStands.put(key, armorStand);
-        if (oldArmorStand != null) oldArmorStand.stop();
+        if (oldArmorStand != null) oldArmorStand.remove();
     }
 
     /**
@@ -50,7 +50,7 @@ public class ArmorStandData {
                 armorStand.tick();
             }
             else {
-                armorStand.stop();
+                armorStand.remove();
                 iterator.remove();
             }
         }
@@ -59,8 +59,8 @@ public class ArmorStandData {
     /**
      * Removes and unregisters all armor stands for this target
      */
-    public void stop() {
-        armorStands.values().forEach(ArmorStandInstance::stop);
+    public void remove() {
+        armorStands.values().forEach(ArmorStandInstance::remove);
         armorStands.clear();
     }
 }

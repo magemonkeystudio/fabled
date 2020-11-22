@@ -1,7 +1,11 @@
 package com.sucy.skill.api.armorstand;
 
+import com.sucy.skill.SkillAPI;
+import com.sucy.skill.listener.MechanicListener;
 import com.sucy.skill.task.ArmorStandTask;
 import com.sucy.skill.thread.MainThread;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.Iterator;
@@ -9,16 +13,26 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ArmorStandManager {
-    private static Map<LivingEntity, ArmorStandData> instances = new ConcurrentHashMap<>();
+    private static final Map<LivingEntity, ArmorStandData> instances = new ConcurrentHashMap<>();
 
     /**
-     * Registers the follow repeated task
+     * Registers the armor stand repeated task, and searches for rogue armor to remove them
      */
     public static void init() {
         MainThread.register(new ArmorStandTask());
+        Bukkit.getWorlds().forEach(world -> world.getEntitiesByClass(ArmorStand.class).forEach(as -> {
+            if (SkillAPI.getMeta(as, MechanicListener.ARMOR_STAND) != null) as.remove();
+        }));
     }
 
-    public static void cleanUp() { instances.clear(); }
+    /**
+     * Removes all armor stand instances
+     *
+     */
+    public static void cleanUp() {
+        instances.values().forEach(ArmorStandData::remove);
+        instances.clear();
+    }
 
     /**
      * Clears armor stands for a given entity
@@ -72,7 +86,7 @@ public class ArmorStandManager {
         while (iterator.hasNext()) {
             ArmorStandData data = iterator.next();
             if (data.isValid()) { data.tick(); } else {
-                data.stop();
+                data.remove();
                 iterator.remove();
             }
         }
