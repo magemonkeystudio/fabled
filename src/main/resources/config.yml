@@ -382,9 +382,6 @@ Casting:
     data: 0
     durability: 0
     name: '&6Instant Bar'
-    data: 0
-    durability: 0
-    name: '&6Instant Bar'
     lore:
     - ''
     - 'Skills in this row will'
