@@ -27,6 +27,7 @@
 package com.sucy.skill.api.particle;
 
 import com.rit.sucy.version.VersionManager;
+import com.sucy.skill.SkillAPI;
 import com.sucy.skill.log.Logger;
 import org.bukkit.*;
 import org.bukkit.block.data.BlockData;
@@ -311,12 +312,11 @@ public class Particle {
                 break;
             case ITEM_CRACK:
                 ItemStack item = new ItemStack(material);
-                try {
-                    ItemMeta.class.getMethod("hasCustomModelData",null);
+                if (SkillAPI.getSettings().useCustomModelData()) {
                     ItemMeta meta = item.getItemMeta();
                     meta.setCustomModelData(data);
                     item.setItemMeta(meta);
-                } catch (NoSuchMethodException e) {
+                } else {
                     item.setData(new MaterialData(material, (byte) data));
                 }
                 object = item;
