@@ -43,13 +43,14 @@ import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Heals each target
+ * Launches a projectile using an item as its visual that applies child components upon landing
  */
 public class ItemProjectileMechanic extends MechanicComponent implements ProjectileCallback {
     private static final Vector UP = new Vector(0, 1, 0);
@@ -143,7 +144,14 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
             // Invalid or missing item material
         }
         ItemStack item = new ItemStack(mat);
-        item.setDurability((short) settings.getInt(DATA, 0));
+        int data = settings.getInt(DATA, 0);
+        if (SkillAPI.getSettings().useSkillModelData()) {
+            ItemMeta meta = item.getItemMeta();
+            meta.setCustomModelData(data);
+            item.setItemMeta(meta);
+        } else {
+            item.setDurability((short) data);
+        }
 
         // Get other common values
         double speed = parseValues(caster, SPEED, level, 3.0);

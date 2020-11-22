@@ -27,11 +27,14 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import com.rit.sucy.text.TextFormatter;
+import com.sucy.skill.SkillAPI;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.MaterialData;
 
 import java.util.List;
 
@@ -78,12 +81,12 @@ public class ItemMechanic extends MechanicComponent
         int amount = settings.getInt(AMOUNT, 1);
         int durability = settings.getInt(DATA, 0);
         int data = settings.getInt(BYTE, 0);
-        ItemStack item = new ItemStack(material, amount, (short) durability, (byte) data);
 
-        boolean custom = settings.getString(CUSTOM, "false").toLowerCase().equals("true");
-        if (custom)
+        ItemStack item = new ItemStack(material, amount);
+
+        ItemMeta meta = item.getItemMeta();
+        if (settings.getString(CUSTOM, "false").toLowerCase().equals("true"))
         {
-            ItemMeta meta = item.getItemMeta();
             String name = TextFormatter.colorString(settings.getString(NAME, ""));
             if (name.length() > 0)
             {
@@ -91,7 +94,21 @@ public class ItemMechanic extends MechanicComponent
             }
             List<String> lore = TextFormatter.colorStringList(settings.getStringList(LORE));
             meta.setLore(lore);
+        }
+        if (SkillAPI.getSettings().useSkillModelData()) {
+            meta.setCustomModelData(data);
+        } else {
+            item.setData(new MaterialData(material, (byte) data));
+        }
+        try {
+            Class.forName("org.bukkit.inventory.meta.Damageable");
+            if (meta instanceof Damageable) {
+                ((Damageable) meta).setDamage(durability);
+            }
             item.setItemMeta(meta);
+        } catch (ClassNotFoundException e) {
+            item.setItemMeta(meta);
+            item.setDurability((short) durability);
         }
 
         boolean worked = false;
