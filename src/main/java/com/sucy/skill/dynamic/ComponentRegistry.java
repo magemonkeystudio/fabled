@@ -216,6 +216,7 @@ public class ComponentRegistry {
         register(new WeatherCondition());
 
         // Mechanics
+        register(new ArmorMechanic());
         register(new ArmorStandMechanic());
         register(new ArmorStandPoseMechanic());
         register(new AttributeMechanic());

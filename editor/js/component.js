@@ -104,6 +104,7 @@ var Condition = {
  * Available mechanic component data
  */
 var Mechanic = {
+    ARMOR:               { name: 'Armor',               container: false, construct: MechanicArmor              },
     ARMOR_STAND:         { name: 'Armor Stand',         container: true,  construct: MechanicArmorStand         },
     ARMOR_STAND_POSE:    { name: 'Armor Stand Pose',    container: false, construct: MechanicArmorStandPose     },
     ATTRIBUTE:           { name: 'Attribute',           container: false, construct: MechanicAttribute          },
@@ -1519,12 +1520,48 @@ function MechanicAttribute()
     );
 }
 
+extend('MechanicArmor', 'Component');
+function MechanicArmor()
+{
+    this.super('Armor', Type.MECHANIC, false);
+
+    this.description = 'Sets the specified armor slot of the target to the item defined by the settings';
+
+    this.data.push(new ListValue('Slot', 'slot', [ 'Hand', 'Off Hand', 'Feet', 'Legs', 'Chest', 'Head' ], 'Hand')
+        .setTooltip('The slot number to set the item to')
+    );
+    this.data.push(new ListValue('Material', 'material', getMaterials, 'Arrow')
+        .setTooltip('The type of item to set')
+    );
+    this.data.push(new IntValue('Amount', 'amount', 1)
+        .setTooltip('The quantity of the item to set')
+    );
+    this.data.push(new IntValue('Durability', 'durability', 0)
+        .setTooltip('The durability value of the item to set')
+    );
+    this.data.push(new IntValue('Data', 'data', 0)
+        .setTooltip('The data value or the CustomModelData (1.14+ only) to apply to the item')
+    );
+    this.data.push(new ListValue('Custom', 'custom', [ 'True', 'False' ], 'False')
+        .setTooltip('Whether or not to apply a custom name/lore to the item')
+    );
+    this.data.push(new StringValue('Name', 'name', 'Name').requireValue('custom', [ 'True' ])
+        .setTooltip('The name of the item')
+    );
+    this.data.push(new StringListValue('Lore', 'lore', []).requireValue('custom', [ 'True' ])
+        .setTooltip('The lore text for the item (the text below the name)')
+    );
+    this.data.push(new ListValue('Overwrite', 'overwrite', [ 'True', 'False' ], 'False')
+        .setTooltip('USE WITH CAUTION. Whether or not to overwrite an existing item in the slot. If true, will permanently delete the existing iem')
+    );
+}
+
 extend('MechanicArmorStand', 'Component');
 function MechanicArmorStand()
 {
     this.super('Armor Stand', Type.MECHANIC, true);
 
-    this.description = 'Summons an armor stand that can be used as a marker or for item display. Applies child components on the armor stand';
+    this.description = 'Summons an armor stand that can be used as a marker or for item display (check Armor Mechanic for latter). Applies child components on the armor stand';
 
     this.data.push(new StringValue('Armor Stand Key', 'key', 'default')
         .setTooltip('The key to refer to the armorstand by. Only one armorstand of each key can be active per target at the time')
