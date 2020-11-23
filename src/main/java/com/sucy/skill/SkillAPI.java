@@ -116,6 +116,7 @@ public class SkillAPI extends JavaPlugin {
 
         // Load settings
         settings = new Settings(this);
+        settings.reload();
         language = new CommentedLanguageConfig(this, "language");
         language.checkDefaults();
         language.trim();

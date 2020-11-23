@@ -80,9 +80,9 @@ public class Settings {
         this.plugin = plugin;
         CommentedConfig file = new CommentedConfig(plugin, "config");
         file.checkDefaults();
+        file.trim();
         file.save();
         config = file.getConfig();
-        reload();
     }
 
     /**
@@ -975,7 +975,8 @@ public class Settings {
             GUI_DUR    = GUI_BASE + "title-duration",
             GUI_FADEI  = GUI_BASE + "title-fade-in",
             GUI_FADEO  = GUI_BASE + "title-fade-out",
-            GUI_LIST   = GUI_BASE + "title-messages";
+            GUI_LIST   = GUI_BASE + "title-messages",
+            GUI_CUSTOMMODELDATA = GUI_BASE + "use-custommodeldata";
 
     private List<String> titleMessages;
 
@@ -995,6 +996,7 @@ public class Settings {
     private int     titleDuration;
     private int     titleFadeIn;
     private int     titleFadeOut;
+    private boolean guiModelData;
 
     /**
      * Checks whether or not old health bars (fixed 10 hearts) are enabled
@@ -1125,6 +1127,15 @@ public class Settings {
         return titleFadeOut;
     }
 
+    /**
+     * Checks whether or not CustomModelData is enabled for GUI
+     *
+     * @return true if enabled, false otherwise
+     */
+    public boolean useGUIModelData() {
+        return guiModelData;
+    }
+
     private void loadGUISettings() {
         oldHealth = config.getBoolean(GUI_OLD);
         forceScaling = config.getBoolean(GUI_FORCE);
@@ -1143,6 +1154,16 @@ public class Settings {
         titleFadeIn = (int) (20 * config.getFloat(GUI_FADEI));
         titleFadeOut = (int) (20 * config.getFloat(GUI_FADEO));
         titleMessages = config.getList(GUI_LIST);
+        guiModelData = config.getBoolean(GUI_CUSTOMMODELDATA, false);
+        if (guiModelData) {
+            try {
+                ItemMeta.class.getMethod("hasCustomModelData");
+                guiModelData = true;
+            } catch (NoSuchMethodException e) {
+                guiModelData = false;
+                Logger.log("CustomModelData not supported below 1.14+. Using item durability/data instead.");
+            }
+        }
     }
 
     ///////////////////////////////////////////////////////
@@ -1484,7 +1505,6 @@ public class Settings {
     private ItemStack unassigned;
     private boolean[] defaultBarLayout = new boolean[9];
     private boolean[] lockedSlots      = new boolean[9];
-    private boolean skillBarModelData;
 
     /**
      * Checks whether or not the skill bar is enabled
@@ -1531,28 +1551,10 @@ public class Settings {
         return lockedSlots;
     }
 
-    /**
-     * Checks whether or not CustomModelData is enabled
-     *
-     * @return true if enabled, false otherwise
-     */
-    public boolean useSkillBarModelData() {
-        return skillBarModelData;
-    }
-
     private void loadSkillBarSettings() {
         DataSection bar = config.getSection("Skill Bar");
         skillBarEnabled = bar.getBoolean("enabled", false) && !castEnabled;
         skillBarCooldowns = bar.getBoolean("show-cooldown", true);
-        skillBarModelData = bar.getBoolean("use-custommodeldata", false);
-        if (skillBarModelData) {
-            try {
-                ItemMeta.class.getMethod("hasCustomModelData");
-            } catch (NoSuchMethodException e) {
-                skillBarModelData = false;
-                Logger.log("CustomModelData not supported below 1.14+. Using item durability/data instead.");
-            }
-        }
 
         DataSection icon = bar.getSection("empty-icon");
         Material mat = Material.matchMaterial(icon.getString("material", "PUMPKIN_SEEDS"));
@@ -1562,7 +1564,7 @@ public class Settings {
         ItemMeta meta = unassigned.getItemMeta();
 
         final int data = icon.getInt("data", 0);
-        if (skillBarModelData) {
+        if (guiModelData) {
             if (data!=0) {
                 meta.setCustomModelData(data);
             }

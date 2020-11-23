@@ -57,7 +57,7 @@ public class Data {
 
             final ItemStack item = new ItemStack(material);
             final ItemMeta meta = item.getItemMeta();
-            if (SkillAPI.getSettings().useSkillBarModelData()) {
+            if (SkillAPI.getSettings().useGUIModelData()) {
                 if (data!=0) {
                     meta.setCustomModelData(data);
                 }
@@ -94,7 +94,7 @@ public class Data {
         config.set(MAT, item.getType().name());
 
         ItemMeta meta = item.getItemMeta();
-        if (SkillAPI.getSettings().useSkillBarModelData()) {
+        if (SkillAPI.getSettings().useGUIModelData()) {
             config.set(DATA, meta.hasCustomModelData() ? meta.getCustomModelData() : 0);
         } else {
             config.set(DATA, item.getData().getData());
