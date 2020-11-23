@@ -29,11 +29,8 @@ package com.sucy.skill.api.util;
 import com.rit.sucy.config.parse.DataSection;
 import com.rit.sucy.text.TextFormatter;
 import com.sucy.skill.SkillAPI;
-import com.sucy.skill.data.Settings;
-import org.apache.commons.lang.ObjectUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -60,11 +57,7 @@ public class Data {
 
             final ItemStack item = new ItemStack(material);
             final ItemMeta meta = item.getItemMeta();
-
-            if (meta instanceof Damageable) {
-                ((Damageable) meta).setDamage(dur);
-            }
-            if (SkillAPI.getSettings().useCustomModelData()) {
+            if (SkillAPI.getSettings().useGUIModelData()) {
                 if (data!=0) {
                     meta.setCustomModelData(data);
                 }
@@ -76,7 +69,15 @@ public class Data {
                 meta.setDisplayName(colored.remove(0));
                 meta.setLore(colored);
             }
-            item.setItemMeta(meta);
+            if (SkillAPI.getSettings().useOldDurability()) {
+                item.setItemMeta(meta);
+                item.setDurability(dur);
+            } else {
+                if (meta instanceof Damageable) {
+                    ((Damageable) meta).setDamage(dur);
+                }
+                item.setItemMeta(meta);
+            }
             return DamageLoreRemover.removeAttackDmg(item);
         } catch (final Exception ex) {
             return new ItemStack(Material.JACK_O_LANTERN);
@@ -93,14 +94,19 @@ public class Data {
         config.set(MAT, item.getType().name());
 
         ItemMeta meta = item.getItemMeta();
-        if (SkillAPI.getSettings().useCustomModelData()) {
+        if (SkillAPI.getSettings().useGUIModelData()) {
             config.set(DATA, meta.hasCustomModelData() ? meta.getCustomModelData() : 0);
         } else {
             config.set(DATA, item.getData().getData());
         }
-        if (meta instanceof Damageable) {
-            config.set(DURABILITY, ((Damageable) meta).getDamage());
+
+        if (SkillAPI.getSettings().useOldDurability()) {
+            config.set(DURABILITY, item.getDurability());
+        } else {
+            if (meta instanceof Damageable) config.set(DURABILITY, ((Damageable) meta).getDamage());
+            else config.set(DURABILITY, 0);
         }
+
         if (meta.hasDisplayName()) {
             List<String> lore = item.getItemMeta().getLore();
             if (lore == null) { lore = new ArrayList<>(); }

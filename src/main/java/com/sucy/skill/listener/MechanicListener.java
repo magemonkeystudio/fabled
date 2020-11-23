@@ -39,18 +39,13 @@ import com.sucy.skill.hook.DisguiseHook;
 import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.hook.VaultHook;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.PotionSplashEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -70,6 +65,7 @@ public class MechanicListener extends SkillAPIListener
     public static final String SKILL_CASTER      = "caster";
     public static final String SPEED_KEY         = "sapiSpeedKey";
     public static final String DISGUISE_KEY      = "sapiDisguiseKey";
+    public static final String ARMOR_STAND = "asMechanic";
 
     private static HashMap<UUID, Double> flying = new HashMap<UUID, Double>();
 
@@ -263,5 +259,31 @@ public class MechanicListener extends SkillAPIListener
     {
         if (BlockMechanic.isPending(event.getBlock().getLocation()))
             event.setCancelled(true);
+    }
+
+    /**
+     * Cancels damage to armor stands corresponding to an Armor Stand Mechanic
+     *
+     * @param event event details
+     */
+    @EventHandler
+    public void onArmorStandDamage(EntityDamageEvent event) {
+        Entity entity = event.getEntity();
+        if (entity instanceof ArmorStand && SkillAPI.getMeta(entity, ARMOR_STAND) != null) {
+            event.setCancelled(true);
+        }
+    }
+
+    /**
+     * Cancels interactions with  armor stands corresponding to an Armor Stand Mechanic
+     *
+     * @param event event details
+     */
+    @EventHandler
+    public void onArmorStandInteract(PlayerArmorStandManipulateEvent event) {
+        Entity entity = event.getRightClicked();
+        if (SkillAPI.getMeta(entity, ARMOR_STAND) != null) {
+            event.setCancelled(true);
+        }
     }
 }

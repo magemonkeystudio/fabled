@@ -104,6 +104,9 @@ var Condition = {
  * Available mechanic component data
  */
 var Mechanic = {
+    ARMOR:               { name: 'Armor',               container: false, construct: MechanicArmor              },
+    ARMOR_STAND:         { name: 'Armor Stand',         container: true,  construct: MechanicArmorStand         },
+    ARMOR_STAND_POSE:    { name: 'Armor Stand Pose',    container: false, construct: MechanicArmorStandPose     },
     ATTRIBUTE:           { name: 'Attribute',           container: false, construct: MechanicAttribute          },
     BLOCK:               { name: 'Block',               container: false, construct: MechanicBlock              },
     BUFF:                { name: 'Buff',                container: false, construct: MechanicBuff               },
@@ -1514,6 +1517,114 @@ function MechanicAttribute()
     );
     this.data.push(new ListValue('Stackable', 'stackable', [ 'True', 'False' ], 'False')
         .setTooltip('[PREM] Whether or not applying multiple times stacks the effects')
+    );
+}
+
+extend('MechanicArmor', 'Component');
+function MechanicArmor()
+{
+    this.super('Armor', Type.MECHANIC, false);
+
+    this.description = 'Sets the specified armor slot of the target to the item defined by the settings';
+
+    this.data.push(new ListValue('Slot', 'slot', [ 'Hand', 'Off Hand', 'Feet', 'Legs', 'Chest', 'Head' ], 'Hand')
+        .setTooltip('The slot number to set the item to')
+    );
+    this.data.push(new ListValue('Material', 'material', getMaterials, 'Arrow')
+        .setTooltip('The type of item to set')
+    );
+    this.data.push(new IntValue('Amount', 'amount', 1)
+        .setTooltip('The quantity of the item to set')
+    );
+    this.data.push(new IntValue('Durability', 'durability', 0)
+        .setTooltip('The durability value of the item to set')
+    );
+    this.data.push(new IntValue('Data', 'data', 0)
+        .setTooltip('The data value or the CustomModelData (1.14+ only) to apply to the item')
+    );
+    this.data.push(new ListValue('Custom', 'custom', [ 'True', 'False' ], 'False')
+        .setTooltip('Whether or not to apply a custom name/lore to the item')
+    );
+    this.data.push(new StringValue('Name', 'name', 'Name').requireValue('custom', [ 'True' ])
+        .setTooltip('The name of the item')
+    );
+    this.data.push(new StringListValue('Lore', 'lore', []).requireValue('custom', [ 'True' ])
+        .setTooltip('The lore text for the item (the text below the name)')
+    );
+    this.data.push(new ListValue('Overwrite', 'overwrite', [ 'True', 'False' ], 'False')
+        .setTooltip('USE WITH CAUTION. Whether or not to overwrite an existing item in the slot. If true, will permanently delete the existing iem')
+    );
+}
+
+extend('MechanicArmorStand', 'Component');
+function MechanicArmorStand()
+{
+    this.super('Armor Stand', Type.MECHANIC, true);
+
+    this.description = 'Summons an armor stand that can be used as a marker or for item display (check Armor Mechanic for latter). Applies child components on the armor stand';
+
+    this.data.push(new StringValue('Armor Stand Key', 'key', 'default')
+        .setTooltip('The key to refer to the armorstand by. Only one armorstand of each key can be active per target at the time')
+    );
+    this.data.push(new AttributeValue('Duration', 'duration', 5, 0)
+        .setTooltip('How long the armorstand lasts before being deleted')
+    );
+    this.data.push(new StringValue('Name', 'name', 'Armor Stand')
+        .setTooltip('The name the armor stand displays')
+    );
+    this.data.push(new ListValue('Name visible', 'name-visible', [ 'True', 'False' ], 'False')
+        .setTooltip('Whether or not the armorstand\'s name should be visible from afar')
+    );
+    this.data.push(new ListValue('Follow target', 'follow', [ 'True', 'False' ], 'False')
+        .setTooltip('Whether or not the armorstand should follow the target')
+    );
+    this.data.push(new ListValue('Apply gravity', 'gravity', [ 'True', 'False' ], 'True')
+        .setTooltip('Whether or not the armorstand should be affected by gravity')
+    );
+    this.data.push(new ListValue('Small', 'tiny', [ 'True', 'False' ], 'False')
+        .setTooltip('Whether or not the armorstand should be small')
+    );
+    this.data.push(new ListValue('Show arms', 'arms', [ 'True', 'False' ], 'False')
+        .setTooltip('Whether or not the armorstand should display its arms')
+    );
+    this.data.push(new ListValue('Show base plate', 'base', [ 'True', 'False' ], 'False')
+        .setTooltip('Whether or not the armorstand should display its base plate')
+    );
+    this.data.push(new ListValue('Visible', 'visible', [ 'True', 'False' ], 'True')
+        .setTooltip('Whether or not the armorstand should be visible')
+    );
+    this.data.push(new ListValue('Marker', 'marker', [ 'True', 'False' ], 'True')
+        .setTooltip('Setting this to true will remove the armor stand\'s hitbox')
+    );
+    this.data.push(new AttributeValue('Forward Offset', 'forward', 0, 0)
+        .setTooltip('How far forward in front of the target the armorstand should be in blocks. A negative value will put it behind.')
+    );
+    this.data.push(new AttributeValue('Upward Offset', 'upward', 0, 0)
+        .setTooltip('How far above the target the armorstand should be in blocks. A negative value will put it below.')
+    );
+    this.data.push(new AttributeValue('Right Offset', 'right', 0, 0)
+        .setTooltip('How far to the right the armorstand should be of the target. A negative value will put it to the left.')
+    );
+}
+
+extend('MechanicArmorStandPose', 'Component');
+function MechanicArmorStandPose()
+{
+    this.super('Armor Stand Pose', Type.MECHANIC, false);
+
+    this.description = 'Sets the pose of an armor stand target. Values should be in the format x,y,z where rotations are in degrees. Example: 0.0,0.0,0.0';
+
+    this.data.push(new StringValue('Head', 'head', '').setTooltip('The pose values of the head. Leave empty if should be ignored')
+    );
+    this.data.push(new StringValue('Body', 'body', '').setTooltip('The pose values of the body. Leave empty if should be ignored')
+    );
+    this.data.push(new StringValue('Left Arm', 'left-arm', '').setTooltip('The pose values of the left arm. Leave empty if should be ignored')
+    );
+    this.data.push(new StringValue('Right Arm', 'right-arm', '').setTooltip('The pose values of the right arm. Leave empty if should be ignored')
+    );
+    this.data.push(new StringValue('Left Leg', 'left-leg', '').setTooltip('The pose values of the left leg. Leave empty if should be ignored')
+    );
+    this.data.push(new StringValue('Right Leg', 'right-leg', '').setTooltip('The pose values of the right leg. Leave empty if should be ignored')
     );
 }
 

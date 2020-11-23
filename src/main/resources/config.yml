@@ -141,6 +141,10 @@ Skills:
   # by defensive or offesnive buffs and debuffs
   knockback-no-damage: false
   #
+  # Whether the 'data' or 'icon-data' entry in skill mechanics use CustomModelData (1.14+ only).
+  # If false, defaults to material data or durability.
+  use-custommodeldata: false
+  #
   # Blocks to ignore when using the Block mechanic in dynamic skills
   # End values in an * to do all materials containing the value
   block-filter:
@@ -282,6 +286,10 @@ GUI:
   #
   # Text to show for bound materials
   show-bind-text: 'Bound to {material}'
+  #
+  # Whether the 'data' or 'icon-data' entry in skill icons and tools uses CustomModelData (1.14+ only).
+  # If false, defaults to material data.
+  use-custommodeldata: false
 #
 Casting:
   #
@@ -378,9 +386,6 @@ Casting:
     data: 0
     durability: 0
     name: '&6Instant Bar'
-    data: 0
-    durability: 0
-    name: '&6Instant Bar'
     lore:
     - ''
     - 'Skills in this row will'
@@ -440,10 +445,6 @@ Skill Bar:
   #
   # Whether or not to show skill cooldowns in the skill bar
   show-cooldown: true
-  #
-  # Whether the 'data' or 'icon-data' entry in skill icons uses CustomModelData (1.14+ only).
-  # If false, defaults to material data.
-  use-custommodeldata: false
   #
   # The item to use as a placeholder in the skill bar
   empty-icon:

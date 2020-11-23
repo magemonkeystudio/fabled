@@ -66,6 +66,8 @@ public class Settings {
     private SkillAPI    plugin;
     private DataSection config;
 
+    private boolean OLD_DURABILITY;
+
     /**
      * <p>Initializes a new settings manager.</p>
      * <p>This is already set up by SkillAPI and shouldn't be
@@ -78,9 +80,9 @@ public class Settings {
         this.plugin = plugin;
         CommentedConfig file = new CommentedConfig(plugin, "config");
         file.checkDefaults();
+        file.trim();
         file.save();
         config = file.getConfig();
-        reload();
     }
 
     /**
@@ -89,6 +91,13 @@ public class Settings {
      * and trim any values that aren't supposed to be there.</p>
      */
     public void reload() {
+        try {
+            Class.forName("org.bukkit.inventory.meta.Damageable");
+            OLD_DURABILITY = false;
+        } catch (ClassNotFoundException e) {
+            OLD_DURABILITY = true;
+        }
+
         loadExperienceSettings();
         loadAccountSettings();
         loadClassSettings();
@@ -106,6 +115,8 @@ public class Settings {
         loadTargetingSettings();
         loadWorldGuardSettings();
     }
+
+    public boolean useOldDurability() { return OLD_DURABILITY; }
 
     ///////////////////////////////////////////////////////
     //                                                   //
@@ -695,6 +706,7 @@ public class Settings {
     private static final String SKILL_RADIUS    = SKILL_BASE + "message-radius";
     private static final String SKILL_BLOCKS    = SKILL_BASE + "block-filter";
     private static final String SKILL_KNOCKBACK = SKILL_BASE + "knockback-no-damage";
+    private static final String SKILL_MODEL_DATA = SKILL_BASE+"use-custommodeldata";
 
     private ArrayList<Material> filteredBlocks;
 
@@ -702,6 +714,7 @@ public class Settings {
     private boolean showSkillMessages;
     private boolean knockback;
     private int     messageRadius;
+    private boolean skillModelData;
 
     /**
      * Checks whether or not downgrades are allowed
@@ -738,6 +751,12 @@ public class Settings {
     }
 
     /**
+     * Return whether skill mechanics should use 'data' values as CustomModelData
+     * @return skill mechanics use CustomModelData
+     */
+    public boolean useSkillModelData() { return skillModelData; }
+
+    /**
      * Retrieves the list of filtered blocks
      *
      * @return list of blocks
@@ -751,8 +770,17 @@ public class Settings {
         showSkillMessages = config.getBoolean(SKILL_MESSAGE);
         messageRadius = config.getInt(SKILL_RADIUS);
         knockback = config.getBoolean(SKILL_KNOCKBACK);
+        skillModelData = config.getBoolean(SKILL_MODEL_DATA);
+        if (skillModelData) {
+            try {
+                ItemMeta.class.getMethod("hasCustomModelData",null);
+            } catch (NoSuchMethodException e) {
+                skillModelData = false;
+                Logger.log("CustomModelData not supported below 1.14+. Using item durability/data instead.");
+            }
+        }
 
-        filteredBlocks = new ArrayList<Material>();
+        filteredBlocks = new ArrayList<>();
         List<String> list = config.getList(SKILL_BLOCKS);
         for (String item : list) {
             item = item.toUpperCase().replace(' ', '_');
@@ -947,7 +975,8 @@ public class Settings {
             GUI_DUR    = GUI_BASE + "title-duration",
             GUI_FADEI  = GUI_BASE + "title-fade-in",
             GUI_FADEO  = GUI_BASE + "title-fade-out",
-            GUI_LIST   = GUI_BASE + "title-messages";
+            GUI_LIST   = GUI_BASE + "title-messages",
+            GUI_CUSTOMMODELDATA = GUI_BASE + "use-custommodeldata";
 
     private List<String> titleMessages;
 
@@ -967,6 +996,7 @@ public class Settings {
     private int     titleDuration;
     private int     titleFadeIn;
     private int     titleFadeOut;
+    private boolean guiModelData;
 
     /**
      * Checks whether or not old health bars (fixed 10 hearts) are enabled
@@ -1097,6 +1127,15 @@ public class Settings {
         return titleFadeOut;
     }
 
+    /**
+     * Checks whether or not CustomModelData is enabled for GUI
+     *
+     * @return true if enabled, false otherwise
+     */
+    public boolean useGUIModelData() {
+        return guiModelData;
+    }
+
     private void loadGUISettings() {
         oldHealth = config.getBoolean(GUI_OLD);
         forceScaling = config.getBoolean(GUI_FORCE);
@@ -1115,6 +1154,16 @@ public class Settings {
         titleFadeIn = (int) (20 * config.getFloat(GUI_FADEI));
         titleFadeOut = (int) (20 * config.getFloat(GUI_FADEO));
         titleMessages = config.getList(GUI_LIST);
+        guiModelData = config.getBoolean(GUI_CUSTOMMODELDATA, false);
+        if (guiModelData) {
+            try {
+                ItemMeta.class.getMethod("hasCustomModelData");
+                guiModelData = true;
+            } catch (NoSuchMethodException e) {
+                guiModelData = false;
+                Logger.log("CustomModelData not supported below 1.14+. Using item durability/data instead.");
+            }
+        }
     }
 
     ///////////////////////////////////////////////////////
@@ -1456,7 +1505,6 @@ public class Settings {
     private ItemStack unassigned;
     private boolean[] defaultBarLayout = new boolean[9];
     private boolean[] lockedSlots      = new boolean[9];
-    private boolean customModelData;
 
     /**
      * Checks whether or not the skill bar is enabled
@@ -1503,28 +1551,10 @@ public class Settings {
         return lockedSlots;
     }
 
-    /**
-     * Checks whether or not CustomModelData is enabled
-     *
-     * @return true if enabled, false otherwise
-     */
-    public boolean useCustomModelData() {
-        return customModelData;
-    }
-
     private void loadSkillBarSettings() {
         DataSection bar = config.getSection("Skill Bar");
         skillBarEnabled = bar.getBoolean("enabled", false) && !castEnabled;
         skillBarCooldowns = bar.getBoolean("show-cooldown", true);
-        customModelData = bar.getBoolean("use-custommodeldata", false);
-        if (customModelData) {
-            try {
-                ItemMeta.class.getMethod("hasCustomModelData",null);
-            } catch (NoSuchMethodException e) {
-                customModelData = false;
-                Logger.log("CustomModelData not supported below 1.14+. Using item durability/data instead.");
-            }
-        }
 
         DataSection icon = bar.getSection("empty-icon");
         Material mat = Material.matchMaterial(icon.getString("material", "PUMPKIN_SEEDS"));
@@ -1533,12 +1563,8 @@ public class Settings {
 
         ItemMeta meta = unassigned.getItemMeta();
 
-        if (meta instanceof org.bukkit.inventory.meta.Damageable) {
-            ((Damageable) meta).setDamage((short) icon.getInt("durability", 0));
-        }
-
         final int data = icon.getInt("data", 0);
-        if (customModelData) {
+        if (guiModelData) {
             if (data!=0) {
                 meta.setCustomModelData(data);
             }
@@ -1551,7 +1577,16 @@ public class Settings {
             meta.setDisplayName(format.remove(0));
             meta.setLore(format);
         } else { meta.setDisplayName(TextFormatter.colorString(icon.getString("text", "&7Unassigned"))); }
-        unassigned.setItemMeta(meta);
+
+        if (OLD_DURABILITY) {
+            unassigned.setItemMeta(meta);
+            unassigned.setDurability((short) icon.getInt("durability", 0));
+        } else {
+            if (meta instanceof org.bukkit.inventory.meta.Damageable) {
+                ((Damageable) meta).setDamage((short) icon.getInt("durability", 0));
+            }
+            unassigned.setItemMeta(meta);
+        }
 
         DataSection layout = bar.getSection("layout");
         int skillCount = 0;

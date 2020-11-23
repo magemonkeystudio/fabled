@@ -36,7 +36,7 @@ import java.util.Iterator;
  */
 public class EffectData
 {
-    private static HashMap<String, EffectInstance> effects = new HashMap<String, EffectInstance>();
+    private HashMap<String, EffectInstance> effects = new HashMap<String, EffectInstance>();
 
     private EffectTarget target;
 
@@ -55,9 +55,9 @@ public class EffectData
      *
      * @return true if running
      */
-    public static boolean isEffectActive(String key)
+    public boolean isEffectActive(String key)
     {
-        return effects.containsKey(key);
+        return this.effects.containsKey(key);
     }
 
     /**

@@ -28,6 +28,7 @@ import com.rit.sucy.config.CommentedConfig;
 import com.rit.sucy.config.CommentedLanguageConfig;
 import com.rit.sucy.version.VersionManager;
 import com.rit.sucy.version.VersionPlayer;
+import com.sucy.skill.api.armorstand.ArmorStandManager;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.particle.EffectManager;
 import com.sucy.skill.api.particle.Particle;
@@ -111,9 +112,11 @@ public class SkillAPI extends JavaPlugin {
         mainThread = new MainThread();
         Particle.init();
         EffectManager.init();
+        ArmorStandManager.init();
 
         // Load settings
         settings = new Settings(this);
+        settings.reload();
         language = new CommentedLanguageConfig(this, "language");
         language.checkDefaults();
         language.trim();
@@ -220,6 +223,7 @@ public class SkillAPI extends JavaPlugin {
 
         GUITool.cleanUp();
         EffectManager.cleanUp();
+        ArmorStandManager.cleanUp();
 
         mainThread.disable();
         mainThread = null;
