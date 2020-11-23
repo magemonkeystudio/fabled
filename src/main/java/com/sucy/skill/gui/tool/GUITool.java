@@ -43,7 +43,9 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -143,26 +145,25 @@ public class GUITool implements ToolMenu
 
     public static ItemStack parseItem(DataSection data)
     {
-        ItemStack item;
-        try {
-            item = new ItemStack(
-                    Material.valueOf(data.getString("type").toUpperCase().replace(" ", "_")),
-                    1,
-                    data.getShort("durability"),
-                    data.getByte("data")
-            );
-        } catch (Exception ex) {
-            item = new ItemStack(
-                    Material.matchMaterial(data.getString("type")),
-                    1,
-                    data.getShort("durability")
-            );
+        Material material = Material.valueOf(data.getString("type").toUpperCase().replace(" ", "_"));
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
+        if (SkillAPI.getSettings().useGUIModelData()) {
+            meta.setCustomModelData(data.getInt("data"));
+        } else {
+            item.setData(new MaterialData(material, data.getByte("data")));
         }
 
-        ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(TextFormatter.colorString(data.getString("name")));
         meta.setLore(TextFormatter.colorStringList(data.getList("lore")));
-        item.setItemMeta(meta);
+
+        if (SkillAPI.getSettings().useOldDurability()) {
+            item.setItemMeta(meta);
+            item.setDurability(data.getShort("durability"));
+        } else {
+            ((Damageable) meta).setDamage(data.getInt("durability"));
+            item.setItemMeta(meta);
+        }
         return DamageLoreRemover.removeAttackDmg(item);
     }
 
