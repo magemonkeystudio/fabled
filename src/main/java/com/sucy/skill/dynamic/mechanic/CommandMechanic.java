@@ -43,6 +43,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Executes a command for each target
@@ -111,6 +112,9 @@ public class CommandMechanic extends MechanicComponent {
 
         @Override
         public void sendRawMessage(String paramString) {}
+
+        @Override
+        public void sendRawMessage(@Nullable UUID sender, @NotNull String message) {}
 
         @Override
         public boolean isConversing() {
@@ -188,6 +192,12 @@ public class CommandMechanic extends MechanicComponent {
 
         @Override
         public void sendMessage(String[] paramArrayOfString) {}
+
+        @Override
+        public void sendMessage(@Nullable UUID sender, @NotNull String message) {}
+
+        @Override
+        public void sendMessage(@Nullable UUID sender, @NotNull String[] messages) { }
 
         @Override
         public void sendMessage(String paramString) {}
