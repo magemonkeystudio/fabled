@@ -182,8 +182,9 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
 
     /**
      * Checks if the projectile collides with a given list of entities
+     * Returns true if another check should happen, false other wise
      */
-    protected void checkCollision(final boolean pierce) {
+    protected boolean checkCollision(final boolean pierce) {
         for (LivingEntity entity : getColliding()) {
             if (entity == thrower || hit.contains(entity.getEntityId())) {
                 continue;
@@ -202,9 +203,10 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
 
             if (!pierce) {
                 cancel();
-                return;
+                return false;
             }
         }
+        return true;
     }
 
     /**

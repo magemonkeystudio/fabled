@@ -206,7 +206,7 @@ public class ParticleProjectile extends CustomProjectile
             if (!isTraveling())
                 return;
 
-            checkCollision(pierce);
+            if (!checkCollision(pierce)) break;
         }
 
         // Particle along path
