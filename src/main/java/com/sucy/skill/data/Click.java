@@ -43,13 +43,14 @@ public enum Click
     LEFT_SHIFT(4, "LS"),
     RIGHT_SHIFT(5, "RS"),
     SPACE(6, "P"),
-    Q(7, "Q");
+    Q(7, "Q"),
+    F(8, "F");
 
-    public static final int BITS           = 3;
+    public static final int BITS           = 4;
     public static final int BIT_MASK       = (1 << BITS) - 1;
-    public static final int MAX_COMBO_SIZE = 30 / BITS;
+    public static final int MAX_COMBO_SIZE = 32 / BITS;
 
-    private static final Click[] CLICKS = new Click[] { null, LEFT, RIGHT, SHIFT, LEFT_SHIFT, RIGHT_SHIFT, SPACE, Q };
+    private static final Click[] CLICKS = new Click[] { null, LEFT, RIGHT, SHIFT, LEFT_SHIFT, RIGHT_SHIFT, SPACE, Q, F };
 
     private int id;
     private String key;

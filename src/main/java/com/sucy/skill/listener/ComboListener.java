@@ -30,11 +30,10 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.event.KeyPressEvent;
 import com.sucy.skill.api.player.PlayerCombos;
 import com.sucy.skill.data.Click;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.event.player.*;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -128,6 +127,15 @@ public class ComboListener extends SkillAPIListener {
             onGround.add(event.getPlayer().getUniqueId());
         } else {
             onGround.remove(event.getPlayer().getUniqueId());
+        }
+    }
+
+    @EventHandler
+    public void onFClick(final PlayerSwapHandItemsEvent event) {
+        SkillAPI.getPlayerData(event.getPlayer()).getComboData().applyClick(Click.F);
+
+        if(SkillAPI.getComboManager().isClickEnabled(Click.F.getId())) {
+            event.setCancelled(true);
         }
     }
 
