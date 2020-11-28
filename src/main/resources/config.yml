@@ -432,6 +432,10 @@ Click Combos:
   # Enabling this disables dropping items via Q outside of menus.
   use-click-q: false
   #
+  # Whether or not F clicks are allowed at all.
+  # Enabling this disables swapping items between main and off hand via F.
+  use-click-f: false
+  #
   # How many clicks are needed to perform a combo
   combo-size: 4
   #

@@ -1336,6 +1336,7 @@ public class Settings {
             final String key = COMBO_CLICK + Click.getById(i).name().toLowerCase().replace('_', '-');
             clicks[i] = config.getBoolean(key);
         }
+
         if (clicks[Click.RIGHT_SHIFT.getId()] || clicks[Click.LEFT_SHIFT.getId()]) {
             clicks[Click.SHIFT.getId()] = false;
         }
