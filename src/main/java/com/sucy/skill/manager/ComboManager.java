@@ -183,7 +183,6 @@ public class ComboManager
      */
     public int convertCombo(Click[] clicks, int amount)
     {
-        // TODO: Change to long to be able to fit more than 30 bits
         int id = 0;
         for (int i = 0; i < clicks.length && i < amount; i++)
         {
@@ -202,7 +201,6 @@ public class ComboManager
      */
     public int convertCombo(Click[] clicks)
     {
-        // TODO: Change to long to be able to fit more than 30 bits
         int id = 0;
         for (Click click : clicks)
         {
