@@ -67,6 +67,7 @@ public class Settings {
     private DataSection config;
 
     private boolean OLD_DURABILITY;
+    private boolean BOUNDING_BOX;
 
     /**
      * <p>Initializes a new settings manager.</p>
@@ -97,6 +98,12 @@ public class Settings {
         } catch (ClassNotFoundException e) {
             OLD_DURABILITY = true;
         }
+        try {
+            Entity.class.getMethod("getBoundingBox");
+            BOUNDING_BOX = true;
+        } catch (NoSuchMethodException e) {
+            BOUNDING_BOX = false;
+        }
 
         loadExperienceSettings();
         loadAccountSettings();
@@ -117,6 +124,7 @@ public class Settings {
     }
 
     public boolean useOldDurability() { return OLD_DURABILITY; }
+    public boolean useBoundingBoxes() { return BOUNDING_BOX; }
 
     ///////////////////////////////////////////////////////
     //                                                   //

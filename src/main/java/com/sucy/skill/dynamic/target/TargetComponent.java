@@ -1,13 +1,9 @@
 package com.sucy.skill.dynamic.target;
 
 import com.rit.sucy.config.parse.DataSection;
-import com.sucy.skill.api.TargetHelper;
 import com.sucy.skill.SkillAPI;
-import com.sucy.skill.cast.CircleIndicator;
-import com.sucy.skill.cast.ConeIndicator;
-import com.sucy.skill.cast.IIndicator;
-import com.sucy.skill.cast.IndicatorType;
-import com.sucy.skill.cast.SphereIndicator;
+import com.sucy.skill.api.target.TargetHelper;
+import com.sucy.skill.cast.*;
 import com.sucy.skill.dynamic.ComponentType;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.dynamic.EffectComponent;
@@ -131,15 +127,14 @@ public abstract class TargetComponent extends EffectComponent {
 
         final List<LivingEntity> list = new ArrayList<>();
         from.forEach(target -> {
-            final int count = list.size();
             final List<LivingEntity> found = conversion.apply(target);
+            int count = 0;
+
             for (LivingEntity entity : found) {
-                if (isValidTarget(caster, target, entity)) {
-                    list.add(entity);
-                    if (list.size() - count >= max) {
-                        break;
-                    }
-                }
+                if (count >= max) break;
+                if (!isValidTarget(caster, target, entity)) continue;
+                list.add(found.get(count));
+                count++;
             }
         });
         if (self) {

@@ -29,7 +29,7 @@ package com.sucy.skill.api.player;
 import com.rit.sucy.config.Filter;
 import com.rit.sucy.config.FilterType;
 import com.rit.sucy.config.parse.DataSection;
-import com.sucy.skill.api.TargetHelper;
+import com.sucy.skill.api.target.TargetHelper;
 import com.rit.sucy.version.VersionManager;
 import com.rit.sucy.version.VersionPlayer;
 import com.sucy.skill.SkillAPI;

@@ -868,8 +868,8 @@ function TargetLinear()
     this.data.push(new AttributeValue("Range", "range", 5, 0)
         .setTooltip('The max distance away any target can be in blocks')
     );
-    this.data.push(new AttributeValue("Tolerance", "tolerance", 4, 0)
-        .setTooltip('How lenient the targeting is. Larger numbers allow easier targeting. It is essentially how wide a cone is which is where you are targeting.')
+    this.data.push(new AttributeValue("Tolerance", "tolerance", 0, 0)
+        .setTooltip('How much to expand the potential entity\'s hitbox in all directions, in blocks. This makes it easier to aim')
     );
     this.data.push(new ListValue("Group", "group", ["Ally", "Enemy", "Both"], "Enemy")
         .setTooltip('The alignment of targets to get')
@@ -972,8 +972,8 @@ function TargetSingle()
     this.data.push(new AttributeValue("Range", "range", 5, 0)
         .setTooltip('The max distance away any target can be in blocks')
     );
-    this.data.push(new AttributeValue("Tolerance", "tolerance", 4, 0)
-        .setTooltip('How lenient the targeting is. Larger numbers allow easier targeting. It is essentially how wide a cone is which is where you are targeting.')
+    this.data.push(new AttributeValue("Tolerance", "tolerance", 0, 0)
+        .setTooltip('How much to expand the potential entity\'s hitbox in all directions, in blocks. This makes it easier to aim')
     );
     this.data.push(new ListValue("Group", "group", ["Ally", "Enemy", "Both"], "Enemy")
         .setTooltip('The alignment of targets to get')
