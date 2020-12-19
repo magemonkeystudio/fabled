@@ -32,6 +32,7 @@ import org.bukkit.entity.LivingEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  * Fetches nearby entities by going through possible chunks
@@ -80,7 +81,7 @@ public class Nearby
     }
 
     private static List<LivingEntity> getLivingNearby(Entity source, Location loc, double radius) {
-        List<LivingEntity> result = new ArrayList<LivingEntity>();
+        TreeMap<Double, LivingEntity> result = new TreeMap<>();
 
         int minX = (int) (loc.getX() - radius) >> 4;
         int maxX = (int) (loc.getX() + radius) >> 4;
@@ -96,9 +97,9 @@ public class Nearby
                             && entity instanceof LivingEntity
                             && entity.getWorld() == loc.getWorld()
                             && entity.getLocation().distanceSquared(loc) < radius)
-                        result.add((LivingEntity) entity);
+                        result.put(entity.getLocation().distance(loc), (LivingEntity) entity);
 
-        return result;
+        return new ArrayList<>(result.values());
     }
 
     /**
