@@ -300,6 +300,11 @@ public abstract class EffectComponent {
                     builder.append('{');
                     i = j+3;
                     break;
+                case "sq":
+                    builder.append(string, i, j);
+                    builder.append('\'');
+                    i = j+3;
+                    break;
             }
             j = string.indexOf('&',i);
         }
