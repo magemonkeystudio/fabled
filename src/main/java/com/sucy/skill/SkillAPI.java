@@ -167,6 +167,7 @@ public class SkillAPI extends JavaPlugin {
         listen(new DeathListener(), !VersionManager.isVersionAtLeast(11000));
         listen(new LingeringPotionListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
         listen(new ExperienceListener(), settings.yieldsEnabled());
+        new PluginChecker(this);
 
         // Set up tasks
         if (settings.isManaEnabled()) {

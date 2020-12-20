@@ -26,81 +26,151 @@
  */
 package com.sucy.skill.hook;
 
+import com.sucy.skill.SkillAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.event.server.PluginEnableEvent;
+import org.bukkit.plugin.PluginManager;
 
 /**
  * Handler for checking whether or not hooked plugins are present
  * and active before using related code.
  */
-public class PluginChecker
-{
+public class PluginChecker implements Listener {
+    private static PluginChecker singleton;
+
+    private static boolean vault;
+    private static boolean libsDisguises;
+    private static boolean noCheatPlus;
+    private static boolean rpgInventory;
+    private static boolean papi;
+    private static boolean bungee;
+    private static boolean mythicMobs;
+    private static boolean worldGuard;
+    private static boolean parties;
+
+    public PluginChecker(SkillAPI plugin) {
+        if (singleton != null) return;
+        singleton = this;
+        PluginManager pluginManager = Bukkit.getPluginManager();
+        pluginManager.registerEvents(this, plugin);
+
+        vault = pluginManager.isPluginEnabled("Vault") && VaultHook.isValid();
+        libsDisguises = pluginManager.isPluginEnabled("LibsDisguises");
+        noCheatPlus = pluginManager.isPluginEnabled("NoCheatPlus");
+        rpgInventory = pluginManager.isPluginEnabled("RPGInventory");
+        papi = pluginManager.isPluginEnabled("PlaceholderAPI");
+        try {
+            Class.forName("net.md_5.bungee.Util");
+            bungee = true;
+        } catch (Exception ex) { bungee = false; }
+        mythicMobs = pluginManager.isPluginEnabled("MythicMobs");
+        worldGuard = pluginManager.isPluginEnabled("WorldGuard");
+        parties = pluginManager.isPluginEnabled("Parties");
+    }
+
+    @EventHandler
+    public void onPluginEnable(PluginEnableEvent event) {
+        switch (event.getPlugin().getName()) {
+            case "Vault":
+                vault = true;
+                break;
+            case "LibsDisguises":
+                libsDisguises = true;
+                break;
+            case "NoCheatPlus":
+                noCheatPlus = true;
+                break;
+            case "RPGInventory":
+                rpgInventory = true;
+                break;
+            case "PlaceholderAPI":
+                papi = true;
+                break;
+            case "MythicMobs":
+                mythicMobs = true;
+                break;
+            case "WorldGuard":
+                worldGuard = true;
+                break;
+            case "Parties":
+                parties = true;
+                break;
+        }
+    }
+
+    @EventHandler
+    public void onPluginDisable(PluginDisableEvent event) {
+        switch (event.getPlugin().getName()) {
+            case "Vault":
+                vault = false;
+                break;
+            case "LibsDisguises":
+                libsDisguises = false;
+                break;
+            case "NoCheatPlus":
+                noCheatPlus = false;
+                break;
+            case "RPGInventory":
+                rpgInventory = false;
+                break;
+            case "PlaceholderAPI":
+                papi = true;
+                break;
+            case "MythicMobs":
+                mythicMobs = false;
+                break;
+            case "WorldGuard":
+                worldGuard = false;
+                break;
+            case "Parties":
+                parties = false;
+                break;
+        }
+    }
+
     /**
      * Checks if vault is active on the server
      *
      * @return true if active with permissions plugin, false otherwise
      */
-    public static boolean isVaultActive()
-    {
-        return Bukkit.getPluginManager().isPluginEnabled("Vault") && VaultHook.isValid();
-    }
+    public static boolean isVaultActive() { return vault; }
 
     /**
      * Checks whether or not Lib's Disguises is active
      *
      * @return true if active
      */
-    public static boolean isDisguiseActive()
-    {
-        return Bukkit.getPluginManager().isPluginEnabled("LibsDisguises");
-    }
+    public static boolean isDisguiseActive() { return libsDisguises; }
 
     /**
      * Checks whether or not NoCheatPlus is active on the server
      *
      * @return true if active, false otherwise
      */
-    public static boolean isNoCheatActive()
-    {
-        return Bukkit.getPluginManager().isPluginEnabled("NoCheatPlus");
-    }
+    public static boolean isNoCheatActive() { return noCheatPlus; }
 
     /**
      * Checks whether or not RPGInventory is active on the server
      *
      * @return true if active, false otherwise
      */
-    public static boolean isRPGInventoryActive()
-    {
-        return Bukkit.getPluginManager().isPluginEnabled("RPGInventory");
-    }
+    public static boolean isRPGInventoryActive() { return rpgInventory; }
 
-    public static boolean isPlaceholderAPIActive() {
-        return Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
-    }
+    public static boolean isPlaceholderAPIActive() { return papi; }
 
     /**
      * Checks whether or not bungee is present
      *
      * @return true if present, false otherwise
      */
-    public static boolean isBungeeActive()
-    {
-        try
-        {
-            Class.forName("net.md_5.bungee.Util");
-            return true;
-        }
-        catch (Exception ex)
-        {
-            return false;
-        }
-    }
+    public static boolean isBungeeActive() { return bungee; }
 
-    public static boolean isMythicMobsActive() {
-        return Bukkit.getPluginManager().isPluginEnabled("MythicMobs");
-    }
+    public static boolean isMythicMobsActive() { return mythicMobs; }
 
-    public static boolean isWorldGuardActive() {
-        return Bukkit.getPluginManager().isPluginEnabled("WorldGuard");
-    }
+    public static boolean isWorldGuardActive() { return worldGuard; }
+
+    public static boolean isPartiesActive() { return parties; }
 }

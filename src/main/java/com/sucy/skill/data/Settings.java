@@ -45,6 +45,7 @@ import com.sucy.skill.data.formula.Formula;
 import com.sucy.skill.data.formula.value.CustomValue;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.gui.tool.GUITool;
+import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.log.Logger;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -379,7 +380,7 @@ public class Settings {
             } else if (target instanceof Player) {
                 if (playerAlly || playerWorlds.contains(attacker.getWorld().getName())) { return false; }
 
-                if (partiesAlly) {
+                if (PluginChecker.isPartiesActive() && partiesAlly) {
                     final Parties parties = Parties.getPlugin(Parties.class);
                     final Party p1 = parties.getJoinedParty(player);
                     final Party p2 = parties.getJoinedParty((Player) target);
