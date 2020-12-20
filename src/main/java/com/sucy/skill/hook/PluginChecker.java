@@ -26,10 +26,9 @@
  */
 package com.sucy.skill.hook;
 
-import com.sucy.skill.SkillAPI;
+import com.sucy.skill.listener.SkillAPIListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.PluginManager;
@@ -38,9 +37,7 @@ import org.bukkit.plugin.PluginManager;
  * Handler for checking whether or not hooked plugins are present
  * and active before using related code.
  */
-public class PluginChecker implements Listener {
-    private static PluginChecker singleton;
-
+public class PluginChecker extends SkillAPIListener {
     private static boolean vault;
     private static boolean libsDisguises;
     private static boolean noCheatPlus;
@@ -51,11 +48,9 @@ public class PluginChecker implements Listener {
     private static boolean worldGuard;
     private static boolean parties;
 
-    public PluginChecker(SkillAPI plugin) {
-        if (singleton != null) return;
-        singleton = this;
+    @Override
+    public void init() {
         PluginManager pluginManager = Bukkit.getPluginManager();
-        pluginManager.registerEvents(this, plugin);
 
         vault = pluginManager.isPluginEnabled("Vault") && VaultHook.isValid();
         libsDisguises = pluginManager.isPluginEnabled("LibsDisguises");
