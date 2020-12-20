@@ -1,14 +1,21 @@
-package com.sucy.skill.api;
+package com.sucy.skill.api.target;
 
+import com.sucy.skill.hook.DisguiseHook;
+import com.sucy.skill.hook.PluginChecker;
+import me.libraryaddict.disguise.DisguiseAPI;
+import me.libraryaddict.disguise.utilities.reflection.FakeBoundingBox;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 public abstract class TargetHelper {
+
 
     /**
      * <p>Number of pixels that end up displaying about 1 degree of vision in the client window</p>
@@ -44,28 +51,28 @@ public abstract class TargetHelper {
     public static List<LivingEntity> getLivingTargets(LivingEntity source, double range, double tolerance)
     {
         List<Entity> list = source.getNearbyEntities(range, range, range);
-        List<LivingEntity> targets = new ArrayList<>();
+        TreeMap<Double, LivingEntity> targets = new TreeMap<>();
 
-        Location sourceLocation = source.getEyeLocation();
-        Vector facing = sourceLocation.getDirection();
-        double fLengthSq = facing.lengthSquared();
+        Location location = source.getEyeLocation();
+        Vector origin = location.toVector();
+        AABB.Ray3D ray = new AABB.Ray3D(location);
 
         for (Entity entity : list)
         {
             if (!isInFront(source, entity) || !(entity instanceof LivingEntity)) continue;
 
-            Vector relative = entity.getLocation().clone().add(0,entity.getBoundingBox().getHeight()*0.5,0).subtract(sourceLocation).toVector();
-            double dot = relative.dot(facing);
-            double rLengthSq = relative.lengthSquared();
-            double cosSquared = (dot * dot) / (rLengthSq * fLengthSq);
-            double sinSquared = 1 - cosSquared;
-            double dSquared = rLengthSq * sinSquared;
-
-            // If close enough to vision line, return the entity
-            if (dSquared < tolerance) targets.add((LivingEntity) entity);
+            AABB aabb = getAABB(entity);
+            aabb.expand(tolerance);
+            AABB.Vec3D min = aabb.getMin();
+            AABB.Vec3D max = aabb.getMax();
+            entity.getWorld().spawnParticle(Particle.CRIT,min.x, min.y, min.z,1,0,0,0,0,null);
+            entity.getWorld().spawnParticle(Particle.CRIT,max.x, max.y, max.z,1,0,0,0,0,null);
+            AABB.Vec3D collision = aabb.intersectsRay(ray, 0, range);
+            if (collision != null) {
+                targets.put(new Vector(collision.x, collision.y, collision.z).distance(origin), (LivingEntity) entity);
+            }
         }
-
-        return targets;
+        return new ArrayList<>(targets.values());
     }
 
     /**
@@ -96,19 +103,7 @@ public abstract class TargetHelper {
     {
         List<LivingEntity> targets = getLivingTargets(source, range, tolerance);
         if (targets.size() == 0) return null;
-        Location sourceLocation = source.getEyeLocation();
-        LivingEntity target = targets.get(0);
-        double minDistance = target.getLocation().clone().add(0,target.getBoundingBox().getHeight()*0.5,0).distanceSquared(sourceLocation);
-        for (LivingEntity entity : targets)
-        {
-            double distance = entity.getLocation().distanceSquared(sourceLocation);
-            if (distance < minDistance)
-            {
-                minDistance = distance;
-                target = entity;
-            }
-        }
-        return target;
+        return targets.get(0);
     }
 
     /**
@@ -148,7 +143,7 @@ public abstract class TargetHelper {
                 // Otherwise, select targets based on dot product
                 else
                 {
-                    Vector relative = entity.getLocation().clone().add(0,entity.getBoundingBox().getHeight()*0.5,0).subtract(sourceLocation).toVector();
+                    Vector relative = entity.getLocation().clone().add(0, getHeight(entity)*0.5,0).subtract(sourceLocation).toVector();
                     relative.setY(0);
                     double dot = relative.dot(dir);
                     double value = dot * dot / relative.lengthSquared();
@@ -174,7 +169,7 @@ public abstract class TargetHelper {
 
         // Get the necessary vectors
         Vector facing = entity.getLocation().getDirection();
-        Vector relative = target.getLocation().clone().add(0,target.getBoundingBox().getHeight()*0.5,0).subtract(entity.getLocation()).toVector();
+        Vector relative = target.getLocation().clone().add(0,getHeight(entity)*0.5,0).subtract(entity.getLocation()).toVector();
 
         // If the dot product is positive, the target is in front
         return facing.dot(relative) >= 0;
@@ -197,7 +192,7 @@ public abstract class TargetHelper {
         // Get the necessary data
         double dotTarget = Math.cos(angle);
         Vector facing = entity.getLocation().getDirection();
-        Vector relative = target.getLocation().clone().add(0,target.getBoundingBox().getHeight()*0.5,0).subtract(entity.getLocation()).toVector().normalize();
+        Vector relative = target.getLocation().clone().add(0,getHeight(entity)*0.5,0).subtract(entity.getLocation()).toVector().normalize();
 
         // Compare the target dot product with the actual result
         return facing.dot(relative) >= dotTarget;
@@ -233,7 +228,7 @@ public abstract class TargetHelper {
         // Get the necessary data
         double dotTarget = Math.cos(angle);
         Vector facing = entity.getLocation().getDirection();
-        Vector relative = entity.getLocation().clone().add(0,entity.getBoundingBox().getHeight()*0.5,0).subtract(target.getLocation()).toVector().normalize();
+        Vector relative = entity.getLocation().clone().add(0,getHeight(entity)*0.5,0).subtract(target.getLocation()).toVector().normalize();
 
         // Compare the target dot product and the actual result
         return facing.dot(relative) >= dotTarget;
@@ -320,5 +315,21 @@ public abstract class TargetHelper {
             temp.setY(temp.getBlockY() + 1);
             return temp;
         }
+    }
+
+    public static AABB getAABB(Entity entity) {
+        AABB.Vec3D origin = AABB.Vec3D.fromLocation(entity.getLocation());
+        try {
+            if (PluginChecker.isDisguiseActive() && DisguiseAPI.isDisguised(entity) && DisguiseAPI.getDisguise(entity).isModifyBoundingBox()) {
+                FakeBoundingBox boundingBox = DisguiseHook.getFakeBoundingBox(entity);
+                return new AABB(origin.add(new AABB.Vec3D(-boundingBox.getX(), 0, -boundingBox.getZ())), origin.add(new AABB.Vec3D(boundingBox.getX(), boundingBox.getY(), boundingBox.getZ())));
+            }
+        } catch (NullPointerException ignored) {}
+        double halfWidth = entity.getWidth()/2;
+        return new AABB(origin.add(new AABB.Vec3D(-halfWidth, 0, -halfWidth)), origin.add(new AABB.Vec3D(halfWidth, entity.getHeight(), halfWidth)));
+    }
+
+    public static double getHeight(Entity entity) {
+        return (PluginChecker.isDisguiseActive() && DisguiseAPI.isDisguised(entity)) ? DisguiseHook.getFakeBoundingBox(entity).getY() : entity.getHeight();
     }
 }

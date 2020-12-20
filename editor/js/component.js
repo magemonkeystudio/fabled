@@ -868,8 +868,8 @@ function TargetLinear()
     this.data.push(new AttributeValue("Range", "range", 5, 0)
         .setTooltip('The max distance away any target can be in blocks')
     );
-    this.data.push(new AttributeValue("Tolerance", "tolerance", 4, 0)
-        .setTooltip('How lenient the targeting is. Larger numbers allow easier targeting. It is essentially how wide a cone is which is where you are targeting.')
+    this.data.push(new AttributeValue("Tolerance", "tolerance", 0, 0)
+        .setTooltip('How much to expand the potential entity\'s hitbox in all directions, in blocks. This makes it easier to aim')
     );
     this.data.push(new ListValue("Group", "group", ["Ally", "Enemy", "Both"], "Enemy")
         .setTooltip('The alignment of targets to get')
@@ -972,8 +972,8 @@ function TargetSingle()
     this.data.push(new AttributeValue("Range", "range", 5, 0)
         .setTooltip('The max distance away any target can be in blocks')
     );
-    this.data.push(new AttributeValue("Tolerance", "tolerance", 4, 0)
-        .setTooltip('How lenient the targeting is. Larger numbers allow easier targeting. It is essentially how wide a cone is which is where you are targeting.')
+    this.data.push(new AttributeValue("Tolerance", "tolerance", 0, 0)
+        .setTooltip('How much to expand the potential entity\'s hitbox in all directions, in blocks. This makes it easier to aim')
     );
     this.data.push(new ListValue("Group", "group", ["Ally", "Enemy", "Both"], "Enemy")
         .setTooltip('The alignment of targets to get')
@@ -1765,10 +1765,10 @@ function MechanicCommand()
     this.description ='Executes a command for each of the targets.';
 
     this.data.push(new StringValue('Command', 'command', '')
-        .setTooltip('The command to execute')
+        .setTooltip('The command to execute. {player} = caster\'s name, {target} = target\'s name, {targetUUID} = target\'s UUID (useful if targets are non players), &lc: "{", &rc: "}", &sq: "\'"')
     );
     this.data.push(new ListValue('Execute Type', 'type', [ 'Console', 'OP' ], 'OP')
-        .setTooltip('Console: executes the command from the console. OP: Only if the target is a player, will have them execute it while given a temporary OP permission (If server closes in the meantime, the permission might stay, not recommended!!). {player} = caster\'s name, {target} = target\'s name, {targetUUID} = target\'s UUID (useful if targets are non players), &lc: "{", &rc: "}"')
+        .setTooltip('Console: executes the command from the console. OP: Only if the target is a player, will have them execute it while given a temporary OP permission (If server closes in the meantime, the permission might stay, not recommended!!)')
     );
 }
 
@@ -2229,7 +2229,7 @@ function MechanicMessage()
     this.description = 'Sends a message to each player target. To include numbers from Value mechanics, use the filters {<key>} where <key> is the key the value is stored under.'
 
     this.data.push(new StringValue('Message', 'message', 'text')
-        .setTooltip('The message to display')
+        .setTooltip('The message to display. {player} = caster\'s name, {target} = target\'s name, {targetUUID} = target\'s UUID (useful if targets are non players), &lc: "{", &rc: "}", &sq: "\'"')
     );
 }
 

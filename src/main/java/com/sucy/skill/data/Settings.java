@@ -45,6 +45,7 @@ import com.sucy.skill.data.formula.Formula;
 import com.sucy.skill.data.formula.value.CustomValue;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.gui.tool.GUITool;
+import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.log.Logger;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -67,6 +68,7 @@ public class Settings {
     private DataSection config;
 
     private boolean OLD_DURABILITY;
+    private boolean BOUNDING_BOX;
 
     /**
      * <p>Initializes a new settings manager.</p>
@@ -97,6 +99,12 @@ public class Settings {
         } catch (ClassNotFoundException e) {
             OLD_DURABILITY = true;
         }
+        try {
+            Entity.class.getMethod("getBoundingBox");
+            BOUNDING_BOX = true;
+        } catch (NoSuchMethodException e) {
+            BOUNDING_BOX = false;
+        }
 
         loadExperienceSettings();
         loadAccountSettings();
@@ -117,6 +125,7 @@ public class Settings {
     }
 
     public boolean useOldDurability() { return OLD_DURABILITY; }
+    public boolean useBoundingBoxes() { return BOUNDING_BOX; }
 
     ///////////////////////////////////////////////////////
     //                                                   //
@@ -371,7 +380,7 @@ public class Settings {
             } else if (target instanceof Player) {
                 if (playerAlly || playerWorlds.contains(attacker.getWorld().getName())) { return false; }
 
-                if (partiesAlly) {
+                if (PluginChecker.isPartiesActive() && partiesAlly) {
                     final Parties parties = Parties.getPlugin(Parties.class);
                     final Party p1 = parties.getJoinedParty(player);
                     final Party p2 = parties.getJoinedParty((Player) target);

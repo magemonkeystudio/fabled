@@ -166,13 +166,23 @@ public class TempEntity implements LivingEntity {
 
     }
 
+    @Override
+    public int getArrowCooldown() { return 0; }
+
+    @Override
+    public void setArrowCooldown(int ticks) {}
+
+    @Override
+    public int getArrowsInBody() { return 0; }
+
+    @Override
+    public void setArrowsInBody(int count) {}
+
     public int getMaximumNoDamageTicks() {
         return 0;
     }
 
-    public void setMaximumNoDamageTicks(int i) {
-
-    }
+    public void setMaximumNoDamageTicks(int i) {}
 
     public double getLastDamage() {
         return 0;
@@ -182,21 +192,15 @@ public class TempEntity implements LivingEntity {
         return 0;
     }
 
-    public void setLastDamage(double v) {
+    public void setLastDamage(double v) {}
 
-    }
-
-    public void _INVALID_setLastDamage(int i) {
-
-    }
+    public void _INVALID_setLastDamage(int i) {}
 
     public int getNoDamageTicks() {
         return 0;
     }
 
-    public void setNoDamageTicks(int i) {
-
-    }
+    public void setNoDamageTicks(int i) {}
 
     public Player getKiller() {
         return null;
@@ -405,30 +409,32 @@ public class TempEntity implements LivingEntity {
     }
 
     @Override
+    public @NotNull Set<UUID> getCollidableExemptions() { return null; }
+
+    @Override
     public <T> @Nullable T getMemory(@NotNull MemoryKey<T> memoryKey) {
         return null;
     }
 
     @Override
-    public <T> void setMemory(@NotNull MemoryKey<T> memoryKey, @Nullable T memoryValue) {
+    public <T> void setMemory(@NotNull MemoryKey<T> memoryKey, @Nullable T memoryValue) {}
 
-    }
+    @Override
+    public @NotNull EntityCategory getCategory() { return EntityCategory.NONE; }
 
-    public void damage(double v) {
+    @Override
+    public void setInvisible(boolean invisible) {}
 
-    }
+    @Override
+    public boolean isInvisible() { return true; }
 
-    public void _INVALID_damage(int i) {
+    public void damage(double v) {}
 
-    }
+    public void _INVALID_damage(int i) {}
 
-    public void damage(double v, Entity entity) {
+    public void damage(double v, Entity entity) {}
 
-    }
-
-    public void _INVALID_damage(int i, Entity entity) {
-
-    }
+    public void _INVALID_damage(int i, Entity entity) {}
 
     public double getHealth() {
         return 1;
@@ -438,9 +444,7 @@ public class TempEntity implements LivingEntity {
         return 0;
     }
 
-    public void setHealth(double v) {
-
-    }
+    public void setHealth(double v) {}
 
     @Override
     public double getAbsorptionAmount() {
@@ -448,13 +452,9 @@ public class TempEntity implements LivingEntity {
     }
 
     @Override
-    public void setAbsorptionAmount(double v) {
+    public void setAbsorptionAmount(double v) {}
 
-    }
-
-    public void _INVALID_setHealth(int i) {
-
-    }
+    public void _INVALID_setHealth(int i) {}
 
     public double getMaxHealth() {
         return 1;
@@ -464,17 +464,11 @@ public class TempEntity implements LivingEntity {
         return 0;
     }
 
-    public void setMaxHealth(double v) {
+    public void setMaxHealth(double v) {}
 
-    }
+    public void _INVALID_setMaxHealth(int i) {}
 
-    public void _INVALID_setMaxHealth(int i) {
-
-    }
-
-    public void resetMaxHealth() {
-
-    }
+    public void resetMaxHealth() {}
 
     public Location getLocation() {
         return target.getLocation().clone();
@@ -491,9 +485,7 @@ public class TempEntity implements LivingEntity {
         return location;
     }
 
-    public void setVelocity(Vector vector) {
-
-    }
+    public void setVelocity(Vector vector) {}
 
     public Vector getVelocity() {
         return new Vector(0, 0, 0);
@@ -521,9 +513,7 @@ public class TempEntity implements LivingEntity {
     }
 
     @Override
-    public void setRotation(float yaw, float pitch) {
-
-    }
+    public void setRotation(float yaw, float pitch) {}
 
     public boolean teleport(Location location) {
         target = new FixedTarget(location);
@@ -561,13 +551,9 @@ public class TempEntity implements LivingEntity {
         return 0;
     }
 
-    public void setFireTicks(int i) {
+    public void setFireTicks(int i) {}
 
-    }
-
-    public void remove() {
-
-    }
+    public void remove() {}
 
     public boolean isDead() {
         return false;
@@ -577,13 +563,15 @@ public class TempEntity implements LivingEntity {
         return true;
     }
 
-    public void sendMessage(String s) {
+    public void sendMessage(String s) {}
 
-    }
+    public void sendMessage(String[] strings) {}
 
-    public void sendMessage(String[] strings) {
+    @Override
+    public void sendMessage(@Nullable UUID sender, @NotNull String message) {}
 
-    }
+    @Override
+    public void sendMessage(@Nullable UUID sender, @NotNull String[] messages) {}
 
     public Server getServer() {
         return Bukkit.getServer();
@@ -595,9 +583,7 @@ public class TempEntity implements LivingEntity {
     }
 
     @Override
-    public void setPersistent(boolean persistent) {
-
-    }
+    public void setPersistent(boolean persistent) {}
 
     public String getName() {
         return "Location";
@@ -639,9 +625,7 @@ public class TempEntity implements LivingEntity {
 
     }
 
-    public void setLastDamageCause(EntityDamageEvent entityDamageEvent) {
-
-    }
+    public void setLastDamageCause(EntityDamageEvent entityDamageEvent) {}
 
     public EntityDamageEvent getLastDamageCause() {
         return null;
@@ -655,12 +639,9 @@ public class TempEntity implements LivingEntity {
         return 0;
     }
 
-    public void setTicksLived(int i) {
+    public void setTicksLived(int i) {}
 
-    }
-
-    public void playEffect(EntityEffect entityEffect) {
-    }
+    public void playEffect(EntityEffect entityEffect) {}
 
     public EntityType getType() {
         return EntityType.CHICKEN;

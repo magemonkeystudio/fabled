@@ -27,7 +27,7 @@
 package com.sucy.skill.dynamic.condition;
 
 import com.rit.sucy.config.parse.DataSection;
-import com.sucy.skill.api.TargetHelper;
+import com.sucy.skill.api.target.TargetHelper;
 import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.entity.LivingEntity;
 

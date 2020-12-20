@@ -27,7 +27,7 @@
 package com.sucy.skill.dynamic.target;
 
 import com.google.common.collect.ImmutableList;
-import com.sucy.skill.api.TargetHelper;
+import com.sucy.skill.api.target.TargetHelper;
 import com.sucy.skill.cast.IIndicator;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
