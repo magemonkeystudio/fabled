@@ -52,7 +52,7 @@ public class AreaTarget extends TargetComponent {
 
         final double radius = parseValues(caster, RADIUS, level, 3.0);
         final boolean random = settings.getBool(RANDOM, false);
-        return determineTargets(caster, level, targets, t -> shuffle(Nearby.getLivingNearby(caster, radius), random));
+        return determineTargets(caster, level, targets, t -> shuffle(Nearby.getLivingNearby(t, radius, true), random));
     }
 
     /** {@inheritDoc} */

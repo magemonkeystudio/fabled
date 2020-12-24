@@ -820,8 +820,8 @@ function TargetArea()
     this.data.push(new ListValue("Through Wall", "wall", ['True', 'False'], 'False')
         .setTooltip('Whether or not to allow targets to be on the other side of a wall')
     );
-    this.data.push(new ListValue("Include Caster", "caster", [ 'True', 'False' ], 'False')
-        .setTooltip('Whether or not to include the caster in the target list')
+    this.data.push(new ListValue("Include Caster", "caster", [ 'True', 'False', 'In area' ], 'False')
+        .setTooltip('Whether to include the caster in the target list. "True" will always include them, "False" will never, and "In area" will only if they are within the targeted area')
     );
     this.data.push(new AttributeValue("Max Targets", "max", 99, 0)
         .setTooltip('The max amount of targets to apply children to')

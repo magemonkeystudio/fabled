@@ -31,7 +31,7 @@ public abstract class TargetComponent extends EffectComponent {
     boolean everyone;
     boolean allies;
     boolean throughWall;
-    boolean self;
+    IncludeCaster self;
 
     @Override
     public ComponentType getType() {
@@ -61,7 +61,7 @@ public abstract class TargetComponent extends EffectComponent {
         everyone = group.equals("both");
         allies = group.equals("ally");
         throughWall = settings.getString(WALL, "false").equalsIgnoreCase("true");
-        self = settings.getString(CASTER, "false").equalsIgnoreCase("true");
+        self = IncludeCaster.valueOf(settings.getString(CASTER, "false").toUpperCase().replace(' ', '_'));
     }
 
     abstract List<LivingEntity> getTargets(
@@ -132,15 +132,13 @@ public abstract class TargetComponent extends EffectComponent {
 
             for (LivingEntity entity : found) {
                 if (count >= max) break;
-                if (!isValidTarget(caster, target, entity)) continue;
-                list.add(found.get(count));
-                count++;
+                if (isValidTarget(caster, target, entity) || (self.equals(IncludeCaster.IN_AREA) && caster==entity)) {
+                    list.add(entity);
+                    count++;
+                }
             }
         });
-        if (self) {
-            list.add(caster);
-        }
-
+        if (self.equals(IncludeCaster.TRUE)) list.add(caster);
         return list;
     }
 
@@ -151,5 +149,9 @@ public abstract class TargetComponent extends EffectComponent {
         return target != caster && SkillAPI.getSettings().isValidTarget(target)
                 && (throughWall || !TargetHelper.isObstructed(from.getEyeLocation(), target.getEyeLocation()))
                 && (everyone || allies == SkillAPI.getSettings().isAlly(caster, target));
+    }
+
+    public enum IncludeCaster {
+        TRUE, FALSE, IN_AREA
     }
 }
