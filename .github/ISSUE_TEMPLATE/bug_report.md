@@ -7,6 +7,8 @@ assignees: ''
 
 ---
 
+Note: If your english is not that good, but you speak Spanish, Portuguese or French, we might understand each other better in one of those languages, so feel free to make the issue in that language instead. 
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 
