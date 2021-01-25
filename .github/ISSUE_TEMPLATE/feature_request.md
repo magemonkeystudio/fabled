@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-Note: If your english is not that good, but you speak Spanish, Portuguese or French, we might understand each other better in one of those languages, so feel free to make the issue in that language instead. 
+Note: Aside from English, I also speak Spanish, and can understand Portuguese and French, so you can post the issue in the language you prefer among those.
 
 **Is your feature request related to a problem? Please describe.**
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
