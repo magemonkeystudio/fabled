@@ -38,6 +38,7 @@ public class DamageMechanic extends MechanicComponent {
     private static final String DAMAGE     = "value";
     private static final String TRUE       = "true";
     private static final String CLASSIFIER = "classifier";
+    private static final String KNOCKBACK = "knockback";
 
     @Override
     public String getKey() {
@@ -61,6 +62,7 @@ public class DamageMechanic extends MechanicComponent {
         boolean left = pString.equals("percent left");
         boolean trueDmg = settings.getBool(TRUE, false);
         double damage = parseValues(caster, DAMAGE, level, 1.0);
+        boolean knockback = settings.getBool(KNOCKBACK, true);
         String classification = settings.getString(CLASSIFIER, "default");
         if (damage < 0) { return false; }
         for (LivingEntity target : targets) {
@@ -77,7 +79,7 @@ public class DamageMechanic extends MechanicComponent {
                 amount = damage * target.getHealth() / 100;
             }
             if (trueDmg) { skill.trueDamage(target, amount, caster); } else {
-                skill.damage(target, amount, caster, classification);
+                skill.damage(target, amount, caster, classification, knockback);
             }
         }
         return targets.size() > 0;

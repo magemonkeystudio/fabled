@@ -1804,10 +1804,13 @@ function MechanicDamage()
         .setTooltip('The amount of damage to deal')
     );
     this.data.push(new ListValue('True Damage', 'true', [ 'True', 'False' ], 'False')
-        .setTooltip('Whether or not to deal true damage. True damage ignores armor and all plugin checks.')
+        .setTooltip('Whether or not to deal true damage. True damage ignores armor and all plugin checks, and doesn not have a damage animation nor knockback')
     );
     this.data.push(new StringValue('Classifier', 'classifier', 'default')
-        .setTooltip('[PREMIUM ONLY] The type of damage to deal. Can act as elemental damage or fake physical damage')
+        .setTooltip('The type of damage to deal. Can act as elemental damage or fake physical damage')
+    );
+    this.data.push(new ListValue('Apply Knockback', 'knockback', [ 'True', 'False' ], 'True')
+        .setTooltip('Whether or not the damage will inflict knockback. Ignored if it is True Damage')
     );
 }
 
