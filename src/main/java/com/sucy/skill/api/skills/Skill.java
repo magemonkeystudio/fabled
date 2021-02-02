@@ -581,7 +581,7 @@ public abstract class Skill implements IconHolder
                     Object nextValue = getAttr(player, attr, Math.min(skillData.getLevel() + 1, maxLevel));
                     if (attr.equals("level") || attr.equals("cost"))
                     {
-                        nextValue = (int) Math.floor(NumberParser.parseDouble(nextValue.toString()));
+                        nextValue = (int) Math.floor(NumberParser.parseDouble(nextValue.toString().replace(',','.')));
                         currValue = nextValue;
                     }
 
@@ -749,26 +749,54 @@ public abstract class Skill implements IconHolder
      * @param classification type of damage to deal
      */
     public void damage(LivingEntity target, double damage, LivingEntity source, String classification) {
-        if (target instanceof TempEntity) return;
+        damage(target, damage, source, classification);
+    }
+
+    /**
+     * Applies skill damage to the target, launching the skill damage event
+     *
+     * @param target target to receive the damage
+     * @param damage amount of damage to deal
+     * @param source source of the damage (skill caster)
+     * @param classification type of damage to deal
+     * @param knockback whether the damage should apply knockback
+     */
+    public void damage(LivingEntity target, double damage, LivingEntity source, String classification, boolean knockback) {
+        if (target instanceof TempEntity) { return; }
 
         SkillDamageEvent event = new SkillDamageEvent(this, source, target, damage, classification);
         Bukkit.getPluginManager().callEvent(event);
-        if (!event.isCancelled())
-        {
-            if (source instanceof Player)
-            {
+        if (!event.isCancelled()) {
+            if (source instanceof Player) {
                 Player player = (Player) source;
                 if (PluginChecker.isNoCheatActive()) NoCheatHook.exempt(player);
                 skillDamage = true;
                 target.setNoDamageTicks(0);
-                target.damage(event.getDamage(), source);
+                if (knockback) { target.damage(event.getDamage(), source); }
+                else { target.damage(event.getDamage()); }
                 skillDamage = false;
                 if (PluginChecker.isNoCheatActive()) NoCheatHook.unexempt(player);
-            }
-            else
-            {
+            } else {
                 skillDamage = true;
-                VersionManager.damage(target, source, event.getDamage());
+                //Modified code from com.rit.sucy.version.VersionManager.damage() (MCCore)
+                {
+                    // Allow damage to occur
+                    int ticks = target.getNoDamageTicks();
+                    target.setNoDamageTicks(0);
+
+                    if (VersionManager.isVersionAtMost(VersionManager.V1_5_2)) {
+                        // 1.5.2 and earlier used integer values
+                        if (knockback) { target.damage((int) damage, source); }
+                        else { target.damage((int) damage); }
+                    } else {
+                        // 1.6.2 and beyond use double values
+                        if (knockback) { target.damage(damage, source); }
+                        else { target.damage(damage); }
+                    }
+
+                    // Reset damage timer to before the damage was applied
+                    target.setNoDamageTicks(ticks);
+                }
                 skillDamage = false;
             }
         }
@@ -788,8 +816,9 @@ public abstract class Skill implements IconHolder
 
         TrueDamageEvent event = new TrueDamageEvent(this, source, target, damage);
         Bukkit.getPluginManager().callEvent(event);
-        if (!event.isCancelled() && event.getDamage() != 0)
+        if (!event.isCancelled() && event.getDamage() != 0) {
             target.setHealth(Math.max(Math.min(target.getHealth() - event.getDamage(), target.getMaxHealth()), 0));
+        }
     }
 
     /**

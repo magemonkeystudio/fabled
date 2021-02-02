@@ -34,17 +34,6 @@ public class ArmorStandMechanic extends MechanicComponent {
     private static final String UPWARD = "upward";
     private static final String RIGHT = "right";
 
-    private static boolean LEGACY;
-
-    public ArmorStandMechanic() {
-        try {
-            ArmorStand.class.getMethod("setMarker", boolean.class);
-            LEGACY = false;
-        } catch (NoSuchMethodException e) {
-            LEGACY = true;
-        }
-    }
-
     @Override
     public String getKey() { return "armor stand"; }
 
@@ -73,10 +62,13 @@ public class ArmorStandMechanic extends MechanicComponent {
             loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
 
             ArmorStand armorStand = target.getWorld().spawn(loc, ArmorStand.class, as -> {
-                if (!LEGACY) {
+                try {
                     as.setMarker(marker);
                     as.setInvulnerable(true);
-                }
+                } catch (NoSuchMethodError ignored) {}
+                try {
+                    as.setSilent(true);
+                } catch (NoSuchMethodError ignored) {}
                 as.setGravity(gravity);
                 as.setCustomName(name);
                 as.setCustomNameVisible(nameVisible);

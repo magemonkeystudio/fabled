@@ -37,6 +37,7 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +47,7 @@ import java.util.List;
  */
 public class ProjectileMechanic extends MechanicComponent
 {
+    private static Class<Enum<?>> PICKUP_STATUS_ENUM = null;
     private static final Vector UP = new Vector(0, 1, 0);
 
     private static final String PROJECTILE = "projectile";
@@ -131,17 +133,19 @@ public class ProjectileMechanic extends MechanicComponent
                     Projectile p = caster.launchProjectile(type);
                     p.setTicksLived(1180);
                     if (type.getName().contains("Arrow")) {
-                        // Will fail under 1.12
                         try {
-                            // Will fail under 1.14
+                            // Will fail under 1.12
                             try {
+                                //1.14+
                                 AbstractArrow arrow = (AbstractArrow) p;
                                 arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
                             } catch (NoClassDefFoundError e) {
+                                //1.12+
                                 Arrow arrow = (Arrow) p;
-                                arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+                                Class<?> pickupStatusClass = Class.forName("org.bukkit.Arrow$PickupStatus");
+                                Arrow.class.getMethod("setPickupStatus", pickupStatusClass).invoke(arrow, pickupStatusClass.getMethod("valueOf", String.class).invoke(null, "DISALLOWED"));
                             }
-                        } catch (NoSuchMethodError ignored) {}
+                        } catch (NoSuchMethodError | ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {}
                     }
                     p.setVelocity(new Vector(0, speed, 0));
                     p.teleport(loc);
@@ -173,17 +177,19 @@ public class ProjectileMechanic extends MechanicComponent
                     Projectile p = caster.launchProjectile(type);
                     p.setTicksLived(1180);
                     if (type.getName().contains("Arrow")) {
-                        // Will fail under 1.12
                         try {
-                            // Will fail under 1.14
+                            // Will fail under 1.12
                             try {
+                                //1.14+
                                 AbstractArrow arrow = (AbstractArrow) p;
                                 arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
                             } catch (NoClassDefFoundError e) {
+                                //1.12+
                                 Arrow arrow = (Arrow) p;
-                                arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+                                Class<?> pickupStatusClass = Class.forName("org.bukkit.Arrow$PickupStatus");
+                                Arrow.class.getMethod("setPickupStatus", pickupStatusClass).invoke(arrow, pickupStatusClass.getMethod("valueOf", String.class).invoke(null, "DISALLOWED"));
                             }
-                        } catch (NoSuchMethodError ignored) {}
+                        } catch (NoSuchMethodError | ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {}
                     } else {
                         p.teleport(target.getLocation().add(looking).add(0, upward + 0.5, 0).add(p.getVelocity()).setDirection(d));
                     }

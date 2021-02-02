@@ -508,6 +508,9 @@ public class TempEntity implements LivingEntity {
         return true;
     }
 
+    @Override
+    public boolean isInWater() { return false; }
+
     public World getWorld() {
         return target.getLocation().getWorld();
     }

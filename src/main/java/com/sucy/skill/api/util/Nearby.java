@@ -77,10 +77,14 @@ public class Nearby
      * @return nearby entities
      */
     public static List<LivingEntity> getLivingNearby(Location loc, double radius) {
-        return getLivingNearby(null, loc, radius);
+        return getLivingNearby(null, loc, radius, false);
     }
 
-    private static List<LivingEntity> getLivingNearby(Entity source, Location loc, double radius) {
+    public static List<LivingEntity> getLivingNearby(Location loc, double radius, boolean includeCaster) {
+        return getLivingNearby(null, loc, radius, includeCaster);
+    }
+
+    private static List<LivingEntity> getLivingNearby(Entity source, Location loc, double radius, boolean includeCaster) {
         TreeMap<Double, LivingEntity> result = new TreeMap<>();
 
         int minX = (int) (loc.getX() - radius) >> 4;
@@ -93,7 +97,7 @@ public class Nearby
         for (int i = minX; i <= maxX; i++)
             for (int j = minZ; j <= maxZ; j++)
                 for (Entity entity : loc.getWorld().getChunkAt(i, j).getEntities())
-                    if (entity != source
+                    if ((includeCaster || entity != source)
                             && entity instanceof LivingEntity
                             && entity.getWorld() == loc.getWorld()
                             && entity.getLocation().distanceSquared(loc) < radius)
@@ -123,9 +127,12 @@ public class Nearby
      *
      * @return nearby entities
      */
-    public static List<LivingEntity> getLivingNearby(Entity entity, double radius)
-    {
-        return getLivingNearby(entity, entity.getLocation(), radius);
+    public static List<LivingEntity> getLivingNearby(Entity entity, double radius) {
+        return getLivingNearby(entity, entity.getLocation(), radius, false);
+    }
+
+    public static List<LivingEntity> getLivingNearby(Entity entity, double radius, boolean includeCaster) {
+        return getLivingNearby(entity, entity.getLocation(), radius, includeCaster);
     }
 
     public static List<Entity> getNearbyBox(Location loc, double radius)

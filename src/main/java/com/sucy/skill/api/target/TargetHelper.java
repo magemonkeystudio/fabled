@@ -5,7 +5,6 @@ import com.sucy.skill.hook.PluginChecker;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.utilities.reflection.FakeBoundingBox;
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
@@ -63,10 +62,6 @@ public abstract class TargetHelper {
 
             AABB aabb = getAABB(entity);
             aabb.expand(tolerance);
-            AABB.Vec3D min = aabb.getMin();
-            AABB.Vec3D max = aabb.getMax();
-            entity.getWorld().spawnParticle(Particle.CRIT,min.x, min.y, min.z,1,0,0,0,0,null);
-            entity.getWorld().spawnParticle(Particle.CRIT,max.x, max.y, max.z,1,0,0,0,0,null);
             AABB.Vec3D collision = aabb.intersectsRay(ray, 0, range);
             if (collision != null) {
                 targets.put(new Vector(collision.x, collision.y, collision.z).distance(origin), (LivingEntity) entity);

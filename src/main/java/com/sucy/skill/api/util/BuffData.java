@@ -175,12 +175,13 @@ public class BuffData
                 }
             }
         }
-        Logger.log(LogType.BUFF, 1, "Result: x" + multiplier + ", +" + bonus + ", " + value + " -> " + Math.max(0, value * multiplier + bonus));
+        double result = Math.max(0, value * multiplier + bonus);
+        Logger.log(LogType.BUFF, 1, "Result: x" + multiplier + ", +" + bonus + ", " + value + " -> " + result);
 
         // Negatives aren't well received by bukkit, so return 0 instead
         if (multiplier <= 0) return 0;
 
-        return Math.max(0, value * multiplier + bonus);
+        return result;
     }
 
     private double getFlatBonus(final String... types) {

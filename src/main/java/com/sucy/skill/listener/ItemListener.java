@@ -42,6 +42,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -50,6 +51,7 @@ import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Set;
@@ -164,8 +166,9 @@ public class ItemListener extends SkillAPIListener
     @EventHandler(priority = EventPriority.LOWEST)
     public void onAttack(EntityDamageByEntityEvent event)
     {
-        if (!SkillAPI.getSettings().isWorldEnabled(event.getEntity().getWorld()))
+        if (!SkillAPI.getSettings().isWorldEnabled(event.getEntity().getWorld())) {
             return;
+        }
 
         if (event.getDamager() instanceof Player)
         {
@@ -196,26 +199,44 @@ public class ItemListener extends SkillAPIListener
     @EventHandler(priority = EventPriority.LOWEST)
     public void onShoot(EntityShootBowEvent event)
     {
+        if (!SkillAPI.getSettings().isWorldEnabled(event.getEntity().getWorld())) {
+            return;
+        }
+
         if (event.getEntity() instanceof Player)
         {
             final PlayerEquips equips = SkillAPI.getPlayerData((Player) event.getEntity()).getEquips();
-            if (isMainhand(event.getBow(), event.getEntity()))
-            {
+            if (isMainhand(event.getBow(), event.getEntity())) {
                 if (!equips.canHit()) {
                     SkillAPI.getLanguage().sendMessage(ErrorNodes.CANNOT_USE, event.getEntity(), FilterType.COLOR);
                     event.setCancelled(true);
                 }
-            }
-            else if (!equips.canBlock()) {
+            } else if (!equips.canBlock()) {
                 SkillAPI.getLanguage().sendMessage(ErrorNodes.CANNOT_USE, event.getEntity(), FilterType.COLOR);
                 event.setCancelled(true);
             }
         }
     }
 
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onProjectileLaunch(ProjectileLaunchEvent event) {
+        if (!SkillAPI.getSettings().isWorldEnabled(event.getEntity().getWorld())) {
+            return;
+        }
+        ProjectileSource shooter = event.getEntity().getShooter();
+        if (shooter instanceof Player) {
+            Player player = (Player) shooter;
+            final PlayerEquips equips = SkillAPI.getPlayerData(player).getEquips();
+            if (!equips.canHit()) {
+                SkillAPI.getLanguage().sendMessage(ErrorNodes.CANNOT_USE, player, FilterType.COLOR);
+                event.setCancelled(true);
+            }
+        }
+    }
+
     private boolean isMainhand(final ItemStack bow, final LivingEntity entity) {
-        return !VersionManager.isVersionAtLeast(VersionManager.V1_9_0)
-                || bow == entity.getEquipment().getItemInMainHand();
+        ItemStack item = entity.getEquipment().getItemInMainHand();
+        return bow == item || bow.equals(item);
     }
 
     public static final Set<Material> ARMOR_TYPES = getArmorMaterials();

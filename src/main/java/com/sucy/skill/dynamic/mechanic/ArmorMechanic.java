@@ -80,17 +80,56 @@ public class ArmorMechanic extends MechanicComponent {
             }
             item.setItemMeta(meta);
         }
-
+        boolean success = false;
         for (LivingEntity target : targets) {
-            if (overwrite) {
-                target.getEquipment().setItem(slot, item);
-            } else {
-                EntityEquipment equipment = target.getEquipment();
-                if (equipment.getItem(slot).getType().equals(Material.AIR)) {
-                    equipment.setItem(slot, item);
+            EntityEquipment equipment = target.getEquipment();
+            boolean proceed = overwrite;
+            if (!overwrite) {
+                switch (slot) {
+                    case FEET:
+                        proceed = equipment.getBoots().getType().equals(Material.AIR);
+                        break;
+                    case HAND:
+                        proceed = equipment.getItemInMainHand().getType().equals(Material.AIR);
+                        break;
+                    case HEAD:
+                        proceed = equipment.getHelmet().getType().equals(Material.AIR);
+                        break;
+                    case LEGS:
+                        proceed = equipment.getLeggings().getType().equals(Material.AIR);
+                        break;
+                    case CHEST:
+                        proceed = equipment.getChestplate().getType().equals(Material.AIR);
+                        break;
+                    case OFF_HAND:
+                        proceed = equipment.getItemInOffHand().getType().equals(Material.AIR);
+                        break;
                 }
             }
+            if (proceed) {
+                switch (slot) {
+                    case FEET:
+                        equipment.setBoots(item);
+                        break;
+                    case HAND:
+                        equipment.setItemInMainHand(item);
+                        break;
+                    case HEAD:
+                        equipment.setHelmet(item);
+                        break;
+                    case LEGS:
+                        equipment.setLeggings(item);
+                        break;
+                    case CHEST:
+                        equipment.setChestplate(item);
+                        break;
+                    case OFF_HAND:
+                        equipment.setItemInOffHand(item);
+                        break;
+                }
+                success = true;
+            }
         }
-        return targets.size() > 0;
+        return success;
     }
 }

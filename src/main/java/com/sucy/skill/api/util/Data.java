@@ -27,7 +27,6 @@
 package com.sucy.skill.api.util;
 
 import com.rit.sucy.config.parse.DataSection;
-import com.rit.sucy.text.TextFormatter;
 import com.sucy.skill.SkillAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -65,9 +64,8 @@ public class Data {
                 item.setData(new MaterialData(material, (byte) data));
             }
             if (lore != null && !lore.isEmpty()) {
-                final List<String> colored = TextFormatter.colorStringList(lore);
-                meta.setDisplayName(colored.remove(0));
-                meta.setLore(colored);
+                meta.setDisplayName(lore.remove(0));
+                meta.setLore(lore);
             }
             if (SkillAPI.getSettings().useOldDurability()) {
                 item.setItemMeta(meta);
