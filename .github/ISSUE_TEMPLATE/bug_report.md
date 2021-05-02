@@ -2,18 +2,17 @@
 name: Bug report
 about: Create a report to help us improve
 title: ''
-labels: ''
+labels: bug
 assignees: ''
 
 ---
-
-Note: Aside from English, I also speak Spanish, and can understand Portuguese and French, so you can post the issue in the language you prefer among those.
 
 **Describe the bug**
 A clear and concise description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
+Example steps (replace with your steps)
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
@@ -22,19 +21,16 @@ Steps to reproduce the behavior:
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+**latest.log**
+1. Stop your server
+2. Start your server
+3. Stop your server
+4. Copy your latest.log to https://pastebin.com/
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+**Versions (please complete the following information):**
+-  Spigot Version:
+ - Server Version:
+ - Plugin Version
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
-
-**Additional context**
+**Additional info**
 Add any other context about the problem here.
