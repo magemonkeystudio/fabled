@@ -66,10 +66,6 @@
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
         <repository>
-            <id>placeholderapi</id>
-            <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
-        </repository>
-        <repository>
             <id>bungeecord-repo</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
@@ -138,12 +134,6 @@
             <version>1.0.6</version>
             <scope>system</scope>
             <systemPath>${basedir}/lib/RPGInventory-1.0.6.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>me.clip</groupId>
-            <artifactId>placeholderapi</artifactId>
-            <version>2.10.9</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.md-5</groupId>
