@@ -21,4 +21,4 @@ jobs:
       with:
         java-version: '8'
     - name: Build with Maven
-      run: mvn test
+      run: mvn -B package --file pom.xml
