@@ -105,6 +105,7 @@ public class SkillAPI extends JavaPlugin {
      */
     @Override
     public void onEnable() {
+        System.out.println("ACTION TEST");
         // Set up the singleton
         if (singleton != null) { throw new IllegalStateException("Cannot enable SkillAPI twice!"); }
         singleton = this;
