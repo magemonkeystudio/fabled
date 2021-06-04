@@ -98,6 +98,10 @@
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
+	<repository>
+ 	    <id>md_5-public</id>
+ 	    <url>https://repo.md-5.net/content/groups/public/</url>
+	</repository>
     </repositories>
 
     <dependencies>
@@ -140,10 +144,11 @@
             <systemPath>${basedir}/lib/RPGInventory-1.0.6.jar</systemPath>
         </dependency>
         <dependency>
-	   <groupId>com.github.libraryaddict</groupId>
-	   <artifactId>LibsDisguises</artifactId>
-	   <version>10.0.20</version>
-        </dependency>
+            <groupId>LibsDisguises</groupId>
+            <artifactId>LibsDisguises</artifactId>
+            <version><Version></version>
+   	    <scope>provided</scope>
+	</dependency>
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
