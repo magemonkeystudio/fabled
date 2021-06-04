@@ -200,7 +200,7 @@ public class SkillAPI extends JavaPlugin {
         }
 
         ResourceManager.copyQuestsModule();
-        //ResourceManager.copyPlaceholdersModule();
+        ResourceManager.copyPlaceholdersModule();
 
         loaded = true;
     }
