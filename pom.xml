@@ -136,11 +136,9 @@
             <systemPath>${basedir}/lib/RPGInventory-1.0.6.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>LibsDisguises</groupId>
-            <artifactId>LibsDisguises</artifactId>
-            <version>10.0.24</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/LibsDisguises.jar</systemPath>
+	   <groupId>com.github.libraryaddict</groupId>
+	   <artifactId>LibsDisguises</artifactId>
+	   <version>10.0.20</version>
         </dependency>
         <dependency>
             <groupId>me.clip</groupId>
