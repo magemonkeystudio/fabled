@@ -199,8 +199,15 @@ public class SkillAPI extends JavaPlugin {
             listener.init();
         }
 
+        // Copy the quests module if the plugin is loaded.
+        if (Bukkit.getServer().getPluginManager().getPlugin("Quests") != null) {
         ResourceManager.copyQuestsModule();
+        }
+        
+        // Copy the placeholderapi expansion if the plugin is loaded.
+        if (Bukkit.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
         ResourceManager.copyPlaceholdersModule();
+        }
 
         loaded = true;
     }
