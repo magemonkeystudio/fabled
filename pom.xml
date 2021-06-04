@@ -66,10 +66,6 @@
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
         <repository>
-            <id>bungeecord-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
-        <repository>
             <id>md_5-snapshots</id>
             <url>https://repo.md-5.net/content/repositories/snapshots/</url>
         </repository>
@@ -154,13 +150,6 @@
             <artifactId>bungeecord-api</artifactId>
             <version>1.16-R0.4-SNAPSHOT</version>
             <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.md-5</groupId>
-            <artifactId>bungeecord-api</artifactId>
-            <version>1.16-R0.4-SNAPSHOT</version>
-            <type>javadoc</type>
             <scope>provided</scope>
         </dependency>
         <dependency>
