@@ -19,7 +19,7 @@ jobs:
         java-version: 1.8
     - name: Build with Maven
       run: mvn clean package -e
-    - uses: actions/upload-artifact@v1
-      with:
-        name: ProSkillAPI artifact
-        path: target/ProSkillAPI-dev-build.jar
+#    - uses: actions/upload-artifact@v1
+#      with:
+#        name: ProSkillAPI artifact
+#        path: target/ProSkillAPI-dev-build.jar
