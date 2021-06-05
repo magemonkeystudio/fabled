@@ -1,4 +1,4 @@
-[![Java CI with Maven](https://github.com/SparkGNRK/proskillapi/actions/workflows/maven.yml/badge.svg?branch=actions)](https://github.com/SparkGNRK/proskillapi/actions/workflows/maven.yml)
+[![Java CI with Maven](https://github.com/promcteam/proskillapi/actions/workflows/maven.yml/badge.svg?branch=actions)](https://github.com/promcteam/proskillapi/actions/workflows/maven.yml)
 
 # PROSKILLAPI
 Our fork is based on the original skillapi and the forked skillapi by Sentropic.
