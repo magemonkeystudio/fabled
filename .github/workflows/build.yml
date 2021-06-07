@@ -2,9 +2,15 @@ name: Build Artifacts
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+    paths:
+      - src/main/**/*.java
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
+    paths:
+      - src/main/**/*.java
 
 jobs:
   build:
