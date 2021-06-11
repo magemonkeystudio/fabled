@@ -78,6 +78,7 @@ var Condition = {
     ENTITY_TYPE: { name: 'Entity Type', container: true, construct: ConditionEntityType },
     FIRE:        { name: 'Fire',        container: true, construct: ConditionFire       },
     FLAG:        { name: 'Flag',        container: true, construct: ConditionFlag       },
+    FOOD:        { name: 'Food',        container: true, construct: ConditionFood       },
     GROUND:      { name: 'Ground',      container: true, construct: ConditionGround     },
     HEALTH:      { name: 'Health',      container: true, construct: ConditionHealth     },
     INVENTORY:   { name: 'Inventory',   container: true, construct: ConditionInventory  },
@@ -1207,6 +1208,24 @@ function ConditionFlag()
     );
     this.data.push(new StringValue('Key', 'key', 'key')
         .setTooltip('The unique key representing the flag. This should match the key for when you set it using the Flag mechanic or the Flat Toggle mechanic')
+    );
+}
+
+extend('ConditionFood', 'Component');
+function ConditionFood()
+{
+    this.super('Food', Type.CONDITION, true);
+
+    this.description = "Applies child components when the target's food level matches the settings.";
+
+    this.data.push(new ListValue('Type', 'type', [ 'Food', 'Percent', 'Difference', 'Difference Percent' ], 'Food')
+        .setTooltip('The type of measurement to use for the food. Food level is their flat food left. Percent is the percentage of food they have left. Difference is the difference between the target\'s flat food and the caster\'s. Difference percent is the difference between the target\'s percentage food left and the caster\s')
+    );
+    this.data.push(new AttributeValue('Min Value', 'min-value', 0, 0)
+        .setTooltip('The minimum food required. A positive minimum with one of the "Difference" types would be for when the target has more food')
+    );
+    this.data.push(new AttributeValue('Max Value', 'max-value', 10, 2)
+        .setTooltip('The maximum food required. A negative maximum with one of the "Difference" types would be for when the target has less food')
     );
 }
 
