@@ -27,6 +27,7 @@
 package com.sucy.skill.api.util;
 
 import com.rit.sucy.config.parse.DataSection;
+import com.rit.sucy.text.TextFormatter;
 import com.sucy.skill.SkillAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
