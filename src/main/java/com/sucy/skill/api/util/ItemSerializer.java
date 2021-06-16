@@ -29,6 +29,7 @@ package com.sucy.skill.api.util;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.rit.sucy.reflect.Reflection;
+import com.rit.sucy.version.VersionManager;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
