@@ -210,6 +210,9 @@ public class MainListener extends SkillAPIListener
             if (!SkillAPI.getSettings().shouldIgnoreExpLoss(event.getEntity().getWorld())) {
                 data.loseExp();
             }
+            if (event.getEntity() instanceof Player) {
+                data.getExtraData().clear();
+            }
         }
     }
 
