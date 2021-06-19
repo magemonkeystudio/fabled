@@ -27,6 +27,7 @@
 package com.sucy.skill.api.util;
 
 import com.rit.sucy.config.parse.DataSection;
+import com.rit.sucy.text.TextFormatter;
 import com.sucy.skill.SkillAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -64,8 +65,9 @@ public class Data {
                 item.setData(new MaterialData(material, (byte) data));
             }
             if (lore != null && !lore.isEmpty()) {
-                meta.setDisplayName(lore.remove(0));
-                meta.setLore(lore);
+                final List<String> colored = TextFormatter.colorStringList(lore);
+                meta.setDisplayName(colored.remove(0));
+                meta.setLore(colored);
             }
             if (SkillAPI.getSettings().useOldDurability()) {
                 item.setItemMeta(meta);
@@ -110,7 +112,7 @@ public class Data {
             if (lore == null) { lore = new ArrayList<>(); }
             lore.add(0, item.getItemMeta().getDisplayName());
             int count = lore.size();
-            for (int i = 0; i < count; i++) { lore.add(lore.remove(0).replace(ChatColor.COLOR_CHAR, '&')); }
+            for (int i = 0; i < count; i++) { lore.add(lore.remove(0).replace(ChatColor.COLOR_CHAR, '&').replaceAll("attr:&"+".", "attr:")); }
             config.set(LORE, lore);
         }
     }
