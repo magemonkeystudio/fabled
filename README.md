@@ -1,3 +1,4 @@
+[![Build Artifacts](https://github.com/SparkGNRK/private-proskillapi/actions/workflows/build.yml/badge.svg)](https://github.com/SparkGNRK/private-proskillapi/actions/workflows/build.yml)
 # PROSKILLAPI
 Our fork is based on the original skillapi and the forked skillapi by Sentropic.
 * Includes all  premium features from the original premium version of Skillapi found on spigot.
