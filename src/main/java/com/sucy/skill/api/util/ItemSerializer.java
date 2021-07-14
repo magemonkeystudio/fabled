@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.util.ItemSerializer
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2017 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -29,8 +29,8 @@ package com.sucy.skill.api.util;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.rit.sucy.reflect.Reflection;
+import com.rit.sucy.version.VersionManager;
 import com.sucy.skill.util.Version;
-import net.minecraft.nbt.NBTCompressedStreamTools;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -48,14 +48,48 @@ import java.util.Map;
 // Based on the thread https://bukkit.org/threads/help-with-serialized-nbttagcompounds.116335/
 public class ItemSerializer {
 
+    private static final BiMap<String, Integer> ENCHANT_IDS = ImmutableBiMap.<String, Integer>builder()
+            .put("PROTECTION_ENVIRONMENTAL", 0)
+            .put("PROTECTION_FIRE", 1)
+            .put("PROTECTION_FALL", 2)
+            .put("PROTECTION_EXPLOSIONS", 3)
+            .put("PROTECTION_PROJECTILE", 4)
+            .put("OXYGEN", 5)
+            .put("WATER_WORKER", 6)
+            .put("THORNS", 7)
+            .put("DEPTH_STRIDER", 8)
+            .put("FROST_WALKER", 9)
+            .put("BINDING_CURSE", 10)
+            .put("DAMAGE_ALL", 16)
+            .put("DAMAGE_UNDEAD", 17)
+            .put("DAMAGE_ARTHROPODS", 18)
+            .put("KNOCKBACK", 19)
+            .put("FIRE_ASPECT", 20)
+            .put("LOOT_BONUS_MOBS", 21)
+            .put("SWEEPING_EDGE", 22)
+            .put("DIG_SPEED", 32)
+            .put("SILK_TOUCH", 33)
+            .put("DURABILITY", 34)
+            .put("LOOT_BONUS_BLOCKS", 35)
+            .put("ARROW_DAMAGE", 48)
+            .put("ARROW_KNOCKBACK", 49)
+            .put("ARROW_FIRE", 50)
+            .put("ARROW_INFINITE", 51)
+            .put("LUCK", 61)
+            .put("LURE", 62)
+            .put("MENDING", 70)
+            .put("VANISHING_CURSE", 71)
+            .put("LOYALTY", 80)
+            .put("IMPALING", 81)
+            .put("RIPTIDE", 82)
+            .put("CHANNELING", 83)
+            .build();
     private static boolean initialized = false;
-
     private static Constructor<?> nbtTagListConstructor;
     private static Constructor<?> nbtTagCompoundConstructor;
     private static Constructor<?> craftItemConstructor;
     private static Constructor<?> craftItemNMSConstructor;
     private static Constructor<?> nmsItemConstructor;
-
     private static Method itemStack_save;
     private static Method nbtTagList_add;
     private static Method nbtTagList_size;
@@ -65,7 +99,6 @@ public class ItemSerializer {
     private static Method nbtTagCompound_set;
     private static Method nbtTagCompound_getList;
     private static Method nbtTagCompound_isEmpty;
-
     private static Field craftItemStack_getHandle;
 
     private static void initialize() {
@@ -109,8 +142,7 @@ public class ItemSerializer {
             nbtTagList_get = nbtTagList.getDeclaredMethod("get", int.class);
             nbtCompressedStreamTools_write = nbtCompressedStreamTools.getDeclaredMethod("a", nbtTagCompound, DataOutput.class);
             nbtCompressedStreamTools_read = nbtCompressedStreamTools.getDeclaredMethod("a", DataInputStream.class);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("Server doesn't support NBT serialization - resorting to a less complete implementation");
         }
     }
@@ -145,8 +177,7 @@ public class ItemSerializer {
 
             // Serialize that array
             return new BigInteger(1, outputStream.toByteArray()).toString(32);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             return null;
         }
     }
@@ -163,21 +194,20 @@ public class ItemSerializer {
             DataInputStream dataInputStream = new DataInputStream(inputStream);
             Object wrapper = nbtCompressedStreamTools_read.invoke(null, dataInputStream);
             Object itemList = nbtTagCompound_getList.invoke(wrapper, "i", 10);
-            ItemStack[] items = new ItemStack[(Integer)nbtTagList_size.invoke(itemList)];
+            ItemStack[] items = new ItemStack[(Integer) nbtTagList_size.invoke(itemList)];
 
             for (int i = 0; i < items.length; i++) {
                 Object inputObject = nbtTagList_get.invoke(itemList, i);
 
                 // IsEmpty
-                if (!(Boolean)nbtTagCompound_isEmpty.invoke(inputObject)) {
-                    items[i] = (ItemStack)craftItemNMSConstructor.newInstance(nmsItemConstructor.newInstance(inputObject));
+                if (!(Boolean) nbtTagCompound_isEmpty.invoke(inputObject)) {
+                    items[i] = (ItemStack) craftItemNMSConstructor.newInstance(nmsItemConstructor.newInstance(inputObject));
                 }
             }
 
             // Serialize that array
             return items;
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             return null;
         }
@@ -192,42 +222,41 @@ public class ItemSerializer {
             return stack;
     }
 
-    private static String basicSerialize(ItemStack[] items)
-    {
+    private static String basicSerialize(ItemStack[] items) {
         StringBuilder builder = new StringBuilder();
         builder.append(items.length);
         builder.append(';');
-        for (int i = 0; i < items.length; i++)
-        {
+        for (int i = 0; i < items.length; i++) {
             ItemStack is = items[i];
-            if (is != null)
-            {
+            if (is != null) {
                 builder.append(i);
                 builder.append('#');
 
-                String isType = String.valueOf(is.getType().getId());
-                builder.append("t@");
-                builder.append(isType);
+                if (VersionManager.isVersionAtLeast(11605)) {
+                    String isType = String.valueOf(is.getType());
+                    builder.append("t@");
+                    builder.append(isType);
+                } else {
+                    String isType = String.valueOf(is.getType().getId());
+                    builder.append("t@");
+                    builder.append(isType);
+                }
 
-                if (is.getDurability() != 0)
-                {
+                if (is.getDurability() != 0) {
                     String isDurability = String.valueOf(is.getDurability());
                     builder.append(":d@");
                     builder.append(isDurability);
                 }
 
-                if (is.getAmount() != 1)
-                {
+                if (is.getAmount() != 1) {
                     String isAmount = String.valueOf(is.getAmount());
                     builder.append(":a@");
                     builder.append(isAmount);
                 }
 
-                Map<Enchantment,Integer> isEnch = is.getEnchantments();
-                if (isEnch.size() > 0)
-                {
-                    for (Map.Entry<Enchantment,Integer> ench : isEnch.entrySet())
-                    {
+                Map<Enchantment, Integer> isEnch = is.getEnchantments();
+                if (isEnch.size() > 0) {
+                    for (Map.Entry<Enchantment, Integer> ench : isEnch.entrySet()) {
                         builder.append(":e@");
                         builder.append(ENCHANT_IDS.get(ench.getKey().getName()));
                         builder.append('@');
@@ -254,21 +283,18 @@ public class ItemSerializer {
         return builder.toString();
     }
 
-    private static ItemStack[] basicDeserialize(String invString)
-    {
+    private static ItemStack[] basicDeserialize(String invString) {
         String[] serializedBlocks = invString.split(";");
         if (serializedBlocks.length == 0)
             return null;
         String invInfo = serializedBlocks[0];
         ItemStack[] deserializedInventory = new ItemStack[Integer.valueOf(invInfo)];
 
-        for (int i = 1; i <= deserializedInventory.length && i < serializedBlocks.length; i++)
-        {
+        for (int i = 1; i <= deserializedInventory.length && i < serializedBlocks.length; i++) {
             String[] serializedBlock = serializedBlocks[i].split("#");
             int stackPosition = Integer.valueOf(serializedBlock[0]);
 
-            if (stackPosition >= deserializedInventory.length)
-            {
+            if (stackPosition >= deserializedInventory.length) {
                 continue;
             }
 
@@ -276,38 +302,33 @@ public class ItemSerializer {
             Boolean createdItemStack = false;
 
             String[] serializedItemStack = serializedBlock[1].split(":");
-            for (String itemInfo : serializedItemStack)
-            {
+            for (String itemInfo : serializedItemStack) {
                 String[] itemAttribute = itemInfo.split("@");
-                if (itemAttribute[0].equals("t"))
-                {
-                    int id = Integer.valueOf(itemAttribute[1]);
-                    if (id >= 2256) id -= 2267 - Material.values().length;
-                    final Material mat = Material.values()[id];
-                    is = new ItemStack(mat);
-                    createdItemStack = true;
-                }
-                else if (itemAttribute[0].equals("d") && createdItemStack)
-                {
+                if (itemAttribute[0].equals("t")) {
+                    if (VersionManager.isVersionAtLeast(11605)) {
+                        String id = String.valueOf(itemAttribute[1]);
+                        final Material mat = Material.getMaterial(id);
+                        is = new ItemStack(mat);
+                        createdItemStack = true;
+                    } else {
+                        int id = Integer.valueOf(itemAttribute[1]);
+                        if (id >= 2256) id -= 2267 - Material.values().length;
+                        final Material mat = Material.values()[id];
+                        is = new ItemStack(mat);
+                        createdItemStack = true;
+                    }
+                } else if (itemAttribute[0].equals("d") && createdItemStack) {
                     is.setDurability(Short.valueOf(itemAttribute[1]));
-                }
-                else if (itemAttribute[0].equals("a") && createdItemStack)
-                {
+                } else if (itemAttribute[0].equals("a") && createdItemStack) {
                     is.setAmount(Integer.valueOf(itemAttribute[1]));
-                }
-                else if (itemAttribute[0].equals("e") && createdItemStack)
-                {
+                } else if (itemAttribute[0].equals("e") && createdItemStack) {
                     final String name = ENCHANT_IDS.inverse().getOrDefault(Integer.valueOf(itemAttribute[1]), "OXYGEN");
                     is.addUnsafeEnchantment(Enchantment.getByName(name), Integer.valueOf(itemAttribute[2]));
-                }
-                else if (itemAttribute[0].equals("n") && createdItemStack)
-                {
+                } else if (itemAttribute[0].equals("n") && createdItemStack) {
                     ItemMeta meta = is.getItemMeta();
                     meta.setDisplayName(itemAttribute[1]);
                     is.setItemMeta(meta);
-                }
-                else if (itemAttribute[0].equals("l") && createdItemStack)
-                {
+                } else if (itemAttribute[0].equals("l") && createdItemStack) {
                     ItemMeta meta = is.getItemMeta();
                     List<String> lore = meta.getLore();
                     if (lore == null) lore = new ArrayList<>();
@@ -321,41 +342,4 @@ public class ItemSerializer {
 
         return deserializedInventory;
     }
-
-    private static final BiMap<String, Integer> ENCHANT_IDS = ImmutableBiMap.<String, Integer>builder()
-            .put("PROTECTION_ENVIRONMENTAL", 0)
-            .put("PROTECTION_FIRE", 1)
-            .put("PROTECTION_FALL", 2)
-            .put("PROTECTION_EXPLOSIONS", 3)
-            .put("PROTECTION_PROJECTILE", 4)
-            .put("OXYGEN", 5)
-            .put("WATER_WORKER", 6)
-            .put("THORNS", 7)
-            .put("DEPTH_STRIDER", 8)
-            .put("FROST_WALKER", 9)
-            .put("BINDING_CURSE", 10)
-            .put("DAMAGE_ALL", 16)
-            .put("DAMAGE_UNDEAD", 17)
-            .put("DAMAGE_ARTHROPODS", 18)
-            .put("KNOCKBACK", 19)
-            .put("FIRE_ASPECT", 20)
-            .put("LOOT_BONUS_MOBS", 21)
-            .put("SWEEPING_EDGE", 22)
-            .put("DIG_SPEED", 32)
-            .put("SILK_TOUCH", 33)
-            .put("DURABILITY", 34)
-            .put("LOOT_BONUS_BLOCKS", 35)
-            .put("ARROW_DAMAGE", 48)
-            .put("ARROW_KNOCKBACK", 49)
-            .put("ARROW_FIRE", 50)
-            .put("ARROW_INFINITE", 51)
-            .put("LUCK", 61)
-            .put("LURE", 62)
-            .put("MENDING", 70)
-            .put("VANISHING_CURSE", 71)
-            .put("LOYALTY", 80)
-            .put("IMPALING", 81)
-            .put("RIPTIDE", 82)
-            .put("CHANNELING", 83)
-            .build();
 }
