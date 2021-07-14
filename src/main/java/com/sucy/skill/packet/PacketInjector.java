@@ -2,7 +2,9 @@ package com.sucy.skill.packet;
 
 import com.rit.sucy.reflect.Reflection;
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.util.Version;
 import io.netty.channel.Channel;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
@@ -14,12 +16,11 @@ import java.lang.reflect.Method;
  * com.sucy.skill.PacketInjector
  */
 public class PacketInjector {
-    private Field    playerCon;
-    private Field    network;
-    private Method   handle;
-    private Field    k;
-    private Field    dropField;
-
+    private Field playerCon;
+    private Field network;
+    private Method handle;
+    private Field k;
+    private Field dropField;
     private SkillAPI skillAPI;
 
     /**
@@ -29,19 +30,35 @@ public class PacketInjector {
         this.skillAPI = skillAPI;
 
         try {
-            String nms = Reflection.getNMSPackage();
-            playerCon = Class.forName(nms + "EntityPlayer")
-                    .getField("playerConnection");
+            if (Version.MINOR_VERSION >= 17) {
+                playerCon = Class.forName("net.minecraft.server.level.EntityPlayer")
+                        .getField("b");
 
-            Class<?> playerConnection = Class.forName(nms + "PlayerConnection");
-            network = playerConnection.getField("networkManager");
+                Class<?> playerConnection = Class.forName("net.minecraft.server.network.PlayerConnection");
+                network = playerConnection.getField("a");
 
-            Class<?> networkManager = Class.forName(nms + "NetworkManager");
-            try {
-                k = networkManager.getField("channel");
-            } catch (Exception ex) {
-                k = networkManager.getDeclaredField("i");
-                k.setAccessible(true);
+                Class<?> networkManager = Class.forName("net.minecraft.network.NetworkManager");
+                try {
+                    k = networkManager.getField("k");
+                } catch (Exception ex) {
+                    k = networkManager.getDeclaredField("i");
+                    k.setAccessible(true);
+                }
+            } else {
+                String nms = Reflection.getNMSPackage();
+                playerCon = Class.forName(nms + "EntityPlayer")
+                        .getField("playerConnection");
+
+                Class<?> playerConnection = Class.forName(nms + "PlayerConnection");
+                network = playerConnection.getField("networkManager");
+
+                Class<?> networkManager = Class.forName(nms + "NetworkManager");
+                try {
+                    k = networkManager.getField("channel");
+                } catch (Exception ex) {
+                    k = networkManager.getDeclaredField("i");
+                    k.setAccessible(true);
+                }
             }
 
             handle = Class.forName(Reflection.getCraftPackage() + "entity.CraftPlayer").getMethod("getHandle");
@@ -51,7 +68,10 @@ public class PacketInjector {
         }
 
         try {
-            dropField = Reflection.getNMSClass("PacketPlayInBlockDig").getDeclaredField("c");
+            if (Version.MINOR_VERSION >= 17)
+                dropField = Reflection.getClass("net.minecraft.network.protocol.game.PacketPlayInBlockDig").getDeclaredField("c");
+            else
+                dropField = Reflection.getNMSClass("PacketPlayInBlockDig").getDeclaredField("c");
             dropField.setAccessible(true);
         } catch (Exception ex) {
             ex.printStackTrace();

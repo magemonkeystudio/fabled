@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.util.DamageLoreRemover
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,6 +28,7 @@ package com.sucy.skill.api.util;
 
 import com.rit.sucy.reflect.Reflection;
 import com.sucy.skill.log.Logger;
+import com.sucy.skill.util.Version;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Method;
@@ -35,36 +36,37 @@ import java.lang.reflect.Method;
 /**
  * <p>Utility class for removing vanilla damage lore lines from items.</p>
  */
-public class DamageLoreRemover
-{
+public class DamageLoreRemover {
     private static Class<?>
-        NBT_BASE,
-        NBT_COMPOUND,
-        NBT_LIST,
-        NMS_ITEM,
-        CRAFT_ITEM;
+            NBT_BASE,
+            NBT_COMPOUND,
+            NBT_LIST,
+            NMS_ITEM,
+            CRAFT_ITEM;
 
     private static Method
-        SET,
-        SET_TAG,
-        SET_BOOL,
-        SET_INT,
-        GET_TAG,
-        AS_CRAFT,
-        AS_NMS;
+            SET,
+            SET_TAG,
+            SET_BOOL,
+            SET_INT,
+            GET_TAG,
+            AS_CRAFT,
+            AS_NMS;
 
     /**
      * <p>Sets up reflection methods/classes ahead of time so that they don't need to constantly be fetched.</p>
      */
-    private static void setup()
-    {
+    private static void setup() {
 
-        try
-        {
-            NBT_BASE = Reflection.getNMSClass("NBTBase");
-            NBT_COMPOUND = Reflection.getNMSClass("NBTTagCompound");
-            NBT_LIST = Reflection.getNMSClass("NBTTagList");
-            NMS_ITEM = Reflection.getNMSClass("ItemStack");
+        try {
+            NBT_BASE = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.nbt.NBTBase")
+                    : Reflection.getNMSClass("NBTBase");
+            NBT_COMPOUND = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.nbt.NBTTagCompound")
+                    : Reflection.getNMSClass("NBTTagCompound");
+            NBT_LIST = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.nbt.NBTTagList")
+                    : Reflection.getNMSClass("NBTTagList");
+            NMS_ITEM = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.world.item.ItemStack")
+                    : Reflection.getNMSClass("ItemStack");
             CRAFT_ITEM = Reflection.getCraftClass("inventory.CraftItemStack");
 
             AS_NMS = CRAFT_ITEM.getMethod("asNMSCopy", ItemStack.class);
@@ -74,9 +76,7 @@ public class DamageLoreRemover
             SET_BOOL = NBT_COMPOUND.getMethod("setBoolean", String.class, boolean.class);
             SET_INT = NBT_COMPOUND.getMethod("setInt", String.class, int.class);
             AS_CRAFT = CRAFT_ITEM.getMethod("asCraftMirror", NMS_ITEM);
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             Logger.bug("Failed to set up reflection for removing damage lores.");
         }
     }
@@ -91,22 +91,18 @@ public class DamageLoreRemover
      *
      * @return the tool without the damage lore
      */
-    public static ItemStack removeAttackDmg(ItemStack item)
-    {
-        if (item == null)
-        {
+    public static ItemStack removeAttackDmg(ItemStack item) {
+        if (item == null) {
             return item;
         }
         if (NBT_BASE == null) setup();
-        try
-        {
+        try {
             item = item.clone();
             Object nmsStack = AS_NMS.invoke(null, item);
             Object nbtCompound = GET_TAG.invoke(nmsStack);
 
             // Disable durability if needed
-            if (item.getType().getMaxDurability() > 0)
-            {
+            if (item.getType().getMaxDurability() > 0) {
                 SET_BOOL.invoke(nbtCompound, "Unbreakable", true);
                 SET_INT.invoke(nbtCompound, "HideFlags", 4);
             }
@@ -120,9 +116,7 @@ public class DamageLoreRemover
 
             // Return result
             return (ItemStack) AS_CRAFT.invoke(null, nmsStack);
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             return item;
         }
     }
