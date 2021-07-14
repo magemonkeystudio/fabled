@@ -46,6 +46,7 @@ import com.sucy.skill.dynamic.DynamicClass;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.gui.tool.GUITool;
 import com.sucy.skill.hook.BungeeHook;
+import com.sucy.skill.hook.PlaceholderAPIHook;
 import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.listener.*;
 import com.sucy.skill.manager.*;
@@ -56,6 +57,7 @@ import com.sucy.skill.task.ManaTask;
 import com.sucy.skill.task.SaveTask;
 import com.sucy.skill.thread.MainThread;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -124,6 +126,10 @@ public class SkillAPI extends JavaPlugin {
 
         // Hook plugins
         if (PluginChecker.isBungeeActive()) { BungeeHook.init(this); }
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PlaceholderAPIHook(this).register();
+            Bukkit.getLogger().info("ProSkillAPI hook into PlaceholderAPI: " + ChatColor.GREEN + "success.");
+        }
 
         // Set up managers
         comboManager = new ComboManager();
@@ -201,14 +207,9 @@ public class SkillAPI extends JavaPlugin {
 
         // Copy the quests module if the plugin is loaded.
         if (Bukkit.getServer().getPluginManager().getPlugin("Quests") != null) {
-        ResourceManager.copyQuestsModule();
+            ResourceManager.copyQuestsModule();
         }
         
-        // Copy the placeholderapi expansion if the plugin is loaded.
-        if (Bukkit.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-        ResourceManager.copyPlaceholdersModule();
-        }
-
         loaded = true;
     }
 

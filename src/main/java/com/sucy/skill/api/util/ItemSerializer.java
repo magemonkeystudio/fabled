@@ -29,6 +29,7 @@ package com.sucy.skill.api.util;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.rit.sucy.reflect.Reflection;
+import com.rit.sucy.version.VersionManager;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -198,9 +199,17 @@ public class ItemSerializer {
                 builder.append(i);
                 builder.append('#');
 
-                String isType = String.valueOf(is.getType().getId());
-                builder.append("t@");
-                builder.append(isType);
+                if (VersionManager.isVersionAtLeast(11605))
+                {
+                    String isType = String.valueOf(is.getType());
+                    builder.append("t@");
+                    builder.append(isType);
+                } else
+                {
+                    String isType = String.valueOf(is.getType().getId());
+                    builder.append("t@");
+                    builder.append(isType);
+                }
 
                 if (is.getDurability() != 0)
                 {
@@ -274,11 +283,20 @@ public class ItemSerializer {
                 String[] itemAttribute = itemInfo.split("@");
                 if (itemAttribute[0].equals("t"))
                 {
-                    int id = Integer.valueOf(itemAttribute[1]);
-                    if (id >= 2256) id -= 2267 - Material.values().length;
-                    final Material mat = Material.values()[id];
-                    is = new ItemStack(mat);
-                    createdItemStack = true;
+                    if (VersionManager.isVersionAtLeast(11605))
+                    {
+                        String id = String.valueOf(itemAttribute[1]);
+                        final Material mat = Material.getMaterial(id);
+                        is = new ItemStack(mat);
+                        createdItemStack = true;
+                    } else
+                    {
+                        int id = Integer.valueOf(itemAttribute[1]);
+                        if (id >= 2256) id -= 2267 - Material.values().length;
+                        final Material mat = Material.values()[id];
+                        is = new ItemStack(mat);
+                        createdItemStack = true;
+                    }
                 }
                 else if (itemAttribute[0].equals("d") && createdItemStack)
                 {
