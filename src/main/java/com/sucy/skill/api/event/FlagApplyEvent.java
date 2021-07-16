@@ -47,6 +47,7 @@ public class FlagApplyEvent extends Event implements Cancellable
      *
      * @param entity the entity the flag was on
      * @param flag   the flag that is to be applied
+     * @param ticks  the ticks the flag is to be applied for
      */
     public FlagApplyEvent(LivingEntity entity, String flag, int ticks)
     {

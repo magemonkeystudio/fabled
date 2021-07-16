@@ -49,9 +49,11 @@ public class SkillDamageEvent extends Event implements Cancellable
     /**
      * Initializes a new event
      *
+     * @param skill   skill used to deal damage
      * @param damager entity dealing the damage
      * @param target  entity receiving the damage
      * @param damage  the amount of damage dealt
+     * @param classification
      */
     public SkillDamageEvent(Skill skill, LivingEntity damager, LivingEntity target, double damage, String classification)
     {

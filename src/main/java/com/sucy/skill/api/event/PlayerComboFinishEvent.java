@@ -48,6 +48,7 @@ public class PlayerComboFinishEvent extends Event implements Cancellable
     /**
      * @param player player performing the combo
      * @param combo  combo that was performed
+     * @param skill  skill used
      */
     public PlayerComboFinishEvent(PlayerData player, int combo, String skill)
     {

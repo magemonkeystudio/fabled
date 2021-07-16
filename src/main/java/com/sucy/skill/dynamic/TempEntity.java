@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.dynamic.TempEntity
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -56,11 +56,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Temporary dummy entity used for targeting a location in the dynamic system
@@ -167,40 +163,50 @@ public class TempEntity implements LivingEntity {
     }
 
     @Override
-    public int getArrowCooldown() { return 0; }
+    public int getArrowCooldown() {
+        return 0;
+    }
 
     @Override
-    public void setArrowCooldown(int ticks) {}
+    public void setArrowCooldown(int ticks) {
+    }
 
     @Override
-    public int getArrowsInBody() { return 0; }
+    public int getArrowsInBody() {
+        return 0;
+    }
 
     @Override
-    public void setArrowsInBody(int count) {}
+    public void setArrowsInBody(int count) {
+    }
 
     public int getMaximumNoDamageTicks() {
         return 0;
     }
 
-    public void setMaximumNoDamageTicks(int i) {}
+    public void setMaximumNoDamageTicks(int i) {
+    }
 
     public double getLastDamage() {
         return 0;
+    }
+
+    public void setLastDamage(double v) {
     }
 
     public int _INVALID_getLastDamage() {
         return 0;
     }
 
-    public void setLastDamage(double v) {}
-
-    public void _INVALID_setLastDamage(int i) {}
+    public void _INVALID_setLastDamage(int i) {
+    }
 
     public int getNoDamageTicks() {
         return 0;
     }
 
-    public void setNoDamageTicks(int i) {}
+    public void setNoDamageTicks(int i) {
+    }
 
     public Player getKiller() {
         return null;
@@ -250,15 +256,11 @@ public class TempEntity implements LivingEntity {
         return null;
     }
 
-    public void setCanPickupItems(boolean b) {
-
-    }
-
     public boolean getCanPickupItems() {
         return false;
     }
 
-    public void setCustomName(String s) {
+    public void setCanPickupItems(boolean b) {
 
     }
 
@@ -266,7 +268,7 @@ public class TempEntity implements LivingEntity {
         return null;
     }
 
-    public void setCustomNameVisible(boolean b) {
+    public void setCustomName(String s) {
 
     }
 
@@ -274,7 +276,7 @@ public class TempEntity implements LivingEntity {
         return false;
     }
 
-    public void setGlowing(boolean b) {
+    public void setCustomNameVisible(boolean b) {
 
     }
 
@@ -282,12 +284,16 @@ public class TempEntity implements LivingEntity {
         return false;
     }
 
-    public void setInvulnerable(boolean b) {
+    public void setGlowing(boolean b) {
 
     }
 
     public boolean isInvulnerable() {
         return false;
+    }
+
+    public void setInvulnerable(boolean b) {
+
     }
 
     public boolean isSilent() {
@@ -365,9 +371,12 @@ public class TempEntity implements LivingEntity {
 
     }
 
-    public boolean isSwimming() { return false; }
+    public boolean isSwimming() {
+        return false;
+    }
 
-    public void setSwimming(final boolean b) { }
+    public void setSwimming(final boolean b) {
+    }
 
     @Override
     public boolean isRiptiding() {
@@ -379,7 +388,13 @@ public class TempEntity implements LivingEntity {
         return false;
     }
 
-    public void setAI(boolean b) { }
+    @Override
+    public boolean isClimbing() {
+        return false;
+    }
+
+    public void setAI(boolean b) {
+    }
 
     public boolean hasAI() {
         return false;
@@ -400,16 +415,18 @@ public class TempEntity implements LivingEntity {
 
     }
 
-    public void setCollidable(boolean b) {
-
-    }
-
     public boolean isCollidable() {
         return false;
     }
 
+    public void setCollidable(boolean b) {
+
+    }
+
     @Override
-    public @NotNull Set<UUID> getCollidableExemptions() { return null; }
+    public @NotNull Set<UUID> getCollidableExemptions() {
+        return null;
+    }
 
     @Override
     public <T> @Nullable T getMemory(@NotNull MemoryKey<T> memoryKey) {
@@ -417,34 +434,45 @@ public class TempEntity implements LivingEntity {
     }
 
     @Override
-    public <T> void setMemory(@NotNull MemoryKey<T> memoryKey, @Nullable T memoryValue) {}
+    public <T> void setMemory(@NotNull MemoryKey<T> memoryKey, @Nullable T memoryValue) {
+    }
 
     @Override
-    public @NotNull EntityCategory getCategory() { return EntityCategory.NONE; }
+    public @NotNull EntityCategory getCategory() {
+        return EntityCategory.NONE;
+    }
 
     @Override
-    public void setInvisible(boolean invisible) {}
+    public boolean isInvisible() {
+        return true;
+    }
 
     @Override
-    public boolean isInvisible() { return true; }
+    public void setInvisible(boolean invisible) {
+    }
 
-    public void damage(double v) {}
+    public void damage(double v) {
+    }
 
-    public void _INVALID_damage(int i) {}
+    public void _INVALID_damage(int i) {
+    }
 
-    public void damage(double v, Entity entity) {}
+    public void damage(double v, Entity entity) {
+    }
 
-    public void _INVALID_damage(int i, Entity entity) {}
+    public void _INVALID_damage(int i, Entity entity) {
+    }
 
     public double getHealth() {
         return 1;
     }
 
+    public void setHealth(double v) {
+    }
+
     public int _INVALID_getHealth() {
         return 0;
     }
-
-    public void setHealth(double v) {}
 
     @Override
     public double getAbsorptionAmount() {
@@ -452,23 +480,28 @@ public class TempEntity implements LivingEntity {
     }
 
     @Override
-    public void setAbsorptionAmount(double v) {}
+    public void setAbsorptionAmount(double v) {
+    }
 
-    public void _INVALID_setHealth(int i) {}
+    public void _INVALID_setHealth(int i) {
+    }
 
     public double getMaxHealth() {
         return 1;
+    }
+
+    public void setMaxHealth(double v) {
     }
 
     public int _INVALID_getMaxHealth() {
         return 0;
     }
 
-    public void setMaxHealth(double v) {}
+    public void _INVALID_setMaxHealth(int i) {
+    }
 
-    public void _INVALID_setMaxHealth(int i) {}
-
-    public void resetMaxHealth() {}
+    public void resetMaxHealth() {
+    }
 
     public Location getLocation() {
         return target.getLocation().clone();
@@ -485,10 +518,11 @@ public class TempEntity implements LivingEntity {
         return location;
     }
 
-    public void setVelocity(Vector vector) {}
-
     public Vector getVelocity() {
         return new Vector(0, 0, 0);
+    }
+
+    public void setVelocity(Vector vector) {
     }
 
     public double getHeight() {
@@ -509,14 +543,17 @@ public class TempEntity implements LivingEntity {
     }
 
     @Override
-    public boolean isInWater() { return false; }
+    public boolean isInWater() {
+        return false;
+    }
 
     public World getWorld() {
         return target.getLocation().getWorld();
     }
 
     @Override
-    public void setRotation(float yaw, float pitch) {}
+    public void setRotation(float yaw, float pitch) {
+    }
 
     public boolean teleport(Location location) {
         target = new FixedTarget(location);
@@ -550,13 +587,45 @@ public class TempEntity implements LivingEntity {
         return 0;
     }
 
+    public void setFireTicks(int i) {
+    }
+
     public int getMaxFireTicks() {
         return 0;
     }
 
-    public void setFireTicks(int i) {}
+    @Override
+    public boolean isVisualFire() {
+        return false;
+    }
 
-    public void remove() {}
+    @Override
+    public void setVisualFire(boolean b) {
+
+    }
+
+    @Override
+    public int getFreezeTicks() {
+        return 0;
+    }
+
+    @Override
+    public void setFreezeTicks(int i) {
+
+    }
+
+    @Override
+    public int getMaxFreezeTicks() {
+        return 0;
+    }
+
+    @Override
+    public boolean isFrozen() {
+        return false;
+    }
+
+    public void remove() {
+    }
 
     public boolean isDead() {
         return false;
@@ -566,15 +635,19 @@ public class TempEntity implements LivingEntity {
         return true;
     }
 
-    public void sendMessage(String s) {}
+    public void sendMessage(String s) {
+    }
 
-    public void sendMessage(String[] strings) {}
+    public void sendMessage(String[] strings) {
+    }
 
     @Override
-    public void sendMessage(@Nullable UUID sender, @NotNull String message) {}
+    public void sendMessage(@Nullable UUID sender, @NotNull String message) {
+    }
 
     @Override
-    public void sendMessage(@Nullable UUID sender, @NotNull String[] messages) {}
+    public void sendMessage(@Nullable UUID sender, @NotNull String[] messages) {
+    }
 
     public Server getServer() {
         return Bukkit.getServer();
@@ -586,7 +659,8 @@ public class TempEntity implements LivingEntity {
     }
 
     @Override
-    public void setPersistent(boolean persistent) {}
+    public void setPersistent(boolean persistent) {
+    }
 
     public String getName() {
         return "Location";
@@ -628,10 +702,11 @@ public class TempEntity implements LivingEntity {
 
     }
 
-    public void setLastDamageCause(EntityDamageEvent entityDamageEvent) {}
-
     public EntityDamageEvent getLastDamageCause() {
         return null;
+    }
+
+    public void setLastDamageCause(EntityDamageEvent entityDamageEvent) {
     }
 
     public UUID getUniqueId() {
@@ -642,9 +717,11 @@ public class TempEntity implements LivingEntity {
         return 0;
     }
 
-    public void setTicksLived(int i) {}
+    public void setTicksLived(int i) {
+    }
 
-    public void playEffect(EntityEffect entityEffect) {}
+    public void playEffect(EntityEffect entityEffect) {
+    }
 
     public EntityType getType() {
         return EntityType.CHICKEN;

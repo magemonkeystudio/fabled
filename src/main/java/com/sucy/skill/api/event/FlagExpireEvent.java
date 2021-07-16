@@ -45,6 +45,7 @@ public class FlagExpireEvent extends Event
      *
      * @param entity the entity the flag was on
      * @param flag   the flag that expired
+     * @param reason the expiration reason
      */
     public FlagExpireEvent(LivingEntity entity, String flag, ExpireReason reason)
     {

@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.listener.KillListener
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -36,6 +36,7 @@ import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.util.BuffManager;
 import com.sucy.skill.api.util.FlagManager;
 import com.sucy.skill.data.Permissions;
+import com.sucy.skill.util.Version;
 import org.bukkit.GameMode;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -50,44 +51,27 @@ import java.lang.reflect.Method;
 /**
  * Tracks who kills what entities and awards experience accordingly
  */
-public class KillListener extends SkillAPIListener
-{
-    private static final String S_TYPE  = "sType";
-    private static final int    SPAWNER = 0, EGG = 1;
+public class KillListener extends SkillAPIListener {
+    private static final String S_TYPE = "sType";
+    private static final int SPAWNER = 0, EGG = 1;
 
     private Method handle;
-    private Field  killer;
-    private Field  damageTime;
+    private Field killer;
+    private Field damageTime;
 
-    public KillListener()
-    {
-        try
-        {
-            Class<?> living = Reflection.getNMSClass("EntityLiving");
+    public KillListener() {
+        try {
+            Class<?> living = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.world.entity.EntityLiving")
+                    : Reflection.getNMSClass("EntityLiving");
             handle = Reflection.getCraftClass("entity.CraftEntity").getDeclaredMethod("getHandle");
-            killer = living.getDeclaredField("killer");
-            damageTime = living.getDeclaredField("lastDamageByPlayerTime");
+            killer = Version.MINOR_VERSION >= 17 ? living.getDeclaredField("bc")
+                    : living.getDeclaredField("killer");
+            damageTime = Version.MINOR_VERSION >= 17 ? living.getDeclaredField("bd")
+                    : living.getDeclaredField("lastDamageByPlayerTime");
             damageTime.setAccessible(true);
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-
-    /**
-     * Grants experience upon killing a monster and blocks experience when
-     * the monster originated from a blocked source.
-     *
-     * @param event event details
-     */
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onKill(EntityDeathEvent event)
-    {
-        FlagManager.clearFlags(event.getEntity());
-        BuffManager.clearData(event.getEntity());
-
-        giveExp(event.getEntity(), event.getEntity().getKiller(), event.getDroppedExp());
     }
 
     public static void giveExp(LivingEntity entity, Player killer, int exp) {
@@ -97,8 +81,7 @@ public class KillListener extends SkillAPIListener
             return;
 
         // Cancel experience when applicable
-        if (entity.hasMetadata(S_TYPE))
-        {
+        if (entity.hasMetadata(S_TYPE)) {
             int value = SkillAPI.getMetaInt(entity, S_TYPE);
 
             // Block spawner mob experience
@@ -114,8 +97,7 @@ public class KillListener extends SkillAPIListener
         if (entity.hasMetadata(MechanicListener.SUMMON_DAMAGE))
             return;
 
-        if (killer != null && killer.hasPermission(Permissions.EXP))
-        {
+        if (killer != null && killer.hasPermission(Permissions.EXP)) {
             // Block creative experience
             if (killer.getGameMode() == GameMode.CREATIVE && SkillAPI.getSettings().isBlockCreative())
                 return;
@@ -127,8 +109,7 @@ public class KillListener extends SkillAPIListener
                 player.giveExp(exp, ExpSource.MOB);
 
                 // Give experience based on config when not using orbs
-            else
-            {
+            else {
                 String name = ListenerUtil.getName(entity);
                 double yield = SkillAPI.getSettings().getYield(name);
                 player.giveExp(yield, ExpSource.MOB);
@@ -137,13 +118,26 @@ public class KillListener extends SkillAPIListener
     }
 
     /**
+     * Grants experience upon killing a monster and blocks experience when
+     * the monster originated from a blocked source.
+     *
+     * @param event event details
+     */
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onKill(EntityDeathEvent event) {
+        FlagManager.clearFlags(event.getEntity());
+        BuffManager.clearData(event.getEntity());
+
+        giveExp(event.getEntity(), event.getEntity().getKiller(), event.getDroppedExp());
+    }
+
+    /**
      * Marks spawned entities with how they spawned to block experience from certain methods
      *
      * @param event event details
      */
     @EventHandler
-    public void onSpawn(CreatureSpawnEvent event)
-    {
+    public void onSpawn(CreatureSpawnEvent event) {
         if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.SPAWNER)
             SkillAPI.setMeta(event.getEntity(), S_TYPE, SPAWNER);
         else if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.SPAWNER_EGG)
@@ -156,8 +150,7 @@ public class KillListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPhysical(PhysicalDamageEvent event)
-    {
+    public void onPhysical(PhysicalDamageEvent event) {
         if (event.getDamager() instanceof Player)
             setKiller(event.getTarget(), (Player) event.getDamager());
     }
@@ -168,8 +161,7 @@ public class KillListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onSpell(SkillDamageEvent event)
-    {
+    public void onSpell(SkillDamageEvent event) {
         if (event.getDamager() instanceof Player)
             setKiller(event.getTarget(), (Player) event.getDamager());
     }
@@ -180,21 +172,17 @@ public class KillListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onTrue(TrueDamageEvent event)
-    {
+    public void onTrue(TrueDamageEvent event) {
         if (event.getDamager() instanceof Player)
             setKiller(event.getTarget(), (Player) event.getDamager());
     }
 
-    private void setKiller(LivingEntity entity, Player player)
-    {
-        try
-        {
+    private void setKiller(LivingEntity entity, Player player) {
+        try {
             Object hit = handle.invoke(entity);
             Object source = handle.invoke(player);
             killer.set(hit, source);
             damageTime.set(hit, 100);
-        }
-        catch (Exception ex) { /* */ }
+        } catch (Exception ex) { /* */ }
     }
 }

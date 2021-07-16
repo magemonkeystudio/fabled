@@ -45,6 +45,7 @@ public class PlayerLevelUpEvent extends Event
      * Constructor
      *
      * @param playerClass data of the player leveling up
+     * @param amount how many levels the player's class gained
      */
     public PlayerLevelUpEvent(PlayerClass playerClass, int amount)
     {
