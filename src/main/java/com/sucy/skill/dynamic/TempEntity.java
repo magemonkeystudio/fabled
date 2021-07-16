@@ -388,7 +388,6 @@ public class TempEntity implements LivingEntity {
         return false;
     }
 
-    @Override
     public boolean isClimbing() {
         return false;
     }
