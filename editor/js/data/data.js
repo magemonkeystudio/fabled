@@ -11,6 +11,7 @@ depend('data/1.13', function() { if (version === '13') DATA = DATA_13 });
 depend('data/1.14', function() { if (version === '14') DATA = DATA_14 });
 depend('data/1.15', function() { if (version === '15') DATA = DATA_15 });
 depend('data/1.16', function() { if (version === '16') DATA = DATA_16 });
+depend('data/1.17', function() { if (version === '17') DATA = DATA_17 });
 
 function getMaterials() {
     return DATA.MATERIALS;
