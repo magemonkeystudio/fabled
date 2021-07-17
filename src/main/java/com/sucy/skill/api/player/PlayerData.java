@@ -26,20 +26,59 @@
  */
 package com.sucy.skill.api.player;
 
+import static com.sucy.skill.api.event.PlayerSkillCastFailedEvent.Cause.CANCELED;
+import static com.sucy.skill.api.event.PlayerSkillCastFailedEvent.Cause.CASTER_DEAD;
+import static com.sucy.skill.api.event.PlayerSkillCastFailedEvent.Cause.EFFECT_FAILED;
+import static com.sucy.skill.api.event.PlayerSkillCastFailedEvent.Cause.NOT_UNLOCKED;
+import static com.sucy.skill.api.event.PlayerSkillCastFailedEvent.Cause.NO_MANA;
+import static com.sucy.skill.api.event.PlayerSkillCastFailedEvent.Cause.NO_TARGET;
+import static com.sucy.skill.api.event.PlayerSkillCastFailedEvent.Cause.ON_COOLDOWN;
+import static com.sucy.skill.api.event.PlayerSkillCastFailedEvent.Cause.SPECTATOR;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+
 import com.rit.sucy.config.Filter;
 import com.rit.sucy.config.FilterType;
 import com.rit.sucy.config.parse.DataSection;
-import com.sucy.skill.api.target.TargetHelper;
 import com.rit.sucy.version.VersionManager;
 import com.rit.sucy.version.VersionPlayer;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
-import com.sucy.skill.api.enums.*;
-import com.sucy.skill.api.event.*;
+import com.sucy.skill.api.enums.ExpSource;
+import com.sucy.skill.api.enums.ManaCost;
+import com.sucy.skill.api.enums.ManaSource;
+import com.sucy.skill.api.enums.PointSource;
+import com.sucy.skill.api.enums.SkillStatus;
+import com.sucy.skill.api.event.PlayerCastSkillEvent;
+import com.sucy.skill.api.event.PlayerClassChangeEvent;
+import com.sucy.skill.api.event.PlayerManaGainEvent;
+import com.sucy.skill.api.event.PlayerManaLossEvent;
+import com.sucy.skill.api.event.PlayerPreClassChangeEvent;
+import com.sucy.skill.api.event.PlayerRefundAttributeEvent;
+import com.sucy.skill.api.event.PlayerSkillCastFailedEvent;
+import com.sucy.skill.api.event.PlayerSkillDowngradeEvent;
+import com.sucy.skill.api.event.PlayerSkillUnlockEvent;
+import com.sucy.skill.api.event.PlayerSkillUpgradeEvent;
+import com.sucy.skill.api.event.PlayerUpAttributeEvent;
 import com.sucy.skill.api.skills.PassiveSkill;
 import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.api.skills.SkillShot;
 import com.sucy.skill.api.skills.TargetSkill;
+import com.sucy.skill.api.target.TargetHelper;
 import com.sucy.skill.cast.PlayerCastBars;
 import com.sucy.skill.data.GroupSettings;
 import com.sucy.skill.data.PlayerEquips;
@@ -57,17 +96,6 @@ import com.sucy.skill.log.LogType;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.manager.AttributeManager;
 import com.sucy.skill.task.ScoreboardTask;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-
-import java.util.*;
-
-import static com.sucy.skill.api.event.PlayerSkillCastFailedEvent.Cause.*;
 
 /**
  * Represents one account for a player which can contain one class from each group
@@ -82,7 +110,7 @@ public class PlayerData {
     private final HashMap<String, PlayerSkill>   skills      = new HashMap<>();
     private final HashMap<Material, PlayerSkill> binds       = new HashMap<>();
     private final HashMap<String, Integer>       attributes  = new HashMap<>();
-    private final HashMap<String, Integer>       bonusAttrib = new HashMap<>();
+    private final HashMap<String, ArrayList<PlayerAttributeModifier>> attributesModifiers = new HashMap<>();
 
     private DataSection extraData = new DataSection();
     private OfflinePlayer  player;
@@ -298,13 +326,35 @@ public class PlayerData {
      */
     public int getAttribute(String key) {
         key = key.toLowerCase();
-        int total = 0;
+        double total = 0;
         if (attributes.containsKey(key)) { total += attributes.get(key); }
-        if (bonusAttrib.containsKey(key)) { total += bonusAttrib.get(key); }
+
+        if (this.attributesModifiers.containsKey(key)) {
+
+            double multiplier = 1;
+
+            for(PlayerAttributeModifier modifier : this.getAttributesModifiers(key)) {
+
+                switch(modifier.getOperation()) {
+                case ADD_NUMBER:
+                    total = modifier.applyOn(multiplier);
+                case MULTIPLY_PERCENTAGE:
+                    multiplier = modifier.applyOn(multiplier);
+                }
+
+            }
+
+            total = total*multiplier;
+        }
+
+        if(total < 0) {
+            total = 0;
+        }
+
         for (PlayerClass playerClass : classes.values()) {
             total += playerClass.getData().getAttribute(key, playerClass.getLevel());
         }
-        return Math.max(0, total);
+        return Math.max(0, (int) Math.round(total));
     }
 
     /**
@@ -377,17 +427,33 @@ public class PlayerData {
     }
 
     /**
-     * Adds bonus attributes to the player. These do not count towards
-     * the max invest amount and cannot be refunded.
+     * Adds attributes modifier to the player.
+     * These bypass min/max invest amount and cannot be refunded.
      *
-     * @param key    attribute key
-     * @param amount amount to add
+     * @param key attribute key
+     * @param modifier The player attribute modifier
      */
-    public void addBonusAttributes(String key, int amount) {
+    public void addAttributesModifier(String key, PlayerAttributeModifier modifier) {
         key = SkillAPI.getAttributeManager().normalize(key);
-        amount += bonusAttrib.getOrDefault(key, 0);
-        bonusAttrib.put(key, amount);
+        ArrayList<PlayerAttributeModifier> modifiers = this.getAttributesModifiers(key);
+        modifiers.add(modifier);
+        this.attributesModifiers.put(key, modifiers);
+
         AttributeListener.updatePlayer(this);
+    }
+
+    /**
+     * Get all attributes modifier from the player.
+     *
+     * @param key attribute key
+     * @return attributes modifier list of the attribute given
+     */
+    public ArrayList<PlayerAttributeModifier> getAttributesModifiers(String key) {
+        if(this.attributesModifiers.containsKey(key)) {
+            return this.attributesModifiers.get(key);
+        }else {
+            return new ArrayList<PlayerAttributeModifier>();
+        }
     }
 
     /**
@@ -529,9 +595,9 @@ public class PlayerData {
                             FilterType.COLOR,
                             RPGFilter.POINTS.setReplacement(attribPoints + ""),
                             Filter.PLAYER.setReplacement(player.getName())
-                    ).get(0),
+                            ).get(0),
                     SkillAPI.getAttributeManager().getAttributes()
-            );
+                    );
             return true;
         }
         return false;
@@ -883,9 +949,9 @@ public class PlayerData {
                             true,
                             FilterType.COLOR,
                             Filter.PLAYER.setReplacement(player.getName())
-                    ).get(0),
+                            ).get(0),
                     iconMap
-            );
+                    );
             return true;
         } else { return false; }
     }
@@ -910,9 +976,9 @@ public class PlayerData {
                                 FilterType.COLOR,
                                 Filter.PLAYER.setReplacement(player.getName()),
                                 RPGFilter.GROUP.setReplacement(group)
-                        ).get(0),
+                                ).get(0),
                         SkillAPI.getClasses()
-                );
+                        );
                 return true;
             }
         }
@@ -967,9 +1033,9 @@ public class PlayerData {
                         RPGFilter.LEVEL.setReplacement(playerClass.getLevel() + ""),
                         RPGFilter.CLASS.setReplacement(playerClass.getData().getName()),
                         Filter.PLAYER.setReplacement(getPlayerName())
-                ).get(0),
+                        ).get(0),
                 playerClass.getData().getSkillMap()
-        );
+                );
         return true;
     }
 
@@ -1535,13 +1601,33 @@ public class PlayerData {
     }
 
     /**
-     * Clears bonus health/mana
+     * Remove attribute modifier with the exact uuid
+     *
+     * @param uuid The uuid
      */
-    public void clearBonuses() {
-        bonusMana = 0;
-        bonusHealth = 0;
-        bonusAttrib.clear();
+    public void removeAttributeModifier(UUID uuid) {
+        for(Entry<String, ArrayList<PlayerAttributeModifier>> entry : this.attributesModifiers.entrySet()) {
+
+            ArrayList<PlayerAttributeModifier> modifiers = entry.getValue();
+            for(PlayerAttributeModifier modifier : modifiers) {
+                if(modifier.getUUID().equals(uuid)) {
+                    modifiers.remove(modifier);
+                }
+            }
+
+            this.attributesModifiers.put(entry.getKey(), modifiers);
+
+        }
+
         equips = new PlayerEquips(this);
+    }
+
+    /**
+     * Clear all attribute modifier
+     *
+     */
+    public void clearAttributeModifier() {
+        this.attributesModifiers.clear();
     }
 
     ///////////////////////////////////////////////////////
@@ -1855,7 +1941,7 @@ public class PlayerData {
                     FilterType.COLOR,
                     RPGFilter.COOLDOWN.setReplacement(skill.getCooldown() + ""),
                     RPGFilter.SKILL.setReplacement(skill.getData().getName())
-            );
+                    );
             return PlayerSkillCastFailedEvent.invoke(skill, ON_COOLDOWN);
         }
 
@@ -1869,7 +1955,7 @@ public class PlayerData {
                     RPGFilter.MANA.setReplacement(getMana() + ""),
                     RPGFilter.COST.setReplacement((int) Math.ceil(cost) + ""),
                     RPGFilter.MISSING.setReplacement((int) Math.ceil(cost - getMana()) + "")
-            );
+                    );
             return PlayerSkillCastFailedEvent.invoke(skill, NO_MANA);
         } else { return true; }
     }

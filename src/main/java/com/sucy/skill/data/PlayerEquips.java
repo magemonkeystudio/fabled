@@ -26,18 +26,7 @@
  */
 package com.sucy.skill.data;
 
-import com.google.common.base.Objects;
-import com.rit.sucy.config.parse.NumberParser;
-import com.sucy.skill.SkillAPI;
-import com.sucy.skill.api.classes.RPGClass;
-import com.sucy.skill.api.player.PlayerClass;
-import com.sucy.skill.api.player.PlayerData;
-import com.sucy.skill.api.skills.Skill;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
+import static com.sucy.skill.listener.ItemListener.ARMOR_TYPES;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -46,7 +35,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.sucy.skill.listener.ItemListener.ARMOR_TYPES;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+
+import com.google.common.base.Objects;
+import com.rit.sucy.config.parse.NumberParser;
+import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.classes.RPGClass;
+import com.sucy.skill.api.player.PlayerAttributeModifier;
+import com.sucy.skill.api.player.PlayerAttributeModifier.Operation;
+import com.sucy.skill.api.player.PlayerClass;
+import com.sucy.skill.api.player.PlayerData;
+import com.sucy.skill.api.skills.Skill;
 
 /**
  * Handles keeping track of and applying attribute
@@ -255,7 +258,7 @@ public class PlayerEquips
                         classExc = new HashSet<>();
                     classExc.addAll(excluded);
                 }
-                    
+
                 else
                 {
                     boolean done = false;
@@ -319,7 +322,7 @@ public class PlayerEquips
         {
             if (attribs != null)
                 for (Map.Entry<String, Integer> entry : attribs.entrySet())
-                    player.addBonusAttributes(entry.getKey(), entry.getValue());
+                    player.addAttributesModifier(entry.getKey(), new PlayerAttributeModifier("skillapi.player_equips", entry.getValue(), Operation.ADD_NUMBER));
         }
 
         /**
@@ -329,7 +332,7 @@ public class PlayerEquips
         {
             if (attribs != null)
                 for (Map.Entry<String, Integer> entry : attribs.entrySet())
-                    player.addBonusAttributes(entry.getKey(), -entry.getValue());
+                    player.addAttributesModifier(entry.getKey(), new PlayerAttributeModifier("skillapi.player_equips", -entry.getValue(), Operation.ADD_NUMBER));
         }
 
         public boolean isArmor() {
@@ -350,8 +353,8 @@ public class PlayerEquips
             PlayerClass main = player.getMainClass();
             String className = main == null ? "null" : main.getData().getName().toLowerCase();
             if ((levelReq > 0 && (main == null || main.getLevel() < levelReq))
-                || (classExc != null && main != null && classExc.contains(className))
-                || (classReq != null && (main == null || !classReq.contains(className))))
+                    || (classExc != null && main != null && classExc.contains(className))
+                    || (classReq != null && (main == null || !classReq.contains(className))))
                 return false;
 
             if (classExc != null)

@@ -211,7 +211,7 @@ public class PlayerAccounts {
                 ClassBoardManager.clear(new VersionPlayer(player));
                 getActiveData().stopPassives(player);
                 AttributeListener.clearBonuses(player);
-                getActiveData().clearBonuses();
+                getActiveData().clearAttributeModifier();
                 active = event.getNewID();
                 getActiveData().startPassives(player);
                 getActiveData().updateScoreboard();

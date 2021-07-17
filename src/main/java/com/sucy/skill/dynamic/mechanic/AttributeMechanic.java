@@ -26,17 +26,20 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
-import com.sucy.skill.SkillAPI;
-import com.sucy.skill.api.player.PlayerData;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.player.PlayerAttributeModifier;
+import com.sucy.skill.api.player.PlayerAttributeModifier.Operation;
+import com.sucy.skill.api.player.PlayerData;
 
 /**
  * Applies a flag to each target
@@ -76,14 +79,21 @@ public class AttributeMechanic extends MechanicComponent {
             if (target instanceof Player) {
                 worked = true;
                 final PlayerData data = SkillAPI.getPlayerData((Player) target);
+                PlayerAttributeModifier modifier = new PlayerAttributeModifier("skillapi.attribute_mechanic", amount, Operation.ADD_NUMBER);
 
                 if (casterTasks.containsKey(data.getPlayerName()) && !stackable) {
                     final AttribTask old = casterTasks.remove(data.getPlayerName());
-                    if (amount != old.amount) { data.addBonusAttributes(key, amount - old.amount); }
-                    old.cancel();
-                } else { data.addBonusAttributes(key, amount); }
 
-                final AttribTask task = new AttribTask(caster.getEntityId(), data, key, amount);
+                    data.removeAttributeModifier(old.modifier.getUUID());
+
+                    data.addAttributesModifier(key, new PlayerAttributeModifier("skillapi.attribute_mechanic", amount, Operation.ADD_NUMBER));
+
+                    old.cancel();
+                } else {
+                    data.addAttributesModifier(key, modifier);
+                }
+
+                final AttribTask task = new AttribTask(caster.getEntityId(), data, key, modifier);
                 casterTasks.put(data.getPlayerName(), task);
                 if (ticks >= 0) {
                     SkillAPI.schedule(task, ticks);
@@ -107,18 +117,19 @@ public class AttributeMechanic extends MechanicComponent {
     }
 
     private class AttribTask extends BukkitRunnable {
+
         private PlayerData data;
         private String     attrib;
-        private int        amount;
+        private PlayerAttributeModifier modifier;
         private int        id;
         private boolean running = false;
         private boolean stopped = false;
 
-        AttribTask(int id, PlayerData data, String attrib, int amount) {
+        AttribTask(int id, PlayerData data, String attrib, PlayerAttributeModifier modifier) {
             this.id = id;
             this.data = data;
             this.attrib = attrib;
-            this.amount = amount;
+            this.modifier = modifier;
         }
 
         public void stop() {
@@ -139,7 +150,7 @@ public class AttributeMechanic extends MechanicComponent {
 
         @Override
         public void run() {
-            data.addBonusAttributes(attrib, -amount);
+            data.removeAttributeModifier(modifier.getUUID());
             if (tasks.containsKey(id)) {
                 tasks.get(id).remove(data.getPlayerName());
             }
