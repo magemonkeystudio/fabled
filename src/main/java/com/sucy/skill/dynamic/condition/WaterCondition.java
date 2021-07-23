@@ -26,7 +26,10 @@
  */
 package com.sucy.skill.dynamic.condition;
 
+import com.rit.sucy.version.VersionManager;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.entity.LivingEntity;
 
 /**
@@ -39,7 +42,18 @@ public class WaterCondition extends ConditionComponent {
     boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
         final boolean out = settings.getString(STATE).toLowerCase().equals("out of water");
         final Material block = target.getLocation().getBlock().getType();
-        return out != (block.name().contains("WATER"));
+
+        final Block b =  target.getLocation().getBlock();
+        boolean isWaterLogged = false;
+
+        if(VersionManager.isVersionAtLeast(11300)) {
+            if(b.getBlockData() instanceof Waterlogged){
+                Waterlogged wl = (Waterlogged) b.getBlockData();
+                isWaterLogged = wl.isWaterlogged();
+            }
+        }
+
+        return out != (block.name().contains("WATER")) || (isWaterLogged);
     }
 
     @Override
