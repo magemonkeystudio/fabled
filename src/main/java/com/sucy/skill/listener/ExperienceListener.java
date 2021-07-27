@@ -1,10 +1,10 @@
 package com.sucy.skill.listener;
 
-import com.rit.sucy.config.CommentedConfig;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.enums.ExpSource;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.player.PlayerData;
+import mc.promcteam.engine.mccore.config.CommentedConfig;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -32,7 +32,7 @@ public class ExperienceListener extends SkillAPIListener {
         track = SkillAPI.getSettings().trackBreaks();
         if (track) {
             CommentedConfig data = SkillAPI.getConfig("data/placed");
-            unnatural = new HashSet<String>(data.getConfig().getList(CONFIG_KEY));
+            unnatural = new HashSet<>(data.getConfig().getList(CONFIG_KEY));
         }
     }
 

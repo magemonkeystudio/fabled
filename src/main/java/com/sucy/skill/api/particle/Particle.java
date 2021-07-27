@@ -26,7 +26,7 @@
  */
 package com.sucy.skill.api.particle;
 
-import com.rit.sucy.version.VersionManager;
+import mc.promcteam.engine.mccore.util.VersionManager;
 import com.sucy.skill.SkillAPI;
 import org.bukkit.*;
 import org.bukkit.entity.Player;

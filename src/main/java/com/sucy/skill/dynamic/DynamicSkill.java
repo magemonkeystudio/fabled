@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.dynamic.DynamicSkill
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,8 +27,6 @@
 package com.sucy.skill.dynamic;
 
 import com.google.common.collect.ImmutableList;
-import com.rit.sucy.config.parse.DataSection;
-import com.rit.sucy.text.TextFormatter;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.skills.PassiveSkill;
 import com.sucy.skill.api.skills.Skill;
@@ -36,6 +34,8 @@ import com.sucy.skill.api.skills.SkillShot;
 import com.sucy.skill.cast.IIndicator;
 import com.sucy.skill.dynamic.trigger.TriggerComponent;
 import com.sucy.skill.log.Logger;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
+import mc.promcteam.engine.mccore.util.TextFormatter;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -53,19 +53,17 @@ import static com.sucy.skill.dynamic.ComponentRegistry.getTrigger;
  * A skill implementation for the Dynamic system
  */
 public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, Listener {
-    private final List<TriggerHandler>         triggers   = new ArrayList<>();
+    private static final HashMap<Integer, HashMap<String, Object>> castData = new HashMap<>();
+    private final List<TriggerHandler> triggers = new ArrayList<>();
     private final Map<String, EffectComponent> attribKeys = new HashMap<>();
-    private final Map<Integer, Integer>        active     = new HashMap<>();
-
-    private static final HashMap<Integer, HashMap<String, Object>> castData   = new HashMap<>();
-
+    private final Map<Integer, Integer> active = new HashMap<>();
     private TriggerComponent castTrigger;
     private TriggerComponent initializeTrigger;
     private TriggerComponent cleanupTrigger;
 
-    private boolean cancel     = false;
-    private double  multiplier = 1;
-    private double  bonus      = 0;
+    private boolean cancel = false;
+    private double multiplier = 1;
+    private double bonus = 0;
 
     /**
      * Initializes a new dynamic skill
@@ -74,6 +72,35 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
      */
     public DynamicSkill(final String name) {
         super(name, "Dynamic", Material.JACK_O_LANTERN, 1);
+    }
+
+    /**
+     * Retrieves the cast data for the caster
+     *
+     * @param caster caster to get the data for
+     *
+     * @return cast data for the caster
+     */
+    public static HashMap<String, Object> getCastData(final LivingEntity caster) {
+        if (caster == null) {
+            return null;
+        }
+        HashMap<String, Object> map = castData.get(caster.getEntityId());
+        if (map == null) {
+            map = new HashMap<>();
+            map.put("caster", caster);
+            castData.put(caster.getEntityId(), map);
+        }
+        return map;
+    }
+
+    /**
+     * Clears any stored cast data for the entity
+     *
+     * @param entity entity to clear cast data for
+     */
+    public static void clearCastData(final LivingEntity entity) {
+        castData.remove(entity.getEntityId());
     }
 
     /**
@@ -150,33 +177,6 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
         multiplier = 1;
         bonus = 0;
         return result;
-    }
-
-    /**
-     * Retrieves the cast data for the caster
-     *
-     * @param caster caster to get the data for
-     *
-     * @return cast data for the caster
-     */
-    public static HashMap<String, Object> getCastData(final LivingEntity caster) {
-        if (caster == null) { return null; }
-        HashMap<String, Object> map = castData.get(caster.getEntityId());
-        if (map == null) {
-            map = new HashMap<>();
-            map.put("caster", caster);
-            castData.put(caster.getEntityId(), map);
-        }
-        return map;
-    }
-
-    /**
-     * Clears any stored cast data for the entity
-     *
-     * @param entity entity to clear cast data for
-     */
-    public static void clearCastData(final LivingEntity entity) {
-        castData.remove(entity.getEntityId());
     }
 
     /**
@@ -294,7 +294,9 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
     protected String getAttrName(String key) {
         if (key.contains(".")) {
             return TextFormatter.format(key.substring(key.lastIndexOf('.') + 1));
-        } else { return super.getAttrName(key); }
+        } else {
+            return super.getAttrName(key);
+        }
     }
 
     /**
@@ -317,11 +319,15 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
             final String attr = path[1].toLowerCase();
             if (attribKeys.containsKey(path[0]) && attribKeys.get(path[0]).settings.has(attr)) {
                 return format(attribKeys.get(path[0]).parseValues(caster, attr, level, 0));
-            } else { return 0; }
+            } else {
+                return 0;
+            }
         }
 
         // Otherwise get the attribute normally
-        else { return super.getAttr(caster, key, level); }
+        else {
+            return super.getAttr(caster, key, level);
+        }
     }
 
     private boolean trigger(
@@ -342,7 +348,9 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
         super.load(config);
 
         final DataSection triggers = config.getSection("components");
-        if (triggers == null) { return; }
+        if (triggers == null) {
+            return;
+        }
 
         for (final String key : triggers.keys()) {
             final String modified = key.replaceAll("-.+", "");

@@ -28,9 +28,9 @@ package com.sucy.skill.api.util;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
-import com.rit.sucy.reflect.Reflection;
-import com.rit.sucy.version.VersionManager;
 import com.sucy.skill.util.Version;
+import mc.promcteam.engine.mccore.util.VersionManager;
+import mc.promcteam.engine.utils.Reflex;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -108,11 +108,11 @@ public class ItemSerializer {
         initialized = true;
 
         try {
-            String nms = Reflection.getNMSPackage();
-            String craft = Reflection.getCraftPackage();
+            String nms = Reflex.getNMSPackage();
+            String craft = Reflex.getCraftPackage();
 
             Class<?> craftItemStack = Class.forName(craft + "inventory.CraftItemStack");
-            Class<?> nmsItemStack = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.world.item.ItemStack")
+            Class<?> nmsItemStack = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.item.ItemStack")
                     : Class.forName(nms + "ItemStack");
             craftItemConstructor = craftItemStack.getDeclaredConstructor(ItemStack.class);
             craftItemConstructor.setAccessible(true);
@@ -121,13 +121,13 @@ public class ItemSerializer {
             craftItemStack_getHandle = craftItemStack.getDeclaredField("handle");
             craftItemStack_getHandle.setAccessible(true);
 
-            Class<?> nbtBase = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.nbt.NBTBase")
-                    : Reflection.getNMSClass("NBTBase");
-            Class<?> nbtTagCompound = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.nbt.NBTTagCompound")
-                    : Reflection.getNMSClass("NBTTagCompound");
-            Class<?> nbtTagList = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.nbt.NBTTagList")
-                    : Reflection.getNMSClass("NBTTagList");
-            Class<?> nbtCompressedStreamTools = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.nbt.NBTCompressedStreamTools")
+            Class<?> nbtBase = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.nbt.NBTBase")
+                    : Reflex.getNMSClass("NBTBase");
+            Class<?> nbtTagCompound = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.nbt.NBTTagCompound")
+                    : Reflex.getNMSClass("NBTTagCompound");
+            Class<?> nbtTagList = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.nbt.NBTTagList")
+                    : Reflex.getNMSClass("NBTTagList");
+            Class<?> nbtCompressedStreamTools = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.nbt.NBTCompressedStreamTools")
                     : Class.forName(nms + "NBTCompressedStreamTools");
             nmsItemConstructor = nmsItemStack.getDeclaredConstructor(nbtTagCompound);
             nmsItemConstructor.setAccessible(true);

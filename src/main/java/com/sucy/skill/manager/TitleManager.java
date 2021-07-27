@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.manager.TitleManager
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,12 +26,12 @@
  */
 package com.sucy.skill.manager;
 
-import com.sucy.skill.api.util.Title;
-import com.rit.sucy.config.CustomFilter;
-import com.rit.sucy.config.FilterType;
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.util.Title;
 import com.sucy.skill.data.Settings;
 import com.sucy.skill.data.TitleType;
+import mc.promcteam.engine.mccore.config.CustomFilter;
+import mc.promcteam.engine.mccore.config.FilterType;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -39,8 +39,7 @@ import java.util.List;
 /**
  * Handles accessing the Title display resource
  */
-public class TitleManager
-{
+public class TitleManager {
     private static int fadeIn;
     private static int duration;
     private static int fadeOut;
@@ -48,8 +47,7 @@ public class TitleManager
     /**
      * Initializes the title object if not done so already
      */
-    private static void init()
-    {
+    private static void init() {
         Settings settings = SkillAPI.getSettings();
         fadeIn = settings.getTitleFadeIn();
         duration = settings.getTitleDuration();
@@ -64,20 +62,16 @@ public class TitleManager
      * @param msgKey  language config key for the message
      * @param filters filters to apply to the message
      */
-    public static void show(Player player, TitleType type, String msgKey, CustomFilter... filters)
-    {
-        if (SkillAPI.getSettings().useTitle(type) && msgKey != null)
-        {
+    public static void show(Player player, TitleType type, String msgKey, CustomFilter... filters) {
+        if (SkillAPI.getSettings().useTitle(type) && msgKey != null) {
             List<String> message = SkillAPI.getLanguage().getMessage(msgKey, true, FilterType.COLOR, filters);
-            if (message != null && message.size() > 0)
-            {
+            if (message != null && message.size() > 0) {
                 init();
                 String title = message.get(0);
                 String subtitle = message.size() > 1 ? message.get(1) : null;
                 Title.send(player, title, subtitle, fadeIn, duration, fadeOut);
             }
-        }
-        else if (msgKey != null)
+        } else if (msgKey != null)
             SkillAPI.getLanguage().sendMessage(msgKey, player, FilterType.COLOR, filters);
     }
 }

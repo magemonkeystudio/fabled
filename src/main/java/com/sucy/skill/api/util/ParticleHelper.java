@@ -27,8 +27,8 @@
 package com.sucy.skill.api.util;
 
 import com.google.common.collect.ImmutableSet;
-import com.rit.sucy.reflect.Particle;
-import com.rit.sucy.version.VersionManager;
+import mc.promcteam.engine.mccore.util.Particle;
+import mc.promcteam.engine.mccore.util.VersionManager;
 import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.enums.Direction;
 import com.sucy.skill.api.particle.SpigotParticles;

@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.gui.map.Menu
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,10 +26,10 @@
  */
 package com.sucy.skill.gui.map;
 
-import com.rit.sucy.gui.MapFont;
-import com.rit.sucy.gui.MapMenuManager;
-import com.rit.sucy.gui.MapScheme;
 import com.sucy.skill.SkillAPI;
+import mc.promcteam.engine.mccore.gui.MapFont;
+import mc.promcteam.engine.mccore.gui.MapMenuManager;
+import mc.promcteam.engine.mccore.gui.MapScheme;
 
 import java.awt.*;
 import java.io.File;
@@ -37,43 +37,37 @@ import java.io.File;
 /**
  * Manages schemes for the map menus
  */
-public class Menu
-{
+public class Menu {
     // Menu keys
     public static final String SKILL_TREE = "sapiSkills";
-
-    // Menus
-    static SkillListMenu   LIST_MENU;
-    static SkillDetailMenu DETAIL_MENU;
-
     // Images
     static final String BACKGROUND = "background";
-    static final String TITLE      = "title";
-    static final String NAMEPLATE  = "nameplate";
-    static final String SELECTOR   = "selector";
-    static final String UP_0       = "up0";
-    static final String UP_1       = "up1";
-    static final String DOWN_0     = "down0";
-    static final String DOWN_1     = "down1";
-    static final String MORE_0     = "more0";
-    static final String MORE_1     = "more1";
-    static final String BACK_0     = "back0";
-    static final String BACK_1     = "back1";
-
+    static final String TITLE = "title";
+    static final String NAMEPLATE = "nameplate";
+    static final String SELECTOR = "selector";
+    static final String UP_0 = "up0";
+    static final String UP_1 = "up1";
+    static final String DOWN_0 = "down0";
+    static final String DOWN_1 = "down1";
+    static final String MORE_0 = "more0";
+    static final String MORE_1 = "more1";
+    static final String BACK_0 = "back0";
+    static final String BACK_1 = "back1";
     // Fonts
-    static final String LIST   = "list";
+    static final String LIST = "list";
     static final String DETAIL = "detail";
-
     // Colors
     static final String FONT = "font";
+    // Menus
+    static SkillListMenu LIST_MENU;
+    static SkillDetailMenu DETAIL_MENU;
 
     /**
      * Sets up the schemes for SkillAPI
      *
      * @param api SkillAPI reference
      */
-    public static void initialize(SkillAPI api)
-    {
+    public static void initialize(SkillAPI api) {
         LIST_MENU = new SkillListMenu(api);
         DETAIL_MENU = new SkillDetailMenu(api);
         DETAIL_MENU.setParent(LIST_MENU);

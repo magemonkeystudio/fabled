@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.data.PlayerEquips
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,24 +27,19 @@
 package com.sucy.skill.data;
 
 import com.google.common.base.Objects;
-import com.rit.sucy.config.parse.NumberParser;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.skills.Skill;
+import mc.promcteam.engine.mccore.config.parse.NumberParser;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.sucy.skill.listener.ItemListener.ARMOR_TYPES;
 
@@ -52,13 +47,12 @@ import static com.sucy.skill.listener.ItemListener.ARMOR_TYPES;
  * Handles keeping track of and applying attribute
  * bonuses and requirements for items.
  */
-public class PlayerEquips
-{
+public class PlayerEquips {
     private static final ItemStack TEMP = new ItemStack(Material.BEDROCK);
 
     private PlayerData player;
 
-    private EquipData empty  = new EquipData();
+    private EquipData empty = new EquipData();
     private EquipData weapon = empty;
     private EquipData[] other;
 
@@ -67,8 +61,7 @@ public class PlayerEquips
     /**
      * @param player player data reference
      */
-    public PlayerEquips(PlayerData player)
-    {
+    public PlayerEquips(PlayerData player) {
         this.player = player;
         other = new EquipData[SkillAPI.getSettings().getSlots().length];
         for (int i = 0; i < other.length; i++) {
@@ -81,13 +74,11 @@ public class PlayerEquips
     /**
      * @return true if the player can hit something, false otherwise
      */
-    public boolean canHit()
-    {
+    public boolean canHit() {
         return weapon.isMet();
     }
 
-    public boolean canBlock()
-    {
+    public boolean canBlock() {
         return offhand >= 0 && other[offhand].isMet();
     }
 
@@ -96,8 +87,7 @@ public class PlayerEquips
      *
      * @param player player to update for
      */
-    public void update(Player player)
-    {
+    public void update(Player player) {
         PlayerInventory inv = player.getInventory();
         weapon = swap(inv, inv.getHeldItemSlot(), weapon, true);
         for (int i = 0; i < other.length; i++)
@@ -113,11 +103,9 @@ public class PlayerEquips
      *
      * @return the used equip data
      */
-    private EquipData swap(PlayerInventory inv, int index, EquipData from, boolean weapon)
-    {
+    private EquipData swap(PlayerInventory inv, int index, EquipData from, boolean weapon) {
         EquipData to = make(inv.getItem(index));
-        if (Objects.equal(from.item, to.item))
-        {
+        if (Objects.equal(from.item, to.item)) {
             return to;
         }
 
@@ -127,9 +115,7 @@ public class PlayerEquips
 
         if (weapon && to.isArmor) {
             return to;
-        }
-        else if (!to.isMet())
-        {
+        } else if (!to.isMet()) {
             if (SkillAPI.getSettings().isDropWeapon() || !weapon) {
                 inv.setItem(index, TEMP);
                 for (ItemStack item : inv.addItem(to.item).values())
@@ -138,9 +124,7 @@ public class PlayerEquips
                 return empty;
             }
             return to;
-        }
-        else
-        {
+        } else {
             to.apply();
             return to;
         }
@@ -153,8 +137,7 @@ public class PlayerEquips
     /**
      * Clears the weapon slot
      */
-    public void clearWeapon()
-    {
+    public void clearWeapon() {
         if (weapon.isMet() && !weapon.isArmor) {
             weapon.revert();
         }
@@ -166,8 +149,7 @@ public class PlayerEquips
      *
      * @param inv inventory data
      */
-    public void updateWeapon(PlayerInventory inv)
-    {
+    public void updateWeapon(PlayerInventory inv) {
         weapon = swap(inv, inv.getHeldItemSlot(), weapon, true);
     }
 
@@ -178,8 +160,7 @@ public class PlayerEquips
      *
      * @return item data
      */
-    private EquipData make(ItemStack item)
-    {
+    private EquipData make(ItemStack item) {
         if (item == null)
             return empty;
         else
@@ -189,8 +170,7 @@ public class PlayerEquips
     /**
      * Represents one available item's data
      */
-    private class EquipData
-    {
+    private class EquipData {
         private HashMap<String, Integer> skillReq;
         private HashMap<String, Integer> attrReq;
         private HashMap<String, Integer> attribs;
@@ -199,21 +179,21 @@ public class PlayerEquips
         private HashSet<String> classExc;
 
         private ItemStack item;
-        private int       levelReq;
-        private boolean   isArmor;
+        private int levelReq;
+        private boolean isArmor;
 
         /**
          * Sets up for an empty item slot
          */
-        EquipData() { }
+        EquipData() {
+        }
 
         /**
          * Scans an items for bonuses or requirements
          *
          * @param item item to grab data from
          */
-        EquipData(ItemStack item)
-        {
+        EquipData(ItemStack item) {
             this.item = item;
             this.isArmor = PlayerEquips.this.isArmor(item);
 
@@ -231,8 +211,7 @@ public class PlayerEquips
             boolean skills = settings.isCheckSkillLore();
             boolean attributes = settings.isAttributesEnabled();
 
-            for (String line : lore)
-            {
+            for (String line : lore) {
                 String lower = ChatColor.stripColor(line).toLowerCase();
 
                 // Level requirements
@@ -254,20 +233,14 @@ public class PlayerEquips
                     if (classExc == null)
                         classExc = new HashSet<>();
                     classExc.addAll(excluded);
-                }
-                    
-                else
-                {
+                } else {
                     boolean done = false;
 
                     // Skill requirements
-                    if (skills)
-                    {
-                        for (Skill skill : SkillAPI.getSkills().values())
-                        {
+                    if (skills) {
+                        for (Skill skill : SkillAPI.getSkills().values()) {
                             String text = settings.getSkillText(skill.getName());
-                            if (lower.startsWith(text))
-                            {
+                            if (lower.startsWith(text)) {
                                 done = true;
                                 if (skillReq == null)
                                     skillReq = new HashMap<>();
@@ -279,13 +252,10 @@ public class PlayerEquips
                     }
 
                     // Attribute requirements
-                    if (attributes && !done)
-                    {
-                        for (String attr : SkillAPI.getAttributeManager().getLookupKeys())
-                        {
+                    if (attributes && !done) {
+                        for (String attr : SkillAPI.getAttributeManager().getLookupKeys()) {
                             String text = settings.getAttrReqText(attr);
-                            if (lower.startsWith(text))
-                            {
+                            if (lower.startsWith(text)) {
                                 if (attrReq == null)
                                     attrReq = new HashMap<>();
 
@@ -295,8 +265,7 @@ public class PlayerEquips
                             }
 
                             text = settings.getAttrGiveText(attr);
-                            if (lower.startsWith(text))
-                            {
+                            if (lower.startsWith(text)) {
                                 if (attribs == null)
                                     attribs = new HashMap<>();
 
@@ -315,8 +284,7 @@ public class PlayerEquips
         /**
          * Applies bonuse attributes for the item
          */
-        public void apply()
-        {
+        public void apply() {
             if (attribs != null)
                 for (Map.Entry<String, Integer> entry : attribs.entrySet())
                     player.addBonusAttributes(entry.getKey(), entry.getValue());
@@ -325,8 +293,7 @@ public class PlayerEquips
         /**
          * Reverts bonus attributes for the item
          */
-        void revert()
-        {
+        void revert() {
             if (attribs != null)
                 for (Map.Entry<String, Integer> entry : attribs.entrySet())
                     player.addBonusAttributes(entry.getKey(), -entry.getValue());
@@ -341,8 +308,7 @@ public class PlayerEquips
          *
          * @return true if conditions are met
          */
-        boolean isMet()
-        {
+        boolean isMet() {
             if (item == null) {
                 return true;
             }
@@ -350,8 +316,8 @@ public class PlayerEquips
             PlayerClass main = player.getMainClass();
             String className = main == null ? "null" : main.getData().getName().toLowerCase();
             if ((levelReq > 0 && (main == null || main.getLevel() < levelReq))
-                || (classExc != null && main != null && classExc.contains(className))
-                || (classReq != null && (main == null || !classReq.contains(className))))
+                    || (classExc != null && main != null && classExc.contains(className))
+                    || (classReq != null && (main == null || !classReq.contains(className))))
                 return false;
 
             if (classExc != null)

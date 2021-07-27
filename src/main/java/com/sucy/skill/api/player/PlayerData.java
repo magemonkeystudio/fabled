@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.player.PlayerData
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,12 +26,6 @@
  */
 package com.sucy.skill.api.player;
 
-import com.rit.sucy.config.Filter;
-import com.rit.sucy.config.FilterType;
-import com.rit.sucy.config.parse.DataSection;
-import com.sucy.skill.api.target.TargetHelper;
-import com.rit.sucy.version.VersionManager;
-import com.rit.sucy.version.VersionPlayer;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.enums.*;
@@ -40,6 +34,7 @@ import com.sucy.skill.api.skills.PassiveSkill;
 import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.api.skills.SkillShot;
 import com.sucy.skill.api.skills.TargetSkill;
+import com.sucy.skill.api.target.TargetHelper;
 import com.sucy.skill.cast.PlayerCastBars;
 import com.sucy.skill.data.GroupSettings;
 import com.sucy.skill.data.PlayerEquips;
@@ -57,6 +52,10 @@ import com.sucy.skill.log.LogType;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.manager.AttributeManager;
 import com.sucy.skill.task.ScoreboardTask;
+import mc.promcteam.engine.mccore.config.Filter;
+import mc.promcteam.engine.mccore.config.FilterType;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
+import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -78,30 +77,30 @@ import static com.sucy.skill.api.event.PlayerSkillCastFailedEvent.Cause.*;
  * try to instantaite your own PlayerData object.
  */
 public class PlayerData {
-    private final HashMap<String, PlayerClass>   classes     = new HashMap<>();
-    private final HashMap<String, PlayerSkill>   skills      = new HashMap<>();
-    private final HashMap<Material, PlayerSkill> binds       = new HashMap<>();
-    private final HashMap<String, Integer>       attributes  = new HashMap<>();
-    private final HashMap<String, Integer>       bonusAttrib = new HashMap<>();
+    private final HashMap<String, PlayerClass> classes = new HashMap<>();
+    private final HashMap<String, PlayerSkill> skills = new HashMap<>();
+    private final HashMap<Material, PlayerSkill> binds = new HashMap<>();
+    private final HashMap<String, Integer> attributes = new HashMap<>();
+    private final HashMap<String, Integer> bonusAttrib = new HashMap<>();
 
     private DataSection extraData = new DataSection();
-    private OfflinePlayer  player;
+    private OfflinePlayer player;
     private PlayerSkillBar skillBar;
     private PlayerCastBars castBars;
-    private PlayerCombos   combos;
-    private PlayerEquips   equips;
-    private String         scheme;
-    private String         menuClass;
-    private double         mana;
-    private double         maxMana;
-    private double         bonusHealth;
-    private double         bonusMana;
-    private double         lastHealth;
-    private double         hunger;
-    private boolean        init;
-    private boolean        passive;
-    private int            attribPoints;
-    private long           skillTimer;
+    private PlayerCombos combos;
+    private PlayerEquips equips;
+    private String scheme;
+    private String menuClass;
+    private double mana;
+    private double maxMana;
+    private double bonusHealth;
+    private double bonusMana;
+    private double lastHealth;
+    private double hunger;
+    private boolean init;
+    private boolean passive;
+    private int attribPoints;
+    private long skillTimer;
 
     /**
      * Initializes a new account data representation for a player.
@@ -133,7 +132,7 @@ public class PlayerData {
      * @return Bukkit player object of the owner or null if offline
      */
     public Player getPlayer() {
-        return new VersionPlayer(player).getPlayer();
+        return player.getPlayer();
     }
 
     /**
@@ -272,7 +271,9 @@ public class PlayerData {
      */
     public HashMap<String, Integer> getAttributes() {
         HashMap<String, Integer> map = new HashMap<>();
-        for (String key : SkillAPI.getAttributeManager().getKeys()) { map.put(key, getAttribute(key)); }
+        for (String key : SkillAPI.getAttributeManager().getKeys()) {
+            map.put(key, getAttribute(key));
+        }
         return map;
     }
 
@@ -299,8 +300,12 @@ public class PlayerData {
     public int getAttribute(String key) {
         key = key.toLowerCase();
         int total = 0;
-        if (attributes.containsKey(key)) { total += attributes.get(key); }
-        if (bonusAttrib.containsKey(key)) { total += bonusAttrib.get(key); }
+        if (attributes.containsKey(key)) {
+            total += attributes.get(key);
+        }
+        if (bonusAttrib.containsKey(key)) {
+            total += bonusAttrib.get(key);
+        }
         for (PlayerClass playerClass : classes.values()) {
             total += playerClass.getData().getAttribute(key, playerClass.getLevel());
         }
@@ -353,7 +358,9 @@ public class PlayerData {
             if (event.isCancelled()) {
                 attributes.put(key, current);
                 attribPoints++;
-            } else { return true; }
+            } else {
+                return true;
+            }
         }
         return false;
     }
@@ -403,11 +410,15 @@ public class PlayerData {
         if (current > 0) {
             PlayerRefundAttributeEvent event = new PlayerRefundAttributeEvent(this, key);
             Bukkit.getPluginManager().callEvent(event);
-            if (event.isCancelled()) { return false; }
+            if (event.isCancelled()) {
+                return false;
+            }
 
             attribPoints += 1;
             attributes.put(key, current - 1);
-            if (current - 1 <= 0) { attributes.remove(key); }
+            if (current - 1 <= 0) {
+                attributes.remove(key);
+            }
             AttributeListener.updatePlayer(this);
 
             return true;
@@ -472,10 +483,14 @@ public class PlayerData {
      */
     public double scaleStat(final String stat, final double value) {
         final AttributeManager manager = SkillAPI.getAttributeManager();
-        if (manager == null) { return value; }
+        if (manager == null) {
+            return value;
+        }
 
         final List<AttributeManager.Attribute> matches = manager.forStat(stat);
-        if (matches == null) { return value; }
+        if (matches == null) {
+            return value;
+        }
 
         double modified = value;
         for (final AttributeManager.Attribute attribute : matches) {
@@ -498,10 +513,14 @@ public class PlayerData {
      */
     public double scaleDynamic(EffectComponent component, String key, double value) {
         final AttributeManager manager = SkillAPI.getAttributeManager();
-        if (manager == null) { return value; }
+        if (manager == null) {
+            return value;
+        }
 
         final List<AttributeManager.Attribute> matches = manager.forComponent(component, key);
-        if (matches == null) { return value; }
+        if (matches == null) {
+            return value;
+        }
 
         for (final AttributeManager.Attribute attribute : matches) {
             int amount = getAttribute(attribute.getKey());
@@ -575,7 +594,9 @@ public class PlayerData {
      * @return data for the skill or null if the player doesn't have the skill
      */
     public PlayerSkill getSkill(String name) {
-        if (name == null) { return null; }
+        if (name == null) {
+            return null;
+        }
         return skills.get(name.toLowerCase());
     }
 
@@ -641,10 +662,14 @@ public class PlayerData {
      * Attempts to auto-level any skills that are able to do so
      */
     public void autoLevel() {
-        if (init) { return; }
+        if (init) {
+            return;
+        }
 
         final Player player = getPlayer();
-        if (player == null) { return; }
+        if (player == null) {
+            return;
+        }
 
         for (PlayerSkill skill : skills.values()) {
             if (skill.getData().isAllowed(player)) {
@@ -655,7 +680,9 @@ public class PlayerData {
 
     private void autoLevel(Skill skill) {
         PlayerSkill data = skills.get(skill.getKey());
-        if (data == null || getPlayer() == null || !skill.isAllowed(getPlayer())) { return; }
+        if (data == null || getPlayer() == null || !skill.isAllowed(getPlayer())) {
+            return;
+        }
 
         int lastLevel = data.getLevel();
         while (data.getData().canAutoLevel(lastLevel)
@@ -834,7 +861,9 @@ public class PlayerData {
     public void refundSkill(PlayerSkill skill) {
         Player player = getPlayer();
 
-        if (skill.getCost() == 0 || skill.getLevel() == 0) { return; }
+        if (skill.getCost() == 0 || skill.getLevel() == 0) {
+            return;
+        }
 
         skill.getPlayerClass().givePoints(skill.getInvestedCost(), PointSource.REFUND);
         skill.setLevel(0);
@@ -848,7 +877,9 @@ public class PlayerData {
      * Refunds all skills for the player
      */
     public void refundSkills() {
-        for (PlayerSkill skill : skills.values()) { refundSkill(skill); }
+        for (PlayerSkill skill : skills.values()) {
+            refundSkill(skill);
+        }
 
         clearAllBinds();
     }
@@ -887,7 +918,9 @@ public class PlayerData {
                     iconMap
             );
             return true;
-        } else { return false; }
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -934,10 +967,14 @@ public class PlayerData {
         }
 
         // Show list of classes that have skill trees
-        if (classes.size() > 1) { return showDetails(player); }
+        if (classes.size() > 1) {
+            return showDetails(player);
+        }
 
         // Show only class's skill tree otherwise
-        else { return showSkills(player, classes.values().iterator().next()); }
+        else {
+            return showSkills(player, classes.values().iterator().next());
+        }
     }
 
     /**
@@ -1062,7 +1099,9 @@ public class PlayerData {
                 skills.remove(skill.getName().toLowerCase());
                 combos.removeSkill(skill);
             }
-        } else { attribPoints += rpgClass.getGroupSettings().getStartingAttribs(); }
+        } else {
+            attribPoints += rpgClass.getGroupSettings().getStartingAttribs();
+        }
 
         PlayerClass classData = new PlayerClass(this, rpgClass);
         classes.put(rpgClass.getGroup(), classData);
@@ -1086,7 +1125,9 @@ public class PlayerData {
      * @return true if professed as the specific class, false otherwise
      */
     public boolean isExactClass(RPGClass rpgClass) {
-        if (rpgClass == null) { return false; }
+        if (rpgClass == null) {
+            return false;
+        }
         PlayerClass c = classes.get(rpgClass.getGroup());
         return (c != null) && (c.getData() == rpgClass);
     }
@@ -1105,7 +1146,9 @@ public class PlayerData {
         }
 
         PlayerClass pc = classes.get(rpgClass.getGroup());
-        if (pc == null) { return false; }
+        if (pc == null) {
+            return false;
+        }
 
         RPGClass temp = pc.getData();
         while (temp != null) {
@@ -1150,7 +1193,9 @@ public class PlayerData {
      */
     public void reset(String group) {
         GroupSettings settings = SkillAPI.getSettings().getGroupSettings(group);
-        if (!settings.canReset()) { return; }
+        if (!settings.canReset()) {
+            return;
+        }
 
         PlayerClass playerClass = classes.remove(group);
         if (playerClass != null) {
@@ -1186,7 +1231,9 @@ public class PlayerData {
      */
     public void resetAll() {
         ArrayList<String> keys = new ArrayList<>(classes.keySet());
-        for (String key : keys) { reset(key); }
+        for (String key : keys) {
+            reset(key);
+        }
     }
 
     /**
@@ -1361,7 +1408,9 @@ public class PlayerData {
         if (health <= 0) {
             health = SkillAPI.getSettings().getDefaultHealth();
         }
-        if (SkillAPI.getSettings().isModifyHealth()) { player.setMaxHealth(health); }
+        if (SkillAPI.getSettings().isModifyHealth()) {
+            player.setMaxHealth(health);
+        }
         mana = Math.min(mana, maxMana);
 
         // Health scaling is available starting with 1.6.2
@@ -1420,6 +1469,15 @@ public class PlayerData {
     }
 
     /**
+     * Sets the player's amount of mana without launching events
+     *
+     * @param amount current mana
+     */
+    public void setMana(double amount) {
+        this.mana = amount;
+    }
+
+    /**
      * Checks whether or not the player has at least the specified amount of mana
      *
      * @param amount required mana amount
@@ -1452,15 +1510,6 @@ public class PlayerData {
         if (amount > 0) {
             giveMana(amount, ManaSource.REGEN);
         }
-    }
-
-    /**
-     * Sets the player's amount of mana without launching events
-     *
-     * @param amount current mana
-     */
-    public void setMana(double amount) {
-        this.mana = amount;
     }
 
     /**
@@ -1497,7 +1546,9 @@ public class PlayerData {
             if (mana < 0) {
                 mana = 0;
             }
-        } else { Logger.log(LogType.MANA, 2, getPlayerName() + " had their mana gain cancelled"); }
+        } else {
+            Logger.log(LogType.MANA, 2, getPlayerName() + " had their mana gain cancelled");
+        }
     }
 
     /**
@@ -1681,7 +1732,9 @@ public class PlayerData {
      * done by other plugins.
      */
     public void updateScoreboard() {
-        if (SkillAPI.getSettings().isShowScoreboard()) { SkillAPI.schedule(new ScoreboardTask(this), 2); }
+        if (SkillAPI.getSettings().isShowScoreboard()) {
+            SkillAPI.schedule(new ScoreboardTask(this), 2);
+        }
     }
 
     /**
@@ -1749,19 +1802,27 @@ public class PlayerData {
      */
     public boolean cast(PlayerSkill skill) {
         // Invalid skill
-        if (skill == null) { throw new IllegalArgumentException("Skill cannot be null"); }
+        if (skill == null) {
+            throw new IllegalArgumentException("Skill cannot be null");
+        }
 
         int level = skill.getLevel();
 
         // Not unlocked or on cooldown
-        if (!check(skill, true, true)) { return false; }
+        if (!check(skill, true, true)) {
+            return false;
+        }
 
         // Dead players can't cast skills
         Player p = getPlayer();
-        if (p.isDead()) { return PlayerSkillCastFailedEvent.invoke(skill, CASTER_DEAD); }
+        if (p.isDead()) {
+            return PlayerSkillCastFailedEvent.invoke(skill, CASTER_DEAD);
+        }
 
         // Disable casting in spectator mode
-        if (p.getGameMode().name().equals("SPECTATOR")) { return PlayerSkillCastFailedEvent.invoke(skill, SPECTATOR); }
+        if (p.getGameMode().name().equals("SPECTATOR")) {
+            return PlayerSkillCastFailedEvent.invoke(skill, SPECTATOR);
+        }
 
         // Skill Shots
         if (skill.getData() instanceof SkillShot) {
@@ -1781,7 +1842,9 @@ public class PlayerData {
                     ex.printStackTrace();
                     return PlayerSkillCastFailedEvent.invoke(skill, EFFECT_FAILED);
                 }
-            } else { return PlayerSkillCastFailedEvent.invoke(skill, CANCELED); }
+            } else {
+                return PlayerSkillCastFailedEvent.invoke(skill, CANCELED);
+            }
         }
 
         // Target Skills
@@ -1789,7 +1852,9 @@ public class PlayerData {
             LivingEntity target = TargetHelper.getLivingTarget(p, skill.getData().getRange(level));
 
             // Must have a target
-            if (target == null) { return PlayerSkillCastFailedEvent.invoke(skill, NO_TARGET); }
+            if (target == null) {
+                return PlayerSkillCastFailedEvent.invoke(skill, NO_TARGET);
+            }
 
             PlayerCastSkillEvent event = new PlayerCastSkillEvent(this, skill, p);
             Bukkit.getPluginManager().callEvent(event);
@@ -1808,7 +1873,9 @@ public class PlayerData {
                     ex.printStackTrace();
                     return PlayerSkillCastFailedEvent.invoke(skill, EFFECT_FAILED);
                 }
-            } else { PlayerSkillCastFailedEvent.invoke(skill, CANCELED); }
+            } else {
+                PlayerSkillCastFailedEvent.invoke(skill, CANCELED);
+            }
         }
 
         return false;
@@ -1836,7 +1903,9 @@ public class PlayerData {
      * @return true if can use
      */
     public boolean check(PlayerSkill skill, boolean cooldown, boolean mana) {
-        if (skill == null || System.currentTimeMillis() < skillTimer) { return false; }
+        if (skill == null || System.currentTimeMillis() < skillTimer) {
+            return false;
+        }
 
         SkillStatus status = skill.getStatus();
         int level = skill.getLevel();
@@ -1871,7 +1940,9 @@ public class PlayerData {
                     RPGFilter.MISSING.setReplacement((int) Math.ceil(cost - getMana()) + "")
             );
             return PlayerSkillCastFailedEvent.invoke(skill, NO_MANA);
-        } else { return true; }
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -1880,7 +1951,9 @@ public class PlayerData {
      * @param player player to set up for
      */
     public void init(Player player) {
-        if (!SkillAPI.getSettings().isWorldEnabled(player.getWorld())) { return; }
+        if (!SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
+            return;
+        }
 
         AttributeListener.updatePlayer(this);
         getEquips().update(player);

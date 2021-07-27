@@ -1,8 +1,8 @@
 package com.sucy.skill.api;
 
-import com.rit.sucy.player.Protection;
 import com.sucy.skill.hook.NoCheatHook;
 import com.sucy.skill.hook.PluginChecker;
+import mc.promcteam.engine.mccore.util.Protection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -32,7 +32,9 @@ public class DefaultCombatProtection implements CombatProtection {
             NoCheatHook.exempt(player);
             canAttack = Protection.canAttack(attacker, defender);
             NoCheatHook.unexempt(player);
-        } else { canAttack = CombatProtection.canAttack(attacker, defender, false); }
+        } else {
+            canAttack = CombatProtection.canAttack(attacker, defender, false);
+        }
 
         return canAttack;
     }

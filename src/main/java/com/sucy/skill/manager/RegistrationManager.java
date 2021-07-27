@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.manager.RegistrationManager
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,8 +26,6 @@
  */
 package com.sucy.skill.manager;
 
-import com.rit.sucy.config.CommentedConfig;
-import com.rit.sucy.config.parse.DataSection;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.SkillPlugin;
 import com.sucy.skill.api.classes.RPGClass;
@@ -37,6 +35,8 @@ import com.sucy.skill.dynamic.DynamicClass;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.log.LogType;
 import com.sucy.skill.log.Logger;
+import mc.promcteam.engine.mccore.config.CommentedConfig;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -50,28 +50,13 @@ import java.io.File;
  * added.</p>
  */
 public class RegistrationManager {
-    /**
-     * The registration modes used by the manager. These values are used to check
-     * what can be registered at any given time.
-     */
-    public enum Mode {
-        STARTUP,
-        SKILL,
-        CLASS,
-        DYNAMIC,
-        DONE
-    }
-
     private static final String SKILL_FOLDER = "dynamic" + File.separator + "skill";
     private static final String CLASS_FOLDER = "dynamic" + File.separator + "class";
-    private static final String SKILL_DIR    = SKILL_FOLDER + File.separator;
-    private static final String CLASS_DIR    = CLASS_FOLDER + File.separator;
-
+    private static final String SKILL_DIR = SKILL_FOLDER + File.separator;
+    private static final String CLASS_DIR = CLASS_FOLDER + File.separator;
     private final SkillAPI api;
-
     private CommentedConfig skillConfig;
     private CommentedConfig classConfig;
-
     private Mode mode = Mode.STARTUP;
 
     /**
@@ -180,7 +165,9 @@ public class RegistrationManager {
             File[] files = skillRoot.listFiles();
             if (files != null) {
                 for (File file : files) {
-                    if (!file.getName().endsWith(".yml")) { continue; }
+                    if (!file.getName().endsWith(".yml")) {
+                        continue;
+                    }
                     String name = file.getName().replace(".yml", "");
                     try {
                         CommentedConfig sConfig = new CommentedConfig(api, SKILL_DIR + name);
@@ -261,7 +248,9 @@ public class RegistrationManager {
             File[] files = classRoot.listFiles();
             if (files != null) {
                 for (File file : files) {
-                    if (!file.getName().endsWith(".yml")) { continue; }
+                    if (!file.getName().endsWith(".yml")) {
+                        continue;
+                    }
                     try {
                         String name = file.getName().replace(".yml", "");
                         CommentedConfig cConfig = new CommentedConfig(api, CLASS_DIR + name);
@@ -419,5 +408,17 @@ public class RegistrationManager {
      */
     public boolean isAddingDynamicSkills() {
         return mode == Mode.DYNAMIC;
+    }
+
+    /**
+     * The registration modes used by the manager. These values are used to check
+     * what can be registered at any given time.
+     */
+    public enum Mode {
+        STARTUP,
+        SKILL,
+        CLASS,
+        DYNAMIC,
+        DONE
     }
 }

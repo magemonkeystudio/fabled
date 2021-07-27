@@ -26,7 +26,7 @@
  */
 package com.sucy.skill.dynamic.condition;
 
-import com.rit.sucy.config.parse.DataSection;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 import com.sucy.skill.api.util.Combat;
 import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.entity.LivingEntity;

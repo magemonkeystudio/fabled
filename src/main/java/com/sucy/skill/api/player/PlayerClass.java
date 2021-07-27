@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.player.PlayerClass
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,7 +26,6 @@
  */
 package com.sucy.skill.api.player;
 
-import com.rit.sucy.config.Filter;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.enums.ExpSource;
@@ -41,6 +40,7 @@ import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.language.NotificationNodes;
 import com.sucy.skill.language.RPGFilter;
 import com.sucy.skill.manager.TitleManager;
+import mc.promcteam.engine.mccore.config.Filter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -53,13 +53,12 @@ import org.bukkit.entity.Player;
  * rather what the player has within the class. For more general information
  * about the class, you should use the RPGClass class.</p>
  */
-public class PlayerClass
-{
+public class PlayerClass {
     private PlayerData player;
-    private RPGClass   classData;
-    private int        level;
-    private int        points;
-    private double     exp;
+    private RPGClass classData;
+    private int level;
+    private int points;
+    private double exp;
 
     ///////////////////////////////////////////////////////
     //                                                   //
@@ -75,16 +74,14 @@ public class PlayerClass
      * @param player    owning player data
      * @param classData class template
      */
-    public PlayerClass(PlayerData player, RPGClass classData)
-    {
+    public PlayerClass(PlayerData player, RPGClass classData) {
         this.player = player;
         this.classData = classData;
         this.level = 1;
         this.points = SkillAPI.getSettings().getGroupSettings(classData.getGroup()).getStartingPoints();
         this.exp = 0;
 
-        for (Skill skill : classData.getSkills())
-        {
+        for (Skill skill : classData.getSkills()) {
             player.giveSkill(skill, this);
         }
     }
@@ -100,8 +97,7 @@ public class PlayerClass
      *
      * @return data of owning player
      */
-    public PlayerData getPlayerData()
-    {
+    public PlayerData getPlayerData() {
         return player;
     }
 
@@ -110,8 +106,7 @@ public class PlayerClass
      *
      * @return generic data for the class
      */
-    public RPGClass getData()
-    {
+    public RPGClass getData() {
         return classData;
     }
 
@@ -121,9 +116,17 @@ public class PlayerClass
      *
      * @return the current experience of the class towards the next level
      */
-    public double getExp()
-    {
+    public double getExp() {
         return exp;
+    }
+
+    /**
+     * Sets the current experience for the player
+     *
+     * @param exp experience to set to
+     */
+    public void setExp(double exp) {
+        this.exp = Math.max(Math.min(exp, getRequiredExp() - 1), 0);
     }
 
     /**
@@ -131,8 +134,7 @@ public class PlayerClass
      *
      * @return the current required experience
      */
-    public int getRequiredExp()
-    {
+    public int getRequiredExp() {
         return classData.getRequiredExp(level);
     }
 
@@ -142,8 +144,7 @@ public class PlayerClass
      *
      * @return total accumulated experience for the class
      */
-    public double getTotalExp()
-    {
+    public double getTotalExp() {
         double exp = this.exp;
         for (int i = 1; i < level; i++)
             exp += classData.getRequiredExp(i);
@@ -156,9 +157,20 @@ public class PlayerClass
      *
      * @return current level of the class
      */
-    public int getLevel()
-    {
+    public int getLevel() {
         return level;
+    }
+
+    /**
+     * Sets the level for the class
+     *
+     * @param level level to set to
+     */
+    public void setLevel(int level) {
+        if (level < 1)
+            throw new IllegalArgumentException("Cannot be a level less than 0");
+
+        this.level = level;
     }
 
     /**
@@ -167,18 +179,41 @@ public class PlayerClass
      *
      * @return number of available skill points
      */
-    public int getPoints()
-    {
+    public int getPoints() {
         return points;
     }
+
+    /**
+     * <p>Sets the amount of points the player's class has without
+     * launching an event.</p>
+     * <p>This cannot be less than 0.</p>
+     * <p>This is used primarily for initialization. You should generally
+     * use givePoints(int, PointSource) instead.</p>
+     *
+     * @param amount number of points to set it to
+     */
+    public void setPoints(int amount) {
+        // Cannot have a negative amount of points
+        if (amount < 0) {
+            throw new IllegalArgumentException("Invalid point amount - cannot be less than 1");
+        }
+
+        // Set the points
+        points = amount;
+    }
+
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                Functional Methods                 //
+    //                                                   //
+    ///////////////////////////////////////////////////////
 
     /**
      * <p>Checks whether or not the class has reached the max level.</p>
      *
      * @return true if max level, false otherwise
      */
-    public boolean isLevelMaxed()
-    {
+    public boolean isLevelMaxed() {
         return level == classData.getMaxLevel();
     }
 
@@ -187,8 +222,7 @@ public class PlayerClass
      *
      * @return health provided for the player by this class
      */
-    public double getHealth()
-    {
+    public double getHealth() {
         return classData.getHealth(level);
     }
 
@@ -197,16 +231,9 @@ public class PlayerClass
      *
      * @return mana provided for the player by this class
      */
-    public double getMana()
-    {
+    public double getMana() {
         return classData.getMana(level);
     }
-
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //                Functional Methods                 //
-    //                                                   //
-    ///////////////////////////////////////////////////////
 
     /**
      * <p>Gives skill points to be used for the class.</p>
@@ -219,8 +246,7 @@ public class PlayerClass
      *
      * @throws java.lang.IllegalArgumentException if the points are less than 1
      */
-    public void givePoints(int amount)
-    {
+    public void givePoints(int amount) {
         givePoints(amount, PointSource.SPECIAL);
     }
 
@@ -235,11 +261,9 @@ public class PlayerClass
      *
      * @throws java.lang.IllegalArgumentException if the points are less than 1
      */
-    public void givePoints(int amount, PointSource source)
-    {
+    public void givePoints(int amount, PointSource source) {
         // Cannot give a non-positive amount of points
-        if (amount < 1)
-        {
+        if (amount < 1) {
             throw new IllegalArgumentException("Invalid point amount - cannot be less than 1");
         }
 
@@ -248,8 +272,7 @@ public class PlayerClass
         Bukkit.getPluginManager().callEvent(event);
 
         // Add the points if not cancelled
-        if (!event.isCancelled())
-        {
+        if (!event.isCancelled()) {
             points += event.getAmount();
         }
     }
@@ -259,43 +282,19 @@ public class PlayerClass
      *
      * @param amount amount of points to use
      */
-    public void usePoints(int amount)
-    {
+    public void usePoints(int amount) {
         // Cannot use too few points
-        if (amount < 0)
-        {
+        if (amount < 0) {
             throw new IllegalArgumentException("Invalid points amount - cannot be less than 1");
         }
 
         // Cannot use more points than obtained
-        if (amount > points)
-        {
+        if (amount > points) {
             throw new IllegalArgumentException("Invalid points amount - more than current total");
         }
 
         // Use the points
         points -= amount;
-    }
-
-    /**
-     * <p>Sets the amount of points the player's class has without
-     * launching an event.</p>
-     * <p>This cannot be less than 0.</p>
-     * <p>This is used primarily for initialization. You should generally
-     * use givePoints(int, PointSource) instead.</p>
-     *
-     * @param amount number of points to set it to
-     */
-    public void setPoints(int amount)
-    {
-        // Cannot have a negative amount of points
-        if (amount < 0)
-        {
-            throw new IllegalArgumentException("Invalid point amount - cannot be less than 1");
-        }
-
-        // Set the points
-        points = amount;
     }
 
     /**
@@ -323,11 +322,9 @@ public class PlayerClass
      * @param source type of the source of the experience
      * @param showMessage whether or not to show the configured message if enabled
      */
-    public void giveExp(double amount, ExpSource source, boolean showMessage)
-    {
+    public void giveExp(double amount, ExpSource source, boolean showMessage) {
         // Cannot give a non-positive amount of exp
-        if (amount <= 0 || level >= classData.getMaxLevel())
-        {
+        if (amount <= 0 || level >= classData.getMaxLevel()) {
             return;
         }
 
@@ -336,20 +333,18 @@ public class PlayerClass
         event.setCancelled(!classData.receivesExp(source));
         Bukkit.getPluginManager().callEvent(event);
 
-        int rounded = (int)Math.ceil(event.getExp());
+        int rounded = (int) Math.ceil(event.getExp());
 
         // Add experience if not cancelled
-        if (!event.isCancelled() && rounded > 0)
-        {
-            if (showMessage && SkillAPI.getSettings().isShowExpMessages() && player.getPlayer() != null)
-            {
+        if (!event.isCancelled() && rounded > 0) {
+            if (showMessage && SkillAPI.getSettings().isShowExpMessages() && player.getPlayer() != null) {
                 TitleManager.show(
-                    player.getPlayer(),
-                    TitleType.EXP_GAINED,
-                    NotificationNodes.EXP,
-                    RPGFilter.EXP.setReplacement(rounded + ""),
-                    RPGFilter.CLASS.setReplacement(classData.getName()),
-                    Filter.AMOUNT.setReplacement(rounded + "")
+                        player.getPlayer(),
+                        TitleType.EXP_GAINED,
+                        NotificationNodes.EXP,
+                        RPGFilter.EXP.setReplacement(rounded + ""),
+                        RPGFilter.CLASS.setReplacement(classData.getName()),
+                        Filter.AMOUNT.setReplacement(rounded + "")
                 );
             }
 
@@ -365,8 +360,7 @@ public class PlayerClass
      *
      * @param percent percent of experience to lose
      */
-    public void loseExp(double percent)
-    {
+    public void loseExp(double percent) {
         double amount = percent * getRequiredExp();
 
         // Launch the event
@@ -374,21 +368,19 @@ public class PlayerClass
         Bukkit.getPluginManager().callEvent(event);
 
         // Subtract the experience
-        if (!event.isCancelled())
-        {
+        if (!event.isCancelled()) {
             amount = Math.min(event.getExp(), exp);
             exp = exp - amount;
 
             // Exp loss message
-            if (SkillAPI.getSettings().isShowLossMessages() && (int) amount > 0)
-            {
+            if (SkillAPI.getSettings().isShowLossMessages() && (int) amount > 0) {
                 TitleManager.show(
-                    player.getPlayer(),
-                    TitleType.EXP_LOST,
-                    NotificationNodes.LOSE,
-                    RPGFilter.EXP.setReplacement((int) amount + ""),
-                    RPGFilter.CLASS.setReplacement(classData.getName()),
-                    Filter.AMOUNT.setReplacement((int) amount + "")
+                        player.getPlayer(),
+                        TitleType.EXP_LOST,
+                        NotificationNodes.LOSE,
+                        RPGFilter.EXP.setReplacement((int) amount + ""),
+                        RPGFilter.CLASS.setReplacement(classData.getName()),
+                        Filter.AMOUNT.setReplacement((int) amount + "")
                 );
             }
         }
@@ -398,33 +390,29 @@ public class PlayerClass
      * <p>Checks whether or not the player has leveled up based on
      * their current experience.</p>
      */
-    private void checkLevelUp()
-    {
+    private void checkLevelUp() {
         // Count the number of levels gained, if any
         int levels = 0;
         int required;
-        while (exp >= (required = classData.getRequiredExp(level + levels)) && level + levels < classData.getMaxLevel())
-        {
+        while (exp >= (required = classData.getRequiredExp(level + levels)) && level + levels < classData.getMaxLevel()) {
             exp -= required;
             levels++;
         }
 
         // Give the levels if applicable
-        if (levels > 0)
-        {
+        if (levels > 0) {
             giveLevels(levels);
 
             // Level up message
-            if (SkillAPI.getSettings().isShowLevelMessages())
-            {
+            if (SkillAPI.getSettings().isShowLevelMessages()) {
                 TitleManager.show(
-                    player.getPlayer(),
-                    TitleType.LEVEL_UP,
-                    NotificationNodes.LVL,
-                    RPGFilter.LEVEL.setReplacement(level + ""),
-                    RPGFilter.CLASS.setReplacement(classData.getName()),
-                    RPGFilter.POINTS.setReplacement(points + ""),
-                    Filter.AMOUNT.setReplacement(levels + "")
+                        player.getPlayer(),
+                        TitleType.LEVEL_UP,
+                        NotificationNodes.LVL,
+                        RPGFilter.LEVEL.setReplacement(level + ""),
+                        RPGFilter.CLASS.setReplacement(classData.getName()),
+                        RPGFilter.POINTS.setReplacement(points + ""),
+                        Filter.AMOUNT.setReplacement(levels + "")
                 );
             }
         }
@@ -439,11 +427,9 @@ public class PlayerClass
      *
      * @throws java.lang.IllegalArgumentException when the level amount is less than 1
      */
-    public void giveLevels(int amount)
-    {
+    public void giveLevels(int amount) {
         // Cannot give non-positive amount of levels
-        if (amount < 1)
-        {
+        if (amount < 1) {
             throw new IllegalArgumentException("Invalid level amount - cannot be less than 1");
         }
 
@@ -467,34 +453,10 @@ public class PlayerClass
         Bukkit.getPluginManager().callEvent(event);
 
         // Apply the effect
-        if (SkillAPI.getSettings().hasLevelUpEffect())
-        {
+        if (SkillAPI.getSettings().hasLevelUpEffect()) {
             DynamicSkill skill = SkillAPI.getSettings().getLevelUpSkill();
             skill.cast(player, level);
         }
-    }
-
-    /**
-     * Sets the level for the class
-     *
-     * @param level level to set to
-     */
-    public void setLevel(int level)
-    {
-        if (level < 1)
-            throw new IllegalArgumentException("Cannot be a level less than 0");
-
-        this.level = level;
-    }
-
-    /**
-     * Sets the current experience for the player
-     *
-     * @param exp experience to set to
-     */
-    public void setExp(double exp)
-    {
-        this.exp = Math.max(Math.min(exp, getRequiredExp() - 1), 0);
     }
 
     /**
@@ -503,8 +465,7 @@ public class PlayerClass
      *
      * @param classData class data to switch to
      */
-    public void setClassData(RPGClass classData)
-    {
+    public void setClassData(RPGClass classData) {
         this.classData = classData;
     }
 }

@@ -26,10 +26,10 @@
  */
 package com.sucy.skill.gui.tool;
 
-import com.rit.sucy.config.parse.DataSection;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.skills.Skill;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

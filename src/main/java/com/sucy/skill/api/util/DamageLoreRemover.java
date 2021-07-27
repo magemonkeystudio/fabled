@@ -26,9 +26,9 @@
  */
 package com.sucy.skill.api.util;
 
-import com.rit.sucy.reflect.Reflection;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.util.Version;
+import mc.promcteam.engine.utils.Reflex;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Method;
@@ -59,15 +59,15 @@ public class DamageLoreRemover {
     private static void setup() {
 
         try {
-            NBT_BASE = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.nbt.NBTBase")
-                    : Reflection.getNMSClass("NBTBase");
-            NBT_COMPOUND = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.nbt.NBTTagCompound")
-                    : Reflection.getNMSClass("NBTTagCompound");
-            NBT_LIST = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.nbt.NBTTagList")
-                    : Reflection.getNMSClass("NBTTagList");
-            NMS_ITEM = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.world.item.ItemStack")
-                    : Reflection.getNMSClass("ItemStack");
-            CRAFT_ITEM = Reflection.getCraftClass("inventory.CraftItemStack");
+            NBT_BASE = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.nbt.NBTBase")
+                    : Reflex.getNMSClass("NBTBase");
+            NBT_COMPOUND = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.nbt.NBTTagCompound")
+                    : Reflex.getNMSClass("NBTTagCompound");
+            NBT_LIST = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.nbt.NBTTagList")
+                    : Reflex.getNMSClass("NBTTagList");
+            NMS_ITEM = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.item.ItemStack")
+                    : Reflex.getNMSClass("ItemStack");
+            CRAFT_ITEM = Reflex.getCraftClass("inventory.CraftItemStack");
 
             AS_NMS = CRAFT_ITEM.getMethod("asNMSCopy", ItemStack.class);
             GET_TAG = NMS_ITEM.getMethod("getTag");
@@ -108,7 +108,7 @@ public class DamageLoreRemover {
             }
 
             // Remove default NBT displays
-            Object nbtTagList = Reflection.getInstance(NBT_LIST);
+            Object nbtTagList = Reflex.getInstance(NBT_LIST);
             SET.invoke(nbtCompound, "AttributeModifiers", nbtTagList);
 
             // Apply to item

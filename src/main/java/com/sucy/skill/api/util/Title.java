@@ -1,13 +1,13 @@
 package com.sucy.skill.api.util;
 
-import com.rit.sucy.reflect.Reflection;
 import com.sucy.skill.util.Version;
+import mc.promcteam.engine.utils.Reflex;
+import mc.promcteam.engine.utils.reflection.ReflectionUtil;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
-import static com.rit.sucy.reflect.Reflection.getNMSClass;
 
 public class Title {
     private static Constructor<?> timesConstructor;
@@ -22,9 +22,9 @@ public class Title {
     private static Object subtitleType;
 
     private static void loadClasses() throws Exception {
-        packetTitle = getNMSClass("PacketPlayOutTitle");
-        Class<?> chatBaseComponent = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.network.chat.IChatBaseComponent")
-                : getNMSClass("IChatBaseComponent");
+        packetTitle = Reflex.getNMSClass("PacketPlayOutTitle");
+        Class<?> chatBaseComponent = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.network.chat.IChatBaseComponent")
+                : Reflex.getNMSClass("IChatBaseComponent");
         serialize = chatBaseComponent.getDeclaredClasses()[0].getDeclaredMethod("a", String.class);
 
         Class<?> titleSerializer = packetTitle.getDeclaredClasses()[0];
@@ -56,9 +56,9 @@ public class Title {
         Object chatText = serialize.invoke(null, "{\"text\":\"" + text + "\"}");
 
         Object packet = timesConstructor.newInstance(timesType, chatText, fadeIn, duration, fadeOut);
-        Reflection.sendPacket(player, packet);
+        ReflectionUtil.sendPacket(player, packet);
 
         packet = contentConstructor.newInstance(type, chatText);
-        Reflection.sendPacket(player, packet);
+        ReflectionUtil.sendPacket(player, packet);
     }
 }

@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.gui.map.SkillDetailMenu
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,61 +26,61 @@
  */
 package com.sucy.skill.gui.map;
 
-import com.rit.sucy.gui.*;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerSkill;
+import mc.promcteam.engine.mccore.gui.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class SkillDetailMenu extends MapMenu
-{
+public class SkillDetailMenu extends MapMenu {
+    private static final String BACKGROUND = "background";
+    private static final String DETAIL = "detail";
+    private static final String BACK_ON = "back1";
+    private static final String UP_ON = "up1";
+    private static final String DOWN_ON = "down1";
+    private static final String MORE_ON = "more1";
+    private static final String BACK_OFF = "back0";
+    private static final String UP_OFF = "up0";
+    private static final String DOWN_OFF = "down0";
+    private static final String MORE_OFF = "more0";
     private SkillAPI api;
 
-    public SkillDetailMenu(SkillAPI api)
-    {
+    public SkillDetailMenu(SkillAPI api) {
         this.api = api;
     }
 
-    private int getButton(Player player)
-    {
+    private int getButton(Player player) {
         return getSelection(player) & 0xff;
     }
 
-    private int getPage(Player player)
-    {
+    private int getPage(Player player) {
         return (getSelection(player) >> 8) & 0xff;
     }
 
-    private int getPages(Player player)
-    {
+    private int getPages(Player player) {
         return getSelection(player) >> 16;
     }
 
-    private void setButton(Player player, int button)
-    {
+    private void setButton(Player player, int button) {
         setSelection(player, button, getPage(player), getPages(player));
     }
 
-    private void setPage(Player player, int page)
-    {
+    private void setPage(Player player, int page) {
         setSelection(player, getButton(player), page, getPages(player));
     }
 
-    private void setPages(Player player, int pages)
-    {
+    private void setPages(Player player, int pages) {
         setSelection(player, getButton(player), getPage(player), pages);
     }
 
-    private void setSelection(Player player, int button, int page, int pages)
-    {
+    private void setSelection(Player player, int button, int page, int pages) {
         setSelection(player, button | (page << 8) | (pages << 16));
     }
 
     @Override
-    public void onLeft(Player player)
-    {
+    public void onLeft(Player player) {
         int button = getButton(player);
 
         button = Math.max(0, button - 1);
@@ -91,8 +91,7 @@ public class SkillDetailMenu extends MapMenu
     }
 
     @Override
-    public void onRight(Player player)
-    {
+    public void onRight(Player player) {
         int button = getButton(player);
         int page = getPage(player);
 
@@ -104,64 +103,45 @@ public class SkillDetailMenu extends MapMenu
     }
 
     @Override
-    public void onUp(Player player)
-    {
+    public void onUp(Player player) {
         SkillAPI.getPlayerData(player).upgradeSkill(SkillListMenu.getSkill(player).getData());
     }
 
     @Override
-    public void onDown(Player player)
-    {
+    public void onDown(Player player) {
         SkillAPI.getPlayerData(player).downgradeSkill(SkillListMenu.getSkill(player).getData());
     }
 
     @Override
-    public void onSelect(Player player)
-    {
+    public void onSelect(Player player) {
         int button = getButton(player);
         int page = getPage(player);
 
         // Back button
-        if (button == 0)
-        {
+        if (button == 0) {
             MapMenuManager.sendBack(player);
         }
 
         // Upgrade button
-        else if (button == 1)
-        {
+        else if (button == 1) {
             SkillAPI.getPlayerData(player).upgradeSkill(SkillListMenu.getSkill(player).getData());
         }
 
         // Downgrade button
-        else if (button == 2)
-        {
+        else if (button == 2) {
             SkillAPI.getPlayerData(player).downgradeSkill(SkillListMenu.getSkill(player).getData());
         }
 
         // More info button
-        else
-        {
+        else {
             page = (page + 1) % getPages(player);
             setPage(player, page);
             setup(player);
         }
     }
 
-    private static final String BACKGROUND = "background";
-    private static final String DETAIL     = "detail";
-    private static final String BACK_ON    = "back1";
-    private static final String UP_ON      = "up1";
-    private static final String DOWN_ON    = "down1";
-    private static final String MORE_ON    = "more1";
-    private static final String BACK_OFF   = "back0";
-    private static final String UP_OFF     = "up0";
-    private static final String DOWN_OFF   = "down0";
-    private static final String MORE_OFF   = "more0";
-
     @Override
-    public void setup(Player player)
-    {
+    public void setup(Player player) {
         MapScheme scheme = MapScheme.get(api, SkillAPI.getPlayerData(player).getScheme());
         MapScene scene = getScene(player);
         int page = getPage(player);
@@ -182,8 +162,7 @@ public class SkillDetailMenu extends MapMenu
         // Add the text
         int y = font.getFont().getSize() + 5;
         int start = linesPerPage * page;
-        for (int i = start; i < start + linesPerPage && i < lore.size(); i++)
-        {
+        for (int i = start; i < start + linesPerPage && i < lore.size(); i++) {
             String line = lore.get(i);
             scene.add(DETAIL + i, new MapObject(new MapString(font, scheme.getColor(Menu.FONT), line), 7, y));
             y += font.getFont().getSize() + 3;
@@ -213,8 +192,7 @@ public class SkillDetailMenu extends MapMenu
     }
 
     @Override
-    public void render(MapBuffer mapBuffer, Player player)
-    {
+    public void render(MapBuffer mapBuffer, Player player) {
         int button = getButton(player);
         MapScene scene = getScene(player);
 

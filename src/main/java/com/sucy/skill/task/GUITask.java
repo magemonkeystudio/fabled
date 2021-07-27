@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.task.GUITask
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,8 +26,6 @@
  */
 package com.sucy.skill.task;
 
-import com.rit.sucy.text.TextFormatter;
-import com.rit.sucy.version.VersionManager;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.player.PlayerData;
@@ -36,6 +34,8 @@ import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.log.LogType;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.thread.RepeatThreadTask;
+import mc.promcteam.engine.mccore.util.TextFormatter;
+import mc.promcteam.engine.mccore.util.VersionManager;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
@@ -44,8 +44,7 @@ import org.bukkit.entity.Player;
  * Task that handles updating GUI elements such as level bar,
  * food bar, and action bar according to the config.yml content.
  */
-public class GUITask extends RepeatThreadTask
-{
+public class GUITask extends RepeatThreadTask {
     private final boolean levelMana;
     private final boolean levelLevel;
 
@@ -56,15 +55,14 @@ public class GUITask extends RepeatThreadTask
     private final boolean oldHealth;
 
     private final boolean useAction;
-    private final String  actionText;
+    private final String actionText;
 
     /**
      * Sets up the task, running if any of the GUI options are enabled
      *
      * @param api API reference
      */
-    public GUITask(SkillAPI api)
-    {
+    public GUITask(SkillAPI api) {
         super(5, 5);
 
         String levelBar = SkillAPI.getSettings().getLevelBar().toLowerCase();
@@ -93,18 +91,15 @@ public class GUITask extends RepeatThreadTask
      * Runs the tasks, updating GUI elements for players
      */
     @Override
-    public void run()
-    {
+    public void run() {
         Logger.log(LogType.GUI, 1, "Updating GUI (" + VersionManager.getOnlinePlayers().length + " players)...");
-        for (Player player : VersionManager.getOnlinePlayers())
-        {
+        for (Player player : VersionManager.getOnlinePlayers()) {
             if (!SkillAPI.getSettings().isWorldEnabled(player.getWorld())) continue;
 
             PlayerData data = SkillAPI.getPlayerData(player);
 
             // Health scale
-            if (forceScaling)
-            {
+            if (forceScaling) {
                 if (oldHealth)
                     player.setHealthScale(20);
                 else
@@ -112,28 +107,21 @@ public class GUITask extends RepeatThreadTask
             }
 
             // Level bar options
-            if (levelMana)
-            {
+            if (levelMana) {
                 Logger.log(LogType.GUI, 2, "Updating level bar with mana");
                 if (data.getMaxMana() == 0) {
                     player.setLevel(0);
                     player.setExp(0);
-                }
-                else {
+                } else {
                     player.setLevel((int) data.getMana());
                     player.setExp(Math.min(0.999f, (float) (0.999 * data.getMana() / data.getMaxMana())));
                 }
-            }
-            else if (levelLevel)
-            {
+            } else if (levelLevel) {
                 Logger.log(LogType.GUI, 2, "Updating level bar with class level/exp");
-                if (!data.hasClass())
-                {
+                if (!data.hasClass()) {
                     player.setLevel(0);
                     player.setExp(0);
-                }
-                else
-                {
+                } else {
                     PlayerClass main = data.getMainClass();
                     player.setLevel(main.getLevel());
                     player.setExp((float) main.getExp() / main.getRequiredExp());
@@ -141,53 +129,45 @@ public class GUITask extends RepeatThreadTask
             }
 
             // Food bar options
-            if (foodMana)
-            {
+            if (foodMana) {
                 Logger.log(LogType.GUI, 2, "Updating food bar with mana");
                 player.setSaturation(20);
                 if (data.getMaxMana() == 0) {
-                    player.setFoodLevel(20);;
-                }
-                else {
+                    player.setFoodLevel(20);
+                    ;
+                } else {
                     player.setFoodLevel((int) Math.ceil(20 * data.getMana() / data.getMaxMana()));
                 }
-            }
-            else if (foodExp)
-            {
+            } else if (foodExp) {
                 Logger.log(LogType.GUI, 2, "Updating food bar with class level/exp");
                 player.setSaturation(20);
-                if (!data.hasClass())
-                {
+                if (!data.hasClass()) {
                     player.setFoodLevel(0);
-                }
-                else
-                {
+                } else {
                     PlayerClass main = data.getMainClass();
                     player.setFoodLevel((int) Math.floor(20 * main.getExp() / main.getRequiredExp()));
                 }
             }
 
             // Action bar options
-            if (useAction && data.hasClass())
-            {
+            if (useAction && data.hasClass()) {
                 Logger.log(LogType.GUI, 2, "Updating action bar (Working=" + ActionBar.isSupported() + ")");
                 PlayerClass main = data.getMainClass();
                 String filtered = (main.getData().hasActionBarText() ? main.getData().getActionBarText() : actionText)
-                    .replace("{combo}", data.getComboData().getCurrentComboString())
-                    .replace("{class}", main.getData().getPrefix())
-                    .replace("{level}", "" + main.getLevel())
-                    .replace("{exp}", "" + (int) main.getExp())
-                    .replace("{expReq}", "" + main.getRequiredExp())
-                    .replace("{expLeft}", "" + (int) Math.ceil(main.getRequiredExp() - main.getExp()))
-                    .replace("{mana}", "" + (int) data.getMana())
-                    .replace("{maxMana}", "" + (int) data.getMaxMana())
-                    .replace("{name}", player.getName())
-                    .replace("{health}", "" + (int) player.getHealth())
-                    .replace("{maxHealth}", "" + (int) player.getMaxHealth())
-                    .replace("{attr}", "" + data.getAttributePoints())
-                    .replace("{sp}", "" + main.getPoints());
-                while (filtered.contains("{value:"))
-                {
+                        .replace("{combo}", data.getComboData().getCurrentComboString())
+                        .replace("{class}", main.getData().getPrefix())
+                        .replace("{level}", "" + main.getLevel())
+                        .replace("{exp}", "" + (int) main.getExp())
+                        .replace("{expReq}", "" + main.getRequiredExp())
+                        .replace("{expLeft}", "" + (int) Math.ceil(main.getRequiredExp() - main.getExp()))
+                        .replace("{mana}", "" + (int) data.getMana())
+                        .replace("{maxMana}", "" + (int) data.getMaxMana())
+                        .replace("{name}", player.getName())
+                        .replace("{health}", "" + (int) player.getHealth())
+                        .replace("{maxHealth}", "" + (int) player.getMaxHealth())
+                        .replace("{attr}", "" + data.getAttributePoints())
+                        .replace("{sp}", "" + main.getPoints());
+                while (filtered.contains("{value:")) {
                     int index = filtered.indexOf("{value:");
                     int end = filtered.indexOf('}', index);
                     String key = filtered.substring(index + 7, end);

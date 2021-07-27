@@ -1,10 +1,9 @@
 package com.sucy.skill.packet;
 
-import com.rit.sucy.reflect.Reflection;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.util.Version;
 import io.netty.channel.Channel;
-import org.bukkit.Bukkit;
+import mc.promcteam.engine.utils.Reflex;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
@@ -45,7 +44,7 @@ public class PacketInjector {
                     k.setAccessible(true);
                 }
             } else {
-                String nms = Reflection.getNMSPackage();
+                String nms = Reflex.getNMSPackage();
                 playerCon = Class.forName(nms + "EntityPlayer")
                         .getField("playerConnection");
 
@@ -61,7 +60,7 @@ public class PacketInjector {
                 }
             }
 
-            handle = Class.forName(Reflection.getCraftPackage() + "entity.CraftPlayer").getMethod("getHandle");
+            handle = Class.forName(Reflex.getCraftPackage() + "entity.CraftPlayer").getMethod("getHandle");
         } catch (Throwable t) {
             this.error();
             t.printStackTrace();
@@ -69,9 +68,9 @@ public class PacketInjector {
 
         try {
             if (Version.MINOR_VERSION >= 17)
-                dropField = Reflection.getClass("net.minecraft.network.protocol.game.PacketPlayInBlockDig").getDeclaredField("c");
+                dropField = Reflex.getClass("net.minecraft.network.protocol.game.PacketPlayInBlockDig").getDeclaredField("c");
             else
-                dropField = Reflection.getNMSClass("PacketPlayInBlockDig").getDeclaredField("c");
+                dropField = Reflex.getNMSClass("PacketPlayInBlockDig").getDeclaredField("c");
             dropField.setAccessible(true);
         } catch (Exception ex) {
             ex.printStackTrace();

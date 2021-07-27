@@ -26,11 +26,12 @@
  */
 package com.sucy.skill.api.projectile;
 
-import com.rit.sucy.reflect.Reflection;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.particle.target.Followable;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.util.Version;
+import mc.promcteam.engine.utils.Reflex;
+import mc.promcteam.engine.utils.reflection.ReflectionUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -64,15 +65,15 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
 
     static {
         try {
-            Class<?> aabbClass = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.world.phys.AxisAlignedBB")
-                    : Reflection.getNMSClass("AxisAlignedBB");
-            Class<?> entityClass = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.world.Entity")
-                    : Reflection.getNMSClass("Entity");
+            Class<?> aabbClass = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.phys.AxisAlignedBB")
+                    : Reflex.getNMSClass("AxisAlignedBB");
+            Class<?> entityClass = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.Entity")
+                    : Reflex.getNMSClass("Entity");
             aabbConstructor = aabbClass.getConstructor(double.class, double.class, double.class, double.class, double.class, double.class);
             getBukkitEntity = entityClass.getDeclaredMethod("getBukkitEntity");
-            getHandle = Reflection.getCraftClass("CraftWorld").getDeclaredMethod("getHandle");
-            Class<?> worldClass = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.world.level.World")
-                    : Reflection.getNMSClass("World");
+            getHandle = Reflex.getCraftClass("CraftWorld").getDeclaredMethod("getHandle");
+            Class<?> worldClass = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.level.World")
+                    : Reflex.getNMSClass("World");
             try {
                 getEntities = worldClass.getDeclaredMethod("getEntities", entityClass, aabbClass, Predicate.class);
             } catch (Exception e) {
@@ -84,8 +85,8 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
         }
     }
 
-    private final HashMap<String, List<MetadataValue>> metadata = new HashMap<String, List<MetadataValue>>();
-    private final Set<Integer> hit = new HashSet<Integer>();
+    private final HashMap<String, List<MetadataValue>> metadata = new HashMap<>();
+    private final Set<Integer> hit = new HashSet<>();
     private ProjectileCallback callback;
     private LivingEntity thrower;
     private boolean enemy = true;
