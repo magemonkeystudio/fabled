@@ -31,7 +31,6 @@ import com.sucy.skill.api.particle.target.Followable;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.util.Version;
 import mc.promcteam.engine.utils.Reflex;
-import mc.promcteam.engine.utils.reflection.ReflectionUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -124,10 +123,10 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
     public static ArrayList<Vector> calcSpread(Vector dir, double angle, int amount) {
         // Special cases
         if (amount <= 0) {
-            return new ArrayList<Vector>();
+            return new ArrayList<>();
         }
 
-        ArrayList<Vector> list = new ArrayList<Vector>();
+        ArrayList<Vector> list = new ArrayList<>();
 
         // One goes straight if odd amount
         if (amount % 2 == 1) {
@@ -324,7 +323,7 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
      */
     private List<LivingEntity> getColliding() {
         // Reflection for nms collision
-        List<LivingEntity> result = new ArrayList<LivingEntity>(1);
+        List<LivingEntity> result = new ArrayList<>(1);
         try {
             Object nmsWorld = getHandle.invoke(getLocation().getWorld());
             Object predicate = getEntities == null ? GUAVA_PREDICATE : JAVA_PREDICATE;
