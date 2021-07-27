@@ -31,11 +31,11 @@ import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.data.PlayerStats;
+import mc.promcteam.engine.mccore.chat.Chat;
+import mc.promcteam.engine.mccore.chat.Prefix;
 import mc.promcteam.engine.mccore.scoreboard.BoardManager;
 import mc.promcteam.engine.mccore.scoreboard.StatBoard;
 import mc.promcteam.engine.mccore.scoreboard.Team;
-import mc.promcteam.engine.mccore.util.Chat;
-import mc.promcteam.engine.mccore.util.Prefix;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
