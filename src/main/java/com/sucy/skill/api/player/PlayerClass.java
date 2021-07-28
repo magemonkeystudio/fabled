@@ -457,7 +457,7 @@ public class PlayerClass
         // Update health/mana
         final Player player = getPlayerData().getPlayer();
         if (player != null) {
-            getPlayerData().updateHealthAndMana(getPlayerData().getPlayer());
+            getPlayerData().updatePlayerStat(getPlayerData().getPlayer());
             getPlayerData().getEquips().update(getPlayerData().getPlayer());
         }
         getPlayerData().autoLevel();

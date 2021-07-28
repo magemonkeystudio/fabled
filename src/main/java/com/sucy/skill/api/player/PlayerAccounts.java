@@ -26,16 +26,16 @@
  */
 package com.sucy.skill.api.player;
 
-import com.rit.sucy.version.VersionPlayer;
-import com.sucy.skill.SkillAPI;
-import com.sucy.skill.api.event.PlayerAccountChangeEvent;
-import com.sucy.skill.listener.AttributeListener;
-import com.sucy.skill.manager.ClassBoardManager;
+import java.util.HashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
+import com.rit.sucy.version.VersionPlayer;
+import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.event.PlayerAccountChangeEvent;
+import com.sucy.skill.manager.ClassBoardManager;
 
 /**
  * Represents the collection of accounts owned by a single player.
@@ -210,18 +210,19 @@ public class PlayerAccounts {
             if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
                 ClassBoardManager.clear(new VersionPlayer(player));
                 getActiveData().stopPassives(player);
-                AttributeListener.clearBonuses(player);
-                getActiveData().clearAttributeModifier();
+                getActiveData().clearAllModifiers();
                 active = event.getNewID();
                 getActiveData().startPassives(player);
                 getActiveData().updateScoreboard();
-                getActiveData().updateHealthAndMana(player);
-                AttributeListener.updatePlayer(getActiveData());
                 if (getActiveData().hasClass() && SkillAPI.getSettings().isSkillBarEnabled() && !SkillAPI.getSettings()
                         .isUsingCombat()) {
                     getActiveData().getSkillBar().setup(player);
                 }
                 getActiveData().getEquips().update(player);
+                getActiveData().updatePlayerStat(player);
+                // Do a force health update, as health haven't been altered
+                // updatePlayerStat will not do a wasteful health update
+                getActiveData().updateHealth(player);
             } else {
                 active = event.getNewID();
             }

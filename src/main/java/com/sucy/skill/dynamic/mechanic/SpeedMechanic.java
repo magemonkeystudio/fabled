@@ -26,13 +26,18 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
-import com.sucy.skill.api.util.FlagManager;
-import com.sucy.skill.listener.AttributeListener;
-import com.sucy.skill.listener.MechanicListener;
+import java.util.List;
+
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import java.util.List;
+import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.enums.Operation;
+import com.sucy.skill.api.player.PlayerData;
+import com.sucy.skill.api.player.PlayerStatModifier;
+import com.sucy.skill.api.util.FlagManager;
+import com.sucy.skill.listener.MechanicListener;
+import com.sucy.skill.manager.AttributeManager;
 
 /**
  * Applies a flag to each target
@@ -57,16 +62,21 @@ public class SpeedMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets) {
-        float multiplier = (float) parseValues(caster, MULTIPLIER, level, 1.2);
+        double multiplier = parseValues(caster, MULTIPLIER, level, 1.2);
         double seconds = parseValues(caster, DURATION, level, 3.0);
         int ticks = (int) (seconds * 20);
         boolean worked = false;
         for (LivingEntity target : targets) {
             if (!(target instanceof Player)) { continue; }
 
-            AttributeListener.refreshSpeed((Player) target);
-            FlagManager.addFlag(target, MechanicListener.SPEED_KEY, ticks);
-            ((Player) target).setWalkSpeed(multiplier * ((Player) target).getWalkSpeed());
+            Player targetPlayer = (Player) target;
+
+            PlayerStatModifier statModifier = new PlayerStatModifier("skillapi.mechanic.speed_mechanic", multiplier, Operation.MULTIPLY_PERCENTAGE, false);
+            FlagManager.addFlag(target, MechanicListener.SPEED_KEY + ":" + statModifier.getUUID(), ticks);
+            PlayerData playerData = SkillAPI.getPlayerData(targetPlayer);
+            playerData.addStatModifier(AttributeManager.MOVE_SPEED, statModifier, false);
+            playerData.updateWalkSpeed(targetPlayer);
+
             worked = true;
         }
         return worked;

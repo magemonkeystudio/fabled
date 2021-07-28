@@ -26,11 +26,34 @@
  */
 package com.sucy.skill.listener;
 
+import java.util.HashMap;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.inventory.InventoryPickupItemEvent;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+
 import com.rit.sucy.version.VersionManager;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.event.FlagApplyEvent;
 import com.sucy.skill.api.event.FlagExpireEvent;
 import com.sucy.skill.api.event.PlayerLandEvent;
+import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.projectile.ItemProjectile;
 import com.sucy.skill.dynamic.mechanic.BlockMechanic;
 import com.sucy.skill.dynamic.mechanic.PotionProjectileMechanic;
@@ -38,19 +61,6 @@ import com.sucy.skill.dynamic.mechanic.ProjectileMechanic;
 import com.sucy.skill.hook.DisguiseHook;
 import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.hook.VaultHook;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.*;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.*;
-import org.bukkit.event.inventory.InventoryPickupItemEvent;
-import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-
-import java.util.HashMap;
-import java.util.UUID;
 
 /**
  * The listener for handling events related to dynamic mechanics
@@ -146,12 +156,14 @@ public class MechanicListener extends SkillAPIListener
         {
             if (event.getFlag().startsWith("perm:") && PluginChecker.isVaultActive())
                 VaultHook.remove((Player) event.getEntity(), event.getFlag().substring(5));
-            else if (event.getFlag().equals(SPEED_KEY))
+            else if (event.getFlag().startsWith(SPEED_KEY + ":"))
             {
-                if (SkillAPI.getSettings().isAttributesEnabled())
-                    AttributeListener.refreshSpeed((Player) event.getEntity());
-                else
-                    ((Player) event.getEntity()).setWalkSpeed(0.2f);
+                Player player = (Player) event.getEntity();
+                UUID uuid = UUID.fromString(event.getFlag().split(":")[1]);
+
+                PlayerData data = SkillAPI.getPlayerData(player);
+                data.removeStatModifier(uuid, false);
+                data.updateWalkSpeed(player);
             }
         }
         if (event.getFlag().equals(DISGUISE_KEY))
@@ -214,7 +226,7 @@ public class MechanicListener extends SkillAPIListener
             if (p.hasMetadata(P_CALL) && event.getEntity() instanceof LivingEntity)
             {
                 ((ProjectileMechanic) SkillAPI.getMeta(p, P_CALL))
-                    .callback(p, (LivingEntity) event.getEntity());
+                .callback(p, (LivingEntity) event.getEntity());
                 event.setCancelled(true);
             }
         }
@@ -244,7 +256,7 @@ public class MechanicListener extends SkillAPIListener
         {
             event.setCancelled(true);
             ((PotionProjectileMechanic) SkillAPI.getMeta(event.getEntity(), POTION_PROJECTILE))
-                .callback(event.getEntity(), event.getAffectedEntities());
+            .callback(event.getEntity(), event.getAffectedEntities());
             event.getAffectedEntities().clear();
         }
     }

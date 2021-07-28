@@ -31,9 +31,9 @@ import java.util.UUID;
 import com.sucy.skill.api.enums.Operation;
 
 /**
- * Represents player-specific data for attributes, a replacement of bonus attribute
+ * Represents player-specific data for stats, a replacement of bonus stats
  */
-public class PlayerAttributeModifier {
+public class PlayerStatModifier {
 
     private UUID uuid;
     private String name;
@@ -42,8 +42,8 @@ public class PlayerAttributeModifier {
     private boolean persistent;
 
     /**
-     * Initializes a new PlayerAttributeModifier.
-     * Used for modifying player attribute for a period of time
+     * Initializes a new PlayerStatModifier.
+     * Used for modifying player stat for a period of time
      *
      * @param name The group name of this modifier
      * @param amount The amount of value used for operation later
@@ -51,7 +51,7 @@ public class PlayerAttributeModifier {
      * @param persistent If this is set to true, this modifier will not be removed when player change class
      *                   or change world.
      */
-    public PlayerAttributeModifier(String name, double amount, Operation operation, boolean persistent) {
+    public PlayerStatModifier(String name, double amount, Operation operation, boolean persistent) {
 
         this.uuid = UUID.randomUUID();
         this.name = name;

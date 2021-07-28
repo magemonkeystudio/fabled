@@ -26,19 +26,6 @@
  */
 package com.sucy.skill.listener;
 
-import com.rit.sucy.version.VersionManager;
-import com.sucy.skill.SkillAPI;
-import com.sucy.skill.api.enums.ExpSource;
-import com.sucy.skill.api.enums.ManaSource;
-import com.sucy.skill.api.event.*;
-import com.sucy.skill.api.player.PlayerData;
-import com.sucy.skill.hook.CitizensHook;
-import com.sucy.skill.log.LogType;
-import com.sucy.skill.log.Logger;
-import com.sucy.skill.manager.AttributeManager;
-import org.bukkit.Bukkit;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -46,10 +33,22 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import java.util.HashMap;
+import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.enums.ExpSource;
+import com.sucy.skill.api.enums.ManaSource;
+import com.sucy.skill.api.event.PhysicalDamageEvent;
+import com.sucy.skill.api.event.PlayerExperienceGainEvent;
+import com.sucy.skill.api.event.PlayerLevelUpEvent;
+import com.sucy.skill.api.event.PlayerManaGainEvent;
+import com.sucy.skill.api.event.PlayerUpAttributeEvent;
+import com.sucy.skill.api.event.SkillDamageEvent;
+import com.sucy.skill.api.player.PlayerData;
+import com.sucy.skill.hook.CitizensHook;
+import com.sucy.skill.log.LogType;
+import com.sucy.skill.log.Logger;
+import com.sucy.skill.manager.AttributeManager;
 
 /**
  * Listener for managing applying attribute bonuses for players
@@ -57,7 +56,6 @@ import java.util.HashMap;
 public class AttributeListener extends SkillAPIListener
 {
     public static final String PHYSICAL = "physical";
-    private static HashMap<String, Double> BONUSES = new HashMap<>();
 
     @Override
     public void init() {
@@ -65,56 +63,7 @@ public class AttributeListener extends SkillAPIListener
     }
 
     /**
-     * Cleans up the listener on shutdown
-     */
-    @Override
-    public void cleanup() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            clearBonuses(player);
-        }
-        BONUSES.clear();
-    }
-
-    /**
-     * Clears stored bonuses for the given player
-     *
-     * @param player player to clear bonuses for
-     */
-    public static void clearBonuses(Player player)
-    {
-        clearLocalBonuses(player);
-        BONUSES.remove(player.getName() + ":" + AttributeManager.HEALTH);
-        BONUSES.remove(player.getName() + ":" + AttributeManager.MANA);
-    }
-
-    private static void clearLocalBonuses(Player player)
-    {
-        BONUSES.remove(player.getName() + ":" + AttributeManager.MOVE_SPEED);
-        player.setWalkSpeed(0.2f);
-
-        if (VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
-            clear(player, Attribute.GENERIC_ATTACK_SPEED, AttributeManager.ATTACK_SPEED);
-            clear(player, Attribute.GENERIC_ARMOR, AttributeManager.ARMOR);
-            clear(player, Attribute.GENERIC_LUCK, AttributeManager.LUCK);
-            clear(player, Attribute.GENERIC_KNOCKBACK_RESISTANCE, AttributeManager.LUCK);
-        }
-        if (VersionManager.isVersionAtLeast(11200)) {
-            clear(player, Attribute.GENERIC_ARMOR_TOUGHNESS, AttributeManager.ARMOR_TOUGHNESS);
-        }
-    }
-
-    private static void clear(Player player, Object attribute, String attribKey) {
-        if (!BONUSES.containsKey(attribKey)) {
-            return;
-        }
-
-        double bonus = BONUSES.remove(attribKey);
-        AttributeInstance instance = player.getAttribute((Attribute) attribute);
-        instance.setBaseValue(instance.getBaseValue() - bonus);
-    }
-
-    /**
-     * Gives players bonus stats on login
+     * Refresh player stats on login
      */
     public void onJoin(final Player player)
     {
@@ -133,20 +82,6 @@ public class AttributeListener extends SkillAPIListener
             return;
 
         updatePlayer(SkillAPI.getPlayerData(event.getPlayer()));
-    }
-
-    /**
-     * Clears stored bonuses for a player when they quit
-     *
-     * @param event event details
-     */
-    @EventHandler
-    public void onQuit(PlayerQuitEvent event)
-    {
-        if (event.getPlayer().hasMetadata("NPC"))
-            return;
-
-        clearBonuses(event.getPlayer());
     }
 
     /**
@@ -307,7 +242,7 @@ public class AttributeListener extends SkillAPIListener
         boolean oldEnabled = SkillAPI.getSettings().isWorldEnabled(event.getFrom());
         boolean newEnabled = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
         if (oldEnabled && !newEnabled) {
-            clearBonuses(event.getPlayer());
+            //TODO: Clear global Attribute/Stats bonus
         } else if (!oldEnabled && newEnabled) {
             updatePlayer(SkillAPI.getPlayerData(event.getPlayer()));
         }
@@ -339,77 +274,8 @@ public class AttributeListener extends SkillAPIListener
      *
      * @param data player to update
      */
-    public static void updatePlayer(PlayerData data)
-    {
-        Player player = data.getPlayer();
-        if (player != null && SkillAPI.getSettings().isWorldEnabled(player.getWorld()))
-        {
-            double change = updateStat(data, AttributeManager.HEALTH, player.getMaxHealth(), 0, Double.MAX_VALUE);
-            data.addMaxHealth(change);
-
-            change = updateStat(data, AttributeManager.MANA, data.getMaxMana(), 0, Double.MAX_VALUE);
-            data.addMaxMana(change);
-
-            change = updateStat(data, AttributeManager.MOVE_SPEED, player.getWalkSpeed(), -2, 1);
-            player.setWalkSpeed(player.getWalkSpeed() + (float) change);
-
-            if (VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
-                update(data, player, Attribute.GENERIC_ATTACK_SPEED, AttributeManager.ATTACK_SPEED, 0, 1024);
-                update(data, player, Attribute.GENERIC_ARMOR, AttributeManager.ARMOR, 0, 30);
-                update(data, player, Attribute.GENERIC_LUCK, AttributeManager.LUCK, -1024, 1024);
-                update(data, player, Attribute.GENERIC_KNOCKBACK_RESISTANCE, AttributeManager.KNOCKBACK_RESIST, 0, 1.0);
-            }
-            if (VersionManager.isVersionAtLeast(110200)) {
-                update(data, player, Attribute.GENERIC_ARMOR_TOUGHNESS, AttributeManager.ARMOR_TOUGHNESS, 0, 20);
-            }
-        }
+    private void updatePlayer(PlayerData data) {
+        data.updatePlayerStat(data.getPlayer());
     }
 
-    private static void update(
-            final PlayerData data,
-            final Player player,
-            final Object attribute,
-            final String attribKey,
-            final double min,
-            final double max) {
-
-        final AttributeInstance instance = player.getAttribute((Attribute) attribute);
-        final double change = updateStat(data, attribKey, instance.getBaseValue(), min, max);
-        instance.setBaseValue(instance.getBaseValue() + change);
-    }
-
-    /**
-     * Refreshes player speed after buffs expire
-     *
-     * @param player player to refresh
-     */
-    public static void refreshSpeed(Player player)
-    {
-        BONUSES.remove(player.getName() + ":" + AttributeManager.MOVE_SPEED);
-        double speed = updateStat(SkillAPI.getPlayerData(player), AttributeManager.MOVE_SPEED, 0.2, -2, 1);
-        player.setWalkSpeed((float) (0.2 + speed));
-    }
-
-    /**
-     * Updates an individual stat for a player
-     *
-     * @param data  player data
-     * @param key   stat key
-     * @param value current value
-     *
-     * @return change in the stat based on current attributes
-     */
-    private static double updateStat(PlayerData data, String key, double value, double min, double max)
-    {
-        Player player = data.getPlayer();
-        if (player != null)
-        {
-            String mapKey = player.getName() + ":" + key;
-            double current = BONUSES.containsKey(mapKey) ? BONUSES.remove(mapKey) : 0;
-            double updated = Math.max(min, Math.min(max, data.scaleStat(key, value - current) - value + current));
-            BONUSES.put(mapKey, updated);
-            return updated - current;
-        }
-        return 0;
-    }
 }

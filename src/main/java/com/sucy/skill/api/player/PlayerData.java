@@ -38,6 +38,7 @@ import static com.sucy.skill.api.event.PlayerSkillCastFailedEvent.Cause.SPECTATO
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -91,7 +92,6 @@ import com.sucy.skill.gui.tool.GUITool;
 import com.sucy.skill.language.ErrorNodes;
 import com.sucy.skill.language.GUINodes;
 import com.sucy.skill.language.RPGFilter;
-import com.sucy.skill.listener.AttributeListener;
 import com.sucy.skill.log.LogType;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.manager.AttributeManager;
@@ -106,11 +106,12 @@ import com.sucy.skill.task.ScoreboardTask;
  * try to instantaite your own PlayerData object.
  */
 public class PlayerData {
-    private final HashMap<String, PlayerClass>   classes     = new HashMap<>();
-    private final HashMap<String, PlayerSkill>   skills      = new HashMap<>();
-    private final HashMap<Material, PlayerSkill> binds       = new HashMap<>();
-    private final HashMap<String, Integer>       attributes  = new HashMap<>();
-    private final HashMap<String, ArrayList<PlayerAttributeModifier>> attributesModifiers = new HashMap<>();
+    private HashMap<String, PlayerClass>   classes     = new HashMap<>();
+    private HashMap<String, PlayerSkill>   skills      = new HashMap<>();
+    private HashMap<Material, PlayerSkill> binds       = new HashMap<>();
+    private HashMap<String, Integer>       attributes  = new HashMap<>();
+    private HashMap<String, ArrayList<PlayerAttributeModifier>> attributesModifiers = new HashMap<>();
+    private HashMap<String, ArrayList<PlayerStatModifier>> statModifiers = new HashMap<>();
 
     private DataSection extraData = new DataSection();
     private OfflinePlayer  player;
@@ -122,9 +123,9 @@ public class PlayerData {
     private String         menuClass;
     private double         mana;
     private double         maxMana;
-    private double         bonusHealth;
-    private double         bonusMana;
     private double         lastHealth;
+    private double         health;
+    private double         maxHealth;
     private double         hunger;
     private boolean        init;
     private boolean        passive;
@@ -253,7 +254,7 @@ public class PlayerData {
     }
 
     public int subtractHungerValue(final double amount) {
-        final double scaled = amount / scaleStat(AttributeManager.HUNGER, amount);
+        final double scaled = amount / scaleStat(AttributeManager.HUNGER, amount, 0D, Double.MAX_VALUE);
         final int lost = scaled >= hunger ? (int) (scaled - hunger) + 1 : 0;
         this.hunger += lost - amount;
         return lost;
@@ -327,19 +328,29 @@ public class PlayerData {
     public int getAttribute(String key) {
         key = key.toLowerCase();
         double total = 0;
-        if (attributes.containsKey(key)) { total += attributes.get(key); }
 
+        // Attribute points comes with class level
+        for (PlayerClass playerClass : this.classes.values()) {
+            total += playerClass.getData().getAttribute(key, playerClass.getLevel());
+        }
+
+        // Attribute points come with invested attributes
+        if (this.attributes.containsKey(key)) { total += this.attributes.get(key); }
+
+        // Attribute points come with modifier api
         if (this.attributesModifiers.containsKey(key)) {
 
             double multiplier = 1;
 
-            for(PlayerAttributeModifier modifier : this.getAttributesModifiers(key)) {
+            for(PlayerAttributeModifier modifier : this.getAttributeModifiers(key)) {
 
                 switch(modifier.getOperation()) {
                 case ADD_NUMBER:
-                    total = modifier.applyOn(multiplier);
+                    total = modifier.applyOn(total);
+                    break;
                 case MULTIPLY_PERCENTAGE:
                     multiplier = modifier.applyOn(multiplier);
+                    break;
                 }
 
             }
@@ -347,13 +358,6 @@ public class PlayerData {
             total = total*multiplier;
         }
 
-        if(total < 0) {
-            total = 0;
-        }
-
-        for (PlayerClass playerClass : classes.values()) {
-            total += playerClass.getData().getAttribute(key, playerClass.getLevel());
-        }
         return Math.max(0, (int) Math.round(total));
     }
 
@@ -422,33 +426,68 @@ public class PlayerData {
         amount = Math.min(amount + current, max);
         if (amount > current) {
             attributes.put(key, amount);
-            AttributeListener.updatePlayer(this);
+            this.updatePlayerStat(getPlayer());
         }
     }
 
     /**
-     * Adds attributes modifier to the player.
+     * Adds stat modifier to the player.
+     * These bypass min/max invest amount and cannot be refunded.
+     *
+     * @param key stat key
+     * @param modifier The player stat modifier
+     * @param update calculate player stat immediately and apply to him
+     */
+    public void addStatModifier(String key, PlayerStatModifier modifier, boolean update) {
+        ArrayList<PlayerStatModifier> modifiers = this.getStatModifiers(key);
+        modifiers.add(modifier);
+        this.statModifiers.put(key, modifiers);
+
+        if(update) {
+            this.updatePlayerStat(getPlayer());
+        }
+    }
+
+    /**
+     * Get all stat modifier from the player.
+     *
+     * @param key stat key
+     * @return stat modifier list of the attribute given
+     */
+    public ArrayList<PlayerStatModifier> getStatModifiers(String key) {
+        if(this.statModifiers.containsKey(key)) {
+            return this.statModifiers.get(key);
+        }else {
+            return new ArrayList<PlayerStatModifier>();
+        }
+    }
+
+    /**
+     * Adds attribute modifier to the player.
      * These bypass min/max invest amount and cannot be refunded.
      *
      * @param key attribute key
      * @param modifier The player attribute modifier
+     * @param update calculate player stat immediately and apply to him
      */
-    public void addAttributesModifier(String key, PlayerAttributeModifier modifier) {
+    public void addAttributeModifier(String key, PlayerAttributeModifier modifier, boolean update) {
         key = SkillAPI.getAttributeManager().normalize(key);
-        ArrayList<PlayerAttributeModifier> modifiers = this.getAttributesModifiers(key);
+        ArrayList<PlayerAttributeModifier> modifiers = this.getAttributeModifiers(key);
         modifiers.add(modifier);
         this.attributesModifiers.put(key, modifiers);
 
-        AttributeListener.updatePlayer(this);
+        if(update) {
+            this.updatePlayerStat(getPlayer());
+        }
     }
 
     /**
-     * Get all attributes modifier from the player.
+     * Get all attribute modifier from the player.
      *
      * @param key attribute key
-     * @return attributes modifier list of the attribute given
+     * @return attribute modifier list of the attribute given
      */
-    public ArrayList<PlayerAttributeModifier> getAttributesModifiers(String key) {
+    public ArrayList<PlayerAttributeModifier> getAttributeModifiers(String key) {
         if(this.attributesModifiers.containsKey(key)) {
             return this.attributesModifiers.get(key);
         }else {
@@ -474,7 +513,7 @@ public class PlayerData {
             attribPoints += 1;
             attributes.put(key, current - 1);
             if (current - 1 <= 0) { attributes.remove(key); }
-            AttributeListener.updatePlayer(this);
+            this.updatePlayerStat(getPlayer());
 
             return true;
         }
@@ -488,7 +527,7 @@ public class PlayerData {
         key = key.toLowerCase();
         attribPoints += getInvestedAttribute(key);
         attributes.remove(key);
-        AttributeListener.updatePlayer(this);
+        this.updatePlayerStat(getPlayer());
     }
 
     /**
@@ -532,25 +571,72 @@ public class PlayerData {
      * Scales a stat value using the player's attributes
      *
      * @param stat  stat key
-     * @param value base value
+     * @param baseValue the default value come with vanilla Minecraft, <strong>Only needed for custom stats and Speed</strong>
      *
      * @return modified value
      */
-    public double scaleStat(final String stat, final double value) {
-        final AttributeManager manager = SkillAPI.getAttributeManager();
-        if (manager == null) { return value; }
+    public double scaleStat(String stat, double baseValue) {
+        return this.scaleStat(stat, baseValue, 0D, Double.MAX_VALUE);
+    }
 
-        final List<AttributeManager.Attribute> matches = manager.forStat(stat);
-        if (matches == null) { return value; }
+    /**
+     * Scales a stat value using the player's attributes
+     *
+     * @param stat  stat key
+     * @param defaultValue the default value come with vanilla Minecraft, <strong>Only needed for custom stats and Speed</strong>
+     * @param min min value
+     * @param max max value
+     *
+     * @return modified value
+     */
+    public double scaleStat(String stat, double defaultValue, double min, double max) {
 
-        double modified = value;
-        for (final AttributeManager.Attribute attribute : matches) {
-            int amount = getAttribute(attribute.getKey());
-            if (amount > 0) {
-                modified = attribute.modifyStat(stat, modified, amount);
+        Player player = this.getPlayer();
+        if(player != null) {
+            if(!SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
+                return defaultValue;
             }
         }
-        return modified;
+
+        final AttributeManager manager = SkillAPI.getAttributeManager();
+        if (manager == null) { return defaultValue; }
+
+        double modified = defaultValue;
+
+        final List<AttributeManager.Attribute> matches = manager.forStat(stat);
+        if (matches != null) {
+
+            for (final AttributeManager.Attribute attribute : matches) {
+                int amount = this.getAttribute(attribute.getKey());
+                if (amount > 0) {
+                    modified = attribute.modifyStat(stat, modified, amount);
+                }
+            }
+
+        }
+
+        // Stats come with modifier api
+        if (this.statModifiers.containsKey(stat)) {
+
+            double multiplier = 1;
+
+            for(PlayerStatModifier modifier : this.getStatModifiers(stat)) {
+
+                switch(modifier.getOperation()) {
+                case ADD_NUMBER:
+                    modified = modifier.applyOn(modified);
+                    break;
+                case MULTIPLY_PERCENTAGE:
+                    multiplier = modifier.applyOn(multiplier);
+                    break;
+                }
+
+            }
+
+            modified = modified*multiplier;
+        }
+
+        return Math.max(min, Math.min(max, modified));
     }
 
     /**
@@ -1138,8 +1224,8 @@ public class PlayerData {
             giveSkill(skill, classData);
         }
 
-        updateHealthAndMana(getPlayer());
-        updateScoreboard();
+        this.updatePlayerStat(getPlayer());
+        this.updateScoreboard();
         return classes.get(rpgClass.getGroup());
     }
 
@@ -1265,8 +1351,7 @@ public class PlayerData {
             GroupSettings s = c.getData().getGroupSettings();
             attribPoints += s.getStartingAttribs() + s.getAttribsForLevels(c.getLevel(), 1);
         }
-        AttributeListener.updatePlayer(this);
-        updateHealthAndMana(getPlayer());
+        this.updatePlayerStat(getPlayer());
     }
 
     /**
@@ -1380,7 +1465,7 @@ public class PlayerData {
                 playerClass.giveLevels(amount);
             }
         }
-        updateHealthAndMana(getPlayer());
+        this.updatePlayerStat(getPlayer());
         return success;
     }
 
@@ -1405,30 +1490,82 @@ public class PlayerData {
     ///////////////////////////////////////////////////////
 
     /**
-     * Updates the player's max health and mana using class data.
-     *
-     * @param player player to update the health and mana for
+     * Updates all the stats of a player based on their current attributes
+     * This method is very heavy, consume resources and notable by player
+     * Checkout other method such as {@link #updateWalkSpeed(Player)} for a light refresh
+     * <br>
+     * This also does not update the player equipment
+     * You will need to call {@link PlayerEquips#update(Player)} before this function
+     * to update attribute/stats that comes with equipments
      */
-    public void updateHealthAndMana(Player player) {
-        if (player == null) {
+    public void updatePlayerStat(Player player) {
+
+        // Do not do anything if player has no class
+        if(!this.hasClass()) {
             return;
         }
 
-        // Update maxes
-        double health = bonusHealth;
-        maxMana = bonusMana;
-        for (PlayerClass c : classes.values()) {
-            health += c.getHealth();
-            maxMana += c.getMana();
+        final double oldMaxHealth = this.maxHealth;
+        this.maxHealth = this.scaleStat(AttributeManager.HEALTH, 0D);
+
+        this.maxMana = this.scaleStat(AttributeManager.MANA, 0D);
+
+        for (PlayerClass playerClass : classes.values()) {
+            this.maxHealth += playerClass.getHealth();
+            this.maxMana += playerClass.getMana();
         }
-        if (health == bonusHealth) {
-            health += SkillAPI.getSettings().getDefaultHealth();
+
+        this.mana = Math.min(mana, maxMana);
+
+        // AsyncPlayerPreLoginEvent has to call this without player object to update Mana
+        if(player == null) {
+            return;
         }
-        if (health <= 0) {
-            health = SkillAPI.getSettings().getDefaultHealth();
+
+        this.updateWalkSpeed(player);
+
+        // Update health if its been changed
+        if(oldMaxHealth != this.maxHealth) {
+            this.updateHealth(player);
         }
-        if (SkillAPI.getSettings().isModifyHealth()) { player.setMaxHealth(health); }
-        mana = Math.min(mana, maxMana);
+
+        // Others stats
+        if (VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
+            this.updateMCAttribute(player, Attribute.GENERIC_ATTACK_SPEED, AttributeManager.ATTACK_SPEED, 0, 1024);
+            this.updateMCAttribute(player, Attribute.GENERIC_ARMOR, AttributeManager.ARMOR, 0, 30);
+            this.updateMCAttribute(player, Attribute.GENERIC_LUCK, AttributeManager.LUCK, -1024, 1024);
+            this.updateMCAttribute(player, Attribute.GENERIC_KNOCKBACK_RESISTANCE, AttributeManager.KNOCKBACK_RESIST, 0, 1.0);
+        }
+        if (VersionManager.isVersionAtLeast(110200)) {
+            this.updateMCAttribute(player, Attribute.GENERIC_ARMOR_TOUGHNESS, AttributeManager.ARMOR_TOUGHNESS, 0, 20);
+        }
+
+    }
+
+    /**
+     * Updates walk speed of a player based on their current attributes and apply
+     *
+     * @param player the player
+     */
+    public void updateWalkSpeed(Player player) {
+
+        player.setWalkSpeed((float) (this.scaleStat(AttributeManager.MOVE_SPEED, 0.2f, 0D, Double.MAX_VALUE)));
+
+    }
+
+    /**
+     * Updates health of a player based on their current attributes and apply
+     *
+     * @param player the player
+     */
+    public void updateHealth(Player player) {
+
+        if (this.maxHealth <= 0) {
+            this.maxHealth = SkillAPI.getSettings().getDefaultHealth();
+            this.health = this.maxHealth;
+        }
+
+        if (SkillAPI.getSettings().isModifyHealth()) { player.setMaxHealth(this.maxHealth); }
 
         // Health scaling is available starting with 1.6.2
         if (SkillAPI.getSettings().isOldHealth()) {
@@ -1437,43 +1574,30 @@ public class PlayerData {
         } else {
             player.setHealthScaled(false);
         }
-    }
 
-    /**
-     * Gives max health to the player. This does not carry over to other accounts
-     * and will reset when SkillAPI is disabled. This does however carry over through
-     * death and professions. This will accept negative values.
-     *
-     * @param amount amount of bonus health to give
-     */
-    public void addMaxHealth(double amount) {
-        bonusHealth += amount;
-        final Player player = getPlayer();
-        if (player != null) {
-            if (VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
-                final AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-                attribute.setBaseValue(attribute.getBaseValue() + amount);
-            } else {
-                final double newHealth = player.getMaxHealth() + amount;
-                player.setMaxHealth(newHealth);
-                if (player.getMaxHealth() > newHealth) {
-                    player.setMaxHealth(newHealth * 2 - player.getMaxHealth());
-                }
-            }
+        if (VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
+            final AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+            attribute.setBaseValue(this.maxHealth);
+        } else {
+            player.setMaxHealth(this.maxHealth);
         }
+
+        if(player.getHealth() > this.maxHealth) {
+            player.setHealth(this.maxHealth);
+        }
+
     }
 
-    /**
-     * Gives max mana to the player. This does not carry over to other accounts
-     * and will reset when SkillAPI is disabled. This does however carry over through
-     * death and professions. This will accept negative values.
-     *
-     * @param amount amount of bonus mana to give
-     */
-    public void addMaxMana(double amount) {
-        bonusMana += amount;
-        maxMana += amount;
-        mana += amount;
+    private void updateMCAttribute(
+            Player player,
+            Attribute attribute,
+            String attribKey,
+            double min,
+            double max) {
+
+        AttributeInstance instance = player.getAttribute(attribute);
+        double addtional = this.scaleStat(attribKey, 0D, min, max);
+        instance.setBaseValue(instance.getDefaultValue() + addtional);
     }
 
     /**
@@ -1601,33 +1725,106 @@ public class PlayerData {
     }
 
     /**
+     * Remove stat modifier with the exact uuid
+     *
+     * @param uuid The uuid
+     * @param update calculate player stat immediately and apply to him
+     */
+    public void removeStatModifier(UUID uuid, boolean update) {
+        for(Entry<String, ArrayList<PlayerStatModifier>> entry : this.statModifiers.entrySet()) {
+            ArrayList<PlayerStatModifier> modifiers = entry.getValue();
+            Iterator<PlayerStatModifier> i = modifiers.iterator();
+
+            while(i.hasNext()) {
+                PlayerStatModifier modifier = i.next();
+                if(modifier.getUUID().equals(uuid)) {
+                    i.remove();
+                }
+            }
+
+            this.statModifiers.put(entry.getKey(), modifiers);
+        }
+
+        if(update) {
+            this.updatePlayerStat(getPlayer());
+        }
+    }
+
+    /**
+     * Clear all stat modifier which is not persistent
+     */
+    public void clearStatModifier() {
+        for(Entry<String, ArrayList<PlayerStatModifier>> entry : this.statModifiers.entrySet()) {
+            ArrayList<PlayerStatModifier> modifiers = entry.getValue();
+            Iterator<PlayerStatModifier> i = modifiers.iterator();
+
+            while(i.hasNext()) {
+                PlayerStatModifier modifier = i.next();
+                if(!modifier.isPersistent()) {
+                    i.remove();
+                }
+            }
+
+            this.statModifiers.put(entry.getKey(), modifiers);
+        }
+
+        this.updatePlayerStat(getPlayer());
+    }
+
+    /**
      * Remove attribute modifier with the exact uuid
      *
      * @param uuid The uuid
+     * @param update calculate player stat immediately and apply to him
      */
-    public void removeAttributeModifier(UUID uuid) {
+    public void removeAttributeModifier(UUID uuid, boolean update) {
         for(Entry<String, ArrayList<PlayerAttributeModifier>> entry : this.attributesModifiers.entrySet()) {
-
             ArrayList<PlayerAttributeModifier> modifiers = entry.getValue();
-            for(PlayerAttributeModifier modifier : modifiers) {
+            Iterator<PlayerAttributeModifier> i = modifiers.iterator();
+
+            while(i.hasNext()) {
+                PlayerAttributeModifier modifier = i.next();
                 if(modifier.getUUID().equals(uuid)) {
-                    modifiers.remove(modifier);
+                    i.remove();
                 }
             }
 
             this.attributesModifiers.put(entry.getKey(), modifiers);
-
         }
 
-        equips = new PlayerEquips(this);
+        if(update) {
+            this.updatePlayerStat(getPlayer());
+        }
     }
 
     /**
-     * Clear all attribute modifier
-     *
+     * Clear all attribute modifier which is not persistent
      */
-    public void clearAttributeModifier() {
-        this.attributesModifiers.clear();
+    public void clearAttributeModifiers() {
+        for(Entry<String, ArrayList<PlayerAttributeModifier>> entry : this.attributesModifiers.entrySet()) {
+            ArrayList<PlayerAttributeModifier> modifiers = entry.getValue();
+            Iterator<PlayerAttributeModifier> i = modifiers.iterator();
+
+            while(i.hasNext()) {
+                PlayerAttributeModifier modifier = i.next();
+                if(!modifier.isPersistent()) {
+                    i.remove();
+                }
+            }
+
+            this.attributesModifiers.put(entry.getKey(), modifiers);
+        }
+
+        this.equips.update(getPlayer());
+        this.updatePlayerStat(getPlayer());
+    }
+
+    /**
+     * Clear all of the modifiers including stat modifier and attribute modifier
+     */
+    public void clearAllModifiers() {
+        this.clearStatModifier();
+        this.clearAttributeModifiers();
     }
 
     ///////////////////////////////////////////////////////
@@ -1968,9 +2165,8 @@ public class PlayerData {
     public void init(Player player) {
         if (!SkillAPI.getSettings().isWorldEnabled(player.getWorld())) { return; }
 
-        AttributeListener.updatePlayer(this);
-        getEquips().update(player);
-        this.updateHealthAndMana(player);
+        this.getEquips().update(player);
+        this.updatePlayerStat(player);
         this.startPassives(player);
         this.updateScoreboard();
         if (this.getLastHealth() > 0 && !player.isDead()) {

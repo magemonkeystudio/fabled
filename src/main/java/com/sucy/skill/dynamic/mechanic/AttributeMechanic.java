@@ -37,8 +37,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.enums.Operation;
 import com.sucy.skill.api.player.PlayerAttributeModifier;
-import com.sucy.skill.api.player.PlayerAttributeModifier.Operation;
 import com.sucy.skill.api.player.PlayerData;
 
 /**
@@ -79,18 +79,18 @@ public class AttributeMechanic extends MechanicComponent {
             if (target instanceof Player) {
                 worked = true;
                 final PlayerData data = SkillAPI.getPlayerData((Player) target);
-                PlayerAttributeModifier modifier = new PlayerAttributeModifier("skillapi.attribute_mechanic", amount, Operation.ADD_NUMBER);
+                PlayerAttributeModifier modifier = new PlayerAttributeModifier("skillapi.mechanic.attribute_mechanic", amount, Operation.ADD_NUMBER, false);
 
                 if (casterTasks.containsKey(data.getPlayerName()) && !stackable) {
                     final AttribTask old = casterTasks.remove(data.getPlayerName());
 
-                    data.removeAttributeModifier(old.modifier.getUUID());
+                    data.removeAttributeModifier(old.modifier.getUUID(), false);
 
-                    data.addAttributesModifier(key, new PlayerAttributeModifier("skillapi.attribute_mechanic", amount, Operation.ADD_NUMBER));
+                    data.addAttributeModifier(key, modifier, true);
 
                     old.cancel();
                 } else {
-                    data.addAttributesModifier(key, modifier);
+                    data.addAttributeModifier(key, modifier, true);
                 }
 
                 final AttribTask task = new AttribTask(caster.getEntityId(), data, key, modifier);
@@ -150,7 +150,7 @@ public class AttributeMechanic extends MechanicComponent {
 
         @Override
         public void run() {
-            data.removeAttributeModifier(modifier.getUUID());
+            data.removeAttributeModifier(modifier.getUUID(), true);
             if (tasks.containsKey(id)) {
                 tasks.get(id).remove(data.getPlayerName());
             }

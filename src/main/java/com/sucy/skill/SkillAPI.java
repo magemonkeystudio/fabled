@@ -164,6 +164,7 @@ public class SkillAPI extends JavaPlugin {
         }
         listen(new ComboListener(), settings.isCombosEnabled());
         listen(new AttributeListener(), settings.isAttributesEnabled());
+        listen(new ItemListener(), settings.isCheckAttributes());
         listen(new CastListener(), settings.isUsingBars());
         listen(
                 new CastOffhandListener(),
