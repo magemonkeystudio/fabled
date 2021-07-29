@@ -1466,7 +1466,7 @@ function ConditionTool()
 
     this.description = 'Applies child components when the target is wielding a matching tool.';
 
-    this.data.push(new ListValue('Material', 'material', [ 'Any', 'Wood', 'Stone', 'Iron', 'Gold', 'Diamond' ], 'Any')
+    this.data.push(new ListValue('Material', 'material', [ 'Any', 'Wood', 'Stone', 'Iron', 'Gold', 'Diamond', 'Netherite' ], 'Any')
         .setTooltip('The material the held tool needs to be made out of')
     );
     this.data.push(new ListValue('Tool', 'tool', [ 'Any', 'Axe', 'Hoe', 'Pickaxe', 'Shovel', 'Sword' ], 'Any')
