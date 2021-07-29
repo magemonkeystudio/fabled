@@ -60,7 +60,7 @@ public class PacketInjector {
                 }
             }
 
-            handle = Class.forName(Reflex.getCraftPackage() + "entity.CraftPlayer").getMethod("getHandle");
+            handle = Class.forName(Reflex.getCraftPackage() + ".entity.CraftPlayer").getMethod("getHandle");
         } catch (Throwable t) {
             this.error();
             t.printStackTrace();

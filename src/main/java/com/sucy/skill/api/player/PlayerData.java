@@ -52,6 +52,7 @@ import com.sucy.skill.log.LogType;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.manager.AttributeManager;
 import com.sucy.skill.task.ScoreboardTask;
+import mc.promcteam.engine.NexEngine;
 import mc.promcteam.engine.mccore.config.Filter;
 import mc.promcteam.engine.mccore.config.FilterType;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
@@ -72,7 +73,7 @@ import static com.sucy.skill.api.event.PlayerSkillCastFailedEvent.Cause.*;
  * Represents one account for a player which can contain one class from each group
  * and the skills in each of those classes. You should not instantiate this class
  * yourself and instead get it from the SkillAPI static methods.
- *
+ * <p>
  * In order to get a player's data, use "SkillAPI.getPlayerData(...)". Do NOT
  * try to instantaite your own PlayerData object.
  */
@@ -294,7 +295,6 @@ public class PlayerData {
      * between invested and bonus sources.
      *
      * @param key attribute key
-     *
      * @return number of total points
      */
     public int getAttribute(String key) {
@@ -317,7 +317,6 @@ public class PlayerData {
      * given attribute
      *
      * @param key attribute key
-     *
      * @return number of invested points
      */
     public int getInvestedAttribute(String key) {
@@ -329,7 +328,6 @@ public class PlayerData {
      * points invested in a given attribute
      *
      * @param key attribute key
-     *
      * @return true if any points are invested, false otherwise
      */
     public boolean hasAttribute(String key) {
@@ -342,7 +340,6 @@ public class PlayerData {
      * has no remaining points, this will do nothing.
      *
      * @param key attribute key
-     *
      * @return whether or not it was successfully upgraded
      */
     public boolean upAttribute(String key) {
@@ -478,7 +475,6 @@ public class PlayerData {
      *
      * @param stat  stat key
      * @param value base value
-     *
      * @return modified value
      */
     public double scaleStat(final String stat, final double value) {
@@ -508,7 +504,6 @@ public class PlayerData {
      * @param component component holding the value
      * @param key       key of the value
      * @param value     unmodified value
-     *
      * @return the modified value
      */
     public double scaleDynamic(EffectComponent component, String key, double value) {
@@ -579,7 +574,6 @@ public class PlayerData {
      * the skill is available to upgrade/use.
      *
      * @param name name of the skill
-     *
      * @return true if has the skill, false otherwise
      */
     public boolean hasSkill(String name) {
@@ -590,7 +584,6 @@ public class PlayerData {
      * Retrieves a skill of the owner by name. This is not case-sensitive.
      *
      * @param name name of the skill
-     *
      * @return data for the skill or null if the player doesn't have the skill
      */
     public PlayerSkill getSkill(String name) {
@@ -623,7 +616,6 @@ public class PlayerData {
      * Retrieves the level of a skill for the owner. This is not case-sensitive.
      *
      * @param name name of the skill
-     *
      * @return level of the skill or 0 if not found
      */
     public int getSkillLevel(String name) {
@@ -703,7 +695,6 @@ public class PlayerData {
      * This will consume the skill point cost while upgrading the skill.
      *
      * @param skill skill to upgrade
-     *
      * @return true if successfully was upgraded, false otherwise
      */
     public boolean upgradeSkill(Skill skill) {
@@ -778,7 +769,6 @@ public class PlayerData {
      * the skill point cost when downgrading the skill.
      *
      * @param skill skill to downgrade
-     *
      * @return true if successfully downgraded, false otherwise
      */
     public boolean downgradeSkill(Skill skill) {
@@ -896,7 +886,6 @@ public class PlayerData {
      * Shows the class details for the player
      *
      * @param player player to show to
-     *
      * @return true if shown, false if nothing to show
      */
     public boolean showDetails(Player player) {
@@ -927,7 +916,6 @@ public class PlayerData {
      * Shows profession options of the first class group available
      *
      * @param player player to show profession options for
-     *
      * @return true if shown profession options, false if none available
      */
     public boolean showProfession(Player player) {
@@ -957,7 +945,6 @@ public class PlayerData {
      * this will show the list of skill trees they can view.
      *
      * @param player player to show the skill tree for
-     *
      * @return true if able to show the player, false otherwise
      */
     public boolean showSkills(Player player) {
@@ -982,7 +969,6 @@ public class PlayerData {
      *
      * @param player      player to show
      * @param playerClass class to look for
-     *
      * @return true if succeeded, false otherwise
      */
     public boolean showSkills(Player player, PlayerClass playerClass) {
@@ -1038,7 +1024,6 @@ public class PlayerData {
      * Checks whether or not a player has a class within the given group
      *
      * @param group class group to check
-     *
      * @return true if has a class in the group, false otherwise
      */
     public boolean hasClass(String group) {
@@ -1059,7 +1044,6 @@ public class PlayerData {
      * case-sensitive.
      *
      * @param group group to get the profession for
-     *
      * @return professed class data or null if not professed for the group
      */
     public PlayerClass getClass(String group) {
@@ -1089,7 +1073,6 @@ public class PlayerData {
      * there was any. The new class will start at level 1 with 0 experience.
      *
      * @param rpgClass class to assign to the player
-     *
      * @return the player-specific data for the new class
      */
     public PlayerClass setClass(RPGClass rpgClass) {
@@ -1121,7 +1104,6 @@ public class PlayerData {
      * without checking child classes.
      *
      * @param rpgClass class to check
-     *
      * @return true if professed as the specific class, false otherwise
      */
     public boolean isExactClass(RPGClass rpgClass) {
@@ -1137,7 +1119,6 @@ public class PlayerData {
      * or any of its children.
      *
      * @param rpgClass class to check
-     *
      * @return true if professed as the class or one of its children, false otherwise
      */
     public boolean isClass(RPGClass rpgClass) {
@@ -1167,7 +1148,6 @@ public class PlayerData {
      * given class and is high enough of a level to do so.
      *
      * @param rpgClass class to check
-     *
      * @return true if can profess, false otherwise
      */
     public boolean canProfess(RPGClass rpgClass) {
@@ -1258,7 +1238,6 @@ public class PlayerData {
      * the new profession.
      *
      * @param rpgClass class to profess into
-     *
      * @return true if successfully professed, false otherwise
      */
     public boolean profess(RPGClass rpgClass) {
@@ -1324,8 +1303,8 @@ public class PlayerData {
     /**
      * Gives experience to the player from the given source
      *
-     * @param amount amount of experience to give
-     * @param source source of the experience
+     * @param amount  amount of experience to give
+     * @param source  source of the experience
      * @param message whether or not to show the configured message if enabled
      */
     public void giveExp(double amount, ExpSource source, boolean message) {
@@ -1481,7 +1460,6 @@ public class PlayerData {
      * Checks whether or not the player has at least the specified amount of mana
      *
      * @param amount required mana amount
-     *
      * @return true if has the amount of mana, false otherwise
      */
     public boolean hasMana(double amount) {
@@ -1508,7 +1486,8 @@ public class PlayerData {
             }
         }
         if (amount > 0) {
-            giveMana(amount, ManaSource.REGEN);
+            double finalAmount = amount;
+            Bukkit.getScheduler().runTask(NexEngine.get(), () -> giveMana(finalAmount, ManaSource.REGEN));
         }
     }
 
@@ -1605,7 +1584,6 @@ public class PlayerData {
      * Retrieves a skill the player has bound by material
      *
      * @param mat material to get the bind for
-     *
      * @return skill bound to the material or null if none are bound
      */
     public PlayerSkill getBoundSkill(Material mat) {
@@ -1626,7 +1604,6 @@ public class PlayerData {
      * Checks whether or not the material has a skill bound to it
      *
      * @param mat material to check
-     *
      * @return true if a skill is bound to it, false otherwise
      */
     public boolean isBound(Material mat) {
@@ -1639,7 +1616,6 @@ public class PlayerData {
      *
      * @param mat   material to bind the skill to
      * @param skill skill to bind to the material
-     *
      * @return true if was able to bind the skill, false otherwise
      */
     public boolean bind(Material mat, PlayerSkill skill) {
@@ -1681,7 +1657,6 @@ public class PlayerData {
      * material, this will do nothing.
      *
      * @param mat material to clear bindings from
-     *
      * @return true if a binding was cleared, false otherwise
      */
     public boolean clearBind(Material mat) {
@@ -1784,7 +1759,6 @@ public class PlayerData {
      * have the skill off cooldown, and have a proper target if applicable.
      *
      * @param skillName name of the skill ot cast
-     *
      * @return true if successfully cast the skill, false otherwise
      */
     public boolean cast(String skillName) {
@@ -1797,7 +1771,6 @@ public class PlayerData {
      * have the skill off cooldown, and have a proper target if applicable.
      *
      * @param skill skill to cast
-     *
      * @return true if successfully cast the skill, false otherwise
      */
     public boolean cast(PlayerSkill skill) {
@@ -1899,7 +1872,6 @@ public class PlayerData {
      * @param skill    skill to check for
      * @param cooldown whether or not to check cooldowns
      * @param mana     whether or not to check mana requirements
-     *
      * @return true if can use
      */
     public boolean check(PlayerSkill skill, boolean cooldown, boolean mana) {
