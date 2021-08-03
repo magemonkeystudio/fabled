@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.data.PlayerEquips
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -41,8 +41,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.google.inject.internal.util.Objects;
-import com.rit.sucy.config.parse.NumberParser;
+import com.google.common.base.Objects;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.enums.Operation;
@@ -50,6 +49,8 @@ import com.sucy.skill.api.player.PlayerAttributeModifier;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.skills.Skill;
+
+import mc.promcteam.engine.mccore.config.parse.NumberParser;
 
 /**
  * Handles keeping track of and applying attribute
@@ -150,7 +151,6 @@ public class PlayerEquips
         }
 
         return true;
-
     }
 
     /**
@@ -203,8 +203,7 @@ public class PlayerEquips
     /**
      * Represents one available item's data
      */
-    private class EquipData
-    {
+    private class EquipData {
         private HashMap<String, Integer> skillReq;
         private HashMap<String, Integer> attrReq;
         private HashMap<String, Integer> attribs;
@@ -213,7 +212,7 @@ public class PlayerEquips
         private HashSet<String> classExc;
 
         private ItemStack item;
-        private int       levelReq;
+        private int levelReq;
         private EquipType type;
 
         private ArrayList<UUID> attrModifierUUIDs = new ArrayList<UUID>();
@@ -221,7 +220,7 @@ public class PlayerEquips
         /**
          * Sets up for an empty item slot
          */
-        public EquipData() { }
+        public EquipData() {}
 
         /**
          * Scans an items for bonuses or requirements
@@ -229,8 +228,7 @@ public class PlayerEquips
          * @param item item to grab data from
          * @param type equipment type
          */
-        public EquipData(ItemStack item, EquipType type)
-        {
+        public EquipData(ItemStack item, EquipType type) {
             this.item = item;
             this.type = type;
 
@@ -252,8 +250,7 @@ public class PlayerEquips
             boolean skills = settings.isCheckSkillLore();
             boolean attributes = settings.isAttributesEnabled();
 
-            for (String line : lore)
-            {
+            for (String line : lore) {
                 String lower = ChatColor.stripColor(line).toLowerCase();
 
                 // Level requirements
@@ -275,20 +272,14 @@ public class PlayerEquips
                     if (classExc == null)
                         classExc = new HashSet<>();
                     classExc.addAll(excluded);
-                }
-
-                else
-                {
+                } else {
                     boolean done = false;
 
                     // Skill requirements
-                    if (skills)
-                    {
-                        for (Skill skill : SkillAPI.getSkills().values())
-                        {
+                    if (skills) {
+                        for (Skill skill : SkillAPI.getSkills().values()) {
                             String text = settings.getSkillText(skill.getName());
-                            if (lower.startsWith(text))
-                            {
+                            if (lower.startsWith(text)) {
                                 done = true;
                                 if (skillReq == null)
                                     skillReq = new HashMap<>();
@@ -300,13 +291,10 @@ public class PlayerEquips
                     }
 
                     // Attribute requirements
-                    if (attributes && !done)
-                    {
-                        for (String attr : SkillAPI.getAttributeManager().getLookupKeys())
-                        {
+                    if (attributes && !done) {
+                        for (String attr : SkillAPI.getAttributeManager().getLookupKeys()) {
                             String text = settings.getAttrReqText(attr);
-                            if (lower.startsWith(text))
-                            {
+                            if (lower.startsWith(text)) {
                                 if (attrReq == null)
                                     attrReq = new HashMap<>();
 
@@ -316,8 +304,7 @@ public class PlayerEquips
                             }
 
                             text = settings.getAttrGiveText(attr);
-                            if (lower.startsWith(text))
-                            {
+                            if (lower.startsWith(text)) {
                                 if (attribs == null)
                                     attribs = new HashMap<>();
 
@@ -350,8 +337,7 @@ public class PlayerEquips
         /**
          * Reverts bonus attributes for the item
          */
-        private void revert()
-        {
+        private void revert() {
             if (attribs != null) {
                 for(UUID uuid : this.attrModifierUUIDs) {
                     playerData.removeAttributeModifier(uuid, false);
@@ -364,8 +350,7 @@ public class PlayerEquips
          *
          * @return true if conditions are met
          */
-        boolean hasMetConditions()
-        {
+        boolean hasMetConditions() {
             if (item == null) {
                 return true;
             }

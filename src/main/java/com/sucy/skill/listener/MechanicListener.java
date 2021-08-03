@@ -48,7 +48,6 @@ import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import com.rit.sucy.version.VersionManager;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.event.FlagApplyEvent;
 import com.sucy.skill.api.event.FlagExpireEvent;
@@ -61,6 +60,8 @@ import com.sucy.skill.dynamic.mechanic.ProjectileMechanic;
 import com.sucy.skill.hook.DisguiseHook;
 import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.hook.VaultHook;
+
+import mc.promcteam.engine.mccore.util.VersionManager;
 
 /**
  * The listener for handling events related to dynamic mechanics

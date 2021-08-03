@@ -26,7 +26,7 @@
  */
 package com.sucy.skill.dynamic.condition;
 
-import com.rit.sucy.version.VersionManager;
+import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;

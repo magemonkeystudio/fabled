@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.dynamic.mechanic.DamageLoreMechanic
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,8 +26,8 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
-import com.rit.sucy.config.parse.NumberParser;
-import com.rit.sucy.version.VersionManager;
+import mc.promcteam.engine.mccore.config.parse.NumberParser;
+import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
@@ -40,10 +40,10 @@ import java.util.regex.Pattern;
  * Deals damage based on a held item's lore to each target
  */
 public class DamageLoreMechanic extends MechanicComponent {
-    private static final String REGEX      = "regex";
+    private static final String REGEX = "regex";
     private static final String MULTIPLIER = "multiplier";
-    private static final String HAND       = "hand";
-    private static final String TRUE       = "true";
+    private static final String HAND = "hand";
+    private static final String TRUE = "true";
     private static final String CLASSIFIER = "classifier";
 
     @Override
@@ -72,14 +72,20 @@ public class DamageLoreMechanic extends MechanicComponent {
         boolean trueDmg = settings.getBool(TRUE, false);
         String classification = settings.getString(CLASSIFIER, "default");
 
-        if (caster.getEquipment() == null) { return false; }
+        if (caster.getEquipment() == null) {
+            return false;
+        }
 
         ItemStack hand;
-        if (offhand) { hand = caster.getEquipment().getItemInOffHand(); } else {
+        if (offhand) {
+            hand = caster.getEquipment().getItemInOffHand();
+        } else {
             hand = caster.getEquipment().getItemInHand();
         }
 
-        if (hand == null || !hand.hasItemMeta() || !hand.getItemMeta().hasLore()) { return false; }
+        if (hand == null || !hand.hasItemMeta() || !hand.getItemMeta().hasLore()) {
+            return false;
+        }
 
         List<String> lore = hand.getItemMeta().getLore();
         for (String line : lore) {
@@ -91,9 +97,13 @@ public class DamageLoreMechanic extends MechanicComponent {
                     double base = NumberParser.parseDouble(value);
                     if (base * m > 0) {
                         for (LivingEntity target : targets) {
-                            if (target.isDead()) { continue; }
+                            if (target.isDead()) {
+                                continue;
+                            }
 
-                            if (trueDmg) { skill.trueDamage(target, base * m, caster); } else {
+                            if (trueDmg) {
+                                skill.trueDamage(target, base * m, caster);
+                            } else {
                                 skill.damage(target, base * m, caster, classification);
                             }
                         }

@@ -26,12 +26,6 @@
  */
 package com.sucy.skill.api.skills;
 
-import com.rit.sucy.config.Filter;
-import com.rit.sucy.config.FilterType;
-import com.rit.sucy.config.parse.DataSection;
-import com.rit.sucy.config.parse.NumberParser;
-import com.rit.sucy.text.TextFormatter;
-import com.rit.sucy.version.VersionManager;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.ReadOnlySettings;
 import com.sucy.skill.api.Settings;
@@ -52,6 +46,12 @@ import com.sucy.skill.language.NotificationNodes;
 import com.sucy.skill.language.RPGFilter;
 import com.sucy.skill.language.SkillNodes;
 import com.sucy.skill.log.Logger;
+import mc.promcteam.engine.mccore.config.Filter;
+import mc.promcteam.engine.mccore.config.FilterType;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
+import mc.promcteam.engine.mccore.config.parse.NumberParser;
+import mc.promcteam.engine.mccore.util.TextFormatter;
+import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -778,7 +778,7 @@ public abstract class Skill implements IconHolder
                 if (PluginChecker.isNoCheatActive()) NoCheatHook.unexempt(player);
             } else {
                 skillDamage = true;
-                //Modified code from com.rit.sucy.version.VersionManager.damage() (MCCore)
+                //Modified code from mc.promcteam.engine.mccore.util.VersionManager.damage() (MCCore)
                 {
                     // Allow damage to occur
                     int ticks = target.getNoDamageTicks();

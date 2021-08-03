@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.manager.AttributeManager
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,8 +26,6 @@
  */
 package com.sucy.skill.manager;
 
-import com.rit.sucy.config.CommentedConfig;
-import com.rit.sucy.config.parse.DataSection;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.util.DamageLoreRemover;
@@ -42,6 +40,8 @@ import com.sucy.skill.gui.tool.GUITool;
 import com.sucy.skill.gui.tool.IconHolder;
 import com.sucy.skill.log.LogType;
 import com.sucy.skill.log.Logger;
+import mc.promcteam.engine.mccore.config.CommentedConfig;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -54,31 +54,31 @@ import java.util.*;
  */
 public class AttributeManager {
     // Keys for supported stat modifiers
-    public static final String HEALTH             = "health";
-    public static final String MANA               = "mana";
-    public static final String MANA_REGEN         = "mana-regen";
-    public static final String PHYSICAL_DAMAGE    = "physical-damage";
-    public static final String MELEE_DAMAGE       = "melee-damage";
-    public static final String PROJECTILE_DAMAGE  = "projectile-damage";
-    public static final String PHYSICAL_DEFENSE   = "physical-defense";
-    public static final String MELEE_DEFENSE      = "melee-defense";
+    public static final String HEALTH = "health";
+    public static final String MANA = "mana";
+    public static final String MANA_REGEN = "mana-regen";
+    public static final String PHYSICAL_DAMAGE = "physical-damage";
+    public static final String MELEE_DAMAGE = "melee-damage";
+    public static final String PROJECTILE_DAMAGE = "projectile-damage";
+    public static final String PHYSICAL_DEFENSE = "physical-defense";
+    public static final String MELEE_DEFENSE = "melee-defense";
     public static final String PROJECTILE_DEFENSE = "projectile-defense";
-    public static final String SKILL_DAMAGE       = "skill-damage";
-    public static final String SKILL_DEFENSE      = "skill-defense";
-    public static final String MOVE_SPEED         = "move-speed";
-    public static final String ATTACK_SPEED       = "attack-speed";
-    public static final String ARMOR              = "armor";
-    public static final String LUCK               = "luck";
-    public static final String ARMOR_TOUGHNESS    = "armor-toughness";
-    public static final String EXPERIENCE         = "exp";
-    public static final String HUNGER             = "hunger";
-    public static final String HUNGER_HEAL        = "hunger-heal";
-    public static final String COOLDOWN           = "cooldown";
-    public static final String KNOCKBACK_RESIST   = "knockback-resist";
+    public static final String SKILL_DAMAGE = "skill-damage";
+    public static final String SKILL_DEFENSE = "skill-defense";
+    public static final String MOVE_SPEED = "move-speed";
+    public static final String ATTACK_SPEED = "attack-speed";
+    public static final String ARMOR = "armor";
+    public static final String LUCK = "luck";
+    public static final String ARMOR_TOUGHNESS = "armor-toughness";
+    public static final String EXPERIENCE = "exp";
+    public static final String HUNGER = "hunger";
+    public static final String HUNGER_HEAL = "hunger-heal";
+    public static final String COOLDOWN = "cooldown";
+    public static final String KNOCKBACK_RESIST = "knockback-resist";
 
-    private final HashMap<String, Attribute>       attributes  = new LinkedHashMap<>();
-    private final HashMap<String, Attribute>       lookup      = new HashMap<>();
-    private final HashMap<String, List<Attribute>> byStat      = new HashMap<>();
+    private final HashMap<String, Attribute> attributes = new LinkedHashMap<>();
+    private final HashMap<String, Attribute> lookup = new HashMap<>();
+    private final HashMap<String, List<Attribute>> byStat = new HashMap<>();
     private final HashMap<String, List<Attribute>> byComponent = new HashMap<>();
 
     /**
@@ -153,7 +153,9 @@ public class AttributeManager {
      */
     public String normalize(String key) {
         final Attribute attribute = lookup.get(key.toLowerCase());
-        if (attribute == null) { throw new IllegalArgumentException("Invalid attribute - " + key); }
+        if (attribute == null) {
+            throw new IllegalArgumentException("Invalid attribute - " + key);
+        }
         return attribute.getKey();
     }
 
@@ -180,7 +182,11 @@ public class AttributeManager {
         if (!attribs.isValid()) {
             int i = 0;
             GUIPage page = attribs.getPage(0);
-            for (String key : attributes.keySet()) { if (i < 54) { page.set(i++, key); } }
+            for (String key : attributes.keySet()) {
+                if (i < 54) {
+                    page.set(i++, key);
+                }
+            }
             attribs.resize((attributes.size() + 8) / 9);
         }
     }
@@ -189,19 +195,19 @@ public class AttributeManager {
      * A single attribute template
      */
     public class Attribute implements IconHolder {
-        private static final String DISPLAY   = "display";
-        private static final String GLOBAL    = "global";
+        private static final String DISPLAY = "display";
+        private static final String GLOBAL = "global";
         private static final String CONDITION = "condition";
-        private static final String MECHANIC  = "mechanic";
-        private static final String TARGET    = "target";
-        private static final String STATS     = "stats";
-        private static final String MAX       = "max";
+        private static final String MECHANIC = "mechanic";
+        private static final String TARGET = "target";
+        private static final String STATS = "stats";
+        private static final String MAX = "max";
 
         // Attribute description
-        private String    key;
-        private String    display;
+        private String key;
+        private String display;
         private ItemStack icon;
-        private int       max;
+        private int max;
 
         // Dynamic global modifiers
         private Map<ComponentType, Map<String, AttributeValue[]>> dynamicModifiers = new EnumMap<>(ComponentType.class);
@@ -269,7 +275,9 @@ public class AttributeManager {
             meta.setDisplayName(filter(data, meta.getDisplayName()));
             List<String> lore = meta.getLore();
             if (lore != null) {
-                for (int j = 0; j < lore.size(); j++) { lore.set(j, filter(data, lore.get(j))); }
+                for (int j = 0; j < lore.size(); j++) {
+                    lore.set(j, filter(data, lore.get(j)));
+                }
                 meta.setLore(lore);
             }
 
@@ -332,7 +340,9 @@ public class AttributeManager {
             if (map.containsKey(key)) {
                 AttributeValue[] list = map.get(key);
                 for (AttributeValue attribValue : list) {
-                    if (attribValue.passes(component)) { return attribValue.apply(value, amount); }
+                    if (attribValue.passes(component)) {
+                        return attribValue.apply(value, amount);
+                    }
                 }
             }
             return value;
@@ -361,7 +371,9 @@ public class AttributeManager {
          * @param type the component type to load for
          */
         private void loadGroup(DataSection data, ComponentType type) {
-            if (data == null) { return; }
+            if (data == null) {
+                return;
+            }
 
             final Map<String, AttributeValue[]> target = dynamicModifiers.computeIfAbsent(type, t -> new HashMap<>());
             for (String key : data.keys()) {
@@ -371,10 +383,14 @@ public class AttributeManager {
                 final String[] formulas = value.split("\\|");
                 final AttributeValue[] values = new AttributeValue[formulas.length];
                 int i = 0;
-                for (final String formula : formulas) { values[i++] = new AttributeValue(formula); }
+                for (final String formula : formulas) {
+                    values[i++] = new AttributeValue(formula);
+                }
                 target.put(lower, values);
 
-                if (!byComponent.containsKey(lower)) { byComponent.put(lower, new ArrayList<>()); }
+                if (!byComponent.containsKey(lower)) {
+                    byComponent.put(lower, new ArrayList<>());
+                }
                 byComponent.get(lower).add(this);
             }
         }
@@ -392,7 +408,9 @@ public class AttributeManager {
                         key,
                         new Formula(data.getString(key, "v"), new CustomValue("v"), new CustomValue("a")));
 
-                if (!byStat.containsKey(key)) { byStat.put(key, new ArrayList<>()); }
+                if (!byStat.containsKey(key)) {
+                    byStat.put(key, new ArrayList<>());
+                }
                 byStat.get(key).add(this);
             }
         }
@@ -431,7 +449,9 @@ public class AttributeManager {
          */
         public boolean passes(EffectComponent component) {
             for (String key : conditions.keySet()) {
-                if (!component.getSettings().getString(key).equalsIgnoreCase(conditions.get(key))) { return false; }
+                if (!component.getSettings().getString(key).equalsIgnoreCase(conditions.get(key))) {
+                    return false;
+                }
             }
             return true;
         }

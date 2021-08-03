@@ -26,7 +26,7 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
-import com.rit.sucy.text.TextFormatter;
+import mc.promcteam.engine.mccore.util.TextFormatter;
 import com.sucy.skill.SkillAPI;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;

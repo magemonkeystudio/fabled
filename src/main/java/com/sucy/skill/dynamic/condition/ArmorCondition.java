@@ -27,7 +27,7 @@
 package com.sucy.skill.dynamic.condition;
 
 import com.google.common.collect.ImmutableList;
-import com.rit.sucy.config.parse.DataSection;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.dynamic.ItemChecker;
 import org.bukkit.entity.LivingEntity;

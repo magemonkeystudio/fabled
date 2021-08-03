@@ -26,7 +26,7 @@
  */
 package com.sucy.skill.language;
 
-import com.rit.sucy.config.CustomFilter;
+import mc.promcteam.engine.mccore.config.CustomFilter;
 
 /**
  * Various text filters used by SkillAPI

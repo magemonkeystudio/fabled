@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.listener.BarListener
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,22 +26,18 @@
  */
 package com.sucy.skill.listener;
 
-import com.rit.sucy.gui.MapData;
-import com.rit.sucy.gui.MapMenu;
-import com.rit.sucy.gui.MapMenuManager;
-import com.rit.sucy.version.VersionManager;
 import com.sucy.skill.SkillAPI;
-import com.sucy.skill.api.event.PlayerAccountChangeEvent;
-import com.sucy.skill.api.event.PlayerClassChangeEvent;
-import com.sucy.skill.api.event.PlayerSkillDowngradeEvent;
-import com.sucy.skill.api.event.PlayerSkillUnlockEvent;
-import com.sucy.skill.api.event.PlayerSkillUpgradeEvent;
+import com.sucy.skill.api.event.*;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkillBar;
 import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.gui.handlers.SkillHandler;
 import com.sucy.skill.gui.map.SkillDetailMenu;
 import com.sucy.skill.gui.map.SkillListMenu;
+import mc.promcteam.engine.mccore.gui.MapData;
+import mc.promcteam.engine.mccore.gui.MapMenu;
+import mc.promcteam.engine.mccore.gui.MapMenuManager;
+import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -52,11 +48,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerGameModeChangeEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -65,17 +57,14 @@ import java.util.UUID;
  * Handles interactions with skill bars. This shouldn't be
  * use by other plugins as it is handled by the API.
  */
-public class BarListener extends SkillAPIListener
-{
+public class BarListener extends SkillAPIListener {
     private final HashSet<UUID> ignored = new HashSet<UUID>();
 
     @Override
-    public void init()
-    {
+    public void init() {
         MainListener.registerJoin(this::onJoin);
         MainListener.registerClear(this::handleClear);
-        for (Player player : VersionManager.getOnlinePlayers())
-        {
+        for (Player player : VersionManager.getOnlinePlayers()) {
             if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
                 PlayerData data = SkillAPI.getPlayerData(player);
                 if (data.hasClass())
@@ -95,8 +84,7 @@ public class BarListener extends SkillAPIListener
 
     private void cleanup(Player player) {
         PlayerData data = SkillAPI.getPlayerData(player);
-        if (data.getSkillBar().isSetup())
-        {
+        if (data.getSkillBar().isSetup()) {
             data.getSkillBar().clear(player);
         }
         ignored.remove(player.getUniqueId());
@@ -105,8 +93,7 @@ public class BarListener extends SkillAPIListener
     /**
      * Sets up skill bars on joining
      */
-    public void onJoin(final Player player)
-    {
+    public void onJoin(final Player player) {
         if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
             final PlayerData data = SkillAPI.getPlayerData(player);
             if (data.hasClass()) {
@@ -121,8 +108,7 @@ public class BarListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler
-    public void onQuit(PlayerQuitEvent event)
-    {
+    public void onQuit(PlayerQuitEvent event) {
         cleanup(event.getPlayer());
     }
 
@@ -132,25 +118,21 @@ public class BarListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler
-    public void onProfess(PlayerClassChangeEvent event)
-    {
+    public void onProfess(PlayerClassChangeEvent event) {
         Player p = event.getPlayerData().getPlayer();
         if (!SkillAPI.getSettings().isWorldEnabled(p.getWorld()))
             return;
 
         // Professing as a first class sets up the skill bar
-        if (event.getPreviousClass() == null && event.getNewClass() != null)
-        {
+        if (event.getPreviousClass() == null && event.getNewClass() != null) {
             PlayerSkillBar bar = event.getPlayerData().getSkillBar();
-            if (!bar.isSetup())
-            {
+            if (!bar.isSetup()) {
                 bar.setup(p);
             }
         }
 
         // Resetting your class clears the skill bar
-        else if (event.getPreviousClass() != null && event.getNewClass() == null)
-        {
+        else if (event.getPreviousClass() != null && event.getNewClass() == null) {
             PlayerSkillBar bar = event.getPlayerData().getSkillBar();
             bar.reset();
             bar.clear(p);
@@ -163,10 +145,8 @@ public class BarListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler
-    public void onUnlock(PlayerSkillUnlockEvent event)
-    {
-        if (!event.getUnlockedSkill().getData().canCast() || event.getPlayerData().getPlayer() == null)
-        {
+    public void onUnlock(PlayerSkillUnlockEvent event) {
+        if (!event.getUnlockedSkill().getData().canCast() || event.getPlayerData().getPlayer() == null) {
             return;
         }
         event.getPlayerData().getSkillBar().unlock(event.getUnlockedSkill());
@@ -178,16 +158,12 @@ public class BarListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler
-    public void onUpgrade(final PlayerSkillUpgradeEvent event)
-    {
+    public void onUpgrade(final PlayerSkillUpgradeEvent event) {
         final Player player = event.getPlayerData().getPlayer();
-        if (player != null && event.getPlayerData().getSkillBar().isSetup())
-        {
-            SkillAPI.schedule(new Runnable()
-            {
+        if (player != null && event.getPlayerData().getSkillBar().isSetup()) {
+            SkillAPI.schedule(new Runnable() {
                 @Override
-                public void run()
-                {
+                public void run() {
                     event.getPlayerData().getSkillBar().update(player);
                 }
             }, 0);
@@ -200,8 +176,7 @@ public class BarListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler
-    public void onDowngrade(final PlayerSkillDowngradeEvent event)
-    {
+    public void onDowngrade(final PlayerSkillDowngradeEvent event) {
         if (event.getPlayerData().getSkillBar().isSetup()) {
             SkillAPI.schedule(new Runnable() {
                 @Override
@@ -220,8 +195,7 @@ public class BarListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onDeath(PlayerDeathEvent event)
-    {
+    public void onDeath(PlayerDeathEvent event) {
         if (!SkillAPI.getSettings().isWorldEnabled(event.getEntity().getWorld()))
             return;
 
@@ -241,19 +215,17 @@ public class BarListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onRespawn(PlayerRespawnEvent event)
-    {
+    public void onRespawn(PlayerRespawnEvent event) {
         if (!SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld()))
             return;
 
         PlayerData data = SkillAPI.getPlayerData(event.getPlayer());
-        if (data.hasClass())
-        {
+        if (data.hasClass()) {
             data.getSkillBar().setup(event.getPlayer());
             data.getSkillBar().update(event.getPlayer());
             if (data.getSkillBar().isSetup()
-                && SkillAPI.getSettings().isWorldEnabled(event.getRespawnLocation().getWorld())
-                && !data.getSkillBar().isWeaponSlot(0))
+                    && SkillAPI.getSettings().isWorldEnabled(event.getRespawnLocation().getWorld())
+                    && !data.getSkillBar().isWeaponSlot(0))
                 ignored.add(event.getPlayer().getUniqueId());
         }
     }
@@ -283,8 +255,7 @@ public class BarListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onToggle(InventoryClickEvent event)
-    {
+    public void onToggle(InventoryClickEvent event) {
         // Must click on an active skill bar
         PlayerData data = SkillAPI.getPlayerData((Player) event.getWhoClicked());
         final PlayerSkillBar skillBar = data.getSkillBar();
@@ -292,25 +263,21 @@ public class BarListener extends SkillAPIListener
             return;
 
         if ((event.getAction() == InventoryAction.HOTBAR_SWAP || event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD)
-                && (!skillBar.isWeaponSlot(event.getHotbarButton()) || !skillBar.isWeaponSlot(event.getSlot())))
-        {
+                && (!skillBar.isWeaponSlot(event.getHotbarButton()) || !skillBar.isWeaponSlot(event.getSlot()))) {
             event.setCancelled(true);
             return;
         }
 
         // Prevent moving skill icons
         int slot = event.getSlot();
-        if (event.getSlot() < 9 && event.getRawSlot() > event.getView().getTopInventory().getSize())
-        {
+        if (event.getSlot() < 9 && event.getRawSlot() > event.getView().getTopInventory().getSize()) {
             if (event.getClick() == ClickType.LEFT || event.getClick() == ClickType.SHIFT_LEFT)
                 event.setCancelled(!skillBar.isWeaponSlot(slot));
             else if ((event.getClick() == ClickType.RIGHT || event.getClick() == ClickType.SHIFT_RIGHT)
-                && (!skillBar.isWeaponSlot(slot) || (skillBar.isWeaponSlot(slot) && (event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR))))
-            {
+                    && (!skillBar.isWeaponSlot(slot) || (skillBar.isWeaponSlot(slot) && (event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR)))) {
                 event.setCancelled(true);
                 skillBar.toggleSlot(slot);
-            }
-            else if (event.getAction().name().startsWith("DROP"))
+            } else if (event.getAction().name().startsWith("DROP"))
                 event.setCancelled(!skillBar.isWeaponSlot(slot));
         }
     }
@@ -321,8 +288,7 @@ public class BarListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler
-    public void onChangeWorld(PlayerChangedWorldEvent event)
-    {
+    public void onChangeWorld(PlayerChangedWorldEvent event) {
         PlayerData data = SkillAPI.getPlayerData(event.getPlayer());
         boolean enabled = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
         if (data.hasClass() && data.getSkillBar().isSetup() && enabled)
@@ -339,8 +305,7 @@ public class BarListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler
-    public void onCast(PlayerItemHeldEvent event)
-    {
+    public void onCast(PlayerItemHeldEvent event) {
         // Doesn't do anything without a class
         PlayerData data = SkillAPI.getPlayerData(event.getPlayer());
         if (!data.hasClass())
@@ -348,22 +313,18 @@ public class BarListener extends SkillAPIListener
 
         // Must be a skill slot when the bar is set up
         PlayerSkillBar bar = data.getSkillBar();
-        if (!bar.isWeaponSlot(event.getNewSlot()) && bar.isSetup())
-        {
+        if (!bar.isWeaponSlot(event.getNewSlot()) && bar.isSetup()) {
             event.setCancelled(true);
             if (ignored.remove(event.getPlayer().getUniqueId()))
                 return;
 
             MapData held = MapMenuManager.getActiveMenuData(event.getPlayer());
-            if (held != null)
-            {
+            if (held != null) {
                 MapMenu menu = held.getMenu(event.getPlayer());
-                if (menu instanceof SkillListMenu || menu instanceof SkillDetailMenu)
-                {
+                if (menu instanceof SkillListMenu || menu instanceof SkillDetailMenu) {
                     bar.assign(SkillListMenu.getSkill(event.getPlayer()), event.getNewSlot());
                 }
-            }
-            else
+            } else
                 bar.apply(event.getNewSlot());
         }
     }
@@ -381,16 +342,14 @@ public class BarListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onChangeMode(PlayerGameModeChangeEvent event)
-    {
+    public void onChangeMode(PlayerGameModeChangeEvent event) {
         // Clear on entering creative mode
         final PlayerData data = SkillAPI.getPlayerData(event.getPlayer());
         if (event.getNewGameMode() == GameMode.CREATIVE && data.hasClass())
             data.getSkillBar().clear(event.getPlayer());
 
-        // Setup on leaving creative mode
-        else if (event.getPlayer().getGameMode() == GameMode.CREATIVE && data.hasClass())
-        {
+            // Setup on leaving creative mode
+        else if (event.getPlayer().getGameMode() == GameMode.CREATIVE && data.hasClass()) {
             final Player player = event.getPlayer();
             SkillAPI.schedule(() -> SkillAPI.getPlayerData(player).getSkillBar().setup(player), 0);
         }

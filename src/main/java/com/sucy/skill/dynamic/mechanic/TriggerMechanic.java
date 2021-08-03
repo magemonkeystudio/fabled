@@ -1,7 +1,7 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import com.google.common.base.Objects;
-import com.rit.sucy.config.parse.DataSection;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.dynamic.ComponentRegistry;
 import com.sucy.skill.dynamic.DynamicSkill;

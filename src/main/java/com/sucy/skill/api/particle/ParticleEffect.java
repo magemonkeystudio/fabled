@@ -26,7 +26,7 @@
  */
 package com.sucy.skill.api.particle;
 
-import com.rit.sucy.version.VersionManager;
+import mc.promcteam.engine.mccore.util.VersionManager;
 import com.sucy.skill.api.particle.direction.DirectionHandler;
 import com.sucy.skill.data.Point2D;
 import com.sucy.skill.data.Point3D;

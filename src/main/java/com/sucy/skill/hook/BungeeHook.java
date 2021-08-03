@@ -26,11 +26,12 @@
  */
 package com.sucy.skill.hook;
 
-import com.rit.sucy.version.VersionManager;
+import mc.promcteam.engine.mccore.util.VersionManager;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.listener.MainListener;
 import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.event.ServerKickEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -53,11 +54,11 @@ public class BungeeHook implements Listener
     @EventHandler
     public void onKick(ServerKickEvent event)
     {
-        MainListener.unload(VersionManager.getPlayer(event.getPlayer().getName()));
+        MainListener.unload(Bukkit.getPlayer(event.getPlayer().getName()));
     }
 
     @EventHandler
     public void serverConnect(ServerConnectEvent event) {
-        MainListener.unload(VersionManager.getPlayer(event.getPlayer().getName()));
+        MainListener.unload(Bukkit.getPlayer(event.getPlayer().getName()));
     }
 }

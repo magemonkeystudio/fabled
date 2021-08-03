@@ -27,10 +27,10 @@
 package com.sucy.skill.data;
 
 import com.google.common.collect.ImmutableList;
-import com.rit.sucy.config.parse.DataSection;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.log.Logger;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 
 import java.util.ArrayList;
 import java.util.List;

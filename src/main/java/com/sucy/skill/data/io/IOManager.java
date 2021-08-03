@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.data.io.IOManager
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,7 +26,6 @@
  */
 package com.sucy.skill.data.io;
 
-import com.rit.sucy.config.parse.DataSection;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.player.*;
@@ -34,6 +33,7 @@ import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.listener.MainListener;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.manager.ComboManager;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 
@@ -45,33 +45,32 @@ import java.util.Map;
 /**
  * Base class for managers that handle saving and loading player data
  */
-public abstract class IOManager
-{
+public abstract class IOManager {
     private static final String
-        LIMIT          = "limit",
-        ACTIVE         = "active",
-        ACCOUNTS       = "accounts",
-        ACCOUNT_PREFIX = "acc",
-        HEALTH         = "health",
-        MANA           = "mana",
-        CLASSES        = "classes",
-        SKILLS         = "skills",
-        BINDS          = "binds",
-        LEVEL          = "level",
-        EXP            = "exp",
-        POINTS         = "points",
-        SKILL_BAR      = "bar",
-        HOVER          = "hover",
-        EXTRA          = "extra",
-        INSTANT        = "instant",
-        ENABLED        = "enabled",
-        SLOTS          = "slots",
-        UNASSIGNED     = "e",
-        COMBOS         = "combos",
-        ATTRIBS        = "attribs",
-        COOLDOWN       = "cd",
-        HUNGER         = "hunger",
-        ATTRIB_POINTS  = "attrib-points";
+            LIMIT = "limit",
+            ACTIVE = "active",
+            ACCOUNTS = "accounts",
+            ACCOUNT_PREFIX = "acc",
+            HEALTH = "health",
+            MANA = "mana",
+            CLASSES = "classes",
+            SKILLS = "skills",
+            BINDS = "binds",
+            LEVEL = "level",
+            EXP = "exp",
+            POINTS = "points",
+            SKILL_BAR = "bar",
+            HOVER = "hover",
+            EXTRA = "extra",
+            INSTANT = "instant",
+            ENABLED = "enabled",
+            SLOTS = "slots",
+            UNASSIGNED = "e",
+            COMBOS = "combos",
+            ATTRIBS = "attribs",
+            COOLDOWN = "cd",
+            HUNGER = "hunger",
+            ATTRIB_POINTS = "attrib-points";
 
     /**
      * API reference
@@ -83,8 +82,7 @@ public abstract class IOManager
      *
      * @param api SkillAPI reference
      */
-    IOManager(SkillAPI api)
-    {
+    IOManager(SkillAPI api) {
         this.api = api;
     }
 
@@ -114,10 +112,8 @@ public abstract class IOManager
     /**
      * Saves all player data
      */
-    public void saveAll()
-    {
-        for (PlayerAccounts data : SkillAPI.getPlayerAccountData().values())
-        {
+    public void saveAll() {
+        for (PlayerAccounts data : SkillAPI.getPlayerAccountData().values()) {
             if (!MainListener.loadingPlayers.containsKey(data.getOfflinePlayer().getUniqueId())) {
                 saveData(data);
             }
@@ -132,29 +128,23 @@ public abstract class IOManager
      *
      * @return the loaded player account data
      */
-    protected PlayerAccounts load(OfflinePlayer player, DataSection file)
-    {
+    protected PlayerAccounts load(OfflinePlayer player, DataSection file) {
         PlayerAccounts data = new PlayerAccounts(player);
         DataSection accounts = file.getSection(ACCOUNTS);
-        if (accounts == null)
-        {
+        if (accounts == null) {
             data.getActiveData().endInit();
             return data;
         }
-        for (String accountKey : accounts.keys())
-        {
+        for (String accountKey : accounts.keys()) {
             DataSection account = accounts.getSection(accountKey);
             PlayerData acc = data.getData(Integer.parseInt(accountKey.replace(ACCOUNT_PREFIX, "")), player, true);
 
             // Load classes
             DataSection classes = account.getSection(CLASSES);
-            if (classes != null)
-            {
-                for (String classKey : classes.keys())
-                {
+            if (classes != null) {
+                for (String classKey : classes.keys()) {
                     RPGClass rpgClass = SkillAPI.getClass(classKey);
-                    if (rpgClass != null)
-                    {
+                    if (rpgClass != null) {
                         PlayerClass c = acc.setClass(rpgClass);
                         DataSection classData = classes.getSection(classKey);
                         int levels = classData.getInt(LEVEL);
@@ -171,14 +161,11 @@ public abstract class IOManager
 
             // Load skills
             DataSection skills = account.getSection(SKILLS);
-            if (skills != null)
-            {
-                for (String skillKey : skills.keys())
-                {
+            if (skills != null) {
+                for (String skillKey : skills.keys()) {
                     DataSection skill = skills.getSection(skillKey);
                     PlayerSkill skillData = acc.getSkill(skillKey);
-                    if (skillData != null)
-                    {
+                    if (skillData != null) {
                         skillData.setLevel(skill.getInt(LEVEL));
                         skillData.setPoints(skill.getInt(POINTS));
                         skillData.addCooldown(skill.getInt(COOLDOWN, 0));
@@ -187,15 +174,12 @@ public abstract class IOManager
             }
 
             // Load skill bar
-            if (SkillAPI.getSettings().isSkillBarEnabled() || SkillAPI.getSettings().isUsingCombat())
-            {
+            if (SkillAPI.getSettings().isSkillBarEnabled() || SkillAPI.getSettings().isUsingCombat()) {
                 final DataSection skillBar = account.getSection(SKILL_BAR);
                 final PlayerSkillBar bar = acc.getSkillBar();
-                if (skillBar != null && bar != null)
-                {
+                if (skillBar != null && bar != null) {
                     boolean enabled = skillBar.getBoolean(ENABLED, true);
-                    for (final String key : skillBar.keys())
-                    {
+                    for (final String key : skillBar.keys()) {
                         final boolean[] locked = SkillAPI.getSettings().getLockedSlots();
                         if (key.equals(SLOTS)) {
                             for (int i = 0; i < 9; i++)
@@ -208,28 +192,23 @@ public abstract class IOManager
                                 if (!locked[i - 1])
                                     bar.getData().put(i, UNASSIGNED);
                             }
-                        }
-                        else if (SkillAPI.getSkill(key) != null)
+                        } else if (SkillAPI.getSkill(key) != null)
                             bar.getData().put(skillBar.getInt(key), key);
                     }
-                    
+
                     bar.applySettings();
                 }
             }
 
             // Load combos
-            if (SkillAPI.getSettings().isCustomCombosAllowed())
-            {
+            if (SkillAPI.getSettings().isCustomCombosAllowed()) {
                 DataSection combos = account.getSection(COMBOS);
                 PlayerCombos comboData = acc.getComboData();
                 ComboManager cm = SkillAPI.getComboManager();
-                if (combos != null && comboData != null)
-                {
-                    for (String key : combos.keys())
-                    {
+                if (combos != null && comboData != null) {
+                    for (String key : combos.keys()) {
                         Skill skill = SkillAPI.getSkill(key);
-                        if (acc.hasSkill(key) && skill != null && skill.canCast())
-                        {
+                        if (acc.hasSkill(key) && skill != null && skill.canCast()) {
                             int combo = cm.parseCombo(combos.getString(key));
                             if (combo == -1) Logger.invalid("Invalid skill combo: " + combos.getString(key));
                             else comboData.setSkill(skill, combo);
@@ -239,22 +218,18 @@ public abstract class IOManager
             }
 
             // Load attributes
-            if (SkillAPI.getSettings().isAttributesEnabled())
-            {
+            if (SkillAPI.getSettings().isAttributesEnabled()) {
                 acc.setAttribPoints(account.getInt(ATTRIB_POINTS, 0));
                 DataSection attribs = account.getSection(ATTRIBS);
-                if (attribs != null)
-                {
-                    for (String key : attribs.keys())
-                    {
+                if (attribs != null) {
+                    for (String key : attribs.keys()) {
                         acc.getAttributeData().put(key, attribs.getInt(key));
                     }
                 }
             }
 
             // Load cast bars
-            if (SkillAPI.getSettings().isCastEnabled())
-            {
+            if (SkillAPI.getSettings().isCastEnabled()) {
                 acc.getCastBars().reset();
                 acc.getCastBars().load(account.getSection(HOVER), true);
                 acc.getCastBars().load(account.getSection(INSTANT), false);
@@ -271,10 +246,8 @@ public abstract class IOManager
 
             // Load binds
             DataSection binds = account.getSection(BINDS);
-            if (binds != null)
-            {
-                for (String bindKey : binds.keys())
-                {
+            if (binds != null) {
+                for (String bindKey : binds.keys()) {
                     acc.bind(Material.valueOf(bindKey), acc.getSkill(binds.getString(bindKey)));
                 }
             }
@@ -286,25 +259,21 @@ public abstract class IOManager
         return data;
     }
 
-    protected DataSection save(PlayerAccounts data)
-    {
-        try
-        {
+    protected DataSection save(PlayerAccounts data) {
+        try {
             DataSection file = new DataSection();
             file.set(LIMIT, data.getAccountLimit());
             file.set(ACTIVE, data.getActiveId());
             file.set(HEALTH, data.getActiveData().getLastHealth());
             file.set(MANA, data.getActiveData().getMana());
             DataSection accounts = file.createSection(ACCOUNTS);
-            for (Map.Entry<Integer, PlayerData> entry : data.getAllData().entrySet())
-            {
+            for (Map.Entry<Integer, PlayerData> entry : data.getAllData().entrySet()) {
                 DataSection account = accounts.createSection(ACCOUNT_PREFIX + entry.getKey());
                 PlayerData acc = entry.getValue();
 
                 // Save classes
                 DataSection classes = account.createSection(CLASSES);
-                for (PlayerClass c : acc.getClasses())
-                {
+                for (PlayerClass c : acc.getClasses()) {
                     DataSection classSection = classes.createSection(c.getData().getName());
                     classSection.set(LEVEL, c.getLevel());
                     classSection.set(POINTS, c.getPoints());
@@ -313,8 +282,7 @@ public abstract class IOManager
 
                 // Save skills
                 DataSection skills = account.createSection(SKILLS);
-                for (PlayerSkill skill : acc.getSkills())
-                {
+                for (PlayerSkill skill : acc.getSkills()) {
                     DataSection skillSection = skills.createSection(skill.getData().getName());
                     skillSection.set(LEVEL, skill.getLevel());
                     skillSection.set(POINTS, skill.getPoints());
@@ -324,24 +292,20 @@ public abstract class IOManager
 
                 // Save binds
                 DataSection binds = account.createSection(BINDS);
-                for (Map.Entry<Material, PlayerSkill> bind : acc.getBinds().entrySet())
-                {
+                for (Map.Entry<Material, PlayerSkill> bind : acc.getBinds().entrySet()) {
                     if (bind.getKey() == null || bind.getValue() == null) continue;
                     binds.set(bind.getKey().name(), bind.getValue().getData().getName());
                 }
 
                 // Save skill bar
                 if ((SkillAPI.getSettings().isSkillBarEnabled() || SkillAPI.getSettings().isUsingCombat())
-                        && acc.getSkillBar() != null)
-                {
+                        && acc.getSkillBar() != null) {
                     DataSection skillBar = account.createSection(SKILL_BAR);
                     PlayerSkillBar bar = acc.getSkillBar();
                     skillBar.set(ENABLED, bar.isEnabled());
                     skillBar.set(SLOTS, new ArrayList<>(bar.getData().keySet()));
-                    for (Map.Entry<Integer, String> slotEntry : bar.getData().entrySet())
-                    {
-                        if (slotEntry.getValue().equals(UNASSIGNED))
-                        {
+                    for (Map.Entry<Integer, String> slotEntry : bar.getData().entrySet()) {
+                        if (slotEntry.getValue().equals(UNASSIGNED)) {
                             continue;
                         }
                         skillBar.set(slotEntry.getValue(), slotEntry.getKey());
@@ -349,35 +313,29 @@ public abstract class IOManager
                 }
 
                 // Save combos
-                if (SkillAPI.getSettings().isCustomCombosAllowed())
-                {
+                if (SkillAPI.getSettings().isCustomCombosAllowed()) {
                     DataSection combos = account.createSection(COMBOS);
                     PlayerCombos comboData = acc.getComboData();
                     ComboManager cm = SkillAPI.getComboManager();
-                    if (combos != null && comboData != null)
-                    {
+                    if (combos != null && comboData != null) {
                         HashMap<Integer, String> comboMap = comboData.getSkillMap();
-                        for (Map.Entry<Integer, String> combo : comboMap.entrySet())
-                        {
+                        for (Map.Entry<Integer, String> combo : comboMap.entrySet()) {
                             combos.set(combo.getValue(), cm.getSaveString(combo.getKey()));
                         }
                     }
                 }
 
                 // Save attributes
-                if (SkillAPI.getSettings().isAttributesEnabled())
-                {
+                if (SkillAPI.getSettings().isAttributesEnabled()) {
                     account.set(ATTRIB_POINTS, acc.getAttributePoints());
                     DataSection attribs = account.createSection(ATTRIBS);
-                    for (String key : acc.getAttributeData().keySet())
-                    {
+                    for (String key : acc.getAttributeData().keySet()) {
                         attribs.set(key, acc.getAttributeData().get(key));
                     }
                 }
 
                 // Save cast bars
-                if (SkillAPI.getSettings().isCastEnabled())
-                {
+                if (SkillAPI.getSettings().isCastEnabled()) {
                     acc.getCastBars().save(account.createSection(HOVER), true);
                     acc.getCastBars().save(account.createSection(INSTANT), false);
                 }
@@ -390,9 +348,7 @@ public abstract class IOManager
                 }
             }
             return file;
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             Logger.bug("Failed to save player data for " + data.getPlayer().getName());
             ex.printStackTrace();
             return null;

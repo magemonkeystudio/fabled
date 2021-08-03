@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.Settings
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,9 +27,9 @@
 package com.sucy.skill.api;
 
 import com.google.common.collect.ImmutableList;
-import com.rit.sucy.config.parse.DataSection;
-import com.rit.sucy.config.parse.NumberParser;
 import com.sucy.skill.log.Logger;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
+import mc.promcteam.engine.mccore.config.parse.NumberParser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +40,7 @@ import java.util.List;
  * <p>Represents a set of settings that store configurable data for an object.</p>
  */
 public class Settings {
-    private static final String BASE  = "-base";
+    private static final String BASE = "-base";
     private static final String SCALE = "-scale";
 
     private final HashMap<String, Object> settings;
@@ -122,7 +122,6 @@ public class Settings {
      * not set, this will instead return 0.
      *
      * @param key setting key
-     *
      * @return double setting value
      */
     public double getDouble(String key) {
@@ -135,7 +134,6 @@ public class Settings {
      *
      * @param key          setting key
      * @param defaultValue the default value in case not set
-     *
      * @return double setting value
      */
     public double getDouble(String key, double defaultValue) {
@@ -152,7 +150,6 @@ public class Settings {
      * not set, this will instead return 0.
      *
      * @param key setting key
-     *
      * @return integer setting value
      */
     public int getInt(String key) {
@@ -165,7 +162,6 @@ public class Settings {
      *
      * @param key          setting key
      * @param defaultValue the default value in case not set
-     *
      * @return integer setting value
      */
     public int getInt(String key, int defaultValue) {
@@ -182,7 +178,6 @@ public class Settings {
      * not set, this will instead return false.
      *
      * @param key setting key
-     *
      * @return boolean setting value
      */
     public boolean getBool(String key) {
@@ -195,7 +190,6 @@ public class Settings {
      *
      * @param key          setting key
      * @param defaultValue the default value in case not set
-     *
      * @return boolean setting value
      */
     public boolean getBool(String key, boolean defaultValue) {
@@ -212,7 +206,6 @@ public class Settings {
      * not set, this will instead return null.
      *
      * @param key setting key
-     *
      * @return String setting value
      */
     public String getString(String key) {
@@ -225,7 +218,6 @@ public class Settings {
      *
      * @param key          setting key
      * @param defaultValue the default value in case not set
-     *
      * @return String setting value
      */
     public String getString(String key, String defaultValue) {
@@ -241,7 +233,6 @@ public class Settings {
      * Retrieves a string list from the settings
      *
      * @param key settings key
-     *
      * @return string list or empty list if not found
      */
     @SuppressWarnings("unchecked")
@@ -264,7 +255,6 @@ public class Settings {
      *
      * @param key   scaling setting name
      * @param level level of scaling
-     *
      * @return scaled setting value
      */
     public double getAttr(String key, int level) {
@@ -279,7 +269,6 @@ public class Settings {
      * @param key          scaling setting name
      * @param level        level of scaling
      * @param defaultValue the default value in case not set
-     *
      * @return scaled setting value
      */
     public double getAttr(String key, int level, double defaultValue) {
@@ -295,7 +284,6 @@ public class Settings {
      * <p>If the attribute is not set, this will return 0.</p>
      *
      * @param key attribute name
-     *
      * @return base value
      */
     public double getBase(String key) {
@@ -311,7 +299,6 @@ public class Settings {
      * <p>If the attribute is not set, this will return 0.</p>
      *
      * @param key attribute name
-     *
      * @return change in value per level
      */
     public double getScale(String key) {
@@ -328,7 +315,6 @@ public class Settings {
      *
      * @param key   attribute name
      * @param level level of scaling
-     *
      * @return attribute value or 0 if not found
      */
     public Object getObj(String key, int level) {
@@ -347,7 +333,6 @@ public class Settings {
      * any of the setter methods or while loading from the configuration.</p>
      *
      * @param key name of the setting
-     *
      * @return true if defined, false otherwise
      */
     public boolean has(String key) {

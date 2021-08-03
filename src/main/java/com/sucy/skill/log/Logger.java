@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.log.Logger
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,7 +26,7 @@
  */
 package com.sucy.skill.log;
 
-import com.rit.sucy.config.parse.DataSection;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;
@@ -34,8 +34,7 @@ import java.util.HashMap;
 /**
  * Handles logging messages of varying levels
  */
-public class Logger
-{
+public class Logger {
     private static final HashMap<String, Integer> LEVELS = new HashMap<String, Integer>();
 
     /**
@@ -43,8 +42,7 @@ public class Logger
      *
      * @param config config data to load from
      */
-    public static void loadLevels(DataSection config)
-    {
+    public static void loadLevels(DataSection config) {
         for (String key : config.keys())
             setLevel(key, config.getInt(key));
     }
@@ -55,8 +53,7 @@ public class Logger
      * @param key   category
      * @param level logging level
      */
-    public static void setLevel(String key, int level)
-    {
+    public static void setLevel(String key, int level) {
         LEVELS.put(key, level);
     }
 
@@ -68,8 +65,7 @@ public class Logger
      * @param level   logging level
      * @param message message to send
      */
-    public static void log(String key, int level, String message)
-    {
+    public static void log(String key, int level, String message) {
         if (LEVELS.containsKey(key) && LEVELS.get(key) >= level)
             Bukkit.getLogger().info(message);
     }
@@ -82,8 +78,7 @@ public class Logger
      * @param level   logging level
      * @param message message to send
      */
-    public static void log(LogType key, int level, String message)
-    {
+    public static void log(LogType key, int level, String message) {
         log(key.key(), level, message);
     }
 
@@ -92,8 +87,7 @@ public class Logger
      *
      * @param message error message
      */
-    public static void invalid(String message)
-    {
+    public static void invalid(String message) {
         Bukkit.getLogger().severe(message);
     }
 
@@ -102,8 +96,7 @@ public class Logger
      *
      * @param message error message
      */
-    public static void bug(String message)
-    {
+    public static void bug(String message) {
         Bukkit.getLogger().severe(message);
     }
 
@@ -112,8 +105,7 @@ public class Logger
      *
      * @param message message to log
      */
-    public static void log(String message)
-    {
+    public static void log(String message) {
         Bukkit.getLogger().info(message);
     }
 }

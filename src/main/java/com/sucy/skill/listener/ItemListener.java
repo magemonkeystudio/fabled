@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.listener.ItemListener
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -50,19 +50,20 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.google.common.collect.ImmutableSet;
-import com.rit.sucy.config.FilterType;
-import com.rit.sucy.version.VersionManager;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.event.PlayerClassChangeEvent;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.data.PlayerEquips;
 import com.sucy.skill.language.ErrorNodes;
 
+import mc.promcteam.engine.mccore.config.FilterType;
+import mc.promcteam.engine.mccore.util.VersionManager;
+
 /**
  * Listener that handles weapon item lore requirements
  */
-public class ItemListener extends SkillAPIListener
-{
+public class ItemListener extends SkillAPIListener {
+
     @Override
     public void init() {
         MainListener.registerJoin(this::onJoin);
@@ -104,8 +105,7 @@ public class ItemListener extends SkillAPIListener
     /**
      * Updates equipment data on join
      */
-    public void onJoin(final Player player)
-    {
+    public void onJoin(final Player player) {
         if (SkillAPI.getSettings().isWorldEnabled(player.getWorld()))
             SkillAPI.getPlayerData(player).getEquips().update(player);
     }
@@ -148,8 +148,7 @@ public class ItemListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onWorld(PlayerChangedWorldEvent event)
-    {
+    public void onWorld(PlayerChangedWorldEvent event) {
         if (!SkillAPI.getSettings().isWorldEnabled(event.getFrom())
                 && SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld()))
             SkillAPI.getPlayerData(event.getPlayer()).getEquips().update(event.getPlayer());
@@ -214,27 +213,22 @@ public class ItemListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onAttack(EntityDamageByEntityEvent event)
-    {
+    public void onAttack(EntityDamageByEntityEvent event) {
         if (!SkillAPI.getSettings().isWorldEnabled(event.getEntity().getWorld())) {
             return;
         }
 
-        if (event.getDamager() instanceof Player)
-        {
+        if (event.getDamager() instanceof Player) {
             Player player = (Player) event.getDamager();
-            if (!SkillAPI.getPlayerData(player).getEquips().canHit())
-            {
+            if (!SkillAPI.getPlayerData(player).getEquips().canHit()) {
                 SkillAPI.getLanguage().sendMessage(ErrorNodes.CANNOT_USE, player, FilterType.COLOR);
                 event.setCancelled(true);
             }
         }
-        if (event.getEntity() instanceof Player && VersionManager.isVersionAtLeast(VersionManager.V1_9_0))
-        {
+        if (event.getEntity() instanceof Player && VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
             Player player = (Player) event.getEntity();
             final boolean blocking = event.getDamage(EntityDamageEvent.DamageModifier.BLOCKING) < 0;
-            if (blocking && !SkillAPI.getPlayerData(player).getEquips().canBlock())
-            {
+            if (blocking && !SkillAPI.getPlayerData(player).getEquips().canBlock()) {
                 SkillAPI.getLanguage().sendMessage(ErrorNodes.CANNOT_USE, event.getEntity(), FilterType.COLOR);
                 event.setDamage(EntityDamageEvent.DamageModifier.BLOCKING, 0);
             }
@@ -247,14 +241,12 @@ public class ItemListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onShoot(EntityShootBowEvent event)
-    {
+    public void onShoot(EntityShootBowEvent event) {
         if (!SkillAPI.getSettings().isWorldEnabled(event.getEntity().getWorld())) {
             return;
         }
 
-        if (event.getEntity() instanceof Player)
-        {
+        if (event.getEntity() instanceof Player) {
             final PlayerEquips equips = SkillAPI.getPlayerData((Player) event.getEntity()).getEquips();
             if (isMainhand(event.getBow(), event.getEntity())) {
                 if (!equips.canHit()) {

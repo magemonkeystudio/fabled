@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.manager.ClassBoardManager
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,44 +26,30 @@
  */
 package com.sucy.skill.manager;
 
-import com.rit.sucy.chat.Chat;
-import com.rit.sucy.chat.Prefix;
-import com.rit.sucy.scoreboard.BoardManager;
-import com.rit.sucy.scoreboard.StatBoard;
-import com.rit.sucy.scoreboard.Team;
-import com.rit.sucy.version.VersionPlayer;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.data.PlayerStats;
+import mc.promcteam.engine.mccore.chat.Chat;
+import mc.promcteam.engine.mccore.chat.Prefix;
+import mc.promcteam.engine.mccore.scoreboard.BoardManager;
+import mc.promcteam.engine.mccore.scoreboard.StatBoard;
+import mc.promcteam.engine.mccore.scoreboard.Team;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 /**
  * Manages prefixes for classes
  * - Only works if ChatAPI is installed -
  */
-public class ClassBoardManager
-{
-    /**
-     * Clears a class prefix
-     *
-     * @param player player name
-     *
-     * @deprecated use clearPrefix(VersionPlayer) instead
-     */
-    public static void clear(String player)
-    {
-        clear(new VersionPlayer(player));
-    }
-
+public class ClassBoardManager {
     /**
      * Clears the prefix for a player
      *
      * @param player player reference
      */
-    public static void clear(VersionPlayer player)
-    {
+    public static void clear(Player player) {
         Chat.getPlayerData(player.getName()).clearPluginPrefix("SkillAPI");
         BoardManager.getPlayerBoards(player.getName()).removeBoards("SkillAPI");
         BoardManager.clearTeam(player.getName());
@@ -73,8 +59,7 @@ public class ClassBoardManager
     /**
      * Clears all scoreboards for the plugin
      */
-    public static void clearAll()
-    {
+    public static void clearAll() {
         BoardManager.clearPluginBoards("SkillAPI");
     }
 
@@ -85,13 +70,11 @@ public class ClassBoardManager
      * @param prefix     prefix text
      * @param braceColor color of braces
      */
-    public static void update(PlayerData player, String prefix, ChatColor braceColor)
-    {
-        try
-        {
+    public static void update(PlayerData player, String prefix, ChatColor braceColor) {
+        try {
             // Give a chat prefix
             Chat.getPlayerData(player.getPlayerName()).setPluginPrefix(
-                new Prefix("SkillAPI", prefix, braceColor)
+                    new Prefix("SkillAPI", prefix, braceColor)
             );
 
             // Clear previous data
@@ -99,29 +82,22 @@ public class ClassBoardManager
             BoardManager.clearTeam(player.getPlayerName());
 
             // Apply new data
-            if (SkillAPI.getSettings().isShowScoreboard())
-            {
-                for (PlayerClass c : player.getClasses())
-                {
-                    if (c.getData().getGroupSettings().isShowScoreboard())
-                    {
+            if (SkillAPI.getSettings().isShowScoreboard()) {
+                for (PlayerClass c : player.getClasses()) {
+                    if (c.getData().getGroupSettings().isShowScoreboard()) {
                         StatBoard board = new StatBoard(c.getData().getPrefix(), "SkillAPI");
                         board.addStats(new PlayerStats(c));
                         BoardManager.getPlayerBoards(player.getPlayerName()).addBoard(board);
                     }
                 }
             }
-            if (SkillAPI.getSettings().isShowClassName())
-            {
+            if (SkillAPI.getSettings().isShowClassName()) {
                 BoardManager.setTeam(player.getPlayerName(), player.getMainClass().getData().getName());
             }
-            if (SkillAPI.getSettings().isShowClassLevel())
-            {
+            if (SkillAPI.getSettings().isShowClassLevel()) {
                 BoardManager.setBelowNameScore(player.getPlayerName(), player.getMainClass().getLevel());
             }
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -131,10 +107,8 @@ public class ClassBoardManager
      *
      * @param c class to register
      */
-    public static void registerClass(RPGClass c)
-    {
-        if (SkillAPI.getSettings().isShowClassName())
-        {
+    public static void registerClass(RPGClass c) {
+        if (SkillAPI.getSettings().isShowClassName()) {
             String name = c.getName();
             if (name.length() > 16) {
                 name = name.substring(0, 16);
@@ -148,10 +122,8 @@ public class ClassBoardManager
      *
      * @param data player's data to use for the update
      */
-    public static void updateLevel(PlayerData data)
-    {
-        if (SkillAPI.getSettings().isShowClassLevel() && data.hasClass())
-        {
+    public static void updateLevel(PlayerData data) {
+        if (SkillAPI.getSettings().isShowClassLevel() && data.hasClass()) {
             BoardManager.setBelowNameScore(data.getPlayerName(), data.getMainClass().getLevel());
         }
     }
@@ -159,10 +131,8 @@ public class ClassBoardManager
     /**
      * Registers the text below player names
      */
-    public static void registerText()
-    {
-        if (SkillAPI.getSettings().isShowClassLevel())
-        {
+    public static void registerText() {
+        if (SkillAPI.getSettings().isShowClassLevel()) {
             BoardManager.init();
             BoardManager.setTextBelowNames(SkillAPI.getSettings().getLevelText());
         }

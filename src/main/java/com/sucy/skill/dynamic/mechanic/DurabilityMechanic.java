@@ -1,6 +1,6 @@
 package com.sucy.skill.dynamic.mechanic;
 
-import com.rit.sucy.version.VersionManager;
+import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;

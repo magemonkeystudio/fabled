@@ -26,11 +26,11 @@
  */
 package com.sucy.skill.api.projectile;
 
-import com.rit.sucy.reflect.Reflection;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.particle.target.Followable;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.util.Version;
+import mc.promcteam.engine.utils.Reflex;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -64,15 +64,15 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
 
     static {
         try {
-            Class<?> aabbClass = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.world.phys.AxisAlignedBB")
-                    : Reflection.getNMSClass("AxisAlignedBB");
-            Class<?> entityClass = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.world.Entity")
-                    : Reflection.getNMSClass("Entity");
+            Class<?> aabbClass = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.phys.AxisAlignedBB")
+                    : Reflex.getNMSClass("AxisAlignedBB");
+            Class<?> entityClass = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.Entity")
+                    : Reflex.getNMSClass("Entity");
             aabbConstructor = aabbClass.getConstructor(double.class, double.class, double.class, double.class, double.class, double.class);
             getBukkitEntity = entityClass.getDeclaredMethod("getBukkitEntity");
-            getHandle = Reflection.getCraftClass("CraftWorld").getDeclaredMethod("getHandle");
-            Class<?> worldClass = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.world.level.World")
-                    : Reflection.getNMSClass("World");
+            getHandle = Reflex.getCraftClass("CraftWorld").getDeclaredMethod("getHandle");
+            Class<?> worldClass = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.level.World")
+                    : Reflex.getNMSClass("World");
             try {
                 getEntities = worldClass.getDeclaredMethod("getEntities", entityClass, aabbClass, Predicate.class);
             } catch (Exception e) {
@@ -84,8 +84,8 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
         }
     }
 
-    private final HashMap<String, List<MetadataValue>> metadata = new HashMap<String, List<MetadataValue>>();
-    private final Set<Integer> hit = new HashSet<Integer>();
+    private final HashMap<String, List<MetadataValue>> metadata = new HashMap<>();
+    private final Set<Integer> hit = new HashSet<>();
     private ProjectileCallback callback;
     private LivingEntity thrower;
     private boolean enemy = true;
@@ -123,10 +123,10 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
     public static ArrayList<Vector> calcSpread(Vector dir, double angle, int amount) {
         // Special cases
         if (amount <= 0) {
-            return new ArrayList<Vector>();
+            return new ArrayList<>();
         }
 
-        ArrayList<Vector> list = new ArrayList<Vector>();
+        ArrayList<Vector> list = new ArrayList<>();
 
         // One goes straight if odd amount
         if (amount % 2 == 1) {
@@ -323,7 +323,7 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
      */
     private List<LivingEntity> getColliding() {
         // Reflection for nms collision
-        List<LivingEntity> result = new ArrayList<LivingEntity>(1);
+        List<LivingEntity> result = new ArrayList<>(1);
         try {
             Object nmsWorld = getHandle.invoke(getLocation().getWorld());
             Object predicate = getEntities == null ? GUAVA_PREDICATE : JAVA_PREDICATE;

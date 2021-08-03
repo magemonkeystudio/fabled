@@ -1,6 +1,5 @@
 package com.sucy.skill.dynamic.target;
 
-import com.rit.sucy.config.parse.DataSection;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.target.TargetHelper;
 import com.sucy.skill.cast.*;
@@ -9,6 +8,7 @@ import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.dynamic.EffectComponent;
 import com.sucy.skill.dynamic.TempEntity;
 import com.sucy.skill.listener.MechanicListener;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;

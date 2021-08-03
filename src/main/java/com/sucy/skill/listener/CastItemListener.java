@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.listener.CastItemListener
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,7 +26,6 @@
  */
 package com.sucy.skill.listener;
 
-import com.rit.sucy.player.PlayerUUIDs;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.event.PlayerClassChangeEvent;
 import com.sucy.skill.api.event.PlayerSkillUnlockEvent;
@@ -54,15 +53,19 @@ import java.util.UUID;
 /**
  * Handles the alternate casting option for casting via a cycling slot
  */
-public class CastItemListener extends SkillAPIListener
-{
+public class CastItemListener extends SkillAPIListener {
     private static HashMap<UUID, PlayerSkillSlot> data = new HashMap<UUID, PlayerSkillSlot>();
 
     private static int slot = SkillAPI.getSettings().getCastSlot();
 
+    private static void cleanup(Player player) {
+        data.remove(player.getUniqueId());
+        if (SkillAPI.getSettings().isWorldEnabled(player.getWorld()))
+            player.getInventory().setItem(slot, null);
+    }
+
     @Override
-    public void init()
-    {
+    public void init() {
         MainListener.registerJoin(this::init);
         MainListener.registerClear(this::handleClear);
         for (Player player : Bukkit.getOnlinePlayers())
@@ -73,8 +76,7 @@ public class CastItemListener extends SkillAPIListener
      * Cleans up the listener functions
      */
     @Override
-    public void cleanup()
-    {
+    public void cleanup() {
         if (slot == -1)
             return;
 
@@ -83,21 +85,13 @@ public class CastItemListener extends SkillAPIListener
         slot = -1;
     }
 
-    private static void cleanup(Player player)
-    {
-        data.remove(player.getUniqueId());
-        if (SkillAPI.getSettings().isWorldEnabled(player.getWorld()))
-            player.getInventory().setItem(slot, null);
-    }
-
     /**
      * Re-initializes cast data on class change
      *
      * @param event event details
      */
     @EventHandler
-    public void onClassChange(PlayerClassChangeEvent event)
-    {
+    public void onClassChange(PlayerClassChangeEvent event) {
         data.get(event.getPlayerData().getPlayer().getUniqueId()).init(event.getPlayerData());
     }
 
@@ -107,8 +101,7 @@ public class CastItemListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler
-    public void onWorldChange(PlayerChangedWorldEvent event)
-    {
+    public void onWorldChange(PlayerChangedWorldEvent event) {
         boolean from = SkillAPI.getSettings().isWorldEnabled(event.getFrom());
         boolean to = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
         if (from && !to)
@@ -117,14 +110,12 @@ public class CastItemListener extends SkillAPIListener
             init(event.getPlayer());
     }
 
-    private PlayerSkillSlot get(Player player)
-    {
+    private PlayerSkillSlot get(Player player) {
         return data.get(player.getUniqueId());
     }
 
-    private PlayerSkillSlot get(PlayerData data)
-    {
-        return this.data.get(PlayerUUIDs.getUUID(data.getPlayerName()));
+    private PlayerSkillSlot get(PlayerData data) {
+        return this.data.get(data.getPlayer().getUniqueId());
     }
 
     /**
@@ -132,10 +123,8 @@ public class CastItemListener extends SkillAPIListener
      *
      * @param player player to give to
      */
-    private void init(Player player)
-    {
-        if (SkillAPI.getSettings().isWorldEnabled(player.getWorld()))
-        {
+    private void init(Player player) {
+        if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
             PlayerSkillSlot slotData = new PlayerSkillSlot();
             data.put(player.getUniqueId(), slotData);
             slotData.init(SkillAPI.getPlayerData(player));
@@ -156,8 +145,7 @@ public class CastItemListener extends SkillAPIListener
      */
 
     @EventHandler
-    public void onQuit(PlayerQuitEvent event)
-    {
+    public void onQuit(PlayerQuitEvent event) {
         cleanup(event.getPlayer());
     }
 
@@ -167,8 +155,7 @@ public class CastItemListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler
-    public void onUnlock(PlayerSkillUnlockEvent event)
-    {
+    public void onUnlock(PlayerSkillUnlockEvent event) {
         get(event.getPlayerData()).unlock(event.getUnlockedSkill());
     }
 
@@ -178,8 +165,7 @@ public class CastItemListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler
-    public void onClick(InventoryClickEvent event)
-    {
+    public void onClick(InventoryClickEvent event) {
         if (SkillAPI.getSettings().isWorldEnabled(event.getWhoClicked().getWorld())) {
             if (event.getSlot() == slot && event.getSlotType() == InventoryType.SlotType.QUICKBAR)
                 event.setCancelled(true);
@@ -195,11 +181,9 @@ public class CastItemListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler
-    public void onDrop(PlayerDropItemEvent event)
-    {
+    public void onDrop(PlayerDropItemEvent event) {
         if (SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld())
-            && event.getPlayer().getInventory().getHeldItemSlot() == slot)
-        {
+                && event.getPlayer().getInventory().getHeldItemSlot() == slot) {
             event.setCancelled(true);
             get(event.getPlayer()).activate();
         }
@@ -218,12 +202,10 @@ public class CastItemListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler
-    public void onInteract(PlayerInteractEvent event)
-    {
+    public void onInteract(PlayerInteractEvent event) {
         // Cycling skills
         if (SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld())
-            && event.getPlayer().getInventory().getHeldItemSlot() == slot)
-        {
+                && event.getPlayer().getInventory().getHeldItemSlot() == slot) {
             event.setCancelled(true);
             if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK)
                 get(event.getPlayer()).next();
