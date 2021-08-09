@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.sucy.skill</groupId>
     <artifactId>ProSkillAPI</artifactId>
-    <version>1.1.6.1-DEV</version>
+    <version>1.1.6.2-DEV</version>
     <packaging>jar</packaging>
 
     <name>ProSkillAPI</name>
@@ -54,6 +54,31 @@
                 <configuration>
                     <reportOutputDirectory>${project.basedir}</reportOutputDirectory>
                     <destDir>javadocs</destDir>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>replacer</artifactId>
+                <version>1.5.3</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <basedir>${project.build.directory}</basedir>
+                    <includes>
+                        <include>**/*.yml</include>
+                    </includes>
+                    <replacements>
+                        <replacement>
+                            <token>%PROJECT_VERSION%</token>
+                            <value>${project.version}</value>
+                        </replacement>
+                    </replacements>
                 </configuration>
             </plugin>
         </plugins>
@@ -120,6 +145,12 @@
             <artifactId>spigot</artifactId>
             <version>1.17-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.20</version>
+            <scope>compile</scope>
         </dependency>
         <!--        <dependency>-->
         <!--            <groupId>com.rit.sucy</groupId>-->
