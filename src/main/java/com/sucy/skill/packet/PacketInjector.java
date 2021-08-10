@@ -20,7 +20,7 @@ public class PacketInjector {
     private Method handle;
     private Field k;
     private Field dropField;
-    private SkillAPI skillAPI;
+    private final SkillAPI skillAPI;
 
     /**
      * Sets up the injector, grabbing necessary reflection data
@@ -45,13 +45,13 @@ public class PacketInjector {
                 }
             } else {
                 String nms = Reflex.getNMSPackage();
-                playerCon = Class.forName(nms + "EntityPlayer")
+                playerCon = Class.forName(nms + ".EntityPlayer")
                         .getField("playerConnection");
 
-                Class<?> playerConnection = Class.forName(nms + "PlayerConnection");
+                Class<?> playerConnection = Class.forName(nms + ".PlayerConnection");
                 network = playerConnection.getField("networkManager");
 
-                Class<?> networkManager = Class.forName(nms + "NetworkManager");
+                Class<?> networkManager = Class.forName(nms + ".NetworkManager");
                 try {
                     k = networkManager.getField("channel");
                 } catch (Exception ex) {
