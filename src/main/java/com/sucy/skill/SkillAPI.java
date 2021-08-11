@@ -101,6 +101,442 @@ public class SkillAPI extends JavaPlugin {
     private boolean disabling = false;
 
     /**
+     * Checks whether SkillAPI has all its
+     * data loaded and running.
+     *
+     * @return true if loaded and set up, false otherwise
+     */
+    public static boolean isLoaded() {
+        return singleton != null && singleton.loaded;
+    }
+
+    /**
+     * @return SkillAPI singleton if available
+     *
+     * @throws IllegalStateException if SkillAPI isn't enabled
+     */
+    public static SkillAPI inst() {
+        if (singleton == null) {
+            throw new IllegalStateException("Cannot use SkillAPI methods before it is enabled - add it to your plugin.yml as a dependency");
+        }
+        return singleton;
+    }
+
+    /**
+     * Retrieves the settings data controlling SkillAPI
+     *
+     * @return SkillAPI settings data
+     */
+    public static Settings getSettings() {
+        return inst().settings;
+    }
+
+    /**
+     * Retrieves the language file data for SkillAPI
+     *
+     * @return SkillAPI language file data
+     */
+    public static CommentedLanguageConfig getLanguage() {
+        return inst().language;
+    }
+
+    /**
+     * Retrieves the manager for click cast combos
+     *
+     * @return click combo manager
+     */
+    public static ComboManager getComboManager() {
+        return inst().comboManager;
+    }
+
+    /**
+     * Retrieves the attribute manager for SkillAPI
+     *
+     * @return attribute manager
+     */
+    public static AttributeManager getAttributeManager() {
+        return inst().attributeManager;
+    }
+
+    /**
+     * Retrieves a skill by name. If no skill is found with the name, null is
+     * returned instead.
+     *
+     * @param name name of the skill
+     *
+     * @return skill with the name or null if not found
+     */
+    public static Skill getSkill(String name) {
+        if (name == null) { return null; }
+        return inst().skills.get(name.toLowerCase());
+    }
+
+    /**
+     * Retrieves the registered skill data for SkillAPI. It is recommended that you
+     * don't edit this map. Instead, use "addSkill" and "addSkills" instead.
+     *
+     * @return the map of registered skills
+     */
+    public static HashMap<String, Skill> getSkills() {
+        return inst().skills;
+    }
+
+    /**
+     * Checks whether or not a skill is registered.
+     *
+     * @param name name of the skill
+     *
+     * @return true if registered, false otherwise
+     */
+    public static boolean isSkillRegistered(String name) {
+        return getSkill(name) != null;
+    }
+
+    /**
+     * Checks whether or not a skill is registered
+     *
+     * @param skill the skill to check
+     *
+     * @return true if registered, false otherwise
+     */
+    public static boolean isSkillRegistered(PlayerSkill skill) {
+        return isSkillRegistered(skill.getData().getName());
+    }
+
+    /**
+     * Checks whether or not a skill is registered
+     *
+     * @param skill the skill to check
+     *
+     * @return true if registered, false otherwise
+     */
+    public static boolean isSkillRegistered(Skill skill) {
+        return isSkillRegistered(skill.getName());
+    }
+
+    /**
+     * Retrieves a class by name. If no skill is found with the name, null is
+     * returned instead.
+     *
+     * @param name name of the class
+     *
+     * @return class with the name or null if not found
+     */
+    public static RPGClass getClass(String name) {
+        if (name == null) { return null; }
+        return inst().classes.get(name.toLowerCase());
+    }
+
+    /**
+     * Retrieves the registered class data for SkillAPI. It is recommended that you
+     * don't edit this map. Instead, use "addClass" and "addClasses" instead.
+     *
+     * @return the map of registered skills
+     */
+    public static HashMap<String, RPGClass> getClasses() {
+        return inst().classes;
+    }
+
+    /**
+     * Retrieves a list of base classes that don't profess from another class
+     *
+     * @return the list of base classes
+     */
+    public static ArrayList<RPGClass> getBaseClasses(String group) {
+        ArrayList<RPGClass> list = new ArrayList<>();
+        for (RPGClass c : singleton.classes.values()) {
+            if (!c.hasParent() && c.getGroup().equals(group)) { list.add(c); }
+        }
+        return list;
+    }
+
+    /**
+     * Checks whether or not a class is registered.
+     *
+     * @param name name of the class
+     *
+     * @return true if registered, false otherwise
+     */
+    public static boolean isClassRegistered(String name) {
+        return getClass(name) != null;
+    }
+
+    /**
+     * Checks whether or not a class is registered.
+     *
+     * @param playerClass the class to check
+     *
+     * @return true if registered, false otherwise
+     */
+    public static boolean isClassRegistered(PlayerClass playerClass) {
+        return isClassRegistered(playerClass.getData().getName());
+    }
+
+    /**
+     * Checks whether or not a class is registered.
+     *
+     * @param rpgClass the class to check
+     *
+     * @return true if registered, false otherwise
+     */
+    public static boolean isClassRegistered(RPGClass rpgClass) {
+        return isClassRegistered(rpgClass.getName());
+    }
+
+    /**
+     * Retrieves the active class data for the player. If no data is found for the
+     * player, a new set of data will be created and returned.
+     *
+     * @param player player to get the data for
+     *
+     * @return the class data of the player
+     */
+    public static PlayerData getPlayerData(OfflinePlayer player) {
+        if (player == null) { return null; }
+        return getPlayerAccountData(player).getActiveData();
+    }
+
+    /**
+     * Loads the data for a player when they join the server. This is handled
+     * by the API and doesn't need to be used elsewhere unless you want to
+     * load a player's data without them logging on. This should be run
+     * asynchronously since it is loading configuration files.
+     *
+     * @param player player to load the data for
+     */
+    public static PlayerAccounts loadPlayerData(OfflinePlayer player) {
+        if (player == null) { return null; }
+
+        // Already loaded for some reason, no need to load again
+        String id = player.getUniqueId().toString().toLowerCase();
+        if (inst().players.containsKey(id)) { return singleton.players.get(id); }
+
+        // Load the data
+        return doLoad(player);
+    }
+
+    private static PlayerAccounts doLoad(OfflinePlayer player) {
+        // Load the data
+        PlayerAccounts data = singleton.io.loadData(player);
+        singleton.players.put(player.getUniqueId().toString(), data);
+        return data;
+    }
+
+    /**
+     * Used to fake player data until SQL data is loaded when both SQL and the SQL delay are enabled.
+     * This should not be used by other plugins. If the player data already exists, this does nothing.
+     *
+     * @param player player to fake data for
+     */
+    public static void initFakeData(final OfflinePlayer player) {
+        inst().players.computeIfAbsent(player.getUniqueId().toString(), id -> new PlayerAccounts(player));
+    }
+
+    /**
+     * Do not use this method outside of onJoin. This will delete any progress a player
+     * has made since joining.
+     */
+    public static void reloadPlayerData(final Player player) {
+        doLoad(player);
+    }
+
+    /**
+     * Saves all player data to the configs. This
+     * should be called asynchronously to avoid problems
+     * with the main server loop.
+     */
+    public static void saveData() {
+        inst().io.saveAll();
+    }
+
+    /**
+     * Checks whether or not SkillAPI currently has loaded data for the
+     * given player. This returning false doesn't necessarily mean the
+     * player doesn't have any data at all, just not data that is
+     * currently loaded.
+     *
+     * @param player player to check for
+     *
+     * @return true if has loaded data, false otherwise
+     */
+    public static boolean hasPlayerData(OfflinePlayer player) {
+        return singleton != null && player != null && singleton.players.containsKey(player.getUniqueId().toString().toLowerCase());
+    }
+
+    /**
+     * Unloads player data from memory, saving it to the config
+     * first and then removing it from the map.
+     *
+     * @param player player to unload data for
+     */
+    public static void unloadPlayerData(final OfflinePlayer player) {
+        unloadPlayerData(player, false);
+    }
+
+    public static void unloadPlayerData(final OfflinePlayer player, final boolean skipSaving) {
+        if (singleton == null || player == null || singleton.disabling || !singleton.players.containsKey(player.getUniqueId().toString().toLowerCase())) {
+            return;
+        }
+
+        singleton.getServer().getScheduler().runTaskAsynchronously(singleton, () -> {
+            PlayerAccounts accounts = getPlayerAccountData(player);
+            if (!skipSaving) {
+                singleton.io.saveData(accounts);
+            }
+            singleton.players.remove(player.getUniqueId().toString().toLowerCase());
+        });
+    }
+
+    /**
+     * Retrieves all class data for the player. This includes the active and
+     * all inactive accounts the player has. If no data is found, a new set
+     * of data will be created and returned.
+     *
+     * @param player player to get the data for
+     *
+     * @return the class data of the player
+     */
+    public static PlayerAccounts getPlayerAccountData(OfflinePlayer player) {
+        if (player == null) { return null; }
+
+        String id = player.getUniqueId().toString().toLowerCase();
+        if (!inst().players.containsKey(id)) {
+            PlayerAccounts data = loadPlayerData(player);
+            singleton.players.put(id, data);
+            return data;
+        } else { return singleton.players.get(id); }
+    }
+
+    /**
+     * Retrieves all the player data of SkillAPI. It is recommended not to
+     * modify this map. Instead, use helper methods within individual player data.
+     *
+     * @return all SkillAPI player data
+     */
+    public static HashMap<String, PlayerAccounts> getPlayerAccountData() {
+        return inst().players;
+    }
+
+    /**
+     * Retrieves the list of active class groups used by
+     * registered classes
+     *
+     * @return list of active class groups
+     */
+    public static List<String> getGroups() {
+        return inst().groups;
+    }
+
+    /**
+     * Schedules a delayed task
+     *
+     * @param runnable the task to schedule
+     * @param delay    the delay in ticks
+     */
+    public static BukkitTask schedule(BukkitRunnable runnable, int delay) {
+        return runnable.runTaskLater(inst(), delay);
+    }
+
+    /**
+     * Schedules a delayed task
+     *
+     * @param runnable the task to schedule
+     * @param delay    the delay in ticks
+     */
+    public static BukkitTask schedule(Runnable runnable, int delay) {
+        return Bukkit.getScheduler().runTaskLater(singleton, runnable, delay);
+    }
+
+    /**
+     * Schedules a repeating task
+     *
+     * @param runnable the task to schedule
+     * @param delay    the delay in ticks before the first tick
+     * @param period   how often to run in ticks
+     */
+    public static BukkitTask schedule(BukkitRunnable runnable, int delay, int period) {
+        return runnable.runTaskTimer(inst(), delay, period);
+    }
+
+    /**
+     * Sets a value to an entity's metadata
+     *
+     * @param target entity to set to
+     * @param key    key to store under
+     * @param value  value to store
+     */
+    public static void setMeta(Metadatable target, String key, Object value) {
+        target.setMetadata(key, new FixedMetadataValue(inst(), value));
+    }
+
+    /**
+     * Retrieves metadata from an entity
+     *
+     * @param target entity to retrieve from
+     * @param key    key the value was stored under
+     *
+     * @return the stored value
+     */
+    public static Object getMeta(Metadatable target, String key) {
+        List<MetadataValue> meta = target.getMetadata(key);
+        return meta == null || meta.size() == 0 ? null : meta.get(0).value();
+    }
+
+    /**
+     * Retrieves metadata from an entity
+     *
+     * @param target entity to retrieve from
+     * @param key    key the value was stored under
+     *
+     * @return the stored value
+     */
+    public static int getMetaInt(Metadatable target, String key) {
+        return target.getMetadata(key).get(0).asInt();
+    }
+
+    /**
+     * Retrieves metadata from an entity
+     *
+     * @param target entity to retrieve from
+     * @param key    key the value was stored under
+     *
+     * @return the stored value
+     */
+    public static double getMetaDouble(Metadatable target, String key) {
+        return target.getMetadata(key).get(0).asDouble();
+    }
+
+    /**
+     * Removes metadata from an entity
+     *
+     * @param target entity to remove from
+     * @param key    key metadata was stored under
+     */
+    public static void removeMeta(Metadatable target, String key) {
+        target.removeMetadata(key, inst());
+    }
+
+    /**
+     * Grabs a config for SkillAPI
+     *
+     * @param name config file name
+     *
+     * @return config data
+     */
+    public static CommentedConfig getConfig(String name) {
+        return new CommentedConfig(singleton, name);
+    }
+
+    /**
+     * Reloads the plugin
+     */
+    public static void reload() {
+        SkillAPI inst = inst();
+        inst.onDisable();
+        inst.onEnable();
+    }
+
+    /**
      * <p>Enables SkillAPI, setting up listeners, managers, and loading data. This
      * should not be called by other plugins.</p>
      */
@@ -208,7 +644,7 @@ public class SkillAPI extends JavaPlugin {
         if (Bukkit.getServer().getPluginManager().getPlugin("Quests") != null) {
             ResourceManager.copyQuestsModule();
         }
-        
+
         loaded = true;
     }
 
@@ -265,334 +701,6 @@ public class SkillAPI extends JavaPlugin {
         loaded = false;
         disabling = false;
         singleton = null;
-    }
-
-    /**
-     * Checks whether or not SkillAPI has all its
-     * data loaded and running.
-     *
-     * @return true if loaded and set up, false otherwise
-     */
-    public static boolean isLoaded() {
-        return singleton != null && singleton.loaded;
-    }
-
-    /**
-     * @return SkillAPI singleton if available
-     *
-     * @throws IllegalStateException if SkillAPI isn't enabled
-     */
-    private static SkillAPI singleton() {
-        if (singleton == null) {
-            throw new IllegalStateException(
-                    "Cannot use SkillAPI methods before it is enabled - add it to your plugin.yml as a dependency");
-        }
-        return singleton;
-    }
-
-    /**
-     * Retrieves the settings data controlling SkillAPI
-     *
-     * @return SkillAPI settings data
-     */
-    public static Settings getSettings() {
-        return singleton().settings;
-    }
-
-    /**
-     * Retrieves the language file data for SkillAPI
-     *
-     * @return SkillAPI language file data
-     */
-    public static CommentedLanguageConfig getLanguage() {
-        return singleton().language;
-    }
-
-    /**
-     * Retrieves the manager for click cast combos
-     *
-     * @return click combo manager
-     */
-    public static ComboManager getComboManager() {
-        return singleton().comboManager;
-    }
-
-    /**
-     * Retrieves the attribute manager for SkillAPI
-     *
-     * @return attribute manager
-     */
-    public static AttributeManager getAttributeManager() {
-        return singleton().attributeManager;
-    }
-
-    /**
-     * Retrieves a skill by name. If no skill is found with the name, null is
-     * returned instead.
-     *
-     * @param name name of the skill
-     *
-     * @return skill with the name or null if not found
-     */
-    public static Skill getSkill(String name) {
-        if (name == null) { return null; }
-        return singleton().skills.get(name.toLowerCase());
-    }
-
-    /**
-     * Retrieves the registered skill data for SkillAPI. It is recommended that you
-     * don't edit this map. Instead, use "addSkill" and "addSkills" instead.
-     *
-     * @return the map of registered skills
-     */
-    public static HashMap<String, Skill> getSkills() {
-        return singleton().skills;
-    }
-
-    /**
-     * Checks whether or not a skill is registered.
-     *
-     * @param name name of the skill
-     *
-     * @return true if registered, false otherwise
-     */
-    public static boolean isSkillRegistered(String name) {
-        return getSkill(name) != null;
-    }
-
-    /**
-     * Checks whether or not a skill is registered
-     *
-     * @param skill the skill to check
-     *
-     * @return true if registered, false otherwise
-     */
-    public static boolean isSkillRegistered(PlayerSkill skill) {
-        return isSkillRegistered(skill.getData().getName());
-    }
-
-    /**
-     * Checks whether or not a skill is registered
-     *
-     * @param skill the skill to check
-     *
-     * @return true if registered, false otherwise
-     */
-    public static boolean isSkillRegistered(Skill skill) {
-        return isSkillRegistered(skill.getName());
-    }
-
-    /**
-     * Retrieves a class by name. If no skill is found with the name, null is
-     * returned instead.
-     *
-     * @param name name of the class
-     *
-     * @return class with the name or null if not found
-     */
-    public static RPGClass getClass(String name) {
-        if (name == null) { return null; }
-        return singleton().classes.get(name.toLowerCase());
-    }
-
-    /**
-     * Retrieves the registered class data for SkillAPI. It is recommended that you
-     * don't edit this map. Instead, use "addClass" and "addClasses" instead.
-     *
-     * @return the map of registered skills
-     */
-    public static HashMap<String, RPGClass> getClasses() {
-        return singleton().classes;
-    }
-
-    /**
-     * Retrieves a list of base classes that don't profess from another class
-     *
-     * @return the list of base classes
-     */
-    public static ArrayList<RPGClass> getBaseClasses(String group) {
-        ArrayList<RPGClass> list = new ArrayList<>();
-        for (RPGClass c : singleton.classes.values()) {
-            if (!c.hasParent() && c.getGroup().equals(group)) { list.add(c); }
-        }
-        return list;
-    }
-
-    /**
-     * Checks whether or not a class is registered.
-     *
-     * @param name name of the class
-     *
-     * @return true if registered, false otherwise
-     */
-    public static boolean isClassRegistered(String name) {
-        return getClass(name) != null;
-    }
-
-    /**
-     * Checks whether or not a class is registered.
-     *
-     * @param playerClass the class to check
-     *
-     * @return true if registered, false otherwise
-     */
-    public static boolean isClassRegistered(PlayerClass playerClass) {
-        return isClassRegistered(playerClass.getData().getName());
-    }
-
-    /**
-     * Checks whether or not a class is registered.
-     *
-     * @param rpgClass the class to check
-     *
-     * @return true if registered, false otherwise
-     */
-    public static boolean isClassRegistered(RPGClass rpgClass) {
-        return isClassRegistered(rpgClass.getName());
-    }
-
-    /**
-     * Retrieves the active class data for the player. If no data is found for the
-     * player, a new set of data will be created and returned.
-     *
-     * @param player player to get the data for
-     *
-     * @return the class data of the player
-     */
-    public static PlayerData getPlayerData(OfflinePlayer player) {
-        if (player == null) { return null; }
-        return getPlayerAccountData(player).getActiveData();
-    }
-
-    /**
-     * Loads the data for a player when they join the server. This is handled
-     * by the API and doesn't need to be used elsewhere unless you want to
-     * load a player's data without them logging on. This should be run
-     * asynchronously since it is loading configuration files.
-     *
-     * @param player player to load the data for
-     */
-    public static PlayerAccounts loadPlayerData(OfflinePlayer player) {
-        if (player == null) { return null; }
-
-        // Already loaded for some reason, no need to load again
-        String id = player.getUniqueId().toString().toLowerCase();
-        if (singleton().players.containsKey(id)) { return singleton.players.get(id); }
-
-        // Load the data
-        return doLoad(player);
-    }
-
-    private static PlayerAccounts doLoad(OfflinePlayer player) {
-        // Load the data
-        PlayerAccounts data = singleton.io.loadData(player);
-        singleton.players.put(player.getUniqueId().toString(), data);
-        return data;
-    }
-
-    /**
-     * Used to fake player data until SQL data is loaded when both SQL and the SQL delay are enabled.
-     * This should not be used by other plugins. If the player data already exists, this does nothing.
-     *
-     * @param player player to fake data for
-     */
-    public static void initFakeData(final OfflinePlayer player) {
-        singleton().players.computeIfAbsent(player.getUniqueId().toString(), id -> new PlayerAccounts(player));
-    }
-
-    /**
-     * Do not use this method outside of onJoin. This will delete any progress a player
-     * has made since joining.
-     */
-    public static void reloadPlayerData(final Player player) {
-        doLoad(player);
-    }
-
-    /**
-     * Saves all player data to the configs. This
-     * should be called asynchronously to avoid problems
-     * with the main server loop.
-     */
-    public static void saveData() {
-        singleton().io.saveAll();
-    }
-
-    /**
-     * Checks whether or not SkillAPI currently has loaded data for the
-     * given player. This returning false doesn't necessarily mean the
-     * player doesn't have any data at all, just not data that is
-     * currently loaded.
-     *
-     * @param player player to check for
-     *
-     * @return true if has loaded data, false otherwise
-     */
-    public static boolean hasPlayerData(OfflinePlayer player) {
-        return singleton != null && player != null && singleton.players.containsKey(player.getUniqueId().toString().toLowerCase());
-    }
-
-    /**
-     * Unloads player data from memory, saving it to the config
-     * first and then removing it from the map.
-     *
-     * @param player player to unload data for
-     */
-    public static void unloadPlayerData(final OfflinePlayer player) {
-        unloadPlayerData(player, false);
-    }
-
-    public static void unloadPlayerData(final OfflinePlayer player, final boolean skipSaving) {
-        if (singleton == null || player == null || singleton.disabling || !singleton.players.containsKey(player.getUniqueId().toString().toLowerCase())) {
-            return;
-        }
-
-        singleton.getServer().getScheduler().runTaskAsynchronously(singleton, () -> {
-            PlayerAccounts accounts = getPlayerAccountData(player);
-            if (!skipSaving) {
-                singleton.io.saveData(accounts);
-            }
-            singleton.players.remove(player.getUniqueId().toString().toLowerCase());
-        });
-    }
-
-    /**
-     * Retrieves all class data for the player. This includes the active and
-     * all inactive accounts the player has. If no data is found, a new set
-     * of data will be created and returned.
-     *
-     * @param player player to get the data for
-     *
-     * @return the class data of the player
-     */
-    public static PlayerAccounts getPlayerAccountData(OfflinePlayer player) {
-        if (player == null) { return null; }
-
-        String id = player.getUniqueId().toString().toLowerCase();
-        if (!singleton().players.containsKey(id)) {
-            PlayerAccounts data = loadPlayerData(player);
-            singleton.players.put(id, data);
-            return data;
-        } else { return singleton.players.get(id); }
-    }
-
-    /**
-     * Retrieves all the player data of SkillAPI. It is recommended not to
-     * modify this map. Instead, use helper methods within individual player data.
-     *
-     * @return all SkillAPI player data
-     */
-    public static HashMap<String, PlayerAccounts> getPlayerAccountData() {
-        return singleton().players;
-    }
-
-    /**
-     * Retrieves the list of active class groups used by
-     * registered classes
-     *
-     * @return list of active class groups
-     */
-    public static List<String> getGroups() {
-        return singleton().groups;
     }
 
     /**
@@ -670,114 +778,5 @@ public class SkillAPI extends JavaPlugin {
      */
     public void addClasses(RPGClass... classes) {
         for (RPGClass rpgClass : classes) { addClass(rpgClass); }
-    }
-
-    /**
-     * Schedules a delayed task
-     *
-     * @param runnable the task to schedule
-     * @param delay    the delay in ticks
-     */
-    public static BukkitTask schedule(BukkitRunnable runnable, int delay) {
-        return runnable.runTaskLater(singleton(), delay);
-    }
-
-    /**
-     * Schedules a delayed task
-     *
-     * @param runnable the task to schedule
-     * @param delay    the delay in ticks
-     */
-    public static BukkitTask schedule(Runnable runnable, int delay) {
-        return Bukkit.getScheduler().runTaskLater(singleton, runnable, delay);
-    }
-
-    /**
-     * Schedules a repeating task
-     *
-     * @param runnable the task to schedule
-     * @param delay    the delay in ticks before the first tick
-     * @param period   how often to run in ticks
-     */
-    public static BukkitTask schedule(BukkitRunnable runnable, int delay, int period) {
-        return runnable.runTaskTimer(singleton(), delay, period);
-    }
-
-    /**
-     * Sets a value to an entity's metadata
-     *
-     * @param target entity to set to
-     * @param key    key to store under
-     * @param value  value to store
-     */
-    public static void setMeta(Metadatable target, String key, Object value) {
-        target.setMetadata(key, new FixedMetadataValue(singleton(), value));
-    }
-
-    /**
-     * Retrieves metadata from an entity
-     *
-     * @param target entity to retrieve from
-     * @param key    key the value was stored under
-     *
-     * @return the stored value
-     */
-    public static Object getMeta(Metadatable target, String key) {
-        List<MetadataValue> meta = target.getMetadata(key);
-        return meta == null || meta.size() == 0 ? null : meta.get(0).value();
-    }
-
-    /**
-     * Retrieves metadata from an entity
-     *
-     * @param target entity to retrieve from
-     * @param key    key the value was stored under
-     *
-     * @return the stored value
-     */
-    public static int getMetaInt(Metadatable target, String key) {
-        return target.getMetadata(key).get(0).asInt();
-    }
-
-    /**
-     * Retrieves metadata from an entity
-     *
-     * @param target entity to retrieve from
-     * @param key    key the value was stored under
-     *
-     * @return the stored value
-     */
-    public static double getMetaDouble(Metadatable target, String key) {
-        return target.getMetadata(key).get(0).asDouble();
-    }
-
-    /**
-     * Removes metadata from an entity
-     *
-     * @param target entity to remove from
-     * @param key    key metadata was stored under
-     */
-    public static void removeMeta(Metadatable target, String key) {
-        target.removeMetadata(key, singleton());
-    }
-
-    /**
-     * Grabs a config for SkillAPI
-     *
-     * @param name config file name
-     *
-     * @return config data
-     */
-    public static CommentedConfig getConfig(String name) {
-        return new CommentedConfig(singleton, name);
-    }
-
-    /**
-     * Reloads the plugin
-     */
-    public static void reload() {
-        SkillAPI inst = singleton();
-        inst.onDisable();
-        inst.onEnable();
     }
 }

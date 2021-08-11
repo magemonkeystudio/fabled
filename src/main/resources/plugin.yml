@@ -5,7 +5,7 @@ authors: [ Travja, goflish, Eniripsa96, Sentropic ]
 depend: [ ProMCCore ]
 softdepend: [ Vault, ProtocolLib, Parties, RPGInventory, LibsDisguises, PlaceholderAPI, NoCheatPlus, MythicMobs, WorldGuard, WorldEdit ]
 loadbefore: [ Quests ]
-api-version: 1.16
+api-version: 1.14
 
 permissions:
   skillapi.basic:

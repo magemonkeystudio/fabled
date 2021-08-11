@@ -27,7 +27,6 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -69,6 +68,17 @@ public class BlockMechanic extends MechanicComponent {
     private final Map<Integer, List<RevertTask>> tasks = new HashMap<>();
 
     /**
+     * Checks whether or not the location is modified by a block mechanic
+     *
+     * @param loc location to check
+     *
+     * @return true if modified, false otherwise
+     */
+    public static boolean isPending(Location loc) {
+        return pending.containsKey(loc);
+    }
+
+    /**
      * Executes the component
      *
      * @param caster  caster of the skill
@@ -88,7 +98,7 @@ public class BlockMechanic extends MechanicComponent {
             // Use default
         }
 
-        boolean sphere = settings.getString(SHAPE, "sphere").toLowerCase().equals("sphere");
+        boolean sphere = settings.getString(SHAPE, "sphere").equalsIgnoreCase("sphere");
         int ticks = (int) (20 * parseValues(caster, SECONDS, level, 5));
         byte data = (byte) settings.getInt(DATA, 0);
 
@@ -198,7 +208,7 @@ public class BlockMechanic extends MechanicComponent {
 
         // Revert after duration
         final RevertTask task = new RevertTask(caster, states);
-        task.runTaskLater(Bukkit.getPluginManager().getPlugin("SkillAPI"), ticks);
+        task.runTaskLater(SkillAPI.inst(), ticks);
         tasks.computeIfAbsent(caster.getEntityId(), ArrayList::new).add(task);
 
         return true;
@@ -221,22 +231,11 @@ public class BlockMechanic extends MechanicComponent {
     }
 
     /**
-     * Checks whether or not the location is modified by a block mechanic
-     *
-     * @param loc location to check
-     *
-     * @return true if modified, false otherwise
-     */
-    public static boolean isPending(Location loc) {
-        return pending.containsKey(loc);
-    }
-
-    /**
      * Reverts block changes after a duration
      */
     private class RevertTask extends BukkitRunnable {
-        private ArrayList<Location> locs;
-        private LivingEntity        caster;
+        private final ArrayList<Location> locs;
+        private final LivingEntity        caster;
 
         RevertTask(final LivingEntity caster, final ArrayList<Location> locs) {
             this.caster = caster;

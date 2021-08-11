@@ -26,6 +26,7 @@
  */
 package com.sucy.skill.api.util;
 
+import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.event.FlagApplyEvent;
 import com.sucy.skill.api.event.FlagExpireEvent;
 import org.bukkit.Bukkit;
@@ -44,8 +45,8 @@ public class FlagData
 {
     private final HashMap<String, Long>       flags = new HashMap<String, Long>();
     private final HashMap<String, BukkitTask> tasks = new HashMap<String, BukkitTask>();
-    private LivingEntity entity;
-    private Plugin       plugin;
+    private final LivingEntity entity;
+    private final Plugin       plugin;
 
     /**
      * Initializes new flag data for the entity
@@ -54,7 +55,7 @@ public class FlagData
      */
     public FlagData(LivingEntity entity)
     {
-        this.plugin = Bukkit.getPluginManager().getPlugin("SkillAPI");
+        this.plugin = SkillAPI.inst();
         this.entity = entity;
     }
 
@@ -190,7 +191,7 @@ public class FlagData
 
     private class FlagTask extends BukkitRunnable
     {
-        private String flag;
+        private final String flag;
 
         public FlagTask(String flag)
         {

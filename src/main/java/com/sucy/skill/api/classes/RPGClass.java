@@ -166,7 +166,7 @@ public abstract class RPGClass implements IconHolder {
         setAllowedExpSources(ExpSource.MOB, ExpSource.COMMAND, ExpSource.QUEST);
 
         if (this instanceof Listener) {
-            Bukkit.getPluginManager().registerEvents((Listener) this, Bukkit.getPluginManager().getPlugin("SkillAPI"));
+            Bukkit.getPluginManager().registerEvents((Listener) this, SkillAPI.inst());
         }
     }
 
@@ -676,7 +676,7 @@ public abstract class RPGClass implements IconHolder {
             }
         }
 
-        this.skillTree = this.tree.getTree((SkillAPI) Bukkit.getPluginManager().getPlugin("SkillAPI"), this);
+        this.skillTree = this.tree.getTree(SkillAPI.inst(), this);
     }
 
     /**

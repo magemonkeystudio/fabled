@@ -26,6 +26,7 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
+import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.util.FlagManager;
 import com.sucy.skill.api.util.StatusFlag;
 import org.bukkit.Bukkit;
@@ -63,7 +64,7 @@ public class ChannelMechanic extends MechanicComponent {
         int ticks = (int) (20 * parseValues(caster, SECONDS, level, 2.0));
         if (still) { FlagManager.addFlag(caster, StatusFlag.CHANNELING, ticks + 2); }
         Bukkit.getScheduler().runTaskLater(
-                Bukkit.getPluginManager().getPlugin("SkillAPI"), () -> {
+                SkillAPI.inst(), () -> {
                     if (FlagManager.hasFlag(caster, StatusFlag.CHANNEL)) {
                         FlagManager.removeFlag(caster, StatusFlag.CHANNEL);
                         FlagManager.removeFlag(caster, StatusFlag.CHANNELING);

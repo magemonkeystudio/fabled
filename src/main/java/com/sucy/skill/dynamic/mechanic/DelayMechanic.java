@@ -26,6 +26,7 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
+import com.sucy.skill.SkillAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 
@@ -58,7 +59,7 @@ public class DelayMechanic extends MechanicComponent {
         }
         double seconds = parseValues(caster, SECONDS, level, 2.0);
         Bukkit.getScheduler().runTaskLater(
-                Bukkit.getPluginManager().getPlugin("SkillAPI"),
+                SkillAPI.inst(),
                 () -> executeChildren(caster, level, targets),
                 (long) (seconds * 20)
         );

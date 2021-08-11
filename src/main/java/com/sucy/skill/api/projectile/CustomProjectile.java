@@ -66,7 +66,7 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
         try {
             Class<?> aabbClass = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.phys.AxisAlignedBB")
                     : Reflex.getNMSClass("AxisAlignedBB");
-            Class<?> entityClass = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.Entity")
+            Class<?> entityClass = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.entity.Entity")
                     : Reflex.getNMSClass("Entity");
             aabbConstructor = aabbClass.getConstructor(double.class, double.class, double.class, double.class, double.class, double.class);
             getBukkitEntity = entityClass.getDeclaredMethod("getBukkitEntity");
@@ -86,8 +86,8 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
 
     private final HashMap<String, List<MetadataValue>> metadata = new HashMap<>();
     private final Set<Integer> hit = new HashSet<>();
+    private final LivingEntity thrower;
     private ProjectileCallback callback;
-    private LivingEntity thrower;
     private boolean enemy = true;
     private boolean ally = false;
     private boolean valid = true;
@@ -99,7 +99,7 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
      */
     public CustomProjectile(LivingEntity thrower) {
         this.thrower = thrower;
-        runTaskTimer(Bukkit.getPluginManager().getPlugin("SkillAPI"), 1, 1);
+        runTaskTimer(SkillAPI.inst(), 1, 1);
     }
 
     private static boolean isLivingEntity(Object thing) {
