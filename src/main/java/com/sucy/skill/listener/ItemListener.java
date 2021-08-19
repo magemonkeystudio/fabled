@@ -196,9 +196,9 @@ public class ItemListener extends SkillAPIListener {
             }else if(item.getType().name().contains("CHESTPLATE")) {
                 equippedSlot = 38;
             }else if(item.getType().name().contains("LEGGINGS")) {
-                equippedSlot = 38;
+                equippedSlot = 37;
             }else if(item.getType().name().contains("BOOTS")) {
-                equippedSlot = 38;
+                equippedSlot = 36;
             }
 
             PlayerData playerData = SkillAPI.getPlayerData(player);
