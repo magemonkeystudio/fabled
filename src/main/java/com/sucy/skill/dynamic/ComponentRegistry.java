@@ -268,7 +268,7 @@ public class ComponentRegistry {
         register(new PushMechanic());
         register(new RememberTargetsMechanic());
         register(new RepeatMechanic());
-        register(new SpeedMechanic());
+        register(new StatMechanic());
         register(new SoundMechanic());
         register(new StatusMechanic());
         register(new TauntMechanic());

@@ -157,7 +157,7 @@ var Mechanic = {
     REMEMBER_TARGETS:    { name: 'Remember Targets',    container: false, construct: MechanicRememberTargets    },
     REPEAT:              { name: 'Repeat',              container: true,  construct: MechanicRepeat             },
     SOUND:               { name: 'Sound',               container: false, construct: MechanicSound              },
-    SPEED:               { name: 'Speed',               container: false, construct: MechanicSpeed              },
+    Stat:                { name: 'Stat',                container: false, construct: MechanicStat               },
     STATUS:              { name: 'Status',              container: false, construct: MechanicStatus             },
     TAUNT:               { name: 'Taunt',               container: false, construct: MechanicTaunt              },
     TRIGGER:             { name: 'Trigger',             container: true,  construct: MechanicTrigger            },
@@ -1528,8 +1528,11 @@ function MechanicAttribute()
     this.data.push(new StringValue('Attribute', 'key', 'Intelligence')
         .setTooltip('The name of the attribute to add to')
     );
+	this.data.push(new ListValue('Operation', 'operation', [ 'ADD_NUMBER', 'MULTIPLY_PERCENTAGE' ], 'ADD_NUMBER')
+        .setTooltip('The operation on the original value by amount, ADD_NUMBER: Scalar adding, MULTIPLY_PERCENTAGE: Multiply the value by amount')
+    );
     this.data.push(new AttributeValue('Amount', 'amount', 5, 2)
-        .setTooltip('How much to add to the player\'s attribute')
+        .setTooltip('The amount to use with the operation')
     );
     this.data.push(new AttributeValue('Seconds', 'seconds', 3, 0)
         .setTooltip('How long in seconds to give the attributes to the player')
@@ -2532,18 +2535,27 @@ function MechanicSound()
     );
 }
 
-extend('MechanicSpeed', 'Component');
-function MechanicSpeed()
+extend('MechanicStat', 'Component');
+function MechanicStat()
 {
-    this.super('Speed', Type.MECHANIC, false);
+    this.super('Stat', Type.MECHANIC, false);
 
-    this.description = 'Modifies the base speed of a player using a multiplier (stacks with potions)';
+    this.description = 'Gives a player bonus stat temporarily.';
 
-    this.data.push(new AttributeValue('Multiplier', 'multiplier', 1.2, 0)
-        .setTooltip('The multiplier of the player\'s base speed to use')
+    this.data.push(new StringValue('Stat', 'key', 'move-speed')
+        .setTooltip('The name of the stat to add to')
     );
-    this.data.push(new AttributeValue('Duration', 'duration', 3, 1)
-        .setTooltip('How long to multiply their speed for')
+	this.data.push(new ListValue('Operation', 'operation', [ 'ADD_NUMBER', 'MULTIPLY_PERCENTAGE' ], 'ADD_NUMBER')
+        .setTooltip('The operation on the original value by amount, ADD_NUMBER: Scalar adding, MULTIPLY_PERCENTAGE: Multiply the value by amount')
+    );
+    this.data.push(new AttributeValue('Amount', 'amount', 5, 2)
+        .setTooltip('The amount to use with the operation')
+    );
+    this.data.push(new AttributeValue('Seconds', 'seconds', 3, 0)
+        .setTooltip('How long in seconds to give the stat to the player')
+    );
+    this.data.push(new ListValue('Stackable', 'stackable', [ 'True', 'False' ], 'False')
+        .setTooltip('Whether or not applying multiple times stacks the effects')
     );
 }
 
