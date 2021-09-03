@@ -6,7 +6,7 @@
 
     <groupId>com.sucy.skill</groupId>
     <artifactId>ProSkillAPI</artifactId>
-    <version>1.1.6.2-DEV</version>
+    <version>1.1.7_01-DEV</version>
     <packaging>jar</packaging>
 
     <name>ProSkillAPI</name>
@@ -260,7 +260,7 @@
         <dependency>
             <groupId>mc.promcteam</groupId>
             <artifactId>ProMCCore</artifactId>
-            <version>1.0.2.1-ALPHA</version>
+            <version>1.0.3-ALPHA</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

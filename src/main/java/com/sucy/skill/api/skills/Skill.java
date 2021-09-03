@@ -72,13 +72,30 @@ import java.util.List;
 public abstract class Skill implements IconHolder
 {
     private static final DecimalFormat FORMAT = new DecimalFormat("#########0.0#");
-
+    private static final String NAME      = "name";
+    private static final String TYPE      = "type";
+    private static final String LAYOUT    = "icon-lore";
+    private static final String MAX       = "max-level";
+    private static final String REQ       = "skill-req";
+    private static final String REQLVL    = "skill-req-lvl";
+    private static final String MSG       = "msg";
+    private static final String PERM      = "needs-permission";
+    private static final String DESC      = "desc";
+    private static final String ATTR      = "attributes";
+    private static final String COMBO     = "combo";
+    private static boolean skillDamage = false;
+    /**
+     * The settings for the skill which include configurable stats
+     * for your mechanics and the defaults such as mana cost, level
+     * requirement, skill point cost, and cooldown.
+     */
+    protected final Settings         settings         = new Settings();
     private final ArrayList<String> description = new ArrayList<>();
-
+    private final   ReadOnlySettings readOnlySettings = new ReadOnlySettings(settings);
     private List<String> iconLore;
-    private ItemStack    indicator;
-    private String       key;
-    private String       name;
+    private       ItemStack indicator;
+    private final String    key;
+    private       String    name;
     private String       type;
     private String       message;
     private String       skillReq;
@@ -86,14 +103,6 @@ public abstract class Skill implements IconHolder
     private int          skillReqLevel;
     private boolean      needsPermission;
     private int          combo;
-
-    /**
-     * The settings for the skill which include configurable stats
-     * for your mechanics and the defaults such as mana cost, level
-     * requirement, skill point cost, and cooldown.
-     */
-    protected final Settings         settings         = new Settings();
-    private final   ReadOnlySettings readOnlySettings = new ReadOnlySettings(settings);
 
     /**
      * Initializes a new skill that doesn't require any other skill.
@@ -183,6 +192,18 @@ public abstract class Skill implements IconHolder
 
         this.message = SkillAPI.getLanguage().getMessage(NotificationNodes.CAST, true, FilterType.COLOR).get(0);
         this.iconLore = SkillAPI.getLanguage().getMessage(SkillNodes.LAYOUT, true, FilterType.COLOR);
+    }
+
+    /**
+     * Checks whether or not the current damage event is due to
+     * skills damaging an entity. This method is used by the API
+     * and shouldn't be used by other plugins.
+     *
+     * @return true if caused by a skill, false otherwise
+     */
+    public static boolean isSkillDamage()
+    {
+        return skillDamage;
     }
 
     /**
@@ -749,7 +770,7 @@ public abstract class Skill implements IconHolder
      * @param classification type of damage to deal
      */
     public void damage(LivingEntity target, double damage, LivingEntity source, String classification) {
-        damage(target, damage, source, classification);
+        damage(target, damage, source, classification, true);
     }
 
     /**
@@ -840,32 +861,6 @@ public abstract class Skill implements IconHolder
      * @param level  level of the skill updating for
      */
     public void updateIndicators(List<IIndicator> list, Player player, int level) { }
-
-    private static boolean skillDamage = false;
-
-    /**
-     * Checks whether or not the current damage event is due to
-     * skills damaging an entity. This method is used by the API
-     * and shouldn't be used by other plugins.
-     *
-     * @return true if caused by a skill, false otherwise
-     */
-    public static boolean isSkillDamage()
-    {
-        return skillDamage;
-    }
-
-    private static final String NAME      = "name";
-    private static final String TYPE      = "type";
-    private static final String LAYOUT    = "icon-lore";
-    private static final String MAX       = "max-level";
-    private static final String REQ       = "skill-req";
-    private static final String REQLVL    = "skill-req-lvl";
-    private static final String MSG       = "msg";
-    private static final String PERM      = "needs-permission";
-    private static final String DESC      = "desc";
-    private static final String ATTR      = "attributes";
-    private static final String COMBO     = "combo";
 
     /**
      * Saves the skill data to the configuration, overwriting all previous data

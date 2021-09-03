@@ -40,10 +40,10 @@ import java.util.regex.Pattern;
  * Deals damage based on a held item's lore to each target
  */
 public class DamageLoreMechanic extends MechanicComponent {
-    private static final String REGEX = "regex";
+    private static final String REGEX      = "regex";
     private static final String MULTIPLIER = "multiplier";
-    private static final String HAND = "hand";
-    private static final String TRUE = "true";
+    private static final String HAND       = "hand";
+    private static final String TRUE       = "true";
     private static final String CLASSIFIER = "classifier";
 
     @Override
@@ -57,7 +57,6 @@ public class DamageLoreMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @return true if applied to something, false otherwise
      */
     @Override
@@ -65,12 +64,12 @@ public class DamageLoreMechanic extends MechanicComponent {
         String regex = settings.getString(REGEX, "Damage: {value}");
         regex = regex.replace("{value}", "([0-9]+)");
         Pattern pattern = Pattern.compile(regex);
-        double m = parseValues(caster, MULTIPLIER, level, 1.0);
-        boolean worked = false;
+        double  m       = parseValues(caster, MULTIPLIER, level, 1.0);
+        boolean worked  = false;
         boolean offhand = VersionManager.isVersionAtLeast(VersionManager.V1_9_0)
                 && settings.getString(HAND).equalsIgnoreCase("offhand");
-        boolean trueDmg = settings.getBool(TRUE, false);
-        String classification = settings.getString(CLASSIFIER, "default");
+        boolean trueDmg        = settings.getBool(TRUE, false);
+        String  classification = settings.getString(CLASSIFIER, "default");
 
         if (caster.getEquipment() == null) {
             return false;
@@ -80,7 +79,7 @@ public class DamageLoreMechanic extends MechanicComponent {
         if (offhand) {
             hand = caster.getEquipment().getItemInOffHand();
         } else {
-            hand = caster.getEquipment().getItemInHand();
+            hand = caster.getEquipment().getItemInMainHand();
         }
 
         if (hand == null || !hand.hasItemMeta() || !hand.getItemMeta().hasLore()) {

@@ -1,11 +1,14 @@
 package com.sucy.skill.api.armorstand;
 
+import com.sucy.skill.SkillAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 
 public class ArmorStandInstance {
+    private static final Vector UP = new Vector(0, 1, 0);
     private final ArmorStand armorStand;
     private final LivingEntity target;
     private final boolean follow;
@@ -13,13 +16,12 @@ public class ArmorStandInstance {
     private double upward;
     private double right;
 
-    private static final Vector UP = new Vector(0, 1, 0);
-
     public ArmorStandInstance(ArmorStand armorStand, LivingEntity target) {
         this.armorStand = armorStand;
         this.target = target;
         this.follow = false;
     }
+
     public ArmorStandInstance(ArmorStand armorStand, LivingEntity target, double forward, double upward, double right) {
         this.armorStand = armorStand;
         this.target = target;
@@ -40,7 +42,7 @@ public class ArmorStandInstance {
      * Removes the armor stand
      */
     public void remove() {
-        armorStand.remove();
+        Bukkit.getScheduler().runTask(SkillAPI.inst(), () -> armorStand.remove());
     }
 
     /**
