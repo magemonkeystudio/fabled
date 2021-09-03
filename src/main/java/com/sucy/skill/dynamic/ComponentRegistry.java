@@ -6,29 +6,8 @@ import com.sucy.skill.dynamic.custom.CustomComponent;
 import com.sucy.skill.dynamic.custom.CustomEffectComponent;
 import com.sucy.skill.dynamic.custom.EditorOption;
 import com.sucy.skill.dynamic.mechanic.*;
-import com.sucy.skill.dynamic.target.AreaTarget;
-import com.sucy.skill.dynamic.target.ConeTarget;
-import com.sucy.skill.dynamic.target.LinearTarget;
-import com.sucy.skill.dynamic.target.LocationTarget;
-import com.sucy.skill.dynamic.target.NearestTarget;
-import com.sucy.skill.dynamic.target.OffsetTarget;
-import com.sucy.skill.dynamic.target.RememberTarget;
-import com.sucy.skill.dynamic.target.SelfTarget;
-import com.sucy.skill.dynamic.target.SingleTarget;
-import com.sucy.skill.dynamic.trigger.BlockBreakTrigger;
-import com.sucy.skill.dynamic.trigger.BlockPlaceTrigger;
-import com.sucy.skill.dynamic.trigger.CrouchTrigger;
-import com.sucy.skill.dynamic.trigger.DeathTrigger;
-import com.sucy.skill.dynamic.trigger.EnvironmentalTrigger;
-import com.sucy.skill.dynamic.trigger.KillTrigger;
-import com.sucy.skill.dynamic.trigger.LandTrigger;
-import com.sucy.skill.dynamic.trigger.LaunchTrigger;
-import com.sucy.skill.dynamic.trigger.MoveTrigger;
-import com.sucy.skill.dynamic.trigger.PhysicalDealtTrigger;
-import com.sucy.skill.dynamic.trigger.PhysicalTakenTrigger;
-import com.sucy.skill.dynamic.trigger.SkillDealtTrigger;
-import com.sucy.skill.dynamic.trigger.SkillTakenTrigger;
-import com.sucy.skill.dynamic.trigger.Trigger;
+import com.sucy.skill.dynamic.target.*;
+import com.sucy.skill.dynamic.trigger.*;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.EventExecutor;
 
@@ -36,6 +15,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,104 +28,8 @@ public class ComponentRegistry {
 
     static final Map<ComponentType, Map<String, Class<?>>> COMPONENTS = new EnumMap<>(ComponentType.class);
 
-    static final Map<String, Trigger<?>> TRIGGERS = new HashMap<>();
+    static final         Map<String, Trigger<?>>        TRIGGERS  = new HashMap<>();
     private static final Map<Trigger<?>, EventExecutor> EXECUTORS = new HashMap<>();
-
-    public static Trigger<?> getTrigger(final String key) {
-        return TRIGGERS.get(key.toUpperCase().replace(' ', '_'));
-    }
-
-    static EffectComponent getComponent(final ComponentType type, final String key) {
-        final Class<?> componentClass = COMPONENTS.get(type).get(key.toLowerCase());
-        if (componentClass == null) {
-            throw new IllegalArgumentException("Invalid component key - " + key);
-        }
-        try {
-            return (EffectComponent) componentClass.newInstance();
-        } catch (final Exception ex) {
-            throw new IllegalArgumentException("Invalid component - does not have a default constructor");
-        }
-    }
-
-    static EventExecutor getExecutor(final Trigger<?> trigger) {
-        return EXECUTORS.get(trigger);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T extends Event> void register(final Trigger<T> trigger) {
-        if (getTrigger(trigger.getKey()) != null) {
-            throw new IllegalArgumentException("Trigger with key " + trigger.getKey() + " already exists");
-        } else if (trigger.getKey().contains("-")) {
-            throw new IllegalArgumentException(trigger.getKey() + " is not a valid key: must not contain dashes");
-        }
-
-        TRIGGERS.put(trigger.getKey(), trigger);
-        EXECUTORS.put(trigger, (listener, event) -> {
-            if (!trigger.getEvent().isInstance(event)) return;
-            ((TriggerHandler) listener).apply((T) event, trigger);
-        });
-    }
-
-    public static void register(final CustomEffectComponent component) {
-        register((EffectComponent) component);
-    }
-
-    public static void save() {
-        final StringBuilder builder = new StringBuilder("[");
-        TRIGGERS.values().forEach(trigger -> append(trigger, builder));
-        COMPONENTS.forEach((type, map) -> map.keySet().forEach(key -> append(getComponent(type, key), builder)));
-        if (builder.length() > 2) {
-            builder.replace(builder.length() - 1, builder.length(), "]");
-        } else {
-            builder.append(']');
-        }
-
-        final File file = new File(SkillAPI.getPlugin(SkillAPI.class).getDataFolder(), "tool-config.json");
-        try (final FileOutputStream out = new FileOutputStream(file)) {
-            final BufferedWriter write = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-            write.write(builder.toString());
-            write.close();
-        } catch (Exception var4) {
-            var4.printStackTrace();
-        }
-    }
-
-    private static void append(final Object obj, final StringBuilder builder) {
-        if (!(obj instanceof CustomComponent)) {
-            return;
-        }
-
-        final CustomComponent component = (CustomComponent) obj;
-        builder.append("{\"type\":\"").append(component.getType().name())
-                .append("\",\"key\":\"").append(component.getKey())
-                .append("\",\"display\":\"").append(component.getDisplayName())
-                .append("\",\"container\":\"").append(component.isContainer())
-                .append("\",\"description\":\"").append(component.getDescription())
-                .append("\",\"options\":[");
-
-        boolean first = true;
-        for (EditorOption option : component.getOptions()) {
-            if (!first) {
-                builder.append(',');
-            }
-            first = false;
-
-            builder.append("{\"type\":\"").append(option.type)
-                    .append("\",\"key\":\"").append(option.key)
-                    .append("\",\"display\":\"").append(option.name)
-                    .append("\",\"description\":\"").append(option.description)
-                    .append("\"");
-            option.extra.forEach((key, value) -> builder.append(",\"").append(key).append("\":").append(value));
-            builder.append("}");
-        }
-
-        builder.append("]},");
-    }
-
-    private static void register(final EffectComponent component) {
-        COMPONENTS.computeIfAbsent(component.getType(), t -> new HashMap<>())
-                .put(component.getKey().toLowerCase(), component.getClass());
-    }
 
     static {
 
@@ -268,7 +152,7 @@ public class ComponentRegistry {
         register(new PushMechanic());
         register(new RememberTargetsMechanic());
         register(new RepeatMechanic());
-        register(new SpeedMechanic());
+        register(new StatMechanic());
         register(new SoundMechanic());
         register(new StatusMechanic());
         register(new TauntMechanic());
@@ -293,5 +177,101 @@ public class ComponentRegistry {
         register(new WarpTargetMechanic());
         register(new WarpValueMechanic());
         register(new WolfMechanic());
+    }
+
+    public static Trigger<?> getTrigger(final String key) {
+        return TRIGGERS.get(key.toUpperCase().replace(' ', '_'));
+    }
+
+    static EffectComponent getComponent(final ComponentType type, final String key) {
+        final Class<?> componentClass = COMPONENTS.get(type).get(key.toLowerCase());
+        if (componentClass == null) {
+            throw new IllegalArgumentException("Invalid component key - " + key);
+        }
+        try {
+            return (EffectComponent) componentClass.newInstance();
+        } catch (final Exception ex) {
+            throw new IllegalArgumentException("Invalid component - does not have a default constructor");
+        }
+    }
+
+    static EventExecutor getExecutor(final Trigger<?> trigger) {
+        return EXECUTORS.get(trigger);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Event> void register(final Trigger<T> trigger) {
+        if (getTrigger(trigger.getKey()) != null) {
+            throw new IllegalArgumentException("Trigger with key " + trigger.getKey() + " already exists");
+        } else if (trigger.getKey().contains("-")) {
+            throw new IllegalArgumentException(trigger.getKey() + " is not a valid key: must not contain dashes");
+        }
+
+        TRIGGERS.put(trigger.getKey(), trigger);
+        EXECUTORS.put(trigger, (listener, event) -> {
+            if (!trigger.getEvent().isInstance(event)) return;
+            ((TriggerHandler) listener).apply((T) event, trigger);
+        });
+    }
+
+    public static void register(final CustomEffectComponent component) {
+        register((EffectComponent) component);
+    }
+
+    public static void save() {
+        final StringBuilder builder = new StringBuilder("[");
+        TRIGGERS.values().forEach(trigger -> append(trigger, builder));
+        COMPONENTS.forEach((type, map) -> map.keySet().forEach(key -> append(getComponent(type, key), builder)));
+        if (builder.length() > 2) {
+            builder.replace(builder.length() - 1, builder.length(), "]");
+        } else {
+            builder.append(']');
+        }
+
+        final File file = new File(SkillAPI.getPlugin(SkillAPI.class).getDataFolder(), "tool-config.json");
+        try (final FileOutputStream out = new FileOutputStream(file)) {
+            final BufferedWriter write = new BufferedWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8));
+            write.write(builder.toString());
+            write.close();
+        } catch (Exception var4) {
+            var4.printStackTrace();
+        }
+    }
+
+    private static void append(final Object obj, final StringBuilder builder) {
+        if (!(obj instanceof CustomComponent)) {
+            return;
+        }
+
+        final CustomComponent component = (CustomComponent) obj;
+        builder.append("{\"type\":\"").append(component.getType().name())
+                .append("\",\"key\":\"").append(component.getKey())
+                .append("\",\"display\":\"").append(component.getDisplayName())
+                .append("\",\"container\":\"").append(component.isContainer())
+                .append("\",\"description\":\"").append(component.getDescription())
+                .append("\",\"options\":[");
+
+        boolean first = true;
+        for (EditorOption option : component.getOptions()) {
+            if (!first) {
+                builder.append(',');
+            }
+            first = false;
+
+            builder.append("{\"type\":\"").append(option.type)
+                    .append("\",\"key\":\"").append(option.key)
+                    .append("\",\"display\":\"").append(option.name)
+                    .append("\",\"description\":\"").append(option.description)
+                    .append("\"");
+            option.extra.forEach((key, value) -> builder.append(",\"").append(key).append("\":").append(value));
+            builder.append("}");
+        }
+
+        builder.append("]},");
+    }
+
+    private static void register(final EffectComponent component) {
+        COMPONENTS.computeIfAbsent(component.getType(), t -> new HashMap<>())
+                .put(component.getKey().toLowerCase(), component.getClass());
     }
 }

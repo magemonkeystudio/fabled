@@ -28,8 +28,8 @@ package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.enums.Operation;
-import com.sucy.skill.api.player.PlayerAttributeModifier;
 import com.sucy.skill.api.player.PlayerData;
+import com.sucy.skill.api.player.PlayerStatModifier;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -43,14 +43,14 @@ import java.util.Map;
 /**
  * Applies a flag to each target
  */
-public class AttributeMechanic extends MechanicComponent {
+public class StatMechanic extends MechanicComponent {
     private static final String KEY       = "key";
     private static final String OPERATION = "operation";
     private static final String AMOUNT    = "amount";
     private static final String SECONDS   = "seconds";
     private static final String STACKABLE = "stackable";
 
-    private final Map<Integer, Map<String, AttribTask>> tasks = new HashMap<>();
+    private final Map<Integer, Map<String, StatTask>> tasks = new HashMap<>();
 
     /**
      * Executes the component
@@ -64,36 +64,36 @@ public class AttributeMechanic extends MechanicComponent {
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets) {
         String key = settings.getString(KEY, "");
-        if (targets.size() == 0 || SkillAPI.getAttributeManager().getAttribute(key) == null) {
+        if (targets.size() == 0) {
             return false;
         }
 
-        final Map<String, AttribTask> casterTasks = tasks.computeIfAbsent(caster.getEntityId(), HashMap::new);
-        final int                     amount      = (int) parseValues(caster, AMOUNT, level, 5);
-        final double                  seconds     = parseValues(caster, SECONDS, level, 3.0);
-        final boolean                 stackable   = settings.getString(STACKABLE, "false").equalsIgnoreCase("true");
-        final int                     ticks       = (int) (seconds * 20);
+        final Map<String, StatTask> casterTasks = tasks.computeIfAbsent(caster.getEntityId(), HashMap::new);
+        final int                   amount      = (int) parseValues(caster, AMOUNT, level, 5);
+        final double                seconds     = parseValues(caster, SECONDS, level, 3.0);
+        final boolean               stackable   = settings.getString(STACKABLE, "false").equalsIgnoreCase("true");
+        final int                   ticks       = (int) (seconds * 20);
 
         boolean worked = false;
         for (LivingEntity target : targets) {
             if (target instanceof Player) {
                 worked = true;
-                final PlayerData        data     = SkillAPI.getPlayerData((Player) target);
-                PlayerAttributeModifier modifier = new PlayerAttributeModifier("skillapi.mechanic.attribute_mechanic", amount, Operation.valueOf(OPERATION), false);
+                final PlayerData   data     = SkillAPI.getPlayerData((Player) target);
+                PlayerStatModifier modifier = new PlayerStatModifier("skillapi.mechanic.stat_mechanic", amount, Operation.valueOf(OPERATION), false);
 
                 if (casterTasks.containsKey(data.getPlayerName()) && !stackable) {
-                    final AttribTask old = casterTasks.remove(data.getPlayerName());
+                    final StatTask old = casterTasks.remove(data.getPlayerName());
 
-                    data.removeAttributeModifier(old.modifier.getUUID(), false);
+                    data.removeStatModifier(old.modifier.getUUID(), false);
 
-                    data.addAttributeModifier(key, modifier, true);
+                    data.addStatModifier(key, modifier, true);
 
                     old.cancel();
                 } else {
-                    data.addAttributeModifier(key, modifier, true);
+                    data.addStatModifier(key, modifier, true);
                 }
 
-                final AttribTask task = new AttribTask(caster.getEntityId(), data, modifier);
+                final StatTask task = new StatTask(caster.getEntityId(), data, modifier);
                 casterTasks.put(data.getPlayerName(), task);
                 if (ticks >= 0) {
                     SkillAPI.schedule(task, ticks);
@@ -105,26 +105,26 @@ public class AttributeMechanic extends MechanicComponent {
 
     @Override
     public String getKey() {
-        return "attribute";
+        return "stat";
     }
 
     @Override
     protected void doCleanUp(final LivingEntity user) {
-        final Map<String, AttribTask> casterTasks = tasks.remove(user.getEntityId());
+        final Map<String, StatTask> casterTasks = tasks.remove(user.getEntityId());
         if (casterTasks != null) {
-            casterTasks.values().forEach(AttribTask::stop);
+            casterTasks.values().forEach(StatTask::stop);
         }
     }
 
-    private class AttribTask extends BukkitRunnable {
+    private class StatTask extends BukkitRunnable {
 
-        private final PlayerData              data;
-        private final PlayerAttributeModifier modifier;
-        private final int                     id;
-        private       boolean                 running = false;
-        private boolean                 stopped = false;
+        private final PlayerData         data;
+        private final PlayerStatModifier modifier;
+        private final int                id;
+        private       boolean            running = false;
+        private boolean            stopped = false;
 
-        AttribTask(int id, PlayerData data, PlayerAttributeModifier modifier) {
+        StatTask(int id, PlayerData data, PlayerStatModifier modifier) {
             this.id = id;
             this.data = data;
             this.modifier = modifier;

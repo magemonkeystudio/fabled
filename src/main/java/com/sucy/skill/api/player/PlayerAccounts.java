@@ -28,7 +28,6 @@ package com.sucy.skill.api.player;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.event.PlayerAccountChangeEvent;
-import com.sucy.skill.listener.AttributeListener;
 import com.sucy.skill.manager.ClassBoardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -46,8 +45,8 @@ import java.util.HashMap;
 public class PlayerAccounts {
     private final HashMap<Integer, PlayerData> classData = new HashMap<Integer, PlayerData>();
 
-    private int active;
-    private OfflinePlayer player;
+    private       int           active;
+    private final OfflinePlayer player;
 
     /**
      * Initializes a new container for player account data.
@@ -124,7 +123,6 @@ public class PlayerAccounts {
      * unless the setting to initialize one account for each class is enabled.
      *
      * @param id account ID
-     *
      * @return true if data exists, false otherwise
      */
     public boolean hasData(int id) {
@@ -135,7 +133,6 @@ public class PlayerAccounts {
      * Gets the account data by ID for the owner
      *
      * @param id account ID
-     *
      * @return account data or null if not found
      */
     public PlayerData getData(int id) {
@@ -151,7 +148,6 @@ public class PlayerAccounts {
      * @param id     account ID
      * @param player offline player reference
      * @param init   whether or not the data is being initialized
-     *
      * @return account data or null if invalid id or player
      */
     public PlayerData getData(int id, OfflinePlayer player, boolean init) {
@@ -209,18 +205,19 @@ public class PlayerAccounts {
             if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
                 ClassBoardManager.clear(player);
                 getActiveData().stopPassives(player);
-                AttributeListener.clearBonuses(player);
-                getActiveData().clearBonuses();
+                getActiveData().clearAllModifiers();
                 active = event.getNewID();
                 getActiveData().startPassives(player);
                 getActiveData().updateScoreboard();
-                getActiveData().updateHealthAndMana(player);
-                AttributeListener.updatePlayer(getActiveData());
                 if (getActiveData().hasClass() && SkillAPI.getSettings().isSkillBarEnabled() && !SkillAPI.getSettings()
                         .isUsingCombat()) {
                     getActiveData().getSkillBar().setup(player);
                 }
                 getActiveData().getEquips().update(player);
+                getActiveData().updatePlayerStat(player);
+                // Do a force health update, as health haven't been altered
+                // updatePlayerStat will not do a wasteful health update
+                getActiveData().updateHealth(player);
             } else {
                 active = event.getNewID();
             }

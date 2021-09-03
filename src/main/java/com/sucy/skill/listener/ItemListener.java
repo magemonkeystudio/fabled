@@ -29,20 +29,19 @@ package com.sucy.skill.listener;
 import com.google.common.collect.ImmutableSet;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.event.PlayerClassChangeEvent;
+import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.data.PlayerEquips;
 import com.sucy.skill.language.ErrorNodes;
 import mc.promcteam.engine.mccore.config.FilterType;
 import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
@@ -55,13 +54,14 @@ import java.util.Set;
  * Listener that handles weapon item lore requirements
  */
 public class ItemListener extends SkillAPIListener {
+
     public static final Set<Material> ARMOR_TYPES = getArmorMaterials();
 
     private static Set<Material> getArmorMaterials() {
-        final Set<String> armorSuffixes = ImmutableSet.of("BOOTS", "LEGGINGS", "CHESTPLATE", "HELMET");
-        final ImmutableSet.Builder<Material> builder = ImmutableSet.builder();
+        final Set<String>                    armorSuffixes = ImmutableSet.of("BOOTS", "LEGGINGS", "CHESTPLATE", "HELMET");
+        final ImmutableSet.Builder<Material> builder       = ImmutableSet.builder();
         for (Material material : Material.values()) {
-            final int index = material.name().lastIndexOf('_') + 1;
+            final int    index  = material.name().lastIndexOf('_') + 1;
             final String suffix = material.name().substring(index);
             if (armorSuffixes.contains(suffix)) {
                 builder.add(material);
@@ -82,8 +82,12 @@ public class ItemListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDrop(PlayerDropItemEvent event) {
-        if (SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld()))
-            SkillAPI.getPlayerData(event.getPlayer()).getEquips().clearWeapon();
+        if (SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld())) {
+            Player     player     = event.getPlayer();
+            PlayerData playerData = SkillAPI.getPlayerData(player);
+            playerData.getEquips().update(player);
+            playerData.updatePlayerStat(player);
+        }
     }
 
     /**
@@ -93,8 +97,13 @@ public class ItemListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBreak(PlayerItemBreakEvent event) {
-        if (SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld()))
-            SkillAPI.schedule(new UpdateTask(event.getPlayer(), false), 1);
+        Player player = event.getPlayer();
+        if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
+            PlayerData playerData = SkillAPI.getPlayerData(player);
+            if (playerData.getEquips().updateHandHeldItem(player, null)) {
+                playerData.updatePlayerStat(player);
+            }
+        }
     }
 
     /**
@@ -119,9 +128,25 @@ public class ItemListener extends SkillAPIListener {
      * @param event event details
      */
     @EventHandler
-    public void onPickup(PlayerPickupItemEvent event) {
-        if (SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld()))
-            SkillAPI.schedule(new UpdateTask(event.getPlayer(), false), 1);
+    public void onPickup(EntityPickupItemEvent event) {
+        Entity ent = event.getEntity();
+        if (!(ent instanceof Player))
+            return;
+
+        Player player = (Player) ent;
+        if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
+
+            SkillAPI.schedule(new BukkitRunnable() {
+                @Override
+                public void run() {
+                    PlayerData playerData = SkillAPI.getPlayerData(player);
+                    if (playerData.getEquips().update(player)) {
+                        playerData.updatePlayerStat(player);
+                    }
+                }
+            }, 1);
+
+        }
     }
 
     /**
@@ -138,23 +163,50 @@ public class ItemListener extends SkillAPIListener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onHeld(PlayerItemHeldEvent event) {
-        if (SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld()))
-            SkillAPI.schedule(new UpdateTask(event.getPlayer(), true), 1);
+        Player player = event.getPlayer();
+        if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
+            PlayerData playerData = SkillAPI.getPlayerData(player);
+            if (playerData.getEquips().updateHandHeldItem(player, player.getInventory().getItem(event.getNewSlot()))) {
+                playerData.updatePlayerStat(player);
+            }
+        }
     }
 
     @EventHandler
     public void onClose(InventoryCloseEvent event) {
-        if (SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld()))
-            SkillAPI.schedule(new UpdateTask((Player) event.getPlayer(), false), 1);
+        Player player = (Player) event.getPlayer();
+        if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
+            PlayerData playerData = SkillAPI.getPlayerData(player);
+            if (playerData.getEquips().update(player)) {
+                playerData.updatePlayerStat(player);
+            }
+        }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onInteract(PlayerInteractEvent event) {
-        if (SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld())
+    @EventHandler
+    public void onArmorEquip(PlayerInteractEvent event) {
+        Player    player = event.getPlayer();
+        ItemStack item   = event.getItem();
+
+        if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())
                 && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
-                && event.getPlayer().getItemInHand() != null
-                && ARMOR_TYPES.contains(event.getPlayer().getItemInHand().getType())) {
-            SkillAPI.schedule(new UpdateTask(event.getPlayer(), false), 1);
+                && item != null
+                && ARMOR_TYPES.contains(item.getType())) {
+            int equippedSlot = -1;
+
+            if (item.getType().name().contains("HELMET")) {
+                equippedSlot = 39;
+            } else if (item.getType().name().contains("CHESTPLATE")) {
+                equippedSlot = 38;
+            } else if (item.getType().name().contains("LEGGINGS")) {
+                equippedSlot = 37;
+            } else if (item.getType().name().contains("BOOTS")) {
+                equippedSlot = 36;
+            }
+
+            PlayerData playerData = SkillAPI.getPlayerData(player);
+            playerData.getEquips().updateEquip(player, equippedSlot, item);
+            playerData.updatePlayerStat(player);
         }
     }
 
@@ -177,7 +229,7 @@ public class ItemListener extends SkillAPIListener {
             }
         }
         if (event.getEntity() instanceof Player && VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
-            Player player = (Player) event.getEntity();
+            Player        player   = (Player) event.getEntity();
             final boolean blocking = event.getDamage(EntityDamageEvent.DamageModifier.BLOCKING) < 0;
             if (blocking && !SkillAPI.getPlayerData(player).getEquips().canBlock()) {
                 SkillAPI.getLanguage().sendMessage(ErrorNodes.CANNOT_USE, event.getEntity(), FilterType.COLOR);
@@ -218,7 +270,7 @@ public class ItemListener extends SkillAPIListener {
         }
         ProjectileSource shooter = event.getEntity().getShooter();
         if (shooter instanceof Player) {
-            Player player = (Player) shooter;
+            Player             player = (Player) shooter;
             final PlayerEquips equips = SkillAPI.getPlayerData(player).getEquips();
             if (!equips.canHit()) {
                 SkillAPI.getLanguage().sendMessage(ErrorNodes.CANNOT_USE, player, FilterType.COLOR);
@@ -232,31 +284,4 @@ public class ItemListener extends SkillAPIListener {
         return bow == item || bow.equals(item);
     }
 
-    /**
-     * Handles updating equipped armor
-     */
-    private class UpdateTask extends BukkitRunnable {
-        private Player player;
-
-        private boolean weaponOnly;
-
-        /**
-         * @param player player reference
-         */
-        UpdateTask(Player player, boolean weaponOnly) {
-            this.player = player;
-            this.weaponOnly = weaponOnly;
-        }
-
-        /**
-         * Applies the update
-         */
-        @Override
-        public void run() {
-            if (weaponOnly)
-                SkillAPI.getPlayerData(player).getEquips().updateWeapon(player.getInventory());
-            else
-                SkillAPI.getPlayerData(player).getEquips().update(player);
-        }
-    }
 }
