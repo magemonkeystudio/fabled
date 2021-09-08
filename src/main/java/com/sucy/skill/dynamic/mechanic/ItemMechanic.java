@@ -28,13 +28,17 @@ package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
 import mc.promcteam.engine.mccore.util.TextFormatter;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.material.MaterialData;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
 
@@ -49,6 +53,11 @@ public class ItemMechanic extends MechanicComponent {
     private static final String CUSTOM   = "custom";
     private static final String NAME     = "name";
     private static final String LORE     = "lore";
+
+    private static final String POTION_COLOR    = "potion_color";
+    private static final String POTION_TYPE     = "potion_type";
+    private static final String POTION_LEVEL    = "potion_level";
+    private static final String POTION_DURATION = "potion_duration";
 
     @Override
     public String getKey() {
@@ -101,6 +110,21 @@ public class ItemMechanic extends MechanicComponent {
             }
             item.setItemMeta(meta);
         }
+
+        if (item.getType() == Material.POTION || item.getType() == Material.SPLASH_POTION) {
+            PotionMeta pm = (PotionMeta) meta;
+            pm.clearCustomEffects();
+            PotionEffect pe = new PotionEffect(
+                    PotionEffectType.getByName(settings.getString(POTION_TYPE).replace(" ", "_")),
+                    settings.getInt(POTION_DURATION) * 20,
+                    settings.getInt(POTION_LEVEL)
+            );
+            int col = Integer.parseInt(settings.getString(POTION_COLOR).substring(1), 16);
+            pm.setColor(Color.fromRGB(col));
+            pm.addCustomEffect(pe, true);
+            item.setItemMeta(pm);
+        }
+
 
         boolean worked = false;
         for (LivingEntity target : targets) {

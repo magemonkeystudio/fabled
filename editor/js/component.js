@@ -2157,6 +2157,18 @@ function MechanicItem()
     this.data.push(new StringListValue('Lore', 'lore', []).requireValue('custom', [ 'True' ])
         .setTooltip('The lore text for the item (the text below the name)')
     );
+    this.data.push(new StringValue('Potion Color', 'potion_color', '#1f8c1f').requireValue('material', [ 'Potion', 'Splash potion' ])
+        .setTooltip('The potion color in hex RGB')
+    );
+    this.data.push(new ListValue('Potion Type', 'potion_type', getPotionTypes, 'Speed').requireValue('material', [ 'Potion', 'Splash potion' ])
+        .setTooltip('The type of potion')
+    );
+    this.data.push(new IntValue('Potion Level', 'potion_level', 0).requireValue('material', [ 'Potion', 'Splash potion' ])
+        .setTooltip('The potion level')
+    );
+    this.data.push(new IntValue('Potion Duration', 'potion_duration', 30).requireValue('material', [ 'Potion', 'Splash potion' ])
+        .setTooltip('The potion duration (seconds)')
+    );
 }
 
 extend('MechanicItemProjectile', 'Component');
