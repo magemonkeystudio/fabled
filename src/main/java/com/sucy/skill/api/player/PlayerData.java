@@ -64,6 +64,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -77,31 +78,32 @@ import java.util.Map.Entry;
  * try to instantaite your own PlayerData object.
  */
 public class PlayerData {
-    private final HashMap<String, PlayerClass> classes = new HashMap<>();
-    private final HashMap<String, PlayerSkill> skills  = new HashMap<>();
-    private final HashMap<Material, PlayerSkill> binds   = new HashMap<>();
-    private final HashMap<String, Integer>       attributes = new HashMap<>();
+    private final HashMap<String, PlayerClass>                        classes             = new HashMap<>();
+    private final HashMap<String, PlayerSkill>                        skills              = new HashMap<>();
+    private final HashMap<Material, PlayerSkill>                      binds               = new HashMap<>();
+    private final HashMap<String, Integer>                            attributes          = new HashMap<>();
     private final HashMap<String, ArrayList<PlayerAttributeModifier>> attributesModifiers = new HashMap<>();
     private final HashMap<String, ArrayList<PlayerStatModifier>>      statModifiers       = new HashMap<>();
 
-    private final DataSection   extraData = new DataSection();
-    private final OfflinePlayer player;
+    private final DataSection    extraData = new DataSection();
+    private final OfflinePlayer  player;
     private final PlayerSkillBar skillBar;
     private final PlayerCastBars castBars;
     private final PlayerCombos   combos;
     private final PlayerEquips   equips;
-    private       String       scheme;
-    private String         menuClass;
-    private double         mana;
-    private double         maxMana;
-    private double         lastHealth;
-    private double         health;
-    private double         maxHealth;
-    private double         hunger;
-    private boolean        init;
-    private boolean        passive;
-    private int            attribPoints;
-    private long           skillTimer;
+    private       String         scheme;
+    private       String         menuClass;
+    private       double         mana;
+    private       double         maxMana;
+    private       double         lastHealth;
+    private       double         health;
+    private       double         maxHealth;
+    private       double         hunger;
+    private       boolean        init;
+    private       boolean        passive;
+    private       int            attribPoints;
+    private       long           skillTimer;
+    private       BukkitTask     removeTimer;
 
     /**
      * Initializes a new account data representation for a player.
@@ -249,6 +251,12 @@ public class PlayerData {
         return scheme;
     }
 
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                    Attributes                     //
+    //                                                   //
+    ///////////////////////////////////////////////////////
+
     /**
      * Sets the active scheme name for the player
      *
@@ -257,12 +265,6 @@ public class PlayerData {
     public void setScheme(String name) {
         scheme = name;
     }
-
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //                    Attributes                     //
-    //                                                   //
-    ///////////////////////////////////////////////////////
 
     /**
      * Retrieves a map of all player attribute totals. Modifying
@@ -669,6 +671,12 @@ public class PlayerData {
         return false;
     }
 
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                      Skills                       //
+    //                                                   //
+    ///////////////////////////////////////////////////////
+
     /**
      * Retrieves the player's attribute data.
      * Modifying this will modify the player's
@@ -679,12 +687,6 @@ public class PlayerData {
     public HashMap<String, Integer> getAttributeData() {
         return attributes;
     }
-
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //                      Skills                       //
-    //                                                   //
-    ///////////////////////////////////////////////////////
 
     /**
      * Checks if the owner has a skill by name. This is not case-sensitive
@@ -1114,6 +1116,12 @@ public class PlayerData {
         return true;
     }
 
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                     Classes                       //
+    //                                                   //
+    ///////////////////////////////////////////////////////
+
     /**
      * Retrieves the name of the class shown in the skill tree
      *
@@ -1122,12 +1130,6 @@ public class PlayerData {
     public String getShownClassName() {
         return menuClass;
     }
-
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //                     Classes                       //
-    //                                                   //
-    ///////////////////////////////////////////////////////
 
     /**
      * Checks whether or not the player has as least one class they have professed as.
@@ -1461,6 +1463,12 @@ public class PlayerData {
         return success;
     }
 
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                  Health and Mana                  //
+    //                                                   //
+    ///////////////////////////////////////////////////////
+
     /**
      * Gives skill points to the player for all classes matching the experience source
      *
@@ -1474,12 +1482,6 @@ public class PlayerData {
             }
         }
     }
-
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //                  Health and Mana                  //
-    //                                                   //
-    ///////////////////////////////////////////////////////
 
     /**
      * Updates all the stats of a player based on their current attributes
@@ -1561,19 +1563,20 @@ public class PlayerData {
             player.setMaxHealth(this.maxHealth);
         }
 
-        // Health scaling is available starting with 1.6.2
-        if (SkillAPI.getSettings().isOldHealth()) {
-            player.setHealthScaled(true);
-            player.setHealthScale(20);
-        } else {
-            player.setHealthScaled(false);
-        }
 
         if (VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
             final AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
             attribute.setBaseValue(this.maxHealth);
         } else {
             player.setMaxHealth(this.maxHealth);
+        }
+
+        // Health scaling is available starting with 1.6.2
+        if (SkillAPI.getSettings().isOldHealth()) {
+            player.setHealthScaled(true);
+            player.setHealthScale(20);
+        } else {
+            player.setHealthScaled(false);
         }
 
         if (player.getHealth() > this.maxHealth) {
@@ -1815,6 +1818,12 @@ public class PlayerData {
         this.updatePlayerStat(getPlayer());
     }
 
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                   Skill Binding                   //
+    //                                                   //
+    ///////////////////////////////////////////////////////
+
     /**
      * Clear all of the modifiers including stat modifier and attribute modifier
      */
@@ -1822,12 +1831,6 @@ public class PlayerData {
         this.clearStatModifier();
         this.clearAttributeModifiers();
     }
-
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //                   Skill Binding                   //
-    //                                                   //
-    ///////////////////////////////////////////////////////
 
     /**
      * Retrieves a skill the player has bound by material
@@ -1928,18 +1931,18 @@ public class PlayerData {
         }
     }
 
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                     Functions                     //
+    //                                                   //
+    ///////////////////////////////////////////////////////
+
     /**
      * Clears all binds the player currently has
      */
     public void clearAllBinds() {
         binds.clear();
     }
-
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //                     Functions                     //
-    //                                                   //
-    ///////////////////////////////////////////////////////
 
     /**
      * Records any data to save with class data
@@ -2104,6 +2107,7 @@ public class PlayerData {
     }
 
     private boolean applyUse(final Player player, final PlayerSkill skill, final double manaCost) {
+        player.setMetadata("custom-cooldown", new FixedMetadataValue(SkillAPI.inst(), 1));
         skill.startCooldown();
         if (SkillAPI.getSettings().isShowSkillMessages()) {
             skill.getData().sendMessage(player, SkillAPI.getSettings().getMessageRadius());
@@ -2112,6 +2116,11 @@ public class PlayerData {
             useMana(manaCost, ManaCost.SKILL_CAST);
         }
         skillTimer = System.currentTimeMillis() + SkillAPI.getSettings().getCastCooldown();
+        if (removeTimer != null) {
+            if (!removeTimer.isCancelled())
+                removeTimer.cancel();
+        }
+        removeTimer = Bukkit.getScheduler().runTaskLater(SkillAPI.inst(), () -> player.removeMetadata("custom-cooldown", SkillAPI.inst()), 20L);
         return true;
     }
 
