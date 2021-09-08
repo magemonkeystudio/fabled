@@ -26,11 +26,11 @@
  */
 package com.sucy.skill.api.util;
 
-import com.rit.sucy.reflect.Reflection;
-import com.rit.sucy.text.TextFormatter;
-import com.rit.sucy.version.VersionManager;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.util.Version;
+import mc.promcteam.engine.mccore.util.TextFormatter;
+import mc.promcteam.engine.mccore.util.VersionManager;
+import mc.promcteam.engine.utils.Reflex;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.entity.Player;
@@ -61,18 +61,18 @@ public class ActionBar {
     private static void initialize() {
         initialized = true;
         try {
-            craftPlayer = Reflection.getCraftClass("entity.CraftPlayer");
-            chatPacket = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.network.protocol.game.PacketPlayOutChat")
-                    : Reflection.getNMSClass("PacketPlayOutChat");
-            packet = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.network.protocol.Packet")
-                    : Reflection.getNMSClass("Packet");
-            chatBase = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.network.chat.IChatBaseComponent")
-                    : Reflection.getNMSClass("IChatBaseComponent");
-            chatText = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.network.chat.ChatComponentText")
-                    : Reflection.getNMSClass("ChatComponentText");
+            craftPlayer = Reflex.getCraftClass("entity.CraftPlayer");
+            chatPacket = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.network.protocol.game.PacketPlayOutChat")
+                    : Reflex.getNMSClass("PacketPlayOutChat");
+            packet = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.network.protocol.Packet")
+                    : Reflex.getNMSClass("Packet");
+            chatBase = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.network.chat.IChatBaseComponent")
+                    : Reflex.getNMSClass("IChatBaseComponent");
+            chatText = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.network.chat.ChatComponentText")
+                    : Reflex.getNMSClass("ChatComponentText");
             if (VersionManager.isVersionAtLeast(11200)) {
-                Class<?> chatMessageType = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.network.chat.ChatMessageType")
-                        : Reflection.getNMSClass("ChatMessageType");
+                Class<?> chatMessageType = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.network.chat.ChatMessageType")
+                        : Reflex.getNMSClass("ChatMessageType");
                 messageType = chatMessageType.getMethod("a", byte.class).invoke(null, messageType);
                 constructPacket = chatPacket.getConstructor(chatBase, chatMessageType);
             } else {
@@ -117,8 +117,8 @@ public class ActionBar {
             Object text = constructText.newInstance(TextFormatter.colorString(message));
             Object data = constructPacket.newInstance(text, messageType);
             Object handle = getHandle.invoke(player);
-            Object connection = Reflection.getValue(handle, "playerConnection");
-            Method send = Reflection.getMethod(connection, "sendPacket", packet);
+            Object connection = Reflex.getValue(handle, "playerConnection");
+            Method send = Reflex.getMethod(connection, "sendPacket", packet);
             send.invoke(connection, data);
         } catch (Exception ex) {
             Logger.bug("Failed to apply Action Bar");

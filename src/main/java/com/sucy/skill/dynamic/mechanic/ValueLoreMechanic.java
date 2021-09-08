@@ -26,7 +26,7 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
-import com.rit.sucy.version.VersionManager;
+import mc.promcteam.engine.mccore.util.VersionManager;
 import com.sucy.skill.dynamic.ItemChecker;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;

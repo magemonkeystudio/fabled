@@ -2,7 +2,7 @@ package com.sucy.skill.api.particle;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.rit.sucy.version.VersionManager;
+import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;

@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.particle.ParticleSettings
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,9 +26,8 @@
  */
 package com.sucy.skill.api.particle;
 
-import com.rit.sucy.config.parse.DataSection;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.Material;
-import org.bukkit.World;
 
 /**
  * Settings for playing a particle
@@ -37,12 +36,12 @@ public class ParticleSettings {
     private static final String
             PARTICLE_KEY = "particle",
             MATERIAL_KEY = "material",
-            DATA_KEY     = "type",
-            AMOUNT_KEY   = "amount",
-            DX_KEY       = "dx",
-            DY_KEY       = "dy",
-            DZ_KEY       = "dz",
-            SPEED_KEY    = "speed";
+            DATA_KEY = "type",
+            AMOUNT_KEY = "amount",
+            DX_KEY = "dx",
+            DY_KEY = "dy",
+            DZ_KEY = "dz",
+            SPEED_KEY = "speed";
 
     // Particle type
     public final org.bukkit.Particle type;

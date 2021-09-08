@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.classes.RPGClass
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,8 +26,6 @@
  */
 package com.sucy.skill.api.classes;
 
-import com.rit.sucy.config.parse.DataSection;
-import com.rit.sucy.text.TextFormatter;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.ReadOnlySettings;
 import com.sucy.skill.api.Settings;
@@ -41,6 +39,8 @@ import com.sucy.skill.gui.tool.IconHolder;
 import com.sucy.skill.log.LogType;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.tree.basic.InventoryTree;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
+import mc.promcteam.engine.mccore.util.TextFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -57,45 +57,59 @@ import java.util.HashSet;
  * Represents a template for a class used in the RPG system. This is
  * the class to extend when creating your own classes.
  */
-public abstract class RPGClass implements IconHolder
-{
-    private final HashMap<String, Skill> skillMap = new HashMap<String, Skill>();
-    private final ArrayList<Skill>       skills   = new ArrayList<Skill>();
-
-    private final HashSet<Material> blacklist = new HashSet<Material>();
-
-    private InventoryTree skillTree;
-
-    private String    actionBar;
-    private String    parent;
-    private ItemStack icon;
-    private TreeType  tree;
-    private String    name;
-    private String    prefix;
-    private String    group;
-    private String    mana;
-    private int       maxLevel;
-    private int       expSources;
-    private double    manaRegen;
-
-    /**
-     * Whether or not the class requires permissions
-     * in order to be professed into
-     */
-    protected boolean needsPermission;
-
+public abstract class RPGClass implements IconHolder {
+    private static final String SKILLS = "skills";
+    private static final String PARENT = "parent";
+    private static final String NAME = "name";
+    private static final String PREFIX = "prefix";
+    private static final String ACTION_BAR = "action-bar";
+    private static final String GROUP = "group";
+    private static final String MANA = "mana";
+    private static final String MAX = "max-level";
+    private static final String EXP = "exp-source";
+    private static final String REGEN = "mana-regen";
+    private static final String PERM = "needs-permission";
+    private static final String ATTR = "attributes";
+    private static final String TREE = "tree";
+    private static final String BLACKLIST = "blacklist";
     /**
      * The settings for your class. This will include the
      * health and mana scaling for the class.
      */
-    protected final Settings         settings         = new Settings();
-    private final   ReadOnlySettings readOnlySettings = new ReadOnlySettings(settings);
+    protected final Settings settings = new Settings();
+    private final HashMap<String, Skill> skillMap = new HashMap<String, Skill>();
+    private final ArrayList<Skill> skills = new ArrayList<Skill>();
+    private final HashSet<Material> blacklist = new HashSet<Material>();
 
     ///////////////////////////////////////////////////////
     //                                                   //
     //                   Constructors                    //
     //                                                   //
     ///////////////////////////////////////////////////////
+    private final ReadOnlySettings readOnlySettings = new ReadOnlySettings(settings);
+    /**
+     * Whether or not the class requires permissions
+     * in order to be professed into
+     */
+    protected boolean needsPermission;
+    private InventoryTree skillTree;
+
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                 Accessor Methods                  //
+    //                                                   //
+    ///////////////////////////////////////////////////////
+    private String actionBar;
+    private String parent;
+    private ItemStack icon;
+    private TreeType tree;
+    private String name;
+    private String prefix;
+    private String group;
+    private String mana;
+    private int maxLevel;
+    private int expSources;
+    private double manaRegen;
 
     /**
      * Initializes a class template that does not profess from other
@@ -105,8 +119,7 @@ public abstract class RPGClass implements IconHolder
      * @param icon     icon representing the class in menus
      * @param maxLevel max level the class can reach
      */
-    protected RPGClass(String name, ItemStack icon, int maxLevel)
-    {
+    protected RPGClass(String name, ItemStack icon, int maxLevel) {
         this(name, icon, maxLevel, null, null);
     }
 
@@ -119,8 +132,7 @@ public abstract class RPGClass implements IconHolder
      * @param maxLevel max level the class can reach
      * @param parent   parent class to profess from
      */
-    protected RPGClass(String name, ItemStack icon, int maxLevel, String parent)
-    {
+    protected RPGClass(String name, ItemStack icon, int maxLevel, String parent) {
         this(name, icon, maxLevel, null, parent);
     }
 
@@ -141,8 +153,7 @@ public abstract class RPGClass implements IconHolder
      * @param group    class group
      * @param parent   parent class to profess from
      */
-    protected RPGClass(String name, ItemStack icon, int maxLevel, String group, String parent)
-    {
+    protected RPGClass(String name, ItemStack icon, int maxLevel, String group, String parent) {
         this.parent = parent;
         this.icon = icon;
         this.name = name;
@@ -154,25 +165,17 @@ public abstract class RPGClass implements IconHolder
 
         setAllowedExpSources(ExpSource.MOB, ExpSource.COMMAND, ExpSource.QUEST);
 
-        if (this instanceof Listener)
-        {
-            Bukkit.getPluginManager().registerEvents((Listener) this, Bukkit.getPluginManager().getPlugin("SkillAPI"));
+        if (this instanceof Listener) {
+            Bukkit.getPluginManager().registerEvents((Listener) this, SkillAPI.inst());
         }
     }
-
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //                 Accessor Methods                  //
-    //                                                   //
-    ///////////////////////////////////////////////////////
 
     /**
      * Retrieves the name of the class
      *
      * @return class name
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
@@ -181,9 +184,17 @@ public abstract class RPGClass implements IconHolder
      *
      * @return class prefix
      */
-    public String getPrefix()
-    {
+    public String getPrefix() {
         return prefix;
+    }
+
+    /**
+     * Sets the prefix for the class
+     *
+     * @param prefix class prefix
+     */
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 
     /**
@@ -192,8 +203,7 @@ public abstract class RPGClass implements IconHolder
      *
      * @return true if needs permission, false otherwise
      */
-    public boolean isNeedsPermission()
-    {
+    public boolean isNeedsPermission() {
         return needsPermission;
     }
 
@@ -202,11 +212,9 @@ public abstract class RPGClass implements IconHolder
      *
      * @return prefix color
      */
-    public ChatColor getPrefixColor()
-    {
+    public ChatColor getPrefixColor() {
         String colors = ChatColor.getLastColors(prefix);
-        if (colors.length() < 2)
-        {
+        if (colors.length() < 2) {
             return ChatColor.WHITE;
         }
         return ChatColor.getByChar(colors.charAt(1));
@@ -217,8 +225,7 @@ public abstract class RPGClass implements IconHolder
      *
      * @return class skill tree
      */
-    public InventoryTree getSkillTree()
-    {
+    public InventoryTree getSkillTree() {
         return skillTree;
     }
 
@@ -227,8 +234,7 @@ public abstract class RPGClass implements IconHolder
      *
      * @return class group
      */
-    public String getGroup()
-    {
+    public String getGroup() {
         return group;
     }
 
@@ -237,8 +243,7 @@ public abstract class RPGClass implements IconHolder
      *
      * @return settings for the class's group
      */
-    public GroupSettings getGroupSettings()
-    {
+    public GroupSettings getGroupSettings() {
         return SkillAPI.getSettings().getGroupSettings(group);
     }
 
@@ -247,8 +252,7 @@ public abstract class RPGClass implements IconHolder
      *
      * @return true if professes from another class, false otherwise
      */
-    public boolean hasParent()
-    {
+    public boolean hasParent() {
         return getParent() != null;
     }
 
@@ -257,8 +261,7 @@ public abstract class RPGClass implements IconHolder
      *
      * @return parent of the class or null if none
      */
-    public RPGClass getParent()
-    {
+    public RPGClass getParent() {
         return SkillAPI.getClass(parent);
     }
 
@@ -273,21 +276,17 @@ public abstract class RPGClass implements IconHolder
      *
      * @return icon representation of the class
      */
-    public ItemStack getIcon()
-    {
+    public ItemStack getIcon() {
         return icon;
     }
 
     /**
      * @return map of skills for use in menus
      */
-    public HashMap<String, Skill> getSkillMap()
-    {
-        if (skillMap.isEmpty())
-        {
+    public HashMap<String, Skill> getSkillMap() {
+        if (skillMap.isEmpty()) {
             RPGClass current = this;
-            while (current != null)
-            {
+            while (current != null) {
                 for (Skill skill : current.skills)
                     skillMap.put(skill.getName().toLowerCase(), skill);
                 current = current.getParent();
@@ -304,8 +303,7 @@ public abstract class RPGClass implements IconHolder
      * @return icon representation of the class
      */
     @Override
-    public ItemStack getIcon(PlayerData data)
-    {
+    public ItemStack getIcon(PlayerData data) {
         return getIcon();
     }
 
@@ -321,8 +319,7 @@ public abstract class RPGClass implements IconHolder
      *
      * @return GUI tool indicator
      */
-    public ItemStack getToolIcon()
-    {
+    public ItemStack getToolIcon() {
         ItemStack item = icon.clone();
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(name);
@@ -349,8 +346,7 @@ public abstract class RPGClass implements IconHolder
      *
      * @return true if receives experience from the source, false otherwise
      */
-    public boolean receivesExp(ExpSource source)
-    {
+    public boolean receivesExp(ExpSource source) {
         return (expSources & source.getId()) != 0;
     }
 
@@ -359,10 +355,15 @@ public abstract class RPGClass implements IconHolder
      *
      * @return max level this class can reach
      */
-    public int getMaxLevel()
-    {
+    public int getMaxLevel() {
         return maxLevel;
     }
+
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                 Setting Methods                   //
+    //                                                   //
+    ///////////////////////////////////////////////////////
 
     /**
      * Retrieves the required amount of experience this class need to level
@@ -371,8 +372,7 @@ public abstract class RPGClass implements IconHolder
      *
      * @return required amount of experience to reach the next level
      */
-    public int getRequiredExp(int level)
-    {
+    public int getRequiredExp(int level) {
         return SkillAPI.getSettings().getRequiredExp(level);
     }
 
@@ -383,8 +383,7 @@ public abstract class RPGClass implements IconHolder
      *
      * @return amount of max health the class provides
      */
-    public double getHealth(int level)
-    {
+    public double getHealth(int level) {
         return settings.getAttr(ClassAttribute.HEALTH, level);
     }
 
@@ -393,8 +392,7 @@ public abstract class RPGClass implements IconHolder
      *
      * @return base amount of health for the class
      */
-    public double getBaseHealth()
-    {
+    public double getBaseHealth() {
         return settings.getBase(ClassAttribute.HEALTH);
     }
 
@@ -403,8 +401,7 @@ public abstract class RPGClass implements IconHolder
      *
      * @return health gained per level
      */
-    public double getHealthScale()
-    {
+    public double getHealthScale() {
         return settings.getScale(ClassAttribute.HEALTH);
     }
 
@@ -415,8 +412,7 @@ public abstract class RPGClass implements IconHolder
      *
      * @return amount of max mana the class provides
      */
-    public double getMana(int level)
-    {
+    public double getMana(int level) {
         return settings.getAttr(ClassAttribute.MANA, level);
     }
 
@@ -425,8 +421,7 @@ public abstract class RPGClass implements IconHolder
      *
      * @return base amount of mana for the class
      */
-    public double getBaseMana()
-    {
+    public double getBaseMana() {
         return settings.getBase(ClassAttribute.MANA);
     }
 
@@ -435,8 +430,7 @@ public abstract class RPGClass implements IconHolder
      *
      * @return mana gained per level
      */
-    public double getManaScale()
-    {
+    public double getManaScale() {
         return settings.getScale(ClassAttribute.MANA);
     }
 
@@ -448,18 +442,22 @@ public abstract class RPGClass implements IconHolder
      *
      * @return attribute amount
      */
-    public int getAttribute(String key, int level)
-    {
+    public int getAttribute(String key, int level) {
         return (int) settings.getAttr(key, level, 0);
     }
+
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                    IO Methods                     //
+    //                                                   //
+    ///////////////////////////////////////////////////////
 
     /**
      * Retrieves the settings for the class in a read-only format
      *
      * @return settings for the class in a read-only format
      */
-    public ReadOnlySettings getSettings()
-    {
+    public ReadOnlySettings getSettings() {
         return readOnlySettings;
     }
 
@@ -468,9 +466,17 @@ public abstract class RPGClass implements IconHolder
      *
      * @return mana alias for the class
      */
-    public String getManaName()
-    {
+    public String getManaName() {
         return mana;
+    }
+
+    /**
+     * Sets the mana alias for the class
+     *
+     * @param name mana alias
+     */
+    public void setManaName(String name) {
+        mana = name;
     }
 
     /**
@@ -478,8 +484,7 @@ public abstract class RPGClass implements IconHolder
      *
      * @return list of skills provided by the class
      */
-    public ArrayList<Skill> getSkills()
-    {
+    public ArrayList<Skill> getSkills() {
         ArrayList<Skill> skills = new ArrayList<Skill>();
         skills.addAll(this.skills);
         if (hasParent() && !getGroupSettings().isProfessReset()) skills.addAll(getParent().getSkills());
@@ -491,8 +496,7 @@ public abstract class RPGClass implements IconHolder
      *
      * @return true if has mana regeneration, false otherwise
      */
-    public boolean hasManaRegen()
-    {
+    public boolean hasManaRegen() {
         return manaRegen > 0;
     }
 
@@ -501,9 +505,17 @@ public abstract class RPGClass implements IconHolder
      *
      * @return mana regeneration per update or a non-positive number if no regeneration
      */
-    public double getManaRegen()
-    {
+    public double getManaRegen() {
         return manaRegen;
+    }
+
+    /**
+     * Sets the amount of mana regen this class has
+     *
+     * @param amount amount of mana regen
+     */
+    public void setManaRegen(double amount) {
+        this.manaRegen = amount;
     }
 
     /**
@@ -512,8 +524,7 @@ public abstract class RPGClass implements IconHolder
      *
      * @return list of child classes
      */
-    public ArrayList<RPGClass> getOptions()
-    {
+    public ArrayList<RPGClass> getOptions() {
         ArrayList<RPGClass> list = new ArrayList<RPGClass>();
         for (RPGClass c : SkillAPI.getClasses().values())
             if (c.getParent() == this)
@@ -525,27 +536,17 @@ public abstract class RPGClass implements IconHolder
         return !blacklist.contains(type);
     }
 
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //                 Setting Methods                   //
-    //                                                   //
-    ///////////////////////////////////////////////////////
-
     /**
      * Adds a skill to the class by name. This will not add it to the
      * skill tree or to players who are already professed as the class.
      *
      * @param name name of the skill
      */
-    public void addSkill(String name)
-    {
+    public void addSkill(String name) {
         Skill skill = SkillAPI.getSkill(name);
-        if (skill != null)
-        {
+        if (skill != null) {
             skills.add(skill);
-        }
-        else
-        {
+        } else {
             Logger.invalid("Class \"" + this.name + "\" tried to add an invalid skill - \"" + name + "\"");
         }
     }
@@ -556,32 +557,10 @@ public abstract class RPGClass implements IconHolder
      *
      * @param names names of the skills
      */
-    public void addSkills(String... names)
-    {
-        for (String name : names)
-        {
+    public void addSkills(String... names) {
+        for (String name : names) {
             addSkill(name);
         }
-    }
-
-    /**
-     * Sets the prefix for the class
-     *
-     * @param prefix class prefix
-     */
-    public void setPrefix(String prefix)
-    {
-        this.prefix = prefix;
-    }
-
-    /**
-     * Sets the mana alias for the class
-     *
-     * @param name mana alias
-     */
-    public void setManaName(String name)
-    {
-        mana = name;
     }
 
     /**
@@ -589,11 +568,9 @@ public abstract class RPGClass implements IconHolder
      *
      * @param sources allowed sources of experience
      */
-    public void setAllowedExpSources(ExpSource... sources)
-    {
+    public void setAllowedExpSources(ExpSource... sources) {
         expSources = 0;
-        for (ExpSource source : sources)
-        {
+        for (ExpSource source : sources) {
             allowExpSource(source);
         }
     }
@@ -603,8 +580,7 @@ public abstract class RPGClass implements IconHolder
      *
      * @param source allowed source of experience
      */
-    public void allowExpSource(ExpSource source)
-    {
+    public void allowExpSource(ExpSource source) {
         expSources |= source.getId();
     }
 
@@ -614,49 +590,16 @@ public abstract class RPGClass implements IconHolder
      *
      * @param source disallowed source of experience
      */
-    public void disallowExpSource(ExpSource source)
-    {
+    public void disallowExpSource(ExpSource source) {
         expSources &= (~source.getId());
     }
-
-    /**
-     * Sets the amount of mana regen this class has
-     *
-     * @param amount amount of mana regen
-     */
-    public void setManaRegen(double amount)
-    {
-        this.manaRegen = amount;
-    }
-
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //                    IO Methods                     //
-    //                                                   //
-    ///////////////////////////////////////////////////////
-
-    private static final String SKILLS = "skills";
-    private static final String PARENT = "parent";
-    private static final String NAME   = "name";
-    private static final String PREFIX = "prefix";
-    private static final String ACTION_BAR = "action-bar";
-    private static final String GROUP  = "group";
-    private static final String MANA   = "mana";
-    private static final String MAX    = "max-level";
-    private static final String EXP    = "exp-source";
-    private static final String REGEN  = "mana-regen";
-    private static final String PERM   = "needs-permission";
-    private static final String ATTR   = "attributes";
-    private static final String TREE   = "tree";
-    private static final String BLACKLIST = "blacklist";
 
     /**
      * Saves the class template data to the config
      *
      * @param config config to save to
      */
-    public void save(DataSection config)
-    {
+    public void save(DataSection config) {
         config.set(NAME, name);
         config.set(ACTION_BAR, actionBar.replace(ChatColor.COLOR_CHAR, '&'));
         config.set(PREFIX, prefix.replace(ChatColor.COLOR_CHAR, '&'));
@@ -671,8 +614,7 @@ public abstract class RPGClass implements IconHolder
         config.set(BLACKLIST, new ArrayList<Material>(blacklist));
 
         ArrayList<String> skillNames = new ArrayList<String>();
-        for (Skill skill : skills)
-        {
+        for (Skill skill : skills) {
             skillNames.add(skill.getName());
         }
         config.set(SKILLS, skillNames);
@@ -687,11 +629,9 @@ public abstract class RPGClass implements IconHolder
      *
      * @param config config to save to
      */
-    public void softSave(DataSection config)
-    {
+    public void softSave(DataSection config) {
         boolean neededOnly = config.keys().size() > 0;
-        if (!neededOnly)
-        {
+        if (!neededOnly) {
             save(config);
         }
     }
@@ -701,8 +641,7 @@ public abstract class RPGClass implements IconHolder
      *
      * @param config config to load from
      */
-    public void load(DataSection config)
-    {
+    public void load(DataSection config) {
         parent = config.getString(PARENT);
         icon = Data.parseIcon(config);
         name = config.getString(NAME, name);
@@ -727,35 +666,27 @@ public abstract class RPGClass implements IconHolder
 
         settings.load(config.getSection(ATTR));
 
-        if (config.isList(SKILLS))
-        {
+        if (config.isList(SKILLS)) {
             skills.clear();
-            for (String name : config.getList(SKILLS))
-            {
+            for (String name : config.getList(SKILLS)) {
                 Skill skill = SkillAPI.getSkill(name);
-                if (skill != null)
-                {
+                if (skill != null) {
                     skills.add(skill);
-                }
-                else Logger.invalid("Invalid skill for class " + this.name + " - " + name);
+                } else Logger.invalid("Invalid skill for class " + this.name + " - " + name);
             }
         }
 
-        this.skillTree = this.tree.getTree((SkillAPI) Bukkit.getPluginManager().getPlugin("SkillAPI"), this);
+        this.skillTree = this.tree.getTree(SkillAPI.inst(), this);
     }
 
     /**
      * Arranges the skill tree for the class
      */
-    public void arrange()
-    {
-        try
-        {
+    public void arrange() {
+        try {
             Logger.log(LogType.REGISTRATION, 2, "Arranging for \"" + name + "\" - " + skills.size() + " skills");
             this.skillTree.arrange();
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             Logger.invalid("Failed to arrange skill tree for class \"" + name + "\" - " + ex.getMessage());
         }
     }

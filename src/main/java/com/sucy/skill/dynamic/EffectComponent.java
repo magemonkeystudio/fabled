@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.dynamic.EffectComponent
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,8 +26,6 @@
  */
 package com.sucy.skill.dynamic;
 
-import com.rit.sucy.config.parse.DataSection;
-import com.rit.sucy.mobs.MobManager;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.player.PlayerData;
@@ -35,6 +33,8 @@ import com.sucy.skill.api.player.PlayerSkill;
 import com.sucy.skill.cast.IIndicator;
 import com.sucy.skill.cast.IndicatorType;
 import com.sucy.skill.log.Logger;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
+import mc.promcteam.engine.mccore.util.MobManager;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -47,37 +47,61 @@ import java.util.Map;
  * A component for dynamic skills which takes care of one effect
  */
 public abstract class EffectComponent {
-    private static final String ICON_KEY   = "icon-key";
+    private static final String ICON_KEY = "icon-key";
     private static final String COUNTS_KEY = "counts";
-
+    private static final String TYPE = "type";
+    private static final String INDICATOR = "indicator";
     private static boolean passed;
-
     /**
      * Child components
      */
     public final ArrayList<EffectComponent> children = new ArrayList<>();
-
     /**
      * The settings for the component
      */
     protected final Settings settings = new Settings();
-
-    /**
-     * Parent class of the component
-     */
-    protected DynamicSkill skill;
-
-    /**
-     * Type of indicators to show
-     */
-    protected IndicatorType indicatorType;
-
     /**
      * Whether or not the component has preview effects
      */
     public boolean hasEffect;
-
+    /**
+     * Parent class of the component
+     */
+    protected DynamicSkill skill;
+    /**
+     * Type of indicators to show
+     */
+    protected IndicatorType indicatorType;
     private String instanceKey;
+
+    private static String filterSpecialChars(String string) {
+        int i = 0;
+        int j = string.indexOf('&');
+        StringBuilder builder = new StringBuilder();
+        while (j >= 0) {
+            String key = string.substring(j + 1, j + 3);
+            switch (key) {
+                case "rc":
+                    builder.append(string, i, j);
+                    builder.append('}');
+                    i = j + 3;
+                    break;
+                case "lc":
+                    builder.append(string, i, j);
+                    builder.append('{');
+                    i = j + 3;
+                    break;
+                case "sq":
+                    builder.append(string, i, j);
+                    builder.append('\'');
+                    i = j + 3;
+                    break;
+            }
+            j = string.indexOf('&', i);
+        }
+        builder.append(string.substring(i));
+        return builder.toString();
+    }
 
     /**
      * Retrieves the config key for the component
@@ -112,9 +136,15 @@ public abstract class EffectComponent {
      * @return true if has an effect, false otherwise
      */
     private boolean hasEffect() {
-        if (indicatorType != IndicatorType.NONE) { return true; }
+        if (indicatorType != IndicatorType.NONE) {
+            return true;
+        }
 
-        for (EffectComponent child : children) { if (child.hasEffect()) { return true; } }
+        for (EffectComponent child : children) {
+            if (child.hasEffect()) {
+                return true;
+            }
+        }
 
         return false;
     }
@@ -159,7 +189,9 @@ public abstract class EffectComponent {
      */
     protected double getNum(LivingEntity caster, String key, double fallback) {
         String val = settings.getString(key);
-        if (val == null) { return fallback; }
+        if (val == null) {
+            return fallback;
+        }
 
         try {
             return Double.parseDouble(val);
@@ -220,7 +252,8 @@ public abstract class EffectComponent {
         children.forEach(child -> child.cleanUp(caster));
     }
 
-    protected void doCleanUp(final LivingEntity caster) { }
+    protected void doCleanUp(final LivingEntity caster) {
+    }
 
     /**
      * Gets the skill data for the caster
@@ -240,10 +273,14 @@ public abstract class EffectComponent {
     protected String filter(LivingEntity caster, LivingEntity target, String text) {
         // Grab values
         int i = text.indexOf('{');
-        if (i < 0) { return filterSpecialChars(text); }
+        if (i < 0) {
+            return filterSpecialChars(text);
+        }
 
         int j = text.indexOf('}', i);
-        if (j < 0) { return filterSpecialChars(text); }
+        if (j < 0) {
+            return filterSpecialChars(text);
+        }
 
         StringBuilder builder = new StringBuilder();
         HashMap<String, Object> data = DynamicSkill.getCastData(caster);
@@ -253,7 +290,9 @@ public abstract class EffectComponent {
             String key = text.substring(i + 1, j);
             if (data.containsKey(key)) {
                 Object obj = data.get(key);
-                if (obj instanceof Player) { obj = ((Player) obj).getName(); } else if (obj instanceof LivingEntity) {
+                if (obj instanceof Player) {
+                    obj = ((Player) obj).getName();
+                } else if (obj instanceof LivingEntity) {
                     obj = MobManager.getName((LivingEntity) obj);
                 }
                 builder.append(text, k, i);
@@ -283,35 +322,6 @@ public abstract class EffectComponent {
         return filterSpecialChars(builder.toString());
     }
 
-    private static String filterSpecialChars(String string) {
-        int i = 0;
-        int j = string.indexOf('&');
-        StringBuilder builder = new StringBuilder();
-        while (j >= 0) {
-            String key = string.substring(j+1,j+3);
-            switch (key) {
-                case "rc":
-                    builder.append(string, i, j);
-                    builder.append('}');
-                    i = j+3;
-                    break;
-                case "lc":
-                    builder.append(string, i, j);
-                    builder.append('{');
-                    i = j+3;
-                    break;
-                case "sq":
-                    builder.append(string, i, j);
-                    builder.append('\'');
-                    i = j+3;
-                    break;
-            }
-            j = string.indexOf('&',i);
-        }
-        builder.append(string.substring(i));
-        return builder.toString();
-    }
-
     /**
      * Executes the component (to be implemented)
      *
@@ -333,12 +343,11 @@ public abstract class EffectComponent {
      */
     public void makeIndicators(List<IIndicator> list, Player caster, List<LivingEntity> targets, int level) {
         if (hasEffect) {
-            for (EffectComponent component : children) { component.makeIndicators(list, caster, targets, level); }
+            for (EffectComponent component : children) {
+                component.makeIndicators(list, caster, targets, level);
+            }
         }
     }
-
-    private static final String TYPE      = "type";
-    private static final String INDICATOR = "indicator";
 
     /**
      * Saves the component and its children to the config

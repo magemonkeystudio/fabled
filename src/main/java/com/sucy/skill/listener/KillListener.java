@@ -26,7 +26,6 @@
  */
 package com.sucy.skill.listener;
 
-import com.rit.sucy.reflect.Reflection;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.enums.ExpSource;
 import com.sucy.skill.api.event.PhysicalDamageEvent;
@@ -37,6 +36,7 @@ import com.sucy.skill.api.util.BuffManager;
 import com.sucy.skill.api.util.FlagManager;
 import com.sucy.skill.data.Permissions;
 import com.sucy.skill.util.Version;
+import mc.promcteam.engine.utils.Reflex;
 import org.bukkit.GameMode;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -61,9 +61,9 @@ public class KillListener extends SkillAPIListener {
 
     public KillListener() {
         try {
-            Class<?> living = Version.MINOR_VERSION >= 17 ? Reflection.getClass("net.minecraft.world.entity.EntityLiving")
-                    : Reflection.getNMSClass("EntityLiving");
-            handle = Reflection.getCraftClass("entity.CraftEntity").getDeclaredMethod("getHandle");
+            Class<?> living = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.entity.EntityLiving")
+                    : Reflex.getNMSClass("EntityLiving");
+            handle = Reflex.getCraftClass("entity.CraftEntity").getDeclaredMethod("getHandle");
             killer = Version.MINOR_VERSION >= 17 ? living.getDeclaredField("bc")
                     : living.getDeclaredField("killer");
             damageTime = Version.MINOR_VERSION >= 17 ? living.getDeclaredField("bd")

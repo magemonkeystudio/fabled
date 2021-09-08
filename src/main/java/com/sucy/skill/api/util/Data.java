@@ -26,9 +26,9 @@
  */
 package com.sucy.skill.api.util;
 
-import com.rit.sucy.config.parse.DataSection;
-import com.rit.sucy.text.TextFormatter;
 import com.sucy.skill.SkillAPI;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
+import mc.promcteam.engine.mccore.util.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

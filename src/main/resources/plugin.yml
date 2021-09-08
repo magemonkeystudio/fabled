@@ -1,11 +1,11 @@
-name: SkillAPI
+name: ProSkillAPI
 main: com.sucy.skill.SkillAPI
-version: s1.99
-authors: [Eniripsa96, Sentropic]
-depend: [MCCore]
-softdepend: [Vault, ProtocolLib, Parties, RPGInventory, LibsDisguises, PlaceholderAPI, NoCheatPlus, MythicMobs, WorldGuard, WorldEdit]
-loadbefore: [Quests]
-api-version: 1.16
+version: %PROJECT_VERSION%
+authors: [ Travja, goflish, Eniripsa96, Sentropic ]
+depend: [ ProMCCore ]
+softdepend: [ Vault, ProtocolLib, Parties, RPGInventory, LibsDisguises, PlaceholderAPI, NoCheatPlus, MythicMobs, WorldGuard, WorldEdit ]
+loadbefore: [ Quests ]
+api-version: 1.14
 
 permissions:
   skillapi.basic:

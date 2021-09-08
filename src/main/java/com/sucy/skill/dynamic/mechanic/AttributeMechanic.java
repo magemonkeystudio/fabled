@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.dynamic.mechanic.FlagMechanic
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,6 +27,8 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.enums.Operation;
+import com.sucy.skill.api.player.PlayerAttributeModifier;
 import com.sucy.skill.api.player.PlayerData;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -43,6 +45,7 @@ import java.util.Map;
  */
 public class AttributeMechanic extends MechanicComponent {
     private static final String KEY       = "key";
+    private static final String OPERATION = "operation";
     private static final String AMOUNT    = "amount";
     private static final String SECONDS   = "seconds";
     private static final String STACKABLE = "stackable";
@@ -66,24 +69,31 @@ public class AttributeMechanic extends MechanicComponent {
         }
 
         final Map<String, AttribTask> casterTasks = tasks.computeIfAbsent(caster.getEntityId(), HashMap::new);
-        final int amount = (int) parseValues(caster, AMOUNT, level, 5);
-        final double seconds = parseValues(caster, SECONDS, level, 3.0);
-        final boolean stackable = settings.getString(STACKABLE, "false").equalsIgnoreCase("true");
-        final int ticks = (int) (seconds * 20);
+        final int                     amount      = (int) parseValues(caster, AMOUNT, level, 5);
+        final double                  seconds     = parseValues(caster, SECONDS, level, 3.0);
+        final boolean                 stackable   = settings.getString(STACKABLE, "false").equalsIgnoreCase("true");
+        final int                     ticks       = (int) (seconds * 20);
 
         boolean worked = false;
         for (LivingEntity target : targets) {
             if (target instanceof Player) {
                 worked = true;
-                final PlayerData data = SkillAPI.getPlayerData((Player) target);
+                final PlayerData        data     = SkillAPI.getPlayerData((Player) target);
+                PlayerAttributeModifier modifier = new PlayerAttributeModifier("skillapi.mechanic.attribute_mechanic", amount, Operation.valueOf(OPERATION), false);
 
                 if (casterTasks.containsKey(data.getPlayerName()) && !stackable) {
                     final AttribTask old = casterTasks.remove(data.getPlayerName());
-                    if (amount != old.amount) { data.addBonusAttributes(key, amount - old.amount); }
-                    old.cancel();
-                } else { data.addBonusAttributes(key, amount); }
 
-                final AttribTask task = new AttribTask(caster.getEntityId(), data, key, amount);
+                    data.removeAttributeModifier(old.modifier.getUUID(), false);
+
+                    data.addAttributeModifier(key, modifier, true);
+
+                    old.cancel();
+                } else {
+                    data.addAttributeModifier(key, modifier, true);
+                }
+
+                final AttribTask task = new AttribTask(caster.getEntityId(), data, modifier);
                 casterTasks.put(data.getPlayerName(), task);
                 if (ticks >= 0) {
                     SkillAPI.schedule(task, ticks);
@@ -107,18 +117,17 @@ public class AttributeMechanic extends MechanicComponent {
     }
 
     private class AttribTask extends BukkitRunnable {
-        private PlayerData data;
-        private String     attrib;
-        private int        amount;
-        private int        id;
-        private boolean running = false;
-        private boolean stopped = false;
 
-        AttribTask(int id, PlayerData data, String attrib, int amount) {
+        private final PlayerData              data;
+        private final PlayerAttributeModifier modifier;
+        private final int                     id;
+        private       boolean                 running = false;
+        private boolean                 stopped = false;
+
+        AttribTask(int id, PlayerData data, PlayerAttributeModifier modifier) {
             this.id = id;
             this.data = data;
-            this.attrib = attrib;
-            this.amount = amount;
+            this.modifier = modifier;
         }
 
         public void stop() {
@@ -139,7 +148,7 @@ public class AttributeMechanic extends MechanicComponent {
 
         @Override
         public void run() {
-            data.addBonusAttributes(attrib, -amount);
+            data.removeAttributeModifier(modifier.getUUID(), true);
             if (tasks.containsKey(id)) {
                 tasks.get(id).remove(data.getPlayerName());
             }

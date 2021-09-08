@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.data.Click
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,8 +26,8 @@
  */
 package com.sucy.skill.data;
 
-import com.rit.sucy.text.TextFormatter;
 import com.sucy.skill.SkillAPI;
+import mc.promcteam.engine.mccore.util.TextFormatter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,8 +35,7 @@ import java.util.Map;
 /**
  * Represents a single click in a click combination
  */
-public enum Click
-{
+public enum Click {
     LEFT(1, "L"),
     RIGHT(2, "R"),
     SHIFT(3, "S"),
@@ -46,26 +45,56 @@ public enum Click
     Q(7, "Q"),
     F(8, "F");
 
-    public static final int BITS           = 4;
-    public static final int BIT_MASK       = (1 << BITS) - 1;
+    public static final int BITS = 4;
+    public static final int BIT_MASK = (1 << BITS) - 1;
     public static final int MAX_COMBO_SIZE = 32 / BITS;
 
-    private static final Click[] CLICKS = new Click[] { null, LEFT, RIGHT, SHIFT, LEFT_SHIFT, RIGHT_SHIFT, SPACE, Q, F };
-
+    private static final Click[] CLICKS = new Click[]{null, LEFT, RIGHT, SHIFT, LEFT_SHIFT, RIGHT_SHIFT, SPACE, Q, F};
+    private static final Map<String, Click> CLICK_MAP = new HashMap<String, Click>() {{
+        for (final Click click : Click.values()) {
+            put(click.name().toLowerCase(), click);
+            put(click.key.toLowerCase(), click);
+        }
+    }};
     private int id;
     private String key;
 
-    Click(int id, String key)
-    {
+    Click(int id, String key) {
         this.id = id;
         this.key = key;
     }
 
     /**
+     * Retrieves a Click by ID. If an invalid ID is provided,
+     * this will instead return null.
+     *
+     * @param id click ID
+     *
+     * @return Click enum value or null if not found
+     */
+    public static Click getById(int id) {
+        if (id < 0 || id >= CLICKS.length) return null;
+        return CLICKS[id];
+    }
+
+    /**
+     * Retrieves a Click by name. If an invalid name is provided,
+     * this will return null instead.
+     *
+     * @param name click name
+     *
+     * @return Click enum value or null if not found
+     */
+    public static Click getByName(String name) {
+        if (name == null) return null;
+        name = name.toLowerCase();
+        return CLICK_MAP.get(name);
+    }
+
+    /**
      * @return numeric ID of the click type
      */
-    public int getId()
-    {
+    public int getId() {
         return id;
     }
 
@@ -81,44 +110,7 @@ public enum Click
      *
      * @return formatted click type name
      */
-    public String getName()
-    {
+    public String getName() {
         return TextFormatter.colorString(SkillAPI.getLanguage().getMessage("Combo." + name().toLowerCase()).get(0));
     }
-
-    /**
-     * Retrieves a Click by ID. If an invalid ID is provided,
-     * this will instead return null.
-     *
-     * @param id click ID
-     *
-     * @return Click enum value or null if not found
-     */
-    public static Click getById(int id)
-    {
-        if (id < 0 || id >= CLICKS.length) return null;
-        return CLICKS[id];
-    }
-
-    /**
-     * Retrieves a Click by name. If an invalid name is provided,
-     * this will return null instead.
-     *
-     * @param name click name
-     *
-     * @return Click enum value or null if not found
-     */
-    public static Click getByName(String name)
-    {
-        if (name == null) return null;
-        name = name.toLowerCase();
-        return CLICK_MAP.get(name);
-    }
-
-    private static final Map<String, Click> CLICK_MAP = new HashMap<String, Click>() {{
-        for (final Click click : Click.values()) {
-            put(click.name().toLowerCase(), click);
-            put(click.key.toLowerCase(), click);
-        }
-    }};
 }

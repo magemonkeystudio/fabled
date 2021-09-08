@@ -26,7 +26,7 @@
  */
 package com.sucy.skill.api.particle;
 
-import com.rit.sucy.config.parse.DataSection;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 import com.sucy.skill.api.particle.direction.DirectionHandler;
 import com.sucy.skill.data.Point2D;
 import com.sucy.skill.data.Point3D;

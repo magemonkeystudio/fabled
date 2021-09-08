@@ -26,7 +26,7 @@
  */
 package com.sucy.skill.dynamic.condition;
 
-import com.rit.sucy.config.parse.DataSection;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.dynamic.DynamicSkill;

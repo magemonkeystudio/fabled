@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.gui.map.SkillListMenu
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,36 +26,38 @@
  */
 package com.sucy.skill.gui.map;
 
-import com.rit.sucy.gui.*;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkill;
+import mc.promcteam.engine.mccore.gui.*;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
 
-public class SkillListMenu extends MapMenu
-{
+public class SkillListMenu extends MapMenu {
     // Player data keys
     private static final String SELECTION = "sapi_skill";
     private static final String AVAILABLE = "sapi_available";
 
     // Scene keys
-    private static final String PLATE    = "plate";
-    private static final String NAME     = "name";
+    private static final String PLATE = "plate";
+    private static final String NAME = "name";
     private static final String SELECTOR = "selector";
-    private static final String TITLE    = "title";
+    private static final String TITLE = "title";
+    private SkillAPI api;
+
+    public SkillListMenu(SkillAPI api) {
+        this.api = api;
+    }
 
     /**
      * Gets the selected skill of a player
      *
      * @param player player to get the selection of
-     *
      * @return player's selection or null if hasn't selected one
      */
-    public static PlayerSkill getSkill(Player player)
-    {
+    public static PlayerSkill getSkill(Player player) {
         Object skill = getData(player, SELECTION);
         ArrayList<PlayerSkill> list = getSkills(player);
 
@@ -63,11 +65,22 @@ public class SkillListMenu extends MapMenu
         return list.get((Integer) skill);
     }
 
-    private SkillAPI api;
+    private static int getId(Player player) {
+        return getSelection(player) & 0xff;
+    }
 
-    public SkillListMenu(SkillAPI api)
-    {
-        this.api = api;
+    private static int getScroll(Player player) {
+        return getSelection(player) >> 8;
+    }
+
+    private static void setSelection(Player player, int id, int scroll) {
+        setSelection(player, id | (scroll << 8));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static ArrayList<PlayerSkill> getSkills(Player player) {
+        Object list = getData(player, AVAILABLE);
+        return list == null ? null : (ArrayList<PlayerSkill>) list;
     }
 
     /**
@@ -79,57 +92,30 @@ public class SkillListMenu extends MapMenu
      * @param player player to move the selection for
      * @param i      amount to move the selection by
      */
-    private void move(Player player, int i)
-    {
+    private void move(Player player, int i) {
         int id = getId(player);
         int scroll = getScroll(player);
         int skills = getSkills(player).size();
 
         id += i;
-        if (id < 0)
-        {
+        if (id < 0) {
             id = 0;
             scroll = 0;
         }
-        if (id >= skills)
-        {
+        if (id >= skills) {
             id = skills - 1;
             scroll = id - 3;
         }
 
-        while (id - scroll <= 0 && id > 0)
-        {
+        while (id - scroll <= 0 && id > 0) {
             scroll--;
         }
-        while (id - scroll >= 3 && id < skills - 1)
-        {
+        while (id - scroll >= 3 && id < skills - 1) {
             scroll++;
         }
 
         setSelection(player, id, scroll);
         setData(player, SELECTION, id);
-    }
-
-    private static int getId(Player player)
-    {
-        return getSelection(player) & 0xff;
-    }
-
-    private static int getScroll(Player player)
-    {
-        return getSelection(player) >> 8;
-    }
-
-    private static void setSelection(Player player, int id, int scroll)
-    {
-        setSelection(player, id | (scroll << 8));
-    }
-
-    @SuppressWarnings("unchecked")
-    private static ArrayList<PlayerSkill> getSkills(Player player)
-    {
-        Object list = getData(player, AVAILABLE);
-        return list == null ? null : (ArrayList<PlayerSkill>) list;
     }
 
     /**
@@ -138,8 +124,7 @@ public class SkillListMenu extends MapMenu
      * @param player player to move for
      */
     @Override
-    public void onUp(Player player)
-    {
+    public void onUp(Player player) {
         move(player, -1);
     }
 
@@ -149,8 +134,7 @@ public class SkillListMenu extends MapMenu
      * @param player player to move for
      */
     @Override
-    public void onDown(Player player)
-    {
+    public void onDown(Player player) {
         move(player, 1);
     }
 
@@ -160,8 +144,7 @@ public class SkillListMenu extends MapMenu
      * @param player player to jump back for
      */
     @Override
-    public void onLeft(Player player)
-    {
+    public void onLeft(Player player) {
         move(player, -4);
     }
 
@@ -171,8 +154,7 @@ public class SkillListMenu extends MapMenu
      * @param player player to jump forward for
      */
     @Override
-    public void onRight(Player player)
-    {
+    public void onRight(Player player) {
         move(player, 4);
     }
 
@@ -182,8 +164,7 @@ public class SkillListMenu extends MapMenu
      * @param player player selecting a skill
      */
     @Override
-    public void onSelect(Player player)
-    {
+    public void onSelect(Player player) {
         MapMenuManager.sendNext(player, Menu.DETAIL_MENU);
     }
 
@@ -193,17 +174,14 @@ public class SkillListMenu extends MapMenu
      * @param player player to prepare for the menu
      */
     @Override
-    public void setup(Player player)
-    {
+    public void setup(Player player) {
         MapScheme scheme = MapScheme.get(api, SkillAPI.getPlayerData(player).getScheme());
 
         MapScene scene = getScene(player);
         PlayerData playerData = SkillAPI.getPlayerData(player);
         ArrayList<PlayerSkill> skills = new ArrayList<PlayerSkill>();
-        for (PlayerSkill skill : playerData.getSkills())
-        {
-            if (skill.getPlayerClass().getData().getSkillTree().canShow(player, skill.getData()))
-            {
+        for (PlayerSkill skill : playerData.getSkills()) {
+            if (skill.getPlayerClass().getData().getSkillTree().canShow(player, skill.getData())) {
                 int id = skills.size();
                 skills.add(skill);
 
@@ -220,8 +198,7 @@ public class SkillListMenu extends MapMenu
     }
 
     @Override
-    public void render(MapBuffer mapBuffer, Player player)
-    {
+    public void render(MapBuffer mapBuffer, Player player) {
         MapScene scene = getScene(player);
 
         int id = getId(player);
@@ -229,8 +206,7 @@ public class SkillListMenu extends MapMenu
         ArrayList<PlayerSkill> skills = getSkills(player);
 
         // Draw skill list
-        for (int i = Math.max(0, scroll - 1); i < scroll + 6 && i < skills.size(); i++)
-        {
+        for (int i = Math.max(0, scroll - 1); i < scroll + 6 && i < skills.size(); i++) {
             int y = (i - scroll) * 20 + 36;
             scene.get(PLATE + i).moveTo(0, y);
             if (id == i) scene.get(SELECTOR).moveTo(6, y + 5);

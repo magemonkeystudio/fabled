@@ -26,7 +26,7 @@
  */
 package com.sucy.skill.listener;
 
-import com.rit.sucy.version.VersionManager;
+import mc.promcteam.engine.mccore.util.VersionManager;
 import com.sucy.skill.api.event.FlagApplyEvent;
 import com.sucy.skill.api.event.PhysicalDamageEvent;
 import com.sucy.skill.api.event.PlayerCastSkillEvent;

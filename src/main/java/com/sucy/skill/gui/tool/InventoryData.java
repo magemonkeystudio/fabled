@@ -26,7 +26,7 @@
  */
 package com.sucy.skill.gui.tool;
 
-import com.rit.sucy.version.VersionManager;
+import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 

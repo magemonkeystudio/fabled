@@ -7,13 +7,12 @@ import java.util.Iterator;
 
 public class ArmorStandData {
     private final HashMap<String, ArmorStandInstance> armorStands = new HashMap<>();
-    private final LivingEntity target;
+    private final LivingEntity                        target;
 
     /**
      * @param target target of the armor stands
      */
-    public ArmorStandData(LivingEntity target)
-    {
+    public ArmorStandData(LivingEntity target) {
         this.target = target;
     }
 
@@ -28,10 +27,11 @@ public class ArmorStandData {
      * Fetches an active armor stand by key
      *
      * @param key armor stand key
-     *
      * @return active armor stand or null if not found
      */
-    public ArmorStandInstance getArmorStands(String key) { return armorStands.get(key); }
+    public ArmorStandInstance getArmorStands(String key) {
+        return armorStands.get(key);
+    }
 
     public void register(ArmorStandInstance armorStand, String key) {
         ArmorStandInstance oldArmorStand = armorStands.put(key, armorStand);
@@ -43,13 +43,11 @@ public class ArmorStandData {
      */
     public void tick() {
         Iterator<ArmorStandInstance> iterator = armorStands.values().iterator();
-        while (iterator.hasNext())
-        {
+        while (iterator.hasNext()) {
             ArmorStandInstance armorStand = iterator.next();
             if (armorStand.isValid()) {
                 armorStand.tick();
-            }
-            else {
+            } else {
                 armorStand.remove();
                 iterator.remove();
             }

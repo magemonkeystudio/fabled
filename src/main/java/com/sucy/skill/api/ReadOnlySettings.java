@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.ReadOnlySettings
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,15 +26,15 @@
  */
 package com.sucy.skill.api;
 
-import com.rit.sucy.config.parse.DataSection;
+
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 
 import java.util.List;
 
 /**
  * A wrapper for the API settings that makes it read-only
  */
-public class ReadOnlySettings
-{
+public class ReadOnlySettings {
     private Settings settings;
 
     /**
@@ -42,8 +42,7 @@ public class ReadOnlySettings
      *
      * @param settings settings to wrap
      */
-    public ReadOnlySettings(Settings settings)
-    {
+    public ReadOnlySettings(Settings settings) {
         this.settings = settings;
     }
 
@@ -55,8 +54,7 @@ public class ReadOnlySettings
      *
      * @return double setting value
      */
-    public double getDouble(String key)
-    {
+    public double getDouble(String key) {
         return getDouble(key, 0);
     }
 
@@ -69,8 +67,7 @@ public class ReadOnlySettings
      *
      * @return double setting value
      */
-    public double getDouble(String key, double defaultValue)
-    {
+    public double getDouble(String key, double defaultValue) {
         return settings.getDouble(key, defaultValue);
     }
 
@@ -82,8 +79,7 @@ public class ReadOnlySettings
      *
      * @return integer setting value
      */
-    public int getInt(String key)
-    {
+    public int getInt(String key) {
         return settings.getInt(key, 0);
     }
 
@@ -96,8 +92,7 @@ public class ReadOnlySettings
      *
      * @return integer setting value
      */
-    public int getInt(String key, int defaultValue)
-    {
+    public int getInt(String key, int defaultValue) {
         return settings.getInt(key, defaultValue);
     }
 
@@ -109,8 +104,7 @@ public class ReadOnlySettings
      *
      * @return boolean setting value
      */
-    public boolean getBool(String key)
-    {
+    public boolean getBool(String key) {
         return settings.getBool(key);
     }
 
@@ -123,8 +117,7 @@ public class ReadOnlySettings
      *
      * @return boolean setting value
      */
-    public boolean getBool(String key, boolean defaultValue)
-    {
+    public boolean getBool(String key, boolean defaultValue) {
         return settings.getBool(key, defaultValue);
     }
 
@@ -136,8 +129,7 @@ public class ReadOnlySettings
      *
      * @return String setting value
      */
-    public String getString(String key)
-    {
+    public String getString(String key) {
         return settings.getString(key, null);
     }
 
@@ -150,8 +142,7 @@ public class ReadOnlySettings
      *
      * @return String setting value
      */
-    public String getString(String key, String defaultValue)
-    {
+    public String getString(String key, String defaultValue) {
         return settings.getString(key, defaultValue);
     }
 
@@ -162,8 +153,7 @@ public class ReadOnlySettings
      *
      * @return string list or empty list if not found
      */
-    public List<String> getStringList(String key)
-    {
+    public List<String> getStringList(String key) {
         return settings.getStringList(key);
     }
 
@@ -176,8 +166,7 @@ public class ReadOnlySettings
      *
      * @return scaled setting value
      */
-    public double getAttr(String key, int level)
-    {
+    public double getAttr(String key, int level) {
         return settings.getAttr(key, level, 0);
     }
 
@@ -192,8 +181,7 @@ public class ReadOnlySettings
      *
      * @return scaled setting value
      */
-    public double getAttr(String key, int level, double defaultValue)
-    {
+    public double getAttr(String key, int level, double defaultValue) {
         return settings.getAttr(key, level, defaultValue);
     }
 
@@ -205,8 +193,7 @@ public class ReadOnlySettings
      *
      * @return base value
      */
-    public double getBase(String key)
-    {
+    public double getBase(String key) {
         return settings.getBase(key);
     }
 
@@ -218,8 +205,7 @@ public class ReadOnlySettings
      *
      * @return change in value per level
      */
-    public double getScale(String key)
-    {
+    public double getScale(String key) {
         return settings.getScale(key);
     }
 
@@ -232,8 +218,7 @@ public class ReadOnlySettings
      *
      * @return attribute value or 0 if not found
      */
-    public Object getObj(String key, int level)
-    {
+    public Object getObj(String key, int level) {
         return settings.getObj(key, level);
     }
 
@@ -246,8 +231,7 @@ public class ReadOnlySettings
      *
      * @return true if defined, false otherwise
      */
-    public boolean has(String key)
-    {
+    public boolean has(String key) {
         return settings.has(key);
     }
 
@@ -257,16 +241,14 @@ public class ReadOnlySettings
      *
      * @param config configuration section to save to
      */
-    public void save(DataSection config)
-    {
+    public void save(DataSection config) {
         settings.save(config);
     }
 
     /**
      * Dumps the settings to the console for debugging purposes
      */
-    public void dumpToConsole()
-    {
+    public void dumpToConsole() {
         settings.dumpToConsole();
     }
 }

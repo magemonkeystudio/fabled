@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.player.PlayerAccounts
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,10 +26,8 @@
  */
 package com.sucy.skill.api.player;
 
-import com.rit.sucy.version.VersionPlayer;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.event.PlayerAccountChangeEvent;
-import com.sucy.skill.listener.AttributeListener;
 import com.sucy.skill.manager.ClassBoardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -47,8 +45,8 @@ import java.util.HashMap;
 public class PlayerAccounts {
     private final HashMap<Integer, PlayerData> classData = new HashMap<Integer, PlayerData>();
 
-    private int           active;
-    private OfflinePlayer player;
+    private       int           active;
+    private final OfflinePlayer player;
 
     /**
      * Initializes a new container for player account data.
@@ -125,7 +123,6 @@ public class PlayerAccounts {
      * unless the setting to initialize one account for each class is enabled.
      *
      * @param id account ID
-     *
      * @return true if data exists, false otherwise
      */
     public boolean hasData(int id) {
@@ -136,7 +133,6 @@ public class PlayerAccounts {
      * Gets the account data by ID for the owner
      *
      * @param id account ID
-     *
      * @return account data or null if not found
      */
     public PlayerData getData(int id) {
@@ -152,7 +148,6 @@ public class PlayerAccounts {
      * @param id     account ID
      * @param player offline player reference
      * @param init   whether or not the data is being initialized
-     *
      * @return account data or null if invalid id or player
      */
     public PlayerData getData(int id, OfflinePlayer player, boolean init) {
@@ -208,20 +203,21 @@ public class PlayerAccounts {
             }
 
             if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
-                ClassBoardManager.clear(new VersionPlayer(player));
+                ClassBoardManager.clear(player);
                 getActiveData().stopPassives(player);
-                AttributeListener.clearBonuses(player);
-                getActiveData().clearBonuses();
+                getActiveData().clearAllModifiers();
                 active = event.getNewID();
                 getActiveData().startPassives(player);
                 getActiveData().updateScoreboard();
-                getActiveData().updateHealthAndMana(player);
-                AttributeListener.updatePlayer(getActiveData());
                 if (getActiveData().hasClass() && SkillAPI.getSettings().isSkillBarEnabled() && !SkillAPI.getSettings()
                         .isUsingCombat()) {
                     getActiveData().getSkillBar().setup(player);
                 }
                 getActiveData().getEquips().update(player);
+                getActiveData().updatePlayerStat(player);
+                // Do a force health update, as health haven't been altered
+                // updatePlayerStat will not do a wasteful health update
+                getActiveData().updateHealth(player);
             } else {
                 active = event.getNewID();
             }

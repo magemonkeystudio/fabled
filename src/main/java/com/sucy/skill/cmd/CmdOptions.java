@@ -26,9 +26,9 @@
  */
 package com.sucy.skill.cmd;
 
-import com.rit.sucy.commands.ConfigurableCommand;
-import com.rit.sucy.commands.IFunction;
-import com.rit.sucy.text.TextFormatter;
+import mc.promcteam.engine.mccore.commands.ConfigurableCommand;
+import mc.promcteam.engine.mccore.commands.IFunction;
+import mc.promcteam.engine.mccore.util.TextFormatter;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.player.PlayerClass;

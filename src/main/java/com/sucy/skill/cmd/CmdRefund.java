@@ -26,10 +26,10 @@
  */
 package com.sucy.skill.cmd;
 
-import com.rit.sucy.commands.ConfigurableCommand;
-import com.rit.sucy.commands.IFunction;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerData;
+import mc.promcteam.engine.mccore.commands.ConfigurableCommand;
+import mc.promcteam.engine.mccore.commands.IFunction;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -38,11 +38,10 @@ import org.bukkit.plugin.Plugin;
 /**
  * Command for refunding invested skill points
  */
-public class CmdRefund implements IFunction
-{
+public class CmdRefund implements IFunction {
     private static final String CANNOT_USE = "cannot-use";
-    private static final String NO_CLASS   = "no-class";
-    private static final String REFUNDED   = "refunded";
+    private static final String NO_CLASS = "no-class";
+    private static final String REFUNDED = "refunded";
 
     /**
      * Runs the command
@@ -53,30 +52,25 @@ public class CmdRefund implements IFunction
      * @param args   argument list
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args)
-    {
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
         // Only players have skills
-        if (sender instanceof Player)
-        {
+        if (sender instanceof Player) {
             PlayerData player = SkillAPI.getPlayerData((Player) sender);
 
             // Player must have a class
-            if (!player.hasClass())
-            {
+            if (!player.hasClass()) {
                 cmd.sendMessage(sender, NO_CLASS, "&4You have not professed as any class yet");
             }
 
             // Reset all skills
-            else
-            {
+            else {
                 player.refundSkills();
                 cmd.sendMessage(sender, REFUNDED, "&2Your skill points have been refunded");
             }
         }
 
         // Console doesn't have profession options
-        else
-        {
+        else {
             cmd.sendMessage(sender, CANNOT_USE, ChatColor.RED + "This cannot be used by the console");
         }
     }

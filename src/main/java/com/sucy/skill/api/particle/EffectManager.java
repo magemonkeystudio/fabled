@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.particle.EffectManager
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,14 +26,14 @@
  */
 package com.sucy.skill.api.particle;
 
-import com.rit.sucy.config.CommentedConfig;
-import com.rit.sucy.config.parse.DataSection;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.particle.direction.XZHandler;
 import com.sucy.skill.api.particle.target.EffectTarget;
 import com.sucy.skill.api.particle.target.EntityTarget;
 import com.sucy.skill.task.EffectTask;
 import com.sucy.skill.thread.MainThread;
+import mc.promcteam.engine.mccore.config.CommentedConfig;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.HashMap;
@@ -46,8 +46,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class EffectManager {
     private static Map<EffectTarget, EffectData> instances = new ConcurrentHashMap<EffectTarget, EffectData>();
-    private static Map<String, ParticleEffect>   effects   = new HashMap<String, ParticleEffect>();
-    private static Map<String, PolarSettings>    formulas  = new HashMap<String, PolarSettings>();
+    private static Map<String, ParticleEffect> effects = new HashMap<String, ParticleEffect>();
+    private static Map<String, PolarSettings> formulas = new HashMap<String, PolarSettings>();
 
     /**
      * Initializes the utility, loading formulas from the config file
@@ -58,7 +58,9 @@ public class EffectManager {
         DataSection data = config.getConfig();
         for (String key : data.keys()) {
             formulas.put(key, new PolarSettings(data.getSection(key)));
-            if (key.equals("one-circle")) { formulas.get(key).getPoints(XZHandler.instance); }
+            if (key.equals("one-circle")) {
+                formulas.get(key).getPoints(XZHandler.instance);
+            }
         }
 
         MainThread.register(new EffectTask());
@@ -77,7 +79,9 @@ public class EffectManager {
      * @param effect effect to register
      */
     public static void register(ParticleEffect effect) {
-        if (effect != null) { effects.put(effect.getName(), effect); }
+        if (effect != null) {
+            effects.put(effect.getName(), effect);
+        }
     }
 
     /**
@@ -87,7 +91,9 @@ public class EffectManager {
      * @param formula formula to register
      */
     public static void register(String key, PolarSettings formula) {
-        if (formula != null) { formulas.put(key, formula); }
+        if (formula != null) {
+            formulas.put(key, formula);
+        }
     }
 
     /**
@@ -150,7 +156,9 @@ public class EffectManager {
      * @return active effect or null if not found
      */
     public static EffectInstance getEffect(EffectTarget target, String key) {
-        if (!instances.containsKey(target)) { return null; }
+        if (!instances.containsKey(target)) {
+            return null;
+        }
 
         return instances.get(target).getEffect(key);
     }
@@ -166,7 +174,9 @@ public class EffectManager {
      * @param level  effect level
      */
     public static void runEffect(ParticleEffect effect, EffectTarget target, int ticks, int level) {
-        if (!instances.containsKey(target)) { instances.put(target, new EffectData(target)); }
+        if (!instances.containsKey(target)) {
+            instances.put(target, new EffectData(target));
+        }
         instances.get(target).runEffect(effect, ticks, level);
     }
 
@@ -177,7 +187,11 @@ public class EffectManager {
         Iterator<EffectData> iterator = instances.values().iterator();
         while (iterator.hasNext()) {
             EffectData data = iterator.next();
-            if (data.isValid()) { data.tick(); } else { iterator.remove(); }
+            if (data.isValid()) {
+                data.tick();
+            } else {
+                iterator.remove();
+            }
         }
     }
 }

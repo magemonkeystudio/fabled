@@ -26,7 +26,7 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
-import com.rit.sucy.version.VersionManager;
+import mc.promcteam.engine.mccore.util.VersionManager;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.dynamic.TempEntity;
 import org.bukkit.Location;
