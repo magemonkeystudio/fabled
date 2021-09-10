@@ -26,7 +26,7 @@
  */
 package com.sucy.skill.dynamic.condition;
 
-import com.rit.sucy.version.VersionManager;
+import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Waterlogged;
@@ -40,7 +40,7 @@ public class WaterCondition extends ConditionComponent {
 
     @Override
     boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        final boolean out = settings.getString(STATE).toLowerCase().equals("out of water");
+        final boolean out = settings.getString(STATE).equalsIgnoreCase("out of water");
         final Material block = target.getLocation().getBlock().getType();
 
         final Block b =  target.getLocation().getBlock();
