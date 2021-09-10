@@ -1947,13 +1947,13 @@ function MechanicDisguise()
         .setTooltip('The object to disguise the target as')
     );
     this.data.push(new IntValue('Data', 'data', 0)
-        .requireValue('type', [ 'Misc' ])
+        // .requireValue('type', [ 'Misc' ])
         .requireValue('misc', [ 'Area Effect Cloud', 'Armor Stand', 'Arrow', 'Boat', 'Dragon Fireball', 'Egg', 'Ender Crystal', 'Ender Pearl', 'Ender Signal', 'Experience Orb', 'Fireball', 'Firework', 'Fishing Hook', 'Item Frame', 'Leash Hitch', 'Minecart', 'Minecart Chest', 'Minecart Command', 'Minecart Furnace', 'Minecart Hopper', 'Minecart Mob Spawner', 'Minecart TNT', 'Painting', 'Primed TNT', 'Shulker Bullet', 'Snowball', 'Spectral Arrow', 'Splash Potion', 'Tipped Arrow', 'Thrown EXP Bottle', 'Wither Skull' ])
         .setTooltip('Data value to use for the disguise type. What it does depends on the disguise')
     );
 
     this.data.push(new ListValue('Material', 'mat', getMaterials, 'Anvil')
-        .requireValue('type', [ 'Misc' ])
+        // .requireValue('type', [ 'Misc' ])
         .requireValue('misc', [ 'Dropped Item', 'Falling Block' ])
         .setTooltip('Material to use for the disguise type. Note that items used for falling block will not function.')
     );
