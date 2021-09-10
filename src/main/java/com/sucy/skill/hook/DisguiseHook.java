@@ -33,6 +33,7 @@ import me.libraryaddict.disguise.disguisetypes.watchers.ArmorStandWatcher;
 import me.libraryaddict.disguise.disguisetypes.watchers.SlimeWatcher;
 import me.libraryaddict.disguise.utilities.DisguiseValues;
 import me.libraryaddict.disguise.utilities.reflection.FakeBoundingBox;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -102,6 +103,30 @@ public class DisguiseHook
             String name = target.getCustomName();
             DisguiseType disguise = DisguiseType.valueOf(type.toUpperCase().replace(" ", "_"));
             MiscDisguise miscDisguise = new MiscDisguise(disguise, data);
+            DisguiseAPI.disguiseToAll(target, miscDisguise);
+            if (name != null)
+                target.setCustomName(name);
+        }
+        catch (Exception ex)
+        {
+            Logger.invalid("Invalid misc disguise type: " + type);
+        }
+    }
+
+    /**
+     * Disguises the target as a miscellaneous thing
+     *
+     * @param target target to disguise
+     * @param type   disguise type
+     * @param mat    disguise material value
+     */
+    public static void disguiseMisc(LivingEntity target, String type, Material mat)
+    {
+        try
+        {
+            String name = target.getCustomName();
+            DisguiseType disguise = DisguiseType.valueOf(type.toUpperCase().replace(" ", "_"));
+            MiscDisguise miscDisguise = new MiscDisguise(disguise, mat);
             DisguiseAPI.disguiseToAll(target, miscDisguise);
             if (name != null)
                 target.setCustomName(name);

@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.dynamic.mechanic.DisguiseMechanic
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -31,6 +31,7 @@ import com.sucy.skill.dynamic.TempEntity;
 import com.sucy.skill.hook.DisguiseHook;
 import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.listener.MechanicListener;
+import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
@@ -45,6 +46,7 @@ public class DisguiseMechanic extends MechanicComponent {
     private static final String PLAYER   = "player";
     private static final String MISC     = "misc";
     private static final String DATA     = "data";
+    private static final String MATERIAL = "mat";
     private static final String DURATION = "duration";
 
     @Override
@@ -58,12 +60,13 @@ public class DisguiseMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @return true if applied to something, false otherwise
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets) {
-        if (!PluginChecker.isDisguiseActive()) { return false; }
+        if (!PluginChecker.isDisguiseActive()) {
+            return false;
+        }
 
         String type = settings.getString(TYPE);
 
@@ -91,18 +94,26 @@ public class DisguiseMechanic extends MechanicComponent {
         else if (type.equalsIgnoreCase("misc")) {
             for (LivingEntity target : targets) {
                 if (!(target instanceof TempEntity)) {
-                    DisguiseHook.disguiseMisc(target, settings.getString(MISC, "Painting"), settings.getInt(DATA, 0));
+                    String dataType = settings.getString(MISC, "Painting");
+                    if (dataType.equals("Dropped Item") || dataType.equals("Falling Block")) {
+                        DisguiseHook.disguiseMisc(target, dataType, Material.valueOf(settings.getString(MATERIAL, "Anvil").toUpperCase().replace(" ", "_")));
+                    } else
+                        DisguiseHook.disguiseMisc(target, dataType, settings.getInt(DATA, 0));
                 }
             }
         }
 
         // Invalid type
-        else { return false; }
+        else {
+            return false;
+        }
 
         // Apply Flag duration
         int ticks = (int) (parseValues(caster, DURATION, level, -1) * 20);
         for (LivingEntity target : targets) {
-            if (!(target instanceof TempEntity)) { FlagManager.addFlag(target, MechanicListener.DISGUISE_KEY, ticks); }
+            if (!(target instanceof TempEntity)) {
+                FlagManager.addFlag(target, MechanicListener.DISGUISE_KEY, ticks);
+            }
         }
 
         return targets.size() > 0;
