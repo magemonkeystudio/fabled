@@ -261,7 +261,7 @@
         <dependency>
             <groupId>mc.promcteam</groupId>
             <artifactId>ProMCCore</artifactId>
-            <version>1.0.3-ALPHA</version>
+            <version>1.0.3.1-ALPHA</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
