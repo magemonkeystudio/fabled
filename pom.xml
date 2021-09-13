@@ -261,8 +261,9 @@
         <dependency>
             <groupId>mc.promcteam</groupId>
             <artifactId>ProMCCore</artifactId>
-            <version>1.0.3-ALPHA</version>
-            <scope>provided</scope>
+            <version>1.0.3.1</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/MProCCore-1.0.3.1-ALPHA.jar</systemPath>
         </dependency>
     </dependencies>
 </project>
