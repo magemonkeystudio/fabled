@@ -263,7 +263,7 @@
             <artifactId>ProMCCore</artifactId>
             <version>1.0.3.1</version>
             <scope>system</scope>
-            <systemPath>${basedir}/lib/MProCCore-1.0.3.1-ALPHA.jar</systemPath>
+            <systemPath>${basedir}/lib/ProMCCore-1.0.3.1-ALPHA.jar</systemPath>
         </dependency>
     </dependencies>
 </project>
