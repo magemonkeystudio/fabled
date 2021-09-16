@@ -1325,7 +1325,7 @@ function ConditionMounted()
     this.data.push(new MultiListValue('Types', 'types', getAnyEntities, [ 'Any' ])
         .setTooltip('The entity types that can be mounting the target')
     );
-    
+
 }
 
 extend('ConditionMounting', 'Component');
@@ -1338,7 +1338,7 @@ function ConditionMounting()
     this.data.push(new MultiListValue('Types', 'types', getAnyEntities, [ 'Any' ])
         .setTooltip('The entity types the target can be mounting')
     );
-    
+
 }
 
 extend('ConditionName', 'Component');
@@ -1947,8 +1947,15 @@ function MechanicDisguise()
         .setTooltip('The object to disguise the target as')
     );
     this.data.push(new IntValue('Data', 'data', 0)
-        .requireValue('type', [ 'Misc' ])
+        // .requireValue('type', [ 'Misc' ])
+        .requireValue('misc', [ 'Area Effect Cloud', 'Armor Stand', 'Arrow', 'Boat', 'Dragon Fireball', 'Egg', 'Ender Crystal', 'Ender Pearl', 'Ender Signal', 'Experience Orb', 'Fireball', 'Firework', 'Fishing Hook', 'Item Frame', 'Leash Hitch', 'Minecart', 'Minecart Chest', 'Minecart Command', 'Minecart Furnace', 'Minecart Hopper', 'Minecart Mob Spawner', 'Minecart TNT', 'Painting', 'Primed TNT', 'Shulker Bullet', 'Snowball', 'Spectral Arrow', 'Splash Potion', 'Tipped Arrow', 'Thrown EXP Bottle', 'Wither Skull' ])
         .setTooltip('Data value to use for the disguise type. What it does depends on the disguise')
+    );
+
+    this.data.push(new ListValue('Material', 'mat', getMaterials, 'Anvil')
+        // .requireValue('type', [ 'Misc' ])
+        .requireValue('misc', [ 'Dropped Item', 'Falling Block' ])
+        .setTooltip('Material to use for the disguise type. Note that items used for falling block will not function.')
     );
 }
 
@@ -2674,9 +2681,9 @@ extend('MechanicValueAdd', 'Component');
 function MechanicValueAdd()
 {
     this.super('Value Add', Type.MECHANIC, false);
-    
+
     this.description = 'Adds to a stored value under a unique key for the caster. If the value wasn\'t set before, this will set the value to the given amount.';
-    
+
     this.data.push(new StringValue('Key', 'key', 'value')
         .setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value.')
     );
@@ -2686,12 +2693,12 @@ function MechanicValueAdd()
 }
 
 extend('MechanicValueAttribute', 'Component');
-function MechanicValueAttribute() 
+function MechanicValueAttribute()
 {
     this.super('Value Attribute', Type.MECHANIC, false);
-    
+
     this.description = 'Loads a player\'s attribute count for a specific attribute as a stored value to be used in other mechanics.';
-    
+
     this.data.push(new StringValue('Key', 'key', 'attribute')
         .setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value.')
     );
@@ -2704,9 +2711,9 @@ extend('MechanicValueCopy', 'Component');
 function MechanicValueCopy()
 {
     this.super('Value Copy', Type.MECHANIC, false);
-    
+
     this.description = 'Copies a stored value from the caster to the target or vice versa';
-    
+
     this.data.push(new StringValue('Key', 'key', 'value')
         .setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value.')
     );
@@ -2734,9 +2741,9 @@ extend('MechanicValueHealth', 'Component');
 function MechanicValueHealth()
 {
     this.super('Value Health', Type.MECHANIC, false);
-    
+
     this.description = 'Stores the target\'s current health as a value under a given key for the caster';
-    
+
     this.data.push(new StringValue('Key', 'key', 'value')
         .setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value.')
     );
@@ -2746,12 +2753,12 @@ function MechanicValueHealth()
 }
 
 extend('MechanicValueLocation', 'Component');
-function MechanicValueLocation() 
+function MechanicValueLocation()
 {
     this.super('Value Location', Type.MECHANIC, false);
-    
+
     this.description = 'Loads the first target\'s current location into a stored value for use at a later time.';
-    
+
     this.data.push(new StringValue('Key', 'key', 'location')
         .setTooltip('The unique key to store the location under. This key can be used in place of attribute values to use the stored value.')
     );
@@ -2761,9 +2768,9 @@ extend('MechanicValueLore', 'Component');
 function MechanicValueLore()
 {
     this.super('Value Lore', Type.MECHANIC, false);
-    
+
     this.description = 'Loads a value from a held item\'s lore into a stored value under the given unique key for the caster.';
-    
+
     this.data.push(new StringValue('Key', 'key', 'lore')
         .setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value.')
     );
@@ -2782,9 +2789,9 @@ extend('MechanicValueLoreSlot', 'Component');
 function MechanicValueLoreSlot()
 {
     this.super('Value Lore Slot', Type.MECHANIC, false);
-    
+
     this.description = 'Loads a value from an item\'s lore into a stored value under the given unique key for the caster.';
-    
+
     this.data.push(new StringValue('Key', 'key', 'lore')
         .setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value.')
     );
@@ -2803,9 +2810,9 @@ extend('MechanicValueMana', 'Component');
 function MechanicValueMana()
 {
     this.super('Value Mana', Type.MECHANIC, false);
-    
+
     this.description = 'Stores the target player\'s current mana as a value under a given key for the caster';
-    
+
     this.data.push(new StringValue('Key', 'key', 'value')
         .setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value.')
     );
@@ -2851,9 +2858,9 @@ extend('MechanicValueRandom', 'Component')
 function MechanicValueRandom()
 {
     this.super('Value Random', Type.MECHANIC, false);
-    
+
     this.description = 'Stores a specified value under a given key for the caster.';
-    
+
     this.data.push(new StringValue('Key', 'key', 'value')
         .setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value.')
     );
@@ -2872,9 +2879,9 @@ extend('MechanicValueSet', 'Component');
 function MechanicValueSet()
 {
     this.super('Value Set', Type.MECHANIC, false);
-    
+
     this.description = 'Stores a specified value under a given key for the caster.';
-    
+
     this.data.push(new StringValue('Key', 'key', 'value')
         .setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value.')
     );
@@ -2887,9 +2894,9 @@ extend('MechanicWarp', 'Component');
 function MechanicWarp()
 {
     this.super('Warp', Type.MECHANIC, false);
-    
+
     this.description = 'Warps the target relative to their forward direction. Use negative numbers to go in the opposite direction (e.g. negative forward will cause the target to warp backwards).';
-    
+
     this.data.push(new ListValue('Through Walls', 'walls', [ 'True', 'False' ], 'False')
         .setTooltip('Whether or not to allow the target to teleport through walls')
     );
@@ -2908,9 +2915,9 @@ extend('MechanicWarpLoc', 'Component');
 function MechanicWarpLoc()
 {
     this.super('Warp Location', Type.MECHANIC, false);
-    
+
     this.description = 'Warps the target to a specified location.';
-    
+
     this.data.push(new StringValue('World (or "current")', 'world', 'current')
         .setTooltip('The name of the world that the location is in')
     );
@@ -2935,9 +2942,9 @@ extend('MechanicWarpRandom', 'Component');
 function MechanicWarpRandom()
 {
     this.super('Warp Random', Type.MECHANIC, false);
-    
+
     this.description = 'Warps the target in a random direction the given distance.';
-    
+
     this.data.push(new ListValue('Only Horizontal', 'horizontal', [ 'True', 'False' ], 'True')
         .setTooltip('Whether or not to limit the random position to the horizontal plane')
     );
@@ -2953,7 +2960,7 @@ extend('MechanicWarpSwap', 'Component');
 function MechanicWarpSwap()
 {
     this.super('Warp Swap', Type.MECHANIC, false);
-    
+
     this.description = 'Switches the location of the caster and the target. If multiple targets are provided, this takes the first one.';
 }
 
@@ -2961,21 +2968,21 @@ extend('MechanicWarpTarget', 'Component');
 function MechanicWarpTarget()
 {
     this.super('Warp Target', Type.MECHANIC, false);
-    
+
     this.description = 'Warps either the target or the caster to the other. This does nothing when the target is the caster.';
-    
+
     this.data.push(new ListValue('Type', 'type', [ 'Caster to Target', 'Target to Caster' ], 'Caster to Target')
         .setTooltip('The direction to warp the involved targets')
     );
 }
 
 extend('MechanicWarpValue', 'Component');
-function MechanicWarpValue() 
+function MechanicWarpValue()
 {
     this.super('Warp Value', Type.MECHANIC, false);
-    
+
     this.description = 'Warps all targets to a location remembered using the Value Location mechanic.';
-    
+
     this.data.push(new StringValue('Key', 'key', 'location')
         .setTooltip('The unique key the location is stored under. This should be the same key used in the Value Location mechanic.')
     );
@@ -2985,9 +2992,9 @@ extend('MechanicWolf', 'Component');
 function MechanicWolf()
 {
     this.super('Wolf', Type.MECHANIC, true);
-    
+
     this.description = 'Summons a wolf on each target for a duration. Child components will start off targeting the wolf so you can add effects to it. You can also give it its own skillset, though Cast triggers will not occur.';
-    
+
     this.data.push(new ListValue('Collar Color', 'color', getDyes(), 'Black')
         .setTooltip('The color of the collar that the wolf should wear')
     );
@@ -3023,7 +3030,7 @@ var activeComponent = undefined;
  * @param {Component} component - the component to add to
  */
 function addItemOptions(component) {
-    
+
     component.data.push(new ListValue('Check Material', 'check-mat', [ 'True', 'False' ], 'True')
         .setTooltip('Whether or not the item needs to be a certain type')
     );
@@ -3031,7 +3038,7 @@ function addItemOptions(component) {
         .requireValue('check-mat', [ 'True' ])
         .setTooltip('The type the item needs to be')
     );
-    
+
     component.data.push(new ListValue('Check Data', 'check-data', [ 'True', 'False' ], 'False')
         .setTooltip('Whether or not the item needs to have a certain data value')
     );
@@ -3039,7 +3046,7 @@ function addItemOptions(component) {
         .requireValue('check-data', [ 'True' ])
         .setTooltip('The data value the item must have')
     );
-    
+
     component.data.push(new ListValue('Check Lore', 'check-lore', [ 'True', 'False' ], 'False')
         .setTooltip('Whether or not the item requires a bit of text in its lore')
     );
@@ -3047,7 +3054,7 @@ function addItemOptions(component) {
         .requireValue('check-lore', [ 'True' ])
         .setTooltip('The text the item requires in its lore')
     );
-    
+
     component.data.push(new ListValue('Check Name', 'check-name', [ 'True', 'False' ], 'False')
         .setTooltip('Whether or not the item needs to have a bit of text in its display name')
     );
@@ -3055,14 +3062,14 @@ function addItemOptions(component) {
         .requireValue('check-name', [ 'True' ])
         .setTooltip('The text the item requires in its display name')
     );
-    
+
     component.data.push(new ListValue('Regex', 'regex', [ 'True', 'False' ], 'False')
         .setTooltip('Whether or not the name and lore checks are regex strings. If you do not know what regex is, leave this option alone.')
     );
 }
 
 function addProjectileOptions(component) {
-    
+
     // General data
     component.data.push(new ListValue("Group", "group", ["Ally", "Enemy"], "Enemy")
         .setTooltip('The alignment of targets to hit')
@@ -3076,7 +3083,7 @@ function addProjectileOptions(component) {
     component.data.push(new AttributeValue('Velocity', 'velocity', 3, 0)
         .setTooltip('How fast the projectile is launched. A negative value fires it in the opposite direction.')
     );
-    
+
     // Cone values
     component.data.push(new AttributeValue('Angle', 'angle', 30, 0)
         .requireValue('spread', [ 'Cone', 'Horizontal Cone' ])
@@ -3086,7 +3093,7 @@ function addProjectileOptions(component) {
         .requireValue('spread', [ 'Cone', 'Horizontal Cone' ])
         .setTooltip('The height from the ground to start the projectile')
     );
-    
+
     // Rain values
     component.data.push(new AttributeValue('Height', 'height', 8, 0)
         .requireValue('spread', [ 'Rain' ])
@@ -3096,7 +3103,7 @@ function addProjectileOptions(component) {
         .requireValue('spread', [ 'Rain' ])
         .setTooltip('The radius of the rain emission area in blocks')
     );
-    
+
     // Offsets
     component.data.push(new AttributeValue('Forward Offset', 'forward', 0, 0)
         .setTooltip('How far forward in front of the target the projectile should fire from in blocks. A negative value will put it behind.')
@@ -3118,14 +3125,14 @@ function addParticleOptions(component) {
     component.data.push(new ListValue('Particle', 'particle', getParticles, 'Barrier')
         .setTooltip('The type of particle to display. Particle effects that show the DX, DY, and DZ options are not compatible with Cauldron')
     );
-    
+
     component.data.push(new ListValue('Material', 'material', getMaterials, 'Dirt').requireValue('particle', [ 'Item crack', 'Block crack', 'Block dust', 'Falling dust', 'Block Crack', 'Item Crack' ])
         .setTooltip('The material to use for the particles')
     );
     component.data.push(new IntValue('Data', 'type', 0).requireValue('particle', [ 'Item crack', 'Item Crack' ])
         .setTooltip('The material data value to se for the particles. For 1.14+ determines the CustomModelData of the item')
     );
-    
+
     component.data.push(new ListValue('Arrangement', 'arrangement', [ 'Circle', 'Hemisphere', 'Sphere' ], 'Circle')
         .setTooltip('The arrangement to use for the particles. Circle is a 2D circle, Hemisphere is half a 3D sphere, and Sphere is a 3D sphere')
     );
@@ -3135,12 +3142,12 @@ function addParticleOptions(component) {
     component.data.push(new AttributeValue('Amount', 'particles', 20, 0)
         .setTooltip('The amount of points that conform the chosen arrangement.')
     );
-    
+
     // Circle arrangement direction
     component.data.push(new ListValue('Circle Direction', 'direction', [ 'XY', 'XZ', 'YZ' ], 'XZ').requireValue('arrangement', [ 'Circle' ])
         .setTooltip('The orientation of the circle. XY and YZ are vertical circles while XZ is a horizontal circle.')
     );
-    
+
     // Bukkit particle data value
     component.data.push(new IntValue('Effect Data', 'data', 0).requireValue('particle', [ 'Smoke', 'Ender Signal', 'Mobspawner Flames', 'Potion Break' ])
         .setTooltip('The data value to use for the particle. The effect changes between particles such as the orientation for smoke particles or the color for potion break')
@@ -3165,19 +3172,19 @@ function addEffectOptions(component, optional)
     if (optional)
     {
         opt = appendOptional;
-        
+
         component.data.push(new ListValue('Use Effect', 'use-effect', [ 'True', 'False' ], 'False')
             .setTooltip('Whether or not to use the premium particle effects.')
         );
     }
-    
+
     component.data.push(opt(new StringValue('Effect Key', 'effect-key', 'default')
         .setTooltip('The key to refer to the effect by. Only one effect of each key can be active at a time.')
     ));
     component.data.push(opt(new AttributeValue('Duration', 'duration', 1, 0)
         .setTooltip('The time to play the effect for in seconds')
     ));
-    
+
     component.data.push(opt(new StringValue('Shape', '-shape', 'hexagon')
         .setTooltip('Key of a formula for deciding where particles are played each iteration. View "effects.yml" for a list of defined formulas and their keys.')
     ));
@@ -3202,7 +3209,7 @@ function addEffectOptions(component, optional)
     component.data.push(opt(new IntValue('View Range', '-view-range', 25)
         .setTooltip('How far away the effect can be seen from.')
     ));
-    
+
     component.data.push(opt(new ListValue('Particle', '-particle-type', getParticles, 'Barrier')
         .setTooltip('The type of particle to use.')
     ));
