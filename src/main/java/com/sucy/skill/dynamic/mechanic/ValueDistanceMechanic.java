@@ -27,10 +27,11 @@ public class ValueDistanceMechanic extends MechanicComponent
      * @param level   level of the skill
      * @param targets targets to apply to
      *
+     * @param force
      * @return true if applied to something, false otherwise
      */
     @Override
-    public boolean execute(final LivingEntity caster, final int level, final List<LivingEntity> targets)
+    public boolean execute(final LivingEntity caster, final int level, final List<LivingEntity> targets, boolean force)
     {
         if (!settings.has(KEY) || !(caster instanceof Player))
         {

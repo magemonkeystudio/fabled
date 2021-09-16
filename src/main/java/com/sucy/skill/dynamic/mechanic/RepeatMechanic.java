@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.dynamic.mechanic.RepeatMechanic
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -53,18 +53,21 @@ public class RepeatMechanic extends MechanicComponent {
      * @param level   level of the skill
      * @param targets targets to apply to
      *
+     * @param force
      * @return true if applied to something, false otherwise
      */
     @Override
-    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets) {
+    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (targets.size() > 0) {
             final int count = (int) parseValues(caster, REPETITIONS, level, 3.0);
-            if (count <= 0) { return false; }
+            if (count <= 0) {
+                return false;
+            }
 
-            final int delay = (int) (settings.getDouble(DELAY, 0.0) * 20);
-            final int period = (int) (settings.getDouble(PERIOD, 1.0) * 20);
-            final boolean stopOnFail = settings.getBool(STOP_ON_FAIL, false);
-            final RepeatTask task = new RepeatTask(caster, targets, count, delay, period, stopOnFail);
+            final int        delay      = (int) (settings.getDouble(DELAY, 0.0) * 20);
+            final int        period     = (int) (settings.getDouble(PERIOD, 1.0) * 20);
+            final boolean    stopOnFail = settings.getBool(STOP_ON_FAIL, false);
+            final RepeatTask task       = new RepeatTask(caster, targets, count, delay, period, stopOnFail, force);
             tasks.computeIfAbsent(caster.getEntityId(), ArrayList::new).add(task);
 
             return true;
@@ -89,6 +92,7 @@ public class RepeatMechanic extends MechanicComponent {
         private final List<LivingEntity> targets;
         private final LivingEntity       caster;
         private final boolean            stopOnFail;
+        private final boolean            force;
 
         private int count;
 
@@ -98,11 +102,13 @@ public class RepeatMechanic extends MechanicComponent {
                 int count,
                 int delay,
                 int period,
-                boolean stopOnFail) {
+                boolean stopOnFail,
+                boolean force) {
             this.targets = new ArrayList<>(targets);
             this.caster = caster;
             this.count = count;
             this.stopOnFail = stopOnFail;
+            this.force = force;
 
             SkillAPI.schedule(this, delay, period);
         }
@@ -119,16 +125,18 @@ public class RepeatMechanic extends MechanicComponent {
         @Override
         public void run() {
             for (int i = 0; i < targets.size(); i++) {
-                if (targets.get(i).isDead() || !targets.get(i).isValid()) { targets.remove(i); }
+                if (targets.get(i).isDead() || !targets.get(i).isValid()) {
+                    targets.remove(i);
+                }
             }
 
-            if (!skill.isActive(caster) || targets.size() == 0) {
+            if ((!skill.isActive(caster) && !force) || targets.size() == 0) {
                 cancel();
                 return;
             }
 
-            final int level = skill.getActiveLevel(caster);
-            boolean success = executeChildren(caster, level, targets);
+            final int level   = skill.getActiveLevel(caster);
+            boolean   success = executeChildren(caster, level, targets, force);
 
             if (--count <= 0 || (!success && stopOnFail)) {
                 cancel();

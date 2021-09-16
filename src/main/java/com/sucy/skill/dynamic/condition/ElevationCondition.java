@@ -51,10 +51,11 @@ public class ElevationCondition extends ConditionComponent {
      * @param level   level of the skill
      * @param targets targets to apply to
      *
+     * @param force
      * @return true if applied to something, false otherwise
      */
     @Override
-    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets) {
+    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         String type = settings.getString(TYPE).toLowerCase();
         double min = parseValues(caster, MIN, level, 0);
         double max = parseValues(caster, MAX, level, 255);
@@ -71,7 +72,7 @@ public class ElevationCondition extends ConditionComponent {
                 list.add(target);
             }
         }
-        return list.size() > 0 && executeChildren(caster, level, list);
+        return list.size() > 0 && executeChildren(caster, level, list, force);
     }
 
     @Override

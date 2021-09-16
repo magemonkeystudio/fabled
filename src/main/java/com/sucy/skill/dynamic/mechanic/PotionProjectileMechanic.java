@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.dynamic.mechanic.PotionProjectileMechanic
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,9 +26,9 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
-import mc.promcteam.engine.mccore.util.VersionManager;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.dynamic.TempEntity;
+import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -45,15 +45,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.sucy.skill.listener.MechanicListener.POTION_PROJECTILE;
-import static com.sucy.skill.listener.MechanicListener.SKILL_CASTER;
-import static com.sucy.skill.listener.MechanicListener.SKILL_LEVEL;
+import static com.sucy.skill.listener.MechanicListener.*;
 
 /**
  * Heals each target
  */
-public class PotionProjectileMechanic extends MechanicComponent
-{
+public class PotionProjectileMechanic extends MechanicComponent {
     private static final String POTION = "type";
     private static final String ALLY   = "group";
     private static final String LINGER = "linger";
@@ -70,44 +67,37 @@ public class PotionProjectileMechanic extends MechanicComponent
      * @param level   level of the skill
      * @param targets targets to apply to
      *
+     * @param force
      * @return true if applied to something, false otherwise
      */
     @Override
-    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets)
-    {
+    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         // Get common values
-        String potion = settings.getString(POTION, "slowness").toUpperCase().replace(" ", "_");
-        boolean linger = settings.getString(LINGER, "false").toLowerCase().equals("true") && VersionManager.isVersionAtLeast(VersionManager.V1_9_0);
+        String     potion = settings.getString(POTION, "slowness").toUpperCase().replace(" ", "_");
+        boolean    linger = settings.getString(LINGER, "false").equalsIgnoreCase("true") && VersionManager.isVersionAtLeast(VersionManager.V1_9_0);
         PotionType type;
-        try
-        {
+        try {
             type = PotionType.valueOf(potion);
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             return false;
         }
 
-        Potion p = new Potion(type, 1);
+        Potion    p = new Potion(type, 1);
         ItemStack item;
-        try
-        {
+        try {
             item = new ItemStack(Material.valueOf(linger ? "LINGERING_POTION" : "SPLASH_POTION"));
             Field meta = ItemStack.class.getDeclaredField("meta");
             meta.setAccessible(true);
             PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
             potionMeta.setDisplayName("lol");
             meta.set(item, potionMeta);
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             item = new ItemStack(Material.POTION);
         }
         p.apply(item);
 
         // Fire from each target
-        for (LivingEntity target : targets)
-        {
+        for (LivingEntity target : targets) {
             ThrownPotion thrown = target.launchProjectile(linger ? LingeringPotion.class : ThrownPotion.class);
             SkillAPI.setMeta(thrown, SKILL_LEVEL, level);
             SkillAPI.setMeta(thrown, SKILL_CASTER, caster);
@@ -124,28 +114,24 @@ public class PotionProjectileMechanic extends MechanicComponent
      * @param entity potion effect
      * @param hit    the entity hit by the projectile, if any
      */
-    public void callback(Entity entity, Collection<LivingEntity> hit)
-    {
+    public void callback(Entity entity, Collection<LivingEntity> hit) {
         ArrayList<LivingEntity> targets = new ArrayList<LivingEntity>(hit);
-        String group = settings.getString(ALLY, "enemy").toLowerCase();
-        boolean both = group.equals("both");
-        boolean ally = group.equals("ally");
-        LivingEntity caster = (LivingEntity) SkillAPI.getMeta(entity, SKILL_CASTER);
-        int level = SkillAPI.getMetaInt(entity, SKILL_LEVEL);
-        Location loc = entity.getLocation();
-        for (int i = 0; i < targets.size(); i++)
-        {
-            if (!both && SkillAPI.getSettings().canAttack(caster, targets.get(i)) == ally)
-            {
+        String                  group   = settings.getString(ALLY, "enemy").toLowerCase();
+        boolean                 both    = group.equals("both");
+        boolean                 ally    = group.equals("ally");
+        LivingEntity            caster  = (LivingEntity) SkillAPI.getMeta(entity, SKILL_CASTER);
+        int                     level   = SkillAPI.getMetaInt(entity, SKILL_LEVEL);
+        Location                loc     = entity.getLocation();
+        for (int i = 0; i < targets.size(); i++) {
+            if (!both && SkillAPI.getSettings().canAttack(caster, targets.get(i)) == ally) {
                 targets.remove(i);
                 i--;
             }
         }
-        if (targets.size() == 0)
-        {
+        if (targets.size() == 0) {
             LivingEntity locTarget = new TempEntity(loc);
             targets.add(locTarget);
         }
-        executeChildren(caster, level, targets);
+        executeChildren(caster, level, targets, skill.isForced(caster));
     }
 }

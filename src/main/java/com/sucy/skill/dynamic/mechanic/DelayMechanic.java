@@ -50,17 +50,18 @@ public class DelayMechanic extends MechanicComponent {
      * @param level   level of the skill
      * @param targets targets to apply to
      *
+     * @param force
      * @return true if applied to something, false otherwise
      */
     @Override
-    public boolean execute(final LivingEntity caster, final int level, final List<LivingEntity> targets) {
+    public boolean execute(final LivingEntity caster, final int level, final List<LivingEntity> targets, boolean force) {
         if (targets.size() == 0) {
             return false;
         }
         double seconds = parseValues(caster, SECONDS, level, 2.0);
         Bukkit.getScheduler().runTaskLater(
                 SkillAPI.inst(),
-                () -> executeChildren(caster, level, targets),
+                () -> executeChildren(caster, level, targets, force),
                 (long) (seconds * 20)
         );
         return true;

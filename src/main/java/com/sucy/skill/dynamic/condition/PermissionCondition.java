@@ -39,8 +39,8 @@ public class PermissionCondition extends ConditionComponent {
     }
 
     @Override
-    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets) {
-        return test(caster, level, null) && executeChildren(caster, level, targets);
+    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
+        return test(caster, level, null) && executeChildren(caster, level, targets, force);
     }
 
     @Override

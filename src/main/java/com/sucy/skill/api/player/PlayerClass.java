@@ -54,8 +54,8 @@ import org.bukkit.entity.Player;
  * about the class, you should use the RPGClass class.</p>
  */
 public class PlayerClass {
-    private PlayerData player;
-    private RPGClass classData;
+    private final PlayerData player;
+    private       RPGClass   classData;
     private int level;
     private int points;
     private double exp;

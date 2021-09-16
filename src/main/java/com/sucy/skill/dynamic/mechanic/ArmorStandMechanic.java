@@ -38,7 +38,7 @@ public class ArmorStandMechanic extends MechanicComponent {
     public String getKey() { return "armor stand"; }
 
     @Override
-    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets) {
+    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         String key = settings.getString(KEY, skill.getName());
         int duration = (int) (20 * parseValues(caster, DURATION, level, 5));
         String name = settings.getString(NAME, "Armor Stand");
@@ -88,7 +88,7 @@ public class ArmorStandMechanic extends MechanicComponent {
             }
             ArmorStandManager.register(instance, target, key);
         }
-        executeChildren(caster, level, armorStands);
+        executeChildren(caster, level, armorStands, force);
         new RemoveTask(armorStands, duration);
         return targets.size() > 0;
     }

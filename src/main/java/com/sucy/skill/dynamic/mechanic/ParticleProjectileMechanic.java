@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.dynamic.mechanic.ParticleProjectileMechanic
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,11 +34,7 @@ import com.sucy.skill.api.projectile.CustomProjectile;
 import com.sucy.skill.api.projectile.ParticleProjectile;
 import com.sucy.skill.api.projectile.ProjectileCallback;
 import com.sucy.skill.api.util.ParticleHelper;
-import com.sucy.skill.cast.CircleIndicator;
-import com.sucy.skill.cast.CylinderIndicator;
-import com.sucy.skill.cast.IIndicator;
-import com.sucy.skill.cast.IndicatorType;
-import com.sucy.skill.cast.ProjectileIndicator;
+import com.sucy.skill.cast.*;
 import com.sucy.skill.dynamic.TempEntity;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
@@ -72,17 +68,17 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
     /**
      * Creates the list of indicators for the skill
      *
-     * @param list   list to store indicators in
-     * @param caster caster reference
+     * @param list    list to store indicators in
+     * @param caster  caster reference
      * @param targets location to base location on
-     * @param level  the level of the skill to create for
+     * @param level   the level of the skill to create for
      */
     @Override
     public void makeIndicators(List<IIndicator> list, Player caster, List<LivingEntity> targets, int level) {
         targets.forEach(target -> {
             // Get common values
-            int amount = (int) parseValues(caster, AMOUNT, level, 1.0);
-            double speed = parseValues(caster, "velocity", level, 1);
+            int    amount = (int) parseValues(caster, AMOUNT, level, 1.0);
+            double speed  = parseValues(caster, "velocity", level, 1);
             String spread = settings.getString(SPREAD, "cone").toLowerCase();
 
             // Apply the spread type
@@ -94,7 +90,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                     indicator.moveTo(target.getLocation().add(0, 0.1, 0));
                     list.add(indicator);
                 } else {
-                    double height = parseValues(caster, HEIGHT, level, 8.0);
+                    double     height    = parseValues(caster, HEIGHT, level, 8.0);
                     IIndicator indicator = new CylinderIndicator(radius, height);
                     indicator.moveTo(target.getLocation());
                     list.add(indicator);
@@ -105,9 +101,9 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                     dir.setY(0);
                     dir.normalize();
                 }
-                double angle = parseValues(caster, ANGLE, level, 30.0);
-                ArrayList<Vector> dirs = CustomProjectile.calcSpread(dir, angle, amount);
-                Location loc = caster.getLocation().add(0, caster.getEyeHeight(), 0);
+                double            angle = parseValues(caster, ANGLE, level, 30.0);
+                ArrayList<Vector> dirs  = CustomProjectile.calcSpread(dir, angle, amount);
+                Location          loc   = caster.getLocation().add(0, caster.getEyeHeight(), 0);
                 for (Vector d : dirs) {
                     ProjectileIndicator indicator = new ProjectileIndicator(speed, 0);
                     indicator.setDirection(d);
@@ -129,15 +125,15 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
+     * @param force
      * @return true if applied to something, false otherwise
      */
     @Override
-    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets) {
+    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         // Get common values
-        int amount = (int) parseValues(caster, AMOUNT, level, 1.0);
-        String spread = settings.getString(SPREAD, "cone").toLowerCase();
-        boolean ally = settings.getString(ALLY, "enemy").toLowerCase().equals("ally");
+        int     amount = (int) parseValues(caster, AMOUNT, level, 1.0);
+        String  spread = settings.getString(SPREAD, "cone").toLowerCase();
+        boolean ally   = settings.getString(ALLY, "enemy").equalsIgnoreCase("ally");
         settings.set("level", level);
 
         final Settings copy = new Settings(settings);
@@ -158,12 +154,12 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
             } else {
                 Vector dir = target.getLocation().getDirection();
 
-                double right = parseValues(caster, RIGHT, level, 0);
-                double upward = parseValues(caster, UPWARD, level, 0);
+                double right   = parseValues(caster, RIGHT, level, 0);
+                double upward  = parseValues(caster, UPWARD, level, 0);
                 double forward = parseValues(caster, FORWARD, level, 0);
 
                 Vector looking = dir.clone().setY(0).normalize();
-                Vector normal = looking.clone().crossProduct(UP);
+                Vector normal  = looking.clone().crossProduct(UP);
                 looking.multiply(forward).add(normal.multiply(right));
 
                 if (spread.equals("horizontal cone")) {
@@ -218,6 +214,6 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
         }
         ArrayList<LivingEntity> targets = new ArrayList<LivingEntity>();
         targets.add(hit);
-        executeChildren(projectile.getShooter(), SkillAPI.getMetaInt(projectile, LEVEL), targets);
+        executeChildren(projectile.getShooter(), SkillAPI.getMetaInt(projectile, LEVEL), targets, skill.isForced(projectile.getShooter()));
     }
 }

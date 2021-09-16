@@ -107,7 +107,8 @@ public class TriggerHandler implements Listener {
 
             if ((cd || mana) && !data.check(skill, cd, mana)) { return false; }
 
-            if (component.trigger(user, target, level)) {
+            //TODO Make sure that FALSE is appropriate here.
+            if (component.trigger(user, target, level, false)) {
                 if (cd) { skill.startCooldown(); }
                 if (mana) { data.useMana(skill.getManaCost(), ManaCost.SKILL_CAST); }
 
@@ -116,7 +117,7 @@ public class TriggerHandler implements Listener {
                 return false;
             }
         } else {
-            return component.trigger(user, target, level);
+            return component.trigger(user, target, level, false);
         }
     }
 }

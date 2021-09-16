@@ -53,17 +53,18 @@ import static com.sucy.skill.dynamic.ComponentRegistry.getTrigger;
  * A skill implementation for the Dynamic system
  */
 public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, Listener {
-    private static final HashMap<Integer, HashMap<String, Object>> castData = new HashMap<>();
-    private final List<TriggerHandler> triggers = new ArrayList<>();
-    private final Map<String, EffectComponent> attribKeys = new HashMap<>();
-    private final Map<Integer, Integer> active = new HashMap<>();
-    private TriggerComponent castTrigger;
-    private TriggerComponent initializeTrigger;
-    private TriggerComponent cleanupTrigger;
+    private static final HashMap<Integer, HashMap<String, Object>> castData   = new HashMap<>();
+    private final        List<TriggerHandler>                      triggers   = new ArrayList<>();
+    private final        Map<String, EffectComponent>              attribKeys = new HashMap<>();
+    private final        Map<Integer, Integer>                     active     = new HashMap<>();
+    private final        List<Integer>                             forced     = new ArrayList<>();
+    private              TriggerComponent                          castTrigger;
+    private              TriggerComponent                          initializeTrigger;
+    private              TriggerComponent                          cleanupTrigger;
 
-    private boolean cancel = false;
-    private double multiplier = 1;
-    private double bonus = 0;
+    private boolean cancel     = false;
+    private double  multiplier = 1;
+    private double  bonus      = 0;
 
     /**
      * Initializes a new dynamic skill
@@ -78,7 +79,6 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
      * Retrieves the cast data for the caster
      *
      * @param caster caster to get the data for
-     *
      * @return cast data for the caster
      */
     public static HashMap<String, Object> getCastData(final LivingEntity caster) {
@@ -116,7 +116,6 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
      * Checks whether or not the caster's passives are currently active
      *
      * @param caster caster to check for
-     *
      * @return true if active, false otherwise
      */
     public boolean isActive(final LivingEntity caster) {
@@ -127,11 +126,10 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
      * Retrieves the active level of the caster for the skill
      *
      * @param caster caster of the skill
-     *
      * @return active level of the skill
      */
     public int getActiveLevel(final LivingEntity caster) {
-        return active.get(caster.getEntityId());
+        return active.containsKey(caster.getEntityId()) ? active.get(caster.getEntityId()) : 0;
     }
 
     /**
@@ -229,6 +227,7 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
     @Override
     public void stopEffects(final LivingEntity user, final int level) {
         active.remove(user.getEntityId());
+        if (forced.contains(user.getEntityId())) forced.remove(user.getEntityId());
         for (final TriggerHandler triggerHandler : triggers) {
             triggerHandler.cleanup(user);
         }
@@ -242,17 +241,27 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
         if (component != null) component.cleanUp(user);
     }
 
+    public boolean isForced(LivingEntity user) {
+        return forced.contains(user.getEntityId());
+    }
+
     /**
      * Casts the skill if applicable
      *
      * @param user  user of the skill
      * @param level skill level
-     *
+     * @param force
      * @return true if casted successfully, false if conditions weren't met or no effects are using the cast trigger
      */
     @Override
-    public boolean cast(final LivingEntity user, final int level) {
-        return trigger(user, user, level, castTrigger);
+    public boolean cast(final LivingEntity user, final int level, boolean force) {
+        if (force && !isForced(user)) forced.add(user.getEntityId());
+        return trigger(user, user, level, castTrigger, force);
+    }
+
+    @Override
+    public boolean cast(LivingEntity user, int level) {
+        return cast(user, level, false);
     }
 
     /**
@@ -287,7 +296,6 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
      * path overhead.
      *
      * @param key attribute key
-     *
      * @return formatted attribute name
      */
     @Override
@@ -308,7 +316,6 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
      * @param caster owner of the skill
      * @param key    attribute key
      * @param level  skill level
-     *
      * @return attribute value or 0 if invalid dynamic path
      */
     @Override
@@ -316,7 +323,7 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
         // Dynamic attribute paths use periods
         if (key.contains(".")) {
             final String[] path = key.split("\\.");
-            final String attr = path[1].toLowerCase();
+            final String   attr = path[1].toLowerCase();
             if (attribKeys.containsKey(path[0]) && attribKeys.get(path[0]).settings.has(attr)) {
                 return format(attribKeys.get(path[0]).parseValues(caster, attr, level, 0));
             } else {
@@ -335,7 +342,15 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
             final LivingEntity target,
             final int level,
             final TriggerComponent component) {
-        return component != null && component.trigger(user, target, level);
+        return trigger(user, target, level, component, false);
+    }
+
+    private boolean trigger(
+            final LivingEntity user,
+            final LivingEntity target,
+            final int level,
+            final TriggerComponent component, boolean force) {
+        return component != null && component.trigger(user, target, level, force);
     }
 
     /**
