@@ -15,11 +15,21 @@ public class ArmorStandPoseMechanic extends MechanicComponent {
     private static final String LEFT_LEG = "left-leg";
     private static final String RIGHT_LEG = "right-leg";
 
+    private static EulerAngle eulerAngle(String string) {
+        if (string.equals("")) return null;
+        Double[] doubles;
+        try {
+            doubles = Arrays.stream(string.split(",",3)).map(Double::valueOf).toArray(Double[]::new);
+        } catch (NumberFormatException e) { return null; }
+        if (doubles.length != 3) return null;
+        return new EulerAngle(doubles[0], doubles[1], doubles[2]);
+    }
+
     @Override
     public String getKey() { return "armor stand pose"; }
 
     @Override
-    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets) {
+    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         EulerAngle head = eulerAngle(settings.getString(HEAD, ""));
         EulerAngle body = eulerAngle(settings.getString(BODY, ""));
         EulerAngle leftArm = eulerAngle(settings.getString(LEFT_ARM, ""));
@@ -38,15 +48,5 @@ public class ArmorStandPoseMechanic extends MechanicComponent {
             if (rightLeg != null) armorStand.setRightLegPose(rightLeg);
         }
         return targets.size() > 0;
-    }
-
-    private static EulerAngle eulerAngle(String string) {
-        if (string.equals("")) return null;
-        Double[] doubles;
-        try {
-            doubles = Arrays.stream(string.split(",",3)).map(Double::valueOf).toArray(Double[]::new);
-        } catch (NumberFormatException e) { return null; }
-        if (doubles.length != 3) return null;
-        return new EulerAngle(doubles[0], doubles[1], doubles[2]);
     }
 }

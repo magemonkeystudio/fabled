@@ -92,14 +92,13 @@ public abstract class RPGClass implements IconHolder {
      * in order to be professed into
      */
     protected boolean needsPermission;
-    private InventoryTree skillTree;
-
     ///////////////////////////////////////////////////////
     //                                                   //
     //                 Accessor Methods                  //
     //                                                   //
     ///////////////////////////////////////////////////////
-    private String actionBar;
+    protected String actionBar = "";
+    private InventoryTree skillTree;
     private String parent;
     private ItemStack icon;
     private TreeType tree;
@@ -332,6 +331,10 @@ public abstract class RPGClass implements IconHolder {
      */
     public String getActionBarText() {
         return actionBar;
+    }
+
+    public void setActionBarText(String text) {
+        actionBar = text;
     }
 
     public boolean hasActionBarText() {

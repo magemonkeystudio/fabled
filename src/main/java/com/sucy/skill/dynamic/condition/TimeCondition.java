@@ -42,13 +42,13 @@ public class TimeCondition extends ConditionComponent {
     }
 
     @Override
-    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets) {
-        return test(caster, level, null) && executeChildren(caster, level, targets);
+    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
+        return test(caster, level, null) && executeChildren(caster, level, targets, force);
     }
 
     @Override
     boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        final boolean night = settings.getString(TIME).toLowerCase().equals("night");
+        final boolean night = settings.getString(TIME).equalsIgnoreCase("night");
         return night == (caster.getWorld().getTime() >= 12300 && caster.getWorld().getTime() <= 23850);
     }
 }

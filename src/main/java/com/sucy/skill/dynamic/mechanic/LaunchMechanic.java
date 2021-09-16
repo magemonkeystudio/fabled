@@ -35,13 +35,11 @@ import java.util.List;
  * Launches the target in a given direction relative to their forward direction
  */
 public class LaunchMechanic extends MechanicComponent {
-    private Vector up = new Vector(0, 1, 0);
-
     private static final String FORWARD = "forward";
     private static final String UPWARD  = "upward";
     private static final String RIGHT   = "right";
-
     private static final String RELATIVE = "relative";
+    private Vector up = new Vector(0, 1, 0);
 
     @Override
     public String getKey() {
@@ -55,10 +53,11 @@ public class LaunchMechanic extends MechanicComponent {
      * @param level   level of the skill
      * @param targets targets to apply to
      *
+     * @param force
      * @return true if applied to something, false otherwise
      */
     @Override
-    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets) {
+    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (targets.size() == 0) {
             return false;
         }

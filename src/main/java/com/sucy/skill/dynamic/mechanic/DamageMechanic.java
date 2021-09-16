@@ -52,10 +52,11 @@ public class DamageMechanic extends MechanicComponent {
      * @param level   level of the skill
      * @param targets targets to apply to
      *
+     * @param force
      * @return true if applied to something, false otherwise
      */
     @Override
-    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets) {
+    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         String pString = settings.getString(TYPE, "damage").toLowerCase();
         boolean percent = pString.equals("multiplier") || pString.equals("percent");
         boolean missing = pString.equals("percent missing");

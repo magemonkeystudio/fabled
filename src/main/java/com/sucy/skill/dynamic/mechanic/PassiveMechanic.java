@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.dynamic.mechanic.PassiveMechanic
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -52,15 +52,18 @@ public class PassiveMechanic extends MechanicComponent {
      * @param level   level of the skill
      * @param targets targets to apply to
      *
+     * @param force
      * @return true if applied to something, false otherwise
      */
     @Override
-    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets) {
-        if (tasks.containsKey(caster.getEntityId())) { return false; }
+    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
+        if (tasks.containsKey(caster.getEntityId())) {
+            return false;
+        }
 
         if (targets.size() > 0) {
-            final int period = (int) (parseValues(caster, PERIOD, level, 1.0) * 20);
-            final PassiveTask task = new PassiveTask(caster, level, targets, period);
+            final int         period = (int) (parseValues(caster, PERIOD, level, 1.0) * 20);
+            final PassiveTask task   = new PassiveTask(caster, level, targets, period);
             tasks.put(caster.getEntityId(), task);
 
             return true;
@@ -82,9 +85,9 @@ public class PassiveMechanic extends MechanicComponent {
     }
 
     private class PassiveTask extends BukkitRunnable {
-        private List<LivingEntity> targets;
-        private LivingEntity       caster;
-        private int                level;
+        private final List<LivingEntity> targets;
+        private final LivingEntity       caster;
+        private       int                level;
 
         PassiveTask(LivingEntity caster, int level, List<LivingEntity> targets, int period) {
             this.targets = new ArrayList<>(targets);
@@ -118,7 +121,7 @@ public class PassiveMechanic extends MechanicComponent {
                 }
             }
             level = skill.getActiveLevel(caster);
-            executeChildren(caster, level, targets);
+            executeChildren(caster, level, targets, skill.isForced(caster));
 
             if (skill.checkCancelled()) {
                 cancel();

@@ -47,36 +47,36 @@ import java.util.Map;
  * A component for dynamic skills which takes care of one effect
  */
 public abstract class EffectComponent {
-    private static final String ICON_KEY = "icon-key";
-    private static final String COUNTS_KEY = "counts";
-    private static final String TYPE = "type";
-    private static final String INDICATOR = "indicator";
-    private static boolean passed;
+    private static final String                     ICON_KEY   = "icon-key";
+    private static final String                     COUNTS_KEY = "counts";
+    private static final String                     TYPE       = "type";
+    private static final String                     INDICATOR  = "indicator";
+    private static       boolean                    passed;
     /**
      * Child components
      */
-    public final ArrayList<EffectComponent> children = new ArrayList<>();
+    public final         ArrayList<EffectComponent> children   = new ArrayList<>();
     /**
      * The settings for the component
      */
-    protected final Settings settings = new Settings();
+    protected final      Settings                   settings   = new Settings();
     /**
      * Whether or not the component has preview effects
      */
-    public boolean hasEffect;
+    public               boolean                    hasEffect;
     /**
      * Parent class of the component
      */
-    protected DynamicSkill skill;
+    protected            DynamicSkill               skill;
     /**
      * Type of indicators to show
      */
-    protected IndicatorType indicatorType;
-    private String instanceKey;
+    protected            IndicatorType              indicatorType;
+    private              String                     instanceKey;
 
     private static String filterSpecialChars(String string) {
-        int i = 0;
-        int j = string.indexOf('&');
+        int           i       = 0;
+        int           j       = string.indexOf('&');
         StringBuilder builder = new StringBuilder();
         while (j >= 0) {
             String key = string.substring(j + 1, j + 3);
@@ -157,11 +157,10 @@ public abstract class EffectComponent {
      * @param key      key of the value to grab
      * @param level    level of the skill
      * @param fallback default value for the attribute
-     *
      * @return the value with attribute modifications if applicable
      */
     protected double parseValues(LivingEntity caster, String key, int level, double fallback) {
-        double base = getNum(caster, key + "-base", fallback);
+        double base  = getNum(caster, key + "-base", fallback);
         double scale = getNum(caster, key + "-scale", 0);
         double value = base + (level - 1) * scale;
 
@@ -184,7 +183,6 @@ public abstract class EffectComponent {
      * @param caster   the caster of the skill
      * @param key      key of the value
      * @param fallback fallback value in case the settings don't have it
-     *
      * @return the settings value or, if not a number, the cast data value
      */
     protected double getNum(LivingEntity caster, String key, double fallback) {
@@ -206,7 +204,7 @@ public abstract class EffectComponent {
         }
 
         try {
-            final int mid = val.indexOf('-', 1);
+            final int    mid = val.indexOf('-', 1);
             final double min = Double.parseDouble(val.substring(0, mid));
             final double max = Double.parseDouble(val.substring(mid + 1));
             return Math.random() * (max - min) + min;
@@ -230,18 +228,18 @@ public abstract class EffectComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to execute on
-     *
+     * @param force
      * @return true if executed, false if conditions not met
      */
-    protected boolean executeChildren(LivingEntity caster, int level, List<LivingEntity> targets) {
+    protected boolean executeChildren(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (targets.isEmpty()) {
             return false;
         }
 
         boolean worked = false;
         for (EffectComponent child : children) {
-            boolean counts = !child.settings.getString(COUNTS_KEY, "true").toLowerCase().equals("false");
-            passed = child.execute(caster, level, targets);
+            boolean counts = !child.settings.getString(COUNTS_KEY, "true").equalsIgnoreCase("false");
+            passed = child.execute(caster, level, targets, force);
             worked = (passed && counts) || worked;
         }
         return worked;
@@ -259,7 +257,6 @@ public abstract class EffectComponent {
      * Gets the skill data for the caster
      *
      * @param caster caster of the skill
-     *
      * @return skill data for the caster or null if not found
      */
     protected PlayerSkill getSkillData(LivingEntity caster) {
@@ -282,8 +279,8 @@ public abstract class EffectComponent {
             return filterSpecialChars(text);
         }
 
-        StringBuilder builder = new StringBuilder();
-        HashMap<String, Object> data = DynamicSkill.getCastData(caster);
+        StringBuilder           builder = new StringBuilder();
+        HashMap<String, Object> data    = DynamicSkill.getCastData(caster);
 
         int k = 0;
         while (i >= 0 && j > i) {
@@ -311,7 +308,7 @@ public abstract class EffectComponent {
                 k = j + 1;
             } else if (key.equals("targetUUID")) {
                 builder.append(text, k, i);
-                builder.append(target.getUniqueId().toString());
+                builder.append(target.getUniqueId());
 
                 k = j + 1;
             }
@@ -322,16 +319,20 @@ public abstract class EffectComponent {
         return filterSpecialChars(builder.toString());
     }
 
+    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets) {
+        return execute(caster, level, targets, false);
+    }
+
     /**
      * Executes the component (to be implemented)
      *
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to execute on
-     *
+     * @param force   whether skill should be forced
      * @return true if executed, false if conditions not met
      */
-    public abstract boolean execute(LivingEntity caster, int level, List<LivingEntity> targets);
+    public abstract boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force);
 
     /**
      * Creates the list of indicators for the skill
@@ -387,9 +388,9 @@ public abstract class EffectComponent {
         DataSection children = config.getSection("children");
         if (children != null) {
             for (String key : children.keys()) {
-                final String typeName = children.getSection(key).getString(TYPE, "missing").toUpperCase();
-                final ComponentType type = ComponentType.valueOf(typeName);
-                final String mkey = key.replaceAll("-.+", "");
+                final String        typeName = children.getSection(key).getString(TYPE, "missing").toUpperCase();
+                final ComponentType type     = ComponentType.valueOf(typeName);
+                final String        mkey     = key.replaceAll("-.+", "");
                 try {
                     final EffectComponent child = ComponentRegistry.getComponent(type, mkey);
                     if (child != null) {

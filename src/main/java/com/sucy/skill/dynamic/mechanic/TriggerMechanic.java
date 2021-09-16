@@ -1,13 +1,13 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import com.google.common.base.Objects;
-import mc.promcteam.engine.mccore.config.parse.DataSection;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.dynamic.ComponentRegistry;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.dynamic.TriggerHandler;
 import com.sucy.skill.dynamic.trigger.Trigger;
 import com.sucy.skill.dynamic.trigger.TriggerComponent;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -57,7 +57,7 @@ public class TriggerMechanic extends MechanicComponent {
 
     @Override
     public boolean execute(
-            final LivingEntity caster, final int level, final List<LivingEntity> targets) {
+            final LivingEntity caster, final int level, final List<LivingEntity> targets, boolean force) {
 
         final int ticks = (int)(20 * parseValues(caster, DURATION, level, 5));
 
@@ -90,6 +90,29 @@ public class TriggerMechanic extends MechanicComponent {
         }
     }
 
+    private static class Context {
+        public final LivingEntity caster;
+        public final int level;
+
+        public Context(final LivingEntity caster, final int level) {
+            this.caster = caster;
+            this.level = level;
+        }
+
+        @Override
+        public boolean equals(final Object other) {
+            if (other == this) return true;
+            if (!(other instanceof Context)) return false;
+            final Context context = (Context) other;
+            return context.caster == caster && context.level == level;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(caster, level);
+        }
+    }
+
     private class StopTask implements Runnable {
 
         private final LivingEntity target;
@@ -115,7 +138,7 @@ public class TriggerMechanic extends MechanicComponent {
         }
 
         @Override
-        public boolean execute(final LivingEntity target, final int level, final List<LivingEntity> targets) {
+        public boolean execute(final LivingEntity target, final int level, final List<LivingEntity> targets, boolean force) {
             if (!CASTER_MAP.containsKey(target.getEntityId())) return false;
 
             final List<Context> contexts;
@@ -129,33 +152,10 @@ public class TriggerMechanic extends MechanicComponent {
 
             for (final Context context : contexts) {
                 DynamicSkill.getCastData(context.caster).put("listen-target", targetList);
-                TriggerMechanic.this.executeChildren(context.caster, context.level, targets);
+                TriggerMechanic.this.executeChildren(context.caster, context.level, targets, force);
             }
 
             return true;
-        }
-    }
-
-    private static class Context {
-        public final LivingEntity caster;
-        public final int level;
-
-        public Context(final LivingEntity caster, final int level) {
-            this.caster = caster;
-            this.level = level;
-        }
-
-        @Override
-        public boolean equals(final Object other) {
-            if (other == this) return true;
-            if (!(other instanceof Context)) return false;
-            final Context context = (Context) other;
-            return context.caster == caster && context.level == level;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hashCode(caster, level);
         }
     }
 }

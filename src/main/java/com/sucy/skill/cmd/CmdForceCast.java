@@ -47,8 +47,8 @@ import java.util.regex.Pattern;
 public class CmdForceCast implements IFunction {
     private static final Pattern INTEGER = Pattern.compile("-?[0-9]+");
 
-    private static final String NOT_PLAYER = "not-player";
-    private static final String WRONG_SKILL = "wrong-skill";
+    private static final String NOT_PLAYER    = "not-player";
+    private static final String WRONG_SKILL   = "wrong-skill";
     private static final String INVALID_SKILL = "invalid-skill";
 
     /**
@@ -71,8 +71,8 @@ public class CmdForceCast implements IFunction {
                 return;
             }
 
-            String name = args[1];
-            int level = 1;
+            String name  = args[1];
+            int    level = 1;
             for (int i = 2; i < args.length; i++) {
                 if (i == args.length - 1 && SkillAPI.getSkill(name) != null && INTEGER.matcher(args[i]).matches()) {
                     level = Integer.parseInt(args[i]);
@@ -88,7 +88,7 @@ public class CmdForceCast implements IFunction {
 
             // Castable skill
             else if (skill instanceof SkillShot) {
-                ((SkillShot) skill).cast(player, level);
+                ((SkillShot) skill).cast(player, level, true);
             }
 
             // Not castable

@@ -20,7 +20,11 @@ public class TriggerComponent extends EffectComponent {
     }
 
     public boolean trigger(final LivingEntity caster, final LivingEntity target, final int level) {
-        return execute(caster, level, Lists.asList(target));
+        return trigger(caster, target, level, false);
+    }
+
+    public boolean trigger(final LivingEntity caster, final LivingEntity target, final int level, boolean force) {
+        return execute(caster, level, Lists.asList(target), force);
     }
 
     @Override
@@ -34,10 +38,10 @@ public class TriggerComponent extends EffectComponent {
     }
 
     @Override
-    public boolean execute(final LivingEntity caster, final int level, final List<LivingEntity> targets) {
+    public boolean execute(final LivingEntity caster, final int level, final List<LivingEntity> targets, boolean force) {
         try {
             running = true;
-            return executeChildren(caster, level, targets);
+            return executeChildren(caster, level, targets, force);
         } finally {
             running = false;
         }
