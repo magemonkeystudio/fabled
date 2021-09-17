@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.skills.Skill
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -69,40 +69,39 @@ import java.util.List;
  * Represents a template for a skill used in the RPG system. This is
  * the class to extend when creating your own custom skills.
  */
-public abstract class Skill implements IconHolder
-{
-    private static final DecimalFormat FORMAT = new DecimalFormat("#########0.0#");
-    private static final String NAME      = "name";
-    private static final String TYPE      = "type";
-    private static final String LAYOUT    = "icon-lore";
-    private static final String MAX       = "max-level";
-    private static final String REQ       = "skill-req";
-    private static final String REQLVL    = "skill-req-lvl";
-    private static final String MSG       = "msg";
-    private static final String PERM      = "needs-permission";
-    private static final String DESC      = "desc";
-    private static final String ATTR      = "attributes";
-    private static final String COMBO     = "combo";
-    private static boolean skillDamage = false;
+public abstract class Skill implements IconHolder {
+    private static final DecimalFormat     FORMAT           = new DecimalFormat("#########0.0#");
+    private static final String            NAME             = "name";
+    private static final String            TYPE             = "type";
+    private static final String            LAYOUT           = "icon-lore";
+    private static final String            MAX              = "max-level";
+    private static final String            REQ              = "skill-req";
+    private static final String            REQLVL           = "skill-req-lvl";
+    private static final String            MSG              = "msg";
+    private static final String            PERM             = "needs-permission";
+    private static final String            DESC             = "desc";
+    private static final String            ATTR             = "attributes";
+    private static final String            COMBO            = "combo";
+    private static       boolean           skillDamage      = false;
     /**
      * The settings for the skill which include configurable stats
      * for your mechanics and the defaults such as mana cost, level
      * requirement, skill point cost, and cooldown.
      */
-    protected final Settings         settings         = new Settings();
-    private final ArrayList<String> description = new ArrayList<>();
-    private final   ReadOnlySettings readOnlySettings = new ReadOnlySettings(settings);
-    private final String    key;
-    private List<String> iconLore;
-    private       ItemStack indicator;
-    private       String    name;
-    private String       type;
-    private String       message;
-    private String       skillReq;
-    private int          maxLevel;
-    private int          skillReqLevel;
-    private boolean      needsPermission;
-    private int          combo;
+    protected final      Settings          settings         = new Settings();
+    private final        ArrayList<String> description      = new ArrayList<>();
+    private final        ReadOnlySettings  readOnlySettings = new ReadOnlySettings(settings);
+    private final        String            key;
+    private              List<String>      iconLore;
+    private              ItemStack         indicator;
+    private              String            name;
+    private              String            type;
+    private              String            message;
+    private              String            skillReq;
+    private              int               maxLevel;
+    private              int               skillReqLevel;
+    private              boolean           needsPermission;
+    private              int               combo;
 
     /**
      * Initializes a new skill that doesn't require any other skill.
@@ -112,8 +111,7 @@ public abstract class Skill implements IconHolder
      * @param indicator indicator to represent the skill
      * @param maxLevel  max level the skill can reach
      */
-    public Skill(String name, String type, Material indicator, int maxLevel)
-    {
+    public Skill(String name, String type, Material indicator, int maxLevel) {
         this(name, type, new ItemStack(indicator), maxLevel, null, 0);
     }
 
@@ -128,8 +126,7 @@ public abstract class Skill implements IconHolder
      * @param skillReq      name of the skill required to raise this one
      * @param skillReqLevel level of the required skill needed
      */
-    public Skill(String name, String type, Material indicator, int maxLevel, String skillReq, int skillReqLevel)
-    {
+    public Skill(String name, String type, Material indicator, int maxLevel, String skillReq, int skillReqLevel) {
         this(name, type, new ItemStack(indicator), maxLevel, skillReq, skillReqLevel);
     }
 
@@ -143,8 +140,7 @@ public abstract class Skill implements IconHolder
      * @param indicator indicator to respresent the skill
      * @param maxLevel  max level the skill can reach
      */
-    public Skill(String name, String type, ItemStack indicator, int maxLevel)
-    {
+    public Skill(String name, String type, ItemStack indicator, int maxLevel) {
         this(name, type, indicator, maxLevel, null, 0);
     }
 
@@ -160,24 +156,19 @@ public abstract class Skill implements IconHolder
      * @param skillReq      name of the skill required to raise this one
      * @param skillReqLevel level of the required skill needed
      */
-    public Skill(String name, String type, ItemStack indicator, int maxLevel, String skillReq, int skillReqLevel)
-    {
-        if (name == null)
-        {
+    public Skill(String name, String type, ItemStack indicator, int maxLevel, String skillReq, int skillReqLevel) {
+        if (name == null) {
             throw new IllegalArgumentException("Skill name cannot be null");
         }
 
         // Default values
-        if (type == null)
-        {
+        if (type == null) {
             type = "Unknown type";
         }
-        if (indicator == null)
-        {
+        if (indicator == null) {
             indicator = new ItemStack(Material.APPLE);
         }
-        if (maxLevel < 1)
-        {
+        if (maxLevel < 1) {
             maxLevel = 1;
         }
 
@@ -201,8 +192,7 @@ public abstract class Skill implements IconHolder
      *
      * @return true if caused by a skill, false otherwise
      */
-    public static boolean isSkillDamage()
-    {
+    public static boolean isSkillDamage() {
         return skillDamage;
     }
 
@@ -212,8 +202,7 @@ public abstract class Skill implements IconHolder
      *
      * @return true if has a combo, false otherwise
      */
-    public boolean hasCombo()
-    {
+    public boolean hasCombo() {
         return combo >= 0;
     }
 
@@ -225,8 +214,7 @@ public abstract class Skill implements IconHolder
      * @deprecated use {@link Skill#canAutoLevel(int)} instead
      */
     @Deprecated
-    public boolean canAutoLevel()
-    {
+    public boolean canAutoLevel() {
         return getCost(0) == 0 && getCost(1) == 0;
     }
 
@@ -246,8 +234,7 @@ public abstract class Skill implements IconHolder
      *
      * @return configuration key for the skill
      */
-    public String getKey()
-    {
+    public String getKey() {
         return key;
     }
 
@@ -256,8 +243,7 @@ public abstract class Skill implements IconHolder
      *
      * @return skill name
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
@@ -266,8 +252,7 @@ public abstract class Skill implements IconHolder
      *
      * @return max skill level
      */
-    public int getMaxLevel()
-    {
+    public int getMaxLevel() {
         return maxLevel;
     }
 
@@ -276,8 +261,7 @@ public abstract class Skill implements IconHolder
      *
      * @return true if has a message, false otherwise
      */
-    public boolean hasMessage()
-    {
+    public boolean hasMessage() {
         return message != null && message.length() > 0;
     }
 
@@ -286,8 +270,7 @@ public abstract class Skill implements IconHolder
      *
      * @return combo ID
      */
-    public int getCombo()
-    {
+    public int getCombo() {
         return combo;
     }
 
@@ -296,8 +279,7 @@ public abstract class Skill implements IconHolder
      *
      * @param combo new combo
      */
-    public void setCombo(int combo)
-    {
+    public void setCombo(int combo) {
         this.combo = combo;
     }
 
@@ -305,8 +287,7 @@ public abstract class Skill implements IconHolder
      * Clears the set combo for the skill.
      * Only the API should call this.
      */
-    public void clearCombo()
-    {
+    public void clearCombo() {
         combo = -1;
     }
 
@@ -315,8 +296,7 @@ public abstract class Skill implements IconHolder
      *
      * @return cast message of the skill
      */
-    public String getMessage()
-    {
+    public String getMessage() {
         return message;
     }
 
@@ -325,8 +305,7 @@ public abstract class Skill implements IconHolder
      *
      * @return true if requires a permission, false otherwise
      */
-    public boolean needsPermission()
-    {
+    public boolean needsPermission() {
         return needsPermission;
     }
 
@@ -335,8 +314,7 @@ public abstract class Skill implements IconHolder
      *
      * @return indicator for the skill
      */
-    public ItemStack getIndicator()
-    {
+    public ItemStack getIndicator() {
         return indicator;
     }
 
@@ -345,8 +323,7 @@ public abstract class Skill implements IconHolder
      *
      * @return descriptive type of the skill
      */
-    public String getType()
-    {
+    public String getType() {
         return type;
     }
 
@@ -355,8 +332,7 @@ public abstract class Skill implements IconHolder
      *
      * @return true if requires another skill, false otherwise
      */
-    public boolean hasSkillReq()
-    {
+    public boolean hasSkillReq() {
         return SkillAPI.getSkill(skillReq) != null && skillReqLevel > 0;
     }
 
@@ -365,8 +341,7 @@ public abstract class Skill implements IconHolder
      *
      * @return required skill
      */
-    public String getSkillReq()
-    {
+    public String getSkillReq() {
         return skillReq;
     }
 
@@ -376,8 +351,7 @@ public abstract class Skill implements IconHolder
      *
      * @return required skill level
      */
-    public int getSkillReqLevel()
-    {
+    public int getSkillReqLevel() {
         return skillReqLevel;
     }
 
@@ -386,8 +360,7 @@ public abstract class Skill implements IconHolder
      *
      * @return description of the skill
      */
-    public List<String> getDescription()
-    {
+    public List<String> getDescription() {
         return description;
     }
 
@@ -395,11 +368,9 @@ public abstract class Skill implements IconHolder
      * Retrieves the level requirement for the skill to reach the next level
      *
      * @param level current level of the skill
-     *
      * @return level requirement for the next level
      */
-    public int getLevelReq(int level)
-    {
+    public int getLevelReq(int level) {
         return (int) settings.getAttr(SkillAttribute.LEVEL, level + 1);
     }
 
@@ -407,11 +378,9 @@ public abstract class Skill implements IconHolder
      * Retrieves the mana cost of the skill
      *
      * @param level current level of the skill
-     *
      * @return mana cost
      */
-    public double getManaCost(int level)
-    {
+    public double getManaCost(int level) {
         return settings.getAttr(SkillAttribute.MANA, level);
     }
 
@@ -419,11 +388,9 @@ public abstract class Skill implements IconHolder
      * Retrieves the cooldown of the skill in seconds
      *
      * @param level current level of the skill
-     *
      * @return cooldown
      */
-    public double getCooldown(int level)
-    {
+    public double getCooldown(int level) {
         return settings.getAttr(SkillAttribute.COOLDOWN, level);
     }
 
@@ -431,11 +398,9 @@ public abstract class Skill implements IconHolder
      * Retrieves the range of the skill in blocks
      *
      * @param level current level of the skill
-     *
      * @return target range
      */
-    public double getRange(int level)
-    {
+    public double getRange(int level) {
         return settings.getAttr(SkillAttribute.RANGE, level);
     }
 
@@ -443,11 +408,9 @@ public abstract class Skill implements IconHolder
      * Retrieves the skill point cost of the skill
      *
      * @param level current level of the skill
-     *
      * @return skill point cost
      */
-    public int getCost(int level)
-    {
+    public int getCost(int level) {
         return (int) settings.getAttr(SkillAttribute.COST, level + 1);
     }
 
@@ -456,8 +419,7 @@ public abstract class Skill implements IconHolder
      *
      * @return settings for the skill in a read-only format
      */
-    public ReadOnlySettings getSettings()
-    {
+    public ReadOnlySettings getSettings() {
         return readOnlySettings;
     }
 
@@ -466,8 +428,7 @@ public abstract class Skill implements IconHolder
      *
      * @return true if can be cast, false otherwise
      */
-    public boolean canCast()
-    {
+    public boolean canCast() {
         return this instanceof SkillShot || this instanceof TargetSkill;
     }
 
@@ -476,10 +437,9 @@ public abstract class Skill implements IconHolder
      *
      * @return GUI tool indicator
      */
-    public ItemStack getToolIndicator()
-    {
+    public ItemStack getToolIndicator() {
         ItemStack item = indicator.clone();
-        ItemMeta meta = item.getItemMeta();
+        ItemMeta  meta = item.getItemMeta();
         meta.setDisplayName(name);
 
         ArrayList<String> lore = new ArrayList<>();
@@ -496,12 +456,10 @@ public abstract class Skill implements IconHolder
      * Fetches the icon for the skill for the player
      *
      * @param data player to get for
-     *
      * @return the skill icon
      */
     @Override
-    public ItemStack getIcon(PlayerData data)
-    {
+    public ItemStack getIcon(PlayerData data) {
         PlayerSkill skill = data.getSkill(name);
         if (skill != null)
             return getIndicator(skill, false);
@@ -550,36 +508,32 @@ public abstract class Skill implements IconHolder
      * the player-specific data.
      *
      * @param skillData player data
-     *
      * @return filtered skill indicator
      */
-    public ItemStack getIndicator(PlayerSkill skillData, boolean brief)
-    {
+    public ItemStack getIndicator(PlayerSkill skillData, boolean brief) {
         Player player = skillData.getPlayerData().getPlayer();
 
         ItemStack item = indicator.clone();
         item.setAmount(Math.max(1, skillData.getLevel()));
-        ItemMeta meta = item.hasItemMeta() ? item.getItemMeta() : Bukkit.getItemFactory().getItemMeta(item.getType());
+        ItemMeta          meta = item.hasItemMeta() ? item.getItemMeta() : Bukkit.getItemFactory().getItemMeta(item.getType());
         ArrayList<String> lore = new ArrayList<String>();
 
-        String MET = SkillAPI.getLanguage().getMessage(SkillNodes.REQUIREMENT_MET, true, FilterType.COLOR).get(0);
+        String MET     = SkillAPI.getLanguage().getMessage(SkillNodes.REQUIREMENT_MET, true, FilterType.COLOR).get(0);
         String NOT_MET = SkillAPI.getLanguage().getMessage(SkillNodes.REQUIREMENT_NOT_MET, true, FilterType.COLOR).get(0);
         MET = MET.substring(0, MET.length() - 2);
         NOT_MET = NOT_MET.substring(0, NOT_MET.length() - 2);
 
-        final String lvlReq = skillData.getLevelReq() <= skillData.getPlayerClass().getLevel() ? MET : NOT_MET;
-        final String costReq = skillData.getCost() <= skillData.getPlayerClass().getPoints() ? MET : NOT_MET;
-        final String spentReq = hasInvestedEnough(skillData.getPlayerData()) ? MET : NOT_MET;
+        final String lvlReq    = skillData.getLevelReq() <= skillData.getPlayerClass().getLevel() ? MET : NOT_MET;
+        final String costReq   = skillData.getCost() <= skillData.getPlayerClass().getPoints() ? MET : NOT_MET;
+        final String spentReq  = hasInvestedEnough(skillData.getPlayerData()) ? MET : NOT_MET;
         final String branchReq = isCompatible(skillData.getPlayerData()) ? MET : NOT_MET;
-        final String skillReq = isCompatible(skillData.getPlayerData()) ? MET : NOT_MET;
+        final String skillReq  = isCompatible(skillData.getPlayerData()) ? MET : NOT_MET;
 
         String attrChanging = SkillAPI.getLanguage().getMessage(SkillNodes.ATTRIBUTE_CHANGING, true, FilterType.COLOR).get(0);
-        String attrStatic = SkillAPI.getLanguage().getMessage(SkillNodes.ATTRIBUTE_NOT_CHANGING, true, FilterType.COLOR).get(0);
+        String attrStatic   = SkillAPI.getLanguage().getMessage(SkillNodes.ATTRIBUTE_NOT_CHANGING, true, FilterType.COLOR).get(0);
 
-        for (String line : iconLore)
-        {
-            try
-            {
+        for (String line : iconLore) {
+            try {
                 // General data
                 line = line.replace("{level}", "" + skillData.getLevel())
                         .replace("{req:lvl}", lvlReq)
@@ -593,50 +547,41 @@ public abstract class Skill implements IconHolder
                         .replace("{type}", type);
 
                 // Attributes
-                while (line.contains("{attr:"))
-                {
-                    int start = line.indexOf("{attr:");
-                    int end = line.indexOf("}", start);
-                    String attr = line.substring(start + 6, end);
+                while (line.contains("{attr:")) {
+                    int    start     = line.indexOf("{attr:");
+                    int    end       = line.indexOf("}", start);
+                    String attr      = line.substring(start + 6, end);
                     Object currValue = getAttr(player, attr, Math.max(1, skillData.getLevel()));
                     Object nextValue = getAttr(player, attr, Math.min(skillData.getLevel() + 1, maxLevel));
-                    if (attr.equals("level") || attr.equals("cost"))
-                    {
-                        nextValue = (int) Math.floor(NumberParser.parseDouble(nextValue.toString().replace(',','.')));
+                    if (attr.equals("level") || attr.equals("cost")) {
+                        nextValue = (int) Math.floor(NumberParser.parseDouble(nextValue.toString().replace(',', '.')));
                         currValue = nextValue;
                     }
 
-                    if (currValue.equals(nextValue) || brief)
-                    {
+                    if (currValue.equals(nextValue) || brief) {
                         line = line.replace("{attr:" + attr + "}", attrStatic.replace("{name}", getAttrName(attr)).replace("{value}", currValue.toString()));
-                    }
-                    else
-                    {
+                    } else {
                         line = line.replace("{attr:" + attr + "}", attrChanging.replace("{name}", getAttrName(attr)).replace("{value}", currValue.toString()).replace("{new}", nextValue.toString()));
                     }
                 }
 
                 // Full description
-                if (line.contains("{desc}"))
-                {
-                    for (String descLine : description)
-                    {
+                if (line.contains("{desc}")) {
+                    for (String descLine : description) {
                         lore.add(line.replace("{desc}", descLine));
                     }
                     continue;
                 }
 
                 // Description segments
-                if (line.contains("{desc:"))
-                {
-                    int start = line.indexOf("{desc:");
-                    int end = line.indexOf("}", start);
-                    String lineInfo = line.substring(start + 6, end);
-                    String[] split = lineInfo.contains("-") ? lineInfo.split("-") : new String[] { lineInfo, lineInfo };
+                if (line.contains("{desc:")) {
+                    int      start    = line.indexOf("{desc:");
+                    int      end      = line.indexOf("}", start);
+                    String   lineInfo = line.substring(start + 6, end);
+                    String[] split    = lineInfo.contains("-") ? lineInfo.split("-") : new String[]{lineInfo, lineInfo};
                     start = Integer.parseInt(split[0]) - 1;
                     end = (split[1].equals("x") ? description.size() : Integer.parseInt(split[1]));
-                    for (int i = start; i < end && i < description.size(); i++)
-                    {
+                    for (int i = start; i < end && i < description.size(); i++) {
                         lore.add(line.replace("{desc:" + lineInfo + "}", description.get(i)));
                     }
                     continue;
@@ -646,18 +591,15 @@ public abstract class Skill implements IconHolder
             }
 
             // Lines with invalid filters are ignored
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Logger.invalid("Skill icon filter for the skill \"" + name + "\" is invalid (Line = \"" + line + "\") - " + ex.getMessage());
             }
         }
 
         // Click string at the bottom
-        if (SkillAPI.getSettings().isCombosEnabled() && canCast())
-        {
+        if (SkillAPI.getSettings().isCombosEnabled() && canCast()) {
             PlayerCombos combos = skillData.getPlayerData().getComboData();
-            if (combos.hasCombo(this))
-            {
+            if (combos.hasCombo(this)) {
                 lore.add("");
                 lore.add(combos.getComboString(this));
             }
@@ -670,8 +612,7 @@ public abstract class Skill implements IconHolder
             lore.add(SkillAPI.getSettings().getBindText().replace("{material}", type));
         }
 
-        if (lore.size() > 0)
-        {
+        if (lore.size() > 0) {
             meta.setDisplayName(lore.remove(0));
         }
 
@@ -684,11 +625,9 @@ public abstract class Skill implements IconHolder
      * Formats an attribute name for applying to the indicator
      *
      * @param key attribute key
-     *
      * @return formatted attribute name
      */
-    protected String getAttrName(String key)
-    {
+    protected String getAttrName(String key) {
         return TextFormatter.format(key);
     }
 
@@ -698,14 +637,11 @@ public abstract class Skill implements IconHolder
      * @param caster owner of the skill
      * @param key    attribute key
      * @param level  skill level
-     *
      * @return attribute value
      */
-    protected Object getAttr(LivingEntity caster, String key, int level)
-    {
+    protected Object getAttr(LivingEntity caster, String key, int level) {
         Object result = settings.getObj(key, level);
-        if (result instanceof Double)
-        {
+        if (result instanceof Double) {
             return format((Double) result);
         }
         return result;
@@ -715,11 +651,9 @@ public abstract class Skill implements IconHolder
      * Formats a double value to prevent excessive decimals
      *
      * @param value double value to format
-     *
      * @return formatted double value
      */
-    protected String format(double value)
-    {
+    protected String format(double value) {
         String result = FORMAT.format(value);
         if (result.endsWith(".0"))
             return result.substring(0, result.length() - 2);
@@ -734,16 +668,12 @@ public abstract class Skill implements IconHolder
      * @param player player to project the message from
      * @param radius radius to include targets of the message
      */
-    public void sendMessage(Player player, double radius)
-    {
-        if (hasMessage())
-        {
+    public void sendMessage(Player player, double radius) {
+        if (hasMessage()) {
             radius *= radius;
             Location l = player.getLocation();
-            for (Player p : player.getWorld().getPlayers())
-            {
-                if (p.getLocation().distanceSquared(l) < radius)
-                {
+            for (Player p : player.getWorld().getPlayers()) {
+                if (p.getLocation().distanceSquared(l) < radius) {
                     p.sendMessage(RPGFilter.SKILL.setReplacement(getName()).apply(Filter.PLAYER.setReplacement(player.getName()).apply(message)));
                 }
             }
@@ -764,9 +694,9 @@ public abstract class Skill implements IconHolder
     /**
      * Applies skill damage to the target, launching the skill damage event
      *
-     * @param target target to receive the damage
-     * @param damage amount of damage to deal
-     * @param source source of the damage (skill caster)
+     * @param target         target to receive the damage
+     * @param damage         amount of damage to deal
+     * @param source         source of the damage (skill caster)
      * @param classification type of damage to deal
      */
     public void damage(LivingEntity target, double damage, LivingEntity source, String classification) {
@@ -776,14 +706,20 @@ public abstract class Skill implements IconHolder
     /**
      * Applies skill damage to the target, launching the skill damage event
      *
-     * @param target target to receive the damage
-     * @param damage amount of damage to deal
-     * @param source source of the damage (skill caster)
+     * @param target         target to receive the damage
+     * @param damage         amount of damage to deal
+     * @param source         source of the damage (skill caster)
      * @param classification type of damage to deal
-     * @param knockback whether the damage should apply knockback
+     * @param knockback      whether the damage should apply knockback
      */
     public void damage(LivingEntity target, double damage, LivingEntity source, String classification, boolean knockback) {
-        if (target instanceof TempEntity) { return; }
+        if (target instanceof TempEntity) {
+            return;
+        }
+
+        // We have to check if the damage event would get cancelled, since we aren't _really_ calling
+        // EntityDamageByEntityEvent unless we use knockback
+        if (!SkillAPI.getSettings().canAttack(source, target)) return;
 
         SkillDamageEvent event = new SkillDamageEvent(this, source, target, damage, classification);
         Bukkit.getPluginManager().callEvent(event);
@@ -793,8 +729,11 @@ public abstract class Skill implements IconHolder
                 if (PluginChecker.isNoCheatActive()) NoCheatHook.exempt(player);
                 skillDamage = true;
                 target.setNoDamageTicks(0);
-                if (knockback) { target.damage(event.getDamage(), source); }
-                else { target.damage(event.getDamage()); }
+                if (knockback) {
+                    target.damage(event.getDamage(), source);
+                } else {
+                    target.damage(event.getDamage());
+                }
                 skillDamage = false;
                 if (PluginChecker.isNoCheatActive()) NoCheatHook.unexempt(player);
             } else {
@@ -807,12 +746,18 @@ public abstract class Skill implements IconHolder
 
                     if (VersionManager.isVersionAtMost(VersionManager.V1_5_2)) {
                         // 1.5.2 and earlier used integer values
-                        if (knockback) { target.damage((int) damage, source); }
-                        else { target.damage((int) damage); }
+                        if (knockback) {
+                            target.damage((int) damage, source);
+                        } else {
+                            target.damage((int) damage);
+                        }
                     } else {
                         // 1.6.2 and beyond use double values
-                        if (knockback) { target.damage(damage, source); }
-                        else { target.damage(damage); }
+                        if (knockback) {
+                            target.damage(damage, source);
+                        } else {
+                            target.damage(damage);
+                        }
                     }
 
                     // Reset damage timer to before the damage was applied
@@ -831,8 +776,7 @@ public abstract class Skill implements IconHolder
      * @param damage amount of damage to deal
      * @param source source of the damage (skill caster)
      */
-    public void trueDamage(LivingEntity target, double damage, LivingEntity source)
-    {
+    public void trueDamage(LivingEntity target, double damage, LivingEntity source) {
         if (target instanceof TempEntity) return;
 
         TrueDamageEvent event = new TrueDamageEvent(this, source, target, damage);
@@ -850,7 +794,8 @@ public abstract class Skill implements IconHolder
      * @param player player to base location on
      * @param level  the level of the skill to create for
      */
-    public void createPreview(List<IIndicator> list, Player player, int level) { }
+    public void createPreview(List<IIndicator> list, Player player, int level) {
+    }
 
     /**
      * Updates the positions of indicators for a skill.
@@ -860,15 +805,15 @@ public abstract class Skill implements IconHolder
      * @param player player to base location on
      * @param level  level of the skill updating for
      */
-    public void updateIndicators(List<IIndicator> list, Player player, int level) { }
+    public void updateIndicators(List<IIndicator> list, Player player, int level) {
+    }
 
     /**
      * Saves the skill data to the configuration, overwriting all previous data
      *
      * @param config config to save to
      */
-    public void save(DataSection config)
-    {
+    public void save(DataSection config) {
         config.set(NAME, name);
         config.set(TYPE, type.replace(ChatColor.COLOR_CHAR, '&'));
         config.set(MAX, maxLevel);
@@ -878,8 +823,7 @@ public abstract class Skill implements IconHolder
         if (combo >= 0 && canCast())
             config.set(COMBO, SkillAPI.getComboManager().getSaveString(combo));
         settings.save(config.createSection(ATTR));
-        if (hasMessage())
-        {
+        if (hasMessage()) {
             config.set(MSG, message.replace(ChatColor.COLOR_CHAR, '&'));
         }
         Data.serializeIcon(indicator, config);
@@ -892,12 +836,10 @@ public abstract class Skill implements IconHolder
      *
      * @param config config to save to
      */
-    public void softSave(DataSection config)
-    {
+    public void softSave(DataSection config) {
 
         boolean neededOnly = config.keys().size() > 0;
-        if (!neededOnly)
-        {
+        if (!neededOnly) {
             save(config);
         }
     }
@@ -907,8 +849,7 @@ public abstract class Skill implements IconHolder
      *
      * @param config config to load from
      */
-    public void load(DataSection config)
-    {
+    public void load(DataSection config) {
         name = config.getString(NAME, name);
         type = TextFormatter.colorString(config.getString(TYPE, name));
         indicator = Data.parseIcon(config);
@@ -920,13 +861,11 @@ public abstract class Skill implements IconHolder
         needsPermission = config.getString(PERM, needsPermission + "").equalsIgnoreCase("true");
         combo = SkillAPI.getComboManager().parseCombo(config.getString(COMBO));
 
-        if (config.isList(DESC))
-        {
+        if (config.isList(DESC)) {
             description.clear();
             description.addAll(config.getList(DESC));
         }
-        if (config.isList(LAYOUT))
-        {
+        if (config.isList(LAYOUT)) {
             iconLore = TextFormatter.colorStringList(config.getList(LAYOUT));
         }
 
