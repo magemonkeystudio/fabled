@@ -478,8 +478,7 @@ public class PlayerSkillBar
                     if (!slots.containsKey(i))
                         slots.put(i, UNASSIGNED);
                 }
-                else if (slots.containsKey(i))
-                    slots.remove(i);
+                else slots.remove(i);
             }
         }
     }

@@ -87,7 +87,7 @@ public class PlayerData {
     private final HashMap<String, ArrayList<PlayerStatModifier>>      statModifiers       = new HashMap<>();
 
     private final DataSection    extraData = new DataSection();
-    private final OfflinePlayer  player;
+    private final UUID           playerUUID;
     private final PlayerSkillBar skillBar;
     private final PlayerCastBars castBars;
     private final PlayerCombos   combos;
@@ -112,7 +112,7 @@ public class PlayerData {
      * @param player player to store the data for
      */
     PlayerData(OfflinePlayer player, boolean init) {
-        this.player = player;
+        this.playerUUID = player.getUniqueId();
         this.skillBar = new PlayerSkillBar(this);
         this.castBars = new PlayerCastBars(this);
         this.combos = new PlayerCombos(this);
@@ -136,7 +136,7 @@ public class PlayerData {
      * @return Bukkit player object of the owner or null if offline
      */
     public Player getPlayer() {
-        return player.getPlayer();
+        return Bukkit.getPlayer(playerUUID);
     }
 
     /**
@@ -145,11 +145,11 @@ public class PlayerData {
      * @return name of the owner
      */
     public String getPlayerName() {
-        return player.getName();
+        return getPlayer().getName();
     }
 
     public UUID getUUID() {
-        return player.getUniqueId();
+        return playerUUID;
     }
 
     /**

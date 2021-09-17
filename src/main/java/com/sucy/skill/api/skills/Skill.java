@@ -92,9 +92,9 @@ public abstract class Skill implements IconHolder
     protected final Settings         settings         = new Settings();
     private final ArrayList<String> description = new ArrayList<>();
     private final   ReadOnlySettings readOnlySettings = new ReadOnlySettings(settings);
+    private final String    key;
     private List<String> iconLore;
     private       ItemStack indicator;
-    private final String    key;
     private       String    name;
     private String       type;
     private String       message;

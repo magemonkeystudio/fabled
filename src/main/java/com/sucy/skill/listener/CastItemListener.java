@@ -54,7 +54,7 @@ import java.util.UUID;
  * Handles the alternate casting option for casting via a cycling slot
  */
 public class CastItemListener extends SkillAPIListener {
-    private static HashMap<UUID, PlayerSkillSlot> data = new HashMap<UUID, PlayerSkillSlot>();
+    private static final HashMap<UUID, PlayerSkillSlot> data = new HashMap<UUID, PlayerSkillSlot>();
 
     private static int slot = SkillAPI.getSettings().getCastSlot();
 
@@ -115,7 +115,7 @@ public class CastItemListener extends SkillAPIListener {
     }
 
     private PlayerSkillSlot get(PlayerData data) {
-        return this.data.get(data.getPlayer().getUniqueId());
+        return CastItemListener.data.get(data.getPlayer().getUniqueId());
     }
 
     /**

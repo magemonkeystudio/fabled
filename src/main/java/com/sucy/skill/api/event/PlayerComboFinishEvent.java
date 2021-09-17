@@ -40,10 +40,10 @@ import org.bukkit.event.HandlerList;
 public class PlayerComboFinishEvent extends Event implements Cancellable
 {
     private static final HandlerList handlers = new HandlerList();
-    private PlayerData player;
-    private boolean cancelled = false;
-    private int    combo;
-    private String skill;
+    private final        PlayerData  player;
+    private              boolean     cancelled = false;
+    private final int     combo;
+    private final String  skill;
 
     /**
      * @param player player performing the combo
@@ -55,6 +55,14 @@ public class PlayerComboFinishEvent extends Event implements Cancellable
         this.player = player;
         this.combo = combo;
         this.skill = skill;
+    }
+
+    /**
+     * @return gets the handlers for the event
+     */
+    public static HandlerList getHandlerList()
+    {
+        return handlers;
     }
 
     /**
@@ -122,14 +130,6 @@ public class PlayerComboFinishEvent extends Event implements Cancellable
      * @return gets the handlers for the event
      */
     public HandlerList getHandlers()
-    {
-        return handlers;
-    }
-
-    /**
-     * @return gets the handlers for the event
-     */
-    public static HandlerList getHandlerList()
     {
         return handlers;
     }
