@@ -39,10 +39,10 @@ import java.util.Map;
 
 public class GUIPage
 {
-    private HashMap<String, Integer> slots  = new HashMap<String, Integer>();
-    private HashMap<Integer, String> lookup = new HashMap<Integer, String>();
+    private final HashMap<String, Integer> slots  = new HashMap<String, Integer>();
+    private final HashMap<Integer, String> lookup = new HashMap<Integer, String>();
 
-    private GUIData parent;
+    private final GUIData parent;
 
     GUIPage(GUIData parent)
     {

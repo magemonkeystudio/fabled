@@ -34,7 +34,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class ScoreboardTask extends BukkitRunnable {
-    private PlayerData data;
+    private final PlayerData data;
 
     /**
      * Prepares the task

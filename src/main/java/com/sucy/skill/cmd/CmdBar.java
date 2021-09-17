@@ -26,11 +26,11 @@
  */
 package com.sucy.skill.cmd;
 
-import mc.promcteam.engine.mccore.commands.ConfigurableCommand;
-import mc.promcteam.engine.mccore.commands.IFunction;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkillBar;
+import mc.promcteam.engine.mccore.commands.ConfigurableCommand;
+import mc.promcteam.engine.mccore.commands.IFunction;
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

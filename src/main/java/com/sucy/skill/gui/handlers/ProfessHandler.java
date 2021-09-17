@@ -27,8 +27,8 @@
 package com.sucy.skill.gui.handlers;
 
 import com.sucy.skill.api.classes.RPGClass;
-import com.sucy.skill.manager.CmdManager;
 import com.sucy.skill.gui.tool.GUIHolder;
+import com.sucy.skill.manager.CmdManager;
 
 public class ProfessHandler extends GUIHolder<RPGClass>
 {

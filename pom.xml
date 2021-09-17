@@ -6,7 +6,7 @@
 
     <groupId>com.sucy.skill</groupId>
     <artifactId>ProSkillAPI</artifactId>
-    <version>1.1.7_02-DEV</version>
+    <version>1.1.7.3-ALPHA</version>
     <packaging>jar</packaging>
 
     <name>ProSkillAPI</name>

@@ -39,16 +39,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.inventory.*;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -58,6 +50,17 @@ import org.bukkit.inventory.PlayerInventory;
 public class CastListener extends SkillAPIListener
 {
     private static int slot = SkillAPI.getSettings().getCastSlot();
+
+    private static void cleanup(Player player)
+    {
+        if (SkillAPI.getSettings().isWorldEnabled(player.getWorld()))
+            forceCleanup(player);
+    }
+
+    private static void forceCleanup(Player player) {
+        SkillAPI.getPlayerData(player).getCastBars().restore(player);
+        player.getInventory().setItem(slot, null);
+    }
 
     @Override
     public void init()
@@ -80,17 +83,6 @@ public class CastListener extends SkillAPIListener
         for (Player player : Bukkit.getOnlinePlayers())
             cleanup(player);
         slot = -1;
-    }
-
-    private static void cleanup(Player player)
-    {
-        if (SkillAPI.getSettings().isWorldEnabled(player.getWorld()))
-            forceCleanup(player);
-    }
-
-    private static void forceCleanup(Player player) {
-        SkillAPI.getPlayerData(player).getCastBars().restore(player);
-        player.getInventory().setItem(slot, null);
     }
 
     @EventHandler
@@ -235,7 +227,7 @@ public class CastListener extends SkillAPIListener
 
     private class OrganizerTask extends ThreadTask
     {
-        private Player player;
+        private final Player player;
 
         public OrganizerTask(Player player)
         {
