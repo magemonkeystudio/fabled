@@ -1501,14 +1501,16 @@ public class PlayerData {
         }
 
         final double oldMaxHealth = this.maxHealth;
-        this.maxHealth = this.scaleStat(AttributeManager.HEALTH, 0D);
-
-        this.maxMana = this.scaleStat(AttributeManager.MANA, 0D);
+        this.maxHealth = 0;
+        this.maxMana = 0;
 
         for (PlayerClass playerClass : classes.values()) {
             this.maxHealth += playerClass.getHealth();
             this.maxMana += playerClass.getMana();
         }
+
+        this.maxHealth = this.scaleStat(AttributeManager.HEALTH, maxHealth);
+        this.maxMana = this.scaleStat(AttributeManager.MANA, maxMana);
 
         this.mana = Math.min(mana, maxMana);
 
@@ -1594,8 +1596,9 @@ public class PlayerData {
             double max) {
 
         AttributeInstance instance  = player.getAttribute(attribute);
-        double            addtional = this.scaleStat(attribKey, 0D, min, max);
-        instance.setBaseValue(instance.getDefaultValue() + addtional);
+        double            def       = instance.getDefaultValue();
+        double            addtional = this.scaleStat(attribKey, def, min, max);
+        instance.setBaseValue(def + addtional);
     }
 
     /**
