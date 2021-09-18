@@ -1,10 +1,10 @@
 /**
  * SkillAPI
- * com.sucy.skill.cmd.CmdForceCast
+ * com.sucy.skill.cmd.CmdMobCast
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2014 Steven Sucy
+ * Copyright (c) 2021 Travja
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -51,7 +51,6 @@ public class CmdMobCast implements IFunction, Listener {
     private static final Pattern INTEGER = Pattern.compile("-?[0-9]+");
 
     private static final String NOT_ENTITY    = "not-entity";
-    private static final String SUCCESS       = "success";
     private static final String WRONG_SKILL   = "wrong-skill";
     private static final String INVALID_SKILL = "invalid-skill";
 
@@ -93,7 +92,6 @@ public class CmdMobCast implements IFunction, Listener {
 
             // Castable skill
             else if (skill instanceof SkillShot) {
-                cmd.sendMessage(sender, SUCCESS, ChatColor.GREEN + "Cast successful");
                 ((SkillShot) skill).cast(entity, level, true);
             }
 
