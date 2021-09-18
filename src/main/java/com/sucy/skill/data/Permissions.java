@@ -47,4 +47,5 @@ public class Permissions
     public static final String ATTRIB = ROOT + "attrib";
     public static final String GUI    = ROOT + "gui";
     public static final String WORLD  = ROOT + "world";
+    public static final String RESET  = ROOT + "reset";
 }
