@@ -49,7 +49,7 @@ body:
         - Server Software:
         - ProSkillAPI Version:
         - ProMCCore Version:
-        - Plugins
+        - Plugins:
       render: markdown
     validations:
       required: true
@@ -58,7 +58,7 @@ body:
       label: latest.log
       description: |
         Assuming this bug causes an error, please stop your server, start it again, reproduce the error and then stop your server.
-        Upload your latest.log either directly here or through a paste service like [https://pastebin.com](pastebin).
+        Upload your latest.log either directly here or through a paste service like [pastebin](https://pastebin.com).
     validations:
       required: false
   - type: textarea
