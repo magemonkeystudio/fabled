@@ -2561,7 +2561,7 @@ function MechanicStat()
 
     this.description = 'Gives a player bonus stat temporarily.';
 
-    this.data.push(new StringValue('Stat', 'key', 'move-speed')
+    this.data.push(new ListValue('Stat', 'key', ['health', 'mana', 'mana-regen', 'physical-damage', 'melee-damage', 'projectile-damage', 'physical-damage', 'melee-defense', 'projectile-defense', 'skill-damage', 'skill-defense', 'move-speed', 'attack-speed', 'armor', 'luck', 'armor-toughness', 'exp', 'hunger', 'hunger-heal', 'cooldown', 'knockback-resist'], 'health')
         .setTooltip('The name of the stat to add to')
     );
 	this.data.push(new ListValue('Operation', 'operation', [ 'ADD_NUMBER', 'MULTIPLY_PERCENTAGE' ], 'ADD_NUMBER')
