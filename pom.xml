@@ -53,7 +53,7 @@
                 <version>3.2.0</version>
                 <configuration>
                     <reportOutputDirectory>${project.basedir}</reportOutputDirectory>
-                    <destDir>javadocs</destDir>
+                    <destDir>gh-pages/javadocs</destDir>
                 </configuration>
             </plugin>
             <plugin>
