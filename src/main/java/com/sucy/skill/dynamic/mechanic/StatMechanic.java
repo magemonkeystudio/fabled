@@ -58,7 +58,6 @@ public class StatMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -74,13 +73,15 @@ public class StatMechanic extends MechanicComponent {
         final double                seconds     = parseValues(caster, SECONDS, level, 3.0);
         final boolean               stackable   = settings.getString(STACKABLE, "false").equalsIgnoreCase("true");
         final int                   ticks       = (int) (seconds * 20);
+        final String                operation   = settings.getString(OPERATION, "MULTIPLY_PERCENTAGE");
 
         boolean worked = false;
         for (LivingEntity target : targets) {
             if (target instanceof Player) {
                 worked = true;
-                final PlayerData   data     = SkillAPI.getPlayerData((Player) target);
-                PlayerStatModifier modifier = new PlayerStatModifier("skillapi.mechanic.stat_mechanic", amount, Operation.valueOf(OPERATION), false);
+                final PlayerData data = SkillAPI.getPlayerData((Player) target);
+                PlayerStatModifier modifier = new PlayerStatModifier("skillapi.mechanic.stat_mechanic", amount,
+                        Operation.valueOf(operation), false);
 
                 if (casterTasks.containsKey(data.getPlayerName()) && !stackable) {
                     final StatTask old = casterTasks.remove(data.getPlayerName());
@@ -123,7 +124,7 @@ public class StatMechanic extends MechanicComponent {
         private final PlayerStatModifier modifier;
         private final int                id;
         private       boolean            running = false;
-        private boolean            stopped = false;
+        private       boolean            stopped = false;
 
         StatTask(int id, PlayerData data, PlayerStatModifier modifier) {
             this.id = id;
