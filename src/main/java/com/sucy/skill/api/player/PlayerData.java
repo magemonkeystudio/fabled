@@ -1495,8 +1495,9 @@ public class PlayerData {
      */
     public void updatePlayerStat(Player player) {
 
-        // Do not do anything if player has no class
         if (!this.hasClass()) {
+            this.maxHealth = 20;
+            this.updateHealth(player);
             return;
         }
 
