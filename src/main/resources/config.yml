@@ -107,7 +107,7 @@ Classes:
   show-auto-skills: false
   #
   # Whether or not attributes are enabled
-  attributes-enabled: false
+  attributes-enabled: true
   #
   # Whether or not attributes can be refunded
   attributes-downgrade: false
@@ -223,7 +223,7 @@ GUI:
   #
   # Whether or not to lock the health bar to 10 hearts
   # This does not affect total health, only the display
-  old-health-bar: false
+  old-health-bar: true
   #
   # Whether or not to force SkillAPI to override
   # health scaling of other plugins
@@ -231,7 +231,7 @@ GUI:
   #
   # This is what to display using the level bar, if anything.
   # Options are: none, mana, level
-  level-bar: none
+  level-bar: level
   #
   # This is what to display using the food bar, if anything.
   # Options are: none, mana, exp
@@ -307,7 +307,7 @@ GUI:
 Casting:
   #
   # Whether or not the main casting option is enabled
-  enabled: false
+  enabled: true
   #
   # Whether or not to use the mult-bar implementation.
   # When enabled:
@@ -319,7 +319,7 @@ Casting:
   # - Left/Right clicking on item cycles through skills
   # - Preview when hovering the item
   # - No limit on skills (though makes cycling hard to find skills)
-  bars: true
+  bars: false
   #
   # Whether or not to use the combat bar implementation. Details:
   # - Specified slot becomes a toggle item
@@ -329,7 +329,7 @@ Casting:
   # - In passive mode, no skills are shown
   # - Passive and combat modes each have their own stored contents
   # - combat mode uses the skill bar settings
-  combat: false
+  combat: true
   #
   # Global cooldown between skill casts in seconds
   cooldown: 0
