@@ -33,6 +33,8 @@ import com.sucy.party.Party;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.CombatProtection;
 import com.sucy.skill.api.DefaultCombatProtection;
+import com.sucy.skill.api.event.EntityCanAttackEntity;
+import com.sucy.skill.api.event.PlayerCanAttackPlayer;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.cast.IndicatorSettings;
@@ -47,6 +49,7 @@ import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.config.parse.NumberParser;
 import mc.promcteam.engine.mccore.util.TextFormatter;
 import mc.promcteam.engine.mccore.util.VersionManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.*;
@@ -373,6 +376,11 @@ public class Settings {
      * @return true if can be attacked, false otherwise
      */
     public boolean canAttack(LivingEntity attacker, LivingEntity target) {
+        EntityCanAttackEntity eventC = new EntityCanAttackEntity(attacker, target, combatProtection.canAttack(attacker, target));
+        Bukkit.getPluginManager().callEvent(eventC);
+        if (eventC.isCancelled()) {
+            return eventC.isCanAttack();
+        }
         if (attacker instanceof Player) {
             final Player player = (Player) attacker;
             if (target instanceof Animals && !(target instanceof Tameable)) {
@@ -388,13 +396,18 @@ public class Settings {
                     return false;
                 }
 
+                //add
+                boolean can;
+                can = combatProtection.canAttack(player, (Player) target);
                 if (PluginChecker.isPartiesActive() && partiesAlly) {
                     final Parties parties = Parties.getPlugin(Parties.class);
                     final Party p1 = parties.getJoinedParty(player);
                     final Party p2 = parties.getJoinedParty((Player) target);
-                    return p1 == null || p1 != p2;
+                    can = p1 == null || p1 != p2;
                 }
-                return combatProtection.canAttack(player, (Player) target);
+                PlayerCanAttackPlayer event = new PlayerCanAttackPlayer(attacker, target, can);
+                Bukkit.getPluginManager().callEvent(event);
+                return event.isCanAttack();
             }
             return combatProtection.canAttack(player, target);
         } else if (attacker instanceof Tameable) {

@@ -36,6 +36,7 @@ import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.skills.Skill;
 import mc.promcteam.engine.mccore.config.parse.NumberParser;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -346,6 +347,7 @@ public class PlayerEquips {
                             //判断是否开启
                             String pattern = settings.getAttrPattern();
                             PlayerReadItemAttributeEvent event = new PlayerReadItemAttributeEvent(playerData,item,pattern);
+                            Bukkit.getPluginManager().callEvent(event);
                             //If you want to customize your own rules, you can cancel this event and make your own judgment!
                             if (!event.isCancelled() && event.getPattern().equals("Regular")){
                                 String infos = lower.replaceAll("[^a-zA-Z\\u4e00-\\u9fa5]", "");
