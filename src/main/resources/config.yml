@@ -202,6 +202,12 @@ Items:
   # The text used for providing attributes
   attribute-text: '{attr}: '
   #
+  # The text is attribute load rule
+  # Default -> is skillapi old read lore attr rule
+  # Regular -> is read lore has attr text and read tip: +50 heal or +50 +50 heal == (100 heal)
+  #
+  attribute-pattern: "Default"
+  #
   # The slots to check for items in and apply requirements to.
   # This does not include held item, as that fluctuates and is assumed
   # Slots are based on the following:
