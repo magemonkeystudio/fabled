@@ -33,6 +33,7 @@ var Trigger = {
     DEATH                : { name: 'Death',                container: true, construct: TriggerDeath              },
     ENVIRONMENT_DAMAGE   : { name: 'Environment Damage',   container: true, construct: TriggerEnvironmentDamage  },
     INITIALIZE           : { name: 'Initialize',           container: true, construct: TriggerInitialize         },
+    ITEMSWAP             : { name: 'Item Swap',            container: true, construct: TriggerItemSwap           },
     KILL                 : { name: 'Kill',                 container: true, construct: TriggerKill               },
     LAND                 : { name: 'Land',                 container: true, construct: TriggerLand               },
     LAUNCH               : { name: 'Launch',               container: true, construct: TriggerLaunch             },
@@ -677,6 +678,14 @@ function TriggerInitialize()
     this.super('Initialize', Type.TRIGGER, true);
 
     this.description = 'Applies skill effects immediately. This can be used for passive abilities.';
+}
+
+extend('TriggerItemSwap', 'Component');
+function TriggerItemSwap()
+{
+    this.super('Item Swap', Type.TRIGGER, true);
+
+    this.description = 'Applies skill effects upon pressing the swap-key on your keyboard.';
 }
 
 extend('TriggerKill', 'Component');
