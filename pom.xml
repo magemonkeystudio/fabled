@@ -62,6 +62,10 @@
             <id>md_5-public</id>
             <url>https://repo.md-5.net/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/promcteam/promccore</url>
+        </repository>
     </repositories>
 
     <dependencies>
