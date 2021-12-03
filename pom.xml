@@ -190,7 +190,7 @@
         </dependency>
         <dependency>
             <groupId>mc.promcteam</groupId>
-            <artifactId>ProMCCore</artifactId>
+            <artifactId>promccore</artifactId>
             <version>1.0.3.3-ALPHA</version>
         </dependency>
     </dependencies>
