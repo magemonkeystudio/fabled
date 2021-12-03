@@ -26,8 +26,6 @@ jobs:
         githubServer: false
     - name: Build with Maven
       run: mvn clean package -e
-      with:
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
 #    - uses: actions/upload-artifact@v1
 #      with:
 #        name: ProSkillAPI artifact
