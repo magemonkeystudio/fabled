@@ -22,7 +22,8 @@ jobs:
       - name: 'Create settings.xml'
         uses: s4u/maven-settings-action@v2.4.1
         with:
-          servers: '[{"id": "github", "username": "${{ secrets.GITHUB_USERNAME }}", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
+          githubServer: false
+          servers: '[{"id": "github", "username": "Travja", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
       - name: Build with Maven
         run: mvn clean package -e
         env:
