@@ -52,22 +52,33 @@ import java.lang.reflect.Method;
  * Tracks who kills what entities and awards experience accordingly
  */
 public class KillListener extends SkillAPIListener {
-    private static final String S_TYPE = "sType";
-    private static final int SPAWNER = 0, EGG = 1;
+    private static final String S_TYPE  = "sType";
+    private static final int    SPAWNER = 0, EGG = 1;
 
     private Method handle;
-    private Field killer;
-    private Field damageTime;
+    private Field  killer;
+    private Field  damageTime;
 
     public KillListener() {
         try {
             Class<?> living = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.entity.EntityLiving")
                     : Reflex.getNMSClass("EntityLiving");
             handle = Reflex.getCraftClass("entity.CraftEntity").getDeclaredMethod("getHandle");
-            killer = Version.MINOR_VERSION >= 17 ? living.getDeclaredField("bc")
-                    : living.getDeclaredField("killer");
-            damageTime = Version.MINOR_VERSION >= 17 ? living.getDeclaredField("bd")
-                    : living.getDeclaredField("lastDamageByPlayerTime");
+
+            if (Version.MINOR_VERSION == 17)
+                killer = living.getDeclaredField("bc");
+            else if (Version.MINOR_VERSION >= 18)
+                killer = living.getDeclaredField("bd");
+            else
+                killer = living.getDeclaredField("killer");
+
+            if (Version.MINOR_VERSION == 17)
+                damageTime = living.getDeclaredField("bd");
+            else if (Version.MINOR_VERSION >= 18)
+                damageTime = living.getDeclaredField("be");
+            else
+                damageTime = living.getDeclaredField("lastDamageByPlayerTime");
+
             damageTime.setAccessible(true);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -110,7 +121,7 @@ public class KillListener extends SkillAPIListener {
 
                 // Give experience based on config when not using orbs
             else {
-                String name = ListenerUtil.getName(entity);
+                String name  = ListenerUtil.getName(entity);
                 double yield = SkillAPI.getSettings().getYield(name);
                 player.giveExp(yield, ExpSource.MOB);
             }
@@ -179,7 +190,7 @@ public class KillListener extends SkillAPIListener {
 
     private void setKiller(LivingEntity entity, Player player) {
         try {
-            Object hit = handle.invoke(entity);
+            Object hit    = handle.invoke(entity);
             Object source = handle.invoke(player);
             killer.set(hit, source);
             damageTime.set(hit, 100);

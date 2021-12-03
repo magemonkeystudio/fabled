@@ -70,12 +70,14 @@ public class DamageLoreRemover {
             CRAFT_ITEM = Reflex.getCraftClass("inventory.CraftItemStack");
 
             AS_NMS = CRAFT_ITEM.getMethod("asNMSCopy", ItemStack.class);
-            GET_TAG = NMS_ITEM.getMethod("getTag");
-            SET = NBT_COMPOUND.getMethod("set", String.class, NBT_BASE);
-            SET_TAG = NMS_ITEM.getMethod("setTag", NBT_COMPOUND);
-            SET_BOOL = NBT_COMPOUND.getMethod("setBoolean", String.class, boolean.class);
-            SET_INT = NBT_COMPOUND.getMethod("setInt", String.class, int.class);
             AS_CRAFT = CRAFT_ITEM.getMethod("asCraftMirror", NMS_ITEM);
+            GET_TAG = NMS_ITEM.getMethod(Version.MINOR_VERSION >= 18 ? "s" : "getTag");
+            SET_TAG = NMS_ITEM.getMethod(Version.MINOR_VERSION >= 18 ? "c" : "setTag", NBT_COMPOUND);
+            SET = NBT_COMPOUND.getMethod(Version.MINOR_VERSION >= 18 ? "a" : "set", String.class, NBT_BASE);
+            SET_BOOL = NBT_COMPOUND.getMethod(Version.MINOR_VERSION >= 18
+                    ? "a"
+                    : "setBoolean", String.class, boolean.class);
+            SET_INT = NBT_COMPOUND.getMethod(Version.MINOR_VERSION >= 18 ? "a" : "setInt", String.class, int.class);
         } catch (Exception ex) {
             Logger.bug("Failed to set up reflection for removing damage lores.");
         }
@@ -88,7 +90,6 @@ public class DamageLoreRemover {
      * also do nothing.</p>
      *
      * @param item tool to remove the lore from
-     *
      * @return the tool without the damage lore
      */
     public static ItemStack removeAttackDmg(ItemStack item) {
@@ -98,7 +99,7 @@ public class DamageLoreRemover {
         if (NBT_BASE == null) setup();
         try {
             item = item.clone();
-            Object nmsStack = AS_NMS.invoke(null, item);
+            Object nmsStack    = AS_NMS.invoke(null, item);
             Object nbtCompound = GET_TAG.invoke(nmsStack);
 
             // Disable durability if needed
