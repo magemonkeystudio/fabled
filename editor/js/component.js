@@ -686,6 +686,9 @@ function TriggerItemSwap()
     this.super('Item Swap', Type.TRIGGER, true);
 
     this.description = 'Applies skill effects upon pressing the swap-key on your keyboard.';
+
+    this.data.push(new ListValue('Cancel swap', 'cancel', [ 'True', 'False' ], 'True')
+    .setTooltip('True cancels the item swap. False allows the item swap'));
 }
 
 extend('TriggerKill', 'Component');
