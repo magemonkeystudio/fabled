@@ -119,6 +119,16 @@
             <artifactId>LibsDisguises</artifactId>
             <version>10.0.21</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.dmulloy2</groupId>
+                    <artifactId>ProtocolLib</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.spigotmc</groupId>
+                    <artifactId>spigot</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>me.clip</groupId>
@@ -172,7 +182,7 @@
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>4.5.0</version>
+            <version>4.5.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.bukkit</groupId>
@@ -196,6 +206,7 @@
             <groupId>mc.promcteam</groupId>
             <artifactId>promccore</artifactId>
             <version>1.0.3.3-ALPHA</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
