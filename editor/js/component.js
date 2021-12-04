@@ -32,6 +32,7 @@ var Trigger = {
     CROUCH               : { name: 'Crouch',               container: true, construct: TriggerCrouch             },
     DEATH                : { name: 'Death',                container: true, construct: TriggerDeath              },
     ENVIRONMENT_DAMAGE   : { name: 'Environment Damage',   container: true, construct: TriggerEnvironmentDamage  },
+    FISH_BITE            : { name: 'Fishing Bite',         container: true, construct: TriggerFishingBite        },
     FISH_FAIL            : { name: 'Fishing Fail',         container: true, construct: TriggerFishingFail        },
     FISH_REEL            : { name: 'Fishing Reel',         container: true, construct: TriggerFishingReel        },
     INITIALIZE           : { name: 'Initialize',           container: true, construct: TriggerInitialize         },
@@ -671,6 +672,14 @@ function TriggerEnvironmentDamage()
     this.data.push(new ListValue('Type', 'type', getDamageTypes, 'FALL')
         .setTooltip('The source of damage to apply for')
     );
+}
+
+extend('TriggerFishingBite', 'Component');
+function TriggerFishingBite()
+{
+    this.super('Fishing Bite', Type.TRIGGER, true);
+
+    this.description = 'Applies skill efects when a fish bites the fishing rod of a player';
 }
 
 extend('TriggerFishingFail', 'Component');
