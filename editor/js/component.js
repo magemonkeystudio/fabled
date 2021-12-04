@@ -32,6 +32,7 @@ var Trigger = {
     CROUCH               : { name: 'Crouch',               container: true, construct: TriggerCrouch             },
     DEATH                : { name: 'Death',                container: true, construct: TriggerDeath              },
     ENVIRONMENT_DAMAGE   : { name: 'Environment Damage',   container: true, construct: TriggerEnvironmentDamage  },
+    FISH_FAIL            : { name: 'Fishing Fail',         container: true, construct: TriggerFishingFail        },
     INITIALIZE           : { name: 'Initialize',           container: true, construct: TriggerInitialize         },
     ITEMSWAP             : { name: 'Item Swap',            container: true, construct: TriggerItemSwap           },
     KILL                 : { name: 'Kill',                 container: true, construct: TriggerKill               },
@@ -671,6 +672,13 @@ function TriggerEnvironmentDamage()
     );
 }
 
+extend('TriggerFishingFail', 'Component');
+function TriggerFishingFail()
+{
+    this.super('Fishing Fail', Type.TRIGGER, true);
+    
+    this.description = 'Applies skill effects when a player fails to catch a fish due to poor timing.';
+}
 
 extend('TriggerInitialize', 'Component');
 function TriggerInitialize()
