@@ -33,6 +33,7 @@ var Trigger = {
     DEATH                : { name: 'Death',                container: true, construct: TriggerDeath              },
     ENVIRONMENT_DAMAGE   : { name: 'Environment Damage',   container: true, construct: TriggerEnvironmentDamage  },
     FISH_FAIL            : { name: 'Fishing Fail',         container: true, construct: TriggerFishingFail        },
+    FISH_REEL            : { name: 'Fishing Reel',         container: true, construct: TriggerFishingReel        },
     INITIALIZE           : { name: 'Initialize',           container: true, construct: TriggerInitialize         },
     ITEMSWAP             : { name: 'Item Swap',            container: true, construct: TriggerItemSwap           },
     KILL                 : { name: 'Kill',                 container: true, construct: TriggerKill               },
@@ -678,6 +679,14 @@ function TriggerFishingFail()
     this.super('Fishing Fail', Type.TRIGGER, true);
     
     this.description = 'Applies skill effects when a player fails to catch a fish due to poor timing.';
+}
+
+extend('TriggerFishingReel', 'Component');
+function TriggerFishingReel()
+{
+    this.super('Fishing Reel', Type.TRIGGER, true);
+
+    this.description = 'Applies skill effects when a player reels in a fishing rod out of water or air with no fish on the rod.';
 }
 
 extend('TriggerInitialize', 'Component');
