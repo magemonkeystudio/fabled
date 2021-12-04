@@ -39,6 +39,7 @@ public class ComponentRegistry {
         register(new CrouchTrigger());
         register(new DeathTrigger());
         register(new EnvironmentalTrigger());
+        register(new FishingBiteTrigger());
         register(new FishingFailTrigger());
         register(new FishingReelTrigger());
         register(new ItemSwapTrigger());
