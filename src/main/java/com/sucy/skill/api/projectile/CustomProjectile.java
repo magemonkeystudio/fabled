@@ -51,16 +51,16 @@ import java.util.function.Predicate;
  * Base class for custom projectiles
  */
 public abstract class CustomProjectile extends BukkitRunnable implements Metadatable, Followable {
-    private static final Vector X_VEC = new Vector(1, 0, 0);
-    private static final double DEGREE_TO_RAD = Math.PI / 180;
-    private static final Vector vel = new Vector();
-    private static Constructor<?> aabbConstructor;
-    private static Method getEntities;
-    private static Method getBukkitEntity;
-    private static final Predicate<Object> JAVA_PREDICATE = CustomProjectile::isLivingEntity;
+    private static final Vector                                   X_VEC           = new Vector(1, 0, 0);
+    private static final double                                   DEGREE_TO_RAD   = Math.PI / 180;
+    private static final Vector                                   vel             = new Vector();
+    private static       Constructor<?>                           aabbConstructor;
+    private static       Method                                   getEntities;
+    private static       Method                                   getBukkitEntity;
+    private static final Predicate<Object>                        JAVA_PREDICATE  = CustomProjectile::isLivingEntity;
     private static final com.google.common.base.Predicate<Object> GUAVA_PREDICATE = CustomProjectile::isLivingEntity;
-    private static Method getEntitiesGuava;
-    private static Method getHandle;
+    private static       Method                                   getEntitiesGuava;
+    private static       Method                                   getHandle;
 
     static {
         try {
@@ -74,9 +74,12 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
             Class<?> worldClass = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.level.World")
                     : Reflex.getNMSClass("World");
             try {
-                getEntities = worldClass.getDeclaredMethod("getEntities", entityClass, aabbClass, Predicate.class);
+                getEntities = worldClass.getDeclaredMethod(Version.MINOR_VERSION >= 18 ? "a" : "getEntities",
+                        entityClass, aabbClass, Predicate.class);
             } catch (Exception e) {
-                getEntitiesGuava = worldClass.getDeclaredMethod("getEntities", entityClass, aabbClass, com.google.common.base.Predicate.class);
+                getEntitiesGuava = worldClass.getDeclaredMethod(Version.MINOR_VERSION >= 18
+                        ? "a"
+                        : "getEntities", entityClass, aabbClass, com.google.common.base.Predicate.class);
             }
         } catch (Exception ex) {
             Logger.log("Unable to use reflection for accurate collision - will resort to simple radius check");
@@ -85,12 +88,12 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
     }
 
     private final HashMap<String, List<MetadataValue>> metadata = new HashMap<>();
-    private final Set<Integer> hit = new HashSet<>();
-    private final LivingEntity thrower;
-    private ProjectileCallback callback;
-    private boolean enemy = true;
-    private boolean ally = false;
-    private boolean valid = true;
+    private final Set<Integer>                         hit      = new HashSet<>();
+    private final LivingEntity                         thrower;
+    private       ProjectileCallback                   callback;
+    private       boolean                              enemy    = true;
+    private       boolean                              ally     = false;
+    private       boolean                              valid    = true;
 
     /**
      * Constructs a new custom projectile and starts its timer task
@@ -163,8 +166,8 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
                 // Initial calculations
                 double bonusAngle = angle / 2 * direction - angleIncrement * i * direction;
                 double totalAngle = hAngle + bonusAngle;
-                double vAngle = vBaseAngle * Math.cos(bonusAngle * DEGREE_TO_RAD);
-                double x = Math.cos(vAngle);
+                double vAngle     = vBaseAngle * Math.cos(bonusAngle * DEGREE_TO_RAD);
+                double x          = Math.cos(vAngle);
 
                 // Get the velocity
                 vel.setX(x * Math.cos(totalAngle * DEGREE_TO_RAD));
@@ -203,14 +206,14 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
         // Calculate locations
         int tiers = (amount + 7) / 8;
         for (int i = 0; i < tiers; i++) {
-            double rad = radius * (tiers - i) / tiers;
-            int tierNum = Math.min(amount, 8);
+            double rad       = radius * (tiers - i) / tiers;
+            int    tierNum   = Math.min(amount, 8);
             double increment = 360 / tierNum;
-            double angle = (i % 2) * 22.5;
+            double angle     = (i % 2) * 22.5;
             for (int j = 0; j < tierNum; j++) {
-                double dx = Math.cos(angle) * rad;
-                double dz = Math.sin(angle) * rad;
-                Location l = loc.clone();
+                double   dx = Math.cos(angle) * rad;
+                double   dz = Math.sin(angle) * rad;
+                Location l  = loc.clone();
                 l.add(dx, 0, dz);
                 list.add(l);
                 angle += increment;
@@ -227,6 +230,16 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
      * @return location of the projectile
      */
     public abstract Location getLocation();
+
+    /**
+     * Checks whether or not the projectile is still active
+     *
+     * @return true if active, false otherwise
+     */
+    @Override
+    public boolean isValid() {
+        return valid;
+    }
 
     /**
      * Handles expiring due to range or leaving loaded chunks
@@ -325,7 +338,7 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
         // Reflection for nms collision
         List<LivingEntity> result = new ArrayList<>(1);
         try {
-            Object nmsWorld = getHandle.invoke(getLocation().getWorld());
+            Object nmsWorld  = getHandle.invoke(getLocation().getWorld());
             Object predicate = getEntities == null ? GUAVA_PREDICATE : JAVA_PREDICATE;
             Object list = (getEntities == null ? getEntitiesGuava : getEntities)
                     .invoke(nmsWorld, null, getBoundingBox(), predicate);
@@ -353,7 +366,7 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
      */
     private Object getBoundingBox() throws Exception {
         Location loc = getLocation();
-        double rad = getCollisionRadius();
+        double   rad = getCollisionRadius();
         return aabbConstructor.newInstance(
                 loc.getX() - rad, loc.getY() - rad, loc.getZ() - rad,
                 loc.getX() + rad, loc.getY() + rad, loc.getZ() + rad
@@ -364,13 +377,13 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
      * @return list of nearby living entities
      */
     private List<LivingEntity> getNearbyEntities() {
-        List<LivingEntity> list = new ArrayList<LivingEntity>();
-        Location loc = getLocation();
-        double radius = getCollisionRadius();
-        int minX = (int) (loc.getX() - radius) >> 4;
-        int maxX = (int) (loc.getX() + radius) >> 4;
-        int minZ = (int) (loc.getZ() - radius) >> 4;
-        int maxZ = (int) (loc.getZ() + radius) >> 4;
+        List<LivingEntity> list   = new ArrayList<LivingEntity>();
+        Location           loc    = getLocation();
+        double             radius = getCollisionRadius();
+        int                minX   = (int) (loc.getX() - radius) >> 4;
+        int                maxX   = (int) (loc.getX() + radius) >> 4;
+        int                minZ   = (int) (loc.getZ() - radius) >> 4;
+        int                maxZ   = (int) (loc.getZ() + radius) >> 4;
         for (int i = minX; i <= maxX; i++)
             for (int j = minZ; j < maxZ; j++)
                 for (Entity entity : loc.getWorld().getChunkAt(i, j).getEntities())
@@ -409,16 +422,6 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
     }
 
     /**
-     * Checks whether or not the projectile is still active
-     *
-     * @return true if active, false otherwise
-     */
-    @Override
-    public boolean isValid() {
-        return valid;
-    }
-
-    /**
      * <p>Sets a bit of metadata onto the projectile.</p>
      *
      * @param key  the key for the metadata
@@ -426,8 +429,8 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
      */
     @Override
     public void setMetadata(String key, MetadataValue meta) {
-        boolean hasMeta = hasMetadata(key);
-        List<MetadataValue> list = hasMeta ? getMetadata(key) : new ArrayList<MetadataValue>();
+        boolean             hasMeta = hasMetadata(key);
+        List<MetadataValue> list    = hasMeta ? getMetadata(key) : new ArrayList<MetadataValue>();
         list.add(meta);
         if (!hasMeta) {
             metadata.put(key, list);

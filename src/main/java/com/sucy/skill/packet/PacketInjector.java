@@ -15,12 +15,12 @@ import java.lang.reflect.Method;
  * com.sucy.skill.PacketInjector
  */
 public class PacketInjector {
-    private Field playerCon;
-    private Field network;
-    private Method handle;
-    private Field k;
-    private Field dropField;
     private final SkillAPI skillAPI;
+    private       Field    playerCon;
+    private       Field    network;
+    private       Method   handle;
+    private       Field    k;
+    private       Field    dropField;
 
     /**
      * Sets up the injector, grabbing necessary reflection data

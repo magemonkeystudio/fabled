@@ -48,6 +48,13 @@ import java.util.Map;
 // Based on the thread https://bukkit.org/threads/help-with-serialized-nbttagcompounds.116335/
 public class ItemSerializer {
 
+    // Missing the following (not sure what to do with these):
+//    MULTISHOT
+//    QUICK_CHARGE
+//    PIERCING
+//    MENDING
+//    VANISHING_CURSE
+//    SOUL_SPEED
     private static final BiMap<String, Integer> ENCHANT_IDS = ImmutableBiMap.<String, Integer>builder()
             .put("PROTECTION_ENVIRONMENTAL", 0)
             .put("PROTECTION_FIRE", 1)
@@ -84,22 +91,22 @@ public class ItemSerializer {
             .put("RIPTIDE", 82)
             .put("CHANNELING", 83)
             .build();
-    private static boolean initialized = false;
-    private static Constructor<?> nbtTagListConstructor;
-    private static Constructor<?> nbtTagCompoundConstructor;
-    private static Constructor<?> craftItemConstructor;
-    private static Constructor<?> craftItemNMSConstructor;
-    private static Constructor<?> nmsItemConstructor;
-    private static Method itemStack_save;
-    private static Method nbtTagList_add;
-    private static Method nbtTagList_size;
-    private static Method nbtTagList_get;
-    private static Method nbtCompressedStreamTools_write;
-    private static Method nbtCompressedStreamTools_read;
-    private static Method nbtTagCompound_set;
-    private static Method nbtTagCompound_getList;
-    private static Method nbtTagCompound_isEmpty;
-    private static Field craftItemStack_getHandle;
+    private static       boolean                initialized = false;
+    private static       Constructor<?>         nbtTagListConstructor;
+    private static       Constructor<?>         nbtTagCompoundConstructor;
+    private static       Constructor<?>         craftItemConstructor;
+    private static       Constructor<?>         craftItemNMSConstructor;
+    private static       Constructor<?>         nmsItemConstructor;
+    private static       Method                 itemStack_save;
+    private static       Method                 nbtTagList_add;
+    private static       Method                 nbtTagList_size;
+    private static       Method                 nbtTagList_get;
+    private static       Method                 nbtCompressedStreamTools_write;
+    private static       Method                 nbtCompressedStreamTools_read;
+    private static       Method                 nbtTagCompound_set;
+    private static       Method                 nbtTagCompound_getList;
+    private static       Method                 nbtTagCompound_isEmpty;
+    private static       Field                  craftItemStack_getHandle;
 
     private static void initialize() {
         if (initialized)
@@ -108,11 +115,12 @@ public class ItemSerializer {
         initialized = true;
 
         try {
-            String nms = Reflex.getNMSPackage();
+            String nms   = Reflex.getNMSPackage();
             String craft = Reflex.getCraftPackage();
 
             Class<?> craftItemStack = Class.forName(craft + "inventory.CraftItemStack");
-            Class<?> nmsItemStack = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.item.ItemStack")
+            Class<?> nmsItemStack = Version.MINOR_VERSION >= 17
+                    ? Reflex.getClass("net.minecraft.world.item.ItemStack")
                     : Class.forName(nms + "ItemStack");
             craftItemConstructor = craftItemStack.getDeclaredConstructor(ItemStack.class);
             craftItemConstructor.setAccessible(true);
@@ -121,25 +129,41 @@ public class ItemSerializer {
             craftItemStack_getHandle = craftItemStack.getDeclaredField("handle");
             craftItemStack_getHandle.setAccessible(true);
 
-            Class<?> nbtBase = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.nbt.NBTBase")
+            Class<?> nbtBase = Version.MINOR_VERSION >= 17
+                    ? Reflex.getClass("net.minecraft.nbt.NBTBase")
                     : Reflex.getNMSClass("NBTBase");
-            Class<?> nbtTagCompound = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.nbt.NBTTagCompound")
+            Class<?> nbtTagCompound = Version.MINOR_VERSION >= 17
+                    ? Reflex.getClass("net.minecraft.nbt.NBTTagCompound")
                     : Reflex.getNMSClass("NBTTagCompound");
-            Class<?> nbtTagList = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.nbt.NBTTagList")
+            Class<?> nbtTagList = Version.MINOR_VERSION >= 17
+                    ? Reflex.getClass("net.minecraft.nbt.NBTTagList")
                     : Reflex.getNMSClass("NBTTagList");
-            Class<?> nbtCompressedStreamTools = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.nbt.NBTCompressedStreamTools")
+            Class<?> nbtCompressedStreamTools = Version.MINOR_VERSION >= 17
+                    ? Reflex.getClass("net.minecraft.nbt.NBTCompressedStreamTools")
                     : Class.forName(nms + "NBTCompressedStreamTools");
             nmsItemConstructor = nmsItemStack.getDeclaredConstructor(nbtTagCompound);
             nmsItemConstructor.setAccessible(true);
             nbtTagCompoundConstructor = nbtTagCompound.getConstructor();
             nbtTagListConstructor = nbtTagList.getConstructor();
-            nbtTagCompound_set = nbtTagCompound.getDeclaredMethod("set", String.class, nbtBase);
-            nbtTagCompound_getList = nbtTagCompound.getDeclaredMethod("getList", String.class, int.class);
-            nbtTagCompound_isEmpty = nbtTagCompound.getDeclaredMethod("isEmpty");
-            itemStack_save = nmsItemStack.getDeclaredMethod("save", nbtTagCompound);
-            nbtTagList_add = nbtTagList.getDeclaredMethod("add", nbtBase);
-            nbtTagList_size = nbtTagList.getDeclaredMethod("size");
-            nbtTagList_get = nbtTagList.getDeclaredMethod("get", int.class);
+            if (Version.MINOR_VERSION >= 18) {
+                nbtTagCompound_set = nbtTagCompound.getDeclaredMethod("a", String.class, nbtBase);
+                nbtTagCompound_getList = nbtTagCompound.getDeclaredMethod("c", String.class, int.class);
+                nbtTagCompound_isEmpty = nbtTagCompound.getDeclaredMethod("f");
+
+                itemStack_save = nmsItemStack.getDeclaredMethod("b", nbtTagCompound);
+                nbtTagList_get = nbtTagList.getDeclaredMethod("k", int.class);
+            } else {
+                nbtTagCompound_set = nbtTagCompound.getDeclaredMethod("set", String.class, nbtBase);
+                nbtTagCompound_getList = nbtTagCompound.getDeclaredMethod("getList", String.class, int.class);
+                nbtTagCompound_isEmpty = nbtTagCompound.getDeclaredMethod("isEmpty");
+
+                itemStack_save = nmsItemStack.getDeclaredMethod("save", nbtTagCompound);
+                nbtTagList_get = nbtTagList.getDeclaredMethod("get", int.class);
+            }
+
+                nbtTagList_add = nbtTagList.getDeclaredMethod("add", nbtBase);
+                nbtTagList_size = nbtTagList.getDeclaredMethod("size");
+
             nbtCompressedStreamTools_write = nbtCompressedStreamTools.getDeclaredMethod("a", nbtTagCompound, DataOutput.class);
             nbtCompressedStreamTools_read = nbtCompressedStreamTools.getDeclaredMethod("a", DataInputStream.class);
         } catch (Exception ex) {
@@ -156,13 +180,13 @@ public class ItemSerializer {
         }
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            DataOutputStream dataOutput = new DataOutputStream(outputStream);
-            Object itemList = nbtTagListConstructor.newInstance();
+            DataOutputStream      dataOutput   = new DataOutputStream(outputStream);
+            Object                itemList     = nbtTagListConstructor.newInstance();
 
             // Save every element in the list
             for (ItemStack item : items) {
                 Object outputObject = nbtTagCompoundConstructor.newInstance();
-                Object craft = getCraftVersion(item);
+                Object craft        = getCraftVersion(item);
 
                 // Convert the item stack to a NBT compound
                 if (craft != null)
@@ -190,11 +214,11 @@ public class ItemSerializer {
             return basicDeserialize(data);
         }
         try {
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(new BigInteger(data, 32).toByteArray());
-            DataInputStream dataInputStream = new DataInputStream(inputStream);
-            Object wrapper = nbtCompressedStreamTools_read.invoke(null, dataInputStream);
-            Object itemList = nbtTagCompound_getList.invoke(wrapper, "i", 10);
-            ItemStack[] items = new ItemStack[(Integer) nbtTagList_size.invoke(itemList)];
+            ByteArrayInputStream inputStream     = new ByteArrayInputStream(new BigInteger(data, 32).toByteArray());
+            DataInputStream      dataInputStream = new DataInputStream(inputStream);
+            Object               wrapper         = nbtCompressedStreamTools_read.invoke(null, dataInputStream);
+            Object               itemList        = nbtTagCompound_getList.invoke(wrapper, "i", 10);
+            ItemStack[]          items           = new ItemStack[(Integer) nbtTagList_size.invoke(itemList)];
 
             for (int i = 0; i < items.length; i++) {
                 Object inputObject = nbtTagList_get.invoke(itemList, i);
@@ -287,26 +311,26 @@ public class ItemSerializer {
         String[] serializedBlocks = invString.split(";");
         if (serializedBlocks.length == 0)
             return null;
-        String invInfo = serializedBlocks[0];
+        String      invInfo               = serializedBlocks[0];
         ItemStack[] deserializedInventory = new ItemStack[Integer.valueOf(invInfo)];
 
         for (int i = 1; i <= deserializedInventory.length && i < serializedBlocks.length; i++) {
             String[] serializedBlock = serializedBlocks[i].split("#");
-            int stackPosition = Integer.valueOf(serializedBlock[0]);
+            int      stackPosition   = Integer.valueOf(serializedBlock[0]);
 
             if (stackPosition >= deserializedInventory.length) {
                 continue;
             }
 
-            ItemStack is = null;
-            Boolean createdItemStack = false;
+            ItemStack is               = null;
+            Boolean   createdItemStack = false;
 
             String[] serializedItemStack = serializedBlock[1].split(":");
             for (String itemInfo : serializedItemStack) {
                 String[] itemAttribute = itemInfo.split("@");
                 if (itemAttribute[0].equals("t")) {
                     if (VersionManager.isVersionAtLeast(11605)) {
-                        String id = String.valueOf(itemAttribute[1]);
+                        String         id  = String.valueOf(itemAttribute[1]);
                         final Material mat = Material.getMaterial(id);
                         is = new ItemStack(mat);
                         createdItemStack = true;
@@ -329,7 +353,7 @@ public class ItemSerializer {
                     meta.setDisplayName(itemAttribute[1]);
                     is.setItemMeta(meta);
                 } else if (itemAttribute[0].equals("l") && createdItemStack) {
-                    ItemMeta meta = is.getItemMeta();
+                    ItemMeta     meta = is.getItemMeta();
                     List<String> lore = meta.getLore();
                     if (lore == null) lore = new ArrayList<>();
                     lore.add(itemAttribute[1]);
