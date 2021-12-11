@@ -26,6 +26,7 @@
  */
 package com.sucy.skill.hook;
 
+import com.sucy.skill.hook.mimic.MimicHook;
 import com.sucy.skill.listener.SkillAPIListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -94,7 +95,7 @@ public class PluginChecker extends SkillAPIListener {
     public static boolean isPartiesActive() {return parties || Bukkit.getPluginManager().isPluginEnabled("Parties");}
 
     /** Checks whether Mimic is present. */
-    public static boolean isMimicActive() {return mimic;}
+    public static boolean isMimicActive() {return mimic && MimicHook.isHooked();}
 
     @Override
     public void init() {
