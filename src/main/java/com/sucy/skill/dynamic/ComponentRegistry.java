@@ -36,6 +36,7 @@ public class ComponentRegistry {
         // Triggers
         register(new BlockBreakTrigger());
         register(new BlockPlaceTrigger());
+        register(new ClickRightTrigger());
         register(new CrouchTrigger());
         register(new DeathTrigger());
         register(new EnvironmentalTrigger());
@@ -206,6 +207,7 @@ public class ComponentRegistry {
 
     @SuppressWarnings("unchecked")
     public static <T extends Event> void register(final Trigger<T> trigger) {
+    	
         if (getTrigger(trigger.getKey()) != null) {
             throw new IllegalArgumentException("Trigger with key " + trigger.getKey() + " already exists");
         } else if (trigger.getKey().contains("-")) {
