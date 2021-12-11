@@ -41,6 +41,7 @@ var Trigger = {
     KILL                 : { name: 'Kill',                 container: true, construct: TriggerKill               },
     LAND                 : { name: 'Land',                 container: true, construct: TriggerLand               },
     LAUNCH               : { name: 'Launch',               container: true, construct: TriggerLaunch             },
+    LEFT_CLICK           : { name: 'Left Click',           container: true, construct: TriggerLeftClick          },
     MOVE                 : { name: 'Move',                 container: true, construct: TriggerMove               },
     PHYSICAL_DAMAGE      : { name: 'Physical Damage',      container: true, construct: TriggerPhysicalDamage     },
     RIGHT_CLICK          : { name: 'Right Click',          container: true, construct: TriggerRightClick         },
@@ -757,6 +758,18 @@ function TriggerLaunch()
     this.data.push(new ListValue('Type', 'type', [ 'Any', 'Arrow', 'Egg', 'Ender Pearl', 'Fireball', 'Fishing Hook', 'Snowball' ], 'Any')
         .setTooltip('The type of projectile that should be launched.')
     );
+}
+
+extend('TriggerLeftClick', 'Component');
+function TriggerLeftClick()
+{
+    this.super('Left Click', Type.TRIGGER, true);
+
+    this.description = 'Applies skill effects upon performing a left-click';
+
+    this.data.push(new ListValue('Crouch', 'crouch', ['Crouch', 'Dont crouch', 'Both'], 'Crouch')
+        .setTooltip('If the player has to be crouching in order for this trigger to function')
+        );
 }
 
 extend('TriggerMove', 'Component');
