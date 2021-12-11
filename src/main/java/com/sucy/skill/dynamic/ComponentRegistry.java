@@ -36,6 +36,7 @@ public class ComponentRegistry {
         // Triggers
         register(new BlockBreakTrigger());
         register(new BlockPlaceTrigger());
+        register(new ClickLeftTrigger());
         register(new ClickRightTrigger());
         register(new CrouchTrigger());
         register(new DeathTrigger());
