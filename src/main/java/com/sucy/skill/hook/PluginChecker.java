@@ -31,6 +31,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
 /**
@@ -47,6 +48,7 @@ public class PluginChecker extends SkillAPIListener {
     private static boolean mythicMobs;
     private static boolean worldGuard;
     private static boolean parties;
+    private static boolean mimic;
 
     /**
      * Checks if vault is active on the server
@@ -91,6 +93,9 @@ public class PluginChecker extends SkillAPIListener {
 
     public static boolean isPartiesActive() {return parties || Bukkit.getPluginManager().isPluginEnabled("Parties");}
 
+    /** Checks whether Mimic is present. */
+    public static boolean isMimicActive() {return mimic;}
+
     @Override
     public void init() {
         PluginManager pluginManager = Bukkit.getPluginManager();
@@ -107,64 +112,47 @@ public class PluginChecker extends SkillAPIListener {
         mythicMobs = pluginManager.isPluginEnabled("MythicMobs");
         worldGuard = pluginManager.isPluginEnabled("WorldGuard");
         parties = pluginManager.isPluginEnabled("Parties");
+        mimic = pluginManager.isPluginEnabled("Mimic");
     }
 
     @EventHandler
     public void onPluginEnable(PluginEnableEvent event) {
-        switch (event.getPlugin().getName()) {
-            case "Vault":
-                vault = true;
-                break;
-            case "LibsDisguises":
-                libsDisguises = true;
-                break;
-            case "NoCheatPlus":
-                noCheatPlus = true;
-                break;
-            case "RPGInventory":
-                rpgInventory = true;
-                break;
-            case "PlaceholderAPI":
-                papi = true;
-                break;
-            case "MythicMobs":
-                mythicMobs = true;
-                break;
-            case "WorldGuard":
-                worldGuard = true;
-                break;
-            case "Parties":
-                parties = true;
-                break;
-        }
+        onPluginToggled(event.getPlugin(), true);
     }
 
     @EventHandler
     public void onPluginDisable(PluginDisableEvent event) {
-        switch (event.getPlugin().getName()) {
+        onPluginToggled(event.getPlugin(), false);
+    }
+
+    private void onPluginToggled(Plugin plugin, Boolean isEnabled) {
+        switch (plugin.getName()) {
             case "Vault":
-                vault = false;
+                vault = isEnabled;
                 break;
             case "LibsDisguises":
-                libsDisguises = false;
+                libsDisguises = isEnabled;
                 break;
             case "NoCheatPlus":
-                noCheatPlus = false;
+                noCheatPlus = isEnabled;
                 break;
             case "RPGInventory":
-                rpgInventory = false;
+                rpgInventory = isEnabled;
                 break;
             case "PlaceholderAPI":
-                papi = true;
+                papi = isEnabled;
                 break;
             case "MythicMobs":
-                mythicMobs = false;
+                mythicMobs = isEnabled;
                 break;
             case "WorldGuard":
-                worldGuard = false;
+                worldGuard = isEnabled;
                 break;
             case "Parties":
-                parties = false;
+                parties = isEnabled;
+                break;
+            case "Mimic":
+                mimic = isEnabled;
                 break;
         }
     }
