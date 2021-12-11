@@ -18,7 +18,8 @@ public class ClickRightTrigger extends ClickTrigger{
 	public boolean shouldTrigger(PlayerInteractEvent event, int level, Settings settings) {
 		
 		if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			return true;
+			return settings.getString("crouch").equalsIgnoreCase("both") ||
+					event.getPlayer().isSneaking() != settings.getString("crouch").equalsIgnoreCase("Dont crouch");
 		}
 		return false;
 	}
