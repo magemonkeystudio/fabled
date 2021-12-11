@@ -43,6 +43,7 @@ var Trigger = {
     LAUNCH               : { name: 'Launch',               container: true, construct: TriggerLaunch             },
     MOVE                 : { name: 'Move',                 container: true, construct: TriggerMove               },
     PHYSICAL_DAMAGE      : { name: 'Physical Damage',      container: true, construct: TriggerPhysicalDamage     },
+    RIGHT_CLICK          : { name: 'Right Click',          container: true, construct: TriggerRightClick         },
     SKILL_DAMAGE         : { name: 'Skill Damage',         container: true, construct: TriggerSkillDamage        },
     TOOK_PHYSICAL_DAMAGE : { name: 'Took Physical Damage', container: true, construct: TriggerTookPhysicalDamage },
     TOOK_SKILL_DAMAGE    : { name: 'Took Skill Damage',    container: true, construct: TriggerTookSkillDamage    }
@@ -787,6 +788,18 @@ function TriggerPhysicalDamage()
     );
 }
 
+extend('TriggerRightClick', 'Component');
+function TriggerRightClick()
+{
+    this.super('Right Click', Type.TRIGGER, true);
+
+    this.description = 'Applies skill effects upon performing a right-click (NOTE: When clicking in air, you have to have an item in your hand)';
+
+    this.data.push(new ListValue('Crouch', 'crouch', ['Crouch', 'Dont crouch', 'Both'], 'Crouch')
+        .setTooltip('If the player has to be crouching in order for this trigger to function')
+        );
+}
+
 extend('TriggerSkillDamage', 'Component');
 function TriggerSkillDamage()
 {
@@ -803,7 +816,7 @@ function TriggerSkillDamage()
     this.data.push(new DoubleValue("Max Damage", "dmg-max", 999)
         .setTooltip('The maximum damage that needs to be dealt')
     );
-    this.data.push(new StringListValue('Category', 'category', [ 'default' ] )
+    this.data.push(new ListValue('Category', 'category', [ 'default' ] )
         .setTooltip('The type of skill damage to apply for. Leave this empty to apply to all skill damage.')
     );
 }
