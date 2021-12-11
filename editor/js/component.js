@@ -816,7 +816,7 @@ function TriggerSkillDamage()
     this.data.push(new DoubleValue("Max Damage", "dmg-max", 999)
         .setTooltip('The maximum damage that needs to be dealt')
     );
-    this.data.push(new ListValue('Category', 'category', [ 'default' ] )
+    this.data.push(new StringListValue('Category', 'category', [ 'default' ] )
         .setTooltip('The type of skill damage to apply for. Leave this empty to apply to all skill damage.')
     );
 }
