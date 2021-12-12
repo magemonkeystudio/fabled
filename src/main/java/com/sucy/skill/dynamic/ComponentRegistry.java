@@ -44,6 +44,7 @@ public class ComponentRegistry {
         register(new FishingBiteTrigger());
         register(new FishingFailTrigger());
         register(new FishingGrabTrigger());
+        register(new FishingGroundTrigger());
         register(new FishingReelTrigger());
         register(new ItemSwapTrigger());
         register(new KillTrigger());
