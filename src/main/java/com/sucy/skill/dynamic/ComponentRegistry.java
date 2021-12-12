@@ -40,6 +40,7 @@ public class ComponentRegistry {
         register(new ClickRightTrigger());
         register(new CrouchTrigger());
         register(new DeathTrigger());
+        register(new DropItemTrigger());
         register(new EnvironmentalTrigger());
         register(new FishingBiteTrigger());
         register(new FishingFailTrigger());
