@@ -31,6 +31,7 @@ var Trigger = {
     CLEANUP              : { name: 'Cleanup',              container: true, construct: TriggerCleanup            },
     CROUCH               : { name: 'Crouch',               container: true, construct: TriggerCrouch             },
     DEATH                : { name: 'Death',                container: true, construct: TriggerDeath              },
+    DROP_ITEM            : { name: 'Drop Item',            container: true, construct: TriggerDropItem           },
     ENVIRONMENT_DAMAGE   : { name: 'Environment Damage',   container: true, construct: TriggerEnvironmentDamage  },
     FISH                 : { name: 'Fishing',              container: true, construct: TriggerFishing            },
     FISH_BITE            : { name: 'Fishing Bite',         container: true, construct: TriggerFishingBite        },
@@ -665,6 +666,18 @@ function TriggerDeath()
     this.super('Death', Type.TRIGGER, true);
 
     this.description = 'Applies skill effects when a player dies.';
+}
+
+extend('TriggerDropItem', 'Component');
+function TriggerDropItem()
+{
+    this.super('Drop Item', Type.TRIGGER, true);
+
+    this.description = 'Applies skill effects upon dropping an item';
+
+    this.data.push(new ListValue('Drop multiple', 'drop multiple', ['True', 'False', 'Ignore'], 'Ignore')
+        .setTooltip('Wheter the player has to drop multiple items or a single item')
+    );
 }
 
 extend('TriggerEnvironmentDamage', 'Component');
