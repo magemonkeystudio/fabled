@@ -35,6 +35,7 @@ var Trigger = {
     FISH_BITE            : { name: 'Fishing Bite',         container: true, construct: TriggerFishingBite        },
     FISH_FAIL            : { name: 'Fishing Fail',         container: true, construct: TriggerFishingFail        },
     FISH_GRAB            : { name: 'Fishing Grab',         container: true, construct: TriggerFishingGrab        },
+    FISH_GROUND          : { name: 'Fishing Ground',       container: true, construct: TriggerFishingGround      },
     FISH_REEL            : { name: 'Fishing Reel',         container: true, construct: TriggerFishingReel        },
     INITIALIZE           : { name: 'Initialize',           container: true, construct: TriggerInitialize         },
     ITEMSWAP             : { name: 'Item Swap',            container: true, construct: TriggerItemSwap           },
@@ -699,6 +700,14 @@ function TriggerFishingGrab()
     this.super('Fishing Grab', Type.TRIGGER, true);
 
     this.description = 'Applies skill effects when a player catches a fish';
+}
+
+extend('TriggerFishingGround', 'Component');
+function TriggerFishingGround()
+{
+    this.super('Fishing Ground', Type.TRIGGER, true);
+
+    this.description = 'Applies skill effects when the bobber of a fishing rod hits the ground';
 }
 
 extend('TriggerFishingReel', 'Component');
