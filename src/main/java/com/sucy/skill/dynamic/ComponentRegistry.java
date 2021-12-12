@@ -43,6 +43,7 @@ public class ComponentRegistry {
         register(new EnvironmentalTrigger());
         register(new FishingBiteTrigger());
         register(new FishingFailTrigger());
+        register(new FishingFishTrigger());
         register(new FishingGrabTrigger());
         register(new FishingGroundTrigger());
         register(new FishingReelTrigger());
