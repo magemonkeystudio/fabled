@@ -6,6 +6,7 @@ import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkill;
 import com.sucy.skill.dynamic.trigger.Trigger;
 import com.sucy.skill.dynamic.trigger.TriggerComponent;
+
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -75,11 +76,20 @@ public class TriggerHandler implements Listener {
      * @param plugin plugin reference
      */
     public void register(final SkillAPI plugin) {
-        plugin.getServer().getPluginManager().registerEvent(
-                trigger.getEvent(), this, EventPriority.HIGHEST, getExecutor(trigger), plugin, true);
+    	
+    	if(trigger.getEvent().getTypeName().equals("org.bukkit.event.player.PlayerInteractEvent")) {
+    		plugin.getServer().getPluginManager().registerEvent(
+                    trigger.getEvent(), this, EventPriority.HIGHEST, getExecutor(trigger), plugin, false);
+    	}
+    	else {
+    		plugin.getServer().getPluginManager().registerEvent(
+                    trigger.getEvent(), this, EventPriority.HIGHEST, getExecutor(trigger), plugin, true);
+    	}
+        
     }
 
     <T extends Event> void apply(final T event, final Trigger<T> trigger) {
+
         final LivingEntity caster = trigger.getCaster(event);
         if (caster == null || !active.containsKey(caster.getEntityId())) { return; }
 
@@ -89,7 +99,7 @@ public class TriggerHandler implements Listener {
         final LivingEntity target = trigger.getTarget(event, component.settings);
         trigger.setValues(event, DynamicSkill.getCastData(caster));
         trigger(caster, target, level);
-
+       
         if (event instanceof Cancellable) { skill.applyCancelled((Cancellable) event); }
         trigger.postProcess(event, skill);
     }

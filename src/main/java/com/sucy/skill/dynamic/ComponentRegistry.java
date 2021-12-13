@@ -36,9 +36,18 @@ public class ComponentRegistry {
         // Triggers
         register(new BlockBreakTrigger());
         register(new BlockPlaceTrigger());
+        register(new ClickLeftTrigger());
+        register(new ClickRightTrigger());
         register(new CrouchTrigger());
         register(new DeathTrigger());
+        register(new DropItemTrigger());
         register(new EnvironmentalTrigger());
+        register(new FishingBiteTrigger());
+        register(new FishingFailTrigger());
+        register(new FishingFishTrigger());
+        register(new FishingGrabTrigger());
+        register(new FishingGroundTrigger());
+        register(new FishingReelTrigger());
         register(new ItemSwapTrigger());
         register(new KillTrigger());
         register(new LandTrigger());
@@ -202,6 +211,7 @@ public class ComponentRegistry {
 
     @SuppressWarnings("unchecked")
     public static <T extends Event> void register(final Trigger<T> trigger) {
+    	
         if (getTrigger(trigger.getKey()) != null) {
             throw new IllegalArgumentException("Trigger with key " + trigger.getKey() + " already exists");
         } else if (trigger.getKey().contains("-")) {

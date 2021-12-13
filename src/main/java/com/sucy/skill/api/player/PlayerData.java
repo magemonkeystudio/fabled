@@ -66,6 +66,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -1177,7 +1178,7 @@ public class PlayerData {
      *
      * @return main professed class data or null if not professed for the main group
      */
-    public PlayerClass getMainClass() {
+    public @Nullable PlayerClass getMainClass() {
         String main = SkillAPI.getSettings().getMainGroup();
         if (classes.containsKey(main)) {
             return classes.get(main);

@@ -208,6 +208,12 @@
             <version>1.0.3.3-ALPHA</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>ru.endlesscode.mimic</groupId>
+            <artifactId>mimic-bukkit-api</artifactId>
+            <version>0.6.1</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
