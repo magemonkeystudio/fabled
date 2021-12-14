@@ -135,6 +135,7 @@ public class Settings {
     private static final String ITEM_EXCLUDE = ITEM_BASE + "lore-exclude-text";
     private static final String ITEM_ATTR    = ITEM_BASE + "lore-attribute-text";
     private static final String ITEM_STATS   = ITEM_BASE + "attribute-text";
+    private static final String ITEM_PATTERN = ITEM_BASE + "attribute-pattern";
     private static final String ITEM_SLOTS   = ITEM_BASE + "slots";
     private static final String CAST_BASE      = "Casting.";
     private static final String CAST_ENABLED   = CAST_BASE + "enabled";
@@ -243,6 +244,7 @@ public class Settings {
     private String skillPre, skillPost;
     private String attrReqPre, attrReqPost;
     private String attrPre, attrPost;
+    private String attrPattern;
     private List<String> titleMessages;
     private boolean oldHealth;
     private boolean forceScaling;
