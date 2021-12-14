@@ -42,12 +42,11 @@ import com.sucy.skill.dynamic.DynamicClass;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.gui.tool.GUITool;
 import com.sucy.skill.hook.BungeeHook;
-import com.sucy.skill.hook.mimic.MimicHook;
 import com.sucy.skill.hook.PlaceholderAPIHook;
 import com.sucy.skill.hook.PluginChecker;
+import com.sucy.skill.hook.mimic.MimicHook;
 import com.sucy.skill.listener.*;
 import com.sucy.skill.manager.*;
-import com.sucy.skill.packet.PacketInjector;
 import com.sucy.skill.task.CooldownTask;
 import com.sucy.skill.task.GUITask;
 import com.sucy.skill.task.ManaTask;
@@ -543,6 +542,58 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
+     * <p>Disables SkillAPI, saving data before unloading everything and disconnecting
+     * listeners. This should not be called by other plugins.</p>
+     */
+    @Override
+    public void onDisable() {
+        // Validate instance
+        if (singleton != this) {
+            throw new IllegalStateException("This is not a valid, enabled SkillAPI copy!");
+        }
+
+        disabling = true;
+
+        GUITool.cleanUp();
+        EffectManager.cleanUp();
+        ArmorStandManager.cleanUp();
+
+        mainThread.disable();
+        mainThread = null;
+
+        if (manaTask != null) {
+            manaTask.cancel();
+            manaTask = null;
+        }
+
+        for (SkillAPIListener listener : listeners) {
+            listener.cleanup();
+        }
+        listeners.clear();
+
+        // Clear scoreboards
+        ClassBoardManager.clearAll();
+
+        // Clear skill bars and stop passives before disabling
+        for (Player player : VersionManager.getOnlinePlayers()) {
+            MainListener.unload(player);
+        }
+
+        io.saveAll();
+
+        skills.clear();
+        classes.clear();
+        players.clear();
+
+        HandlerList.unregisterAll(this);
+        cmd.clear();
+
+        loaded = false;
+        disabling = false;
+        singleton = null;
+    }
+
+    /**
      * <p>Enables SkillAPI, setting up listeners, managers, and loading data. This
      * should not be called by other plugins.</p>
      */
@@ -604,14 +655,9 @@ public class SkillAPI extends JavaPlugin {
         listen(new AddonListener(), true);
         listen(new ItemListener(), settings.isCheckLore());
         listen(new BarListener(), settings.isSkillBarEnabled());
-        if (VersionManager.isVersionAtLeast(VersionManager.V1_8_0)) {
-            final PacketInjector injector = new PacketInjector(this);
-            listen(new PacketListener(injector), true);
-            listen(new ClickListener(), settings.isCombosEnabled());
-        }
+        listen(new ClickListener(), settings.isCombosEnabled());
         listen(new ComboListener(), settings.isCombosEnabled());
         listen(new AttributeListener(), settings.isAttributesEnabled());
-        //TODO Check to see if this ItemListener indeed works as intended.
         listen(new ItemListener(), settings.isCheckAttributes());
         listen(new CastListener(), settings.isUsingBars());
         listen(new CastOffhandListener(),
@@ -672,58 +718,6 @@ public class SkillAPI extends JavaPlugin {
             Bukkit.getPluginManager().registerEvents(listener, this);
             listeners.add(listener);
         }
-    }
-
-    /**
-     * <p>Disables SkillAPI, saving data before unloading everything and disconnecting
-     * listeners. This should not be called by other plugins.</p>
-     */
-    @Override
-    public void onDisable() {
-        // Validate instance
-        if (singleton != this) {
-            throw new IllegalStateException("This is not a valid, enabled SkillAPI copy!");
-        }
-
-        disabling = true;
-
-        GUITool.cleanUp();
-        EffectManager.cleanUp();
-        ArmorStandManager.cleanUp();
-
-        mainThread.disable();
-        mainThread = null;
-
-        if (manaTask != null) {
-            manaTask.cancel();
-            manaTask = null;
-        }
-
-        for (SkillAPIListener listener : listeners) {
-            listener.cleanup();
-        }
-        listeners.clear();
-
-        // Clear scoreboards
-        ClassBoardManager.clearAll();
-
-        // Clear skill bars and stop passives before disabling
-        for (Player player : VersionManager.getOnlinePlayers()) {
-            MainListener.unload(player);
-        }
-
-        io.saveAll();
-
-        skills.clear();
-        classes.clear();
-        players.clear();
-
-        HandlerList.unregisterAll(this);
-        cmd.clear();
-
-        loaded = false;
-        disabling = false;
-        singleton = null;
     }
 
     /**
