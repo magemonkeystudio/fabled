@@ -26,6 +26,7 @@
  */
 package com.sucy.skill.log;
 
+import com.sucy.skill.SkillAPI;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.Bukkit;
 
@@ -67,7 +68,7 @@ public class Logger {
      */
     public static void log(String key, int level, String message) {
         if (LEVELS.containsKey(key) && LEVELS.get(key) >= level)
-            Bukkit.getLogger().info(message);
+            SkillAPI.inst().getLogger().info(message);
     }
 
     /**
@@ -88,7 +89,7 @@ public class Logger {
      * @param message error message
      */
     public static void invalid(String message) {
-        Bukkit.getLogger().severe(message);
+        SkillAPI.inst().getLogger().severe(message);
     }
 
     /**
@@ -97,7 +98,7 @@ public class Logger {
      * @param message error message
      */
     public static void bug(String message) {
-        Bukkit.getLogger().severe(message);
+        SkillAPI.inst().getLogger().severe(message);
     }
 
     /**
@@ -106,6 +107,6 @@ public class Logger {
      * @param message message to log
      */
     public static void log(String message) {
-        Bukkit.getLogger().info(message);
+        SkillAPI.inst().getLogger().info(message);
     }
 }

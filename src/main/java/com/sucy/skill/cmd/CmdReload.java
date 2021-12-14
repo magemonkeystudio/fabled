@@ -51,6 +51,6 @@ public class CmdReload implements IFunction
     public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args)
     {
         SkillAPI.reload();
-        cmd.sendMessage(sender, DONE, "&2The plugin has been reloaded");
+        cmd.sendMessage(sender, DONE, "&2ProSkillAPI has been reloaded");
     }
 }

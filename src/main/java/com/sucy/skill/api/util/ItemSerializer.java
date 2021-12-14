@@ -28,6 +28,7 @@ package com.sucy.skill.api.util;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
+import com.sucy.skill.SkillAPI;
 import com.sucy.skill.util.Version;
 import mc.promcteam.engine.mccore.util.VersionManager;
 import mc.promcteam.engine.utils.Reflex;
@@ -167,7 +168,7 @@ public class ItemSerializer {
             nbtCompressedStreamTools_write = nbtCompressedStreamTools.getDeclaredMethod("a", nbtTagCompound, DataOutput.class);
             nbtCompressedStreamTools_read = nbtCompressedStreamTools.getDeclaredMethod("a", DataInputStream.class);
         } catch (Exception ex) {
-            System.out.println("Server doesn't support NBT serialization - resorting to a less complete implementation");
+            SkillAPI.inst().getLogger().warning("Server doesn't support NBT serialization - resorting to a less complete implementation");
         }
     }
 

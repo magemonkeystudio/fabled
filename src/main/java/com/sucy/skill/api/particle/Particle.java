@@ -147,7 +147,7 @@ public class Particle {
             }
         } catch (Exception ex) {
             if (!VersionManager.isVersionAtLeast(11300)) {
-                System.out.println("Failed to set up particles, are you using Cauldron?");
+                SkillAPI.inst().getLogger().warning("Failed to set up particles, are you using Cauldron?");
             }
         }
     }
