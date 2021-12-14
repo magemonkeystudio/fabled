@@ -1524,8 +1524,16 @@ public class PlayerData {
         this.updateWalkSpeed(player);
 
         // Update health if its been changed
-        if (oldMaxHealth != this.maxHealth) {
+        if (oldMaxHealth != this.maxHealth || player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() != this.maxHealth) {
             this.updateHealth(player);
+        } else {
+            // Health scaling is available starting with 1.6.2
+            if (SkillAPI.getSettings().isOldHealth()) {
+                player.setHealthScaled(true);
+                player.setHealthScale(20);
+            } else {
+                player.setHealthScaled(false);
+            }
         }
 
         // Others stats

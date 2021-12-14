@@ -43,7 +43,6 @@ import com.sucy.skill.manager.ClassBoardManager;
 import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -106,11 +105,12 @@ public class MainListener extends SkillAPIListener {
         DynamicSkill.clearCastData(player);
 
         player.setDisplayName(player.getName());
-        if (VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
-        } else {
-            player.setMaxHealth(20);
-        }
+        //We don't really need to reset the health... do we?
+//        if (VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
+//            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+//        } else {
+//            player.setMaxHealth(20);
+//        }
         player.setWalkSpeed(0.2f);
         SkillAPI.unloadPlayerData(player, skipSaving);
     }
