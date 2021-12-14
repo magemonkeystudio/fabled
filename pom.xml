@@ -6,7 +6,7 @@
 
     <groupId>com.sucy.skill</groupId>
     <artifactId>ProSkillAPI</artifactId>
-    <version>1.1.7.9-ALPHA</version>
+    <version>1.1.7.10-ALPHA</version>
     <packaging>jar</packaging>
 
     <name>ProSkillAPI</name>
@@ -78,7 +78,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.18-R0.1-SNAPSHOT</version>
+            <version>1.18.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -133,7 +133,7 @@
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
-            <version>2.10.9</version>
+            <version>2.10.10</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -205,7 +205,7 @@
         <dependency>
             <groupId>mc.promcteam</groupId>
             <artifactId>promccore</artifactId>
-            <version>1.0.3.3-ALPHA</version>
+            <version>1.0.3.4-ALPHA</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

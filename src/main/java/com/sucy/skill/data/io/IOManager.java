@@ -47,30 +47,30 @@ import java.util.Map;
  */
 public abstract class IOManager {
     private static final String
-            LIMIT = "limit",
-            ACTIVE = "active",
-            ACCOUNTS = "accounts",
+            LIMIT          = "limit",
+            ACTIVE         = "active",
+            ACCOUNTS       = "accounts",
             ACCOUNT_PREFIX = "acc",
-            HEALTH = "health",
-            MANA = "mana",
-            CLASSES = "classes",
-            SKILLS = "skills",
-            BINDS = "binds",
-            LEVEL = "level",
-            EXP = "exp",
-            POINTS = "points",
-            SKILL_BAR = "bar",
-            HOVER = "hover",
-            EXTRA = "extra",
-            INSTANT = "instant",
-            ENABLED = "enabled",
-            SLOTS = "slots",
-            UNASSIGNED = "e",
-            COMBOS = "combos",
-            ATTRIBS = "attribs",
-            COOLDOWN = "cd",
-            HUNGER = "hunger",
-            ATTRIB_POINTS = "attrib-points";
+            HEALTH         = "health",
+            MANA           = "mana",
+            CLASSES        = "classes",
+            SKILLS         = "skills",
+            BINDS          = "binds",
+            LEVEL          = "level",
+            EXP            = "exp",
+            POINTS         = "points",
+            SKILL_BAR      = "bar",
+            HOVER          = "hover",
+            EXTRA          = "extra",
+            INSTANT        = "instant",
+            ENABLED        = "enabled",
+            SLOTS          = "slots",
+            UNASSIGNED     = "e",
+            COMBOS         = "combos",
+            ATTRIBS        = "attribs",
+            COOLDOWN       = "cd",
+            HUNGER         = "hunger",
+            ATTRIB_POINTS  = "attrib-points";
 
     /**
      * API reference
@@ -97,7 +97,6 @@ public abstract class IOManager {
      * Loads data for the player
      *
      * @param player player to load for
-     *
      * @return loaded player data
      */
     public abstract PlayerAccounts loadData(OfflinePlayer player);
@@ -125,19 +124,26 @@ public abstract class IOManager {
      *
      * @param player player to load for
      * @param file   DataSection containing the account info
-     *
      * @return the loaded player account data
      */
     protected PlayerAccounts load(OfflinePlayer player, DataSection file) {
-        PlayerAccounts data = new PlayerAccounts(player);
-        DataSection accounts = file.getSection(ACCOUNTS);
+        PlayerAccounts data     = new PlayerAccounts(player);
+        DataSection    accounts = file.getSection(ACCOUNTS);
         if (accounts == null) {
             data.getActiveData().endInit();
             return data;
         }
         for (String accountKey : accounts.keys()) {
             DataSection account = accounts.getSection(accountKey);
-            PlayerData acc = data.getData(Integer.parseInt(accountKey.replace(ACCOUNT_PREFIX, "")), player, true);
+            PlayerData  acc     = null;
+            try {
+                acc = data.getData(Integer.parseInt(accountKey.replace(ACCOUNT_PREFIX, "")), player, true);
+            } catch (NumberFormatException e) {
+                Logger.bug("Could not parse account key '" + accountKey + "' for player " + player.getUniqueId());
+                Logger.bug("This is related to ticket #154. Please paste the player's file and this stack trace.");
+                Logger.bug("https://github.com/promcteam/proskillapi/issues/154");
+                e.printStackTrace();
+            }
 
             // Load classes
             DataSection classes = account.getSection(CLASSES);
@@ -145,9 +151,9 @@ public abstract class IOManager {
                 for (String classKey : classes.keys()) {
                     RPGClass rpgClass = SkillAPI.getClass(classKey);
                     if (rpgClass != null) {
-                        PlayerClass c = acc.setClass(rpgClass);
+                        PlayerClass c         = acc.setClass(rpgClass);
                         DataSection classData = classes.getSection(classKey);
-                        int levels = classData.getInt(LEVEL);
+                        int         levels    = classData.getInt(LEVEL);
                         if (levels > 0)
                             c.setLevel(levels);
                         c.setPoints(classData.getInt(POINTS));
@@ -163,7 +169,7 @@ public abstract class IOManager {
             DataSection skills = account.getSection(SKILLS);
             if (skills != null) {
                 for (String skillKey : skills.keys()) {
-                    DataSection skill = skills.getSection(skillKey);
+                    DataSection skill     = skills.getSection(skillKey);
                     PlayerSkill skillData = acc.getSkill(skillKey);
                     if (skillData != null) {
                         skillData.setLevel(skill.getInt(LEVEL));
@@ -175,8 +181,8 @@ public abstract class IOManager {
 
             // Load skill bar
             if (SkillAPI.getSettings().isSkillBarEnabled() || SkillAPI.getSettings().isUsingCombat()) {
-                final DataSection skillBar = account.getSection(SKILL_BAR);
-                final PlayerSkillBar bar = acc.getSkillBar();
+                final DataSection    skillBar = account.getSection(SKILL_BAR);
+                final PlayerSkillBar bar      = acc.getSkillBar();
                 if (skillBar != null && bar != null) {
                     boolean enabled = skillBar.getBoolean(ENABLED, true);
                     for (final String key : skillBar.keys()) {
@@ -202,9 +208,9 @@ public abstract class IOManager {
 
             // Load combos
             if (SkillAPI.getSettings().isCustomCombosAllowed()) {
-                DataSection combos = account.getSection(COMBOS);
+                DataSection  combos    = account.getSection(COMBOS);
                 PlayerCombos comboData = acc.getComboData();
-                ComboManager cm = SkillAPI.getComboManager();
+                ComboManager cm        = SkillAPI.getComboManager();
                 if (combos != null && comboData != null) {
                     for (String key : combos.keys()) {
                         Skill skill = SkillAPI.getSkill(key);
@@ -269,7 +275,7 @@ public abstract class IOManager {
             DataSection accounts = file.createSection(ACCOUNTS);
             for (Map.Entry<Integer, PlayerData> entry : data.getAllData().entrySet()) {
                 DataSection account = accounts.createSection(ACCOUNT_PREFIX + entry.getKey());
-                PlayerData acc = entry.getValue();
+                PlayerData  acc     = entry.getValue();
 
                 // Save classes
                 DataSection classes = account.createSection(CLASSES);
@@ -300,8 +306,8 @@ public abstract class IOManager {
                 // Save skill bar
                 if ((SkillAPI.getSettings().isSkillBarEnabled() || SkillAPI.getSettings().isUsingCombat())
                         && acc.getSkillBar() != null) {
-                    DataSection skillBar = account.createSection(SKILL_BAR);
-                    PlayerSkillBar bar = acc.getSkillBar();
+                    DataSection    skillBar = account.createSection(SKILL_BAR);
+                    PlayerSkillBar bar      = acc.getSkillBar();
                     skillBar.set(ENABLED, bar.isEnabled());
                     skillBar.set(SLOTS, new ArrayList<>(bar.getData().keySet()));
                     for (Map.Entry<Integer, String> slotEntry : bar.getData().entrySet()) {
@@ -314,9 +320,9 @@ public abstract class IOManager {
 
                 // Save combos
                 if (SkillAPI.getSettings().isCustomCombosAllowed()) {
-                    DataSection combos = account.createSection(COMBOS);
+                    DataSection  combos    = account.createSection(COMBOS);
                     PlayerCombos comboData = acc.getComboData();
-                    ComboManager cm = SkillAPI.getComboManager();
+                    ComboManager cm        = SkillAPI.getComboManager();
                     if (combos != null && comboData != null) {
                         HashMap<Integer, String> comboMap = comboData.getSkillMap();
                         for (Map.Entry<Integer, String> combo : comboMap.entrySet()) {
