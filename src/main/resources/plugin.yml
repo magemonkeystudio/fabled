@@ -3,7 +3,7 @@ main: com.sucy.skill.SkillAPI
 version: %PROJECT_VERSION%
 authors: [ Travja, goflish, Eniripsa96, Sentropic ]
 depend: [ ProMCCore ]
-softdepend: [ Vault, ProtocolLib, RPGInventory, LibsDisguises, PlaceholderAPI, NoCheatPlus, MythicMobs, WorldGuard, WorldEdit, Mimic ]
+softdepend: [ Vault, Citizens, LibsDisguises, PlaceholderAPI, NoCheatPlus, MythicMobs, WorldGuard, WorldEdit, Mimic ]
 loadbefore: [ Quests ]
 api-version: 1.14
 

@@ -87,32 +87,17 @@
             <version>1.18.22</version>
             <scope>provided</scope>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>com.rit.sucy</groupId>-->
-        <!--            <artifactId>mccore</artifactId>-->
-        <!--            <version>1.67</version>-->
-        <!--            <scope>system</scope>-->
-        <!--            <systemPath>${basedir}/lib/MCCore-1.67.jar</systemPath>-->
-        <!--        </dependency>-->
         <dependency>
-            <groupId>com.sucy.party</groupId>
-            <artifactId>parties</artifactId>
-            <version>1.13</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/Parties-1.13.jar</systemPath>
+            <groupId>com.github.promcteam</groupId>
+            <artifactId>proskillapiparties</artifactId>
+            <version>4edd1b5e56</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>4.1.51.Final</version>
+            <version>4.1.70.Final</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>ru.endlesscode</groupId>
-            <artifactId>rpginventory</artifactId>
-            <version>1.0.6</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/RPGInventory-1.0.6.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>LibsDisguises</groupId>
@@ -183,6 +168,7 @@
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
             <version>4.5.1</version>
+            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.bukkit</groupId>
