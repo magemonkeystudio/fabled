@@ -57,7 +57,7 @@ public class Particle {
 
 //    private static Field connection;
 
-    private static HashMap<String, Object> particleTypes = new HashMap<>();
+    private static final HashMap<String, Object> particleTypes = new HashMap<>();
 
     /**
      * Initializes the SkillAPI particle utility
@@ -65,8 +65,8 @@ public class Particle {
     public static void init() {
         try {
             String version = Bukkit.getServer().getClass().getPackage().getName().substring(23);
-            String nms = "net.minecraft.server." + version + '.';
-            String craft = "org.bukkit.craftbukkit." + version + '.';
+            String nms     = "net.minecraft.server." + version + '.';
+            String craft   = "org.bukkit.craftbukkit." + version + '.';
 //            getHandle = Class.forName(craft + "entity.CraftPlayer").getMethod("getHandle");
 //            connection = Class.forName(nms + "EntityPlayer").getDeclaredField("playerConnection");
 //            sendPacket = Class.forName(nms + "PlayerConnection")

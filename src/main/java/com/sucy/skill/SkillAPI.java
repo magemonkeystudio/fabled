@@ -42,6 +42,7 @@ import com.sucy.skill.dynamic.DynamicClass;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.gui.tool.GUITool;
 import com.sucy.skill.hook.BungeeHook;
+import com.sucy.skill.hook.mimic.MimicHook;
 import com.sucy.skill.hook.PlaceholderAPIHook;
 import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.listener.*;
@@ -534,6 +535,11 @@ public class SkillAPI extends JavaPlugin {
         SkillAPI inst = inst();
         inst.onDisable();
         inst.onEnable();
+    }
+
+    @Override
+    public void onLoad() {
+        MimicHook.init(this);
     }
 
     /**

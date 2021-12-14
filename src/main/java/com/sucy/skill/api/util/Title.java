@@ -21,9 +21,10 @@ public class Title {
     private static Object titleType;
     private static Object subtitleType;
 
-    private static void loadClasses() throws Exception {
+    private static void loadClasses() throws Exception { // This is not used...
         packetTitle = Reflex.getNMSClass("PacketPlayOutTitle");
-        Class<?> chatBaseComponent = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.network.chat.IChatBaseComponent")
+        Class<?> chatBaseComponent = Version.MINOR_VERSION >= 17
+                ? Reflex.getClass("net.minecraft.network.chat.IChatBaseComponent")
                 : Reflex.getNMSClass("IChatBaseComponent");
         serialize = chatBaseComponent.getDeclaredClasses()[0].getDeclaredMethod("a", String.class);
 

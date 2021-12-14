@@ -16,54 +16,9 @@ import java.util.Map;
  * com.sucy.skill.api.particle.SpigotParticles
  */
 public class SpigotParticles {
-    private static boolean error = true;
-
-    public static void play(final Location loc, final String particle, final float dx, final float dy, final float dz, final int count, final float speed, final double distance, final Material material, final int data) {
-        Particle effect;
-        try {
-            effect = Particle.valueOf(particle.toUpperCase().replace(' ','_'));
-        } catch (IllegalArgumentException e) {
-            effect = CONVERSION.get(particle.toLowerCase().replace('_', ' '));
-        }
-        if (effect == null) return;
-        try {
-            if (VersionManager.isVersionAtLeast(11300)) {
-                ArrayList<Player> players = new ArrayList<>();
-                for (Player player : loc.getWorld().getPlayers()) {
-                    if (loc.distance(player.getLocation()) <= distance) {
-                        players.add(player);
-                    }
-                }
-                com.sucy.skill.api.particle.Particle.play(
-                        players,
-                        effect,
-                        loc.getX(),
-                        loc.getY(),
-                        loc.getZ(),
-                        count,
-                        dx,
-                        dy,
-                        dz,
-                        speed,
-                        material,
-                        data
-                );
-            } else {
-                final Object packet = com.sucy.skill.api.particle.Particle.make(
-                        effect.name(), loc.getX(), loc.getY(), loc.getZ(), dx, dy, dz, speed, count, material, 0);
-                com.sucy.skill.api.particle.Particle.send(loc, ImmutableList.of(packet), distance);
-            }
-        } catch (final Exception ex) {
-            if (error) {
-                ex.printStackTrace();
-                error = false;
-            }
-        }
-    }
-
     private static final Map<String, Particle> CONVERSION = ImmutableMap.<String, Particle>builder()
             .put("angry villager", Particle.VILLAGER_ANGRY)
-            .put("barrier", Particle.BARRIER)
+//            .put("barrier", Particle.BARRIER)
             .put("block crack", Particle.BLOCK_CRACK)
             .put("bubble", Particle.WATER_BUBBLE)
             .put("cloud", Particle.CLOUD)
@@ -113,4 +68,48 @@ public class SpigotParticles {
             .put("witch magic", Particle.SPELL_WITCH)
             .put("wolf hearts", Particle.HEART)
             .build();
+    private static boolean error = true;
+
+    public static void play(final Location loc, final String particle, final float dx, final float dy, final float dz, final int count, final float speed, final double distance, final Material material, final int data) {
+        Particle effect;
+        try {
+            effect = Particle.valueOf(particle.toUpperCase().replace(' ','_'));
+        } catch (IllegalArgumentException e) {
+            effect = CONVERSION.get(particle.toLowerCase().replace('_', ' '));
+        }
+        if (effect == null) return;
+        try {
+            if (VersionManager.isVersionAtLeast(11300)) {
+                ArrayList<Player> players = new ArrayList<>();
+                for (Player player : loc.getWorld().getPlayers()) {
+                    if (loc.distance(player.getLocation()) <= distance) {
+                        players.add(player);
+                    }
+                }
+                com.sucy.skill.api.particle.Particle.play(
+                        players,
+                        effect,
+                        loc.getX(),
+                        loc.getY(),
+                        loc.getZ(),
+                        count,
+                        dx,
+                        dy,
+                        dz,
+                        speed,
+                        material,
+                        data
+                );
+            } else {
+                final Object packet = com.sucy.skill.api.particle.Particle.make(
+                        effect.name(), loc.getX(), loc.getY(), loc.getZ(), dx, dy, dz, speed, count, material, 0);
+                com.sucy.skill.api.particle.Particle.send(loc, ImmutableList.of(packet), distance);
+            }
+        } catch (final Exception ex) {
+            if (error) {
+                ex.printStackTrace();
+                error = false;
+            }
+        }
+    }
 }
