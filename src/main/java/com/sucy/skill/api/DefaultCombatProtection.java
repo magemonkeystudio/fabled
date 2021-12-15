@@ -2,6 +2,8 @@ package com.sucy.skill.api;
 
 import com.sucy.skill.hook.NoCheatHook;
 import com.sucy.skill.hook.PluginChecker;
+import lombok.Getter;
+import lombok.Setter;
 import mc.promcteam.engine.mccore.util.Protection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -40,6 +42,10 @@ public class DefaultCombatProtection implements CombatProtection {
     }
 
     public static class FakeEntityDamageByEntityEvent extends EntityDamageByEntityEvent {
+
+        @Getter
+        @Setter
+        public boolean externallyCancelled = false;
 
         public FakeEntityDamageByEntityEvent(@NotNull Entity damager, @NotNull Entity damagee, @NotNull DamageCause cause, double damage) {
             super(damager, damagee, cause, damage);

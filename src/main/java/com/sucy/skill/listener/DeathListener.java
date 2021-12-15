@@ -36,8 +36,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-public class DeathListener extends SkillAPIListener
-{
+public class DeathListener extends SkillAPIListener {
     private final String KILLER = "sapiKiller";
 
     /**

@@ -31,7 +31,7 @@ public interface CombatProtection {
 
             DefaultCombatProtection.FakeEntityDamageByEntityEvent event = new DefaultCombatProtection.FakeEntityDamageByEntityEvent(attacker, target, EntityDamageEvent.DamageCause.CUSTOM, 1.0D);
             Bukkit.getPluginManager().callEvent(event);
-            boolean attackable = !event.isCancelled();
+            boolean attackable = !event.isExternallyCancelled();
 
             event.setCancelled(true);
 
