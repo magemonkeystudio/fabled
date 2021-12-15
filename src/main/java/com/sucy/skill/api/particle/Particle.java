@@ -49,15 +49,13 @@ import java.util.List;
  * Simplified particle utility compared to MCCore's
  */
 public class Particle {
+    private static final HashMap<String, Object> particleTypes = new HashMap<>();
     private static Constructor<?> packet;
-
-    private static Method toNms;
 //    private static Method getHandle;
 //    private static Method sendPacket;
 
 //    private static Field connection;
-
-    private static final HashMap<String, Object> particleTypes = new HashMap<>();
+    private static Method toNms;
 
     /**
      * Initializes the SkillAPI particle utility
@@ -75,7 +73,7 @@ public class Particle {
             Class<?> packetClass;
             // 1.13+ Servers
             Class<?> particleEnum;
-            if (VersionManager.isVersionAtLeast(VersionManager.V1_17)) {
+            if (ReflectionUtil.MINOR_VERSION >= 17) {
                 Class<?> craftParticle = Class.forName(craft + "CraftParticle");
                 toNms = craftParticle.getDeclaredMethod("toNMS", org.bukkit.Particle.class, Object.class);
                 particleEnum = Class.forName("net.minecraft.core.particles.ParticleParam");
