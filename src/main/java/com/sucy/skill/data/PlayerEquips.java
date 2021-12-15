@@ -30,16 +30,21 @@ import com.google.common.base.Objects;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.enums.Operation;
+import com.sucy.skill.api.event.PlayerReadItemAttributeEvent;
 import com.sucy.skill.api.player.PlayerAttributeModifier;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.skills.Skill;
 import mc.promcteam.engine.mccore.config.parse.NumberParser;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -51,9 +56,9 @@ public class PlayerEquips {
 
     private final PlayerData playerData;
 
-    private final EquipData emptyEquip   = new EquipData();
-    private       EquipData handHeldItem = new EquipData();
-    private final HashMap<Integer, EquipData> equips       = new HashMap<Integer, EquipData>();
+    private final EquipData emptyEquip = new EquipData();
+    private EquipData handHeldItem = new EquipData();
+    private final HashMap<Integer, EquipData> equips = new HashMap<Integer, EquipData>();
 
     /**
      * @param player player data reference
@@ -245,7 +250,7 @@ public class PlayerEquips {
         private HashSet<String> classExc;
 
         private ItemStack item;
-        private int       levelReq;
+        private int levelReq;
         private EquipType type;
 
         private final ArrayList<UUID> attrModifierUUIDs = new ArrayList<UUID>();
@@ -271,25 +276,27 @@ public class PlayerEquips {
 
             ItemMeta itemMeta = item.getItemMeta();
 
+            assert itemMeta != null;
             if (!itemMeta.hasLore()) {
                 return;
             }
 
             List<String> lore = itemMeta.getLore();
 
-            Settings settings    = SkillAPI.getSettings();
-            String   classText   = settings.getLoreClassText();
-            String   excludeText = settings.getLoreExcludeText();
-            String   levelText   = settings.getLoreLevelText();
-            boolean  skills      = settings.isCheckSkillLore();
-            boolean  attributes  = settings.isAttributesEnabled();
+            Settings settings = SkillAPI.getSettings();
+            String classText = settings.getLoreClassText();
+            String excludeText = settings.getLoreExcludeText();
+            String levelText = settings.getLoreLevelText();
+            boolean skills = settings.isCheckSkillLore();
+            boolean attributes = settings.isAttributesEnabled();
 
+            assert lore != null;
             for (String line : lore) {
                 String lower = ChatColor.stripColor(line).toLowerCase();
 
                 // Level requirements
-                if (lower.startsWith(levelText)) {
-                    levelReq = NumberParser.parseInt(lower.substring(levelText.length()));
+                if (lower.contains(levelText)) {
+                    levelReq = NumberParser.parseInt(lower.replaceAll("[^0-9]", ""));
                 }
 
                 // Class requirements
@@ -337,16 +344,47 @@ public class PlayerEquips {
                                 break;
                             }
 
-                            text = settings.getAttrGiveText(attr);
-                            if (lower.startsWith(text)) {
-                                if (attribs == null)
-                                    attribs = new HashMap<>();
+                            //判断是否开启
+                            String pattern = settings.getAttrPattern();
+                            PlayerReadItemAttributeEvent event = new PlayerReadItemAttributeEvent(playerData,item,pattern);
+                            Bukkit.getPluginManager().callEvent(event);
+                            //If you want to customize your own rules, you can cancel this event and make your own judgment!
+                            if (!event.isCancelled() && event.getPattern().equals("Regular")){
+                                String infos = lower.replaceAll("[^a-zA-Z\\u4e00-\\u9fa5]", "");
+                                if (infos.contains(attr)) {
+                                    if (attribs == null) {
+                                        attribs = new HashMap<>();
+                                    }
+                                    String normalized = SkillAPI.getAttributeManager().normalize(attr);
+                                    //存储的数据
+                                    int current = attribs.getOrDefault(attr, 0);
+                                    //识别出来的数据
+                                    //NumberParser.parseInt(lower.substring(text.length()).replace("%", ""));
+                                    ScriptEngineManager manager = new ScriptEngineManager();
+                                    ScriptEngine engine = manager.getEngineByName("js");
+                                    Integer result;
+                                    try {
+                                        result = (Integer) engine.eval(lower.replaceAll("[^0-9.+\\-\\\\*/]", ""));
+                                    } catch (ScriptException e) {
+                                        e.printStackTrace();
+                                        result = 0;
+                                    }
+                                    int extra = result;
+                                    attribs.put(normalized, current + extra);
+                                    break;
+                                }
+                            }else{
+                                text = settings.getAttrGiveText(attr);
+                                if (lower.startsWith(text)) {
+                                    if (attribs == null)
+                                        attribs = new HashMap<>();
 
-                                String normalized = SkillAPI.getAttributeManager().normalize(attr);
-                                int    current    = attribs.containsKey(attr) ? attribs.get(attr) : 0;
-                                int    extra      = NumberParser.parseInt(lower.substring(text.length()).replace("%", ""));
-                                attribs.put(normalized, current + extra);
-                                break;
+                                    String normalized = SkillAPI.getAttributeManager().normalize(attr);
+                                    int current = attribs.containsKey(attr) ? attribs.get(attr) : 0;
+                                    int extra = NumberParser.parseInt(lower.substring(text.length()).replace("%", ""));
+                                    attribs.put(normalized, current + extra);
+                                    break;
+                                }
                             }
                         }
                     }
@@ -388,8 +426,8 @@ public class PlayerEquips {
                 return true;
             }
 
-            PlayerClass main      = playerData.getMainClass();
-            String      className = main == null ? "null" : main.getData().getName().toLowerCase();
+            PlayerClass main = playerData.getMainClass();
+            String className = main == null ? "null" : main.getData().getName().toLowerCase();
             if ((levelReq > 0 && (main == null || main.getLevel() < levelReq))
                     || (classExc != null && main != null && classExc.contains(className))
                     || (classReq != null && (main == null || !classReq.contains(className))))

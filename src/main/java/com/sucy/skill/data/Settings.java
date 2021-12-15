@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.data.Settings
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,6 +33,8 @@ import com.sucy.party.Party;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.CombatProtection;
 import com.sucy.skill.api.DefaultCombatProtection;
+import com.sucy.skill.api.event.EntityCanAttackEntity;
+import com.sucy.skill.api.event.PlayerCanAttackPlayer;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.cast.IndicatorSettings;
@@ -47,6 +49,7 @@ import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.config.parse.NumberParser;
 import mc.promcteam.engine.mccore.util.TextFormatter;
 import mc.promcteam.engine.mccore.util.VersionManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.*;
@@ -132,6 +135,7 @@ public class Settings {
     private static final String ITEM_EXCLUDE = ITEM_BASE + "lore-exclude-text";
     private static final String ITEM_ATTR    = ITEM_BASE + "lore-attribute-text";
     private static final String ITEM_STATS   = ITEM_BASE + "attribute-text";
+    private static final String ITEM_PATTERN = ITEM_BASE + "attribute-pattern";
     private static final String ITEM_SLOTS   = ITEM_BASE + "slots";
     private static final String CAST_BASE      = "Casting.";
     private static final String CAST_ENABLED   = CAST_BASE + "enabled";
@@ -240,6 +244,7 @@ public class Settings {
     private String skillPre, skillPost;
     private String attrReqPre, attrReqPost;
     private String attrPre, attrPost;
+    private String attrPattern;
     private List<String> titleMessages;
     private boolean oldHealth;
     private boolean forceScaling;
@@ -466,7 +471,6 @@ public class Settings {
      * Retrieves the settings for a class group
      *
      * @param group name of the group to retrieve the settings for
-     *
      * @return settings for the class group
      */
     public GroupSettings getGroupSettings(String group) {
@@ -510,7 +514,6 @@ public class Settings {
      * by checking permissions for additional accounts.
      *
      * @param player player to check the max allowed accounts for
-     *
      * @return number of allowed accounts
      */
     public int getMaxAccounts(Player player) {
@@ -556,26 +559,41 @@ public class Settings {
      *
      * @param attacker the attacking entity
      * @param target   the target entity
-     *
      * @return true if can be attacked, false otherwise
      */
     public boolean canAttack(LivingEntity attacker, LivingEntity target) {
+        EntityCanAttackEntity eventC = new EntityCanAttackEntity(attacker, target, combatProtection.canAttack(attacker, target));
+        Bukkit.getPluginManager().callEvent(eventC);
+        if (eventC.isCancelled()) {
+            return eventC.isCanAttack();
+        }
         if (attacker instanceof Player) {
             final Player player = (Player) attacker;
             if (target instanceof Animals && !(target instanceof Tameable)) {
-                if (passiveAlly || passiveWorlds.contains(attacker.getWorld().getName())) { return false; }
+                if (passiveAlly || passiveWorlds.contains(attacker.getWorld().getName())) {
+                    return false;
+                }
             } else if (target instanceof Monster) {
-                if (monsterEnemy || monsterWorlds.contains(attacker.getWorld().getName())) { return true; }
+                if (monsterEnemy || monsterWorlds.contains(attacker.getWorld().getName())) {
+                    return true;
+                }
             } else if (target instanceof Player) {
-                if (playerAlly || playerWorlds.contains(attacker.getWorld().getName())) { return false; }
+                if (playerAlly || playerWorlds.contains(attacker.getWorld().getName())) {
+                    return false;
+                }
 
+                //add
+                boolean can;
+                can = combatProtection.canAttack(player, (Player) target);
                 if (PluginChecker.isPartiesActive() && partiesAlly) {
                     final Parties parties = Parties.getPlugin(Parties.class);
                     final Party p1 = parties.getJoinedParty(player);
                     final Party p2 = parties.getJoinedParty((Player) target);
-                    return p1 == null || p1 != p2;
+                    can = p1 == null || p1 != p2;
                 }
-                return combatProtection.canAttack(player, (Player) target);
+                PlayerCanAttackPlayer event = new PlayerCanAttackPlayer(attacker, target, can);
+                Bukkit.getPluginManager().callEvent(event);
+                return event.isCanAttack();
             }
             return combatProtection.canAttack(player, target);
         } else if (attacker instanceof Tameable) {
@@ -584,7 +602,9 @@ public class Settings {
                 return (tameable.getOwner() != target)
                         && canAttack((LivingEntity) tameable.getOwner(), target);
             }
-        } else { return !(target instanceof Monster); }
+        } else {
+            return !(target instanceof Monster);
+        }
 
         return combatProtection.canAttack(attacker, target);
     }
@@ -594,7 +614,6 @@ public class Settings {
      *
      * @param attacker the attacking entity
      * @param target   the target entity
-     *
      * @return true if an ally, false otherwise
      */
     public boolean isAlly(LivingEntity attacker, LivingEntity target) {
@@ -631,17 +650,23 @@ public class Settings {
         if (config.isList(TARGET_MONSTER)) {
             monsterWorlds.addAll(config.getList(TARGET_MONSTER));
             monsterEnemy = false;
-        } else { monsterEnemy = config.getBoolean(TARGET_MONSTER); }
+        } else {
+            monsterEnemy = config.getBoolean(TARGET_MONSTER);
+        }
 
         if (config.isList(TARGET_PASSIVE)) {
             passiveWorlds.addAll(config.getList(TARGET_PASSIVE));
             passiveAlly = false;
-        } else { passiveAlly = config.getBoolean(TARGET_PASSIVE); }
+        } else {
+            passiveAlly = config.getBoolean(TARGET_PASSIVE);
+        }
 
         if (config.isList(TARGET_PLAYER)) {
             playerWorlds.addAll(config.getList(TARGET_PLAYER));
             playerAlly = false;
-        } else { playerAlly = config.getBoolean(TARGET_PLAYER); }
+        } else {
+            playerAlly = config.getBoolean(TARGET_PLAYER);
+        }
 
         partiesAlly = config.getBoolean(TARGET_PARTIES);
         affectArmorStands = config.getBoolean(TARGET_STANDS);
@@ -877,9 +902,12 @@ public class Settings {
 
     /**
      * Return whether skill mechanics should use 'data' values as CustomModelData
+     *
      * @return skill mechanics use CustomModelData
      */
-    public boolean useSkillModelData() { return skillModelData; }
+    public boolean useSkillModelData() {
+        return skillModelData;
+    }
 
     /**
      * Retrieves the list of filtered blocks
@@ -904,7 +932,7 @@ public class Settings {
         skillModelData = config.getBoolean(SKILL_MODEL_DATA);
         if (skillModelData) {
             try {
-                ItemMeta.class.getMethod("hasCustomModelData",null);
+                ItemMeta.class.getMethod("hasCustomModelData", null);
             } catch (NoSuchMethodException e) {
                 skillModelData = false;
                 Logger.log("CustomModelData not supported below 1.14+. Using item durability/data instead.");
@@ -1014,6 +1042,13 @@ public class Settings {
     }
 
     /**
+     * @return attr pattern
+     */
+    public String getAttrPattern() {
+        return attrPattern;
+    }
+
+    /**
      * @return slots checked for requirements and attributes
      */
     public int[] getSlots() {
@@ -1028,6 +1063,8 @@ public class Settings {
         loreClassText = config.getString(ITEM_CLASS).toLowerCase();
         loreLevelText = config.getString(ITEM_LEVEL).toLowerCase();
         loreExcludeText = config.getString(ITEM_EXCLUDE).toLowerCase();
+        attrPattern = config.getString(ITEM_PATTERN).toLowerCase();
+
 
         String temp = config.getString(ITEM_SKILL).toLowerCase();
         int index = temp.indexOf('{');
@@ -1045,9 +1082,13 @@ public class Settings {
         attrPost = temp.substring(index + 6);
 
         List<String> slotList = config.getList(ITEM_SLOTS);
-        if (!VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) { slotList.remove("40"); }
+        if (!VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
+            slotList.remove("40");
+        }
         slots = new int[slotList.size()];
-        for (int i = 0; i < slots.length; i++) { slots[i] = NumberParser.parseInt(slotList.get(i)); }
+        for (int i = 0; i < slots.length; i++) {
+            slots[i] = NumberParser.parseInt(slotList.get(i));
+        }
     }
 
     /**
@@ -1157,7 +1198,6 @@ public class Settings {
      * on the given message type
      *
      * @param type type of message to check for
-     *
      * @return true if should use title display, false otherwise
      */
     public boolean useTitle(TitleType type) {
@@ -1363,18 +1403,20 @@ public class Settings {
      * Gets the required amount of experience at a given level
      *
      * @param level level of the class
-     *
      * @return required experience to gain a level
      */
     public int getRequiredExp(int level) {
-        if (useCustomExp) { return (int) expCustom.compute(level, 0); } else { return expFormula.calculate(level); }
+        if (useCustomExp) {
+            return (int) expCustom.compute(level, 0);
+        } else {
+            return expFormula.calculate(level);
+        }
     }
 
     /**
      * Gets the experience yield of a mob
      *
      * @param mob mob to get the yield of
-     *
      * @return experience yield
      */
     public double getYield(String mob) {
@@ -1554,14 +1596,16 @@ public class Settings {
 
         DataSection icon = bar.getSection("empty-icon");
         Material mat = Material.matchMaterial(icon.getString("material", "PUMPKIN_SEEDS"));
-        if (mat == null) { mat = Material.PUMPKIN_SEEDS; }
+        if (mat == null) {
+            mat = Material.PUMPKIN_SEEDS;
+        }
         unassigned = new ItemStack(mat);
 
         ItemMeta meta = unassigned.getItemMeta();
 
         final int data = icon.getInt("data", 0);
         if (guiModelData) {
-            if (data!=0) {
+            if (data != 0) {
                 meta.setCustomModelData(data);
             }
         } else {
@@ -1572,7 +1616,9 @@ public class Settings {
             List<String> format = TextFormatter.colorStringList(icon.getList("text"));
             meta.setDisplayName(format.remove(0));
             meta.setLore(format);
-        } else { meta.setDisplayName(TextFormatter.colorString(icon.getString("text", "&7Unassigned"))); }
+        } else {
+            meta.setDisplayName(TextFormatter.colorString(icon.getString("text", "&7Unassigned")));
+        }
 
         if (OLD_DURABILITY) {
             unassigned.setItemMeta(meta);
@@ -1619,7 +1665,6 @@ public class Settings {
      * Checks whether or not SkillAPI is active in the world
      *
      * @param world world to check
-     *
      * @return true if active, false otherwise
      */
     public boolean isWorldEnabled(World world) {
@@ -1631,7 +1676,6 @@ public class Settings {
      * the given name.
      *
      * @param world world name
-     *
      * @return true if active, false otherwise
      */
     public boolean isWorldEnabled(String world) {

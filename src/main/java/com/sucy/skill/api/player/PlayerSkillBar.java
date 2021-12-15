@@ -229,6 +229,17 @@ public class PlayerSkillBar
             player.cast(skill);
     }
 
+
+    public void closeBar() {
+        clear(player.getPlayer());
+        enabled = false;
+    }
+
+    public void usedBar() {
+        enabled = true;
+        setup(player.getPlayer());
+    }
+
     /**
      * Clears the skill bar icons for the player
      *
