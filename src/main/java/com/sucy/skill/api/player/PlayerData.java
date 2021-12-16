@@ -105,7 +105,8 @@ public class PlayerData {
     private       boolean        passive;
     private       int            attribPoints;
     private       long           skillTimer;
-    private       BukkitTask     removeTimer;
+    private       BukkitTask removeTimer;
+    private final List<UUID> onCooldown = new ArrayList<>();
 
     /**
      * Initializes a new account data representation for a player.
@@ -244,6 +245,12 @@ public class PlayerData {
         init = false;
     }
 
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                    Attributes                     //
+    //                                                   //
+    ///////////////////////////////////////////////////////
+
     /**
      * Retrieves the name of the active map menu scheme for the player
      *
@@ -252,12 +259,6 @@ public class PlayerData {
     public String getScheme() {
         return scheme;
     }
-
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //                    Attributes                     //
-    //                                                   //
-    ///////////////////////////////////////////////////////
 
     /**
      * Sets the active scheme name for the player
@@ -648,6 +649,12 @@ public class PlayerData {
         return value;
     }
 
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                      Skills                       //
+    //                                                   //
+    ///////////////////////////////////////////////////////
+
     /**
      * Opens the attribute menu for the player
      *
@@ -661,12 +668,6 @@ public class PlayerData {
         }
         return false;
     }
-
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //                      Skills                       //
-    //                                                   //
-    ///////////////////////////////////////////////////////
 
     /**
      * Retrieves the player's attribute data.
@@ -1052,6 +1053,12 @@ public class PlayerData {
         return classes.size() > 1 ? showDetails(player) : showSkills(player, getMainClass());
     }
 
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                     Classes                       //
+    //                                                   //
+    ///////////////////////////////////////////////////////
+
     /**
      * Shows the skill tree to the player for the given class
      *
@@ -1080,12 +1087,6 @@ public class PlayerData {
                         playerClass.getData().getSkillMap());
         return true;
     }
-
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //                     Classes                       //
-    //                                                   //
-    ///////////////////////////////////////////////////////
 
     /**
      * Retrieves the name of the class shown in the skill tree
@@ -1414,6 +1415,12 @@ public class PlayerData {
         }
     }
 
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                  Health and Mana                  //
+    //                                                   //
+    ///////////////////////////////////////////////////////
+
     /**
      * Gives levels to the player for all classes matching the experience source
      *
@@ -1432,12 +1439,6 @@ public class PlayerData {
         this.updatePlayerStat(getPlayer());
         return success;
     }
-
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //                  Health and Mana                  //
-    //                                                   //
-    ///////////////////////////////////////////////////////
 
     /**
      * Gives skill points to the player for all classes matching the experience source
@@ -1767,6 +1768,12 @@ public class PlayerData {
         }
     }
 
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                   Skill Binding                   //
+    //                                                   //
+    ///////////////////////////////////////////////////////
+
     /**
      * Clear all attribute modifier which is not persistent
      */
@@ -1788,12 +1795,6 @@ public class PlayerData {
         this.equips.update(getPlayer());
         this.updatePlayerStat(getPlayer());
     }
-
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //                   Skill Binding                   //
-    //                                                   //
-    ///////////////////////////////////////////////////////
 
     /**
      * Clear all of the modifiers including stat modifier and attribute modifier
@@ -1886,6 +1887,12 @@ public class PlayerData {
         return binds.remove(mat) != null;
     }
 
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                     Functions                     //
+    //                                                   //
+    ///////////////////////////////////////////////////////
+
     /**
      * Clears the skill binding for the given skill. This will remove the bindings
      * on all materials involving the skill.
@@ -1901,12 +1908,6 @@ public class PlayerData {
             }
         }
     }
-
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //                     Functions                     //
-    //                                                   //
-    ///////////////////////////////////////////////////////
 
     /**
      * Clears all binds the player currently has
@@ -2118,7 +2119,11 @@ public class PlayerData {
 
         // On Cooldown
         if (status == SkillStatus.ON_COOLDOWN && cooldown) {
-            SkillAPI.getLanguage().sendMessage(ErrorNodes.COOLDOWN, getPlayer(), FilterType.COLOR, RPGFilter.COOLDOWN.setReplacement(skill.getCooldown() + ""), RPGFilter.SKILL.setReplacement(skill.getData().getName()));
+            if (!onCooldown.contains(getUUID())) {
+                SkillAPI.getLanguage().sendMessage(ErrorNodes.COOLDOWN, getPlayer(), FilterType.COLOR, RPGFilter.COOLDOWN.setReplacement(skill.getCooldown() + ""), RPGFilter.SKILL.setReplacement(skill.getData().getName()));
+                onCooldown.add(getUUID());
+                Bukkit.getScheduler().runTaskLater(SkillAPI.inst(), () -> onCooldown.remove(getUUID()), 40L);
+            }
             return PlayerSkillCastFailedEvent.invoke(skill, Cause.ON_COOLDOWN);
         }
 
