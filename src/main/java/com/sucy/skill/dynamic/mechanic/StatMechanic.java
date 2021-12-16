@@ -52,6 +52,19 @@ public class StatMechanic extends MechanicComponent {
 
     private final Map<Integer, Map<String, StatTask>> tasks = new HashMap<>();
 
+    @Override
+    public String getKey() {
+        return "stat";
+    }
+
+    @Override
+    protected void doCleanUp(final LivingEntity user) {
+        final Map<String, StatTask> casterTasks = tasks.remove(user.getEntityId());
+        if (casterTasks != null) {
+            casterTasks.values().forEach(StatTask::stop);
+        }
+    }
+
     /**
      * Executes the component
      *
@@ -69,7 +82,7 @@ public class StatMechanic extends MechanicComponent {
         }
 
         final Map<String, StatTask> casterTasks = tasks.computeIfAbsent(caster.getEntityId(), HashMap::new);
-        final int                   amount      = (int) parseValues(caster, AMOUNT, level, 5);
+        final double                amount      = parseValues(caster, AMOUNT, level, 5);
         final double                seconds     = parseValues(caster, SECONDS, level, 3.0);
         final boolean               stackable   = settings.getString(STACKABLE, "false").equalsIgnoreCase("true");
         final int                   ticks       = (int) (seconds * 20);
@@ -103,19 +116,6 @@ public class StatMechanic extends MechanicComponent {
             }
         }
         return worked;
-    }
-
-    @Override
-    public String getKey() {
-        return "stat";
-    }
-
-    @Override
-    protected void doCleanUp(final LivingEntity user) {
-        final Map<String, StatTask> casterTasks = tasks.remove(user.getEntityId());
-        if (casterTasks != null) {
-            casterTasks.values().forEach(StatTask::stop);
-        }
     }
 
     private class StatTask extends BukkitRunnable {
