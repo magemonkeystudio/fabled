@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.data.Settings
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -42,6 +42,7 @@ import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.gui.tool.GUITool;
 import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.log.Logger;
+import lombok.Getter;
 import mc.promcteam.engine.mccore.config.CommentedConfig;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.config.parse.NumberParser;
@@ -62,12 +63,12 @@ import java.util.*;
  */
 public class Settings {
 
-    private static final String DEFAULT_YIELD = "default";
-    private static final String ACCOUNT_BASE = "Accounts.";
-    private static final String ACCOUNT_MAIN = ACCOUNT_BASE + "main-class-group";
-    private static final String ACCOUNT_EACH = ACCOUNT_BASE + "one-per-class";
-    private static final String ACCOUNT_MAX  = ACCOUNT_BASE + "max-accounts";
-    private static final String ACCOUNT_PERM = ACCOUNT_BASE + "perm-accounts";
+    private static final String DEFAULT_YIELD  = "default";
+    private static final String ACCOUNT_BASE   = "Accounts.";
+    private static final String ACCOUNT_MAIN   = ACCOUNT_BASE + "main-class-group";
+    private static final String ACCOUNT_EACH   = ACCOUNT_BASE + "one-per-class";
+    private static final String ACCOUNT_MAX    = ACCOUNT_BASE + "max-accounts";
+    private static final String ACCOUNT_PERM   = ACCOUNT_BASE + "perm-accounts";
     private static final String TARGET_BASE    = "Targeting.";
     private static final String TARGET_MONSTER = TARGET_BASE + "monsters-enemy";
     private static final String TARGET_PASSIVE = TARGET_BASE + "passive-ally";
@@ -81,58 +82,59 @@ public class Settings {
     private static final String TARGET_PARTIES = TARGET_BASE + "parties-ally";
     private static final String TARGET_NPC     = TARGET_BASE + "affect-npcs";
     private static final String TARGET_STANDS  = TARGET_BASE + "affect-armor-stands";
-    private static final String SAVE_BASE = "Saving.";
-    private static final String SAVE_AUTO = SAVE_BASE + "auto-save";
-    private static final String SAVE_MINS = SAVE_BASE + "minutes";
-    private static final String SAVE_SQL  = SAVE_BASE + "sql-database";
-    private static final String SAVE_SQLD = SAVE_BASE + "sql-details";
-    private static final String CLASS_BASE   = "Classes.";
-    private static final String CLASS_MODIFY = CLASS_BASE + "modify-health";
-    private static final String CLASS_HP     = CLASS_BASE + "classless-hp";
-    private static final String CLASS_SHOW   = CLASS_BASE + "show-auto-skills";
-    private static final String CLASS_ATTRIB = CLASS_BASE + "attributes-enabled";
-    private static final String CLASS_REFUND = CLASS_BASE + "attributes-downgrade";
+    private static final String SAVE_BASE      = "Saving.";
+    private static final String SAVE_AUTO      = SAVE_BASE + "auto-save";
+    private static final String SAVE_MINS      = SAVE_BASE + "minutes";
+    private static final String SAVE_SQL       = SAVE_BASE + "sql-database";
+    private static final String SAVE_SQLD      = SAVE_BASE + "sql-details";
+    private static final String CLASS_BASE     = "Classes.";
+    private static final String CLASS_MODIFY   = CLASS_BASE + "modify-health";
+    private static final String CLASS_HP       = CLASS_BASE + "classless-hp";
+    private static final String CLASS_SHOW     = CLASS_BASE + "show-auto-skills";
+    private static final String CLASS_ATTRIB   = CLASS_BASE + "attributes-enabled";
+    private static final String CLASS_REFUND   = CLASS_BASE + "attributes-downgrade";
 
     ///////////////////////////////////////////////////////
     //                                                   //
     //                  Group Settings                   //
     //                                                   //
     ///////////////////////////////////////////////////////
-    private static final String CLASS_LEVEL  = CLASS_BASE + "level-up-skill";
-    private static final String MANA_BASE    = "Mana.";
+    private static final String CLASS_LEVEL = CLASS_BASE + "level-up-skill";
+    private static final String MANA_BASE   = "Mana.";
 
     ///////////////////////////////////////////////////////
     //                                                   //
     //                 Account Settings                  //
     //                                                   //
     ///////////////////////////////////////////////////////
-    private static final String MANA_ENABLED = MANA_BASE + "enabled";
-    private static final String MANA_FREQ    = MANA_BASE + "freq";
-    private static final String SKILL_BASE      = "Skills.";
-    private static final String SKILL_DOWNGRADE = SKILL_BASE + "allow-downgrade";
-    private static final String SKILL_MESSAGE   = SKILL_BASE + "show-messages";
-    private static final String SKILL_RADIUS    = SKILL_BASE + "message-radius";
-    private static final String SKILL_BLOCKS    = SKILL_BASE + "block-filter";
-    private static final String SKILL_KNOCKBACK = SKILL_BASE + "knockback-no-damage";
-    private static final String SKILL_MODEL_DATA = SKILL_BASE+"use-custommodeldata";
-    private static final String ITEM_BASE    = "Items.";
-    private static final String ITEM_LORE    = ITEM_BASE + "lore-requirements";
-    private static final String ITEM_DROP    = ITEM_BASE + "drop-weapon";
-    private static final String ITEM_SKILLS  = ITEM_BASE + "skill-requirements";
-    private static final String ITEM_ATTRIBS = ITEM_BASE + "lore-attributes";
+    private static final String MANA_ENABLED     = MANA_BASE + "enabled";
+    private static final String MANA_FREQ        = MANA_BASE + "freq";
+    private static final String SKILL_BASE       = "Skills.";
+    private static final String SKILL_DOWNGRADE  = SKILL_BASE + "allow-downgrade";
+    private static final String SKILL_MESSAGE    = SKILL_BASE + "show-messages";
+    private static final String SKILL_RADIUS     = SKILL_BASE + "message-radius";
+    private static final String SKILL_BLOCKS     = SKILL_BASE + "block-filter";
+    private static final String SKILL_KNOCKBACK  = SKILL_BASE + "knockback-no-damage";
+    private static final String SKILL_MODEL_DATA = SKILL_BASE + "use-custommodeldata";
+    private static final String SKILL_REFUND_ON_CHANGE = SKILL_BASE + "refund-on-change";
+    private static final String ITEM_BASE        = "Items.";
+    private static final String ITEM_LORE        = ITEM_BASE + "lore-requirements";
+    private static final String ITEM_DROP        = ITEM_BASE + "drop-weapon";
+    private static final String ITEM_SKILLS      = ITEM_BASE + "skill-requirements";
+    private static final String ITEM_ATTRIBS     = ITEM_BASE + "lore-attributes";
 
     ///////////////////////////////////////////////////////
     //                                                   //
     //                 Targeting Settings                //
     //                                                   //
     ///////////////////////////////////////////////////////
-    private static final String ITEM_CLASS   = ITEM_BASE + "lore-class-text";
-    private static final String ITEM_SKILL   = ITEM_BASE + "lore-skill-text";
-    private static final String ITEM_LEVEL   = ITEM_BASE + "lore-level-text";
-    private static final String ITEM_EXCLUDE = ITEM_BASE + "lore-exclude-text";
-    private static final String ITEM_ATTR    = ITEM_BASE + "lore-attribute-text";
-    private static final String ITEM_STATS   = ITEM_BASE + "attribute-text";
-    private static final String ITEM_SLOTS   = ITEM_BASE + "slots";
+    private static final String ITEM_CLASS     = ITEM_BASE + "lore-class-text";
+    private static final String ITEM_SKILL     = ITEM_BASE + "lore-skill-text";
+    private static final String ITEM_LEVEL     = ITEM_BASE + "lore-level-text";
+    private static final String ITEM_EXCLUDE   = ITEM_BASE + "lore-exclude-text";
+    private static final String ITEM_ATTR      = ITEM_BASE + "lore-attribute-text";
+    private static final String ITEM_STATS     = ITEM_BASE + "attribute-text";
+    private static final String ITEM_SLOTS     = ITEM_BASE + "slots";
     private static final String CAST_BASE      = "Casting.";
     private static final String CAST_ENABLED   = CAST_BASE + "enabled";
     private static final String CAST_BARS      = CAST_BASE + "bars";
@@ -143,141 +145,142 @@ public class Settings {
     private static final String CAST_COOLDOWN  = CAST_BASE + "cooldown";
     private static final String CAST_HOVER     = CAST_BASE + "hover-item";
     private static final String CAST_INSTANT   = CAST_BASE + "instant-item";
-    private static final String COMBO_BASE    = "Click Combos.";
-    private static final String COMBO_ENABLED = COMBO_BASE + "enabled";
-    private static final String COMBO_CUSTOM  = COMBO_BASE + "allow-custom";
-    private static final String COMBO_CLICK   = COMBO_BASE + "use-click-";
-    private static final String COMBO_SIZE    = COMBO_BASE + "combo-size";
+    private static final String COMBO_BASE     = "Click Combos.";
+    private static final String COMBO_ENABLED  = COMBO_BASE + "enabled";
+    private static final String COMBO_CUSTOM   = COMBO_BASE + "allow-custom";
+    private static final String COMBO_CLICK    = COMBO_BASE + "use-click-";
+    private static final String COMBO_SIZE     = COMBO_BASE + "combo-size";
 
     ///////////////////////////////////////////////////////
     //                                                   //
     //                  Saving Settings                  //
     //                                                   //
     ///////////////////////////////////////////////////////
-    private static final String COMBO_TIME    = COMBO_BASE + "click-time";
-    private static final String COMBO_AUTO    = COMBO_BASE + "auto-assign";
-    private static final String EXP_BASE = "Experience.";
-    private static final String WORLD_BASE   = "Worlds.";
-    private static final String WORLD_ENABLE = WORLD_BASE + "enable";
-    private static final String WORLD_TYPE   = WORLD_BASE + "use-as-enabling";
-    private static final String WORLD_LIST   = WORLD_BASE + "worlds";
-    private static final String WG_SKILLS = "disable-skills";
-    private static final String WG_EXP    = "disable-exp";
-    private final HashMap<String, Double>        yields = new HashMap<String, Double>();
-    private final HashMap<String, GroupSettings> groups = new HashMap<String, GroupSettings>();
-    private final SkillAPI                       plugin;
-    private final DataSection                    config;
-    private       boolean     OLD_DURABILITY;
-    private boolean BOUNDING_BOX;
-    private Map<String, Map<String, Double>> breakYields;
-    private Map<String, Map<String, Double>> placeYields;
-    private Map<String, Map<String, Double>> craftYields;
-    private boolean trackBreak;
-    private boolean yieldsEnabled;
-    private String  mainGroup;
-    private boolean onePerClass;
-    private       int                      maxAccounts;
-    private final HashMap<String, Integer> permAccounts = new HashMap<String, Integer>();
-
+    private static final String                           COMBO_TIME       = COMBO_BASE + "click-time";
+    private static final String                           COMBO_AUTO       = COMBO_BASE + "auto-assign";
+    private static final String                           EXP_BASE         = "Experience.";
+    private static final String                           WORLD_BASE       = "Worlds.";
+    private static final String                           WORLD_ENABLE     = WORLD_BASE + "enable";
+    private static final String                           WORLD_TYPE       = WORLD_BASE + "use-as-enabling";
+    private static final String                           WORLD_LIST       = WORLD_BASE + "worlds";
+    private static final String                           WG_SKILLS        = "disable-skills";
+    private static final String                           WG_EXP           = "disable-exp";
+    private final        HashMap<String, Double>          yields           = new HashMap<String, Double>();
+    private final        HashMap<String, GroupSettings>   groups           = new HashMap<String, GroupSettings>();
+    private final        SkillAPI                         plugin;
+    private final        DataSection                      config;
+    private final        HashMap<String, Integer>         permAccounts     = new HashMap<String, Integer>();
     ///////////////////////////////////////////////////////
     //                                                   //
     //                  Class Settings                   //
     //                                                   //
     ///////////////////////////////////////////////////////
-    private final ArrayList<String> monsterWorlds = new ArrayList<String>();
-    private final ArrayList<String> passiveWorlds = new ArrayList<String>();
-    private final ArrayList<String> playerWorlds  = new ArrayList<String>();
-    private       boolean           monsterEnemy;
-    private boolean passiveAlly;
-    private boolean playerAlly;
-    private boolean partiesAlly;
-    private boolean affectNpcs;
-    private boolean affectArmorStands;
-    private CombatProtection combatProtection = new DefaultCombatProtection();
-    private boolean auto;
-    private boolean useSql;
-    private int     minutes;
-    private int     sqlDelay;
-    private String sqlHost;
-    private String sqlPort;
-    private String sqlDatabase;
-    private String sqlUser;
-    private String sqlPass;
-    private boolean modifyHealth;
-    private int     defaultHealth;
-
+    private final        ArrayList<String>                monsterWorlds    = new ArrayList<String>();
+    private final        ArrayList<String>                passiveWorlds    = new ArrayList<String>();
+    private final        ArrayList<String>                playerWorlds     = new ArrayList<String>();
+    private final        boolean[]                        defaultBarLayout = new boolean[9];
+    private final        boolean[]                        lockedSlots      = new boolean[9];
+    private              boolean                          OLD_DURABILITY;
+    private              boolean                          BOUNDING_BOX;
+    private              Map<String, Map<String, Double>> breakYields;
+    private              Map<String, Map<String, Double>> placeYields;
+    private              Map<String, Map<String, Double>> craftYields;
+    private              boolean                          trackBreak;
+    private              boolean                          yieldsEnabled;
+    private              String                           mainGroup;
+    private              boolean                          onePerClass;
+    private              int                              maxAccounts;
+    private              boolean                          monsterEnemy;
+    private              boolean                          passiveAlly;
+    private              boolean                          playerAlly;
+    private              boolean                          partiesAlly;
+    private              boolean                          affectNpcs;
+    private              boolean                          affectArmorStands;
+    private              CombatProtection                 combatProtection = new DefaultCombatProtection();
+    private              boolean                          auto;
+    private              boolean                          useSql;
+    private              int                              minutes;
+    private              int                              sqlDelay;
+    private              String                           sqlHost;
+    private              String                           sqlPort;
+    private              String                           sqlDatabase;
+    private              String                           sqlUser;
+    private              String                           sqlPass;
+    private              boolean                          modifyHealth;
+    private              int                              defaultHealth;
     ///////////////////////////////////////////////////////
     //                                                   //
     //                   Mana Settings                   //
     //                                                   //
     ///////////////////////////////////////////////////////
-    private boolean showAutoSkills;
-    private boolean attributesEnabled;
-    private boolean attributesDowngrade;
-    private String  levelUpSkill;
-    private boolean manaEnabled;
-    private int     gainFreq;
-    private ArrayList<Material> filteredBlocks;
-    private boolean allowDowngrade;
-
+    private              boolean                          showAutoSkills;
+    private              boolean                          attributesEnabled;
+    private              boolean                          attributesDowngrade;
+    private              String                           levelUpSkill;
+    private              boolean                          manaEnabled;
+    private              int                              gainFreq;
+    private              ArrayList<Material>              filteredBlocks;
+    private              boolean                          allowDowngrade;
     ///////////////////////////////////////////////////////
     //                                                   //
     //                  Skill Settings                   //
     //                                                   //
     ///////////////////////////////////////////////////////
-    private boolean showSkillMessages;
-    private boolean knockback;
-    private int     messageRadius;
-    private boolean skillModelData;
-    private boolean checkLore;
-    private boolean checkAttribs;
-    private boolean checkSkills;
-    private boolean dropWeapon;
-    private String  loreClassText;
-    private String  loreLevelText;
-    private String  loreExcludeText;
-    private int[]   slots;
-    private String skillPre, skillPost;
+    private              boolean                          showSkillMessages;
+    private              boolean                          knockback;
+    private              int                              messageRadius;
+    private              boolean                          skillModelData;
+    private              boolean                          checkLore;
+    private              boolean                          checkAttribs;
+    private              boolean                          checkSkills;
+    private              boolean                          dropWeapon;
+    private              String                           loreClassText;
+    private              String                           loreLevelText;
+    private              String                           loreExcludeText;
+    private              int[]                            slots;
+    private              String                           skillPre, skillPost;
     private String attrReqPre, attrReqPost;
     private String attrPre, attrPost;
     private List<String> titleMessages;
-    private boolean oldHealth;
-    private boolean forceScaling;
-    private String  levelBar;
-    private String  foodBar;
+    private boolean      oldHealth;
+    private boolean      forceScaling;
+    private String       levelBar;
+    private String       foodBar;
+    @Getter
+    private boolean      refundOnClassChange;
 
     ///////////////////////////////////////////////////////
     //                                                   //
     //                   Item Settings                   //
     //                                                   //
     ///////////////////////////////////////////////////////
-    private String  levelText;
-    private boolean useActionBar;
-    private String  actionText;
-    private boolean showScoreboard;
-    private boolean showClassName;
-    private boolean showClassLevel;
-    private boolean showBinds;
-    private String  bindText;
-    private boolean useTitle;
-    private int     titleDuration;
-    private int     titleFadeIn;
-    private int     titleFadeOut;
-    private boolean guiModelData;
-    private boolean   castEnabled;
-    private boolean   castBars;
-    private boolean   combatEnabled;
-    private int       castSlot;
-    private long      castCooldown;
-    private ItemStack castItem;
-    private ItemStack hoverItem;
-    private ItemStack instantItem;
-    private boolean[] clicks;
-    private boolean   combosEnabled;
-    private boolean   customCombos;
-    private boolean   autoAssignCombos;
-    private int       comboSize;
-    private int       clickTime;
+    private String     levelText;
+    private boolean    useActionBar;
+    private String     actionText;
+    private boolean    showScoreboard;
+    private boolean    showClassName;
+    private boolean    showClassLevel;
+    private boolean    showBinds;
+    private String     bindText;
+    private boolean    useTitle;
+    private int        titleDuration;
+    private int        titleFadeIn;
+    private int        titleFadeOut;
+    private boolean    guiModelData;
+    private boolean    castEnabled;
+    private boolean    castBars;
+    private boolean    combatEnabled;
+    private int        castSlot;
+    private long       castCooldown;
+    private ItemStack  castItem;
+    private ItemStack  hoverItem;
+    private ItemStack  instantItem;
+    private boolean[]  clicks;
+    private boolean    combosEnabled;
+    private boolean    customCombos;
+    private boolean    autoAssignCombos;
+    private int        comboSize;
+    private int        clickTime;
     private ExpFormula expFormula;
     private Formula    expCustom;
     private boolean    useCustomExp;
@@ -285,45 +288,41 @@ public class Settings {
     private boolean    blockSpawner;
     private boolean    blockEgg;
     private boolean    blockCreative;
-    private boolean    showExpMessages;
-
+    private              boolean showExpMessages;
     ///////////////////////////////////////////////////////
     //                                                   //
     //                   GUI Settings                    //
     //                                                   //
     ///////////////////////////////////////////////////////
-    private boolean    showLevelMessages;    private static final String
-            GUI_BASE   = "GUI.",
-            GUI_OLD    = GUI_BASE + "old-health-bar",
-            GUI_FORCE  = GUI_BASE + "force-scaling",
-            GUI_LVLBAR = GUI_BASE + "level-bar",
-            GUI_FOOD   = GUI_BASE + "food-bar",
-            GUI_ACTION = GUI_BASE + "use-action-bar",
-            GUI_TEXT   = GUI_BASE + "action-bar-text",
-            GUI_BOARD  = GUI_BASE + "scoreboard-enabled",
-            GUI_NAME   = GUI_BASE + "show-class-name",
-            GUI_LEVEL  = GUI_BASE + "show-class-level",
-            GUI_BINDS  = GUI_BASE + "show-binds",
-            GUI_BIND_TEXT = GUI_BASE + "show-bind-text",
-            GUI_LVLTXT = GUI_BASE + "class-level-text",
-            GUI_TITLE  = GUI_BASE + "title-enabled",
-            GUI_DUR    = GUI_BASE + "title-duration",
-            GUI_FADEI  = GUI_BASE + "title-fade-in",
-            GUI_FADEO  = GUI_BASE + "title-fade-out",
-            GUI_LIST   = GUI_BASE + "title-messages",
-            GUI_CUSTOMMODELDATA = GUI_BASE + "use-custommodeldata";
-    private boolean    showLossMessages;
-    private Set<String> expLostBlacklist;
-    private boolean   skillBarEnabled;
-    private boolean   skillBarCooldowns;
-    private       ItemStack unassigned;
-    private final boolean[] defaultBarLayout = new boolean[9];
-    private final boolean[] lockedSlots      = new boolean[9];
-    private       List<String> worlds;
+    private boolean      showLevelMessages;        private boolean      showLossMessages;private static final String
+                                 GUI_BASE = "GUI.",
+            GUI_OLD                       = GUI_BASE + "old-health-bar",
+            GUI_FORCE                     = GUI_BASE + "force-scaling",
+            GUI_LVLBAR                    = GUI_BASE + "level-bar",
+            GUI_FOOD                      = GUI_BASE + "food-bar",
+            GUI_ACTION                    = GUI_BASE + "use-action-bar",
+            GUI_TEXT                      = GUI_BASE + "action-bar-text",
+            GUI_BOARD                     = GUI_BASE + "scoreboard-enabled",
+            GUI_NAME                      = GUI_BASE + "show-class-name",
+            GUI_LEVEL                     = GUI_BASE + "show-class-level",
+            GUI_BINDS                     = GUI_BASE + "show-binds",
+            GUI_BIND_TEXT                 = GUI_BASE + "show-bind-text",
+            GUI_LVLTXT                    = GUI_BASE + "class-level-text",
+            GUI_TITLE                     = GUI_BASE + "title-enabled",
+            GUI_DUR                       = GUI_BASE + "title-duration",
+            GUI_FADEI                     = GUI_BASE + "title-fade-in",
+            GUI_FADEO                     = GUI_BASE + "title-fade-out",
+            GUI_LIST                      = GUI_BASE + "title-messages",
+            GUI_CUSTOMMODELDATA           = GUI_BASE + "use-custommodeldata";
+    private Set<String>  expLostBlacklist;
+    private boolean      skillBarEnabled;
+    private boolean      skillBarCooldowns;
+    private ItemStack    unassigned;
+    private List<String> worlds;
     private boolean      worldEnabled;
     private boolean      worldEnableList;
-    private Set<String> skillDisabledRegions;
-    private Set<String> expDisabledRegions;
+    private Set<String>  skillDisabledRegions;
+    private Set<String>  expDisabledRegions;
     /**
      * <p>Initializes a new settings manager.</p>
      * <p>This is already set up by SkillAPI and shouldn't be
@@ -378,9 +377,9 @@ public class Settings {
         loadWorldGuardSettings();
     }
 
-    public boolean useOldDurability() { return OLD_DURABILITY; }
+    public boolean useOldDurability() {return OLD_DURABILITY;}
 
-    public boolean useBoundingBoxes() { return BOUNDING_BOX; }
+    public boolean useBoundingBoxes() {return BOUNDING_BOX;}
 
     public void loadExperienceSettings() {
         CommentedConfig file = new CommentedConfig(plugin, "exp");
@@ -399,8 +398,8 @@ public class Settings {
     private Map<String, Map<String, Double>> loadYields(DataSection config) {
         Map<String, Map<String, Double>> yields = new HashMap<String, Map<String, Double>>();
         for (String className : config.keys()) {
-            HashMap<String, Double> map = new HashMap<String, Double>();
-            DataSection classYields = config.getSection(className);
+            HashMap<String, Double> map         = new HashMap<String, Double>();
+            DataSection             classYields = config.getSection(className);
             for (String type : classYields.keys()) {
                 map.put(type.toUpperCase().replace(" ", "_"), classYields.getDouble(type));
             }
@@ -439,8 +438,8 @@ public class Settings {
     }
 
     public void loadGroupSettings() {
-        CommentedConfig file = new CommentedConfig(plugin, "groups");
-        DataSection config = file.getConfig();
+        CommentedConfig file   = new CommentedConfig(plugin, "groups");
+        DataSection     config = file.getConfig();
         groups.clear();
 
         for (String key : config.keys()) {
@@ -563,16 +562,16 @@ public class Settings {
         if (attacker instanceof Player) {
             final Player player = (Player) attacker;
             if (target instanceof Animals && !(target instanceof Tameable)) {
-                if (passiveAlly || passiveWorlds.contains(attacker.getWorld().getName())) { return false; }
+                if (passiveAlly || passiveWorlds.contains(attacker.getWorld().getName())) {return false;}
             } else if (target instanceof Monster) {
-                if (monsterEnemy || monsterWorlds.contains(attacker.getWorld().getName())) { return true; }
+                if (monsterEnemy || monsterWorlds.contains(attacker.getWorld().getName())) {return true;}
             } else if (target instanceof Player) {
-                if (playerAlly || playerWorlds.contains(attacker.getWorld().getName())) { return false; }
+                if (playerAlly || playerWorlds.contains(attacker.getWorld().getName())) {return false;}
 
                 if (PluginChecker.isPartiesActive() && partiesAlly) {
                     final Parties parties = Parties.getPlugin(Parties.class);
-                    final Party p1 = parties.getJoinedParty(player);
-                    final Party p2 = parties.getJoinedParty((Player) target);
+                    final Party   p1      = parties.getJoinedParty(player);
+                    final Party   p2      = parties.getJoinedParty((Player) target);
                     return p1 == null || p1 != p2;
                 }
                 return combatProtection.canAttack(player, (Player) target);
@@ -584,7 +583,7 @@ public class Settings {
                 return (tameable.getOwner() != target)
                         && canAttack((LivingEntity) tameable.getOwner(), target);
             }
-        } else { return !(target instanceof Monster); }
+        } else {return !(target instanceof Monster);}
 
         return combatProtection.canAttack(attacker, target);
     }
@@ -621,27 +620,21 @@ public class Settings {
         this.combatProtection = combatProtection;
     }
 
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //                   Cast Settings                   //
-    //                                                   //
-    ///////////////////////////////////////////////////////
-
     private void loadTargetingSettings() {
         if (config.isList(TARGET_MONSTER)) {
             monsterWorlds.addAll(config.getList(TARGET_MONSTER));
             monsterEnemy = false;
-        } else { monsterEnemy = config.getBoolean(TARGET_MONSTER); }
+        } else {monsterEnemy = config.getBoolean(TARGET_MONSTER);}
 
         if (config.isList(TARGET_PASSIVE)) {
             passiveWorlds.addAll(config.getList(TARGET_PASSIVE));
             passiveAlly = false;
-        } else { passiveAlly = config.getBoolean(TARGET_PASSIVE); }
+        } else {passiveAlly = config.getBoolean(TARGET_PASSIVE);}
 
         if (config.isList(TARGET_PLAYER)) {
             playerWorlds.addAll(config.getList(TARGET_PLAYER));
             playerAlly = false;
-        } else { playerAlly = config.getBoolean(TARGET_PLAYER); }
+        } else {playerAlly = config.getBoolean(TARGET_PLAYER);}
 
         partiesAlly = config.getBoolean(TARGET_PARTIES);
         affectArmorStands = config.getBoolean(TARGET_STANDS);
@@ -665,6 +658,12 @@ public class Settings {
     public int getSaveFreq() {
         return minutes * 60 * 20;
     }
+
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                   Cast Settings                   //
+    //                                                   //
+    ///////////////////////////////////////////////////////
 
     /**
      * Checks whether or not the plugin is using SQL Database saving
@@ -879,7 +878,7 @@ public class Settings {
      * Return whether skill mechanics should use 'data' values as CustomModelData
      * @return skill mechanics use CustomModelData
      */
-    public boolean useSkillModelData() { return skillModelData; }
+    public boolean useSkillModelData() {return skillModelData;}
 
     /**
      * Retrieves the list of filtered blocks
@@ -890,21 +889,16 @@ public class Settings {
         return filteredBlocks;
     }
 
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //               Click Combo Settings                //
-    //                                                   //
-    ///////////////////////////////////////////////////////
-
     private void loadSkillSettings() {
         allowDowngrade = config.getBoolean(SKILL_DOWNGRADE);
         showSkillMessages = config.getBoolean(SKILL_MESSAGE);
         messageRadius = config.getInt(SKILL_RADIUS);
         knockback = config.getBoolean(SKILL_KNOCKBACK);
         skillModelData = config.getBoolean(SKILL_MODEL_DATA);
+        refundOnClassChange = config.getBoolean(SKILL_REFUND_ON_CHANGE);
         if (skillModelData) {
             try {
-                ItemMeta.class.getMethod("hasCustomModelData",null);
+                ItemMeta.class.getMethod("hasCustomModelData", null);
             } catch (NoSuchMethodException e) {
                 skillModelData = false;
                 Logger.log("CustomModelData not supported below 1.14+. Using item durability/data instead.");
@@ -948,6 +942,12 @@ public class Settings {
     public boolean isCheckSkillLore() {
         return checkSkills;
     }
+
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //               Click Combo Settings                //
+    //                                                   //
+    ///////////////////////////////////////////////////////
 
     /**
      * @return true if should check for attribute bonuses
@@ -1029,8 +1029,8 @@ public class Settings {
         loreLevelText = config.getString(ITEM_LEVEL).toLowerCase();
         loreExcludeText = config.getString(ITEM_EXCLUDE).toLowerCase();
 
-        String temp = config.getString(ITEM_SKILL).toLowerCase();
-        int index = temp.indexOf('{');
+        String temp  = config.getString(ITEM_SKILL).toLowerCase();
+        int    index = temp.indexOf('{');
         skillPre = temp.substring(0, index);
         skillPost = temp.substring(index + 7);
 
@@ -1045,9 +1045,9 @@ public class Settings {
         attrPost = temp.substring(index + 6);
 
         List<String> slotList = config.getList(ITEM_SLOTS);
-        if (!VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) { slotList.remove("40"); }
+        if (!VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {slotList.remove("40");}
         slots = new int[slotList.size()];
-        for (int i = 0; i < slots.length; i++) { slots[i] = NumberParser.parseInt(slotList.get(i)); }
+        for (int i = 0; i < slots.length; i++) {slots[i] = NumberParser.parseInt(slotList.get(i));}
     }
 
     /**
@@ -1111,12 +1111,6 @@ public class Settings {
         return showScoreboard;
     }
 
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //                   Exp Settings                    //
-    //                                                   //
-    ///////////////////////////////////////////////////////
-
     /**
      * Checks whether or not a player's class name is to be
      * shown next to their name
@@ -1140,6 +1134,12 @@ public class Settings {
     public boolean isShowBinds() {
         return showBinds;
     }
+
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                   Exp Settings                    //
+    //                                                   //
+    ///////////////////////////////////////////////////////
 
     public String getBindText() {
         return bindText;
@@ -1310,12 +1310,6 @@ public class Settings {
         return autoAssignCombos;
     }
 
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //                Skill Bar Settings                 //
-    //                                                   //
-    ///////////////////////////////////////////////////////
-
     /**
      * @return enabled clicks as an array of booleans indexed by click ID
      */
@@ -1340,6 +1334,12 @@ public class Settings {
     public int getClickTime() {
         return clickTime;
     }
+
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                Skill Bar Settings                 //
+    //                                                   //
+    ///////////////////////////////////////////////////////
 
     private void loadComboSettings() {
         combosEnabled = config.getBoolean(COMBO_ENABLED);
@@ -1367,7 +1367,7 @@ public class Settings {
      * @return required experience to gain a level
      */
     public int getRequiredExp(int level) {
-        if (useCustomExp) { return (int) expCustom.compute(level, 0); } else { return expFormula.calculate(level); }
+        if (useCustomExp) {return (int) expCustom.compute(level, 0);} else {return expFormula.calculate(level);}
     }
 
     /**
@@ -1436,12 +1436,6 @@ public class Settings {
         return showExpMessages;
     }
 
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //                 Logging Settings                  //
-    //                                                   //
-    ///////////////////////////////////////////////////////
-
     /**
      * Checks whether or not messages should be displayed
      * when a player gains a level
@@ -1451,12 +1445,6 @@ public class Settings {
     public boolean isShowLevelMessages() {
         return showLevelMessages;
     }
-
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //                  World Settings                   //
-    //                                                   //
-    ///////////////////////////////////////////////////////
 
     /**
      * Checks whether or not messages should be displayed
@@ -1476,6 +1464,12 @@ public class Settings {
         return expLostBlacklist.contains(world.getName());
     }
 
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                 Logging Settings                  //
+    //                                                   //
+    ///////////////////////////////////////////////////////
+
     private void loadExpSettings() {
         this.useOrbs = config.getBoolean(EXP_BASE + "use-exp-orbs");
         this.blockSpawner = config.getBoolean(EXP_BASE + "block-mob-spawner");
@@ -1487,9 +1481,9 @@ public class Settings {
         this.expLostBlacklist = new HashSet<>(config.getList(EXP_BASE + "lose-exp-blacklist"));
 
         DataSection formula = config.getSection(EXP_BASE + "formula");
-        int x = formula.getInt("x");
-        int y = formula.getInt("y");
-        int z = formula.getInt("z");
+        int         x       = formula.getInt("x");
+        int         y       = formula.getInt("y");
+        int         z       = formula.getInt("z");
         expFormula = new ExpFormula(x, y, z);
 
         expCustom = new Formula(config.getString(EXP_BASE + "custom-formula"), new CustomValue("lvl"));
@@ -1501,6 +1495,12 @@ public class Settings {
             this.yields.put(key, yields.getDouble(key));
         }
     }
+
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                  World Settings                   //
+    //                                                   //
+    ///////////////////////////////////////////////////////
 
     /**
      * Checks whether or not the skill bar is enabled
@@ -1553,15 +1553,15 @@ public class Settings {
         skillBarCooldowns = bar.getBoolean("show-cooldown", true);
 
         DataSection icon = bar.getSection("empty-icon");
-        Material mat = Material.matchMaterial(icon.getString("material", "PUMPKIN_SEEDS"));
-        if (mat == null) { mat = Material.PUMPKIN_SEEDS; }
+        Material    mat  = Material.matchMaterial(icon.getString("material", "PUMPKIN_SEEDS"));
+        if (mat == null) {mat = Material.PUMPKIN_SEEDS;}
         unassigned = new ItemStack(mat);
 
         ItemMeta meta = unassigned.getItemMeta();
 
         final int data = icon.getInt("data", 0);
         if (guiModelData) {
-            if (data!=0) {
+            if (data != 0) {
                 meta.setCustomModelData(data);
             }
         } else {
@@ -1572,7 +1572,7 @@ public class Settings {
             List<String> format = TextFormatter.colorStringList(icon.getList("text"));
             meta.setDisplayName(format.remove(0));
             meta.setLore(format);
-        } else { meta.setDisplayName(TextFormatter.colorString(icon.getString("text", "&7Unassigned"))); }
+        } else {meta.setDisplayName(TextFormatter.colorString(icon.getString("text", "&7Unassigned")));}
 
         if (OLD_DURABILITY) {
             unassigned.setItemMeta(meta);
@@ -1584,8 +1584,8 @@ public class Settings {
             unassigned.setItemMeta(meta);
         }
 
-        DataSection layout = bar.getSection("layout");
-        int skillCount = 0;
+        DataSection layout     = bar.getSection("layout");
+        int         skillCount = 0;
         for (int i = 0; i < 9; i++) {
             DataSection slot = layout.getSection((i + 1) + "");
             defaultBarLayout[i] = slot.getBoolean("skill", i <= 5);
@@ -1608,12 +1608,6 @@ public class Settings {
     private void loadLoggingSettings() {
         Logger.loadLevels(config.getSection("Logging"));
     }
-
-    ///////////////////////////////////////////////////////
-    //                                                   //
-    //               WorldGuard Settings                 //
-    //                                                   //
-    ///////////////////////////////////////////////////////
 
     /**
      * Checks whether or not SkillAPI is active in the world
@@ -1644,6 +1638,12 @@ public class Settings {
         worlds = config.getList(WORLD_LIST);
     }
 
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //               WorldGuard Settings                 //
+    //                                                   //
+    ///////////////////////////////////////////////////////
+
     public boolean areSkillsDisabledForRegion(final String region) {
         return skillDisabledRegions.contains(region);
     }
@@ -1662,6 +1662,10 @@ public class Settings {
         skillDisabledRegions = ImmutableSet.copyOf(data.getList(WG_SKILLS));
         expDisabledRegions = ImmutableSet.copyOf(data.getList(WG_EXP));
     }
+
+
+
+
 
 
 }

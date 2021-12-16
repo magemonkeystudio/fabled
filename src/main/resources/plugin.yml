@@ -40,7 +40,7 @@ permissions:
     default: op
   skillapi.force:
     description: access to force commands
-    default: false
+    default: op
   skillapi.attrib:
     description: access to giving attribute points
     default: op

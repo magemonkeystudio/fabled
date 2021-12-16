@@ -151,7 +151,7 @@ public abstract class IOManager {
                 for (String classKey : classes.keys()) {
                     RPGClass rpgClass = SkillAPI.getClass(classKey);
                     if (rpgClass != null) {
-                        PlayerClass c         = acc.setClass(rpgClass);
+                        PlayerClass c         = acc.setClass(rpgClass, true);
                         DataSection classData = classes.getSection(classKey);
                         int         levels    = classData.getInt(LEVEL);
                         if (levels > 0)

@@ -56,9 +56,9 @@ import org.bukkit.entity.Player;
 public class PlayerClass {
     private final PlayerData player;
     private       RPGClass   classData;
-    private int level;
-    private int points;
-    private double exp;
+    private       int        level;
+    private       int        points;
+    private       double     exp;
 
     ///////////////////////////////////////////////////////
     //                                                   //
@@ -243,7 +243,6 @@ public class PlayerClass {
      * <p>This treats the points as coming from the source "SPECIAL".</p>
      *
      * @param amount amount of points to give
-     *
      * @throws java.lang.IllegalArgumentException if the points are less than 1
      */
     public void givePoints(int amount) {
@@ -258,7 +257,6 @@ public class PlayerClass {
      *
      * @param amount amount of points to give
      * @param source source of the points
-     *
      * @throws java.lang.IllegalArgumentException if the points are less than 1
      */
     public void givePoints(int amount, PointSource source) {
@@ -318,8 +316,8 @@ public class PlayerClass {
      * it will still launch an experience event, just it will start off as
      * cancelled in case it should still be given in select circumstances.</p>
      *
-     * @param amount amount of experience to give
-     * @param source type of the source of the experience
+     * @param amount      amount of experience to give
+     * @param source      type of the source of the experience
      * @param showMessage whether or not to show the configured message if enabled
      */
     public void giveExp(double amount, ExpSource source, boolean showMessage) {
@@ -424,7 +422,6 @@ public class PlayerClass {
      * <p>This will launch a level event for the gained levels.</p>
      *
      * @param amount amount of levels to give
-     *
      * @throws java.lang.IllegalArgumentException when the level amount is less than 1
      */
     public void giveLevels(int amount) {
@@ -467,5 +464,6 @@ public class PlayerClass {
      */
     public void setClassData(RPGClass classData) {
         this.classData = classData;
+        getPlayerData().setClass(classData, false);
     }
 }

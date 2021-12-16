@@ -6,7 +6,7 @@
 
     <groupId>com.sucy.skill</groupId>
     <artifactId>ProSkillAPI</artifactId>
-    <version>1.1.7.10-ALPHA</version>
+    <version>1.1.7.11-ALPHA</version>
     <packaging>jar</packaging>
 
     <name>ProSkillAPI</name>
@@ -178,6 +178,13 @@
             <groupId>ru.endlesscode.mimic</groupId>
             <artifactId>mimic-bukkit-api</artifactId>
             <version>0.6.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.22</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

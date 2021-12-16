@@ -145,6 +145,10 @@ Skills:
   # If false, defaults to material data or durability.
   use-custommodeldata: false
   #
+  # If set to true, using /class changeclass will refund skill points back to the
+  # player. If false, no refund will take place.
+  refund-on-change: true
+  #
   # Blocks to ignore when using the Block mechanic in dynamic skills
   # End values in an * to do all materials containing the value
   block-filter:

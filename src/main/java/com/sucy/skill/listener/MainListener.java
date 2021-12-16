@@ -115,6 +115,12 @@ public class MainListener extends SkillAPIListener {
         SkillAPI.unloadPlayerData(player, skipSaving);
     }
 
+    public static void init(final Player player) {
+        final PlayerData data = SkillAPI.getPlayerData(player);
+        data.init(player);
+        JOIN_HANDLERS.forEach(handler -> handler.accept(player));
+    }
+
     @Override
     public void cleanup() {
         JOIN_HANDLERS.clear();
@@ -162,14 +168,6 @@ public class MainListener extends SkillAPIListener {
         } else {
             init(player);
         }
-    }
-
-    private void init(final Player player) {
-        final PlayerData data = SkillAPI.getPlayerData(player);
-        data.init(player);
-        data.autoLevel();
-        data.updateScoreboard();
-        JOIN_HANDLERS.forEach(handler -> handler.accept(player));
     }
 
     /**

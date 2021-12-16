@@ -160,14 +160,8 @@ public class BarListener extends SkillAPIListener {
     @EventHandler
     public void onUpgrade(final PlayerSkillUpgradeEvent event) {
         final Player player = event.getPlayerData().getPlayer();
-        if (player != null && event.getPlayerData().getSkillBar().isSetup()) {
-            SkillAPI.schedule(new Runnable() {
-                @Override
-                public void run() {
-                    event.getPlayerData().getSkillBar().update(player);
-                }
-            }, 0);
-        }
+        if (player != null && event.getPlayerData().getSkillBar().isSetup())
+            SkillAPI.schedule(() -> event.getPlayerData().getSkillBar().update(player), 0);
     }
 
     /**
@@ -241,7 +235,7 @@ public class BarListener extends SkillAPIListener {
             final PlayerData data = SkillAPI.getPlayerData((Player) event.getWhoClicked());
             if (data.getSkillBar().isSetup() && !data.getSkillBar().isWeaponSlot(event.getHotbarButton())) {
                 final SkillHandler handler = (SkillHandler) event.getInventory().getHolder();
-                final Skill skill = handler.get(event.getSlot());
+                final Skill        skill   = handler.get(event.getSlot());
                 if (skill != null && skill.canCast()) {
                     data.getSkillBar().assign(data.getSkill(skill.getName()), event.getHotbarButton());
                 }
@@ -257,7 +251,7 @@ public class BarListener extends SkillAPIListener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onToggle(InventoryClickEvent event) {
         // Must click on an active skill bar
-        PlayerData data = SkillAPI.getPlayerData((Player) event.getWhoClicked());
+        PlayerData           data     = SkillAPI.getPlayerData((Player) event.getWhoClicked());
         final PlayerSkillBar skillBar = data.getSkillBar();
         if (!skillBar.isSetup())
             return;
@@ -289,8 +283,8 @@ public class BarListener extends SkillAPIListener {
      */
     @EventHandler
     public void onChangeWorld(PlayerChangedWorldEvent event) {
-        PlayerData data = SkillAPI.getPlayerData(event.getPlayer());
-        boolean enabled = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
+        PlayerData data    = SkillAPI.getPlayerData(event.getPlayer());
+        boolean    enabled = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
         if (data.hasClass() && data.getSkillBar().isSetup() && enabled)
             ignored.add(event.getPlayer().getUniqueId());
         if (enabled)

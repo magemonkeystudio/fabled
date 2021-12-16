@@ -55,7 +55,7 @@ public class GUITask extends RepeatThreadTask {
     private final boolean oldHealth;
 
     private final boolean useAction;
-    private final String actionText;
+    private final String  actionText;
 
     /**
      * Sets up the task, running if any of the GUI options are enabled
@@ -95,6 +95,7 @@ public class GUITask extends RepeatThreadTask {
         Logger.log(LogType.GUI, 1, "Updating GUI (" + VersionManager.getOnlinePlayers().length + " players)...");
         for (Player player : VersionManager.getOnlinePlayers()) {
             if (!SkillAPI.getSettings().isWorldEnabled(player.getWorld())) continue;
+            if (!SkillAPI.hasPlayerData(player)) continue;
 
             PlayerData data = SkillAPI.getPlayerData(player);
 
@@ -134,7 +135,6 @@ public class GUITask extends RepeatThreadTask {
                 player.setSaturation(20);
                 if (data.getMaxMana() == 0) {
                     player.setFoodLevel(20);
-                    ;
                 } else {
                     player.setFoodLevel((int) Math.ceil(20 * data.getMana() / data.getMaxMana()));
                 }
@@ -168,9 +168,9 @@ public class GUITask extends RepeatThreadTask {
                         .replace("{attr}", "" + data.getAttributePoints())
                         .replace("{sp}", "" + main.getPoints());
                 while (filtered.contains("{value:")) {
-                    int index = filtered.indexOf("{value:");
-                    int end = filtered.indexOf('}', index);
-                    String key = filtered.substring(index + 7, end);
+                    int    index = filtered.indexOf("{value:");
+                    int    end   = filtered.indexOf('}', index);
+                    String key   = filtered.substring(index + 7, end);
                     Object value = DynamicSkill.getCastData(player).get(key);
                     filtered = filtered.replace("{value:" + key + "}", (value == null ? "None" : value.toString()));
                 }
