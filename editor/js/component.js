@@ -2343,8 +2343,8 @@ function MechanicLightning()
 
     this.description = 'Strikes lightning on or near the target. Negative offsets will offset it in the opposite direction (e.g. negative forward offset puts it behind the target).';
 
-    this.data.push(new ListValue('Damage', 'damage', ['True', 'False'], 'True')
-        .setTooltip('Whether or not the lightning should deal damage')
+    this.data.push(new AttributeValue('Damage', 'damage', 5, 0)
+        .setTooltip('The damage dealt by the lightning bolt')
     );
     this.data.push(new AttributeValue('Forward Offset', 'forward', 0, 0)
         .setTooltip('How far in front of the target in blocks to place the lightning')
