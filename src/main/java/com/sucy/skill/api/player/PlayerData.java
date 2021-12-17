@@ -1466,7 +1466,7 @@ public class PlayerData {
     public void updatePlayerStat(Player player) {
 
         if (!this.hasClass()) {
-            this.maxHealth = 20;
+            this.maxHealth = 0;
             this.updateHealth(player);
             return;
         }
