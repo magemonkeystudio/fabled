@@ -87,12 +87,13 @@ public class PlayerData {
     private final HashMap<String, ArrayList<PlayerAttributeModifier>> attributesModifiers = new HashMap<>();
     private final HashMap<String, ArrayList<PlayerStatModifier>>      statModifiers       = new HashMap<>();
 
-    private final DataSection    extraData = new DataSection();
+    private final DataSection    extraData  = new DataSection();
     private final UUID           playerUUID;
     private final PlayerSkillBar skillBar;
     private final PlayerCastBars castBars;
     private final PlayerCombos   combos;
     private final PlayerEquips   equips;
+    private final List<UUID>     onCooldown = new ArrayList<>();
     private       String         scheme;
     private       String         menuClass;
     private       double         mana;
@@ -105,8 +106,7 @@ public class PlayerData {
     private       boolean        passive;
     private       int            attribPoints;
     private       long           skillTimer;
-    private       BukkitTask removeTimer;
-    private final List<UUID> onCooldown = new ArrayList<>();
+    private       BukkitTask     removeTimer;
 
     /**
      * Initializes a new account data representation for a player.
@@ -1571,8 +1571,8 @@ public class PlayerData {
 
         AttributeInstance instance  = player.getAttribute(attribute);
         double            def       = instance.getDefaultValue();
-        double            addtional = this.scaleStat(attribKey, def, min, max);
-        instance.setBaseValue(def + addtional);
+        double            modified = this.scaleStat(attribKey, def, min, max);
+        instance.setBaseValue(/*def + */modified);
     }
 
     /**
