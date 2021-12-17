@@ -66,7 +66,6 @@ public class PotionProjectileMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -115,13 +114,13 @@ public class PotionProjectileMechanic extends MechanicComponent {
      * @param hit    the entity hit by the projectile, if any
      */
     public void callback(Entity entity, Collection<LivingEntity> hit) {
-        ArrayList<LivingEntity> targets = new ArrayList<LivingEntity>(hit);
-        String                  group   = settings.getString(ALLY, "enemy").toLowerCase();
-        boolean                 both    = group.equals("both");
-        boolean                 ally    = group.equals("ally");
-        LivingEntity            caster  = (LivingEntity) SkillAPI.getMeta(entity, SKILL_CASTER);
-        int                     level   = SkillAPI.getMetaInt(entity, SKILL_LEVEL);
-        Location                loc     = entity.getLocation();
+        List<LivingEntity> targets = new ArrayList<>(hit);
+        String             group   = settings.getString(ALLY, "enemy").toLowerCase();
+        boolean            both    = group.equals("both");
+        boolean            ally    = group.equals("ally");
+        LivingEntity       caster  = (LivingEntity) SkillAPI.getMeta(entity, SKILL_CASTER);
+        int                level   = SkillAPI.getMetaInt(entity, SKILL_LEVEL);
+        Location           loc     = entity.getLocation();
         for (int i = 0; i < targets.size(); i++) {
             if (!both && SkillAPI.getSettings().canAttack(caster, targets.get(i)) == ally) {
                 targets.remove(i);
