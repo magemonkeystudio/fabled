@@ -26,10 +26,16 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
+import com.sucy.skill.SkillAPI;
+import com.sucy.skill.dynamic.TempEntity;
+import com.sucy.skill.listener.MechanicListener;
 import org.bukkit.Location;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.*;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -38,9 +44,11 @@ import java.util.List;
 public class LightningMechanic extends MechanicComponent {
     private static final Vector up = new Vector(0, 1, 0);
 
+    private static final String DAMAGE = "damage";
+    private static final String GROUP = "group";
+    private static final String CASTER = "caster";
     private static final String FORWARD = "forward";
     private static final String RIGHT   = "right";
-    private static final String DAMAGE  = "damage";
 
     @Override
     public String getKey() {
@@ -62,17 +70,50 @@ public class LightningMechanic extends MechanicComponent {
         if (targets.size() == 0) {
             return false;
         }
-        boolean damage = settings.getBool(DAMAGE, true);
         double forward = parseValues(caster, FORWARD, level, 0);
         double right = parseValues(caster, RIGHT, level, 0);
         for (LivingEntity target : targets) {
             Vector dir = target.getLocation().getDirection().setY(0).normalize();
             Vector nor = dir.clone().crossProduct(up);
             Location loc = target.getLocation().add(dir.multiply(forward).add(nor.multiply(right)));
-            if (damage) { target.getWorld().strikeLightning(loc); } else {
-                target.getWorld().strikeLightningEffect(loc);
-            }
+            LightningStrike lightning =  target.getWorld().strikeLightning(loc);
+            SkillAPI.setMeta(lightning, MechanicListener.P_CALL, new Callback(caster, level, force));
         }
         return targets.size() > 0;
+    }
+
+    public class Callback {
+        private final LivingEntity caster;
+        private final int level;
+        private final boolean force;
+        private final List<LivingEntity> struckEntities = new ArrayList<>();
+
+        public Callback(LivingEntity caster, int level, boolean force) {
+            this.caster = caster;
+            this.level = level;
+            this.force = force;
+        }
+
+        public double execute(LivingEntity entity) {
+            if (struckEntities.contains(entity)) {
+                return -1; // Deals with MC-72028 (lightning bolts sometimes dealing damage twice)
+            }
+            boolean canTarget = false;
+            if (SkillAPI.getSettings().isValidTarget(entity)) {
+                String group = settings.getString(GROUP, "ENEMY").toUpperCase();
+                if (caster != entity) {
+                    canTarget = group.equals("BOTH") || group.equals("ALLY") == SkillAPI.getSettings().isAlly(caster, entity);
+                } else {
+                    canTarget = settings.getBool(CASTER, false);
+                }
+            }
+            if (canTarget) {
+                executeChildren(caster, level, Collections.singletonList(entity), force);
+                struckEntities.add(entity);
+                return parseValues(caster, DAMAGE, level, 5);
+            } else {
+                return -1;
+            }
+        }
     }
 }
