@@ -149,7 +149,7 @@ var Mechanic = {
     ITEM_PROJECTILE:     { name: 'Item Projectile',     container: true,  construct: MechanicItemProjectile     },
     ITEM_REMOVE:         { name: 'Item Remove',         container: false, construct: MechanicItemRemove         },
     LAUNCH:              { name: 'Launch',              container: false, construct: MechanicLaunch             },
-    LIGHTNING:           { name: 'Lightning',           container: false, construct: MechanicLightning          },
+    LIGHTNING:           { name: 'Lightning',           container: true,  construct: MechanicLightning          },
     MANA:                { name: 'Mana',                container: false, construct: MechanicMana               },
     MESSAGE:             { name: 'Message',             container: false, construct: MechanicMessage            },
     PARTICLE:            { name: 'Particle',            container: false, construct: MechanicParticle           },
@@ -2339,12 +2339,18 @@ function MechanicLaunch()
 extend('MechanicLightning', 'Component');
 function MechanicLightning()
 {
-    this.super('Lightning', Type.MECHANIC, false);
+    this.super('Lightning', Type.MECHANIC, true);
 
-    this.description = 'Strikes lightning on or near the target. Negative offsets will offset it in the opposite direction (e.g. negative forward offset puts it behind the target).';
+    this.description = 'Strikes lightning on or near the target, applying child components to the struck targets. Negative offsets will offset it in the opposite direction (e.g. negative forward offset puts it behind the target).';
 
     this.data.push(new AttributeValue('Damage', 'damage', 5, 0)
         .setTooltip('The damage dealt by the lightning bolt')
+    );
+    this.data.push(new ListValue("Group", "group", ["Ally", "Enemy", "Both" ], "Enemy")
+        .setTooltip('The alignment of targets to hit')
+    );
+    this.data.push(new ListValue("Include Caster", "caster", [ 'True', 'False' ], 'False')
+        .setTooltip('Whether the lightning strike can hit the caster')
     );
     this.data.push(new AttributeValue('Forward Offset', 'forward', 0, 0)
         .setTooltip('How far in front of the target in blocks to place the lightning')
