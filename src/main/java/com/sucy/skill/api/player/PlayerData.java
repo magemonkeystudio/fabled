@@ -1264,15 +1264,18 @@ public class PlayerData {
      * the profession entirely, leaving no remaining data until the player professes
      * again to a starting class.
      *
-     * @param group group to reset
+     * @param group      group to reset
+     * @param toSubclass - whether we are professing to a subclass of the previous class
+     * @return the number of skill points to be refunded
      */
-    public void reset(String group) {
+    public int reset(String group, boolean toSubclass) {
         GroupSettings settings = SkillAPI.getSettings().getGroupSettings(group);
         if (!settings.canReset()) {
-            return;
+            return 0;
         }
 
         PlayerClass playerClass = classes.remove(group);
+        int         points      = 0;
         if (playerClass != null) {
             // Remove skills
             RPGClass data = playerClass.getData();
@@ -1281,6 +1284,8 @@ public class PlayerData {
                 if (ps != null && ps.isUnlocked() && ps.getData() instanceof PassiveSkill) {
                     ((PassiveSkill) ps.getData()).stopEffects(getPlayer(), ps.getLevel());
                 }
+
+                if (settings.isProfessRefundSkills() && toSubclass) points += ps.getInvestedCost();
                 combos.removeSkill(skill);
             }
 
@@ -1297,7 +1302,16 @@ public class PlayerData {
             setClass(rpgClass, true);
         }
         binds.clear();
-        resetAttribs();
+
+        int aPoints = 0;
+        if (settings.isProfessRefundAttributes() && toSubclass) {
+            aPoints += attribPoints;
+            for (Entry<String, Integer> entry : attributes.entrySet()) aPoints += entry.getValue();
+        }
+        resetAttribs(); //Should reset attribute points to 0.
+        attribPoints += aPoints;
+
+        return points;
     }
 
     /**
@@ -1307,7 +1321,7 @@ public class PlayerData {
     public void resetAll() {
         ArrayList<String> keys = new ArrayList<>(classes.keySet());
         for (String key : keys) {
-            reset(key);
+            reset(key, false);
         }
     }
 
@@ -1348,8 +1362,10 @@ public class PlayerData {
 
             // Reset data if applicable
             final boolean isResetting = SkillAPI.getSettings().getGroupSettings(rpgClass.getGroup()).isProfessReset();
+            boolean       isSubclass  = previous != null && rpgClass.getParent().getName().equals(previous.getName());
+            int           skillPoints = 0;
             if (isResetting) {
-                reset(rpgClass.getGroup());
+                skillPoints = reset(rpgClass.getGroup(), isSubclass);
             }
 
             // Inherit previous class data if any
@@ -1373,6 +1389,7 @@ public class PlayerData {
 
             Bukkit.getPluginManager().callEvent(new PlayerClassChangeEvent(current, previous, current.getData()));
             resetAttribs();
+            current.setPoints(skillPoints);
             updateScoreboard();
             return true;
         } else {
