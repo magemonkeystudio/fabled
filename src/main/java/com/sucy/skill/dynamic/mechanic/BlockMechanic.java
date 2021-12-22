@@ -182,15 +182,18 @@ public class BlockMechanic extends MechanicComponent {
                 loc.add(dir.multiply(forward).add(nor.multiply(right)));
                 loc.add(0, upward, 0);
 
-                x = loc.getX();
+                double  yaw     = loc.getYaw();
+                boolean facingZ = Math.abs(yaw) < 45 || Math.abs(yaw) > 135;
+
+                x = facingZ ? loc.getX() : loc.getZ();
                 y = loc.getY();
-                z = loc.getZ();
+                z = facingZ ? loc.getZ() : loc.getX();
 
                 // Get all blocks in the area
                 for (double i = x - width; i <= x + width + 0.01; i++) {
                     for (double j = y - height; j <= y + height + 0.01; j++) {
                         for (double k = z - depth; k <= z + depth + 0.01; k++) {
-                            Block b = w.getBlockAt((int) i, (int) j, (int) k);
+                            Block b = w.getBlockAt((int) (facingZ ? i : k), (int) j, (int) (facingZ ? k : i));
                             if ((!solid || b.getType().isSolid())
                                     && (!air || b.getType() == Material.AIR)
                                     && !SkillAPI.getSettings().getFilteredBlocks().contains(b.getType())) {
@@ -203,7 +206,7 @@ public class BlockMechanic extends MechanicComponent {
         }
 
         // Change blocks
-        ArrayList<Location> states = new ArrayList<Location>();
+        ArrayList<Location> states = new ArrayList<>();
         for (Block b : blocks) {
             // Increment the counter
             Location loc = b.getLocation();
