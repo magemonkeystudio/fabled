@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.dynamic.mechanic.BlockMechanic
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -71,11 +71,26 @@ public class BlockMechanic extends MechanicComponent {
      * Checks whether or not the location is modified by a block mechanic
      *
      * @param loc location to check
-     *
      * @return true if modified, false otherwise
      */
     public static boolean isPending(Location loc) {
         return pending.containsKey(loc);
+    }
+
+    @Override
+    public String getKey() {
+        return "block";
+    }
+
+    @Override
+    protected void doCleanUp(final LivingEntity caster) {
+        final List<RevertTask> casterTasks = tasks.remove(caster.getEntityId());
+        if (casterTasks != null) {
+            casterTasks.forEach(task -> {
+                task.revert();
+                task.cancel();
+            });
+        }
     }
 
     /**
@@ -84,13 +99,12 @@ public class BlockMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0) { return false; }
+        if (targets.size() == 0) {return false;}
 
         Material block = Material.ICE;
         try {
@@ -100,30 +114,30 @@ public class BlockMechanic extends MechanicComponent {
         }
 
         boolean sphere = settings.getString(SHAPE, "sphere").equalsIgnoreCase("sphere");
-        int ticks = (int) (20 * parseValues(caster, SECONDS, level, 5));
-        byte data = (byte) settings.getInt(DATA, 0);
+        int     ticks  = (int) (20 * parseValues(caster, SECONDS, level, 5));
+        byte    data   = (byte) settings.getInt(DATA, 0);
 
-        String type = settings.getString(TYPE, "solid").toLowerCase();
+        String  type  = settings.getString(TYPE, "solid").toLowerCase();
         boolean solid = type.equals("solid");
-        boolean air = type.equals("air");
+        boolean air   = type.equals("air");
 
         double forward = parseValues(caster, FORWARD, level, 0);
-        double upward = parseValues(caster, UPWARD, level, 0);
-        double right = parseValues(caster, RIGHT, level, 0);
+        double upward  = parseValues(caster, UPWARD, level, 0);
+        double right   = parseValues(caster, RIGHT, level, 0);
 
         List<Block> blocks = new ArrayList<Block>();
-        World w = caster.getWorld();
+        World       w      = caster.getWorld();
 
         // Grab blocks in a sphere
         if (sphere) {
             double radius = parseValues(caster, RADIUS, level, 3);
             double x, y, z, dx, dy, dz;
-            double rSq = radius * radius;
+            double rSq    = radius * radius;
             for (LivingEntity t : targets) {
                 // Get the center with offsets included
                 Location loc = t.getLocation();
-                Vector dir = t.getLocation().getDirection().setY(0).normalize();
-                Vector nor = dir.clone().crossProduct(UP);
+                Vector   dir = t.getLocation().getDirection().setY(0).normalize();
+                Vector   nor = dir.clone().crossProduct(UP);
                 loc.add(dir.multiply(forward).add(nor.multiply(right)));
                 loc.add(0, upward, 0);
 
@@ -155,16 +169,16 @@ public class BlockMechanic extends MechanicComponent {
         // Grab blocks in a cuboid
         else {
             // Cuboid options
-            double width = (parseValues(caster, WIDTH, level, 5) - 1) / 2;
+            double width  = (parseValues(caster, WIDTH, level, 5) - 1) / 2;
             double height = (parseValues(caster, HEIGHT, level, 5) - 1) / 2;
-            double depth = (parseValues(caster, DEPTH, level, 5) - 1) / 2;
+            double depth  = (parseValues(caster, DEPTH, level, 5) - 1) / 2;
             double x, y, z;
 
             for (LivingEntity t : targets) {
                 // Get the location with offsets included
                 Location loc = t.getLocation();
-                Vector dir = t.getLocation().getDirection().setY(0).normalize();
-                Vector nor = dir.clone().crossProduct(UP);
+                Vector   dir = t.getLocation().getDirection().setY(0).normalize();
+                Vector   nor = dir.clone().crossProduct(UP);
                 loc.add(dir.multiply(forward).add(nor.multiply(right)));
                 loc.add(0, upward, 0);
 
@@ -203,7 +217,8 @@ public class BlockMechanic extends MechanicComponent {
             states.add(b.getLocation());
             BlockState state = b.getState();
             state.setType(block);
-            state.setData(new MaterialData(block, data));
+            if (data > 0)
+                state.setData(new MaterialData(block, data));
             state.update(true, false);
         }
 
@@ -213,22 +228,6 @@ public class BlockMechanic extends MechanicComponent {
         tasks.computeIfAbsent(caster.getEntityId(), ArrayList::new).add(task);
 
         return true;
-    }
-
-    @Override
-    public String getKey() {
-        return "block";
-    }
-
-    @Override
-    protected void doCleanUp(final LivingEntity caster) {
-        final List<RevertTask> casterTasks = tasks.remove(caster.getEntityId());
-        if (casterTasks != null) {
-            casterTasks.forEach(task -> {
-                task.revert();
-                task.cancel();
-            });
-        }
     }
 
     /**
