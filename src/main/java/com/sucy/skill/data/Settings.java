@@ -1150,9 +1150,10 @@ public class Settings {
      * @return required experience to gain a level
      */
     public int getRequiredExp(int level) {
-        //TODO Verify that this actually works as intended. #110
-        if (useCustomExp) return (int) expCustom.compute(level, 0);
-        else return expFormula.calculate(level);
+        if (useCustomExp) {
+            double result = expCustom.compute(level, 0);
+            return (int) result;
+        } else return expFormula.calculate(level);
 
     }
 

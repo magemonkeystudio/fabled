@@ -191,8 +191,7 @@ public class MainListener extends SkillAPIListener {
         BuffManager.clearData(event.getEntity());
         DynamicSkill.clearCastData(event.getEntity());
 
-        if (event.getEntity().hasMetadata("NPC"))
-            return;
+        if (CitizensHook.isNPC(event.getEntity())) return;
 
         PlayerData data = SkillAPI.getPlayerData(event.getEntity());
         if (data.hasClass() && SkillAPI.getSettings().isWorldEnabled(event.getEntity().getWorld())) {

@@ -33,6 +33,7 @@ import com.sucy.skill.api.player.PlayerSkillBar;
 import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.api.util.ItemSerializer;
 import com.sucy.skill.gui.handlers.SkillHandler;
+import com.sucy.skill.hook.CitizensHook;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -250,10 +251,9 @@ public class CastCombatListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onDeath(PlayerDeathEvent event) {
-        if (!SkillAPI.getSettings().isWorldEnabled(event.getEntity().getWorld()))
-            return;
-        if (event.getEntity().getWorld().getGameRuleValue("keepInventory").equals("true"))
-            return;
+        if (CitizensHook.isNPC(event.getEntity())) return;
+        if (!SkillAPI.getSettings().isWorldEnabled(event.getEntity().getWorld())) return;
+        if (event.getEntity().getWorld().getGameRuleValue("keepInventory").equals("true")) return;
 
         PlayerData data = SkillAPI.getPlayerData(event.getEntity());
         if (data.getSkillBar().isSetup()) {
