@@ -653,9 +653,9 @@ public class SkillAPI extends JavaPlugin {
         listen(new ToolListener(), true);
         listen(new KillListener(), true);
         listen(new AddonListener(), true);
+        listen(new ClickListener(), true);
         listen(new ItemListener(), settings.isCheckLore());
         listen(new BarListener(), settings.isSkillBarEnabled());
-        listen(new ClickListener(), settings.isCombosEnabled());
         listen(new ComboListener(), settings.isCombosEnabled());
         listen(new AttributeListener(), settings.isAttributesEnabled());
         listen(new ItemListener(), settings.isCheckAttributes());
@@ -667,7 +667,7 @@ public class SkillAPI extends JavaPlugin {
         listen(new DeathListener(), !VersionManager.isVersionAtLeast(11000));
         listen(new CombatProtectionListener(), VersionManager.isVersionAtLeast(11000));
         listen(new LingeringPotionListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
-        listen(new ExperienceListener(), settings.yieldsEnabled());
+        listen(new ExperienceListener(), settings.isYieldsEnabled());
         listen(new PluginChecker(), true);
 
 

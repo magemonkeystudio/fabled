@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.util.Data
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -56,9 +56,9 @@ public class Data {
             }
 
             final ItemStack item = new ItemStack(material);
-            final ItemMeta meta = item.getItemMeta();
+            final ItemMeta  meta = item.getItemMeta();
             if (SkillAPI.getSettings().useGUIModelData()) {
-                if (data!=0) {
+                if (data != 0) {
                     meta.setCustomModelData(data);
                 }
             } else {
@@ -109,10 +109,12 @@ public class Data {
 
         if (meta.hasDisplayName()) {
             List<String> lore = item.getItemMeta().getLore();
-            if (lore == null) { lore = new ArrayList<>(); }
+            if (lore == null) {lore = new ArrayList<>();}
             lore.add(0, item.getItemMeta().getDisplayName());
             int count = lore.size();
-            for (int i = 0; i < count; i++) { lore.add(lore.remove(0).replace(ChatColor.COLOR_CHAR, '&').replaceAll("attr:&"+".", "attr:")); }
+            for (int i = 0; i < count; i++) {
+                lore.add(lore.remove(0).replace(ChatColor.COLOR_CHAR, '&').replaceAll("attr:&" + ".", "attr:"));
+            }
             config.set(LORE, lore);
         }
     }
@@ -121,7 +123,6 @@ public class Data {
      * Parses an item icon from a configuration
      *
      * @param config config to load from
-     *
      * @return parsed item icon or a plain Jack O' Lantern if invalid
      */
     public static ItemStack parseIcon(DataSection config) {

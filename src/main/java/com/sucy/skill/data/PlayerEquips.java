@@ -51,8 +51,8 @@ public class PlayerEquips {
 
     private final PlayerData playerData;
 
-    private final EquipData emptyEquip   = new EquipData();
-    private       EquipData handHeldItem = new EquipData();
+    private final EquipData                   emptyEquip   = new EquipData();
+    private       EquipData                   handHeldItem = new EquipData();
     private final HashMap<Integer, EquipData> equips       = new HashMap<Integer, EquipData>();
 
     /**
@@ -281,7 +281,7 @@ public class PlayerEquips {
             String   classText   = settings.getLoreClassText();
             String   excludeText = settings.getLoreExcludeText();
             String   levelText   = settings.getLoreLevelText();
-            boolean  skills      = settings.isCheckSkillLore();
+            boolean  skills      = settings.isCheckSkills();
             boolean  attributes  = settings.isAttributesEnabled();
 
             for (String line : lore) {
