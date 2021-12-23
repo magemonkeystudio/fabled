@@ -84,7 +84,7 @@ public class StatMechanic extends MechanicComponent {
         final Map<String, StatTask> casterTasks = tasks.computeIfAbsent(caster.getEntityId(), HashMap::new);
         final double                amount      = parseValues(caster, AMOUNT, level, 5);
         final double                seconds     = parseValues(caster, SECONDS, level, 3.0);
-        final boolean               stackable   = settings.getString(STACKABLE, "false").equalsIgnoreCase("true");
+        final boolean               stackable   = settings.getBool(STACKABLE, false);
         final int                   ticks       = (int) (seconds * 20);
         final String                operation   = settings.getString(OPERATION, "MULTIPLY_PERCENTAGE");
 
@@ -150,7 +150,7 @@ public class StatMechanic extends MechanicComponent {
 
         @Override
         public void run() {
-            data.removeAttributeModifier(modifier.getUUID(), true);
+            data.removeStatModifier(modifier.getUUID(), true);
             if (tasks.containsKey(id)) {
                 tasks.get(id).remove(data.getPlayerName());
             }

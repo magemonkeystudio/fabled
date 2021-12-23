@@ -34,6 +34,7 @@ import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.gui.handlers.SkillHandler;
 import com.sucy.skill.gui.map.SkillDetailMenu;
 import com.sucy.skill.gui.map.SkillListMenu;
+import com.sucy.skill.hook.CitizensHook;
 import mc.promcteam.engine.mccore.gui.MapData;
 import mc.promcteam.engine.mccore.gui.MapMenu;
 import mc.promcteam.engine.mccore.gui.MapMenuManager;
@@ -190,8 +191,8 @@ public class BarListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onDeath(PlayerDeathEvent event) {
-        if (!SkillAPI.getSettings().isWorldEnabled(event.getEntity().getWorld()))
-            return;
+        if (CitizensHook.isNPC(event.getEntity())) return;
+        if (!SkillAPI.getSettings().isWorldEnabled(event.getEntity().getWorld())) return;
 
         PlayerData data = SkillAPI.getPlayerData(event.getEntity());
         if (data.getSkillBar().isSetup()) {

@@ -17,15 +17,15 @@ import java.util.List;
  * Sets the specified armor slot of the target to the item defined by the settings
  */
 public class ArmorMechanic extends MechanicComponent {
-    private static final String SLOT = "slot";
-    private static final String MATERIAL = "material";
-    private static final String AMOUNT = "amount";
+    private static final String SLOT       = "slot";
+    private static final String MATERIAL   = "material";
+    private static final String AMOUNT     = "amount";
     private static final String DURABILITY = "durability";
-    private static final String DATA = "data";
-    private static final String CUSTOM = "custom";
-    private static final String NAME = "name";
-    private static final String LORE = "lore";
-    private static final String OVERWRITE = "overwrite";
+    private static final String DATA       = "data";
+    private static final String CUSTOM     = "custom";
+    private static final String NAME       = "name";
+    private static final String LORE       = "lore";
+    private static final String OVERWRITE  = "overwrite";
 
     @Override
     public String getKey() {
@@ -43,7 +43,7 @@ public class ArmorMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        String mat = settings.getString(MATERIAL, "arrow").toUpperCase().replace(" ", "_");
+        String        mat = settings.getString(MATERIAL, "arrow").toUpperCase().replace(" ", "_");
         EquipmentSlot slot;
         try {
             slot = EquipmentSlot.valueOf(settings.getString(SLOT, "HAND").toUpperCase().replace(" ", "_"));
@@ -56,14 +56,14 @@ public class ArmorMechanic extends MechanicComponent {
         } catch (Exception ex) {
             return false;
         }
-        int amount = settings.getInt(AMOUNT, 1);
-        int durability = settings.getInt(DURABILITY, 0);
-        int data = settings.getInt(DATA, 0);
-        boolean overwrite = settings.getBool(OVERWRITE, false);
+        int     amount     = settings.getInt(AMOUNT, 1);
+        int     durability = settings.getInt(DURABILITY, 0);
+        int     data       = settings.getInt(DATA, 0);
+        boolean overwrite  = settings.getBool(OVERWRITE, false);
 
         ItemStack item = new ItemStack(material, amount);
-        ItemMeta meta = item.getItemMeta();
-        if (settings.getString(CUSTOM, "false").toLowerCase().equals("true")) {
+        ItemMeta  meta = item.getItemMeta();
+        if (settings.getString(CUSTOM, "false").equalsIgnoreCase("true")) {
             String name = TextFormatter.colorString(settings.getString(NAME, ""));
             if (name.length() > 0) {
                 meta.setDisplayName(name);
@@ -90,7 +90,7 @@ public class ArmorMechanic extends MechanicComponent {
         boolean success = false;
         for (LivingEntity target : targets) {
             EntityEquipment equipment = target.getEquipment();
-            boolean proceed = overwrite;
+            boolean         proceed   = overwrite;
             if (!overwrite) {
                 switch (slot) {
                     case FEET:

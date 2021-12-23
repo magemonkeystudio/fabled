@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.particle.direction.DirectionHandler
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -32,8 +32,7 @@ import com.sucy.skill.data.Point3D;
 /**
  * Handles the directional application
  */
-public interface DirectionHandler
-{
+public interface DirectionHandler {
     /**
      * Applies the two results from the polar calculation to a point
      *
@@ -41,35 +40,32 @@ public interface DirectionHandler
      * @param n1    first value
      * @param n2    second value
      */
-    public void apply(Point3D point, double n1, double n2);
+    void apply(Point3D point, double n1, double n2);
 
     /**
      * Calculates the X value of a point after rotation
      *
      * @param p    original point
      * @param trig trig data
-     *
      * @return rotation
      */
-    public double rotateX(Point3D p, Point2D trig);
+    double rotateX(Point3D p, Point2D trig);
 
     /**
      * Calculates the Y value of a point after rotation
      *
      * @param p    original point
      * @param trig trig data
-     *
      * @return rotation
      */
-    public double rotateY(Point3D p, Point2D trig);
+    double rotateY(Point3D p, Point2D trig);
 
     /**
      * Calculates the Z value of a point after rotation
      *
      * @param p    original point
      * @param trig trig data
-     *
      * @return rotation
      */
-    public double rotateZ(Point3D p, Point2D trig);
+    double rotateZ(Point3D p, Point2D trig);
 }

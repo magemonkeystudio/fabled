@@ -36,16 +36,17 @@ import org.bukkit.Particle;
 /**
  * Handles playing effects based on configuration settings
  */
-public class EffectPlayer
-{
-    public static final String SHAPE      = "-shape";
-    public static final String SHAPE_DIR  = "-shape-dir";
-    public static final String SHAPE_SIZE = "-shape-size";
-    public static final String ANIMATION  = "-animation";
-    public static final String ANIM_DIR   = "-anim-dir";
-    public static final String ANIM_SIZE  = "-anim-size";
-    public static final String INTERVAL   = "-interval";
-    public static final String VIEW_RANGE = "-view-range";
+public class EffectPlayer {
+    public static final String SHAPE            = "-shape";
+    public static final String SHAPE_DIR        = "-shape-dir";
+    public static final String SHAPE_SIZE       = "-shape-size";
+    public static final String ANIMATION        = "-animation";
+    public static final String ANIM_DIR         = "-anim-dir";
+    public static final String ANIM_SIZE        = "-anim-size";
+    public static final String INTERVAL         = "-interval";
+    public static final String VIEW_RANGE       = "-view-range";
+    public static final String WITH_ROTATION    = "-with-rotation";
+    public static final String INITIAL_ROTATION = "-initial-rotation";
 
     public static final String P_TYPE = "-particle-type";
     public static final String MAT    = "-particle-material";
@@ -56,7 +57,7 @@ public class EffectPlayer
     public static final String DZ     = "-particle-dz";
     public static final String SPEED  = "-particle-speed";
 
-    private Settings settings;
+    private final Settings settings;
 
     /**
      * Sets up an effect player that applies effects based of the values in the provided settings.
@@ -64,8 +65,7 @@ public class EffectPlayer
      *
      * @param settings settings to read from
      */
-    public EffectPlayer(Settings settings)
-    {
+    public EffectPlayer(Settings settings) {
         this.settings = settings;
     }
 
@@ -77,8 +77,7 @@ public class EffectPlayer
      * @param ticks  duration of effect in ticks
      * @param level  level of the effect
      */
-    public void start(EffectTarget target, String key, int ticks, int level)
-    {
+    public void start(EffectTarget target, String key, int ticks, int level) {
         start(target, key, ticks, level, false);
     }
 
@@ -91,12 +90,10 @@ public class EffectPlayer
      * @param level    level of the effect
      * @param noPrefix exclude prefix when grabbing settings
      */
-    public void start(EffectTarget target, String key, int ticks, int level, boolean noPrefix)
-    {
+    public void start(EffectTarget target, String key, int ticks, int level, boolean noPrefix) {
         // If the effect is already running, just refresh it
         EffectInstance instance = EffectManager.getEffect(target, key);
-        if (instance != null)
-        {
+        if (instance != null) {
             instance.extend(ticks);
             return;
         }
@@ -115,12 +112,11 @@ public class EffectPlayer
      * @param key      effect key
      * @param noPrefix exclude prefix when grabbing settings
      */
-    private void makeEffect(String key, boolean noPrefix)
-    {
+    private void makeEffect(String key, boolean noPrefix) {
         String keyMod = noPrefix ? "" : key;
 
         // Grab the particle type
-        Particle particleType = ParticleLookup.find(settings.getString(keyMod + P_TYPE, "SPELL"));
+        Particle         particleType = ParticleLookup.find(settings.getString(keyMod + P_TYPE, "SPELL"));
         ParticleSettings particle;
 
         try {
@@ -132,27 +128,27 @@ public class EffectPlayer
                     (float) settings.getDouble(keyMod + SPEED, 1),
                     settings.getInt(keyMod + AMOUNT, 1),
                     Material.matchMaterial(settings.getString(keyMod + MAT, "DIRT")),
-                    settings.getInt(keyMod + DATA,0)
+                    settings.getInt(keyMod + DATA, 0)
             );
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             Logger.invalid("Bad material for particle effect - " + settings.getString(keyMod + MAT));
             return;
         }
 
         // Make the effect
         ParticleEffect effect = new ParticleEffect(
-            key,
-            EffectManager.getFormula(settings.getString(keyMod + SHAPE, "single")),
-            EffectManager.getFormula(settings.getString(keyMod + ANIMATION, "single")),
-            particle,
-            Directions.byName(settings.getString(keyMod + SHAPE_DIR, "XZ")),
-            Directions.byName(settings.getString(keyMod + ANIM_DIR, "XZ")),
-            settings.getString(keyMod + SHAPE_SIZE, "1"),
-            settings.getString(keyMod + ANIM_SIZE, "1"),
-            settings.getInt(keyMod + INTERVAL, 1),
-            settings.getInt(keyMod + VIEW_RANGE, 25)
+                key,
+                EffectManager.getFormula(settings.getString(keyMod + SHAPE, "single")),
+                EffectManager.getFormula(settings.getString(keyMod + ANIMATION, "single")),
+                particle,
+                Directions.byName(settings.getString(keyMod + SHAPE_DIR, "XZ")),
+                Directions.byName(settings.getString(keyMod + ANIM_DIR, "XZ")),
+                settings.getString(keyMod + SHAPE_SIZE, "1"),
+                settings.getString(keyMod + ANIM_SIZE, "1"),
+                settings.getInt(keyMod + INTERVAL, 1),
+                settings.getInt(keyMod + VIEW_RANGE, 25),
+                settings.getBool(keyMod + WITH_ROTATION, true),
+                settings.getDouble(keyMod + INITIAL_ROTATION, 0)
         );
 
         // Register the effect

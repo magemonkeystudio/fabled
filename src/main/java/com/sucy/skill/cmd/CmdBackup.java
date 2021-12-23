@@ -51,7 +51,7 @@ import java.sql.ResultSet;
 public class CmdBackup implements IFunction {
     private static final String BACKUP = "backup";
     private static final String FAILED = "failed";
-    private static final String DONE = "done";
+    private static final String DONE   = "done";
 
     /**
      * Executes the command
@@ -73,8 +73,8 @@ public class CmdBackup implements IFunction {
      */
     private class BackupTask extends BukkitRunnable {
         private final ConfigurableCommand cmd;
-        private final SkillAPI api;
-        private final CommandSender sender;
+        private final SkillAPI            api;
+        private final CommandSender       sender;
 
         /**
          * @param api SkillAPI reference
@@ -91,11 +91,12 @@ public class CmdBackup implements IFunction {
         @Override
         public void run() {
             Settings settings = SkillAPI.getSettings();
-            int count = 0;
-            SQLDatabase database = new SQLDatabase(api, settings.getSQLHost(), settings.getSQLPort(), settings.getSQLDatabase(), settings.getSQLUser(), settings.getSQLPass());
+            int      count    = 0;
+            SQLDatabase database = new SQLDatabase(api, settings.getSqlHost(), settings.getSqlPort(),
+                    settings.getSqlDatabase(), settings.getSqlUser(), settings.getSqlPass());
             try {
                 database.openConnection();
-                SQLTable table = database.createTable(api, "players");
+                SQLTable  table = database.createTable(api, "players");
                 ResultSet query = table.queryAll();
 
                 final File file = new File(api.getDataFolder(), "players");
@@ -104,11 +105,11 @@ public class CmdBackup implements IFunction {
                 // Go through every entry, saving it to disk
                 while (query.next()) {
                     String sqlYaml = query.getString(SQLIO.DATA);
-                    String yaml = YAMLParser.parseText(sqlYaml, SQLIO.STRING).toString();
-                    String name = query.getString("Name");
+                    String yaml    = YAMLParser.parseText(sqlYaml, SQLIO.STRING).toString();
+                    String name    = query.getString("Name");
 
-                    FileOutputStream out = new FileOutputStream(new File(file, name + ".yml"));
-                    BufferedWriter write = new BufferedWriter(new OutputStreamWriter(out));
+                    FileOutputStream out   = new FileOutputStream(new File(file, name + ".yml"));
+                    BufferedWriter   write = new BufferedWriter(new OutputStreamWriter(out));
 
                     write.write(yaml);
 

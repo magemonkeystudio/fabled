@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.particle.EffectInstance
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -31,23 +31,21 @@ import com.sucy.skill.api.particle.target.EffectTarget;
 /**
  * An instanced particle effect
  */
-public class EffectInstance
-{
-    private ParticleEffect effect;
-    private EffectTarget   target;
+public class EffectInstance {
+    private final ParticleEffect effect;
+    private final EffectTarget   target;
 
-    private int level;
-    private int life;
-    private int tick;
-    private int frame;
+    private final int level;
+    private       int life;
+    private       int tick;
+    private       int frame;
 
     /**
      * @param effect the effect to play
      * @param target target to play an effect for
      * @param level  the level of the effect
      */
-    public EffectInstance(ParticleEffect effect, EffectTarget target, int level)
-    {
+    public EffectInstance(ParticleEffect effect, EffectTarget target, int level) {
         this.effect = effect;
         this.target = target;
         this.level = level;
@@ -60,8 +58,7 @@ public class EffectInstance
     /**
      * @return true if the target is still valid
      */
-    public boolean isValid()
-    {
+    public boolean isValid() {
         return target.isValid() && life > 0;
     }
 
@@ -70,19 +67,16 @@ public class EffectInstance
      *
      * @param duration effect duration
      */
-    public void extend(int duration)
-    {
+    public void extend(int duration) {
         life = Math.max(life, duration);
     }
 
     /**
      * Ticks the effect
      */
-    public void tick()
-    {
+    public void tick() {
         tick++;
-        if (tick % effect.getInterval() == 0)
-        {
+        if (tick % effect.getInterval() == 0) {
             effect.play(target.getLocation(), frame, level);
             frame++;
             tick = 0;

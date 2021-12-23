@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.particle.ParticleType
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,8 +26,7 @@
  */
 package com.sucy.skill.api.particle;
 
-public enum ParticleType
-{
+public enum ParticleType {
     BARRIER("barrier"),
     BLOCK_CRACK("block crack", "blackcrack_", true),
     CLOUD("cloud", "cloud"),
@@ -71,41 +70,35 @@ public enum ParticleType
     WATER_SPLASH("splash", "splash"),
     WATER_WAKE("water wake");
 
-    private String  editor;
-    private String  old;
+    private final String editor;
+    private       String old;
     private boolean mat;
 
-    ParticleType(String editorKey)
-    {
+    ParticleType(String editorKey) {
         editor = editorKey;
         ParticleLookup.register(this);
     }
 
-    ParticleType(String editorKey, String oldName)
-    {
+    ParticleType(String editorKey, String oldName) {
         editor = editorKey;
         old = oldName;
         ParticleLookup.register(this);
     }
 
-    ParticleType(String editorKey, String oldName, boolean usesMat)
-    {
+    ParticleType(String editorKey, String oldName, boolean usesMat) {
         this(editorKey, oldName);
         mat = usesMat;
     }
 
-    public String editorKey()
-    {
+    public String editorKey() {
         return editor;
     }
 
-    public String oldName()
-    {
+    public String oldName() {
         return old;
     }
 
-    public boolean usesMat()
-    {
+    public boolean usesMat() {
         return mat;
     }
 }

@@ -103,26 +103,26 @@ three-spiral:
   y: 0
   z: 0
 square:
-  formula: 1/c
+  formula: '1/(c+(t*4))'
   steps: 5
-  copies: 8
-  domain: 0.125
+  copies: 4
+  domain: 0.26
   x: 0
   y: 0
   z: 0
 pentagon:
-  formula: 1/c
+  formula: '1/(c+(t*3.4))'
   steps: 5
-  copies: 10
-  domain: 0.1
+  copies: 5
+  domain: 0.2
   x: 0
   y: 0
   z: 0
 hexagon:
-  formula: 1/c
-  steps: 4
-  copies: 12
-  domain: 0.08333
+  formula: '1/(c+(t*2.8))'
+  steps: 5
+  copies: 6
+  domain: 0.17
   x: 0
   y: 0
   z: 0
