@@ -2209,6 +2209,9 @@ function MechanicFire() {
 
     this.description = 'Sets the target on fire for a duration.';
 
+    this.data.push(new AttributeValue('Damage', 'damage', 1, 0)
+        .setTooltip('The damage dealt by each fire tick')
+    );
     this.data.push(new AttributeValue('Seconds', 'seconds', 3, 1)
         .setTooltip('The duration of the fire in seconds')
     );
