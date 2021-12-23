@@ -3517,9 +3517,9 @@ function addEffectOptions(component, optional) {
     component.data.push(opt(new DoubleValue('Initial Rotation', '-initial-rotation', 0)
         .setTooltip('The amount to rotate the effect (useful for effects like the square).')
     ));
-    component.data.push(new ListValue('Rotate w/ Player', '-with-rotation', ['True', 'False'], 'True')
+    component.data.push(opt(new ListValue('Rotate w/ Player', '-with-rotation', ['True', 'False'], 'True')
         .setTooltip('Whether to follow the rotation of the player for the effect.')
-    );
+    ));
 }
 
 function appendOptional(value) {
