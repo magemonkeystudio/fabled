@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.cmd.CmdOptions
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,25 +26,27 @@
  */
 package com.sucy.skill.cmd;
 
-import mc.promcteam.engine.mccore.commands.ConfigurableCommand;
-import mc.promcteam.engine.mccore.commands.IFunction;
-import mc.promcteam.engine.mccore.util.TextFormatter;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.player.PlayerData;
+import mc.promcteam.engine.mccore.commands.ConfigurableCommand;
+import mc.promcteam.engine.mccore.commands.IFunction;
+import mc.promcteam.engine.mccore.util.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A command that displays the list of available profess options
  */
-public class CmdOptions implements IFunction
-{
+public class CmdOptions implements IFunction {
     private static final String TITLE      = "title";
     private static final String CATEGORY   = "category";
     private static final String OPTION     = "option";
@@ -63,82 +65,62 @@ public class CmdOptions implements IFunction
      * @param args   argument list
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args)
-    {
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
         // Disabled world
         if (sender instanceof Player && !SkillAPI.getSettings().isWorldEnabled(((Player) sender).getWorld()))
-        {
             cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
-        }
 
-        // Only players have profession options
-        else if (sender instanceof Player)
-        {
+            // Only players have profession options
+        else if (sender instanceof Player) {
             cmd.sendMessage(sender, TITLE, ChatColor.DARK_GRAY + "--" + ChatColor.DARK_GREEN + " Profess Options " + ChatColor.DARK_GRAY + "-----------");
-            PlayerData data = SkillAPI.getPlayerData((Player) sender);
-            String categoryTemplate = cmd.getMessage(CATEGORY, ChatColor.GOLD + "{category}" + ChatColor.GRAY + ": ");
-            String optionTemplate = cmd.getMessage(OPTION, ChatColor.LIGHT_PURPLE + "{option}" + ChatColor.GRAY);
-            String separator = cmd.getMessage(SEPARATOR, ChatColor.DARK_GRAY + "----------------------------");
-            String none = cmd.getMessage(NO_OPTIONS, ChatColor.GRAY + "None");
-            boolean first = true;
-            if (data != null)
-            {
-                for (String group : SkillAPI.getGroups())
-                {
+            PlayerData data             = SkillAPI.getPlayerData((Player) sender);
+            String     categoryTemplate = cmd.getMessage(CATEGORY, ChatColor.GOLD + "{category}" + ChatColor.GRAY + ": ");
+            String     optionTemplate   = cmd.getMessage(OPTION, ChatColor.LIGHT_PURPLE + "{option}" + ChatColor.GRAY);
+            String     separator        = cmd.getMessage(SEPARATOR, ChatColor.DARK_GRAY + "----------------------------");
+            String     none             = cmd.getMessage(NO_OPTIONS, ChatColor.GRAY + "None");
+            boolean    first            = true;
+
+            if (data != null) {
+                Map<String, List<String>> groupList = new HashMap<>();
+                for (String group : SkillAPI.getGroups()) {
                     PlayerClass c = data.getClass(group);
 
-                    // Separator message if not the first group
-                    if (first)
-                    {
-                        first = false;
-                    }
-                    else
-                    {
-                        sender.sendMessage(separator);
-                    }
-
                     // Get the options list
-                    List<RPGClass> options;
-                    if (c != null)
-                    {
-                        options = c.getData().getOptions();
-                    }
-                    else
-                    {
-                        options = SkillAPI.getBaseClasses(group);
-                    }
+                    List<RPGClass> options = c != null
+                            ? c.getData().getOptions()
+                            : SkillAPI.getBaseClasses(group);
+
 
                     // Compose the message
-                    String list = categoryTemplate.replace("{category}", TextFormatter.format(group));
-                    boolean firstOption = true;
-                    for (RPGClass option : options)
-                    {
-                        if (firstOption)
-                        {
-                            firstOption = false;
-                        }
-                        else
-                        {
-                            list += ", ";
-                        }
-                        list += optionTemplate.replace("{option}", option.getName());
-                    }
-                    if (options.size() == 0)
-                    {
-                        list += none;
-                    }
+                    for (RPGClass option : options) {
+                        String gp = option.getGroup().toLowerCase();
+                        if (!groupList.containsKey(gp)) groupList.put(gp, new ArrayList<>());
 
-                    // Send the result
-                    sender.sendMessage(list);
+                        String entry = optionTemplate.replace("{option}", option.getName());
+                        if (!groupList.get(gp).contains(entry)) groupList.get(gp).add(entry);
+                    }
+                }
+
+                //Send the entire message :D
+                for (Map.Entry<String, List<String>> entry : groupList.entrySet()) {
+                    if (first) first = false;
+                    else sender.sendMessage(separator);
+
+                    String        group   = entry.getKey();
+                    List<String>  options = entry.getValue();
+                    StringBuilder list    = new StringBuilder();
+                    list.append(categoryTemplate.replace("{category}", TextFormatter.format(group)));
+                    if (options.size() > 0)
+                        list.append(String.join(", ", options));
+                    else
+                        list.append(none);
+
+                    sender.sendMessage(list.toString());
                 }
             }
             cmd.sendMessage(sender, END, ChatColor.DARK_GRAY + "----------------------------");
         }
-
         // Console doesn't have profession options
-        else
-        {
-            cmd.sendMessage(sender, CANNOT_USE, ChatColor.RED + "This cannot be used by the console");
-        }
+        else cmd.sendMessage(sender, CANNOT_USE, ChatColor.RED + "This cannot be used by the console");
     }
 }
