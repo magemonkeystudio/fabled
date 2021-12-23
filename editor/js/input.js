@@ -8,7 +8,7 @@
  */
 function requireValue(key, values) {
     this.requirements = this.requirements || [];
-    this.requirements.push({key: key, values: values});
+    this.requirements.push({ key: key, values: values });
     return this;
 }
 
@@ -24,13 +24,13 @@ function copyRequirements(source, target) {
  */
 function applyRequireValues() {
     for (let i = 0; this.requirements && i < this.requirements.length; i++) {
-        const key = this.requirements[i].key;
+        const key    = this.requirements[i].key;
         const values = this.requirements[i].values;
 
         const element = document.getElementById(key);
         if (element != null) {
             element.requireLists = element.requireLists || [];
-            element.requireLists.push({element: this, values: values});
+            element.requireLists.push({ element: this, values: values });
             element.addEventListener('change', checkRequireValue);
             checkRequireValue.bind(element)();
         }
@@ -46,7 +46,7 @@ function applyRequireValues() {
 function checkRequireValue(e) {
     for (let i = 0; i < this.requireLists.length; i++) {
         const requireData = this.requireLists[i];
-        let visible = false;
+        let visible       = false;
         for (let j = 0; j < requireData.values.length; j++) {
             if (requireData.values[j] == (this.value || this.selectedIndex)) {
                 visible = true;
@@ -54,8 +54,7 @@ function checkRequireValue(e) {
         }
         if (visible) {
             requireData.element.show();
-        }
-        else {
+        } else {
             requireData.element.hide();
         }
     }
@@ -85,12 +84,12 @@ function setTooltip(text) {
  * @constructor
  */
 function IndexListValue(name, key, list, index) {
-    this.name = name;
-    this.key = key;
-    this.list = list;
+    this.name  = name;
+    this.key   = key;
+    this.list  = list;
     this.index = index;
 
-    this.label = undefined;
+    this.label  = undefined;
     this.select = undefined;
     this.hidden = false;
 }
@@ -101,9 +100,9 @@ IndexListValue.prototype.dupe = function () {
 };
 
 // -- Hooking up the function at the top, see comments there -- //
-IndexListValue.prototype.requireValue = requireValue;
+IndexListValue.prototype.requireValue       = requireValue;
 IndexListValue.prototype.applyRequireValues = applyRequireValues;
-IndexListValue.prototype.setTooltip = setTooltip;
+IndexListValue.prototype.setTooltip         = setTooltip;
 
 /**
  * Creates the form HTML for the value and appends
@@ -112,7 +111,7 @@ IndexListValue.prototype.setTooltip = setTooltip;
  * @param {Element} target - the HTML element to append to
  */
 IndexListValue.prototype.createHTML = function (target) {
-    this.label = document.createElement('label');
+    this.label           = document.createElement('label');
     this.label.innerHTML = this.name;
     if (this.tooltip) {
         this.label.setAttribute('data-tooltip', this.tooltip);
@@ -120,10 +119,10 @@ IndexListValue.prototype.createHTML = function (target) {
     }
     target.appendChild(this.label);
 
-    this.select = document.createElement('select');
+    this.select    = document.createElement('select');
     this.select.id = this.key;
     for (let i = 0; i < this.list.length; i++) {
-        const option = document.createElement('option');
+        const option     = document.createElement('option');
         option.innerHTML = this.list[i];
         this.select.add(option);
     }
@@ -136,8 +135,8 @@ IndexListValue.prototype.createHTML = function (target) {
  */
 IndexListValue.prototype.hide = function () {
     if (this.label && this.select && !this.hidden) {
-        this.hidden = true;
-        this.label.style.display = 'none';
+        this.hidden               = true;
+        this.label.style.display  = 'none';
         this.select.style.display = 'none';
     }
 };
@@ -147,8 +146,8 @@ IndexListValue.prototype.hide = function () {
  */
 IndexListValue.prototype.show = function () {
     if (this.label && this.select && this.hidden) {
-        this.hidden = false;
-        this.label.style.display = 'block';
+        this.hidden               = false;
+        this.label.style.display  = 'block';
         this.select.style.display = 'block';
     }
 };
@@ -191,12 +190,12 @@ IndexListValue.prototype.load = function (value) {
  * @constructor
  */
 function ListValue(name, key, list, value) {
-    this.name = name;
-    this.key = key;
-    this.list = list;
+    this.name  = name;
+    this.key   = key;
+    this.list  = list;
     this.value = value;
 
-    this.label = undefined;
+    this.label  = undefined;
     this.select = undefined;
     this.hidden = false;
 }
@@ -207,9 +206,9 @@ ListValue.prototype.dupe = function () {
 };
 
 // -- Hooking up the function at the top, see comments there -- //
-ListValue.prototype.requireValue = requireValue;
+ListValue.prototype.requireValue       = requireValue;
 ListValue.prototype.applyRequireValues = applyRequireValues;
-ListValue.prototype.setTooltip = setTooltip;
+ListValue.prototype.setTooltip         = setTooltip;
 
 /**
  * Creates the form HTML for the value and appends
@@ -218,7 +217,7 @@ ListValue.prototype.setTooltip = setTooltip;
  * @param {Element} target - the HTML element to append to
  */
 ListValue.prototype.createHTML = function (target) {
-    this.label = document.createElement('label');
+    this.label           = document.createElement('label');
     this.label.innerHTML = this.name;
     if (this.tooltip) {
         this.label.setAttribute('data-tooltip', this.tooltip);
@@ -226,20 +225,22 @@ ListValue.prototype.createHTML = function (target) {
     }
     target.appendChild(this.label);
 
-    this.select = document.createElement('select');
+    this.select    = document.createElement('select');
     this.select.id = this.key;
-    let selected = -1;
+    let selected   = -1;
 
     const vLower = this.value.toLowerCase().replace('_', ' ');
-    const list = typeof this.list == 'function' ? this.list() : this.list;
-    for (let i = 0; i < list.length; i++) {
-        const option = document.createElement('option');
-        option.innerHTML = list[i];
-        this.select.add(option);
+    const list   = typeof this.list == 'function' ? this.list() : this.list;
+    if (list) {
+        for (let i = 0; i < list.length; i++) {
+            const option     = document.createElement('option');
+            option.innerHTML = list[i];
+            this.select.add(option);
 
-        const lower = list[i].toLowerCase().replace('_', ' ');
-        if (lower === vLower || (selected == -1 && list[i] == 'None')) {
-            selected = i;
+            const lower = list[i].toLowerCase().replace('_', ' ');
+            if (lower === vLower || (selected == -1 && list[i] == 'None')) {
+                selected = i;
+            }
         }
     }
     this.select.selectedIndex = Math.max(0, selected);
@@ -251,8 +252,8 @@ ListValue.prototype.createHTML = function (target) {
  */
 ListValue.prototype.hide = function () {
     if (this.label && this.select && !this.hidden) {
-        this.hidden = true;
-        this.label.style.display = 'none';
+        this.hidden               = true;
+        this.label.style.display  = 'none';
         this.select.style.display = 'none';
     }
 };
@@ -262,8 +263,8 @@ ListValue.prototype.hide = function () {
  */
 ListValue.prototype.show = function () {
     if (this.label && this.select && this.hidden) {
-        this.hidden = false;
-        this.label.style.display = 'block';
+        this.hidden               = false;
+        this.label.style.display  = 'block';
         this.select.style.display = 'block';
     }
 };
@@ -309,17 +310,17 @@ ListValue.prototype.load = function (value) {
  * @constructor
  */
 function AttributeValue(name, key, base, scale) {
-    this.name = name;
-    this.key = key;
-    this.base = base;
+    this.name  = name;
+    this.key   = key;
+    this.base  = base;
     this.scale = scale;
 
-    this.label = undefined;
-    this.left = undefined;
-    this.right = undefined;
-    this.baseBox = undefined;
+    this.label    = undefined;
+    this.left     = undefined;
+    this.right    = undefined;
+    this.baseBox  = undefined;
     this.scaleBox = undefined;
-    this.hidden = false;
+    this.hidden   = false;
 }
 
 AttributeValue.prototype.dupe = function () {
@@ -328,9 +329,9 @@ AttributeValue.prototype.dupe = function () {
 };
 
 // -- Hooking up the function at the top, see comments there -- //
-AttributeValue.prototype.requireValue = requireValue;
+AttributeValue.prototype.requireValue       = requireValue;
 AttributeValue.prototype.applyRequireValues = applyRequireValues;
-AttributeValue.prototype.setTooltip = setTooltip;
+AttributeValue.prototype.setTooltip         = setTooltip;
 
 /**
  * Creates the form HTML for the value and appends
@@ -339,7 +340,7 @@ AttributeValue.prototype.setTooltip = setTooltip;
  * @param {Element} target - the HTML element to append to
  */
 AttributeValue.prototype.createHTML = function (target) {
-    this.label = document.createElement('label');
+    this.label           = document.createElement('label');
     this.label.innerHTML = this.name;
     if (this.tooltip) {
         this.label.setAttribute('data-tooltip', this.tooltip);
@@ -347,24 +348,24 @@ AttributeValue.prototype.createHTML = function (target) {
     }
     target.appendChild(this.label);
 
-    this.baseBox = document.createElement('input');
-    this.baseBox.id = this.key + '-base';
-    this.baseBox.value = this.base;
+    this.baseBox           = document.createElement('input');
+    this.baseBox.id        = this.key + '-base';
+    this.baseBox.value     = this.base;
     this.baseBox.className = 'base';
     target.appendChild(this.baseBox);
 
-    this.left = document.createElement('label');
+    this.left           = document.createElement('label');
     this.left.innerHTML = '+ (';
     this.left.className = 'attrLabel';
     target.appendChild(this.left);
 
-    this.scaleBox = document.createElement('input');
-    this.scaleBox.id = this.key + '-scale';
-    this.scaleBox.value = this.scale;
+    this.scaleBox           = document.createElement('input');
+    this.scaleBox.id        = this.key + '-scale';
+    this.scaleBox.value     = this.scale;
     this.scaleBox.className = 'scale';
     target.appendChild(this.scaleBox);
 
-    this.right = document.createElement('label');
+    this.right           = document.createElement('label');
     this.right.innerHTML = ')';
     this.right.className = 'attrLabel';
     target.appendChild(this.right);
@@ -375,12 +376,12 @@ AttributeValue.prototype.createHTML = function (target) {
  */
 AttributeValue.prototype.hide = function () {
     if (this.label && this.baseBox && this.scaleBox && this.left && this.right && !this.hidden) {
-        this.hidden = true;
-        this.label.style.display = 'none';
-        this.baseBox.style.display = 'none';
-        this.left.style.display = 'none';
+        this.hidden                 = true;
+        this.label.style.display    = 'none';
+        this.baseBox.style.display  = 'none';
+        this.left.style.display     = 'none';
         this.scaleBox.style.display = 'none';
-        this.right.style.display = 'none';
+        this.right.style.display    = 'none';
     }
 };
 
@@ -389,12 +390,12 @@ AttributeValue.prototype.hide = function () {
  */
 AttributeValue.prototype.show = function () {
     if (this.label && this.baseBox && this.scaleBox && this.left && this.right && this.hidden) {
-        this.hidden = false;
-        this.label.style.display = 'block';
-        this.baseBox.style.display = 'block';
-        this.left.style.display = 'block';
+        this.hidden                 = false;
+        this.label.style.display    = 'block';
+        this.baseBox.style.display  = 'block';
+        this.left.style.display     = 'block';
         this.scaleBox.style.display = 'block';
-        this.right.style.display = 'block';
+        this.right.style.display    = 'block';
     }
 };
 
@@ -403,7 +404,7 @@ AttributeValue.prototype.show = function () {
  */
 AttributeValue.prototype.update = function () {
     if (this.baseBox && this.scaleBox) {
-        this.base = this.baseBox.value;
+        this.base  = this.baseBox.value;
         this.scale = this.scaleBox.value;
     }
 };
@@ -445,12 +446,12 @@ AttributeValue.prototype.loadScale = function (value) {
  * @constructor
  */
 function DoubleValue(name, key, value) {
-    this.name = name;
-    this.key = key;
+    this.name  = name;
+    this.key   = key;
     this.value = value;
 
-    this.label = undefined;
-    this.box = undefined;
+    this.label  = undefined;
+    this.box    = undefined;
     this.hidden = false;
 }
 
@@ -460,9 +461,9 @@ DoubleValue.prototype.dupe = function () {
 };
 
 // -- Hooking up the function at the top, see comments there -- //
-DoubleValue.prototype.requireValue = requireValue;
+DoubleValue.prototype.requireValue       = requireValue;
 DoubleValue.prototype.applyRequireValues = applyRequireValues;
-DoubleValue.prototype.setTooltip = setTooltip;
+DoubleValue.prototype.setTooltip         = setTooltip;
 
 /**
  * Creates the form HTML for the value and appends
@@ -471,7 +472,7 @@ DoubleValue.prototype.setTooltip = setTooltip;
  * @param {Element} target - the HTML element to append to
  */
 DoubleValue.prototype.createHTML = function (target) {
-    this.label = document.createElement('label');
+    this.label           = document.createElement('label');
     this.label.innerHTML = this.name;
     if (this.tooltip) {
         this.label.setAttribute('data-tooltip', this.tooltip);
@@ -479,8 +480,8 @@ DoubleValue.prototype.createHTML = function (target) {
     }
     target.appendChild(this.label);
 
-    this.box = document.createElement('input');
-    this.box.id = this.key;
+    this.box       = document.createElement('input');
+    this.box.id    = this.key;
     this.box.value = this.value;
     this.box.addEventListener('input', filterDouble);
     target.appendChild(this.box);
@@ -491,9 +492,9 @@ DoubleValue.prototype.createHTML = function (target) {
  */
 DoubleValue.prototype.hide = function () {
     if (this.label && this.box && !this.hidden) {
-        this.hidden = true;
+        this.hidden              = true;
         this.label.style.display = 'none';
-        this.box.style.display = 'none';
+        this.box.style.display   = 'none';
     }
 };
 
@@ -502,9 +503,9 @@ DoubleValue.prototype.hide = function () {
  */
 DoubleValue.prototype.show = function () {
     if (this.label && this.box && this.hidden) {
-        this.hidden = false;
+        this.hidden              = false;
         this.label.style.display = 'block';
-        this.box.style.display = 'block';
+        this.box.style.display   = 'block';
     }
 };
 
@@ -545,12 +546,12 @@ DoubleValue.prototype.load = function (value) {
  * @constructor
  */
 function IntValue(name, key, value) {
-    this.name = name;
-    this.key = key;
+    this.name  = name;
+    this.key   = key;
     this.value = value;
 
-    this.label = undefined;
-    this.box = undefined;
+    this.label  = undefined;
+    this.box    = undefined;
     this.hidden = false;
 }
 
@@ -560,9 +561,9 @@ IntValue.prototype.dupe = function () {
 };
 
 // -- Hooking up the function at the top, see comments there -- //
-IntValue.prototype.requireValue = requireValue;
+IntValue.prototype.requireValue       = requireValue;
 IntValue.prototype.applyRequireValues = applyRequireValues;
-IntValue.prototype.setTooltip = setTooltip;
+IntValue.prototype.setTooltip         = setTooltip;
 
 /**
  * Creates the form HTML for the value and appends
@@ -571,7 +572,7 @@ IntValue.prototype.setTooltip = setTooltip;
  * @param {Element} target - the HTML element to append to
  */
 IntValue.prototype.createHTML = function (target) {
-    this.label = document.createElement('label');
+    this.label           = document.createElement('label');
     this.label.innerHTML = this.name;
     if (this.tooltip) {
         this.label.setAttribute('data-tooltip', this.tooltip);
@@ -579,8 +580,8 @@ IntValue.prototype.createHTML = function (target) {
     }
     target.appendChild(this.label);
 
-    this.box = document.createElement('input');
-    this.box.id = this.key;
+    this.box       = document.createElement('input');
+    this.box.id    = this.key;
     this.box.value = this.value;
     this.box.addEventListener('input', filterInt);
     target.appendChild(this.box);
@@ -591,9 +592,9 @@ IntValue.prototype.createHTML = function (target) {
  */
 IntValue.prototype.hide = function () {
     if (this.label && this.box && !this.hidden) {
-        this.hidden = true;
+        this.hidden              = true;
         this.label.style.display = 'none';
-        this.box.style.display = 'none';
+        this.box.style.display   = 'none';
     }
 };
 
@@ -602,9 +603,9 @@ IntValue.prototype.hide = function () {
  */
 IntValue.prototype.show = function () {
     if (this.label && this.box && this.hidden) {
-        this.hidden = false;
+        this.hidden              = false;
         this.label.style.display = 'block';
-        this.box.style.display = 'block';
+        this.box.style.display   = 'block';
     }
 };
 
@@ -645,12 +646,12 @@ IntValue.prototype.load = function (value) {
  * @constructor
  */
 function StringValue(name, key, value) {
-    this.name = name;
-    this.key = key;
+    this.name  = name;
+    this.key   = key;
     this.value = value;
 
-    this.label = undefined;
-    this.box = undefined;
+    this.label  = undefined;
+    this.box    = undefined;
     this.hidden = false;
 }
 
@@ -660,9 +661,9 @@ StringValue.prototype.dupe = function () {
 };
 
 // -- Hooking up the functions at the top, see comments there -- //
-StringValue.prototype.requireValue = requireValue;
+StringValue.prototype.requireValue       = requireValue;
 StringValue.prototype.applyRequireValues = applyRequireValues;
-StringValue.prototype.setTooltip = setTooltip;
+StringValue.prototype.setTooltip         = setTooltip;
 
 /**
  * Creates the form HTML for the value and appends
@@ -671,7 +672,7 @@ StringValue.prototype.setTooltip = setTooltip;
  * @param {Element} target - the HTML element to append to
  */
 StringValue.prototype.createHTML = function (target) {
-    this.label = document.createElement('label');
+    this.label           = document.createElement('label');
     this.label.innerHTML = this.name;
     if (this.tooltip) {
         this.label.setAttribute('data-tooltip', this.tooltip);
@@ -679,8 +680,8 @@ StringValue.prototype.createHTML = function (target) {
     }
     target.appendChild(this.label);
 
-    this.box = document.createElement('input');
-    this.box.id = this.key;
+    this.box       = document.createElement('input');
+    this.box.id    = this.key;
     this.box.value = this.value;
     target.appendChild(this.box);
 };
@@ -690,9 +691,9 @@ StringValue.prototype.createHTML = function (target) {
  */
 StringValue.prototype.hide = function () {
     if (this.label && this.box && !this.hidden) {
-        this.hidden = true;
+        this.hidden              = true;
         this.label.style.display = 'none';
-        this.box.style.display = 'none';
+        this.box.style.display   = 'none';
     }
 };
 
@@ -701,9 +702,9 @@ StringValue.prototype.hide = function () {
  */
 StringValue.prototype.show = function () {
     if (this.label && this.box && this.hidden) {
-        this.hidden = false;
+        this.hidden              = false;
         this.label.style.display = 'block';
-        this.box.style.display = 'block';
+        this.box.style.display   = 'block';
     }
 };
 
@@ -749,12 +750,12 @@ StringValue.prototype.load = function (value) {
  * @constructor
  */
 function StringListValue(name, key, value) {
-    this.name = name;
-    this.key = key;
+    this.name  = name;
+    this.key   = key;
     this.value = value;
 
-    this.label = undefined;
-    this.box = undefined;
+    this.label  = undefined;
+    this.box    = undefined;
     this.hidden = false;
 }
 
@@ -764,9 +765,9 @@ StringListValue.prototype.dupe = function () {
 };
 
 // -- Hooking up the function at the top, see comments there -- //
-StringListValue.prototype.requireValue = requireValue;
+StringListValue.prototype.requireValue       = requireValue;
 StringListValue.prototype.applyRequireValues = applyRequireValues;
-StringListValue.prototype.setTooltip = setTooltip;
+StringListValue.prototype.setTooltip         = setTooltip;
 
 /**
  * Creates the form HTML for the value and appends
@@ -775,7 +776,7 @@ StringListValue.prototype.setTooltip = setTooltip;
  * @param {Element} target - the HTML element to append to
  */
 StringListValue.prototype.createHTML = function (target) {
-    this.label = document.createElement('label');
+    this.label           = document.createElement('label');
     this.label.innerHTML = this.name;
     this.label.className = 'areaLabel';
     if (this.tooltip) {
@@ -790,8 +791,8 @@ StringListValue.prototype.createHTML = function (target) {
         if (i != this.value.length - 1) content += '\n';
     }
 
-    this.box = document.createElement('textarea');
-    this.box.id = this.key;
+    this.box       = document.createElement('textarea');
+    this.box.id    = this.key;
     this.box.value = content;
     target.appendChild(this.box);
 };
@@ -801,9 +802,9 @@ StringListValue.prototype.createHTML = function (target) {
  */
 StringListValue.prototype.hide = function () {
     if (this.label && this.box && !this.hidden) {
-        this.hidden = true;
+        this.hidden              = true;
         this.label.style.display = 'none';
-        this.box.style.display = 'none';
+        this.box.style.display   = 'none';
     }
 };
 
@@ -812,9 +813,9 @@ StringListValue.prototype.hide = function () {
  */
 StringListValue.prototype.show = function () {
     if (this.label && this.box && this.hidden) {
-        this.hidden = false;
+        this.hidden              = false;
         this.label.style.display = 'block';
-        this.box.style.display = 'block';
+        this.box.style.display   = 'block';
     }
 };
 
@@ -865,16 +866,16 @@ StringListValue.prototype.load = function (value) {
  * @constructor
  */
 function MultiListValue(name, key, list, values) {
-    this.name = name;
-    this.key = key;
-    this.list = list;
+    this.name   = name;
+    this.key    = key;
+    this.list   = list;
     this.values = values || [];
 
-    this.label = undefined;
-    this.select = undefined;
+    this.label          = undefined;
+    this.select         = undefined;
     this.valueContainer = undefined;
-    this.div = undefined;
-    this.hidden = false;
+    this.div            = undefined;
+    this.hidden         = false;
 }
 
 MultiListValue.prototype.dupe = function () {
@@ -883,9 +884,9 @@ MultiListValue.prototype.dupe = function () {
 };
 
 // -- Hooking up the function at the top, see comments there -- //
-MultiListValue.prototype.requireValue = requireValue;
+MultiListValue.prototype.requireValue       = requireValue;
 MultiListValue.prototype.applyRequireValues = applyRequireValues;
-MultiListValue.prototype.setTooltip = setTooltip;
+MultiListValue.prototype.setTooltip         = setTooltip;
 
 /**
  * Creates the form HTML for the value and appends
@@ -894,7 +895,7 @@ MultiListValue.prototype.setTooltip = setTooltip;
  * @param {Element} target - the HTML element to append to
  */
 MultiListValue.prototype.createHTML = function (target) {
-    this.label = document.createElement('label');
+    this.label           = document.createElement('label');
     this.label.innerHTML = this.name;
     if (this.tooltip) {
         this.label.setAttribute('data-tooltip', this.tooltip);
@@ -902,20 +903,20 @@ MultiListValue.prototype.createHTML = function (target) {
     }
     target.appendChild(this.label);
 
-    this.select = document.createElement('select');
+    this.select    = document.createElement('select');
     this.select.id = this.key;
 
-    let option = document.createElement('option');
+    let option       = document.createElement('option');
     option.innerHTML = '- Select -';
     this.select.add(option);
     const list = typeof this.list == 'function' ? this.list() : this.list;
     for (let i = 0; i < list.length; i++) {
-        option = document.createElement('option');
+        option           = document.createElement('option');
         option.innerHTML = list[i];
         this.select.add(option);
     }
     this.select.selectedIndex = 0;
-    this.select.inputRef = this;
+    this.select.inputRef      = this;
     this.select.addEventListener('change', function (e) {
         if (this.selectedIndex != 0) {
             const val = this[this.selectedIndex].innerHTML;
@@ -926,12 +927,12 @@ MultiListValue.prototype.createHTML = function (target) {
     });
     target.appendChild(this.select);
 
-    this.help = document.createElement('label');
+    this.help           = document.createElement('label');
     this.help.innerHTML = '- Click to remove -';
     this.help.className = 'grayed';
     target.appendChild(this.help);
 
-    this.div = document.createElement('div');
+    this.div           = document.createElement('div');
     this.div.className = 'byteList';
     target.appendChild(this.div);
 
@@ -941,7 +942,7 @@ MultiListValue.prototype.createHTML = function (target) {
 };
 
 MultiListValue.prototype.populate = function (value) {
-    const entry = document.createElement('div');
+    const entry     = document.createElement('div');
     entry.className = 'multilist';
     entry.innerHTML = value;
     entry.addEventListener('click', function (e) {
@@ -955,10 +956,10 @@ MultiListValue.prototype.populate = function (value) {
  */
 MultiListValue.prototype.hide = function () {
     if (this.label && this.select && !this.hidden) {
-        this.hidden = true;
-        this.label.style.display = 'none';
+        this.hidden               = true;
+        this.label.style.display  = 'none';
         this.select.style.display = 'none';
-        this.div.style.display = 'none';
+        this.div.style.display    = 'none';
     }
 };
 
@@ -967,10 +968,10 @@ MultiListValue.prototype.hide = function () {
  */
 MultiListValue.prototype.show = function () {
     if (this.label && this.select && this.hidden) {
-        this.hidden = false;
-        this.label.style.display = 'block';
+        this.hidden               = false;
+        this.label.style.display  = 'block';
         this.select.style.display = 'block';
-        this.div.style.display = 'block';
+        this.div.style.display    = 'block';
     }
 };
 
@@ -1022,13 +1023,13 @@ MultiListValue.prototype.load = function (value) {
  * @constructor
  */
 function ByteListValue(name, key, values, value) {
-    this.name = name;
-    this.key = key;
-    this.value = value;
+    this.name   = name;
+    this.key    = key;
+    this.value  = value;
     this.values = values;
 
-    this.label = undefined;
-    this.div = undefined;
+    this.label  = undefined;
+    this.div    = undefined;
     this.hidden = false;
 }
 
@@ -1038,9 +1039,9 @@ ByteListValue.prototype.dupe = function () {
 };
 
 // -- Hooking up the function at the top, see comments there -- //
-ByteListValue.prototype.requireValue = requireValue;
+ByteListValue.prototype.requireValue       = requireValue;
 ByteListValue.prototype.applyRequireValues = applyRequireValues;
-ByteListValue.prototype.setTooltip = setTooltip;
+ByteListValue.prototype.setTooltip         = setTooltip;
 
 /**
  * Creates the form HTML for the value and appends
@@ -1049,7 +1050,7 @@ ByteListValue.prototype.setTooltip = setTooltip;
  * @param {Element} target - the HTML element to append to
  */
 ByteListValue.prototype.createHTML = function (target) {
-    this.label = document.createElement('label');
+    this.label           = document.createElement('label');
     this.label.innerHTML = this.name;
     this.label.className = 'areaLabel';
     if (this.tooltip) {
@@ -1059,12 +1060,12 @@ ByteListValue.prototype.createHTML = function (target) {
     target.appendChild(this.label);
 
     // Add div elements
-    this.checkboxes = [];
-    this.div = document.createElement('div');
+    this.checkboxes    = [];
+    this.div           = document.createElement('div');
     this.div.className = 'byteList';
-    let html = '';
+    let html           = '';
     for (var i = 0; i < this.values.length; i++) {
-        const id = this.key + '-' + this.values[i].replace(' ', '-').toLowerCase();
+        const id      = this.key + '-' + this.values[i].replace(' ', '-').toLowerCase();
         const checked = (this.value & (1 << i)) ? ' checked' : '';
         html += '<input type="checkbox" name="byte' + i + '" id="' + id + '"' + checked + '>' + this.values[i] + '<br>';
     }
@@ -1080,9 +1081,9 @@ ByteListValue.prototype.createHTML = function (target) {
  */
 ByteListValue.prototype.hide = function () {
     if (this.label && this.div && !this.hidden) {
-        this.hidden = true;
+        this.hidden              = true;
         this.label.style.display = 'none';
-        this.div.style.display = 'none';
+        this.div.style.display   = 'none';
     }
 };
 
@@ -1091,9 +1092,9 @@ ByteListValue.prototype.hide = function () {
  */
 ByteListValue.prototype.show = function () {
     if (this.label && this.div && this.hidden) {
-        this.hidden = false;
+        this.hidden              = false;
         this.label.style.display = 'block';
-        this.div.style.display = 'block';
+        this.div.style.display   = 'block';
     }
 };
 
