@@ -32,10 +32,7 @@ import com.sucy.skill.api.event.FlagExpireEvent;
 import com.sucy.skill.api.event.PlayerLandEvent;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.projectile.ItemProjectile;
-import com.sucy.skill.dynamic.mechanic.BlockMechanic;
-import com.sucy.skill.dynamic.mechanic.LightningMechanic;
-import com.sucy.skill.dynamic.mechanic.PotionProjectileMechanic;
-import com.sucy.skill.dynamic.mechanic.ProjectileMechanic;
+import com.sucy.skill.dynamic.mechanic.*;
 import com.sucy.skill.hook.DisguiseHook;
 import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.hook.VaultHook;
@@ -253,16 +250,22 @@ public class MechanicListener extends SkillAPIListener {
             event.setCancelled(true);
     }
 
-    /**
-     * Cancels damage to armor stands corresponding to an Armor Stand Mechanic
-     *
-     * @param event event details
-     */
-    @EventHandler
-    public void onArmorStandDamage(EntityDamageEvent event) {
+    @EventHandler(ignoreCancelled = true)
+    public void onEntityDamage(EntityDamageEvent event) {
         Entity entity = event.getEntity();
         if (entity instanceof ArmorStand && SkillAPI.getMeta(entity, ARMOR_STAND) != null) {
             event.setCancelled(true);
+        } else if (event.getCause().equals(EntityDamageEvent.DamageCause.FIRE_TICK) && entity.hasMetadata(FireMechanic.META_KEY)) {
+            event.setDamage(SkillAPI.getMetaDouble(entity, FireMechanic.META_KEY));
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onEntityCombust(EntityCombustEvent event) {
+        Entity entity = event.getEntity();
+        if (entity.hasMetadata(FireMechanic.META_KEY)) {
+            // Clears old FireMechanic data before combusting again
+            SkillAPI.removeMeta(entity, FireMechanic.META_KEY);
         }
     }
 
