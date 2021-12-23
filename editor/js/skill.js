@@ -5,135 +5,143 @@
  *
  * @constructor
  */
-function Skill(name) {
-    this.components = [];
+function Skill(name)
+{
+	this.components = [];
 
-    // Included to simplify code when adding components
-    this.html = document.getElementById('builderContent');
+	// Included to simplify code when adding components
+	this.html = document.getElementById('builderContent');
 
-    this.dataKey      = 'attributes';
-    this.componentKey = 'components';
+	this.dataKey = 'attributes';
+	this.componentKey = 'components';
 
-    // Skill data
-    this.data = [
-        new StringValue('Name', 'name', name).setTooltip('The name of the skill. This should not contain color codes'),
-        new StringValue('Type', 'type', 'Dynamic').setTooltip('The flavor text describing the skill such as "AOE utility" or whatever you want it to be'),
-        new IntValue('Max Level', 'max-level', 5).setTooltip('The maximum level the skill can reach'),
-        new ListValue('Skill Req', 'skill-req', ['None'], 'None').setTooltip('The skill that needs to be upgraded before this one can be unlocked'),
-        new IntValue('Skill Req Level', 'skill-req-lvl', 1).setTooltip('The level that the required skill needs to reach before this one can be unlocked'),
-        new ListValue('Permission', 'needs-permission', ['True',
-                                                         'False'], 'False').setTooltip('Whether or not this skill requires a permission to unlock. The permission would be "skillapi.skill.{skillName}"'),
-        new AttributeValue('Level Req', 'level', 1, 0).setTooltip('The class level the player needs to be before unlocking or upgrading this skill'),
-        new AttributeValue('Cost', 'cost', 1, 0).setTooltip('The amount of skill points needed to unlock and upgrade this skill'),
-        new AttributeValue('Cooldown', 'cooldown', 0, 0).setTooltip('The time in seconds before the skill can be cast again (only works with the Cast trigger)'),
-        new AttributeValue('Mana', 'mana', 0, 0).setTooltip('The amount of mana it takes to cast the skill (only works with the Cast trigger)'),
-        new AttributeValue('Min Spent', 'points-spent-req', 0, 0).setTooltip('The amount of skill points that need to be spent before upgrading this skill'),
-        new StringValue('Cast Message', 'msg', '&6{player} &2has cast &6{skill}').setTooltip('The message to display to players around the caster when the skill is cast. The radius of the area is in the config.yml options'),
+	// Skill data
+	this.data = [
+		new StringValue('Name', 'name', name).setTooltip('The name of the skill. This should not contain color codes'),
+		new StringValue('Type', 'type', 'Dynamic').setTooltip('The flavor text describing the skill such as "AOE utility" or whatever you want it to be'),
+		new IntValue('Max Level', 'max-level', 5).setTooltip('The maximum level the skill can reach'),
+		new ListValue('Skill Req', 'skill-req', ['None'], 'None').setTooltip('The skill that needs to be upgraded before this one can be unlocked'),
+		new IntValue('Skill Req Level', 'skill-req-lvl', 1).setTooltip('The level that the required skill needs to reach before this one can be unlocked'),
+		new ListValue('Permission', 'needs-permission', ['True', 'False'], 'False').setTooltip('Whether or not this skill requires a permission to unlock. The permission would be "skillapi.skill.{skillName}"'),
+		new AttributeValue('Level Req', 'level', 1, 0).setTooltip('The class level the player needs to be before unlocking or upgrading this skill'),
+		new AttributeValue('Cost', 'cost', 1, 0).setTooltip('The amount of skill points needed to unlock and upgrade this skill'),
+		new AttributeValue('Cooldown', 'cooldown', 0, 0).setTooltip('The time in seconds before the skill can be cast again (only works with the Cast trigger)'),
+		new AttributeValue('Mana', 'mana', 0, 0).setTooltip('The amount of mana it takes to cast the skill (only works with the Cast trigger)'),
+		new AttributeValue('Min Spent', 'points-spent-req', 0, 0).setTooltip('The amount of skill points that need to be spent before upgrading this skill'),
+		new StringValue('Cast Message', 'msg', '&6{player} &2has cast &6{skill}').setTooltip('The message to display to players around the caster when the skill is cast. The radius of the area is in the config.yml options'),
         new StringValue('Combo', 'combo', '').setTooltip('The click combo to assign the skill (if enabled). Use L, R, S, LS, RS, P, Q and F for the types of clicks separated by spaces. For example, "L L R R" would work for 4 click combos.'),
-        new ListValue('Indicator', 'indicator', ['2D',
-                                                 '3D',
-                                                 'None'], '2D').setTooltip('[PREMIUM] What sort of display to use for cast previews. This applies to the "hover bar" in the casting bars setup.'),
-        new ListValue('Icon', 'icon', getMaterials, 'Jack O Lantern').setTooltip('The item used to represent the skill in skill trees'),
-        new IntValue('Icon Data', 'icon-data', 0).setTooltip('The data/durability value (under 1.14) or the CustomModelData (in 1.14+) of the icon.'),
-        new StringListValue('Icon Lore', 'icon-lore', [
-            '&d{name} &7({level}/{max})',
-            '&2Type: &6{type}',
-            '',
-            '{req:level}Level: {attr:level}',
-            '{req:cost}Cost: {attr:cost}',
-            '',
-            '&2Mana: {attr:mana}',
-            '&2Cooldown: {attr:cooldown}'
-        ]).setTooltip('The description shown for the item in skill trees. Include values of mechanics such as damage dealt using their "Icon Key" values'),
-        new StringListValue('Incompatible', 'incompatible', []).setTooltip('List of skill names that must not be upgraded in order to upgrade this skill')
-    ];
+        new ListValue('Indicator', 'indicator', [ '2D', '3D', 'None' ], '2D').setTooltip('[PREMIUM] What sort of display to use for cast previews. This applies to the "hover bar" in the casting bars setup.'),
+		new ListValue('Icon', 'icon', getMaterials, 'Jack O Lantern').setTooltip('The item used to represent the skill in skill trees'),
+		new IntValue('Icon Data', 'icon-data', 0).setTooltip('The data/durability value (under 1.14) or the CustomModelData (in 1.14+) of the icon.'),
+		new StringListValue('Icon Lore', 'icon-lore', [
+			'&d{name} &7({level}/{max})',
+			'&2Type: &6{type}',
+			'',
+			'{req:level}Level: {attr:level}',
+			'{req:cost}Cost: {attr:cost}',
+			'',
+			'&2Mana: {attr:mana}',
+			'&2Cooldown: {attr:cooldown}'
+		]).setTooltip('The description shown for the item in skill trees. Include values of mechanics such as damage dealt using their "Icon Key" values'),
+		new StringListValue('Incompatible', 'incompatible', []).setTooltip('List of skill names that must not be upgraded in order to upgrade this skill')
+	];
 }
 
 /**
  * Applies the skill data to the HTML page, overwriting any previous data
  */
-Skill.prototype.apply = function () {
-    let builder       = document.getElementById('builderContent');
-    builder.innerHTML = '';
+Skill.prototype.apply = function()
+{
+	var builder = document.getElementById('builderContent');
+	builder.innerHTML = '';
 
-    // Set up the builder content
-    for (let i = 0; i < this.components.length; i++) {
-        this.components[i].createBuilderHTML(builder);
-    }
+	// Set up the builder content
+	for (var i = 0; i < this.components.length; i++)
+	{
+		this.components[i].createBuilderHTML(builder);
+	}
 }
 
 /**
  * Creates the form HTML for editing the skill and applies it to
  * the appropriate area on the page
  */
-Skill.prototype.createFormHTML = function () {
-    let form = document.createElement('form');
+Skill.prototype.createFormHTML = function()
+{
+	var form = document.createElement('form');
 
-    let header       = document.createElement('h4');
-    header.innerHTML = 'Skill Details';
-    form.appendChild(header);
+	var header = document.createElement('h4');
+	header.innerHTML = 'Skill Details';
+	form.appendChild(header);
 
     form.appendChild(document.createElement('hr'));
     form.appendChild(this.createEditButton(form));
     form.appendChild(document.createElement('hr'));
 
-    this.data[3].list.splice(1, this.data[3].list.length - 1);
-    for (let i = 0; i < skills.length; i++) {
-        if (skills[i] != this) {
-            this.data[3].list.push(skills[i].data[0].value);
-        }
-    }
-    for (let i = 0; i < this.data.length; i++) {
-        this.data[i].createHTML(form);
-    }
+	this.data[3].list.splice(1, this.data[3].list.length - 1);
+	for (var i = 0; i < skills.length; i++)
+	{
+		if (skills[i] != this)
+		{
+			this.data[3].list.push(skills[i].data[0].value);
+		}
+	}
+	for (var i = 0; i < this.data.length; i++)
+	{
+		this.data[i].createHTML(form);
+	}
 
-    let hr = document.createElement('hr');
-    form.appendChild(hr);
+	var hr = document.createElement('hr');
+	form.appendChild(hr);
 
-    form.appendChild(this.createEditButton(form));
+	form.appendChild(this.createEditButton(form));
 
-    let target       = document.getElementById('skillForm');
-    target.innerHTML = '';
-    target.appendChild(form);
+	var target = document.getElementById('skillForm');
+	target.innerHTML = '';
+	target.appendChild(form);
 }
 
-Skill.prototype.createEditButton = function (form) {
-    let done       = document.createElement('h5');
-    done.className = 'doneButton';
-    done.innerHTML = 'Edit Effects',
-        done.skill = this;
-    done.form = form;
-    done.addEventListener('click', function (e) {
-        this.skill.update();
-        let list                      = document.getElementById('skillList');
-        list[list.selectedIndex].text = this.skill.data[0].value;
-        this.form.parentNode.removeChild(this.form);
-        showSkillPage('builder');
-    });
+Skill.prototype.createEditButton = function(form) {
+    var done = document.createElement('h5');
+	done.className = 'doneButton';
+	done.innerHTML = 'Edit Effects',
+	done.skill = this;
+	done.form = form;
+	done.addEventListener('click', function(e) {
+		this.skill.update();
+		var list = document.getElementById('skillList');
+		list[list.selectedIndex].text = this.skill.data[0].value;
+		this.form.parentNode.removeChild(this.form);
+		showSkillPage('builder');
+	});
     return done;
 }
 
 /**
  * Updates the skill data from the details form if it exists
  */
-Skill.prototype.update = function () {
-    let index;
-    let list = document.getElementById('skillList');
-    for (let i = 0; i < skills.length; i++) {
-        if (skills[i] == this) {
-            index = i;
-            break;
-        }
-    }
-    let prevName = this.data[0].value;
-    for (let j = 0; j < this.data.length; j++) {
-        this.data[j].update();
-    }
-    let newName        = this.data[0].value;
-    this.data[0].value = prevName;
-    if (isSkillNameTaken(newName)) return;
-    this.data[0].value = newName;
-    list[index].text   = this.data[0].value;
+Skill.prototype.update = function()
+{
+	var index;
+	var list = document.getElementById('skillList');
+	for (var i = 0; i < skills.length; i++)
+	{
+		if (skills[i] == this)
+		{
+			index = i;
+			break;
+		}
+	}
+	var prevName = this.data[0].value;
+	for (var j = 0; j < this.data.length; j++)
+	{
+		this.data[j].update();
+	}
+	var newName = this.data[0].value;
+	this.data[0].value = prevName;
+	if (isSkillNameTaken(newName)) return;
+	this.data[0].value = newName;
+	list[index].text = this.data[0].value;
 }
 
 /**
@@ -143,38 +151,46 @@ Skill.prototype.update = function () {
  *
  * @returns {boolean} true if using it, false otherwise
  */
-Skill.prototype.usingTrigger = function (trigger) {
-    for (let i = 0; i < this.components.length; i++) {
-        if (this.components[i].name == trigger) return true;
-    }
-    return false;
+Skill.prototype.usingTrigger = function(trigger)
+{
+	for (var i = 0; i < this.components.length; i++)
+	{
+		if (this.components[i].name == trigger) return true;
+	}
+	return false;
 }
 
 /**
  * Creates and returns a save string for the skill
  */
-Skill.prototype.getSaveString = function () {
-    let saveString = '';
+Skill.prototype.getSaveString = function()
+{
+	var saveString = '';
 
-    saveString += this.data[0].value + ":\n";
-    for (let i = 0; i < this.data.length; i++) {
-        if (isAttribute(this.data[i])) continue;
-        saveString += this.data[i].getSaveString('  ');
-    }
-    saveString += '  attributes:\n';
-    for (let i = 0; i < this.data.length; i++) {
-        if (isAttribute(this.data[i])) {
-            saveString += this.data[i].getSaveString('    ');
-        }
-    }
-    if (this.components.length > 0) {
-        saveString += '  components:\n';
-        saveIndex = 0;
-        for (let i = 0; i < this.components.length; i++) {
-            saveString += this.components[i].getSaveString('    ');
-        }
-    }
-    return saveString;
+	saveString += this.data[0].value + ":\n";
+	for (var i = 0; i < this.data.length; i++)
+	{
+		if (isAttribute(this.data[i])) continue;
+		saveString += this.data[i].getSaveString('  ');
+	}
+	saveString += '  attributes:\n';
+	for (var i = 0; i < this.data.length; i++)
+	{
+		if (isAttribute(this.data[i]))
+		{
+			saveString += this.data[i].getSaveString('    ');
+		}
+	}
+	if (this.components.length > 0)
+	{
+		saveString += '  components:\n';
+		saveIndex = 0;
+		for (var i = 0; i < this.components.length; i++)
+		{
+			saveString += this.components[i].getSaveString('    ');
+		}
+	}
+	return saveString;
 }
 
 function isAttribute(input) {
@@ -188,12 +204,16 @@ function isAttribute(input) {
  *
  * @returns {Number} the index of the last line of data for this skill
  */
-Skill.prototype.load = function (data) {
-    if (data.active || data.embed || data.passive) {
-        // Load old skill config for conversion
-    } else {
-        this.loadBase(data);
-    }
+Skill.prototype.load = function(data)
+{
+	if (data.active || data.embed || data.passive)
+	{
+		// Load old skill config for conversion
+	}
+	else
+	{
+		this.loadBase(data);
+	}
 }
 
 Skill.prototype.loadBase = loadSection;
@@ -203,20 +223,21 @@ Skill.prototype.loadBase = loadSection;
  *
  * @returns {Skill} the new skill
  */
-function newSkill() {
-    let id = 1;
-    while (isSkillNameTaken('Skill ' + id)) id++;
+function newSkill()
+{
+	var id = 1;
+	while (isSkillNameTaken('Skill ' + id)) id++;
 
-    activeSkill = addSkill('Skill ' + id);
+	activeSkill = addSkill('Skill ' + id);
 
-    let list           = document.getElementById('skillList');
-    list.selectedIndex = list.length - 2;
+	var list = document.getElementById('skillList');
+	list.selectedIndex = list.length - 2;
 
-    activeSkill.apply();
-    activeSkill.createFormHTML();
-    showSkillPage('skillForm');
+	activeSkill.apply();
+	activeSkill.createFormHTML();
+	showSkillPage('skillForm');
 
-    return activeSkill;
+	return activeSkill;
 }
 
 /**
@@ -226,16 +247,17 @@ function newSkill() {
  *
  * @returns {Skill} the added skill
  */
-function addSkill(name) {
-    let skill = new Skill(name);
-    skills.push(skill);
+function addSkill(name)
+{
+	var skill = new Skill(name);
+	skills.push(skill);
 
-    let option  = document.createElement('option');
-    option.text = name;
-    let list    = document.getElementById('skillList');
-    list.add(option, list.length - 1);
+	var option = document.createElement('option');
+	option.text = name;
+	var list = document.getElementById('skillList');
+	list.add(option, list.length - 1);
 
-    return skill;
+	return skill;
 }
 
 /**
@@ -245,8 +267,9 @@ function addSkill(name) {
  *
  * @returns {boolean} true if the name is taken, false otherwise
  */
-function isSkillNameTaken(name) {
-    return getSkill(name) != null;
+function isSkillNameTaken(name)
+{
+	return getSkill(name) != null;
 }
 
 /**
@@ -256,17 +279,19 @@ function isSkillNameTaken(name) {
  *
  * @returns {Skill} the skill with the given name or null if not found
  */
-function getSkill(name) {
-    name = name.toLowerCase();
-    for (let i = 0; i < skills.length; i++) {
-        if (skills[i].data[0].value.toLowerCase() == name) return skills[i];
-    }
-    return null;
+function getSkill(name)
+{
+	name = name.toLowerCase();
+	for (var i = 0; i < skills.length; i++)
+	{
+		if (skills[i].data[0].value.toLowerCase() == name) return skills[i];
+	}
+	return null;
 }
 
 
-let activeSkill     = new Skill('Skill 1');
-let skills          = [activeSkill];
-activeComponent = undefined;
+var activeSkill = new Skill('Skill 1');
+var activeComponent = undefined;
+var skills = [activeSkill];
 activeSkill.createFormHTML();
 showSkillPage('skillForm');

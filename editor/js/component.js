@@ -1,4 +1,4 @@
-let hoverSpace;
+var hoverSpace;
 
 function canDrop(thing, target) {
     if (thing == target) return false;
@@ -14,7 +14,7 @@ function canDrop(thing, target) {
 /**
  * Types of components
  */
-let Type = {
+var Type = {
     TRIGGER   : 'trigger',
     TARGET    : 'target',
     CONDITION : 'condition',
@@ -24,7 +24,7 @@ let Type = {
 /**
  * Available triggers for activating skill effects
  */
-let Trigger = {
+var Trigger = {
     BLOCK_BREAK          : { name: 'Block Break',          container: true, construct: TriggerBlockBreak         },
     BLOCK_PLACE          : { name: 'Block Place',          container: true, construct: TriggerBlockPlace         },
     CAST                 : { name: 'Cast',                 container: true, construct: TriggerCast               },
@@ -56,7 +56,7 @@ let Trigger = {
 /**
  * Available target component data
  */
-let Target = {
+var Target = {
     AREA     : { name: 'Area',     container: true, construct: TargetArea     },
     CONE     : { name: 'Cone',     container: true, construct: TargetCone     },
     LINEAR   : { name: 'Linear',   container: true, construct: TargetLinear   },
@@ -71,7 +71,7 @@ let Target = {
 /**
  * Available condition component data
  */
-let Condition = {
+var Condition = {
     ARMOR       : { name: 'Armor',       container: true, construct: ConditionArmor      },
     ATTRIBUTE   : { name: 'Attribute',   container: true, construct: ConditionAttribute  },
     BIOME       : { name: 'Biome',       container: true, construct: ConditionBiome      },
@@ -114,7 +114,7 @@ let Condition = {
 /**
  * Available mechanic component data
  */
-let Mechanic = {
+var Mechanic = {
     ARMOR               : { name: 'Armor',               container: false, construct: MechanicArmor              },
     ARMOR_STAND         : { name: 'Armor Stand',         container: true,  construct: MechanicArmorStand         },
     ARMOR_STAND_POSE    : { name: 'Armor Stand Pose',    container: false, construct: MechanicArmorStandPose     },
@@ -193,7 +193,7 @@ let Mechanic = {
     WOLF                : { name: 'Wolf',                container: true,  construct: MechanicWolf               }
 };
 
-let saveIndex;
+var saveIndex;
 
 /**
  * Represents a component of a dynamic skill
@@ -2927,7 +2927,7 @@ function MechanicTrigger() {
     );
 
     // DAMAGE
-    let damageTriggers = ['Physical Damage', 'Skill Damage', 'Took Physical Damage', 'Took Skill Damage'];
+    var damageTriggers = ['Physical Damage', 'Skill Damage', 'Took Physical Damage', 'Took Skill Damage'];
     this.data.push(new ListValue('Target Listen Target', 'target', ['True', 'False'], 'True')
         .requireValue('trigger', damageTriggers)
         .setTooltip('True makes children target the target that has been listened to. False makes children target the entity fighting the target entity.')
@@ -3287,7 +3287,7 @@ function MechanicWolf() {
 }
 
 // The active component being edited or added to
-let activeComponent = undefined;
+var activeComponent = undefined;
 
 /**
  * Adds the options for item related effects to the component
@@ -3442,7 +3442,7 @@ function addParticleOptions(component) {
 }
 
 function addEffectOptions(component, optional) {
-    let opt = appendNone;
+    var opt = appendNone;
     if (optional) {
         opt = appendOptional;
 
