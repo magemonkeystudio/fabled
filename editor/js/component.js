@@ -72,6 +72,7 @@ var Target = {
  * Available condition component data
  */
 var Condition = {
+    ALTITUDE    : { name: 'Altitude',    container: true, construct: ConditionAltitude   },
     ARMOR       : { name: 'Armor',       container: true, construct: ConditionArmor      },
     ATTRIBUTE   : { name: 'Attribute',   container: true, construct: ConditionAttribute  },
     BIOME       : { name: 'Biome',       container: true, construct: ConditionBiome      },
@@ -1070,6 +1071,24 @@ function TargetSingle() {
 
 // -- Condition constructors --------------------------------------------------- //
 
+extend('ConditionAltitude', 'Component');
+
+function ConditionAltitude()
+{
+    this.super('Altitude', Type.CONDITION, true);
+
+    this.description = "Applies child components whenever the player is on a certain height-level";
+
+    this.data.push(new IntValue('Min', 'min', 0)
+        .setTooltip('The minimum height a player has to be on')
+        );
+
+    this.data.push(new IntValue('Max', 'max', 0)
+        .setTooltip('The maximum height a player can be on')
+        );
+
+}
+
 extend('ConditionArmor', 'Component');
 
 function ConditionArmor() {
@@ -1093,10 +1112,10 @@ function ConditionAttribute() {
     this.data.push(new StringValue('Attribute', 'attribute', 'Vitality')
         .setTooltip('The name of the attribute you are checking the value of')
     );
-    this.data.push(new AttributeValue('Min', 'min', 0, 0)
+    this.data.push(new IntValue('Min', 'min', 0)
         .setTooltip('The minimum amount of the attribute the target requires')
     );
-    this.data.push(new AttributeValue('Max', 'max', 999, 0)
+    this.data.push(new IntValue('Max', 'max', 999, 0)
         .setTooltip('The maximum amount of the attribute the target requires')
     );
 }
