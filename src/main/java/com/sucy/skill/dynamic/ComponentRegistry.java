@@ -75,6 +75,7 @@ public class ComponentRegistry {
         register(new AttributeCondition());
         register(new BiomeCondition());
         register(new BlockCondition());
+        register(new BurningCondition());
         register(new CastLevelCondition());
         register(new CeilingCondition());
         register(new ChanceCondition());
