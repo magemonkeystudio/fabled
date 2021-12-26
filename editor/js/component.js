@@ -1112,10 +1112,10 @@ function ConditionAttribute() {
     this.data.push(new StringValue('Attribute', 'attribute', 'Vitality')
         .setTooltip('The name of the attribute you are checking the value of')
     );
-    this.data.push(new IntValue('Min', 'min', 0)
+    this.data.push(new AttributeValue('Min', 'min', 0)
         .setTooltip('The minimum amount of the attribute the target requires')
     );
-    this.data.push(new IntValue('Max', 'max', 999, 0)
+    this.data.push(new AttributeValue('Max', 'max', 999, 0)
         .setTooltip('The maximum amount of the attribute the target requires')
     );
 }
