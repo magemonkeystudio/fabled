@@ -110,7 +110,8 @@ var Condition = {
     TOOL        : { name: 'Tool',        container: true, construct: ConditionTool       },
     VALUE       : { name: 'Value',       container: true, construct: ConditionValue      },
     WATER       : { name: 'Water',       container: true, construct: ConditionWater      },
-    WEATHER     : { name: 'Weather',     container: true, construct: ConditionWeather    }
+    WEATHER     : { name: 'Weather',     container: true, construct: ConditionWeather    },
+    WORLD       : { name: 'World',       container: true, construct: ConditionWorld      }
 };
 
 /**
@@ -1647,6 +1648,24 @@ function ConditionWeather() {
     this.data.push(new ListValue('Type', 'type', ['None', 'Rain', 'Snow', 'Thunder'], 'Rain')
         .setTooltip('Whether or not the target needs to be in the water')
     );
+}
+
+extend('ConditionWorld', 'Component');
+
+function ConditionWorld() 
+{
+    this.super('World', Type.CONDITION, true);
+
+    this.description = 'Applies child components when the target is in a specific world';
+
+    this.data.push(new ListValue('Blacklist', 'blacklist', ['True', 'False'], 'False')
+        .setTooltip('Whether or not the list should be seen as a blacklist')
+    );
+
+    this.data.push(new StringListValue('Worlds', 'worlds', [])
+        .setTooltip("Which worlds should be taken into consideration")
+    );
+
 }
 
 // -- Mechanic constructors ---------------------------------------------------- //
