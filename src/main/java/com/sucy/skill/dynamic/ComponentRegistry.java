@@ -111,6 +111,7 @@ public class ComponentRegistry {
         register(new ValueCondition());
         register(new WaterCondition());
         register(new WeatherCondition());
+        register(new WorldCondition());
 
         // Mechanics
         register(new ArmorMechanic());
