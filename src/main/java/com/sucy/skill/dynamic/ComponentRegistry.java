@@ -70,6 +70,7 @@ public class ComponentRegistry {
         register(new SingleTarget());
 
         // Conditions
+        register(new AltitudeCondition());
         register(new ArmorCondition());
         register(new AttributeCondition());
         register(new BiomeCondition());
