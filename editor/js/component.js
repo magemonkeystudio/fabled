@@ -77,6 +77,7 @@ var Condition = {
     ATTRIBUTE   : { name: 'Attribute',   container: true, construct: ConditionAttribute  },
     BIOME       : { name: 'Biome',       container: true, construct: ConditionBiome      },
     BLOCK       : { name: 'Block',       container: true, construct: ConditionBlock      },
+    BURNING     : { name: 'Burning',     container: true, construct: ConditionBurning    },
     CEILING     : { name: 'Ceiling',     container: true, construct: ConditionCeiling    },
     CHANCE      : { name: 'Chance',      container: true, construct: ConditionChance     },
     CLASS       : { name: 'Class',       container: true, construct: ConditionClass      },
@@ -1151,6 +1152,19 @@ function ConditionBlock() {
     this.data.push(new ListValue('Material', 'material', getMaterials, 'Dirt')
         .setTooltip('The type of the block to require the targets to stand on')
     );
+}
+
+extend('ConditionBurning', 'Component');
+
+function ConditionBurning() 
+{
+    this.super('Burning', Type.CONDITION, true);
+
+    this.description = 'Applies child components if the caster burns or not';
+
+    this.data.push(new ListValue('Type', 'burn', ['Burn', 'Dont burn'], 'Burn')
+        .setTooltip('Specifies whether the player has to be burning for this skill to be performed')
+        );
 }
 
 extend('ConditionCeiling', 'Component');
