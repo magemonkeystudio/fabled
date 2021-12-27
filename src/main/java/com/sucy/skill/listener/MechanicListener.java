@@ -32,9 +32,7 @@ import com.sucy.skill.api.event.FlagExpireEvent;
 import com.sucy.skill.api.event.PlayerLandEvent;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.projectile.ItemProjectile;
-import com.sucy.skill.dynamic.mechanic.BlockMechanic;
-import com.sucy.skill.dynamic.mechanic.PotionProjectileMechanic;
-import com.sucy.skill.dynamic.mechanic.ProjectileMechanic;
+import com.sucy.skill.dynamic.mechanic.*;
 import com.sucy.skill.hook.DisguiseHook;
 import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.hook.VaultHook;
@@ -49,8 +47,10 @@ import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.weather.LightningStrikeEvent;
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -188,18 +188,27 @@ public class MechanicListener extends SkillAPIListener {
     }
 
     /**
-     * Applies projectile callbacks when striking an enemy
+     * Applies projectile and lightning callbacks when striking an enemy
      *
      * @param event event details
      */
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onShoot(EntityDamageByEntityEvent event) {
-        if (event.getDamager() instanceof Projectile) {
-            Projectile p = (Projectile) event.getDamager();
-            if (p.hasMetadata(P_CALL) && event.getEntity() instanceof LivingEntity) {
+    public void onDamageByEntity(EntityDamageByEntityEvent event) {
+        Entity damager = event.getDamager();
+        Entity entity = event.getEntity();
+        if (damager instanceof Projectile) {
+            Projectile p = (Projectile) damager;
+            if (p.hasMetadata(P_CALL) && entity instanceof LivingEntity) {
                 ((ProjectileMechanic) SkillAPI.getMeta(p, P_CALL))
-                        .callback(p, (LivingEntity) event.getEntity());
+                        .callback(p, (LivingEntity) entity);
                 event.setCancelled(true);
+            }
+        } else if (damager instanceof LightningStrike && damager.hasMetadata(P_CALL) && entity instanceof LivingEntity) {
+            double damage = Objects.requireNonNull((LightningMechanic.Callback) SkillAPI.getMeta(damager, P_CALL)).execute((LivingEntity) entity);
+            if (damage <= 0) {
+                event.setCancelled(true);
+            } else {
+                event.setDamage(damage);
             }
         }
     }
@@ -241,16 +250,22 @@ public class MechanicListener extends SkillAPIListener {
             event.setCancelled(true);
     }
 
-    /**
-     * Cancels damage to armor stands corresponding to an Armor Stand Mechanic
-     *
-     * @param event event details
-     */
-    @EventHandler
-    public void onArmorStandDamage(EntityDamageEvent event) {
+    @EventHandler(ignoreCancelled = true)
+    public void onEntityDamage(EntityDamageEvent event) {
         Entity entity = event.getEntity();
         if (entity instanceof ArmorStand && SkillAPI.getMeta(entity, ARMOR_STAND) != null) {
             event.setCancelled(true);
+        } else if (event.getCause().equals(EntityDamageEvent.DamageCause.FIRE_TICK) && entity.hasMetadata(FireMechanic.META_KEY)) {
+            event.setDamage(SkillAPI.getMetaDouble(entity, FireMechanic.META_KEY));
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onEntityCombust(EntityCombustEvent event) {
+        Entity entity = event.getEntity();
+        if (entity.hasMetadata(FireMechanic.META_KEY)) {
+            // Clears old FireMechanic data before combusting again
+            SkillAPI.removeMeta(entity, FireMechanic.META_KEY);
         }
     }
 

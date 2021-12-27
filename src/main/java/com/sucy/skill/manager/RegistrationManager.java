@@ -42,6 +42,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * <p>Skill API Registration Manager.</p>
@@ -162,15 +165,18 @@ public class RegistrationManager {
         Logger.log(LogType.REGISTRATION, 1, "Loading individual dynamic skill files...");
         File skillRoot = new File(api.getDataFolder().getPath() + File.separator + SKILL_FOLDER);
         if (skillRoot.exists()) {
-            File[] files = skillRoot.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    if (!file.getName().endsWith(".yml")) {
-                        continue;
+            Path skillRootPath = skillRoot.toPath();
+            try {
+                Files.walk(skillRootPath).forEach(path -> {
+                    String longName = skillRootPath.relativize(path).toString();
+                    if (!longName.endsWith(".yml")) {
+                        return;
                     }
-                    String name = file.getName().replace(".yml", "");
+                    String name = path.getFileName().toString();
+                    longName = longName.replace(".yml", "");
+                    name = name.replace(".yml", "");
                     try {
-                        CommentedConfig sConfig = new CommentedConfig(api, SKILL_DIR + name);
+                        CommentedConfig sConfig = new CommentedConfig(api, SKILL_DIR + longName);
                         DynamicSkill skill = new DynamicSkill(name);
                         skill.load(sConfig.getConfig().getSection(name));
                         if (!SkillAPI.isSkillRegistered(skill.getName())) {
@@ -190,7 +196,10 @@ public class RegistrationManager {
                         Logger.invalid("Failed to load skill: " + name + " - " + ex.getMessage());
                         ex.printStackTrace();
                     }
-                }
+                });
+            } catch (IOException ex) {
+                Logger.invalid("Failed to read dynamic skills: " + ex.getMessage());
+                ex.printStackTrace();
             }
         }
 
@@ -245,15 +254,18 @@ public class RegistrationManager {
         Logger.log(LogType.REGISTRATION, 1, "Loading individual dynamic class files...");
         File classRoot = new File(api.getDataFolder().getPath() + File.separator + CLASS_FOLDER);
         if (classRoot.exists()) {
-            File[] files = classRoot.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    if (!file.getName().endsWith(".yml")) {
-                        continue;
+            Path classRootPath = classRoot.toPath();
+            try {
+                Files.walk(classRootPath).forEach(path -> {
+                    String longName = classRootPath.relativize(path).toString();
+                    if (!longName.endsWith(".yml")) {
+                        return;
                     }
+                    String name = path.getFileName().toString();
+                    longName = longName.replace(".yml", "");
+                    name = name.replace(".yml", "");
                     try {
-                        String name = file.getName().replace(".yml", "");
-                        CommentedConfig cConfig = new CommentedConfig(api, CLASS_DIR + name);
+                        CommentedConfig cConfig = new CommentedConfig(api, CLASS_DIR + longName);
                         DynamicClass tree = new DynamicClass(api, name);
                         tree.load(cConfig.getConfig().getSection(name));
                         if (!SkillAPI.isClassRegistered(tree.getName())) {
@@ -269,9 +281,12 @@ public class RegistrationManager {
                             Logger.invalid("Duplicate class detected: " + name);
                         }
                     } catch (Exception ex) {
-                        Logger.invalid("Failed to load class file: " + file.getName() + " - " + ex.getMessage());
+                        Logger.invalid("Failed to load class file: " + name + " - " + ex.getMessage());
                     }
-                }
+                });
+            } catch (IOException ex) {
+                Logger.invalid("Failed to read dynamic classes: " + ex.getMessage());
+                ex.printStackTrace();
             }
         }
 

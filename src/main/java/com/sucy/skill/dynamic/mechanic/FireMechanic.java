@@ -26,7 +26,11 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
+import com.sucy.skill.SkillAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
 
@@ -35,6 +39,8 @@ import java.util.List;
  */
 public class FireMechanic extends MechanicComponent {
     private static final String SECONDS = "seconds";
+    private static final String DAMAGE = "damage";
+    public static final String META_KEY = "fireMechanic";
 
     @Override
     public String getKey() {
@@ -57,10 +63,20 @@ public class FireMechanic extends MechanicComponent {
             return false;
         }
         double seconds = parseValues(caster, SECONDS, level, 3.0);
+        double damage = parseValues(caster, DAMAGE, level, 1);
         int ticks = (int) (seconds * 20);
         for (LivingEntity target : targets) {
             int newTicks = ticks <= 0 ? 0 : Math.max(ticks, target.getFireTicks());
             target.setFireTicks(newTicks);
+            SkillAPI.setMeta(target, META_KEY, damage);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (target.hasMetadata(META_KEY)) {
+                        SkillAPI.removeMeta(target, META_KEY);
+                    }
+                }
+            }.runTaskLater(SkillAPI.inst(), newTicks);
         }
         return targets.size() > 0;
     }
