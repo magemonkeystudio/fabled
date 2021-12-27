@@ -84,7 +84,7 @@ public class PluginChecker extends SkillAPIListener {
 
     public static boolean isWorldGuardActive() {return worldGuard;}
 
-    public static boolean isPartiesActive() {return parties || Bukkit.getPluginManager().isPluginEnabled("Parties");}
+    public static boolean isPartiesActive() {return parties || Bukkit.getPluginManager().isPluginEnabled("ProSkillAPIParties");}
 
     /** Checks whether Mimic is present. */
     public static boolean isMimicActive() {return mimic && MimicHook.isHooked();}
@@ -103,7 +103,7 @@ public class PluginChecker extends SkillAPIListener {
         } catch (Exception ex) {bungee = false;}
         mythicMobs = pluginManager.isPluginEnabled("MythicMobs");
         worldGuard = pluginManager.isPluginEnabled("WorldGuard");
-        parties = pluginManager.isPluginEnabled("Parties");
+        parties = pluginManager.isPluginEnabled("ProSkillAPIParties");
         mimic = pluginManager.isPluginEnabled("Mimic");
     }
 
@@ -137,7 +137,7 @@ public class PluginChecker extends SkillAPIListener {
             case "WorldGuard":
                 worldGuard = isEnabled;
                 break;
-            case "Parties":
+            case "ProSkillAPIParties":
                 parties = isEnabled;
                 break;
             case "Mimic":
