@@ -70,10 +70,12 @@ public class ComponentRegistry {
         register(new SingleTarget());
 
         // Conditions
+        register(new AltitudeCondition());
         register(new ArmorCondition());
         register(new AttributeCondition());
         register(new BiomeCondition());
         register(new BlockCondition());
+        register(new BurningCondition());
         register(new CastLevelCondition());
         register(new CeilingCondition());
         register(new ChanceCondition());
@@ -109,6 +111,7 @@ public class ComponentRegistry {
         register(new ValueCondition());
         register(new WaterCondition());
         register(new WeatherCondition());
+        register(new WorldCondition());
 
         // Mechanics
         register(new ArmorMechanic());
