@@ -149,6 +149,7 @@ var Mechanic = {
     IMMUNITY            : { name: 'Immunity',            container: false, construct: MechanicImmunity           },
     INTERRUPT           : { name: 'Interrupt',           container: false, construct: MechanicInterrupt          },
     ITEM                : { name: 'Item',                container: false, construct: MechanicItem               },
+    ITEM_DROP           : { name: 'Item Drop',           container: false, construct: MechanicItemDrop           },
     ITEM_PROJECTILE     : { name: 'Item Projectile',     container: true,  construct: MechanicItemProjectile     },
     ITEM_REMOVE         : { name: 'Item Remove',         container: false, construct: MechanicItemRemove         },
     LAUNCH              : { name: 'Launch',              container: false, construct: MechanicLaunch             },
@@ -1101,7 +1102,7 @@ function ConditionArmor() {
         .setTooltip('The type of armor to check')
     );
 
-    addItemOptions(this);
+    addItemConditionOptions(this);
 }
 
 extend('ConditionAttribute', 'Component');
@@ -1386,7 +1387,7 @@ function ConditionItem() {
     this.super('Item', Type.CONDITION, true);
     this.description = "Applies child components when the target is wielding an item matching the given material.";
 
-    addItemOptions(this);
+    addItemConditionOptions(this);
 }
 
 extend('ConditionInventory', 'Component');
@@ -1400,7 +1401,7 @@ function ConditionInventory() {
         .setTooltip('The amount of the item needed in the player\'s inventory')
     );
 
-    addItemOptions(this);
+    addItemConditionOptions(this);
 }
 
 extend('ConditionLight', 'Component');
@@ -1486,7 +1487,7 @@ function ConditionOffhand() {
     this.super('Offhand', Type.CONDITION, true);
     this.description = "Applies child components when the target is wielding an item matching the given material as an offhand item. This is for v1.9+ servers only.";
 
-    addItemOptions(this);
+    addItemConditionOptions(this);
 }
 
 extend('ConditionPermission', 'Component');
@@ -1550,7 +1551,7 @@ function ConditionSlot() {
         .setTooltip('The slots to look at. Slots 0-8 are the hot bar, 9-35 are the main inventory, 36-39 are armor, and 40 is the offhand slot. Multiple slots will check if any of the slots match.')
     );
 
-    addItemOptions(this);
+    addItemConditionOptions(this);
 }
 
 extend('ConditionStatus', 'Component');
@@ -2407,42 +2408,33 @@ function MechanicItem() {
 
     this.description = 'Gives each player target the item defined by the settings.';
 
-    this.data.push(new ListValue('Material', 'material', getMaterials, 'Arrow')
-        .setTooltip('The type of item to give to the player')
+    addItemOptions(this);
+}
+
+extend('MechanicItemDrop', 'Component');
+
+function MechanicItemDrop() {
+    this.super('Item Drop', Type.MECHANIC, false);
+
+    this.description = 'Spawns a dropped item defined by the settings at the specified location.';
+	
+    this.data.push(new AttributeValue('Pickup Delay', 'pickup_delay', 10, 0)
+        .setTooltip('How many ticks must pass before the item can be picked up, in ticks.')
     );
-    this.data.push(new IntValue('Amount', 'amount', 1)
-        .setTooltip('The quantity of the item to give to the player')
-    );
-    this.data.push(new IntValue('Durability', 'data', 0)
-        .setTooltip('The durability value of the item to give to the player')
-    );
-    this.data.push(new IntValue('Data', 'byte', 0)
-        .setTooltip('The data value of the item to give to the player for things such as egg type or wool color')
-    );
-    this.data.push(new ListValue('Custom', 'custom', ['True', 'False'], 'False')
-        .setTooltip('Whether or not to apply a custom name/lore to the item')
+    this.data.push(new AttributeValue('Duration', 'duration', 6000, 0)
+        .setTooltip('The time after which the item will despawn if not picked up, in ticks. Caps at 6000.')
     );
 
-    this.data.push(new StringValue('Name', 'name', 'Name').requireValue('custom', ['True'])
-        .setTooltip('The name of the item')
+    addItemOptions(this);
+	
+    this.data.push(new AttributeValue('Forward', 'forward', 0, 0)
+        .setTooltip('How far forward in blocks to teleport. A negative value teleports backwards.')
     );
-    this.data.push(new StringListValue('Lore', 'lore', []).requireValue('custom', ['True'])
-        .setTooltip('The lore text for the item (the text below the name)')
+    this.data.push(new AttributeValue('Upward', 'upward', 0, 0)
+        .setTooltip('How far upward in blocks to teleport. A negative value teleports downward.')
     );
-    this.data.push(new StringValue('Potion Color', 'potion_color', '#1f8c1f').requireValue('material', ['Potion',
-                                                                                                        'Splash potion'])
-        .setTooltip('The potion color in hex RGB')
-    );
-    this.data.push(new ListValue('Potion Type', 'potion_type', getPotionTypes, 'Speed').requireValue('material', ['Potion',
-                                                                                                                  'Splash potion'])
-        .setTooltip('The type of potion')
-    );
-    this.data.push(new IntValue('Potion Level', 'potion_level', 0).requireValue('material', ['Potion', 'Splash potion'])
-        .setTooltip('The potion level')
-    );
-    this.data.push(new IntValue('Potion Duration', 'potion_duration', 30).requireValue('material', ['Potion',
-                                                                                                    'Splash potion'])
-        .setTooltip('The potion duration (seconds)')
+    this.data.push(new AttributeValue('Right', 'right', 0, 0)
+        .setTooltip('How far to the right in blocks to teleport. A negative value teleports to the left.')
     );
 }
 
@@ -2457,11 +2449,11 @@ function MechanicItemProjectile() {
     this.data.push(new ListValue('Item', 'item', getMaterials, 'Jack O Lantern')
         .setTooltip('The item type to use as a projectile')
     ),
-        this.data.push(new IntValue('Item Data', 'item-data', 0)
-            .setTooltip('The durability value for the item to use as a projectile, most notably for dyes or colored items like wool')
-        ),
+    this.data.push(new IntValue('Item Data', 'item-data', 0)
+        .setTooltip('The durability value for the item to use as a projectile, most notably for dyes or colored items like wool')
+    ),
 
-        addProjectileOptions(this);
+    addProjectileOptions(this);
     addEffectOptions(this, true);
 }
 
@@ -2476,7 +2468,7 @@ function MechanicItemRemove() {
         .setTooltip('The amount of the item needed in the player\'s inventory')
     );
 
-    addItemOptions(this);
+    addItemConditionOptions(this);
 }
 
 extend('MechanicLaunch', 'Component');
@@ -3350,6 +3342,52 @@ var activeComponent = undefined;
  * @param {Component} component - the component to add to
  */
 function addItemOptions(component) {
+
+    component.data.push(new ListValue('Material', 'material', getMaterials, 'Arrow')
+        .setTooltip('The type of item to give to the player')
+    );
+    component.data.push(new IntValue('Amount', 'amount', 1)
+        .setTooltip('The quantity of the item to give to the player')
+    );
+    component.data.push(new IntValue('Durability', 'data', 0)
+        .setTooltip('The durability value of the item to give to the player')
+    );
+    component.data.push(new IntValue('Data', 'byte', 0)
+        .setTooltip('The data value of the item to give to the player for things such as egg type or wool color')
+    );
+    component.data.push(new ListValue('Custom', 'custom', ['True', 'False'], 'False')
+        .setTooltip('Whether or not to apply a custom name/lore to the item')
+    );
+
+    component.data.push(new StringValue('Name', 'name', 'Name').requireValue('custom', ['True'])
+        .setTooltip('The name of the item')
+    );
+    component.data.push(new StringListValue('Lore', 'lore', []).requireValue('custom', ['True'])
+        .setTooltip('The lore text for the item (the text below the name)')
+    );
+    component.data.push(new StringValue('Potion Color', 'potion_color', '#1f8c1f').requireValue('material', ['Potion',
+                                                                                                        'Splash potion'])
+        .setTooltip('The potion color in hex RGB')
+    );
+    component.data.push(new ListValue('Potion Type', 'potion_type', getPotionTypes, 'Speed').requireValue('material', ['Potion',
+                                                                                                                  'Splash potion'])
+        .setTooltip('The type of potion')
+    );
+    component.data.push(new IntValue('Potion Level', 'potion_level', 0).requireValue('material', ['Potion', 'Splash potion'])
+        .setTooltip('The potion level')
+    );
+    component.data.push(new IntValue('Potion Duration', 'potion_duration', 30).requireValue('material', ['Potion',
+                                                                                                    'Splash potion'])
+        .setTooltip('The potion duration (seconds)')
+    );
+}
+
+/**
+ * Adds the options for item-check related effects to the component
+ *
+ * @param {Component} component - the component to add to
+ */
+function addItemConditionOptions(component) {
 
     component.data.push(new ListValue('Check Material', 'check-mat', ['True', 'False'], 'True')
         .setTooltip('Whether or not the item needs to be a certain type')
