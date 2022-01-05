@@ -2750,8 +2750,12 @@ function MechanicSound() {
 
     this.description = "Plays a sound at the target's location.";
 
-    this.data.push(new ListValue('Sound', 'sound', getSounds, 'Ambience Cave')
-        .setTooltip('The sound clip to play')
+    this.data.push(new ListValue('Sound', 'sound', [ 'Custom', ...getSounds() ], 'Ambient Cave')
+        .setTooltip('The sound clip to play. Select \'Custom\' to enter custom sounds from your resource pack.')
+    );
+    this.data.push(new StringValue('Custom sound name', 'custom', 'myrp:some_sound')
+		.requireValue('sound', ['Custom'])
+        .setTooltip('Namespaced key of your custom sound.')
     );
     this.data.push(new AttributeValue('Volume', 'volume', 100, 0)
         .setTooltip('The volume of the sound as a percentage. Numbers above 100 will not get any louder, but will be heard from a farther distance')
