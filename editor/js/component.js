@@ -903,18 +903,7 @@ function TargetArea() {
     this.data.push(new AttributeValue("Radius", "radius", 3, 0)
         .setTooltip('The radius of the area to target in blocks')
     );
-    this.data.push(new ListValue("Group", "group", ["Ally", "Enemy", "Both"], "Enemy")
-        .setTooltip('The alignment of targets to get')
-    );
-    this.data.push(new ListValue("Through Wall", "wall", ['True', 'False'], 'False')
-        .setTooltip('Whether or not to allow targets to be on the other side of a wall')
-    );
-    this.data.push(new ListValue("Include Caster", "caster", ['True', 'False', 'In area'], 'False')
-        .setTooltip('Whether to include the caster in the target list. "True" will always include them, "False" will never, and "In area" will only if they are within the targeted area')
-    );
-    this.data.push(new AttributeValue("Max Targets", "max", 99, 0)
-        .setTooltip('The max amount of targets to apply children to')
-    );
+	addTargetOptions(this);
     this.data.push(new ListValue("Random", "random", ['True', 'False'], 'False')
         .setTooltip('Whether or not to randomize the targets selected')
     );
@@ -933,18 +922,7 @@ function TargetCone() {
     this.data.push(new AttributeValue("Angle", "angle", 90, 0)
         .setTooltip('The angle of the cone arc in degrees')
     );
-    this.data.push(new ListValue("Group", "group", ["Ally", "Enemy", "Both"], "Enemy")
-        .setTooltip('The alignment of targets to get')
-    );
-    this.data.push(new ListValue("Through Wall", "wall", ['True', 'False'], 'False')
-        .setTooltip('Whether or not to allow targets to be on the other side of a wall')
-    );
-    this.data.push(new ListValue("Include Caster", "caster", ['True', 'False'], 'False')
-        .setTooltip('Whether or not to include the caster in the target list')
-    );
-    this.data.push(new AttributeValue("Max Targets", "max", 99, 0)
-        .setTooltip('The max amount of targets to apply children to')
-    );
+	addTargetOptions(this);
 }
 
 extend('TargetLinear', 'Component');
@@ -960,18 +938,7 @@ function TargetLinear() {
     this.data.push(new AttributeValue("Tolerance", "tolerance", 0, 0)
         .setTooltip('How much to expand the potential entity\'s hitbox in all directions, in blocks. This makes it easier to aim')
     );
-    this.data.push(new ListValue("Group", "group", ["Ally", "Enemy", "Both"], "Enemy")
-        .setTooltip('The alignment of targets to get')
-    );
-    this.data.push(new ListValue("Through Wall", "wall", ['True', 'False'], 'False')
-        .setTooltip('Whether or not to allow targets to be on the other side of a wall')
-    );
-    this.data.push(new ListValue("Include Caster", "caster", ['True', 'False'], 'False')
-        .setTooltip('Whether or not to include the caster in the target list')
-    );
-    this.data.push(new AttributeValue("Max Targets", "max", 99, 0)
-        .setTooltip('The max amount of targets to apply children to')
-    );
+	addTargetOptions(this);
 }
 
 extend('TargetLocation', 'Component');
@@ -999,18 +966,7 @@ function TargetNearest() {
     this.data.push(new AttributeValue("Radius", "radius", 3, 0)
         .setTooltip('The radius of the area to target in blocks')
     );
-    this.data.push(new ListValue("Group", "group", ["Ally", "Enemy", "Both"], "Enemy")
-        .setTooltip('The alignment of targets to get')
-    );
-    this.data.push(new ListValue("Through Wall", "wall", ['True', 'False'], 'False')
-        .setTooltip('Whether or not to allow targets to be on the other side of a wall')
-    );
-    this.data.push(new ListValue("Include Caster", "caster", ['True', 'False'], 'False')
-        .setTooltip('Whether or not to include the caster in the target list')
-    );
-    this.data.push(new AttributeValue("Max Targets", "max", 1, 0)
-        .setTooltip('The max amount of targets to apply children to')
-    );
+	addTargetOptions(this);
 }
 
 extend('TargetOffset', 'Component');
@@ -1705,27 +1661,7 @@ function MechanicArmor() {
     this.data.push(new ListValue('Slot', 'slot', ['Hand', 'Off Hand', 'Feet', 'Legs', 'Chest', 'Head'], 'Hand')
         .setTooltip('The slot number to set the item to')
     );
-    this.data.push(new ListValue('Material', 'material', getMaterials, 'Arrow')
-        .setTooltip('The type of item to set')
-    );
-    this.data.push(new IntValue('Amount', 'amount', 1)
-        .setTooltip('The quantity of the item to set')
-    );
-    this.data.push(new IntValue('Durability', 'durability', 0)
-        .setTooltip('The durability value of the item to set')
-    );
-    this.data.push(new IntValue('Data', 'data', 0)
-        .setTooltip('The data value or the CustomModelData (1.14+ only) to apply to the item')
-    );
-    this.data.push(new ListValue('Custom', 'custom', ['True', 'False'], 'False')
-        .setTooltip('Whether or not to apply a custom name/lore to the item')
-    );
-    this.data.push(new StringValue('Name', 'name', 'Name').requireValue('custom', ['True'])
-        .setTooltip('The name of the item')
-    );
-    this.data.push(new StringListValue('Lore', 'lore', []).requireValue('custom', ['True'])
-        .setTooltip('The lore text for the item (the text below the name)')
-    );
+	addItemOptions(this)
     this.data.push(new ListValue('Overwrite', 'overwrite', ['True', 'False'], 'False')
         .setTooltip('USE WITH CAUTION. Whether or not to overwrite an existing item in the slot. If true, will permanently delete the existing iem')
     );
@@ -3613,6 +3549,21 @@ function addEffectOptions(component, optional) {
     component.data.push(opt(new ListValue('Rotate w/ Player', '-with-rotation', ['True', 'False'], 'True')
         .setTooltip('Whether to follow the rotation of the player for the effect.')
     ));
+}
+
+function addTargetOptions(component) {
+    component.data.push(new ListValue("Group", "group", ["Ally", "Enemy", "Both"], "Enemy")
+        .setTooltip('The alignment of targets to get')
+    );
+    component.data.push(new ListValue("Through Wall", "wall", ['True', 'False'], 'False')
+        .setTooltip('Whether or not to allow targets to be on the other side of a wall')
+    );
+    component.data.push(new ListValue("Include Caster", "caster", ['True', 'False', 'In area'], 'False')
+        .setTooltip('Whether to include the caster in the target list. "True" will always include them, "False" will never, and "In area" will only if they are within the targeted area')
+    );
+    component.data.push(new AttributeValue("Max Targets", "max", 99, 0)
+        .setTooltip('The max amount of targets to apply children to')
+    );
 }
 
 function appendOptional(value) {
