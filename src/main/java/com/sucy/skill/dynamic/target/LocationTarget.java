@@ -47,14 +47,18 @@ public class LocationTarget extends TargetComponent {
     private static final String RANGE = "range";
     private static final String GROUND = "ground";
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void makeIndicators(List<IIndicator> list, Player caster, LivingEntity target, int level) {
         final List<LivingEntity> locs = getTargets(caster, level, ImmutableList.of(target));
         if (!locs.isEmpty()) makeCircleIndicator(list, locs.get(0), 0.5);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
