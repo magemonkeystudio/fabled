@@ -66,17 +66,24 @@ def read_enum(file_name, enum_start):
                 line = line[:line.find('(')]
             if line.isupper():
                 # It´s a value
-                if is_deprecated or line[:7] == 'LEGACY_':
-                    # Is deprecated or legacy, don't add it
-                    is_deprecated = False
-                    continue;
-                else:
-                    # Add it
-                    value = line[0].upper() + line[1:].lower().replace('_', ' ')
-                    if line[-1] in last_chars:
-                        # Must remove last char
-                        value = value[:-1]
-                    values.append(value)
+
+                items = [line]
+                if ',' in line:
+                    items = [it.strip() for it in line.split(",")]
+                for it in items:
+                    if len(it) == 0:
+                        continue
+                    if is_deprecated or it[:7] == 'LEGACY_':
+                        # Is deprecated or legacy, don't add it
+                        is_deprecated = False
+                        continue
+                    else:
+                        # Add it
+                        value = it[0].upper() + it[1:].lower().replace('_', ' ')
+                        if it[-1] in last_chars:
+                            # Must remove last char
+                            value = value[:-1]
+                        values.append(value)
             elif line.split(' ', 1)[0] in enum_enders:
                 # Reached last value, stop
                 break;
@@ -120,43 +127,43 @@ def list_to_string(list):
 
 # Get Biomes
 biomes = read_enum(locations['Biome.java'], 'public enum Biome implements Keyed {')
-assert len(biomes) > 0, 'Couldn\'t read any Biome in Biome.java'
+assert len(biomes) > 0, "Couldn't read any Biome in Biome.java"
 # print(biomes)
 print("Successfully read", len(biomes), "Biomes.")
 
 # Get DamageTypes
 damages = read_enum(locations['EntityDamageEvent.java'], 'public enum DamageCause {')
-assert len(damages) > 0, 'Couldn\'t read any DamageType in EntityDamageEvent.java'
+assert len(damages) > 0, "Couldn't read any DamageType in EntityDamageEvent.java"
 # print(damages)
 print("Successfully read", len(damages), "DamageTypes.")
 
 # Get EntityTypes
 entities = read_enum(locations['EntityType.java'], 'public enum EntityType implements Keyed {')
-assert len(entities) > 0, 'Couldn\'t read any Entity in EntityType.java'
+assert len(entities) > 0, "Couldn't read any Entity in EntityType.java"
 # print(entities)
 print("Successfully read", len(entities), "EntityTypes.")
 
 # Get Materials
 materials = read_enum(locations['Material.java'], 'public enum Material implements Keyed {')
-assert len(materials) > 0, 'Couldn\'t read any Material in Material.java'
+assert len(materials) > 0, "Couldn't read any Material in Material.java"
 # print(materials)
 print("Successfully read", len(materials), "Materials.")
 
 # Get Particles
 particles = read_enum(locations['Particle.java'], 'public enum Particle {')
-assert len(particles) > 0, 'Couldn\'t read any Particle in Particle.java'
+assert len(particles) > 0, "Couldn't read any Particle in Particle.java"
 # print(particles)
 print("Successfully read", len(particles), "Particles.")
 
 # Get Effects
 effects = read_class(locations['PotionEffectType.java'], 'public static final PotionEffectType')
-assert len(effects) > 0, 'Couldn\'t read any PotionEffectType in PotionEffectType.java'
+assert len(effects) > 0, "Couldn't read any PotionEffectType in PotionEffectType.java"
 # print(effects)
 print("Successfully read", len(effects), "PotionEffectTypes.")
 
 # Get Sounds
 sounds = read_enum(locations['Sound.java'], 'public enum Sound implements Keyed {')
-assert len(sounds) > 0, 'Couldn\'t read any Sound in Sound.java'
+assert len(sounds) > 0, "Couldn't read any Sound in Sound.java"
 # print(sounds)
 print("Successfully read", len(sounds), "Sounds.")
 
