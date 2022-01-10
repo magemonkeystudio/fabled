@@ -31,11 +31,11 @@ com.sucy.skill.gui.handlers
 com.sucy.skill.gui.map
 com.sucy.skill.gui.tool
 com.sucy.skill.hook
+com.sucy.skill.hook.mimic
 com.sucy.skill.language
 com.sucy.skill.listener
 com.sucy.skill.log
 com.sucy.skill.manager
-com.sucy.skill.packet
 com.sucy.skill.task
 com.sucy.skill.thread
 com.sucy.skill.tree

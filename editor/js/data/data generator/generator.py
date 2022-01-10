@@ -168,7 +168,7 @@ assert len(sounds) > 0, "Couldn't read any Sound in Sound.java"
 print("Successfully read", len(sounds), "Sounds.")
 
 # Generate javascript file
-file = open('1.' + version + '.js', "w")
+file = open('../1.' + version + '.js', "w")
 fileContent = 'var DATA_' + version + ' = {\n    MATERIALS: ' + list_to_string(
     materials) + ',\n    SOUNDS: ' + list_to_string(sounds) + ',\n    ENTITIES: ' + list_to_string(
     entities) + ',\n    BIOMES: ' + list_to_string(biomes) + ',\n    POTIONS: ' + list_to_string(
