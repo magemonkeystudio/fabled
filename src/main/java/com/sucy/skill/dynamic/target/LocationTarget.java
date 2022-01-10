@@ -27,31 +27,37 @@
 package com.sucy.skill.dynamic.target;
 
 import com.google.common.collect.ImmutableList;
-import com.sucy.skill.api.target.TargetHelper;
 import com.sucy.skill.cast.IIndicator;
 import com.sucy.skill.dynamic.TempEntity;
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Applies child components to a location using the caster's faced direction
  */
 public class LocationTarget extends TargetComponent {
     private static final String RANGE = "range";
+    private static final String ENTITIES = "entities";
+    private static final String FLUIDS = "fluids";
+    private static final String PASSABLE = "passable";
+    private static final String CENTER = "center";
+
+    //LEGACY
     private static final String GROUND = "ground";
 
     /** {@inheritDoc} */
     @Override
     public void makeIndicators(List<IIndicator> list, Player caster, LivingEntity target, int level) {
         final List<LivingEntity> locs = getTargets(caster, level, ImmutableList.of(target));
-        if (!locs.isEmpty()) makeCircleIndicator(list, locs.get(0), 0.5);
+        if (!locs.isEmpty()) { makeCircleIndicator(list, locs.get(0), 0.5); }
     }
 
     /** {@inheritDoc} */
@@ -59,66 +65,48 @@ public class LocationTarget extends TargetComponent {
     List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
         final double range = parseValues(caster, RANGE, level, 5.0);
-        final boolean groundOnly = !settings.getString(GROUND, "true").toLowerCase().equals("false");
-        return determineTargets(caster, level, targets, t -> getTargetLoc(caster, t, range, groundOnly));
+        final boolean entities = settings.getBool(ENTITIES, true);
+        final boolean fluids = settings.getBool(FLUIDS, false);
+        final boolean passable = settings.has(PASSABLE) ? settings.getBool(PASSABLE) : settings.getBool(GROUND, true);
+        final boolean center = settings.getBool(CENTER, false);
+        return determineTargets(caster, level, targets, t -> getTargetLoc(caster, t, range, entities, fluids, passable, center));
     }
 
     private List<LivingEntity> getTargetLoc(
             LivingEntity caster,
             LivingEntity t,
             final double range,
-            final boolean groundOnly) {
-        Location loc = calcTargetLoc(t, range);
-        if (groundOnly && AIR_BLOCKS.contains(loc.getBlock().getType())) {
-            return ImmutableList.of();
-        }
+            final boolean entities,
+            final boolean fluids,
+            final boolean passable,
+            final boolean center) {
+        World world = t.getWorld();
+        Location startLocation = t.getEyeLocation();
+        Vector direction = startLocation.getDirection();
+        FluidCollisionMode fluidMode = fluids ? FluidCollisionMode.ALWAYS : FluidCollisionMode.NEVER;
+        RayTraceResult rayTrace = entities ?
+                world.rayTrace(startLocation, direction, range, fluidMode, !passable, 0, entity -> entity != caster) :
+                world.rayTraceBlocks(startLocation, direction, range, fluidMode, !passable);
 
-        if (!groundOnly) {
-            final LivingEntity target = TargetHelper.getLivingTarget(t, range, 4);
-            final Location casterLoc = caster.getLocation();
-            if (target != null && target.getLocation().distanceSquared(casterLoc) < loc.distanceSquared(casterLoc)) {
-                loc = target.getLocation();
-            }
+        Location location;
+        if (rayTrace == null) {
+            location = startLocation.add(direction.multiply(range));
+        } else {
+            Block hitBlock = rayTrace.getHitBlock();
+            location = center && hitBlock != null ?
+                    hitBlock.getLocation() :
+                    rayTrace.getHitPosition().toLocation(world);
         }
-
-        return ImmutableList.of(new TempEntity(loc));
+        if (center) {
+            center(location);
+        }
+        return ImmutableList.of(new TempEntity(location));
     }
 
-    private Location calcTargetLoc(LivingEntity entity, double maxRange) {
-        Location start = entity.getEyeLocation();
-        Vector dir = entity.getLocation().getDirection();
-        if (dir.getX() == 0) { dir.setX(Double.MIN_NORMAL); }
-        if (dir.getY() == 0) { dir.setY(Double.MIN_NORMAL); }
-        if (dir.getZ() == 0) { dir.setY(Double.MIN_NORMAL); }
-        int ox = dir.getX() > 0 ? 1 : 0;
-        int oy = dir.getY() > 0 ? 1 : 0;
-        int oz = dir.getZ() > 0 ? 1 : 0;
-
-        while (AIR_BLOCKS.contains(start.getBlock().getType()) && maxRange > 0) {
-            double dxt = computeWeight(start.getX(), dir.getX(), ox);
-            double dyt = computeWeight(start.getY(), dir.getY(), oy);
-            double dzt = computeWeight(start.getZ(), dir.getZ(), oz);
-            double t = Math.min(dxt, Math.min(dyt, Math.min(dzt, maxRange))) + 1E-5;
-
-            start.add(dir.clone().multiply(t));
-            maxRange -= t;
-        }
-
-        return start;
-    }
-
-    private double computeWeight(double val, double dir, int offset) {
-        return (Math.floor(val + offset) - val) / dir;
-    }
-
-    private static final Set<Material> AIR_BLOCKS = new HashSet<Material>();
-
-    static {
-        for (Material material : Material.values()) {
-            if (material.isTransparent()) {
-                AIR_BLOCKS.add(material);
-            }
-        }
+    private void center(Location location) {
+        location.setX(location.getBlockX()+0.5);
+        location.setY(location.getBlockY()+0.5);
+        location.setZ(location.getBlockZ()+0.5);
     }
 
     @Override
