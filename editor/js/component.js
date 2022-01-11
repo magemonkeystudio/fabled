@@ -156,6 +156,7 @@ var Mechanic = {
     LIGHTNING           : { name: 'Lightning',           container: true,  construct: MechanicLightning          },
     MANA                : { name: 'Mana',                container: false, construct: MechanicMana               },
     MESSAGE             : { name: 'Message',             container: false, construct: MechanicMessage            },
+    MINE                : { name: 'Mine',                container: false, construct: MechanicMine               },
     PARTICLE            : { name: 'Particle',            container: false, construct: MechanicParticle           },
     PARTICLE_ANIMATION  : { name: 'Particle Animation',  container: false, construct: MechanicParticleAnimation  },
     PARTICLE_EFFECT     : { name: 'Particle Effect',     container: false, construct: MechanicParticleEffect     },
@@ -2485,6 +2486,54 @@ function MechanicMessage() {
 
     this.data.push(new StringValue('Message', 'message', 'text')
         .setTooltip('The message to display. {player} = caster\'s name, {target} = target\'s name, {targetUUID} = target\'s UUID (useful if targets are non players), &lc: "{", &rc: "}", &sq: "\'"')
+    );
+}
+
+extend('MechanicMine', 'Component');
+
+function MechanicMine() {
+    this.super('Mine', Type.MECHANIC, false);
+
+    this.description = 'Destroys a selection of blocks at the location of the target.'
+	
+	this.data.push(new MultiListValue('Material', 'materials', ['Origin', ...getAnyMaterials()], ['Origin'])
+        .setTooltip('The types of blocks allowed to be broken. \'Origin\' refers to the material at the targeted location')
+    );
+    this.data.push(new ListValue('Drop', 'drop', ['True', 'False'], 'True')
+        .setTooltip('Whether or not to create drops for the destroyed blocks')
+    );
+    this.data.push(new ListValue('Tool', 'tool', ['Caster', 'Target', ...getMaterials()], 'Diamond pickaxe').requireValue('drop', ['True'])
+        .setTooltip('What tool to use when breaking the blocks. This allows to take into account the fact that, for example, Diamond Ore does not drop when mined with a Stone Pickaxe, as well as to consider enchantments like Looting and Silk Touch. \'Caster\' an \'Target\' refers to the items in their respective main hands')
+    );
+	
+    this.data.push(new ListValue('Shape', 'shape', ['Sphere', 'Cuboid'], 'Sphere')
+        .setTooltip('The shape of the region to mine')
+    );
+
+    // Sphere options
+    this.data.push(new AttributeValue('Radius', 'radius', 2, 0).requireValue('shape', ['Sphere'])
+        .setTooltip('The radius of the sphere, in blocks')
+    );
+
+    // Cuboid options
+    this.data.push(new AttributeValue('Width (X)', 'width', 3, 0).requireValue('shape', ['Cuboid'])
+        .setTooltip('The width of the cuboid, in blocks')
+    );
+    this.data.push(new AttributeValue('Height (Y)', 'height', 3, 0).requireValue('shape', ['Cuboid'])
+        .setTooltip('The height of the cuboid, in blocks')
+    );
+    this.data.push(new AttributeValue('Depth (Z)', 'depth', 3, 0).requireValue('shape', ['Cuboid'])
+        .setTooltip('The depth of the cuboid, in blocks')
+    );
+	
+    this.data.push(new AttributeValue('Forward Offset', 'forward', 0, 0)
+        .setTooltip('How far forward in front of the target the region should be in blocks. A negative value will put it behind.')
+    );
+    this.data.push(new AttributeValue('Upward Offset', 'upward', 0, 0)
+        .setTooltip('How far above the target the region should be in blocks. A negative value will put it below.')
+    );
+    this.data.push(new AttributeValue('Right Offset', 'right', 0, 0)
+        .setTooltip('How far to the right the region should be of the target. A negative value will put it to the left.')
     );
 }
 
