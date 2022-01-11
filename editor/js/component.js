@@ -946,13 +946,22 @@ extend('TargetLocation', 'Component');
 function TargetLocation() {
     this.super('Location', Type.TARGET, true);
 
-    this.description = 'Targets the reticle location of the target or caster. Combine this with another targeting type for ranged area effects.';
+    this.description = 'Targets the location the target or caster is looking at. Combine this with another targeting type for ranged area effects.';
 
     this.data.push(new AttributeValue('Range', 'range', 5, 0)
-        .setTooltip('The max distance the location can be')
+        .setTooltip('The max distance the location can be from the target\'s eyes')
     );
-    this.data.push(new ListValue('Ground Only', 'ground', ['True', 'False'], 'True')
-        .setTooltip('Whether or not a player is only allowed to target the ground or other units')
+    this.data.push(new ListValue('Entities', 'entities', ['True', 'False'], 'True')
+        .setTooltip('True to account for entities, or false to pass through them')
+    );
+    this.data.push(new ListValue('Fluids', 'fluids', ['True', 'False'], 'False')
+        .setTooltip('True to account for fluids (water and lava), or false to pass through them')
+    );
+    this.data.push(new ListValue('Passable blocks', 'passable', ['True', 'False'], 'True')
+        .setTooltip('True to account for passable or non-collidable blocks (grass, saplings, etc), or false to pass through them')
+    );
+    this.data.push(new ListValue('Center', 'center', ['True', 'False'], 'False')
+        .setTooltip('Whether to move the hit location to the center of the block')
     );
 }
 
