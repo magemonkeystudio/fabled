@@ -96,6 +96,7 @@ public class LocationTarget extends TargetComponent {
             location = center && hitBlock != null ?
                     hitBlock.getLocation() :
                     rayTrace.getHitPosition().toLocation(world);
+            location.setDirection(direction);
         }
         if (center) {
             center(location);
