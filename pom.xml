@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.sucy.skill</groupId>
-    <artifactId>ProSkillAPI</artifactId>
-    <version>1.1.7.12-ALPHA</version>
+    <groupId>mc.promcteam</groupId>
+    <artifactId>proskillapi</artifactId>
+    <version>1.1.7.13-ALPHA</version>
     <packaging>jar</packaging>
 
     <name>ProSkillAPI</name>
@@ -263,6 +263,34 @@
                     </replacements>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>readme</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>doc</directory>
+                                    <includes>
+                                        <include>README.md</include>
+                                    </includes>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+<!--                            <encoding>UTF-8</encoding>-->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
         <resources>
             <resource>
@@ -271,4 +299,12 @@
             </resource>
         </resources>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>promcteam</id>
+            <name>ProMCTeam</name>
+            <url>https://maven.pkg.github.com/promcteam/promccore</url>
+        </repository>
+    </distributionManagement>
 </project>

@@ -86,7 +86,9 @@ public class PluginChecker extends SkillAPIListener {
 
     public static boolean isPartiesActive() {return parties || Bukkit.getPluginManager().isPluginEnabled("ProSkillAPIParties");}
 
-    /** Checks whether Mimic is present. */
+    /**
+     * Checks whether Mimic is present.
+     */
     public static boolean isMimicActive() {return mimic && MimicHook.isHooked();}
 
     @Override

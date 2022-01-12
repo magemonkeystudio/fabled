@@ -1,22 +1,23 @@
 [![Build](https://github.com/promcteam/proskillapi/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/promcteam/proskillapi/actions/workflows/maven.yml/badge.svg)
 
-# ProSkillAPI
+# ${project.name}
 Our fork is based on the original skillapi and the forked skillapi by Sentropic.
 * Includes all  premium features from the original premium version of Skillapi found on spigot.
 
 ## New dynamic editor
-You'll need to use this editor in order for your classes and skills to be compatible with ProSkillAPI.
+You'll need to use this editor in order for your classes and skills to be compatible with ${project.name}.
 * Online Editor: https://promcteam.github.io/proskillapi/
 
 ## Downloads
-You can download ProSkillAPI form our marketplace
+You can download ${project.name} form our marketplace
 * https://promcteam.com/resources/
 
 ## PROMCTEAM:
 * Discord | https://discord.gg/RhTyRReKyP
-# proskillapi
 
-If you wish to use ProSkillAPI as a dependency in your projects, include the following in your `pom.xml`
+# Development 
+
+If you wish to use ${project.name} as a dependency in your projects, include the following in your `pom.xml`
 
 ```xml
 <repository>
@@ -25,9 +26,9 @@ If you wish to use ProSkillAPI as a dependency in your projects, include the fol
 </repository>
         ...
 <dependency>
-    <groupId>mc.promcteam</groupId>
-    <artifactId>proskillapi</artifactId>
-    <version>1.1.7.13-ALPHA</version>
+    <groupId>${project.groupId}</groupId>
+    <artifactId>${project.artifactId}</artifactId>
+    <version>${project.version}</version>
 </dependency>
 ```
 
