@@ -1363,10 +1363,9 @@ public class PlayerData {
             // Reset data if applicable
             final boolean isResetting = SkillAPI.getSettings().getGroupSettings(rpgClass.getGroup()).isProfessReset();
             boolean       isSubclass  = previous != null && rpgClass.getParent().getName().equals(previous.getName());
-            int           skillPoints = 0;
-            if (isResetting) {
-                skillPoints = reset(rpgClass.getGroup(), isSubclass);
-            }
+            int skillPoints = isResetting
+                    ? reset(rpgClass.getGroup(), isSubclass)
+                    : -1;
 
             // Inherit previous class data if any
             final PlayerClass current;
@@ -1374,10 +1373,12 @@ public class PlayerData {
                 current = new PlayerClass(this, rpgClass);
                 classes.put(rpgClass.getGroup(), current);
                 attribPoints += rpgClass.getGroupSettings().getStartingAttribs();
+                if (skillPoints == -1) skillPoints = current.getPoints();
             } else {
                 current = previousData;
                 previousData.setClassData(rpgClass);
             }
+
 
             // Add skills
             for (Skill skill : rpgClass.getSkills()) {

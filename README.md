@@ -14,7 +14,8 @@ You can download ProSkillAPI form our marketplace
 
 ## PROMCTEAM:
 * Discord | https://discord.gg/RhTyRReKyP
-# proskillapi
+
+# Development 
 
 If you wish to use ProSkillAPI as a dependency in your projects, include the following in your `pom.xml`
 
