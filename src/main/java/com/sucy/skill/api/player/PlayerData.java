@@ -2137,7 +2137,7 @@ public class PlayerData {
 
         // On Cooldown
         if (status == SkillStatus.ON_COOLDOWN && cooldown) {
-            if (!onCooldown.contains(getUUID())) {
+            if (skill.getData().cooldownMessage() && !onCooldown.contains(getUUID())) {
                 SkillAPI.getLanguage().sendMessage(ErrorNodes.COOLDOWN, getPlayer(), FilterType.COLOR, RPGFilter.COOLDOWN.setReplacement(skill.getCooldown() + ""), RPGFilter.SKILL.setReplacement(skill.getData().getName()));
                 onCooldown.add(getUUID());
                 Bukkit.getScheduler().runTaskLater(SkillAPI.inst(), () -> onCooldown.remove(getUUID()), 40L);
