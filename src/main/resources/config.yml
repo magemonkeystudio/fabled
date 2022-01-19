@@ -33,7 +33,7 @@ Accounts:
 # you are able to use them.
 Targeting:
   #
-  # Whether or not all monsters are enemies.
+  # Whether all monsters are enemies.
   # If you are using pets that include zombies/spiders/etc,
   # you shouldn't enable this.
   # If you want to enable it for specific worlds, list out the
@@ -43,7 +43,7 @@ Targeting:
   # - world2
   monsters-enemy: false
   #
-  # Whether or not all passive mobs are allies.
+  # Whether all passive mobs are allies.
   # If there are custom passive mobs that you can fight,
   # you should not enable this.
   # If you want to enable it for specific worlds, list out the
@@ -53,7 +53,7 @@ Targeting:
   # - world2
   passive-ally: false
   #
-  # Whether or not all players are allies.
+  # Whether all players are allies.
   # If you have any PvP, this should not be enabled.
   # If you want to enable it for specific worlds, list out the
   # worlds it should apply to in a list format such as:
@@ -62,24 +62,24 @@ Targeting:
   # - world2
   player-ally: false
   #
-  # Whether or not to check for player allies via Parties
+  # Whether to check for player allies via Parties
   parties-ally: false
   #
-  # Whether or not for skills to affect NPCs
+  # Whether for skills to affect NPCs
   affect-npcs: false
   #
-  # Whether or not for skills to affect armor stands
+  # Whether for skills to affect armor stands
   affect-armor-stands: false
 #
 Saving:
   #
-  # Whether or not to auto save data periodically
+  # Whether to auto save data periodically
   auto-save: false
   #
   # How often to auto-save in minutes
   minutes: 30
   #
-  # Whether or not to use an SQL database to save
+  # Whether to use an SQL database to save
   sql-database: false
   #
   # Details for connecting to the database
@@ -97,19 +97,19 @@ Saving:
 #
 Classes:
   #
-  # Whether or not to use SkillAPI's health system
+  # Whether to use SkillAPI's health system
   modify-health: true
   #
   # The default health for players without a class
   classless-hp: 20
   #
-  # Whether or not non-castable auto-leveled skills are shown
+  # Whether non-castable auto-leveled skills are shown
   show-auto-skills: false
   #
-  # Whether or not attributes are enabled
+  # Whether attributes are enabled
   attributes-enabled: true
   #
-  # Whether or not attributes can be refunded
+  # Whether attributes can be refunded
   attributes-downgrade: false
   #
   # This casts the dynamic skill for the player when they level up,
@@ -120,7 +120,7 @@ Classes:
 #
 Mana:
   #
-  # Whether or not to use SkillAPI's mana system
+  # Whether to use SkillAPI's mana system
   enabled: true
   #
   # How frequently mana is gained in seconds
@@ -128,17 +128,17 @@ Mana:
 #
 Skills:
   #
-  # Whether or not players are allowed to downgrade skills
+  # Whether players are allowed to downgrade skills
   allow-downgrade: true
   #
-  # Whether or not messages should be shown on casting a skill
+  # Whether messages should be shown on casting a skill
   show-messages: true
   #
   # The radius in which to show cast messages to nearby players
   message-radius: 20
   #
-  # Whether or not to apply damage knockback when damage is blocked
-  # by defensive or offesnive buffs and debuffs
+  # Whether to apply damage knock-back when damage is blocked
+  # by defensive or offensive buffs and de-buffs
   knockback-no-damage: false
   #
   # Whether the 'data' or 'icon-data' entry in skill mechanics use CustomModelData (1.14+ only).
@@ -174,18 +174,18 @@ Skills:
 #
 Items:
   #
-  # Whether or not to check for class, level, and attribute
+  # Whether to check for class, level, and attribute
   # requirements in an item's lore
   lore-requirements: false
   #
-  # Whether or not to check for skill requirements
+  # Whether to check for skill requirements
   # in an item's lore
   skill-requirements: false
   #
-  # Whether or not to check for stat bonuses in an item's lore
+  # Whether to check for stat bonuses in an item's lore
   lore-attributes: false
   #
-  # Whether or not to drop weapons when unable to use them
+  # Whether to drop weapons when unable to use them
   drop-weapon: false
   #
   # The text used for class requirements in the lore
@@ -225,11 +225,11 @@ Items:
 #
 GUI:
   #
-  # Whether or not to lock the health bar to 10 hearts
+  # Whether to lock the health bar to 10 hearts
   # This does not affect total health, only the display
   old-health-bar: true
   #
-  # Whether or not to force SkillAPI to override
+  # Whether to force SkillAPI to override
   # health scaling of other plugins
   force-scaling: false
   #
@@ -241,7 +241,7 @@ GUI:
   # Options are: none, mana, exp
   food-bar: none
   #
-  # Whether or not to use the action bar
+  # Whether to use the action bar
   use-action-bar: false
   #
   # The text to display on the action bar.
@@ -262,7 +262,7 @@ GUI:
   #   {value:<key>} - a skill value
   action-bar-text: '{combo}'
   #
-  # Whether or not to use title messages
+  # Whether to use title messages
   title-enabled: false
   #
   # Duration for title messages in seconds
@@ -285,20 +285,20 @@ GUI:
   - level_up
   - exp_lost
   #
-  # Whether or not to display class information on a scoreboard
+  # Whether to display class information on a scoreboard
   scoreboard-enabled: true
   #
-  # Whether or not to add a prefix to players with their class name
+  # Whether to add a prefix to players with their class name
   show-class-name: true
   #
-  # Whether or not to display a player's level below their name
+  # Whether to display a player's level below their name
   show-class-level: true
   #
   # The text to show with the player's level when enabled.
   # This always appears as {level} {text}
   class-level-text: 'Level'
   #
-  # Whether or not to append text to skill icons to show what type of item the skill is bound to
+  # Whether to append text to skill icons to show what type of item the skill is bound to
   show-binds: false
   #
   # Text to show for bound materials
@@ -310,10 +310,10 @@ GUI:
 #
 Casting:
   #
-  # Whether or not the main casting option is enabled
+  # Whether the main casting option is enabled
   enabled: true
   #
-  # Whether or not to use the mult-bar implementation.
+  # Whether to use the mult-bar implementation.
   # When enabled:
   # - Left/Right clicking on item opens skill bars
   # - Skills assigned through tree
@@ -325,7 +325,7 @@ Casting:
   # - No limit on skills (though makes cycling hard to find skills)
   bars: false
   #
-  # Whether or not to use the combat bar implementation. Details:
+  # Whether to use the combat bar implementation. Details:
   # - Specified slot becomes a toggle item
   # - Can optionally move over or require interacting (left, right, or drop) to swap modes
   # - Swaps between combat mode and passive mode
@@ -342,7 +342,7 @@ Casting:
   # to show where a skill will hit
   cast-indicator:
     #
-    # Whether or not the feature is enabled
+    # Whether the feature is enabled
     enabled: true
     #
     # How tightly to pack particles in the effect. A higher
@@ -413,43 +413,43 @@ Casting:
 #
 Click Combos:
   #
-  # Whether or not to use click combinations
+  # Whether to use click combinations
   enabled: false
   #
-  # Whether or not players can customize their combos
+  # Whether players can customize their combos
   allow-custom: false
   #
-  # Whether or not to automatically assign combos to skills
+  # Whether to automatically assign combos to skills
   # without a combo manually defined. When disabled, only skills
   # configured to have a combo or have had a combo set by
   # a command will have combos.
   auto-assign: true
   #
-  # Whether or not left clicks are allowed at all
+  # Whether left clicks are allowed at all
   use-click-left: true
   #
-  # Whether or not right clicks are allowed at all
+  # Whether right clicks are allowed at all
   use-click-right: true
   #
-  # Whether or not shift clicks are allowed at all
+  # Whether shift clicks are allowed at all
   use-click-shift: false
   #
-  # Whether or not right shift clicks are allowed at all
+  # Whether right shift clicks are allowed at all
   # This will disable "use-click-shift" if enabled
   use-click-right-shift: false
   #
-  # Whether or not left shift clicks are allowed at all
+  # Whether left shift clicks are allowed at all
   # This will disable "use-click-shift" if enabled
   use-click-left-shift: false
   #
-  # Whether or not jump clicks are allowed at all
+  # Whether jump clicks are allowed at all
   use-click-space: false
   #
-  # Whether or not Q clicks are allowed at all.
+  # Whether Q clicks are allowed at all.
   # Enabling this disables dropping items via Q outside of menus.
   use-click-q: false
   #
-  # Whether or not F clicks are allowed at all.
+  # Whether F clicks are allowed at all.
   # Enabling this disables swapping items between main and off hand via F.
   use-click-f: false
   #
@@ -461,10 +461,10 @@ Click Combos:
 #
 Skill Bar:
   #
-  # Whether or not to use skill bars
+  # Whether to use skill bars
   enabled: false
   #
-  # Whether or not to show skill cooldowns in the skill bar
+  # Whether to show skill cooldowns in the skill bar
   show-cooldown: true
   #
   # The item to use as a placeholder in the skill bar
@@ -507,31 +507,31 @@ Skill Bar:
 #
 Experience:
   #
-  # Whether or not to use vanilla exp drops for class exp
+  # Whether to use vanilla exp drops for class exp
   # Note: any dropped exp will not count towards class exp,
   # only enabled sources will count. By default, this is only
   # mob deaths.
   use-exp-orbs: true
   #
-  # Whether or not to prevent gaining experience from mobs
+  # Whether to prevent gaining experience from mobs
   # spawned via a mob spawner block
   block-mob-spawner: true
   #
-  # Whether or not to prevent gaining experience from mobs
+  # Whether to prevent gaining experience from mobs
   # spawned via a mob spawn egg
   block-mob-egg: true
   #
-  # Whether or not to prevent gaining experience while
+  # Whether to prevent gaining experience while
   # in creative mode
   block-creative: true
   #
-  # Whether or not to display a message when gaining experience
+  # Whether to display a message when gaining experience
   exp-message-enabled: true
   #
-  # Whether or not to display a message when gaining a level
+  # Whether to display a message when gaining a level
   level-message-enabled: true
   #
-  # Whether or not to show a message when losing exp de to dying
+  # Whether to show a message when losing exp de to dying
   lose-exp-message: true
   #
   # Worlds where experience is not lost on death
@@ -545,7 +545,7 @@ Experience:
     y: 8
     z: 16
   #
-  # Whether or not to use a custom equation
+  # Whether to use a custom equation
   use-custom: false
   #
   # The custom formula to use with 'lvl' being the current player level
@@ -606,10 +606,10 @@ Logging:
 #
 Worlds:
   #
-  # Whether or not to enable the world restriction
+  # Whether to enable the world restriction
   enable: false
   #
-  # Whether or not to use the list as an enabling list
+  # Whether to use the list as an enabling list
   # If true, only worlds in the list will let players use SkillAPI
   # If false, any world not in the list will let players use SkillAPI
   use-as-enabling: true

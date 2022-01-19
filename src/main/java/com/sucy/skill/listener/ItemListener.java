@@ -32,6 +32,7 @@ import com.sucy.skill.api.event.PlayerClassChangeEvent;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.data.PlayerEquips;
 import com.sucy.skill.language.ErrorNodes;
+import mc.promcteam.engine.api.armor.ArmorEquipEvent;
 import mc.promcteam.engine.mccore.config.FilterType;
 import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.Material;
@@ -40,10 +41,12 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerItemBreakEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -183,29 +186,49 @@ public class ItemListener extends SkillAPIListener {
         }
     }
 
+    private int getArmorSlot(Material mat) {
+        if (mat.name().contains("CHESTPLATE")) return 38;
+        else if (mat.name().contains("LEGGINGS")) return 37;
+        else if (mat.name().contains("BOOTS")) return 36;
+        else return 39;
+    }
+
+//    @EventHandler
+//    public void onArmorEquip(PlayerInteractEvent event) {
+//        Player    player = event.getPlayer();
+//        ItemStack item   = event.getItem();
+//
+//        if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())
+//                && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
+//                && item != null
+//                && ARMOR_TYPES.contains(item.getType())) {
+//            int equippedSlot = getArmorSlot(item.getType());
+//
+//            PlayerData playerData = SkillAPI.getPlayerData(player);
+//            playerData.getEquips().updateEquip(player, equippedSlot, item);
+//            playerData.updatePlayerStat(player);
+//        }
+//    }
+
     @EventHandler
-    public void onArmorEquip(PlayerInteractEvent event) {
+    public void armorEquip(ArmorEquipEvent event) {
         Player    player = event.getPlayer();
-        ItemStack item   = event.getItem();
+        ItemStack item   = event.getNewArmorPiece();
 
         if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())
-                && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
-                && item != null
-                && ARMOR_TYPES.contains(item.getType())) {
-            int equippedSlot = -1;
-
-            if (item.getType().name().contains("HELMET")) {
-                equippedSlot = 39;
-            } else if (item.getType().name().contains("CHESTPLATE")) {
-                equippedSlot = 38;
-            } else if (item.getType().name().contains("LEGGINGS")) {
-                equippedSlot = 37;
-            } else if (item.getType().name().contains("BOOTS")) {
-                equippedSlot = 36;
-            }
+                && item != null && ARMOR_TYPES.contains(item.getType())) {
+            int slot = getArmorSlot(item.getType());
 
             PlayerData playerData = SkillAPI.getPlayerData(player);
-            playerData.getEquips().updateEquip(player, equippedSlot, item);
+
+            PlayerEquips.EquipData data = playerData.getEquips().getEquipData(item, PlayerEquips.EquipType.fromSlot(slot));
+            if (!data.hasMetConditions()) {
+                event.setCancelled(true);
+                SkillAPI.getLanguage().sendMessage(ErrorNodes.CANNOT_USE, player, FilterType.COLOR);
+                return;
+            }
+
+            playerData.getEquips().updateEquip(player, slot, item);
             playerData.updatePlayerStat(player);
         }
     }

@@ -58,28 +58,28 @@ import java.util.HashSet;
  * the class to extend when creating your own classes.
  */
 public abstract class RPGClass implements IconHolder {
-    private static final String SKILLS = "skills";
-    private static final String PARENT = "parent";
-    private static final String NAME = "name";
-    private static final String PREFIX = "prefix";
-    private static final String ACTION_BAR = "action-bar";
-    private static final String GROUP = "group";
-    private static final String MANA = "mana";
-    private static final String MAX = "max-level";
-    private static final String EXP = "exp-source";
-    private static final String REGEN = "mana-regen";
-    private static final String PERM = "needs-permission";
-    private static final String ATTR = "attributes";
-    private static final String TREE = "tree";
-    private static final String BLACKLIST = "blacklist";
+    private static final String                 SKILLS     = "skills";
+    private static final String                 PARENT     = "parent";
+    private static final String                 NAME       = "name";
+    private static final String                 PREFIX     = "prefix";
+    private static final String                 ACTION_BAR = "action-bar";
+    private static final String                 GROUP      = "group";
+    private static final String                 MANA       = "mana";
+    private static final String                 MAX        = "max-level";
+    private static final String                 EXP        = "exp-source";
+    private static final String                 REGEN      = "mana-regen";
+    private static final String                 PERM       = "needs-permission";
+    private static final String                 ATTR       = "attributes";
+    private static final String                 TREE       = "tree";
+    private static final String                 BLACKLIST  = "blacklist";
     /**
      * The settings for your class. This will include the
      * health and mana scaling for the class.
      */
-    protected final Settings settings = new Settings();
-    private final HashMap<String, Skill> skillMap = new HashMap<String, Skill>();
-    private final ArrayList<Skill> skills = new ArrayList<Skill>();
-    private final HashSet<Material> blacklist = new HashSet<Material>();
+    protected final      Settings               settings   = new Settings();
+    private final        HashMap<String, Skill> skillMap   = new HashMap<>();
+    private final        ArrayList<Skill>       skills     = new ArrayList<>();
+    private final        HashSet<Material>      blacklist  = new HashSet<>();
 
     ///////////////////////////////////////////////////////
     //                                                   //
@@ -91,24 +91,24 @@ public abstract class RPGClass implements IconHolder {
      * Whether or not the class requires permissions
      * in order to be professed into
      */
-    protected boolean needsPermission;
+    protected     boolean          needsPermission;
     ///////////////////////////////////////////////////////
     //                                                   //
     //                 Accessor Methods                  //
     //                                                   //
     ///////////////////////////////////////////////////////
-    protected String actionBar = "";
-    private InventoryTree skillTree;
-    private String parent;
-    private ItemStack icon;
-    private TreeType tree;
-    private String name;
-    private String prefix;
-    private String group;
-    private String mana;
-    private int maxLevel;
-    private int expSources;
-    private double manaRegen;
+    protected     String           actionBar        = "";
+    private       InventoryTree    skillTree;
+    private       String           parent;
+    private       ItemStack        icon;
+    private       TreeType         tree;
+    private       String           name;
+    private       String           prefix;
+    private       String           group;
+    private       String           mana;
+    private       int              maxLevel;
+    private       int              expSources;
+    private       double           manaRegen;
 
     /**
      * Initializes a class template that does not profess from other
@@ -298,7 +298,6 @@ public abstract class RPGClass implements IconHolder {
      * Retrieves the icon representing this class for menus
      *
      * @param data player to get the icon for
-     *
      * @return icon representation of the class
      */
     @Override
@@ -320,7 +319,7 @@ public abstract class RPGClass implements IconHolder {
      */
     public ItemStack getToolIcon() {
         ItemStack item = icon.clone();
-        ItemMeta meta = item.getItemMeta();
+        ItemMeta  meta = item.getItemMeta();
         meta.setDisplayName(name);
         item.setItemMeta(meta);
         return item;
@@ -346,7 +345,6 @@ public abstract class RPGClass implements IconHolder {
      * from the given source
      *
      * @param source source of experience to check
-     *
      * @return true if receives experience from the source, false otherwise
      */
     public boolean receivesExp(ExpSource source) {
@@ -372,7 +370,6 @@ public abstract class RPGClass implements IconHolder {
      * Retrieves the required amount of experience this class need to level
      *
      * @param level current level of the class
-     *
      * @return required amount of experience to reach the next level
      */
     public int getRequiredExp(int level) {
@@ -383,7 +380,6 @@ public abstract class RPGClass implements IconHolder {
      * Retrieves the amount of max health this class provides
      *
      * @param level current level of the class
-     *
      * @return amount of max health the class provides
      */
     public double getHealth(int level) {
@@ -412,7 +408,6 @@ public abstract class RPGClass implements IconHolder {
      * Retrieves the amount of max mana this class provides
      *
      * @param level current level of the class
-     *
      * @return amount of max mana the class provides
      */
     public double getMana(int level) {
@@ -442,7 +437,6 @@ public abstract class RPGClass implements IconHolder {
      *
      * @param key   attribute key
      * @param level class level
-     *
      * @return attribute amount
      */
     public int getAttribute(String key, int level) {

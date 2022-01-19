@@ -23,7 +23,7 @@ jobs:
         uses: s4u/maven-settings-action@v2.4.1
         with:
           githubServer: false
-          servers: '[{"id": "github", "username": "Travja", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
+          servers: '[{"id": "promcteam", "username": "Travja", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
       - name: Build with Maven
         run: mvn clean package -e
         env:

@@ -80,12 +80,12 @@ import java.util.Map.Entry;
  * try to instantaite your own PlayerData object.
  */
 public class PlayerData {
-    private final HashMap<String, PlayerClass>                        classes             = new HashMap<>();
-    private final HashMap<String, PlayerSkill>                        skills              = new HashMap<>();
-    private final HashMap<Material, PlayerSkill>                      binds               = new HashMap<>();
-    private final HashMap<String, Integer>                            attributes          = new HashMap<>();
-    private final HashMap<String, ArrayList<PlayerAttributeModifier>> attributesModifiers = new HashMap<>();
-    private final HashMap<String, ArrayList<PlayerStatModifier>>      statModifiers       = new HashMap<>();
+    private final HashMap<String, PlayerClass>                   classes             = new HashMap<>();
+    private final HashMap<String, PlayerSkill>                   skills              = new HashMap<>();
+    private final HashMap<Material, PlayerSkill>                 binds               = new HashMap<>();
+    private final HashMap<String, Integer>                       attributes          = new HashMap<>();
+    private final HashMap<String, List<PlayerAttributeModifier>> attributesModifiers = new HashMap<>();
+    private final HashMap<String, List<PlayerStatModifier>>      statModifiers       = new HashMap<>();
 
     private final DataSection    extraData  = new DataSection();
     private final UUID           playerUUID;
@@ -417,7 +417,7 @@ public class PlayerData {
      * @param update   calculate player stat immediately and apply to him
      */
     public void addStatModifier(String key, PlayerStatModifier modifier, boolean update) {
-        ArrayList<PlayerStatModifier> modifiers = this.getStatModifiers(key);
+        List<PlayerStatModifier> modifiers = this.getStatModifiers(key);
         modifiers.add(modifier);
         this.statModifiers.put(key, modifiers);
 
@@ -432,11 +432,11 @@ public class PlayerData {
      * @param key stat key
      * @return stat modifier list of the attribute given
      */
-    public ArrayList<PlayerStatModifier> getStatModifiers(String key) {
+    public List<PlayerStatModifier> getStatModifiers(String key) {
         if (this.statModifiers.containsKey(key)) {
             return this.statModifiers.get(key);
         } else {
-            return new ArrayList<PlayerStatModifier>();
+            return new ArrayList<>();
         }
     }
 
@@ -450,7 +450,7 @@ public class PlayerData {
      */
     public void addAttributeModifier(String key, PlayerAttributeModifier modifier, boolean update) {
         key = SkillAPI.getAttributeManager().normalize(key);
-        ArrayList<PlayerAttributeModifier> modifiers = this.getAttributeModifiers(key);
+        List<PlayerAttributeModifier> modifiers = this.getAttributeModifiers(key);
         modifiers.add(modifier);
         this.attributesModifiers.put(key, modifiers);
 
@@ -465,7 +465,7 @@ public class PlayerData {
      * @param key attribute key
      * @return attribute modifier list of the attribute given
      */
-    public ArrayList<PlayerAttributeModifier> getAttributeModifiers(String key) {
+    public List<PlayerAttributeModifier> getAttributeModifiers(String key) {
         if (this.attributesModifiers.containsKey(key)) {
             return this.attributesModifiers.get(key);
         } else {
@@ -1510,7 +1510,7 @@ public class PlayerData {
 
         this.updateWalkSpeed(player);
 
-        // Update health if its been changed
+        // Update health if it's been changed
         if (oldMaxHealth != this.maxHealth || player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() != this.maxHealth) {
             this.updateHealth(player);
         } else {
@@ -1720,8 +1720,8 @@ public class PlayerData {
      * @param update calculate player stat immediately and apply to him
      */
     public void removeStatModifier(UUID uuid, boolean update) {
-        for (Entry<String, ArrayList<PlayerStatModifier>> entry : this.statModifiers.entrySet()) {
-            ArrayList<PlayerStatModifier> modifiers = entry.getValue();
+        for (Entry<String, List<PlayerStatModifier>> entry : this.statModifiers.entrySet()) {
+            List<PlayerStatModifier> modifiers = entry.getValue();
             Iterator<PlayerStatModifier>  i         = modifiers.iterator();
 
             while (i.hasNext()) {
@@ -1743,8 +1743,8 @@ public class PlayerData {
      * Clear all stat modifier which is not persistent
      */
     public void clearStatModifier() {
-        for (Entry<String, ArrayList<PlayerStatModifier>> entry : this.statModifiers.entrySet()) {
-            ArrayList<PlayerStatModifier> modifiers = entry.getValue();
+        for (Entry<String, List<PlayerStatModifier>> entry : this.statModifiers.entrySet()) {
+            List<PlayerStatModifier> modifiers = entry.getValue();
             Iterator<PlayerStatModifier>  i         = modifiers.iterator();
 
             while (i.hasNext()) {
@@ -1767,8 +1767,8 @@ public class PlayerData {
      * @param update calculate player stat immediately and apply to him
      */
     public void removeAttributeModifier(UUID uuid, boolean update) {
-        for (Entry<String, ArrayList<PlayerAttributeModifier>> entry : this.attributesModifiers.entrySet()) {
-            ArrayList<PlayerAttributeModifier> modifiers = entry.getValue();
+        for (Entry<String, List<PlayerAttributeModifier>> entry : this.attributesModifiers.entrySet()) {
+            List<PlayerAttributeModifier> modifiers = entry.getValue();
             Iterator<PlayerAttributeModifier>  i         = modifiers.iterator();
 
             while (i.hasNext()) {
@@ -1796,8 +1796,8 @@ public class PlayerData {
      * Clear all attribute modifier which is not persistent
      */
     public void clearAttributeModifiers() {
-        for (Entry<String, ArrayList<PlayerAttributeModifier>> entry : this.attributesModifiers.entrySet()) {
-            ArrayList<PlayerAttributeModifier> modifiers = entry.getValue();
+        for (Entry<String, List<PlayerAttributeModifier>> entry : this.attributesModifiers.entrySet()) {
+            List<PlayerAttributeModifier> modifiers = entry.getValue();
             Iterator<PlayerAttributeModifier>  i         = modifiers.iterator();
 
             while (i.hasNext()) {
