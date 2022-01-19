@@ -158,6 +158,7 @@ var Mechanic = {
     MANA                : { name: 'Mana',                container: false, construct: MechanicMana               },
     MESSAGE             : { name: 'Message',             container: false, construct: MechanicMessage            },
     MINE                : { name: 'Mine',                container: false, construct: MechanicMine               },
+    MONEY               : { name: 'Money',               container: false, construct: MechanicMoney              },
     PARTICLE            : { name: 'Particle',            container: false, construct: MechanicParticle           },
     PARTICLE_ANIMATION  : { name: 'Particle Animation',  container: false, construct: MechanicParticleAnimation  },
     PARTICLE_EFFECT     : { name: 'Particle Effect',     container: false, construct: MechanicParticleEffect     },
@@ -2555,6 +2556,24 @@ function MechanicMine() {
     );
     this.data.push(new AttributeValue('Right Offset', 'right', 0, 0)
         .setTooltip('How far to the right the region should be of the target. A negative value will put it to the left.')
+    );
+}
+
+extend('MechanicMoney', 'Component');
+
+function MechanicMoney() {
+    this.super('Money', Type.MECHANIC, false);
+
+    this.description = 'Adds or multiplies the target\'s balance by some amount (requires Vault and an economy plugin). Fails if the resulting balance is not within the range allowed by the economy plugin.'
+	
+    this.data.push(new ListValue('Type', 'type', ['Add', 'Multiply'], 'Add')
+	.setTooltip('Whether the target\'s balance will be added or multiplied by the set amount.')
+    );
+    this.data.push(new AttributeValue('Amount', 'amount', 5, 0)
+        .setTooltip('The amount that the target\'s balance will be added or multiplied by. Can be negative.')
+    );
+    this.data.push(new ListValue('Allows negative', 'allows_negative', ['True', 'False'], 'False')
+		.setTooltip('Whether the mechanic will be executed even if it will result in the target having a negative balance.')
     );
 }
 
