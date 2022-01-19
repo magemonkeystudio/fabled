@@ -27,6 +27,7 @@
 package com.sucy.skill.hook;
 
 import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -130,5 +131,13 @@ public class VaultHook
 
     public static double getBalance(Player player) {
         return economy.getBalance(player, player.getWorld().getName());
+    }
+
+    public static EconomyResponse withdraw(Player player, double amount) {
+        return economy.withdrawPlayer(player, player.getWorld().getName(), amount);
+    }
+
+    public static EconomyResponse deposit(Player player, double amount) {
+        return economy.depositPlayer(player, player.getWorld().getName(), amount);
     }
 }
