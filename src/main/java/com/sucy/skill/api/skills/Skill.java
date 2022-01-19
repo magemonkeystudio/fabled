@@ -79,6 +79,7 @@ public abstract class Skill implements IconHolder {
     private static final String            REQLVL           = "skill-req-lvl";
     private static final String            MSG              = "msg";
     private static final String            PERM             = "needs-permission";
+    private static final String            COOLDOWN_MESSAGE = "cooldown-message";
     private static final String            DESC             = "desc";
     private static final String            ATTR             = "attributes";
     private static final String            COMBO            = "combo";
@@ -101,6 +102,7 @@ public abstract class Skill implements IconHolder {
     private              int               maxLevel;
     private              int               skillReqLevel;
     private              boolean           needsPermission;
+    private              boolean           cooldownMessage;
     private              int               combo;
 
     /**
@@ -392,6 +394,15 @@ public abstract class Skill implements IconHolder {
      */
     public double getCooldown(int level) {
         return settings.getAttr(SkillAttribute.COOLDOWN, level);
+    }
+
+    /**
+     * Checks whether a message is sent when attempting to run the skill while in cooldown
+     *
+     * @return true if the message is sent, false otherwise
+     */
+    public boolean cooldownMessage() {
+        return cooldownMessage;
     }
 
     /**
@@ -820,6 +831,7 @@ public abstract class Skill implements IconHolder {
         config.set(REQ, skillReq);
         config.set(REQLVL, skillReqLevel);
         config.set(PERM, needsPermission);
+        config.set(COOLDOWN_MESSAGE, cooldownMessage);
         if (combo >= 0 && canCast())
             config.set(COMBO, SkillAPI.getComboManager().getSaveString(combo));
         settings.save(config.createSection(ATTR));
@@ -859,6 +871,7 @@ public abstract class Skill implements IconHolder {
         skillReqLevel = config.getInt(REQLVL, skillReqLevel);
         message = TextFormatter.colorString(config.getString(MSG, message));
         needsPermission = config.getString(PERM, needsPermission + "").equalsIgnoreCase("true");
+        cooldownMessage = config.getBoolean(COOLDOWN_MESSAGE, true);
         combo = SkillAPI.getComboManager().parseCombo(config.getString(COMBO));
 
         if (config.isList(DESC)) {
