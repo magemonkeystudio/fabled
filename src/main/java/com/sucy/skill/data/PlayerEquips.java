@@ -183,6 +183,10 @@ public class PlayerEquips {
         return true;
     }
 
+    public EquipData getEquipData(ItemStack item, EquipType type) {
+        return new EquipData(item, type);
+    }
+
     public enum EquipType {
 
         Helmet,
@@ -236,7 +240,7 @@ public class PlayerEquips {
     /**
      * Represents one available item's data
      */
-    private class EquipData {
+    public class EquipData {
         private HashMap<String, Integer> skillReq;
         private HashMap<String, Integer> attrReq;
         private HashMap<String, Integer> attribs;
@@ -383,7 +387,7 @@ public class PlayerEquips {
          *
          * @return true if conditions are met
          */
-        boolean hasMetConditions() {
+        public boolean hasMetConditions() {
             if (item == null) {
                 return true;
             }

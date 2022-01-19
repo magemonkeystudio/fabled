@@ -12,6 +12,13 @@ body:
       options:
         - label: I have searched the existing issues
           required: true
+  - type: checkboxes
+    attributes:
+      label: Have you tried to reproduce this without OP?
+      description: Please remove OP from yourself and confirm that the bug still occurs without OP.
+      options:
+        - label: I have tested without OP
+          required: true
   - type: textarea
     attributes:
       label: Current Behavior

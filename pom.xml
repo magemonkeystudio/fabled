@@ -59,7 +59,7 @@
             <url>https://repo.md-5.net/content/groups/public/</url>
         </repository>
         <repository>
-            <id>github</id>
+            <id>promcteam</id>
             <url>https://maven.pkg.github.com/promcteam/promccore</url>
         </repository>
     </repositories>
@@ -171,7 +171,7 @@
         <dependency>
             <groupId>mc.promcteam</groupId>
             <artifactId>promccore</artifactId>
-            <version>1.0.3.5-ALPHA</version>
+            <version>1.0.3.6-ALPHA</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
