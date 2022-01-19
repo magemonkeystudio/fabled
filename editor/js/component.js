@@ -97,6 +97,7 @@ var Condition = {
     ITEM        : { name: 'Item',        container: true, construct: ConditionItem       },
     LIGHT       : { name: 'Light',       container: true, construct: ConditionLight      },
     MANA        : { name: 'Mana',        container: true, construct: ConditionMana       },
+    MONEY       : { name: 'Money',       container: true, construct: ConditionMoney      },
     MOUNTED     : { name: 'Mounted',     container: true, construct: ConditionMounted    },
     MOUNTING    : { name: 'Mounting',    container: true, construct: ConditionMounting   },
     NAME        : { name: 'Name',        container: true, construct: ConditionName       },
@@ -1400,6 +1401,26 @@ function ConditionMana() {
     );
     this.data.push(new AttributeValue('Max Value', 'max-value', 10, 2)
         .setTooltip('The maximum amount of mana needed')
+    );
+}
+
+extend('ConditionMoney', 'Component');
+
+function ConditionMoney() {
+    this.super('Money', Type.CONDITION, true);
+
+    this.description = "Applies child components when the target's balance matches the settings (requires Vault and an economy plugin). Always is false for non-player targets.";
+	
+    this.data.push(new ListValue('Type', 'type', ['Min', 'Max', 'Between'], 'Min')
+        .setTooltip('The type of comparison to make')
+    );
+    this.data.push(new AttributeValue('Min Value', 'min-value', 10, 0)
+        .requireValue('type', ['Min', 'Between'])
+        .setTooltip('The minimum balance the target must have, inclusive.')
+    );
+    this.data.push(new AttributeValue('Max Value', 'max-value', 100, 0)
+        .requireValue('type', ['Max', 'Between'])
+        .setTooltip('The maximum balance the target can have, inclusive.')
     );
 }
 
