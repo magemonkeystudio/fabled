@@ -47,7 +47,6 @@ import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.weather.LightningStrikeEvent;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -119,8 +118,8 @@ public class MechanicListener extends SkillAPIListener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onApply(FlagApplyEvent event) {
         if (event.getEntity() instanceof Player) {
-            if (event.getFlag().startsWith("perm:") && PluginChecker.isVaultActive())
-                VaultHook.add((Player) event.getEntity(), event.getFlag().substring(5));
+            if (event.getFlag().startsWith("perm:") && PluginChecker.isVaultPermissionsActive())
+                VaultHook.addPermission((Player) event.getEntity(), event.getFlag().substring(5));
         }
     }
 
@@ -132,8 +131,8 @@ public class MechanicListener extends SkillAPIListener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onExpire(FlagExpireEvent event) {
         if (event.getEntity() instanceof Player) {
-            if (event.getFlag().startsWith("perm:") && PluginChecker.isVaultActive())
-                VaultHook.remove((Player) event.getEntity(), event.getFlag().substring(5));
+            if (event.getFlag().startsWith("perm:") && PluginChecker.isVaultPermissionsActive())
+                VaultHook.removePermission((Player) event.getEntity(), event.getFlag().substring(5));
             else if (event.getFlag().startsWith(SPEED_KEY + ":")) {
                 Player player = (Player) event.getEntity();
                 UUID   uuid   = UUID.fromString(event.getFlag().split(":")[1]);

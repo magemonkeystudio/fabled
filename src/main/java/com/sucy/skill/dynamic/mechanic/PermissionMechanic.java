@@ -56,7 +56,7 @@ public class PermissionMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0 || !settings.has(PERM) || !PluginChecker.isVaultActive()) {
+        if (targets.size() == 0 || !settings.has(PERM) || !PluginChecker.isVaultPermissionsActive()) {
             return false;
         }
 

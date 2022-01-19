@@ -26,6 +26,7 @@
  */
 package com.sucy.skill.hook;
 
+import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -38,10 +39,11 @@ public class VaultHook
 {
 
     private static Permission permission;
+    private static Economy economy;
     private static boolean checked = false;
 
     /**
-     * Initializes the permissions manager
+     * Initializes the permissions and economy manager
      */
     private static void initialize()
     {
@@ -50,14 +52,21 @@ public class VaultHook
         {
             permission = permissionProvider.getProvider();
         }
+        RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
+        if (economyProvider != null)
+        {
+            economy = economyProvider.getProvider();
+        }
     }
+
+    // Permissions
 
     /**
      * Checks whether or not the Vault reference is valid with a permissions plugin
      *
      * @return true if valid, false otherwise
      */
-    public static boolean isValid()
+    public static boolean isPermissionsValid()
     {
         if (!checked)
         {
@@ -73,7 +82,7 @@ public class VaultHook
      * @param player player to add to
      * @param node   permission node to add
      */
-    public static void add(Player player, String node)
+    public static void addPermission(Player player, String node)
     {
         permission.playerAdd(player, node);
     }
@@ -84,7 +93,7 @@ public class VaultHook
      * @param player player to remove from
      * @param node   permission node to remove
      */
-    public static void remove(Player player, String node)
+    public static void removePermission(Player player, String node)
     {
         permission.playerRemove(player, node);
     }
@@ -97,8 +106,29 @@ public class VaultHook
      *
      * @return true if the player has it, false otherwise
      */
-    public static boolean has(Player player, String node)
+    public static boolean hasPermission(Player player, String node)
     {
         return permission.has(player, node);
+    }
+
+    // Economy
+
+    /**
+     * Checks whether or not the Vault reference is valid with an economy plugin
+     *
+     * @return true if valid, false otherwise
+     */
+    public static boolean isEconomyValid()
+    {
+        if (!checked)
+        {
+            initialize();
+            checked = true;
+        }
+        return economy != null;
+    }
+
+    public static double getBalance(Player player) {
+        return economy.getBalance(player, player.getWorld().getName());
     }
 }

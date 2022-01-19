@@ -97,6 +97,7 @@ public class ComponentRegistry {
         register(new LightCondition());
         register(new LoreCondition());
         register(new ManaCondition());
+        register(new MoneyCondition());
         register(new MountedCondition());
         register(new MountingCondition());
         register(new NameCondition());
