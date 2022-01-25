@@ -18,6 +18,7 @@ Errors:
   no-mana: '&4You need &6{missing} &4more mana'
   no-skills: '&4That class does not have any skills'
   cannot-use: '&4You cannot equip that item'
+  attribute-no-money: 'You don''t have enough money to refund this attribute.'
 GUI:
   attribute-title: 'Attributes ({points} points)'
   profess-title: 'Profess'
@@ -67,4 +68,3 @@ Combo:
   right_shift: '&6Shift R'
   space: '&6Jump'
   q: '&6Drop'
-
