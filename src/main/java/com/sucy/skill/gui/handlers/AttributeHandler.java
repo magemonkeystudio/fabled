@@ -28,12 +28,15 @@ package com.sucy.skill.gui.handlers;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.gui.tool.GUIHolder;
+import com.sucy.skill.hook.VaultHook;
 import com.sucy.skill.manager.AttributeManager;
 
 import java.util.HashMap;
 
 public class AttributeHandler extends GUIHolder<AttributeManager.Attribute> {
     private HashMap<String, Integer> start = new HashMap<String, Integer>();
+
+    private static final String NOMONEY = "attribute-no-money";
 
     @Override
     protected void onSetup() {
@@ -46,6 +49,16 @@ public class AttributeHandler extends GUIHolder<AttributeManager.Attribute> {
         if (left) {
             if (player.upAttribute(type.getKey())) { setPage(page); }
         } else if (SkillAPI.getSettings().isAttributesDowngrade() || player.getAttribute(type.getKey()) > start.get(type.getKey())) {
+
+            if (SkillAPI.getSettings().getAttributesDowngradePrice() > 0 && VaultHook.isValid() && VaultHook.has(player.getPlayer(), String.valueOf(SkillAPI.getSettings().getAttributesDowngradePrice()))) {
+                VaultHook.remove(player.getPlayer(), String.valueOf(SkillAPI.getSettings().getAttributesDowngradePrice()));
+                if (player.refundAttribute(type.getKey())) {
+                    setPage(page);
+                }
+            } else if (!VaultHook.has(player.getPlayer(), String.valueOf(SkillAPI.getSettings().getAttributesDowngradePrice()))) {
+               SkillAPI.getLanguage().sendMessage(NOMONEY, player.getPlayer());
+            }
+
             if (player.refundAttribute(type.getKey())) {
                 setPage(page);
             }
