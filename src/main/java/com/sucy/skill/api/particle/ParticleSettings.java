@@ -36,6 +36,7 @@ public class ParticleSettings {
     private static final String
             PARTICLE_KEY = "particle",
             MATERIAL_KEY = "material",
+            DURABILITY_KEY = "durability",
             DATA_KEY = "type",
             AMOUNT_KEY = "amount",
             DX_KEY = "dx",
@@ -57,6 +58,7 @@ public class ParticleSettings {
 
     // Particle extra data
     public Material material;
+    public int durability;
     public int data;
 
     /**
@@ -104,7 +106,8 @@ public class ParticleSettings {
             float speed,
             int amount,
             Material material,
-            int data) {
+            int data,
+            int durability) {
         this.type = type;
         this.dx = dx;
         this.dy = dy;
@@ -114,6 +117,7 @@ public class ParticleSettings {
         if (Particle.usesData(type)) {
             this.material = material;
             this.data = data;
+            this.durability = durability;
         }
     }
 
@@ -134,12 +138,15 @@ public class ParticleSettings {
         if (Particle.usesData(this.type)) {
             Material mat = null;
             int data = 0;
+            int durability = 0;
             try {
                 mat = Material.valueOf(config.getString(MATERIAL_KEY).toUpperCase().replace(" ", "_"));
-                data = config.getInt(DATA_KEY);
+                durability = config.getInt(DURABILITY_KEY, 0);
+                data = config.getInt(DATA_KEY, 0);
             } catch (Exception ex) { /* */ }
             this.material = mat;
             this.data = data;
+            this.durability = durability;
         } else {
             this.material = null;
             this.data = 0;

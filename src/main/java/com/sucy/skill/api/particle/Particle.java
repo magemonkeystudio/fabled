@@ -35,12 +35,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -308,7 +307,7 @@ public class Particle {
 
     // Supported version for 1.13+
     public static void play(
-            ArrayList<Player> players,
+            List<Player> players,
             org.bukkit.Particle particle,
             double x,
             double y,
@@ -319,7 +318,8 @@ public class Particle {
             double dz,
             double speed,
             Material material,
-            int data) {
+            int data,
+            int durability) {
         Object object = null;
         switch (particle) {
             case REDSTONE:
@@ -331,13 +331,12 @@ public class Particle {
                 break;
             case ITEM_CRACK:
                 ItemStack item = new ItemStack(material);
-                if (SkillAPI.getSettings().useSkillModelData()) {
-                    ItemMeta meta = item.getItemMeta();
-                    meta.setCustomModelData(data);
-                    item.setItemMeta(meta);
-                } else {
-                    item.setData(new MaterialData(material, (byte) data));
+                ItemMeta meta = item.getItemMeta();
+                meta.setCustomModelData(data);
+                if (meta instanceof Damageable) {
+                    ((Damageable) meta).setDamage(durability);
                 }
+                item.setItemMeta(meta);
                 object = item;
                 break;
             case BLOCK_CRACK:

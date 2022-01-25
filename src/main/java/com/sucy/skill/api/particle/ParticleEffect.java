@@ -35,7 +35,6 @@ import com.sucy.skill.data.Point3D;
 import com.sucy.skill.data.formula.Formula;
 import com.sucy.skill.data.formula.IValue;
 import com.sucy.skill.data.formula.value.CustomValue;
-import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -182,68 +181,54 @@ public class ParticleEffect {
             double  t  = animation.getT(frame);
             double  p  = (double) frame / animation.getSteps();
 
-            int j = 0, k = 0;
+            int j = 0;
 
-            if (VersionManager.isVersionAtLeast(11300)) {
-                ArrayList<Player> players = new ArrayList<>();
-                for (Player player : loc.getWorld().getPlayers()) {
-                    if (loc.distance(player.getLocation()) <= view) {
-                        players.add(player);
-                    }
+            ArrayList<Player> players = new ArrayList<>();
+            for (Player player : loc.getWorld().getPlayers()) {
+                if (loc.distance(player.getLocation()) <= view) {
+                    players.add(player);
                 }
-                org.bukkit.Particle effect   = org.bukkit.Particle.valueOf(this.particle.type.name());
-                int                 count    = this.particle.amount;
-                double              dx       = this.particle.dx;
-                double              dy       = this.particle.dy;
-                double              dz       = this.particle.dz;
-                float               speed    = this.particle.speed;
-                Material            material = this.particle.material;
-                int                 data     = this.particle.data;
+            }
+            org.bukkit.Particle effect   = org.bukkit.Particle.valueOf(this.particle.type.name());
+            int                 count      = this.particle.amount;
+            double              dx         = this.particle.dx;
+            double              dy         = this.particle.dy;
+            double              dz         = this.particle.dz;
+            float               speed      = this.particle.speed;
+            Material            material   = this.particle.material;
+            int                 data       = this.particle.data;
+            int                 durability = this.particle.durability;
 
-                for (int i = frame * this.animation.getCopies(); i < next; ++i) {
-                    Point3D p1       = animPoints[i];
-                    double  animSize = this.animSize.compute(t, p, cs.x, cs.y, p1.x, p1.y, p1.z, level);
+            for (int i = frame * this.animation.getCopies(); i < next; ++i) {
+                Point3D p1       = animPoints[i];
+                double  animSize = this.animSize.compute(t, p, cs.x, cs.y, p1.x, p1.y, p1.z, level);
 
-                    for (Point3D p2 : shapePoints) {
-                        double size = this.size.compute(t, p, cs.x, cs.y, p2.x, p2.y, p2.z, level);
-                        if (initialRotation != 0) p2 = flatRot.rotateAboutY(p2, rotMatrix);
-                        if (withRotation) {
-                            double yaw = Math.toRadians(-loc.getYaw());
-                            p2 = flatRot.rotateAboutY(p2, yaw);
-                        }
-                        double x = p1.x * animSize + this.animDir.rotateX(p2, trig[j]) * size + loc.getX();
-                        double y = p1.y * animSize + this.animDir.rotateY(p2, trig[j]) * size + loc.getY();
-                        double z = p1.z * animSize + this.animDir.rotateZ(p2, trig[j]) * size + loc.getZ();
-                        Particle.play(
-                                players,
-                                effect,
-                                x,
-                                y,
-                                z,
-                                count,
-                                dx,
-                                dy,
-                                dz,
-                                speed,
-                                material,
-                                data);
+                for (Point3D p2 : shapePoints) {
+                    double size = this.size.compute(t, p, cs.x, cs.y, p2.x, p2.y, p2.z, level);
+                    if (initialRotation != 0) p2 = flatRot.rotateAboutY(p2, rotMatrix);
+                    if (withRotation) {
+                        double yaw = Math.toRadians(-loc.getYaw());
+                        p2 = flatRot.rotateAboutY(p2, yaw);
                     }
-                    ++j;
+                    double x = p1.x * animSize + this.animDir.rotateX(p2, trig[j]) * size + loc.getX();
+                    double y = p1.y * animSize + this.animDir.rotateY(p2, trig[j]) * size + loc.getY();
+                    double z = p1.z * animSize + this.animDir.rotateZ(p2, trig[j]) * size + loc.getZ();
+                    Particle.play(
+                            players,
+                            effect,
+                            x,
+                            y,
+                            z,
+                            count,
+                            dx,
+                            dy,
+                            dz,
+                            speed,
+                            material,
+                            data,
+                            durability);
                 }
-            } else {
-                for (int i = frame * animation.getCopies(); i < next; i++) {
-                    Point3D p1       = animPoints[i];
-                    double  animSize = this.animSize.compute(t, p, cs.x, cs.y, p1.x, p1.y, p1.z, level);
-                    for (Point3D p2 : shapePoints) {
-                        double size = this.size.compute(t, p, cs.x, cs.y, p2.x, p2.y, p2.z, level);
-                        double x    = p1.x * animSize + animDir.rotateX(p2, trig[j]) * size + loc.getX();
-                        double y    = p1.y * animSize + animDir.rotateY(p2, trig[j]) * size + loc.getY();
-                        double z    = p1.z * animSize + animDir.rotateZ(p2, trig[j]) * size + loc.getZ();
-                        packets[k++] = particle.instance(x, y, z);
-                    }
-                    j++;
-                }
-                Particle.send(loc, packets, view);
+                ++j;
             }
         } catch (Exception ex) {
             ex.printStackTrace();

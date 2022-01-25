@@ -26,7 +26,6 @@
  */
 package com.sucy.skill.api.util;
 
-import com.sucy.skill.SkillAPI;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.util.TextFormatter;
 import org.bukkit.ChatColor;
@@ -34,7 +33,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +46,7 @@ public class Data {
     private static final String DURABILITY = "icon-durability";
     private static final String LORE       = "icon-lore";
 
-    private static ItemStack parse(final String mat, final short dur, final int data, final List<String> lore) {
+    private static ItemStack parse(final String mat, final int dur, final int data, final List<String> lore) {
         try {
             Material material = Material.matchMaterial(mat);
             if (material == null) {
@@ -57,27 +55,16 @@ public class Data {
 
             final ItemStack item = new ItemStack(material);
             final ItemMeta  meta = item.getItemMeta();
-            if (SkillAPI.getSettings().useGUIModelData()) {
-                if (data != 0) {
-                    meta.setCustomModelData(data);
-                }
-            } else {
-                item.setData(new MaterialData(material, (byte) data));
-            }
+            if (data != 0) { meta.setCustomModelData(data); }
             if (lore != null && !lore.isEmpty()) {
                 final List<String> colored = TextFormatter.colorStringList(lore);
                 meta.setDisplayName(colored.remove(0));
                 meta.setLore(colored);
             }
-            if (SkillAPI.getSettings().useOldDurability()) {
-                item.setItemMeta(meta);
-                item.setDurability(dur);
-            } else {
-                if (meta instanceof Damageable) {
-                    ((Damageable) meta).setDamage(dur);
-                }
-                item.setItemMeta(meta);
+            if (meta instanceof Damageable) {
+                ((Damageable) meta).setDamage(dur);
             }
+            item.setItemMeta(meta);
             return DamageLoreRemover.removeAttackDmg(item);
         } catch (final Exception ex) {
             return new ItemStack(Material.JACK_O_LANTERN);
@@ -94,18 +81,10 @@ public class Data {
         config.set(MAT, item.getType().name());
 
         ItemMeta meta = item.getItemMeta();
-        if (SkillAPI.getSettings().useGUIModelData()) {
-            config.set(DATA, meta.hasCustomModelData() ? meta.getCustomModelData() : 0);
-        } else {
-            config.set(DATA, item.getData().getData());
-        }
+        config.set(DATA, meta.hasCustomModelData() ? meta.getCustomModelData() : 0);
 
-        if (SkillAPI.getSettings().useOldDurability()) {
-            config.set(DURABILITY, item.getDurability());
-        } else {
-            if (meta instanceof Damageable) config.set(DURABILITY, ((Damageable) meta).getDamage());
-            else config.set(DURABILITY, 0);
-        }
+        if (meta instanceof Damageable) { config.set(DURABILITY, ((Damageable) meta).getDamage()); }
+        else { config.set(DURABILITY, 0); }
 
         if (meta.hasDisplayName()) {
             List<String> lore = item.getItemMeta().getLore();
@@ -131,9 +110,10 @@ public class Data {
         }
 
         final int data = config.getInt(DATA, 0);
+        System.out.println(config.getInt(DURABILITY));
         return parse(
                 config.getString(MAT, "JACK_O_LANTERN"),
-                (short) config.getInt(DURABILITY, data),
+                config.getInt(DURABILITY, 0),
                 data,
                 config.getList(LORE, null));
     }

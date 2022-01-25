@@ -39,6 +39,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
@@ -52,7 +53,8 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
     private static final Vector UP = new Vector(0, 1, 0);
 
     private static final String ITEM    = "item";
-    private static final String DATA    = "item-data";
+    private static final String DURABILITY = "durability";
+    private static final String CMD     = "item-data";
     private static final String SPEED   = "velocity";
     private static final String ANGLE   = "angle";
     private static final String AMOUNT  = "amount";
@@ -141,14 +143,14 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
             // Invalid or missing item material
         }
         ItemStack item = new ItemStack(mat);
-        int       data = settings.getInt(DATA, 0);
-        if (SkillAPI.getSettings().useSkillModelData()) {
-            ItemMeta meta = item.getItemMeta();
-            meta.setCustomModelData(data);
-            item.setItemMeta(meta);
-        } else {
-            item.setDurability((short) data);
+        int durability = settings.getInt(DURABILITY, 0);
+        int data = settings.getInt(CMD, 0);
+        ItemMeta meta = item.getItemMeta();
+        meta.setCustomModelData(data);
+        if (meta instanceof Damageable) {
+            ((Damageable) meta).setDamage(durability);
         }
+        item.setItemMeta(meta);
 
         // Get other common values
         double  speed  = parseValues(caster, SPEED, level, 3.0);

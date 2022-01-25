@@ -26,7 +26,6 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
-import com.sucy.skill.SkillAPI;
 import mc.promcteam.engine.mccore.util.TextFormatter;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -36,7 +35,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.material.MaterialData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -48,7 +46,7 @@ import java.util.List;
 public class ItemMechanic extends MechanicComponent {
     private static final String MATERIAL = "material";
     private static final String AMOUNT   = "amount";
-    private static final String DATA     = "data";
+    private static final String CMD      = "data";
     private static final String BYTE     = "byte";
     private static final String CUSTOM   = "custom";
     private static final String NAME     = "name";
@@ -83,7 +81,7 @@ public class ItemMechanic extends MechanicComponent {
             return false;
         }
         int amount     = settings.getInt(AMOUNT, 1);
-        int durability = settings.getInt(DATA, 0);
+        int durability = settings.getInt(CMD, 0);
         int data       = settings.getInt(BYTE, 0);
 
         ItemStack item = new ItemStack(material, amount);
@@ -97,20 +95,11 @@ public class ItemMechanic extends MechanicComponent {
             List<String> lore = TextFormatter.colorStringList(settings.getStringList(LORE));
             meta.setLore(lore);
         }
-        if (SkillAPI.getSettings().useSkillModelData()) {
-            meta.setCustomModelData(data);
-        } else {
-            item.setData(new MaterialData(material, (byte) data));
+        meta.setCustomModelData(data);
+        if (meta instanceof Damageable) {
+            ((Damageable) meta).setDamage(durability);
         }
-        if (SkillAPI.getSettings().useOldDurability()) {
-            item.setItemMeta(meta);
-            item.setDurability((short) durability);
-        } else {
-            if (meta instanceof Damageable) {
-                ((Damageable) meta).setDamage(durability);
-            }
-            item.setItemMeta(meta);
-        }
+        item.setItemMeta(meta);
 
         if (item.getType() == Material.POTION || item.getType() == Material.SPLASH_POTION) {
             PotionMeta pm = (PotionMeta) meta;

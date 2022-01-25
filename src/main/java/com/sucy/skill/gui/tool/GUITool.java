@@ -45,7 +45,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 
 import java.util.*;
 
@@ -135,22 +134,16 @@ public class GUITool implements ToolMenu {
         Material  material = Material.valueOf(data.getString("type").toUpperCase().replace(" ", "_"));
         ItemStack item     = new ItemStack(material);
         ItemMeta  meta     = item.getItemMeta();
-        if (SkillAPI.getSettings().useGUIModelData()) {
-            meta.setCustomModelData(data.getInt("data"));
-        } else {
-            item.setData(new MaterialData(material, data.getByte("data")));
+        meta.setCustomModelData(data.getInt("data"));
+        if (meta instanceof Damageable) {
+            ((Damageable) meta).setDamage(data.getInt("durability"));
         }
 
         meta.setDisplayName(TextFormatter.colorString(data.getString("name")));
         meta.setLore(TextFormatter.colorStringList(data.getList("lore")));
 
-        if (SkillAPI.getSettings().useOldDurability()) {
-            item.setItemMeta(meta);
-            item.setDurability(data.getShort("durability"));
-        } else {
-            ((Damageable) meta).setDamage(data.getInt("durability"));
-            item.setItemMeta(meta);
-        }
+        item.setItemMeta(meta);
+
         return DamageLoreRemover.removeAttackDmg(item);
     }
 

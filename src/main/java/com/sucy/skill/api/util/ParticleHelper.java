@@ -74,11 +74,15 @@ public class ParticleHelper {
      * Settings key for the material used by the particle (for block crack, icon crack, and block dust)
      */
     public static final String MATERIAL_KEY = "material";
+    /**
+     * CustomModelData of the item used to make the particles
+     */
+    public static final String CMD_KEY = "type";
 
     /**
-     * Settings key for the material data used by the particle (for block crack, icon crack, and block dust)
+     * Durability to be reduced from the item used to make the particles
      */
-    public static final String TYPE_KEY = "type";
+    public static final String DURABILITY_KEY = "durability";
 
     /**
      * Settings key for the radius of the particle arrangement
@@ -98,7 +102,7 @@ public class ParticleHelper {
     /**
      * Settings key for the Bukkit effects' data (default 0)
      */
-    public static final String DATA_KEY = "data";
+    public static final String EFFECT_DATA_KEY = "data";
 
     /**
      * Settings key for the reflection particles' visible radius (default 25)
@@ -192,13 +196,14 @@ public class ParticleHelper {
         final int amount = settings.getInt(AMOUNT_KEY, 1);
         final float speed = (float) settings.getDouble(SPEED_KEY, 1.0);
         final Material mat = Material.valueOf(settings.getString(MATERIAL_KEY, "DIRT").toUpperCase().replace(" ", "_"));
-        final int type = settings.getInt(TYPE_KEY, 0);
-        final int data = settings.getInt(DATA_KEY, 0);
+        final int customModelData = settings.getInt(CMD_KEY, 0);
+        final int durability = settings.getInt(DURABILITY_KEY, 0);
+        final int effectData = settings.getInt(EFFECT_DATA_KEY, 0);
 
         try {
             // Normal bukkit effects
             if (BUKKIT_EFFECTS.containsKey(particle)) {
-                loc.getWorld().playEffect(loc, BUKKIT_EFFECTS.get(particle), data);
+                loc.getWorld().playEffect(loc, BUKKIT_EFFECTS.get(particle), effectData);
             }
 
             // Entity effects
@@ -208,7 +213,7 @@ public class ParticleHelper {
 
             // v1.13 particles
             else if (VersionManager.isVersionAtLeast(11300)) {
-                SpigotParticles.play(loc, particle, dx, dy, dz, amount, speed, rad, mat, type);
+                SpigotParticles.play(loc, particle, dx, dy, dz, amount, speed, rad, mat, customModelData, durability);
             }
 
             // Reflection particles
@@ -218,17 +223,17 @@ public class ParticleHelper {
 
             // Block break particle
             else if (particle.equals("block crack")) {
-                Particle.playBlockCrack(mat, (short) settings.getInt(TYPE_KEY, 0), loc, rad, speed);
+                Particle.playBlockCrack(mat, (short) customModelData, loc, rad, speed);
             }
 
             // Icon break particle
             else if (particle.equals("icon crack")) {
-                Particle.playIconCrack(mat, (short) settings.getInt(TYPE_KEY, 0), loc, rad, speed);
+                Particle.playIconCrack(mat, (short) customModelData, loc, rad, speed);
             }
 
             // 1.9+ particles
             else {
-                Particle.play(particle, loc, rad, dx, dy, dz, speed, amount);
+                SpigotParticles.play(loc, particle, dx, dy, dz, amount, speed, rad, mat, customModelData, durability);
             }
         } catch (Exception ex) {
             Logger.invalid(ex.getCause().getMessage());

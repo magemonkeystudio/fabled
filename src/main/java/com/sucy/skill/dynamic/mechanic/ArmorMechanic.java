@@ -1,6 +1,5 @@
 package com.sucy.skill.dynamic.mechanic;
 
-import com.sucy.skill.SkillAPI;
 import mc.promcteam.engine.mccore.util.TextFormatter;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
@@ -9,7 +8,6 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 
 import java.util.List;
 
@@ -21,7 +19,7 @@ public class ArmorMechanic extends MechanicComponent {
     private static final String MATERIAL   = "material";
     private static final String AMOUNT     = "amount";
     private static final String DURABILITY = "durability";
-    private static final String DATA       = "data";
+    private static final String CMD        = "data";
     private static final String CUSTOM     = "custom";
     private static final String NAME       = "name";
     private static final String LORE       = "lore";
@@ -58,7 +56,7 @@ public class ArmorMechanic extends MechanicComponent {
         }
         int     amount     = settings.getInt(AMOUNT, 1);
         int     durability = settings.getInt(DURABILITY, 0);
-        int     data       = settings.getInt(DATA, 0);
+        int     data       = settings.getInt(CMD, 0);
         boolean overwrite  = settings.getBool(OVERWRITE, false);
 
         ItemStack item = new ItemStack(material, amount);
@@ -71,22 +69,12 @@ public class ArmorMechanic extends MechanicComponent {
             List<String> lore = TextFormatter.colorStringList(settings.getStringList(LORE));
             meta.setLore(lore);
         }
-
-        if (SkillAPI.getSettings().useSkillModelData()) {
-            meta.setCustomModelData(data);
-        } else {
-            item.setData(new MaterialData(material, (byte) data));
+        meta.setCustomModelData(data);
+        if (meta instanceof Damageable) {
+            ((Damageable) meta).setDamage(durability);
         }
+        item.setItemMeta(meta);
 
-        if (SkillAPI.getSettings().useOldDurability()) {
-            item.setItemMeta(meta);
-            item.setDurability((short) durability);
-        } else {
-            if (meta instanceof Damageable) {
-                ((Damageable) meta).setDamage(durability);
-            }
-            item.setItemMeta(meta);
-        }
         boolean success = false;
         for (LivingEntity target : targets) {
             EntityEquipment equipment = target.getEquipment();

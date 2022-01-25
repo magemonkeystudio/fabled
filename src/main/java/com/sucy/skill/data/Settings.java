@@ -55,7 +55,6 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 
 import java.util.*;
 
@@ -83,7 +82,6 @@ public class Settings {
             GUI_FADEI                    = GUI_BASE + "title-fade-in",
             GUI_FADEO                    = GUI_BASE + "title-fade-out",
             GUI_LIST                     = GUI_BASE + "title-messages",
-            GUI_CUSTOMMODELDATA          = GUI_BASE + "use-custommodeldata",
 
     DEFAULT_YIELD                  = "default",
             ACCOUNT_BASE           = "Accounts.",
@@ -119,7 +117,6 @@ public class Settings {
             SKILL_RADIUS           = SKILL_BASE + "message-radius",
             SKILL_BLOCKS           = SKILL_BASE + "block-filter",
             SKILL_KNOCKBACK        = SKILL_BASE + "knockback-no-damage",
-            SKILL_MODEL_DATA       = SKILL_BASE + "use-custommodeldata",
             SKILL_REFUND_ON_CHANGE = SKILL_BASE + "refund-on-change",
             ITEM_BASE              = "Items.",
             ITEM_LORE              = ITEM_BASE + "lore-requirements",
@@ -180,7 +177,7 @@ public class Settings {
     @Getter private final boolean[]                      lockedSlots      = new boolean[9];
     @Getter
     @Accessors(fluent = true)
-    private               boolean                        useOldDurability, useBoundingBoxes;
+    private         boolean                          useBoundingBoxes;
 
     private         Map<String, Map<String, Double>> breakYields;
     private         Map<String, Map<String, Double>> placeYields;
@@ -411,14 +408,6 @@ public class Settings {
      */
     @Getter private int          titleFadeOut;
     /**
-     * Checks whether or not CustomModelData is enabled for GUI
-     *
-     * @return true if enabled, false otherwise
-     */
-    @Getter
-    @Accessors(fluent = true)
-    private         boolean      useGUIModelData;
-    /**
      * @return true if default casting is enabled
      */
     @Getter private boolean      castEnabled;
@@ -569,12 +558,6 @@ public class Settings {
      * and trim any values that aren't supposed to be there.</p>
      */
     public void reload() {
-        try {
-            Class.forName("org.bukkit.inventory.meta.Damageable");
-            useOldDurability = false;
-        } catch (ClassNotFoundException e) {
-            useOldDurability = true;
-        }
         try {
             Entity.class.getMethod("getBoundingBox");
             useBoundingBoxes = true;
@@ -958,28 +941,12 @@ public class Settings {
         gainFreq = (int) (config.getDouble(MANA_FREQ) * 20);
     }
 
-    /**
-     * Return whether skill mechanics should use 'data' values as CustomModelData
-     *
-     * @return skill mechanics use CustomModelData
-     */
-    public boolean useSkillModelData() {return skillModelData;}
-
     private void loadSkillSettings() {
         allowDowngrade = config.getBoolean(SKILL_DOWNGRADE);
         showSkillMessages = config.getBoolean(SKILL_MESSAGE);
         messageRadius = config.getInt(SKILL_RADIUS);
         knockback = config.getBoolean(SKILL_KNOCKBACK);
-        skillModelData = config.getBoolean(SKILL_MODEL_DATA);
         refundOnClassChange = config.getBoolean(SKILL_REFUND_ON_CHANGE);
-        if (skillModelData) {
-            try {
-                ItemMeta.class.getMethod("hasCustomModelData", null);
-            } catch (NoSuchMethodException e) {
-                skillModelData = false;
-                Logger.log("CustomModelData not supported below 1.14+. Using item durability/data instead.");
-            }
-        }
 
         filteredBlocks = new ArrayList<>();
         List<String> list = config.getList(SKILL_BLOCKS);
@@ -1085,16 +1052,6 @@ public class Settings {
         titleFadeIn = (int) (20 * config.getFloat(GUI_FADEI));
         titleFadeOut = (int) (20 * config.getFloat(GUI_FADEO));
         titleMessages = config.getList(GUI_LIST);
-        useGUIModelData = config.getBoolean(GUI_CUSTOMMODELDATA, false);
-        if (useGUIModelData) {
-            try {
-                ItemMeta.class.getMethod("hasCustomModelData");
-                useGUIModelData = true;
-            } catch (NoSuchMethodException e) {
-                useGUIModelData = false;
-                Logger.log("CustomModelData not supported below 1.14+. Using item durability/data instead.");
-            }
-        }
     }
 
     /**
@@ -1219,13 +1176,7 @@ public class Settings {
         ItemMeta meta = unassigned.getItemMeta();
 
         final int data = icon.getInt("data", 0);
-        if (useGUIModelData) {
-            if (data != 0) {
-                meta.setCustomModelData(data);
-            }
-        } else {
-            unassigned.setData(new MaterialData(mat, (byte) data));
-        }
+        if (data != 0) { meta.setCustomModelData(data); }
 
         if (icon.isList("text")) {
             List<String> format = TextFormatter.colorStringList(icon.getList("text"));
@@ -1233,15 +1184,10 @@ public class Settings {
             meta.setLore(format);
         } else {meta.setDisplayName(TextFormatter.colorString(icon.getString("text", "&7Unassigned")));}
 
-        if (useOldDurability) {
-            unassigned.setItemMeta(meta);
-            unassigned.setDurability((short) icon.getInt("durability", 0));
-        } else {
-            if (meta instanceof org.bukkit.inventory.meta.Damageable) {
-                ((Damageable) meta).setDamage((short) icon.getInt("durability", 0));
-            }
-            unassigned.setItemMeta(meta);
+        if (meta instanceof Damageable) {
+            ((Damageable) meta).setDamage(icon.getInt("durability", 0));
         }
+        unassigned.setItemMeta(meta);
 
         DataSection layout     = bar.getSection("layout");
         int         skillCount = 0;

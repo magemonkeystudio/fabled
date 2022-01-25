@@ -50,6 +50,7 @@ public class EffectPlayer {
 
     public static final String P_TYPE = "-particle-type";
     public static final String MAT    = "-particle-material";
+    public static final String DURABILITY = "-particle-durability";
     public static final String DATA   = "-particle-data";
     public static final String AMOUNT = "-particle-amount";
     public static final String DX     = "-particle-dx";
@@ -128,7 +129,9 @@ public class EffectPlayer {
                     (float) settings.getDouble(keyMod + SPEED, 1),
                     settings.getInt(keyMod + AMOUNT, 1),
                     Material.matchMaterial(settings.getString(keyMod + MAT, "DIRT")),
-                    settings.getInt(keyMod + DATA, 0)
+                    settings.getInt(keyMod + DATA, 0),
+                    settings.getInt(keyMod + DURABILITY, 0)
+
             );
         } catch (Exception ex) {
             Logger.invalid("Bad material for particle effect - " + settings.getString(keyMod + MAT));
