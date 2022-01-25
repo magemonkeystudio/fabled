@@ -2416,10 +2416,13 @@ function MechanicItemProjectile() {
 
     this.data.push(new ListValue('Item', 'item', getMaterials, 'Jack O Lantern')
         .setTooltip('The item type to use as a projectile')
-    ),
-    this.data.push(new IntValue('Item Data', 'item-data', 0)
-        .setTooltip('The durability value for the item to use as a projectile, most notably for dyes or colored items like wool')
-    ),
+    );
+    this.data.push(new IntValue('Durability', 'durability', 0).requireValue('item', getDamageableMaterials())
+        .setTooltip('The durability to reduce from the item')
+    );
+    this.data.push(new IntValue('CustomModelData', 'item-data', 0)
+        .setTooltip('The CustomModelData of the item')
+    );
 
     addProjectileOptions(this);
     addEffectOptions(this, true);
@@ -3387,11 +3390,11 @@ function addItemOptions(component) {
     component.data.push(new IntValue('Amount', 'amount', 1)
         .setTooltip('The quantity of the item to give to the player')
     );
-    component.data.push(new IntValue('Durability', 'data', 0)
-        .setTooltip('The durability value of the item to give to the player')
+    component.data.push(new IntValue('Durability', 'durability', 0).requireValue('material', getDamageableMaterials())
+        .setTooltip('The durability to reduce from the item')
     );
-    component.data.push(new IntValue('Data', 'byte', 0)
-        .setTooltip('The data value of the item to give to the player for things such as egg type or wool color')
+    component.data.push(new IntValue('CustomModelData', 'data', 0)
+        .setTooltip('The CustomModelData of the item')
     );
     component.data.push(new ListValue('Custom', 'custom', ['True', 'False'], 'False')
         .setTooltip('Whether or not to apply a custom name/lore to the item')
@@ -3530,8 +3533,11 @@ function addParticleOptions(component) {
                                                                                                               'Item Crack'])
         .setTooltip('The material to use for the particles')
     );
-    component.data.push(new IntValue('Data', 'type', 0).requireValue('particle', ['Item crack', 'Item Crack'])
-        .setTooltip('The material data value to se for the particles. For 1.14+ determines the CustomModelData of the item')
+    component.data.push(new IntValue('Durability', 'durability', 0).requireValue('particle', ['Item crack', 'Item Crack'])
+        .setTooltip('The durability to be reduced from the item used to make the particles')
+    );
+    component.data.push(new IntValue('CustomModelData', 'type', 0).requireValue('particle', ['Item crack', 'Item Crack'])
+        .setTooltip('The CustomModelData of the item used to make the particles')
     );
 
     component.data.push(new ListValue('Arrangement', 'arrangement', ['Circle', 'Hemisphere', 'Sphere'], 'Circle')
@@ -3541,7 +3547,7 @@ function addParticleOptions(component) {
         .setTooltip('The radius of the arrangement in blocks')
     );
     component.data.push(new AttributeValue('Amount', 'particles', 20, 0)
-        .setTooltip('The amount of points that conform the chosen arrangement.')
+        .setTooltip('The amount of points that conform the chosen arrangement')
     );
 
     // Circle arrangement direction
@@ -3626,6 +3632,10 @@ function addEffectOptions(component, optional) {
                                          'Falling dust'])
         .setTooltip('The material to use for the particle.')
     ));
+    component.data.push(new IntValue('Durability', '-particle-durability', 0)
+		.requireValue('particle', ['Item crack', 'Item Crack'])
+        .setTooltip('The durability to be reduced from the item used to make the particles')
+    );
     component.data.push(opt(new IntValue('Data', '-particle-data', 0)
         .requireValue('-particle-type', ['Item crack', 'Item Crack'])
         .setTooltip('The data value for the material used by the particle. For 1.14+ determines the CustomModelData of the item.')

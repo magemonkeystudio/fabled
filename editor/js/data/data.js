@@ -18,6 +18,10 @@ function getMaterials() {
     return DATA.MATERIALS;
 }
 
+function getDamageableMaterials() {
+	return DATA.DAMAGEABLE_MATERIALS;
+}
+
 function getAnyMaterials() {
     return [ 'Any', ...DATA.MATERIALS ];
 }

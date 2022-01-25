@@ -27,7 +27,7 @@ function Class(name)
 		new ListValue('Skill Tree', 'tree', [ 'Basic Horizontal', 'Basic Vertical', 'Level Horizontal', 'Level Vertical', 'Flood', 'Requirement' ], 'Requirement'),
 		new StringListValue('Skills (one per line)', 'skills', []).setTooltip('The skills the class is able to use'),
 		new ListValue('Icon', 'icon', getMaterials, 'Jack O Lantern').setTooltip('The item that represents the class in GUIs'),
-		new IntValue('Icon Data', 'icon-data', 0).setTooltip('The data/durability value of the item that represents the class in GUIs'),
+		new IntValue('Icon CustomModelData', 'icon-data', 0).setTooltip('The CustomModelData of the item that represents the class in GUIs'),
 		new StringListValue('Icon Lore', 'icon-lore', [
 			'&d' + name
 		]),
