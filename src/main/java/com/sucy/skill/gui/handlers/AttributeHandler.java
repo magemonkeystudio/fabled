@@ -55,8 +55,10 @@ public class AttributeHandler extends GUIHolder<AttributeManager.Attribute> {
                 if (player.refundAttribute(type.getKey())) {
                     setPage(page);
                 }
+                return;
             } else if (!VaultHook.has(player.getPlayer(), String.valueOf(SkillAPI.getSettings().getAttributesDowngradePrice()))) {
                SkillAPI.getLanguage().sendMessage(NOMONEY, player.getPlayer());
+                return;
             }
 
             if (player.refundAttribute(type.getKey())) {
