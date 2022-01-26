@@ -110,7 +110,6 @@ public class Data {
         }
 
         final int data = config.getInt(DATA, 0);
-        System.out.println(config.getInt(DURABILITY));
         return parse(
                 config.getString(MAT, "JACK_O_LANTERN"),
                 config.getInt(DURABILITY, 0),
