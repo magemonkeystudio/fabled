@@ -31,6 +31,7 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -47,7 +48,9 @@ public class ItemMechanic extends MechanicComponent {
     private static final String MATERIAL = "material";
     private static final String AMOUNT   = "amount";
     private static final String DURABILITY = "data";
+    private static final String UNBREAKABLE = "unbreakable";
     private static final String CMD        = "byte";
+    private static final String HIDE_FLAGS = "hide-flags";
     private static final String CUSTOM   = "custom";
     private static final String NAME     = "name";
     private static final String LORE     = "lore";
@@ -97,8 +100,17 @@ public class ItemMechanic extends MechanicComponent {
         }
         meta.setCustomModelData(data);
         if (meta instanceof Damageable) {
-            ((Damageable) meta).setDamage(durability);
+            Damageable damageable = (Damageable) meta;
+            damageable.setDamage(durability);
+            damageable.setUnbreakable(settings.getBool(UNBREAKABLE, false));
         }
+
+        for (String hideFlag : settings.getStringList(HIDE_FLAGS)) {
+            try {
+                meta.addItemFlags(ItemFlag.valueOf("HIDE_"+hideFlag.toUpperCase().replace(' ', '_')));
+            } catch (IllegalArgumentException ignored) { }
+        }
+
         item.setItemMeta(meta);
 
         if (item.getType() == Material.POTION || item.getType() == Material.SPLASH_POTION) {
