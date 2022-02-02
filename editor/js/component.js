@@ -3405,10 +3405,16 @@ function addItemOptions(component) {
     component.data.push(new IntValue('Durability', 'data', 0).requireValue('material', getDamageableMaterials())
         .setTooltip('The durability to reduce from the item')
     );
+    component.data.push(new ListValue('Unbreakable', 'unbreakable', ['True', 'False'], 'False').requireValue('material', getDamageableMaterials())
+        .setTooltip('Whether to make the item unbreakable')
+    );
     component.data.push(new IntValue('CustomModelData', 'byte', 0)
         .setTooltip('The CustomModelData of the item')
     );
-    component.data.push(new ListValue('Custom', 'custom', ['True', 'False'], 'False')
+	component.data.push(new MultiListValue('Hide Flags', 'hide-flags', ['Enchants', 'Attributes', 'Unbreakable', 'Destroys', 'Placed on', 'Potion effects', 'Dye'], [])
+        .setTooltip('Flags to hide from the item')
+    );
+    component.data.push(new ListValue('Custom Name/Lore', 'custom', ['True', 'False'], 'False')
         .setTooltip('Whether or not to apply a custom name/lore to the item')
     );
 
