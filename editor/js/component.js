@@ -3402,10 +3402,10 @@ function addItemOptions(component) {
     component.data.push(new IntValue('Amount', 'amount', 1)
         .setTooltip('The quantity of the item to give to the player')
     );
-    component.data.push(new IntValue('Durability', 'durability', 0).requireValue('material', getDamageableMaterials())
+    component.data.push(new IntValue('Durability', 'data', 0).requireValue('material', getDamageableMaterials())
         .setTooltip('The durability to reduce from the item')
     );
-    component.data.push(new IntValue('CustomModelData', 'data', 0)
+    component.data.push(new IntValue('CustomModelData', 'byte', 0)
         .setTooltip('The CustomModelData of the item')
     );
     component.data.push(new ListValue('Custom', 'custom', ['True', 'False'], 'False')
