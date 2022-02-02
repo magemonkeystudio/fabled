@@ -1,21 +1,12 @@
 package com.sucy.skill.dynamic.mechanic;
 
-import mc.promcteam.engine.mccore.util.TextFormatter;
-import org.bukkit.Color;
+import com.sucy.skill.api.util.ItemStackReader;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Spawns a dropped item at the specified location.
@@ -29,21 +20,6 @@ public class ItemDropMechanic extends MechanicComponent {
 
     private static final String PICKUP_DELAY = "pickup_delay";
     private static final String DURATION = "duration";
-
-    private static final String MATERIAL = "material";
-    private static final String AMOUNT = "amount";
-    private static final String UNBREAKABLE = "unbreakable";
-    private static final String DURABILITY = "data";
-    private static final String HIDE_FLAGS = "hide-flags";
-    private static final String CMD = "byte";
-    private static final String CUSTOM = "custom";
-    private static final String NAME = "name";
-    private static final String LORE = "lore";
-
-    private static final String POTION_COLOR = "potion_color";
-    private static final String POTION_TYPE = "potion_type";
-    private static final String POTION_LEVEL = "potion_level";
-    private static final String POTION_DURATION = "potion_duration";
 
     @Override
     public String getKey() {
@@ -61,56 +37,7 @@ public class ItemDropMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        String mat = settings.getString(MATERIAL, "arrow").toUpperCase().replace(" ", "_");
-        Material material;
-        try {
-            material = Material.valueOf(mat);
-        } catch (Exception ex) {
-            return false;
-        }
-        int amount = settings.getInt(AMOUNT, 1);
-        int durability = settings.getInt(DURABILITY, 0);
-        int data = settings.getInt(CMD, 0);
-
-        ItemStack item = new ItemStack(material, amount);
-
-        ItemMeta meta = Objects.requireNonNull(item.getItemMeta());
-        if (settings.getString(CUSTOM, "false").equalsIgnoreCase("true")) {
-            String name = TextFormatter.colorString(settings.getString(NAME, ""));
-            if (name.length() > 0) {
-                meta.setDisplayName(name);
-            }
-            List<String> lore = TextFormatter.colorStringList(settings.getStringList(LORE));
-            meta.setLore(lore);
-        }
-        meta.setCustomModelData(data);
-        if (meta instanceof Damageable) {
-            Damageable damageable = (Damageable) meta;
-            damageable.setDamage(durability);
-            damageable.setUnbreakable(settings.getBool(UNBREAKABLE, false));
-        }
-
-        for (String hideFlag : settings.getStringList(HIDE_FLAGS)) {
-            try {
-                meta.addItemFlags(ItemFlag.valueOf("HIDE_"+hideFlag.toUpperCase().replace(' ', '_')));
-            } catch (IllegalArgumentException ignored) { }
-        }
-
-        item.setItemMeta(meta);
-
-        if (item.getType() == Material.POTION || item.getType() == Material.SPLASH_POTION) {
-            PotionMeta pm = (PotionMeta) meta;
-            pm.clearCustomEffects();
-            PotionEffect pe = new PotionEffect(
-                    PotionEffectType.getByName(settings.getString(POTION_TYPE).replace(" ", "_")),
-                    settings.getInt(POTION_DURATION)*20,
-                    settings.getInt(POTION_LEVEL)
-            );
-            int col = Integer.parseInt(settings.getString(POTION_COLOR).substring(1), 16);
-            pm.setColor(Color.fromRGB(col));
-            pm.addCustomEffect(pe, true);
-            item.setItemMeta(pm);
-        }
+        ItemStack item = ItemStackReader.read(settings);
 
         double forward = parseValues(caster, FORWARD, level, 0);
         double upward = parseValues(caster, UPWARD, level, 0);

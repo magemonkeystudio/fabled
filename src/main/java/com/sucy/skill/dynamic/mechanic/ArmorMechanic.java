@@ -1,31 +1,20 @@
 package com.sucy.skill.dynamic.mechanic;
 
-import mc.promcteam.engine.mccore.util.TextFormatter;
+import com.sucy.skill.api.util.ItemStackReader;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Sets the specified armor slot of the target to the item defined by the settings
  */
 public class ArmorMechanic extends MechanicComponent {
     private static final String SLOT       = "slot";
-    private static final String MATERIAL   = "material";
-    private static final String AMOUNT     = "amount";
-    private static final String DURABILITY = "data";
-    private static final String UNBREAKABLE = "unbreakable";
-    private static final String CMD        = "byte";
-    private static final String HIDE_FLAGS = "hide-flags";
-    private static final String CUSTOM     = "custom";
-    private static final String NAME       = "name";
-    private static final String LORE       = "lore";
     private static final String OVERWRITE  = "overwrite";
 
     @Override
@@ -44,53 +33,19 @@ public class ArmorMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        String        mat = settings.getString(MATERIAL, "arrow").toUpperCase().replace(" ", "_");
         EquipmentSlot slot;
         try {
             slot = EquipmentSlot.valueOf(settings.getString(SLOT, "HAND").toUpperCase().replace(" ", "_"));
         } catch (IllegalArgumentException exception) {
             return false;
         }
-        Material material;
-        try {
-            material = Material.valueOf(mat);
-        } catch (Exception ex) {
-            return false;
-        }
-        int     amount     = settings.getInt(AMOUNT, 1);
-        int     durability = settings.getInt(DURABILITY, 0);
-        int     data       = settings.getInt(CMD, 0);
+        ItemStack item = ItemStackReader.read(settings);
         boolean overwrite  = settings.getBool(OVERWRITE, false);
-
-        ItemStack item = new ItemStack(material, amount);
-        ItemMeta  meta = item.getItemMeta();
-        if (settings.getString(CUSTOM, "false").equalsIgnoreCase("true")) {
-            String name = TextFormatter.colorString(settings.getString(NAME, ""));
-            if (name.length() > 0) {
-                meta.setDisplayName(name);
-            }
-            List<String> lore = TextFormatter.colorStringList(settings.getStringList(LORE));
-            meta.setLore(lore);
-        }
-        meta.setCustomModelData(data);
-        if (meta instanceof Damageable) {
-            Damageable damageable = (Damageable) meta;
-            damageable.setDamage(durability);
-            damageable.setUnbreakable(settings.getBool(UNBREAKABLE, false));
-        }
-
-        for (String hideFlag : settings.getStringList(HIDE_FLAGS)) {
-            try {
-                meta.addItemFlags(ItemFlag.valueOf("HIDE_"+hideFlag.toUpperCase().replace(' ', '_')));
-            } catch (IllegalArgumentException ignored) { }
-        }
-
-        item.setItemMeta(meta);
 
         boolean success = false;
         for (LivingEntity target : targets) {
-            EntityEquipment equipment = target.getEquipment();
-            boolean         proceed   = overwrite;
+            EntityEquipment equipment = Objects.requireNonNull(target.getEquipment());
+            boolean proceed = overwrite;
             if (!overwrite) {
                 switch (slot) {
                     case FEET:
