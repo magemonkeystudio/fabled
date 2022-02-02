@@ -988,6 +988,7 @@ function TargetOffset() {
 
     this.description = 'Targets a location that is the given offset away from each target.';
 
+    this.data.push(new SectionMarker('Offset'));
     this.data.push(new AttributeValue('Forward', 'forward', 0, 0)
         .setTooltip('The offset from the target in the direction they are facing. Negative numbers go backwards.')
     );
@@ -1693,10 +1694,10 @@ function MechanicArmor() {
     this.data.push(new ListValue('Slot', 'slot', ['Hand', 'Off Hand', 'Feet', 'Legs', 'Chest', 'Head'], 'Hand')
         .setTooltip('The slot number to set the item to')
     );
-	addItemOptions(this)
     this.data.push(new ListValue('Overwrite', 'overwrite', ['True', 'False'], 'False')
         .setTooltip('USE WITH CAUTION. Whether or not to overwrite an existing item in the slot. If true, will permanently delete the existing iem')
     );
+	addItemOptions(this)
 }
 
 extend('MechanicArmorStand', 'Component');
@@ -1739,6 +1740,7 @@ function MechanicArmorStand() {
     this.data.push(new ListValue('Marker', 'marker', ['True', 'False'], 'True')
         .setTooltip('Setting this to true will remove the armor stand\'s hitbox')
     );
+    this.data.push(new SectionMarker('Offset'));
     this.data.push(new AttributeValue('Forward Offset', 'forward', 0, 0)
         .setTooltip('How far forward in front of the target the armorstand should be in blocks. A negative value will put it behind.')
     );
@@ -1793,15 +1795,6 @@ function MechanicBlock() {
     this.data.push(new AttributeValue('Seconds', 'seconds', 5, 0)
         .setTooltip('How long the blocks should be replaced for')
     );
-    this.data.push(new AttributeValue('Forward Offset', 'forward', 0, 0)
-        .setTooltip('How far forward in front of the target the region should be in blocks. A negative value will put it behind.')
-    );
-    this.data.push(new AttributeValue('Upward Offset', 'upward', 0, 0)
-        .setTooltip('How far above the target the region should be in blocks. A negative value will put it below.')
-    );
-    this.data.push(new AttributeValue('Right Offset', 'right', 0, 0)
-        .setTooltip('How far to the right the region should be of the target. A negative value will put it to the left.')
-    );
 
     // Sphere options
     this.data.push(new AttributeValue('Radius', 'radius', 3, 0).requireValue('shape', ['Sphere'])
@@ -1817,6 +1810,17 @@ function MechanicBlock() {
     );
     this.data.push(new AttributeValue('Depth (Z)', 'depth', 5, 0).requireValue('shape', ['Cuboid'])
         .setTooltip('The depth of the cuboid in blocks')
+    );
+
+    this.data.push(new SectionMarker('Offset'));
+    this.data.push(new AttributeValue('Forward Offset', 'forward', 0, 0)
+        .setTooltip('How far forward in front of the target the region should be in blocks. A negative value will put it behind.')
+    );
+    this.data.push(new AttributeValue('Upward Offset', 'upward', 0, 0)
+        .setTooltip('How far above the target the region should be in blocks. A negative value will put it below.')
+    );
+    this.data.push(new AttributeValue('Right Offset', 'right', 0, 0)
+        .setTooltip('How far to the right the region should be of the target. A negative value will put it to the left.')
     );
 }
 
@@ -2395,13 +2399,14 @@ function MechanicItemDrop() {
 
     addItemOptions(this);
 	
-    this.data.push(new AttributeValue('Forward', 'forward', 0, 0)
+	this.data.push(new SectionMarker("Offset"));
+    this.data.push(new AttributeValue('Forward offset', 'forward', 0, 0)
         .setTooltip('How far forward in blocks to teleport. A negative value teleports backwards.')
     );
-    this.data.push(new AttributeValue('Upward', 'upward', 0, 0)
+    this.data.push(new AttributeValue('Upward offset', 'upward', 0, 0)
         .setTooltip('How far upward in blocks to teleport. A negative value teleports downward.')
     );
-    this.data.push(new AttributeValue('Right', 'right', 0, 0)
+    this.data.push(new AttributeValue('Right offset', 'right', 0, 0)
         .setTooltip('How far to the right in blocks to teleport. A negative value teleports to the left.')
     );
 }
@@ -2413,7 +2418,7 @@ function MechanicItemProjectile() {
 
     this.description = 'Launches a projectile using an item as its visual that applies child components upon landing. The target passed on will be the collided target or the location where it landed if it missed.';
 
-
+    this.data.push(new SectionMarker('Item Options'));
     this.data.push(new ListValue('Item', 'item', getMaterials, 'Jack O Lantern')
         .setTooltip('The item type to use as a projectile')
     );
@@ -2479,6 +2484,8 @@ function MechanicLightning() {
     this.data.push(new ListValue("Include Caster", "caster", ['True', 'False'], 'False')
         .setTooltip('Whether the lightning strike can hit the caster')
     );
+	
+	this.data.push(new SectionMarker("Offset"));
     this.data.push(new AttributeValue('Forward Offset', 'forward', 0, 0)
         .setTooltip('How far in front of the target in blocks to place the lightning')
     );
@@ -2551,6 +2558,7 @@ function MechanicMine() {
         .setTooltip('The depth of the cuboid, in blocks')
     );
 	
+	this.data.push(new SectionMarker("Offset"));
     this.data.push(new AttributeValue('Forward Offset', 'forward', 0, 0)
         .setTooltip('How far forward in front of the target the region should be in blocks. A negative value will put it behind.')
     );
@@ -2589,6 +2597,7 @@ function MechanicParticle() {
 
     addParticleOptions(this);
 
+    this.data.push(new SectionMarker('Offset'));
     this.data.push(new DoubleValue('Forward Offset', 'forward', 0)
         .setTooltip('How far forward in front of the target in blocks to play the particles. A negative value will go behind.')
     );
@@ -2637,6 +2646,7 @@ function MechanicParticleAnimation() {
 
     addParticleOptions(this);
 
+    this.data.push(new SectionMarker('Offset'));
     this.data.push(new DoubleValue('Forward Offset', 'forward', 0)
         .setTooltip('How far forward in front of the target in blocks to play the particles. A negative value will go behind.')
     );
@@ -2665,14 +2675,14 @@ function MechanicParticleProjectile() {
 
     this.description = 'Launches a projectile using particles as its visual that applies child components upon landing. The target passed on will be the collided target or the location where it landed if it missed.';
 
-    addProjectileOptions(this);
-
     this.data.push(new DoubleValue('Gravity', 'gravity', 0)
         .setTooltip('How much gravity to apply each tick. Negative values make it fall while positive values make it rise')
     );
     this.data.push(new ListValue('Pierce', 'pierce', ['True', 'False'], 'False')
         .setTooltip('Whether or not this projectile should pierce through initial targets and continue hitting those behind them')
     );
+	
+    addProjectileOptions(this);
 
     addParticleOptions(this);
 
@@ -3253,6 +3263,7 @@ function MechanicWarp() {
     this.data.push(new ListValue('Through Walls', 'walls', ['True', 'False'], 'False')
         .setTooltip('Whether or not to allow the target to teleport through walls')
     );
+    this.data.push(new SectionMarker('Position'));
     this.data.push(new AttributeValue('Forward', 'forward', 3, 1)
         .setTooltip('How far forward in blocks to teleport. A negative value teleports backwards.')
     );
@@ -3384,6 +3395,7 @@ var activeComponent = undefined;
  */
 function addItemOptions(component) {
 
+    component.data.push(new SectionMarker('Item Options'));
     component.data.push(new ListValue('Material', 'material', getMaterials, 'Arrow')
         .setTooltip('The type of item to give to the player')
     );
@@ -3468,6 +3480,7 @@ function addItemConditionOptions(component) {
 }
 
 function addProjectileOptions(component) {
+    component.data.push(new SectionMarker('Projectile Options'));
 
     // General data
     component.data.push(new ListValue("Group", "group", ["Ally", "Enemy"], "Enemy")
@@ -3504,6 +3517,7 @@ function addProjectileOptions(component) {
     );
 
     // Offsets
+    component.data.push(new SectionMarker('Offset'));
     component.data.push(new AttributeValue('Forward Offset', 'forward', 0, 0)
         .setTooltip('How far forward in front of the target the projectile should fire from in blocks. A negative value will put it behind.')
     );
@@ -3521,6 +3535,7 @@ function addProjectileOptions(component) {
  * @param {Component} component - the component to add to
  */
 function addParticleOptions(component) {
+    component.data.push(new SectionMarker('Particle Options'));
     component.data.push(new ListValue('Particle', 'particle', getParticles, 'Barrier')
         .setTooltip('The type of particle to display. Particle effects that show the DX, DY, and DZ options are not compatible with Cauldron')
     );
@@ -3579,6 +3594,7 @@ function addParticleOptions(component) {
 }
 
 function addEffectOptions(component, optional) {
+    component.data.push(new SectionMarker('Particle Effect Options'));
     var opt = appendNone;
     if (optional) {
         opt = appendOptional;
@@ -3632,10 +3648,10 @@ function addEffectOptions(component, optional) {
                                          'Falling dust'])
         .setTooltip('The material to use for the particle.')
     ));
-    component.data.push(new IntValue('Durability', '-particle-durability', 0)
+    component.data.push(opt(new IntValue('Durability', '-particle-durability', 0)
 		.requireValue('particle', ['Item crack', 'Item Crack'])
         .setTooltip('The durability to be reduced from the item used to make the particles')
-    );
+    ));
     component.data.push(opt(new IntValue('Data', '-particle-data', 0)
         .requireValue('-particle-type', ['Item crack', 'Item Crack'])
         .setTooltip('The data value for the material used by the particle. For 1.14+ determines the CustomModelData of the item.')
