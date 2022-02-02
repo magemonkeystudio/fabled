@@ -2418,17 +2418,7 @@ function MechanicItemProjectile() {
 
     this.description = 'Launches a projectile using an item as its visual that applies child components upon landing. The target passed on will be the collided target or the location where it landed if it missed.';
 
-    this.data.push(new SectionMarker('Item Options'));
-    this.data.push(new ListValue('Item', 'item', getMaterials, 'Jack O Lantern')
-        .setTooltip('The item type to use as a projectile')
-    );
-    this.data.push(new IntValue('Durability', 'durability', 0).requireValue('item', getDamageableMaterials())
-        .setTooltip('The durability to reduce from the item')
-    );
-    this.data.push(new IntValue('CustomModelData', 'item-data', 0)
-        .setTooltip('The CustomModelData of the item')
-    );
-
+	addItemOptions(this);
     addProjectileOptions(this);
     addEffectOptions(this, true);
 }
@@ -3424,20 +3414,23 @@ function addItemOptions(component) {
     component.data.push(new StringListValue('Lore', 'lore', []).requireValue('custom', ['True'])
         .setTooltip('The lore text for the item (the text below the name)')
     );
-    component.data.push(new StringValue('Potion Color', 'potion_color', '#1f8c1f').requireValue('material', ['Potion',
-                                                                                                        'Splash potion'])
+    component.data.push(new StringValue('Potion Color', 'potion_color', '#385dc6').requireValue('material', ['Potion',
+                                                                                                        'Splash potion', 'Lingering potion'])
         .setTooltip('The potion color in hex RGB')
     );
     component.data.push(new ListValue('Potion Type', 'potion_type', getPotionTypes, 'Speed').requireValue('material', ['Potion',
-                                                                                                                  'Splash potion'])
+                                                                                                                  'Splash potion', 'Lingering potion'])
         .setTooltip('The type of potion')
     );
-    component.data.push(new IntValue('Potion Level', 'potion_level', 0).requireValue('material', ['Potion', 'Splash potion'])
+    component.data.push(new IntValue('Potion Level', 'potion_level', 0).requireValue('material', ['Potion', 'Splash potion', 'Lingering potion'])
         .setTooltip('The potion level')
     );
     component.data.push(new IntValue('Potion Duration', 'potion_duration', 30).requireValue('material', ['Potion',
-                                                                                                    'Splash potion'])
+                                                                                                    'Splash potion', 'Lingering potion'])
         .setTooltip('The potion duration (seconds)')
+    );
+    component.data.push(new StringValue('Armor Color', 'armor_color', '#a06540').requireValue('material', ['Leather helmet', 'Leather chestplate', 'Leather leggings', 'Leather boots'])
+        .setTooltip('The armor color in hex RGB')
     );
 }
 
