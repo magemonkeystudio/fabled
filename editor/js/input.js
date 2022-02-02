@@ -769,7 +769,6 @@ SectionMarker.prototype.applyRequireValues = applyRequireValues;
  */
 SectionMarker.prototype.createHTML = function (target) {
     this.component = document.createElement('section');
-    // this.component.innerHTML = '-  '+this.value;
     this.component.innerHTML = this.value;
 	this.component.appendChild(document.createElement('sectionr'));
     target.appendChild(this.component);
