@@ -18,8 +18,8 @@ public class ArmorMechanic extends MechanicComponent {
     private static final String SLOT       = "slot";
     private static final String MATERIAL   = "material";
     private static final String AMOUNT     = "amount";
-    private static final String DURABILITY = "durability";
-    private static final String CMD        = "data";
+    private static final String DURABILITY = "data";
+    private static final String CMD        = "byte";
     private static final String CUSTOM     = "custom";
     private static final String NAME       = "name";
     private static final String LORE       = "lore";
