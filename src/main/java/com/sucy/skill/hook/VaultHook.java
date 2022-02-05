@@ -133,6 +133,10 @@ public class VaultHook
         return economy.getBalance(player, player.getWorld().getName());
     }
 
+    public static Boolean hasBalance(Player player, double balance) {
+        return !(getBalance(player) < balance);
+    }
+
     public static EconomyResponse withdraw(Player player, double amount) {
         return economy.withdrawPlayer(player, player.getWorld().getName(), amount);
     }

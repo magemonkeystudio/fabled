@@ -83,7 +83,7 @@ public class PlayerData {
     private final HashMap<String, PlayerClass>                   classes             = new HashMap<>();
     private final HashMap<String, PlayerSkill>                   skills              = new HashMap<>();
     private final HashMap<Material, PlayerSkill>                 binds               = new HashMap<>();
-    private final HashMap<String, Integer>                       attributes          = new HashMap<>();
+    public final HashMap<String, Integer>                       attributes          = new HashMap<>();
     private final HashMap<String, List<PlayerAttributeModifier>> attributesModifiers = new HashMap<>();
     private final HashMap<String, List<PlayerStatModifier>>      statModifiers       = new HashMap<>();
 
@@ -104,7 +104,7 @@ public class PlayerData {
     private       double         hunger;
     private       boolean        init;
     private       boolean        passive;
-    private       int            attribPoints;
+    public        int            attribPoints;
     private       long           skillTimer;
     private       BukkitTask     removeTimer;
 

@@ -50,13 +50,13 @@ public class AttributeHandler extends GUIHolder<AttributeManager.Attribute> {
             if (player.upAttribute(type.getKey())) { setPage(page); }
         } else if (SkillAPI.getSettings().isAttributesDowngrade() || player.getAttribute(type.getKey()) > start.get(type.getKey())) {
 
-            if (SkillAPI.getSettings().getAttributesDowngradePrice() > 0 && VaultHook.isValid() && VaultHook.has(player.getPlayer(), String.valueOf(SkillAPI.getSettings().getAttributesDowngradePrice()))) {
-                VaultHook.remove(player.getPlayer(), String.valueOf(SkillAPI.getSettings().getAttributesDowngradePrice()));
+            if (SkillAPI.getSettings().getAttributesDowngradePrice() > 0 && VaultHook.isEconomyValid() && VaultHook.hasBalance(player.getPlayer(), SkillAPI.getSettings().getAttributesDowngradePrice())) {
+                VaultHook.withdraw(player.getPlayer(), Double.parseDouble(String.valueOf(SkillAPI.getSettings().getAttributesDowngradePrice())));
                 if (player.refundAttribute(type.getKey())) {
                     setPage(page);
                 }
                 return;
-            } else if (!VaultHook.has(player.getPlayer(), String.valueOf(SkillAPI.getSettings().getAttributesDowngradePrice()))) {
+            } else if (!VaultHook.hasBalance(player.getPlayer(), SkillAPI.getSettings().getAttributesDowngradePrice())) {
                SkillAPI.getLanguage().sendMessage(NOMONEY, player.getPlayer());
                 return;
             }
