@@ -654,11 +654,10 @@ public class SkillAPI extends JavaPlugin {
         listen(new KillListener(), true);
         listen(new AddonListener(), true);
         listen(new ClickListener(), true);
-        listen(new ItemListener(), settings.isCheckLore());
         listen(new BarListener(), settings.isSkillBarEnabled());
         listen(new ComboListener(), settings.isCombosEnabled());
         listen(new AttributeListener(), settings.isAttributesEnabled());
-        listen(new ItemListener(), settings.isCheckAttributes());
+        listen(new ItemListener(), settings.isCheckLore() || settings.isCheckAttributes());
         listen(new CastListener(), settings.isUsingBars());
         listen(new CastOffhandListener(),
                 settings.isCastEnabled() && VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
