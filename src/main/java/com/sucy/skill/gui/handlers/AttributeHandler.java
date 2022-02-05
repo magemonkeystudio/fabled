@@ -34,7 +34,7 @@ import com.sucy.skill.manager.AttributeManager;
 import java.util.HashMap;
 
 public class AttributeHandler extends GUIHolder<AttributeManager.Attribute> {
-    private HashMap<String, Integer> start = new HashMap<String, Integer>();
+    private final HashMap<String, Integer> start = new HashMap<String, Integer>();
 
     private static final String NOMONEY = "attribute-no-money";
 
@@ -50,13 +50,16 @@ public class AttributeHandler extends GUIHolder<AttributeManager.Attribute> {
             if (player.upAttribute(type.getKey())) { setPage(page); }
         } else if (SkillAPI.getSettings().isAttributesDowngrade() || player.getAttribute(type.getKey()) > start.get(type.getKey())) {
 
-            if (SkillAPI.getSettings().getAttributesDowngradePrice() > 0 && VaultHook.isValid() && VaultHook.has(player.getPlayer(), String.valueOf(SkillAPI.getSettings().getAttributesDowngradePrice()))) {
-                VaultHook.remove(player.getPlayer(), String.valueOf(SkillAPI.getSettings().getAttributesDowngradePrice()));
+            if (SkillAPI.getSettings().getAttributesDowngradePrice() > 0 && VaultHook.isPermissionsValid()
+                    && VaultHook.hasPermission(player.getPlayer(), String.valueOf(SkillAPI.getSettings().getAttributesDowngradePrice()))) {
+                VaultHook.removePermission(player.getPlayer(),
+                        String.valueOf(SkillAPI.getSettings().getAttributesDowngradePrice()));
                 if (player.refundAttribute(type.getKey())) {
                     setPage(page);
                 }
                 return;
-            } else if (!VaultHook.has(player.getPlayer(), String.valueOf(SkillAPI.getSettings().getAttributesDowngradePrice()))) {
+            } else if (!VaultHook.hasPermission(player.getPlayer(),
+                    String.valueOf(SkillAPI.getSettings().getAttributesDowngradePrice()))) {
                SkillAPI.getLanguage().sendMessage(NOMONEY, player.getPlayer());
                 return;
             }
