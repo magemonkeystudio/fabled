@@ -2417,8 +2417,18 @@ function MechanicItemProjectile() {
     this.super('Item Projectile', Type.MECHANIC, true);
 
     this.description = 'Launches a projectile using an item as its visual that applies child components upon landing. The target passed on will be the collided target or the location where it landed if it missed.';
-
-	addItemOptions(this);
+    
+	this.data.push(new SectionMarker('Item Options'));
+    this.data.push(new ListValue('Item', 'item', getMaterials, 'Jack O Lantern')
+        .setTooltip('The item type to use as a projectile')
+    );
+    this.data.push(new IntValue('Durability', 'durability', 0).requireValue('item', getDamageableMaterials())
+        .setTooltip('The durability to reduce from the item')
+    );
+    this.data.push(new IntValue('CustomModelData', 'item-data', 0)
+        .setTooltip('The CustomModelData of the item')
+    );
+	
     addProjectileOptions(this);
     addEffectOptions(this, true);
 }
