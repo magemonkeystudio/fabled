@@ -32,14 +32,13 @@ import com.sucy.skill.api.particle.target.FollowTarget;
 import com.sucy.skill.api.projectile.CustomProjectile;
 import com.sucy.skill.api.projectile.ItemProjectile;
 import com.sucy.skill.api.projectile.ProjectileCallback;
+import com.sucy.skill.api.util.ItemStackReader;
 import com.sucy.skill.cast.*;
 import com.sucy.skill.dynamic.TempEntity;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -51,8 +50,6 @@ import java.util.List;
 public class ItemProjectileMechanic extends MechanicComponent implements ProjectileCallback {
     private static final Vector UP = new Vector(0, 1, 0);
 
-    private static final String ITEM    = "item";
-    private static final String DATA    = "item-data";
     private static final String SPEED   = "velocity";
     private static final String ANGLE   = "angle";
     private static final String AMOUNT  = "amount";
@@ -134,21 +131,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        Material mat = Material.JACK_O_LANTERN;
-        try {
-            mat = Material.valueOf(settings.getString(ITEM).toUpperCase().replace(" ", "_"));
-        } catch (Exception ex) {
-            // Invalid or missing item material
-        }
-        ItemStack item = new ItemStack(mat);
-        int       data = settings.getInt(DATA, 0);
-        if (SkillAPI.getSettings().useSkillModelData()) {
-            ItemMeta meta = item.getItemMeta();
-            meta.setCustomModelData(data);
-            item.setItemMeta(meta);
-        } else {
-            item.setDurability((short) data);
-        }
+        ItemStack item = ItemStackReader.read(settings);
 
         // Get other common values
         double  speed  = parseValues(caster, SPEED, level, 3.0);
@@ -227,7 +210,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
         if (hit == null) {
             hit = new TempEntity(projectile.getLocation());
         }
-        ArrayList<LivingEntity> targets = new ArrayList<LivingEntity>();
+        ArrayList<LivingEntity> targets = new ArrayList<>();
         targets.add(hit);
         executeChildren(projectile.getShooter(), SkillAPI.getMetaInt(projectile, LEVEL), targets, skill.isForced(projectile.getShooter()));
         projectile.setCallback(null);

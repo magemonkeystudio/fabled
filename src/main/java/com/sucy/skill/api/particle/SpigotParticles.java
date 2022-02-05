@@ -9,6 +9,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -70,7 +71,7 @@ public class SpigotParticles {
             .build();
     private static boolean error = true;
 
-    public static void play(final Location loc, final String particle, final float dx, final float dy, final float dz, final int count, final float speed, final double distance, final Material material, final int data) {
+    public static void play(final Location loc, final String particle, final float dx, final float dy, final float dz, final int count, final float speed, final double distance, final Material material, final int customModelData, final int durability) {
         Particle effect;
         try {
             effect = Particle.valueOf(particle.toUpperCase().replace(' ','_'));
@@ -80,7 +81,7 @@ public class SpigotParticles {
         if (effect == null) return;
         try {
             if (VersionManager.isVersionAtLeast(11300)) {
-                ArrayList<Player> players = new ArrayList<>();
+                List<Player> players = new ArrayList<>();
                 for (Player player : loc.getWorld().getPlayers()) {
                     if (loc.distance(player.getLocation()) <= distance) {
                         players.add(player);
@@ -98,7 +99,8 @@ public class SpigotParticles {
                         dz,
                         speed,
                         material,
-                        data
+                        customModelData,
+                        durability
                 );
             } else {
                 final Object packet = com.sucy.skill.api.particle.Particle.make(

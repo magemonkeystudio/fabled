@@ -51,11 +51,19 @@ public class PluginChecker extends SkillAPIListener {
     private static boolean mimic;
 
     /**
-     * Checks if vault is active on the server
+     * Checks if vault permissions is active on the server
      *
      * @return true if active with permissions plugin, false otherwise
      */
-    public static boolean isVaultActive() {return vault;}
+    public static boolean isVaultPermissionsActive() {return vault && VaultHook.isPermissionsValid();}
+
+    /**
+     * Checks if vault economy is active on the server
+     *
+     * @return true if active with economy plugin, false otherwise
+     */
+    public static boolean isVaultEconomyActive() {return vault && VaultHook.isEconomyValid();}
+
 
     /**
      * Checks whether or not Lib's Disguises is active
@@ -95,7 +103,7 @@ public class PluginChecker extends SkillAPIListener {
     public void init() {
         PluginManager pluginManager = Bukkit.getPluginManager();
 
-        vault = pluginManager.isPluginEnabled("Vault") && VaultHook.isValid();
+        vault = pluginManager.isPluginEnabled("Vault");
         libsDisguises = pluginManager.isPluginEnabled("LibsDisguises");
         noCheatPlus = pluginManager.isPluginEnabled("NoCheatPlus");
         papi = pluginManager.isPluginEnabled("PlaceholderAPI");

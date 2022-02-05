@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.PermissionMechanic
+ * com.sucy.skill.dynamic.mechanic.DamageMechanic
  *
  * The MIT License (MIT)
  *
@@ -26,22 +26,25 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
-import com.sucy.skill.api.util.FlagManager;
-import com.sucy.skill.hook.PluginChecker;
+import com.sucy.skill.hook.VaultHook;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
- * Applies a flag to each target
+ * Deals damage to each target
  */
-public class PermissionMechanic extends MechanicComponent {
-    private static final String PERM    = "perm";
-    private static final String SECONDS = "seconds";
+public class MoneyMechanic extends MechanicComponent {
+    private static final String TYPE = "type";
+    private static final String AMOUNT = "amount";
+    private static final String ALLOWS_NEGATIVE = "allows_negative";
 
     @Override
     public String getKey() {
-        return "permission";
+        return "money";
     }
 
     /**
@@ -56,18 +59,32 @@ public class PermissionMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0 || !settings.has(PERM) || !PluginChecker.isVaultPermissionsActive()) {
-            return false;
-        }
+        if (!VaultHook.isEconomyValid()) { return false; }
 
-        String key = settings.getString(PERM);
-        double seconds = parseValues(caster, SECONDS, level, 3.0);
-        int ticks = (int) (seconds * 20);
+        boolean multiply = settings.getString(TYPE, "add").equalsIgnoreCase("multiply");
+
+        double amount = parseValues(caster, AMOUNT, level, 1);
+        boolean allowsNegative = settings.getBool(ALLOWS_NEGATIVE, false);
+
+        boolean worked = false;
         for (LivingEntity target : targets) {
-            if (!target.hasPermission(key)) {
-                FlagManager.addFlag(target, "perm:" + key, ticks);
+            if (!(target instanceof Player)) {
+                continue;
             }
+            Player player = (Player) target;
+            double balance = VaultHook.getBalance(player);
+
+            double difference = multiply ? balance*(amount-1) : amount;
+            if (!allowsNegative && balance+difference < 0) { continue; }
+
+            EconomyResponse.ResponseType result = null;
+            if (difference > 0) {
+                result = VaultHook.deposit(player, difference).type;
+            } else if (difference < 0) {
+                result = VaultHook.withdraw(player, -difference).type;
+            }
+            if (result == EconomyResponse.ResponseType.SUCCESS) { worked = true; }
         }
-        return targets.size() > 0;
+        return worked;
     }
 }
