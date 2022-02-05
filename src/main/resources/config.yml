@@ -112,6 +112,9 @@ Classes:
   # Whether attributes can be refunded
   attributes-downgrade: false
   #
+  # Price player need to pay to downgrade their attributes, set to 0 to disable (need Vault)
+  attributes-downgrade-price: 0
+  #
   # This casts the dynamic skill for the player when they level up,
   # allowing you to use dynamic mechanics for level up effects. If
   # there is no existing dynamic skill with the name, no effect

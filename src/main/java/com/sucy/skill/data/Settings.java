@@ -85,7 +85,7 @@ public class Settings {
             GUI_LIST                     = GUI_BASE + "title-messages",
             GUI_CUSTOMMODELDATA          = GUI_BASE + "use-custommodeldata",
 
-    DEFAULT_YIELD                  = "default",
+            DEFAULT_YIELD          = "default",
             ACCOUNT_BASE           = "Accounts.",
             ACCOUNT_MAIN           = ACCOUNT_BASE + "main-class-group",
             ACCOUNT_EACH           = ACCOUNT_BASE + "one-per-class",
@@ -109,6 +109,7 @@ public class Settings {
             CLASS_SHOW             = CLASS_BASE + "show-auto-skills",
             CLASS_ATTRIB           = CLASS_BASE + "attributes-enabled",
             CLASS_REFUND           = CLASS_BASE + "attributes-downgrade",
+            CLASS_REFUND_PRICE     = CLASS_BASE + "attributes-downgrade-price",
             CLASS_LEVEL            = CLASS_BASE + "level-up-skill",
             MANA_BASE              = "Mana.",
             MANA_ENABLED           = MANA_BASE + "enabled",
@@ -247,6 +248,7 @@ public class Settings {
      * @return true if can refund, false otherwise
      */
     @Getter private boolean             attributesDowngrade;
+    @Getter private int                 attributesDowngradePrice;
     private         String              levelUpSkill;
     /**
      * Checks whether or not mana is enabled
@@ -950,6 +952,7 @@ public class Settings {
         showAutoSkills = config.getBoolean(CLASS_SHOW);
         attributesEnabled = config.getBoolean(CLASS_ATTRIB);
         attributesDowngrade = config.getBoolean(CLASS_REFUND);
+        attributesDowngradePrice = config.getInt(CLASS_REFUND_PRICE);
         levelUpSkill = config.getString(CLASS_LEVEL);
     }
 
