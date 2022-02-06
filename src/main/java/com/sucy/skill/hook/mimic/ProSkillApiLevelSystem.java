@@ -11,8 +11,6 @@ import ru.endlesscode.mimic.level.ExpLevelConverter;
 
 public class ProSkillApiLevelSystem extends BukkitLevelSystem {
 
-    public static final String ID = "proskillapi";
-
     public ProSkillApiLevelSystem(@NotNull Player player) {
         super(player);
     }
@@ -81,18 +79,5 @@ public class ProSkillApiLevelSystem extends BukkitLevelSystem {
 
     private @Nullable PlayerClass getPlayerClass() {
         return SkillAPI.getPlayerData(getPlayer()).getMainClass();
-    }
-
-    public static class Provider extends BukkitLevelSystem.Provider {
-
-        public Provider() {
-            super(ID);
-        }
-
-        @NotNull
-        @Override
-        public BukkitLevelSystem getSystem(@NotNull Player player) {
-            return new ProSkillApiLevelSystem(player);
-        }
     }
 }
