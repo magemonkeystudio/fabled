@@ -85,7 +85,7 @@ public class ParticleProjectile extends CustomProjectile
      * @param loc      initial location of the projectile
      * @param settings settings for the projectile
      */
-    public ParticleProjectile(LivingEntity shooter, int level, Location loc, Settings settings)
+    public ParticleProjectile(LivingEntity shooter, int level, Location loc, Settings settings, int lifespan)
     {
         super(shooter);
 
@@ -93,7 +93,7 @@ public class ParticleProjectile extends CustomProjectile
         this.settings = settings;
         this.vel = loc.getDirection().multiply(settings.getAttr(SPEED, level, 1.0));
         this.freq = (int) (20 * settings.getDouble(FREQUENCY, 0.5));
-        this.life = (int) (settings.getDouble(LIFESPAN, 2) * 20);
+        this.life = lifespan;
         this.gravity = new Vector(0, settings.getDouble(GRAVITY, 0), 0);
         this.pierce = settings.getBool(PIERCE, false);
 
@@ -240,7 +240,7 @@ public class ParticleProjectile extends CustomProjectile
      *
      * @return list of fired projectiles
      */
-    public static ArrayList<ParticleProjectile> spread(LivingEntity shooter, int level, Vector center, Location loc, Settings settings, double angle, int amount, ProjectileCallback callback)
+    public static ArrayList<ParticleProjectile> spread(LivingEntity shooter, int level, Vector center, Location loc, Settings settings, double angle, int amount, ProjectileCallback callback, int lifespan)
     {
         ArrayList<Vector> dirs = calcSpread(center, angle, amount);
         ArrayList<ParticleProjectile> list = new ArrayList<ParticleProjectile>();
@@ -248,7 +248,7 @@ public class ParticleProjectile extends CustomProjectile
         {
             Location l = loc.clone();
             l.setDirection(dir);
-            ParticleProjectile p = new ParticleProjectile(shooter, level, l, settings);
+            ParticleProjectile p = new ParticleProjectile(shooter, level, l, settings, lifespan);
             p.setCallback(callback);
             list.add(p);
         }
@@ -269,7 +269,7 @@ public class ParticleProjectile extends CustomProjectile
      *
      * @return list of fired projectiles
      */
-    public static ArrayList<ParticleProjectile> rain(LivingEntity shooter, int level, Location center, Settings settings, double radius, double height, int amount, ProjectileCallback callback)
+    public static ArrayList<ParticleProjectile> rain(LivingEntity shooter, int level, Location center, Settings settings, double radius, double height, int amount, ProjectileCallback callback, int lifespan)
     {
         Vector vel = new Vector(0, 1, 0);
         ArrayList<Location> locs = calcRain(center, radius, height, amount);
@@ -277,7 +277,7 @@ public class ParticleProjectile extends CustomProjectile
         for (Location l : locs)
         {
             l.setDirection(vel);
-            ParticleProjectile p = new ParticleProjectile(shooter, level, l, settings);
+            ParticleProjectile p = new ParticleProjectile(shooter, level, l, settings, lifespan);
             p.setCallback(callback);
             list.add(p);
         }

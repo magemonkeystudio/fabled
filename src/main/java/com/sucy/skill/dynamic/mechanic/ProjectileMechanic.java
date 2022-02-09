@@ -48,19 +48,19 @@ import java.util.List;
 public class ProjectileMechanic extends MechanicComponent {
     private static final Vector                                       UP                 = new Vector(0, 1, 0);
     private static final String                                       PROJECTILE         = "projectile";
-    private static final String                                       SPEED              = "velocity";
-    private static final String                                       ANGLE              = "angle";
+    private static final String                                       FLAMING            = "flaming";
+    private static final String                                       COST               = "cost";
+    private static final String                                       VELOCITY           = "velocity";
+    private static final String                                       LIFESPAN           = "lifespan";
+    private static final String                                       SPREAD             = "spread";
     private static final String                                       AMOUNT             = "amount";
-    private static final String                                       LEVEL              = "skill_level";
+    private static final String                                       ANGLE              = "angle";
     private static final String                                       HEIGHT             = "height";
     private static final String                                       RADIUS             = "rain-radius";
-    private static final String                                       SPREAD             = "spread";
-    private static final String                                       COST               = "cost";
-    private static final String                                       RANGE              = "range";
-    private static final String                                       FLAMING            = "flaming";
-    private static final String                                       RIGHT              = "right";
-    private static final String                                       UPWARD             = "upward";
+    private static final String                                       LEVEL              = "skill_level";
     private static final String                                       FORWARD            = "forward";
+    private static final String                                       UPWARD             = "upward";
+    private static final String                                       RIGHT              = "right";
     private static final HashMap<String, Class<? extends Projectile>> PROJECTILES        = new HashMap<String, Class<? extends Projectile>>() {{
         put("arrow", Arrow.class);
         put("egg", Egg.class);
@@ -114,8 +114,7 @@ public class ProjectileMechanic extends MechanicComponent {
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         // Get common values
         int                         amount     = (int) parseValues(caster, AMOUNT, level, 1.0);
-        double                      speed      = parseValues(caster, SPEED, level, 2.0);
-        double                      range      = parseValues(caster, RANGE, level, 999);
+        double                      speed      = parseValues(caster, VELOCITY, level, 2.0);
         boolean                     flaming    = settings.getString(FLAMING, "false").equalsIgnoreCase("true");
         String                      spread     = settings.getString(SPREAD, "cone").toLowerCase();
         String                      projectile = settings.getString(PROJECTILE, "arrow").toLowerCase();
@@ -172,7 +171,7 @@ public class ProjectileMechanic extends MechanicComponent {
                     p.setVelocity(new Vector(0, speed, 0));
                     p.teleport(loc);
                     SkillAPI.setMeta(p, LEVEL, level);
-                    if (flaming) p.setFireTicks(9999);
+                    if (flaming) p.setFireTicks(Integer.MAX_VALUE);
                     projectiles.add(p);
                 }
             } else {
@@ -193,7 +192,7 @@ public class ProjectileMechanic extends MechanicComponent {
                 ArrayList<Vector> dirs = CustomProjectile.calcSpread(dir, angle, amount);
                 for (Vector d : dirs) {
                     Projectile p = caster.launchProjectile(type);
-                    p.setTicksLived(1180);
+                    //p.setTicksLived(1180);
                     if (type.getName().contains("Arrow")) {
                         try {
                             // Will fail under 1.12
@@ -220,7 +219,7 @@ public class ProjectileMechanic extends MechanicComponent {
                 }
             }
         }
-        new RemoveTask(projectiles, (int) Math.ceil(range / Math.abs(speed)));
+        new RemoveTask(projectiles, (int) parseValues(caster, LIFESPAN, level, 9999)*20);
 
         return targets.size() > 0;
     }
