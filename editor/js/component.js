@@ -2960,13 +2960,26 @@ function MechanicTrigger() {
 
     this.description = 'Listens for a trigger on the current targets for a duration.';
 
-    this.data.push(new ListValue('Trigger', 'trigger', ['Crouch',
+    this.data.push(new ListValue('Trigger', 'trigger', ['Block Break',
+                                                        'Block Place', 
+                                                        'Crouch',
                                                         'Death',
+                                                        'Drop Item',
                                                         'Environment Damage',
+                                                        'Fishing',
+                                                        'Fishing Bite',
+                                                        'Fishing Fail',
+                                                        'Fishing Grab',
+                                                        'Fishing Ground',
+                                                        'Fishing Reel',
+                                                        'Item Swap',
                                                         'Kill',
                                                         'Land',
                                                         'Launch',
+                                                        'Left Click',
+                                                        'Move',
                                                         'Physical Damage',
+                                                        'Right Click',
                                                         'Skill Damage',
                                                         'Took Physical Damage',
                                                         'Took Skill Damage'], 'Death')
@@ -2982,10 +2995,35 @@ function MechanicTrigger() {
         .setTooltip('Whether or not the trigger should only be used once each cast. When false, the trigger can execute as many times as it happens for the duration.')
     );
 
+    //BLOCK
+    var blockTriggers = ['Block Break', 'Block Place'];
+    this.data.push(new MultiListValue('Material', 'material', getAnyMaterials, ['Any'])
+        .requireValue('trigger', blockTriggers)
+        .setTooltip('The type of block expected to be handled')
+    );
+
+    this.data.push(new IntValue('Data', 'data', -1)
+        .requireValue('trigger', blockTriggers)
+        .setTooltip('The expected data value of the block (-1 for any data value)')
+    );
+
+    //CLICK
+    var clickTriggers = ['Left Click', 'Right Click'];
+    this.data.push(new ListValue('Crouch', 'crouch', ['Crouch', 'Dont crouch', 'Both'], 'Crouch')
+        .requireValue('trigger', clickTriggers)
+        .setTooltip('If the player has to be crouching in order for this trigger to function')
+    );
+
     // CROUCH
     this.data.push(new ListValue('Type', 'type', ['Start Crouching', 'Stop Crouching', 'Both'], 'Start Crouching')
         .requireValue('trigger', ['Crouch'])
         .setTooltip('Whether or not you want to apply components when crouching or not crouching')
+    );
+
+    //DROP_ITEM
+    this.data.push(new ListValue('Drop multiple', 'drop multiple', ['True', 'False', 'Ignore'], 'Ignore')
+        .requireValue('trigger', ['Drop Item'])
+        .setTooltip('Wheter the player has to drop multiple items or a single item')
     );
 
     // ENVIRONMENT_DAMAGE
@@ -2993,6 +3031,11 @@ function MechanicTrigger() {
         .requireValue('trigger', ['Environment Damage'])
         .setTooltip('The source of damage to apply for')
     );
+
+    //ITEM_SWAP
+    this.data.push(new ListValue('Cancel swap', 'cancel', ['True', 'False'], 'True')
+        .requireValue('trigger', ['Item Swap'])
+        .setTooltip('True cancels the item swap. False allows the item swap'));
 
     // LAND
     this.data.push(new DoubleValue('Min Distance', 'min-distance', 0)
