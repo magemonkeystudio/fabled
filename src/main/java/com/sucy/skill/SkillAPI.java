@@ -32,7 +32,6 @@ import com.sucy.skill.api.player.PlayerAccounts;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkill;
-import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.data.PlayerStats;
 import com.sucy.skill.data.Settings;
 import com.sucy.skill.data.io.ConfigIO;
@@ -78,7 +77,7 @@ import java.util.List;
 public class SkillAPI extends JavaPlugin {
     private static SkillAPI singleton;
 
-    private final HashMap<String, Skill>          skills  = new HashMap<>();
+    private final HashMap<String, com.sucy.skill.api.skills.Skill>          skills  = new HashMap<>();
     private final HashMap<String, RPGClass>       classes = new HashMap<>();
     private final HashMap<String, PlayerAccounts> players = new HashMap<>();
     private final ArrayList<String>               groups  = new ArrayList<>();
@@ -164,7 +163,7 @@ public class SkillAPI extends JavaPlugin {
      * @param name name of the skill
      * @return skill with the name or null if not found
      */
-    public static Skill getSkill(String name) {
+    public static com.sucy.skill.api.skills.Skill getSkill(String name) {
         if (name == null) {
             return null;
         }
@@ -177,7 +176,7 @@ public class SkillAPI extends JavaPlugin {
      *
      * @return the map of registered skills
      */
-    public static HashMap<String, Skill> getSkills() {
+    public static HashMap<String, com.sucy.skill.api.skills.Skill> getSkills() {
         return inst().skills;
     }
 
@@ -207,7 +206,7 @@ public class SkillAPI extends JavaPlugin {
      * @param skill the skill to check
      * @return true if registered, false otherwise
      */
-    public static boolean isSkillRegistered(Skill skill) {
+    public static boolean isSkillRegistered(com.sucy.skill.api.skills.Skill skill) {
         return isSkillRegistered(skill.getName());
     }
 
@@ -741,7 +740,7 @@ public class SkillAPI extends JavaPlugin {
      *
      * @param skill skill to register
      */
-    public void addSkill(Skill skill) {
+    public void addSkill(com.sucy.skill.api.skills.Skill skill) {
         skill = registrationManager.validate(skill);
         if (skill != null) {
             skills.put(skill.getName().toLowerCase(), skill);
@@ -755,8 +754,8 @@ public class SkillAPI extends JavaPlugin {
      *
      * @param skills skills to register
      */
-    public void addSkills(Skill... skills) {
-        for (Skill skill : skills) {
+    public void addSkills(com.sucy.skill.api.skills.Skill... skills) {
+        for (com.sucy.skill.api.skills.Skill skill : skills) {
             addSkill(skill);
         }
     }
