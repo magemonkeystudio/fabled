@@ -1390,6 +1390,7 @@ public class PlayerData {
 
             Bukkit.getPluginManager().callEvent(new PlayerClassChangeEvent(current, previous, current.getData()));
             resetAttribs();
+            if (skillPoints < 0) skillPoints = rpgClass.getGroupSettings().getStartingPoints();
             current.setPoints(skillPoints);
             updateScoreboard();
             return true;
@@ -1721,8 +1722,8 @@ public class PlayerData {
      */
     public void removeStatModifier(UUID uuid, boolean update) {
         for (Entry<String, List<PlayerStatModifier>> entry : this.statModifiers.entrySet()) {
-            List<PlayerStatModifier> modifiers = entry.getValue();
-            Iterator<PlayerStatModifier>  i         = modifiers.iterator();
+            List<PlayerStatModifier>     modifiers = entry.getValue();
+            Iterator<PlayerStatModifier> i         = modifiers.iterator();
 
             while (i.hasNext()) {
                 PlayerStatModifier modifier = i.next();
@@ -1744,8 +1745,8 @@ public class PlayerData {
      */
     public void clearStatModifier() {
         for (Entry<String, List<PlayerStatModifier>> entry : this.statModifiers.entrySet()) {
-            List<PlayerStatModifier> modifiers = entry.getValue();
-            Iterator<PlayerStatModifier>  i         = modifiers.iterator();
+            List<PlayerStatModifier>     modifiers = entry.getValue();
+            Iterator<PlayerStatModifier> i         = modifiers.iterator();
 
             while (i.hasNext()) {
                 PlayerStatModifier modifier = i.next();
@@ -1768,8 +1769,8 @@ public class PlayerData {
      */
     public void removeAttributeModifier(UUID uuid, boolean update) {
         for (Entry<String, List<PlayerAttributeModifier>> entry : this.attributesModifiers.entrySet()) {
-            List<PlayerAttributeModifier> modifiers = entry.getValue();
-            Iterator<PlayerAttributeModifier>  i         = modifiers.iterator();
+            List<PlayerAttributeModifier>     modifiers = entry.getValue();
+            Iterator<PlayerAttributeModifier> i         = modifiers.iterator();
 
             while (i.hasNext()) {
                 PlayerAttributeModifier modifier = i.next();
@@ -1797,8 +1798,8 @@ public class PlayerData {
      */
     public void clearAttributeModifiers() {
         for (Entry<String, List<PlayerAttributeModifier>> entry : this.attributesModifiers.entrySet()) {
-            List<PlayerAttributeModifier> modifiers = entry.getValue();
-            Iterator<PlayerAttributeModifier>  i         = modifiers.iterator();
+            List<PlayerAttributeModifier>     modifiers = entry.getValue();
+            Iterator<PlayerAttributeModifier> i         = modifiers.iterator();
 
             while (i.hasNext()) {
                 PlayerAttributeModifier modifier = i.next();
