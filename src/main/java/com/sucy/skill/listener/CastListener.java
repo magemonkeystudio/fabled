@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.listener.CastListener
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -47,12 +47,10 @@ import org.bukkit.inventory.PlayerInventory;
 /**
  * Listener for the main casting system
  */
-public class CastListener extends SkillAPIListener
-{
+public class CastListener extends SkillAPIListener {
     private static int slot = SkillAPI.getSettings().getCastSlot();
 
-    private static void cleanup(Player player)
-    {
+    private static void cleanup(Player player) {
         if (SkillAPI.getSettings().isWorldEnabled(player.getWorld()))
             forceCleanup(player);
     }
@@ -63,8 +61,7 @@ public class CastListener extends SkillAPIListener
     }
 
     @Override
-    public void init()
-    {
+    public void init() {
         MainListener.registerJoin(this::init);
         MainListener.registerClear(this::handleClear);
         for (Player player : Bukkit.getOnlinePlayers())
@@ -75,8 +72,7 @@ public class CastListener extends SkillAPIListener
      * Cleans up
      */
     @Override
-    public void cleanup()
-    {
+    public void cleanup() {
         if (slot == -1)
             return;
 
@@ -94,16 +90,14 @@ public class CastListener extends SkillAPIListener
     }
 
     @EventHandler
-    public void onClassChange(PlayerClassChangeEvent event)
-    {
+    public void onClassChange(PlayerClassChangeEvent event) {
         event.getPlayerData().getCastBars().reset();
     }
 
     @EventHandler
-    public void onWorldChange(PlayerChangedWorldEvent event)
-    {
+    public void onWorldChange(PlayerChangedWorldEvent event) {
         boolean from = SkillAPI.getSettings().isWorldEnabled(event.getFrom());
-        boolean to = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
+        boolean to   = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
         if (from && !to)
             forceCleanup(event.getPlayer());
         else
@@ -113,17 +107,16 @@ public class CastListener extends SkillAPIListener
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
         if (SkillAPI.getSettings().isWorldEnabled(event.getEntity().getWorld())) {
+            if (slot == -1) return;
             event.getDrops().remove(event.getEntity().getInventory().getItem(slot));
         }
     }
 
-    private void init(Player player)
-    {
-        if (SkillAPI.getSettings().isWorldEnabled(player.getWorld()))
-        {
-            PlayerInventory inv = player.getInventory();
-            int slot = SkillAPI.getSettings().getCastSlot();
-            ItemStack item = inv.getItem(slot);
+    private void init(Player player) {
+        if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
+            PlayerInventory inv  = player.getInventory();
+            int             slot = SkillAPI.getSettings().getCastSlot();
+            ItemStack       item = inv.getItem(slot);
             inv.setItem(slot, SkillAPI.getSettings().getCastItem());
             if (item != null && item.getType() != Material.AIR)
                 inv.addItem(item);
@@ -132,20 +125,17 @@ public class CastListener extends SkillAPIListener
     }
 
     @EventHandler
-    public void onQuit(PlayerQuitEvent event)
-    {
+    public void onQuit(PlayerQuitEvent event) {
         cleanup(event.getPlayer());
     }
 
     @EventHandler
-    public void onOpen(InventoryOpenEvent event)
-    {
+    public void onOpen(InventoryOpenEvent event) {
         SkillAPI.getPlayerData((Player) event.getPlayer()).getCastBars().handleOpen((Player) event.getPlayer());
     }
 
     @EventHandler
-    public void onClose(InventoryCloseEvent event)
-    {
+    public void onClose(InventoryCloseEvent event) {
         SkillAPI.getPlayerData((Player) event.getPlayer()).getCastBars().restore((Player) event.getPlayer());
         init((Player) event.getPlayer());
     }
@@ -156,15 +146,13 @@ public class CastListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler
-    public void onUnlock(PlayerSkillUnlockEvent event)
-    {
+    public void onUnlock(PlayerSkillUnlockEvent event) {
         if (event.getUnlockedSkill().getData().canCast() && event.getPlayerData().getPlayer() != null)
             event.getPlayerData().getCastBars().unlock(event.getUnlockedSkill());
     }
 
     @EventHandler
-    public void onClick(InventoryClickEvent event)
-    {
+    public void onClick(InventoryClickEvent event) {
         if (SkillAPI.getSettings().isWorldEnabled(event.getWhoClicked().getWorld())) {
             if (event.getSlot() == slot && event.getSlotType() == InventoryType.SlotType.QUICKBAR)
                 event.setCancelled(true);
@@ -175,26 +163,20 @@ public class CastListener extends SkillAPIListener
     }
 
     @EventHandler
-    public void onDrop(PlayerDropItemEvent event)
-    {
+    public void onDrop(PlayerDropItemEvent event) {
         if (!SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld()))
             return;
 
-        if (SkillAPI.getPlayerData(event.getPlayer()).getCastBars().handleInteract(event.getPlayer()))
-        {
+        if (SkillAPI.getPlayerData(event.getPlayer()).getCastBars().handleInteract(event.getPlayer())) {
             event.getItemDrop().remove();
-        }
-
-        else if (event.getPlayer().getInventory().getHeldItemSlot() == slot)
-        {
+        } else if (event.getPlayer().getInventory().getHeldItemSlot() == slot) {
             event.getItemDrop().remove();
             MainThread.register(new OrganizerTask(event.getPlayer()));
         }
     }
 
     @EventHandler
-    public void onInteract(PlayerInteractEvent event)
-    {
+    public void onInteract(PlayerInteractEvent event) {
         if (!SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld()))
             return;
 
@@ -205,8 +187,7 @@ public class CastListener extends SkillAPIListener
             event.setCancelled(true);
 
             // Entering a view
-        else if (event.getPlayer().getInventory().getHeldItemSlot() == slot)
-        {
+        else if (event.getPlayer().getInventory().getHeldItemSlot() == slot) {
             event.setCancelled(true);
             if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK)
                 bars.showHoverBar(event.getPlayer());
@@ -216,8 +197,7 @@ public class CastListener extends SkillAPIListener
     }
 
     @EventHandler
-    public void onHeld(PlayerItemHeldEvent event)
-    {
+    public void onHeld(PlayerItemHeldEvent event) {
         SkillAPI.getPlayerData(event.getPlayer()).getCastBars().handle(event);
     }
 
@@ -225,18 +205,15 @@ public class CastListener extends SkillAPIListener
         player.getInventory().setItem(slot, SkillAPI.getSettings().getCastItem());
     }
 
-    private class OrganizerTask extends ThreadTask
-    {
+    private class OrganizerTask extends ThreadTask {
         private final Player player;
 
-        public OrganizerTask(Player player)
-        {
+        public OrganizerTask(Player player) {
             this.player = player;
         }
 
         @Override
-        public void run()
-        {
+        public void run() {
             SkillAPI.getPlayerData(player).getCastBars().showOrganizer(player);
         }
     }

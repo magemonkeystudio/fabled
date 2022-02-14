@@ -50,17 +50,18 @@ import java.util.List;
 public class ItemProjectileMechanic extends MechanicComponent implements ProjectileCallback {
     private static final Vector UP = new Vector(0, 1, 0);
 
+    private static final String ALLY    = "group";
     private static final String SPEED   = "velocity";
-    private static final String ANGLE   = "angle";
+    private static final String LIFESPAN = "lifespan";
+    private static final String SPREAD  = "spread";
     private static final String AMOUNT  = "amount";
-    private static final String LEVEL   = "skill_level";
+    private static final String ANGLE   = "angle";
     private static final String HEIGHT  = "height";
     private static final String RADIUS  = "rain-radius";
-    private static final String SPREAD  = "spread";
-    private static final String ALLY    = "group";
-    private static final String RIGHT   = "right";
-    private static final String UPWARD  = "upward";
+    private static final String LEVEL   = "skill_level";
     private static final String FORWARD = "forward";
+    private static final String UPWARD  = "upward";
+    private static final String RIGHT   = "right";
 
     private static final String USE_EFFECT = "use-effect";
     private static final String EFFECT_KEY = "effect-key";
@@ -138,6 +139,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
         int     amount = (int) parseValues(caster, AMOUNT, level, 1.0);
         String  spread = settings.getString(SPREAD, "cone").toLowerCase();
         boolean ally   = settings.getString(ALLY, "enemy").equalsIgnoreCase("ally");
+        int lifespan = (int) (parseValues(caster, LIFESPAN, level, 9999)*20);
 
         // Fire from each target
         for (LivingEntity target : targets) {
@@ -148,7 +150,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
             if (spread.equals("rain")) {
                 double radius = parseValues(caster, RADIUS, level, 2.0);
                 double height = parseValues(caster, HEIGHT, level, 8.0);
-                list = ItemProjectile.rain(caster, loc, item, radius, height, speed, amount, this);
+                list = ItemProjectile.rain(caster, loc, item, radius, height, speed, amount, this, lifespan);
             } else {
                 Vector dir = target.getLocation().getDirection();
 
@@ -173,7 +175,8 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
                         item,
                         angle,
                         amount,
-                        this
+                        this,
+                        lifespan
                 );
             }
 

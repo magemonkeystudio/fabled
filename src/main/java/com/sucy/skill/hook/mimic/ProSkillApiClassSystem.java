@@ -13,8 +13,6 @@ import java.util.stream.Collectors;
 
 public class ProSkillApiClassSystem extends BukkitClassSystem {
 
-    private static final String ID = "proskillapi";
-
     public ProSkillApiClassSystem(@NotNull Player player) {
         super(player);
     }
@@ -37,18 +35,5 @@ public class ProSkillApiClassSystem extends BukkitClassSystem {
 
     private PlayerData getPlayerData() {
         return SkillAPI.getPlayerData(getPlayer());
-    }
-
-    public static class Provider extends BukkitClassSystem.Provider {
-
-        public Provider() {
-            super(ID);
-        }
-
-        @NotNull
-        @Override
-        public BukkitClassSystem getSystem(@NotNull Player player) {
-            return new ProSkillApiClassSystem(player);
-        }
     }
 }

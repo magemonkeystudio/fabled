@@ -27,9 +27,7 @@
 package com.sucy.skill.api.projectile;
 
 import com.sucy.skill.SkillAPI;
-import com.sucy.skill.api.event.ItemProjectileHitEvent;
-import com.sucy.skill.api.event.ItemProjectileLandEvent;
-import com.sucy.skill.api.event.ItemProjectileLaunchEvent;
+import com.sucy.skill.api.event.*;
 import com.sucy.skill.api.util.DamageLoreRemover;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -53,6 +51,7 @@ public class ItemProjectile extends CustomProjectile
     private static       int    NEXT = 0;
 
     private final Item item;
+    private int life;
 
     /**
      * <p>Constructs a new item projectile.</p>
@@ -62,7 +61,7 @@ public class ItemProjectile extends CustomProjectile
      * @param item    the item to represent the projectile
      * @param vel     the velocity of the projectile
      */
-    public ItemProjectile(LivingEntity thrower, Location loc, ItemStack item, Vector vel)
+    public ItemProjectile(LivingEntity thrower, Location loc, ItemStack item, Vector vel, int lifespan)
     {
         super(thrower);
 
@@ -73,7 +72,8 @@ public class ItemProjectile extends CustomProjectile
 
         this.item = thrower.getWorld().dropItem(loc.add(0, 1, 0), item);
         this.item.setVelocity(vel);
-        this.item.setPickupDelay(999999);
+        this.item.setPickupDelay(Integer.MAX_VALUE);
+        this.life = lifespan;
         SkillAPI.setMeta(this.item, ITEM_PROJECTILE, this);
 
         Bukkit.getPluginManager().callEvent(new ItemProjectileLaunchEvent(this));
@@ -157,6 +157,12 @@ public class ItemProjectile extends CustomProjectile
     {
         if (isTraveling())
             checkCollision(false);
+
+        life--;
+        if (life <= 0) {
+            cancel();
+            Bukkit.getPluginManager().callEvent(new ItemProjectileExpireEvent(this));
+        }
     }
 
     /**
@@ -182,7 +188,7 @@ public class ItemProjectile extends CustomProjectile
      *
      * @return list of fired projectiles
      */
-    public static ArrayList<ItemProjectile> spread(LivingEntity shooter, Vector center, Location loc, ItemStack item, double angle, int amount, ProjectileCallback callback)
+    public static ArrayList<ItemProjectile> spread(LivingEntity shooter, Vector center, Location loc, ItemStack item, double angle, int amount, ProjectileCallback callback, int lifespan)
     {
         double speed = center.length();
         center.normalize();
@@ -191,7 +197,7 @@ public class ItemProjectile extends CustomProjectile
         for (Vector dir : dirs)
         {
             Vector vel = dir.multiply(speed);
-            ItemProjectile p = new ItemProjectile(shooter, loc.clone(), item, vel);
+            ItemProjectile p = new ItemProjectile(shooter, loc.clone(), item, vel, lifespan);
             p.setCallback(callback);
             list.add(p);
         }
@@ -212,7 +218,7 @@ public class ItemProjectile extends CustomProjectile
      *
      * @return list of fired projectiles
      */
-    public static ArrayList<ItemProjectile> rain(LivingEntity shooter, Location center, ItemStack item, double radius, double height, double speed, int amount, ProjectileCallback callback)
+    public static ArrayList<ItemProjectile> rain(LivingEntity shooter, Location center, ItemStack item, double radius, double height, double speed, int amount, ProjectileCallback callback, int lifespan)
     {
         Vector vel = new Vector(0, speed, 0);
         if (vel.getY() == 0)
@@ -224,7 +230,7 @@ public class ItemProjectile extends CustomProjectile
         for (Location l : locs)
         {
             l.setDirection(vel);
-            ItemProjectile p = new ItemProjectile(shooter, l, item, vel);
+            ItemProjectile p = new ItemProjectile(shooter, l, item, vel, lifespan);
             p.setCallback(callback);
             list.add(p);
         }

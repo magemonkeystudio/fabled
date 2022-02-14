@@ -50,17 +50,18 @@ import java.util.List;
 public class ParticleProjectileMechanic extends MechanicComponent implements ProjectileCallback {
     private static final Vector UP = new Vector(0, 1, 0);
 
-    private static final String POSITION = "position";
-    private static final String ANGLE    = "angle";
-    private static final String AMOUNT   = "amount";
+    private static final String GROUP = "group";
+    private static final String VELOCITY = "velocity";
+    private static final String LIFESPAN = "lifespan";
+    private static final String SPREAD  = "spread";
+    private static final String AMOUNT  = "amount";
+    private static final String ANGLE   = "angle";
+    private static final String HEIGHT  = "height";
+    private static final String RADIUS  = "rain-radius";
     private static final String LEVEL    = "skill_level";
-    private static final String HEIGHT   = "height";
-    private static final String RADIUS   = "rain-radius";
-    private static final String SPREAD   = "spread";
-    private static final String ALLY     = "group";
-    private static final String RIGHT    = "right";
-    private static final String UPWARD   = "upward";
     private static final String FORWARD  = "forward";
+    private static final String UPWARD   = "upward";
+    private static final String RIGHT    = "right";
 
     private static final String USE_EFFECT = "use-effect";
     private static final String EFFECT_KEY = "effect-key";
@@ -78,7 +79,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
         targets.forEach(target -> {
             // Get common values
             int    amount = (int) parseValues(caster, AMOUNT, level, 1.0);
-            double speed  = parseValues(caster, "velocity", level, 1);
+            double speed  = parseValues(caster, VELOCITY, level, 1);
             String spread = settings.getString(SPREAD, "cone").toLowerCase();
 
             // Apply the spread type
@@ -133,8 +134,9 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
         // Get common values
         int     amount = (int) parseValues(caster, AMOUNT, level, 1.0);
         String  spread = settings.getString(SPREAD, "cone").toLowerCase();
-        boolean ally   = settings.getString(ALLY, "enemy").equalsIgnoreCase("ally");
+        boolean ally   = settings.getString(GROUP, "enemy").equalsIgnoreCase("ally");
         settings.set("level", level);
+        int life = (int) (parseValues(caster, LIFESPAN, level, settings.getDouble(LIFESPAN, 2)) * 20);
 
         final Settings copy = new Settings(settings);
         copy.set(ParticleProjectile.SPEED, parseValues(caster, ParticleProjectile.SPEED, level, 1), 0);
@@ -150,7 +152,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
             if (spread.equals("rain")) {
                 double radius = parseValues(caster, RADIUS, level, 2.0);
                 double height = parseValues(caster, HEIGHT, level, 8.0);
-                list = ParticleProjectile.rain(caster, level, loc, copy, radius, height, amount, this);
+                list = ParticleProjectile.rain(caster, level, loc, copy, radius, height, amount, this, life);
             } else {
                 Vector dir = target.getLocation().getDirection();
 
@@ -175,7 +177,8 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                         copy,
                         angle,
                         amount,
-                        this
+                        this,
+                        life
                 );
             }
 
@@ -191,7 +194,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                     player.start(
                             new FollowTarget(p),
                             settings.getString(EFFECT_KEY, skill.getName()),
-                            9999,
+                            life,
                             level,
                             true);
                 }

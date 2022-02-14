@@ -719,6 +719,10 @@ public class TempEntity implements LivingEntity {
     public void setTicksLived(int i) {
     }
 
+    @NotNull
+    @Override
+    public SpawnCategory getSpawnCategory() { return SpawnCategory.MISC; }
+
     public void playEffect(EntityEffect entityEffect) {
     }
 
