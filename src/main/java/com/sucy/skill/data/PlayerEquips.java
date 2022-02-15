@@ -52,8 +52,8 @@ public class PlayerEquips {
     private final PlayerData playerData;
 
     private final EquipData                   emptyEquip   = new EquipData();
-    private       EquipData                   handHeldItem = new EquipData();
     private final HashMap<Integer, EquipData> equips       = new HashMap<Integer, EquipData>();
+    private       EquipData                   handHeldItem = new EquipData();
 
     /**
      * @param player player data reference
@@ -180,6 +180,12 @@ public class PlayerEquips {
             to.apply();
         }
 
+        // DEBUG
+        SkillAPI.inst().getLogger().info("Updated player equipment. Equipment is as follows:\nSlot\tItem");
+        this.equips.forEach((key, val) -> {
+            SkillAPI.inst().getLogger().info(key + "\t" + val.item.getType());
+        });
+
         return true;
     }
 
@@ -241,18 +247,15 @@ public class PlayerEquips {
      * Represents one available item's data
      */
     public class EquipData {
-        private HashMap<String, Integer> skillReq;
-        private HashMap<String, Integer> attrReq;
-        private HashMap<String, Integer> attribs;
-
-        private HashSet<String> classReq;
-        private HashSet<String> classExc;
-
-        private ItemStack item;
-        private int       levelReq;
-        private EquipType type;
-
-        private final ArrayList<UUID> attrModifierUUIDs = new ArrayList<UUID>();
+        private final ArrayList<UUID>          attrModifierUUIDs = new ArrayList<UUID>();
+        private       HashMap<String, Integer> skillReq;
+        private       HashMap<String, Integer> attrReq;
+        private       HashMap<String, Integer> attribs;
+        private       HashSet<String>          classReq;
+        private       HashSet<String>          classExc;
+        private       ItemStack                item;
+        private       int                      levelReq;
+        private       EquipType                type;
 
         /**
          * Sets up for an empty item slot
