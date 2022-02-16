@@ -119,7 +119,7 @@ public class PlayerEquips {
         if (item == null) {
             to = this.emptyEquip;
         } else {
-            to = new EquipData(item, EquipType.HandHeldItem);
+            to = new EquipData(item, EquipType.HAND_HELD_ITEM);
         }
 
         if (!to.hasMetConditions()) {
@@ -180,12 +180,6 @@ public class PlayerEquips {
             to.apply();
         }
 
-        // DEBUG
-        SkillAPI.inst().getLogger().info("Updated player equipment. Equipment is as follows:\nSlot\tItem");
-        this.equips.forEach((key, val) -> {
-            SkillAPI.inst().getLogger().info(key + "\t" + val.item.getType());
-        });
-
         return true;
     }
 
@@ -195,46 +189,43 @@ public class PlayerEquips {
 
     public enum EquipType {
 
-        Helmet,
-        Chestplate,
-        Leggings,
-        Boots,
-        HotBarItem,
-        HandHeldItem,
-        OffHandItem,
-        InventoryItem,
-        ExternalItem;
+        HELMET,
+        CHESTPLATE,
+        LEGGINGS,
+        BOOTS,
+        HOT_BAR_ITEM,
+        HAND_HELD_ITEM,
+        OFF_HAND_ITEM,
+        INVENTORY_ITEM,
+        EXTERNAL_ITEM;
 
         public static EquipType fromSlot(int slot) {
             switch (slot) {
                 case 0 - 8:
-                    return HotBarItem;
+                    return HOT_BAR_ITEM;
                 case 9 - 35:
-                    return InventoryItem;
+                    return INVENTORY_ITEM;
                 case 36:
-                    return Boots;
+                    return BOOTS;
                 case 37:
-                    return Leggings;
+                    return LEGGINGS;
                 case 38:
-                    return Chestplate;
+                    return CHESTPLATE;
                 case 39:
-                    return Helmet;
+                    return HELMET;
                 case 40:
-                    return OffHandItem;
+                    return OFF_HAND_ITEM;
                 default:
-                    return ExternalItem;
+                    return EXTERNAL_ITEM;
             }
         }
 
         public boolean isArmor() {
             switch (this) {
-                case Helmet:
-                    return true;
-                case Chestplate:
-                    return true;
-                case Leggings:
-                    return true;
-                case Boots:
+                case HELMET:
+                case CHESTPLATE:
+                case LEGGINGS:
+                case BOOTS:
                     return true;
                 default:
                     return false;

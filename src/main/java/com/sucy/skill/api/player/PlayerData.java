@@ -53,17 +53,22 @@ import com.sucy.skill.log.Logger;
 import com.sucy.skill.manager.AttributeManager;
 import com.sucy.skill.task.ScoreboardTask;
 import mc.promcteam.engine.NexEngine;
+import mc.promcteam.engine.api.meta.NBTAttribute;
 import mc.promcteam.engine.mccore.config.Filter;
 import mc.promcteam.engine.mccore.config.FilterType;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.util.VersionManager;
+import mc.promcteam.engine.utils.EntityUT;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Nullable;
@@ -80,10 +85,10 @@ import java.util.Map.Entry;
  * try to instantaite your own PlayerData object.
  */
 public class PlayerData {
+    public final  HashMap<String, Integer>                       attributes          = new HashMap<>();
     private final HashMap<String, PlayerClass>                   classes             = new HashMap<>();
     private final HashMap<String, PlayerSkill>                   skills              = new HashMap<>();
     private final HashMap<Material, PlayerSkill>                 binds               = new HashMap<>();
-    public final HashMap<String, Integer>                       attributes          = new HashMap<>();
     private final HashMap<String, List<PlayerAttributeModifier>> attributesModifiers = new HashMap<>();
     private final HashMap<String, List<PlayerStatModifier>>      statModifiers       = new HashMap<>();
 
@@ -94,6 +99,7 @@ public class PlayerData {
     private final PlayerCombos   combos;
     private final PlayerEquips   equips;
     private final List<UUID>     onCooldown = new ArrayList<>();
+    public        int            attribPoints;
     private       String         scheme;
     private       String         menuClass;
     private       double         mana;
@@ -104,7 +110,6 @@ public class PlayerData {
     private       double         hunger;
     private       boolean        init;
     private       boolean        passive;
-    public        int            attribPoints;
     private       long           skillTimer;
     private       BukkitTask     removeTimer;
 
@@ -1548,6 +1553,28 @@ public class PlayerData {
 
     }
 
+    private double getModifiedMaxHealth(Player player) {
+        final double baseMaxHealth = this.maxHealth;
+        double       modifiedMax   = this.maxHealth;
+        // Actually apply other modifiers (Like from RPGItems
+        for (ItemStack equipment : EntityUT.getEquipment(player)) {
+            if (equipment == null || equipment.getType().isAir() || equipment.getItemMeta() == null) continue;
+
+            ItemMeta meta = equipment.getItemMeta();
+            for (AttributeModifier modifier : meta.getAttributeModifiers(NBTAttribute.MAX_HEALTH.getAttribute())) {
+                switch (modifier.getOperation()) {
+                    case MULTIPLY_SCALAR_1:
+                        modifiedMax += baseMaxHealth * modifier.getAmount();
+                        break;
+                    default:
+                        modifiedMax += modifier.getAmount();
+                }
+            }
+        }
+
+        return modifiedMax;
+    }
+
     /**
      * Updates health of a player based on their current attributes and apply
      *
@@ -1560,16 +1587,15 @@ public class PlayerData {
             this.health = this.maxHealth;
         }
 
+        double modifiedMax = getModifiedMaxHealth(player);
+
         if (SkillAPI.getSettings().isModifyHealth()) {
-            player.setMaxHealth(this.maxHealth);
-        }
-
-
-        if (VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
-            final AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-            attribute.setBaseValue(this.maxHealth);
-        } else {
-            player.setMaxHealth(this.maxHealth);
+            if (VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
+                final AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+                attribute.setBaseValue(this.maxHealth);
+            } else {
+                player.setMaxHealth(this.maxHealth);
+            }
         }
 
         // Health scaling is available starting with 1.6.2
@@ -1580,10 +1606,9 @@ public class PlayerData {
             player.setHealthScaled(false);
         }
 
-        if (player.getHealth() > this.maxHealth) {
+        if (player.getHealth() > modifiedMax) {
             player.setHealth(this.maxHealth);
         }
-
     }
 
     private void updateMCAttribute(Player player, Attribute attribute, String attribKey, double min, double max) {
