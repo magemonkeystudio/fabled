@@ -1561,6 +1561,9 @@ public class PlayerData {
             if (equipment == null || equipment.getType().isAir() || equipment.getItemMeta() == null) continue;
 
             ItemMeta meta = equipment.getItemMeta();
+            if (!meta.hasAttributeModifiers() || meta.getAttributeModifiers(NBTAttribute.MAX_HEALTH.getAttribute()) == null)
+                continue;
+
             for (AttributeModifier modifier : meta.getAttributeModifiers(NBTAttribute.MAX_HEALTH.getAttribute())) {
                 switch (modifier.getOperation()) {
                     case MULTIPLY_SCALAR_1:
