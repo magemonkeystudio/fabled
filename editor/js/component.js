@@ -2418,17 +2418,11 @@ function MechanicItemProjectile() {
 
     this.description = 'Launches a projectile using an item as its visual that applies child components upon landing. The target passed on will be the collided target or the location where it landed if it missed.';
     
-	this.data.push(new SectionMarker('Item Options'));
-    this.data.push(new ListValue('Item', 'item', getMaterials, 'Jack O Lantern')
-        .setTooltip('The item type to use as a projectile')
+    this.data.push(new ListValue("Group", "group", ["Ally", "Enemy"], "Enemy")
+        .setTooltip('The alignment of targets to hit')
     );
-    this.data.push(new IntValue('Durability', 'durability', 0).requireValue('item', getDamageableMaterials())
-        .setTooltip('The durability to reduce from the item')
-    );
-    this.data.push(new IntValue('CustomModelData', 'item-data', 0)
-        .setTooltip('The CustomModelData of the item')
-    );
-	
+
+	addItemOptions(this);
     addProjectileOptions(this);
     addEffectOptions(this, true);
 }
@@ -2681,6 +2675,9 @@ function MechanicParticleProjectile() {
     this.data.push(new ListValue('Pierce', 'pierce', ['True', 'False'], 'False')
         .setTooltip('Whether or not this projectile should pierce through initial targets and continue hitting those behind them')
     );
+    this.data.push(new ListValue("Group", "group", ["Ally", "Enemy"], "Enemy")
+        .setTooltip('The alignment of targets to hit')
+    );
 	
     addProjectileOptions(this);
 
@@ -2688,9 +2685,6 @@ function MechanicParticleProjectile() {
 
     this.data.push(new DoubleValue('Frequency', 'frequency', 0.05)
         .setTooltip('How often to play a particle effect where the projectile is. It is recommended not to change this value unless there are too many particles playing')
-    );
-    this.data.push(new DoubleValue('Lifespan', 'lifespan', 3)
-        .setTooltip('How long in seconds before the projectile will expire in case it doesn\'t hit anything')
     );
 
     addEffectOptions(this, true);
@@ -2781,7 +2775,7 @@ function MechanicProjectile() {
         .setTooltip('Whether or not to make the launched projectiles on fire.')
     );
     this.data.push(new ListValue('Cost', 'cost', ['None', 'All', 'One'], 'None')
-        .setTooltip('The cost of the skill of the fired item. All will cost the same number of items as the skill fired.')
+        .setTooltip('The item cost of the skill. "One" will only charge the player 1 item of it\'s type, whereas "All" will charge 1 for each fired projectile.')
     );
 
     addProjectileOptions(this);
@@ -3535,8 +3529,11 @@ function addProjectileOptions(component) {
     component.data.push(new SectionMarker('Projectile Options'));
 
     // General data
-    component.data.push(new ListValue("Group", "group", ["Ally", "Enemy"], "Enemy")
-        .setTooltip('The alignment of targets to hit')
+    component.data.push(new AttributeValue('Velocity', 'velocity', 3, 0)
+        .setTooltip('How fast the projectile is launched. A negative value fires it in the opposite direction.')
+    );
+    component.data.push(new AttributeValue('Lifespan', 'lifespan', 5, 0)
+        .setTooltip('How long in secods before the projectile will expire in case it doesn\'t hit anything.')
     );
     component.data.push(new ListValue('Spread', 'spread', ['Cone', 'Horizontal Cone', 'Rain'], 'Cone')
         .setTooltip('The orientation for firing projectiles. Cone will fire arrows in a cone centered on your reticle. Horizontal cone does the same as cone, just locked to the XZ axis (parallel to the ground). Rain drops the projectiles from above the target. For firing one arrow straight, use "Cone"')
@@ -3544,18 +3541,11 @@ function addProjectileOptions(component) {
     component.data.push(new AttributeValue('Amount', 'amount', 1, 0)
         .setTooltip('The number of projectiles to fire')
     );
-    component.data.push(new AttributeValue('Velocity', 'velocity', 3, 0)
-        .setTooltip('How fast the projectile is launched. A negative value fires it in the opposite direction.')
-    );
 
     // Cone values
     component.data.push(new AttributeValue('Angle', 'angle', 30, 0)
         .requireValue('spread', ['Cone', 'Horizontal Cone'])
         .setTooltip('The angle in degrees of the cone arc to spread projectiles over. If you are only firing one projectile, this does not matter.')
-    );
-    component.data.push(new DoubleValue('Position', 'position', 0, 0)
-        .requireValue('spread', ['Cone', 'Horizontal Cone'])
-        .setTooltip('The height from the ground to start the projectile')
     );
 
     // Rain values
