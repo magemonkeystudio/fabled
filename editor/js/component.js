@@ -3578,7 +3578,7 @@ function addProjectileOptions(component) {
  */
 function addParticleOptions(component) {
     component.data.push(new SectionMarker('Particle Options'));
-    component.data.push(new ListValue('Particle', 'particle', getParticles, 'Barrier')
+    component.data.push(new ListValue('Particle', 'particle', getParticles, 'Villager happy')
         .setTooltip('The type of particle to display. Particle effects that show the DX, DY, and DZ options are not compatible with Cauldron')
     );
 
@@ -3597,10 +3597,10 @@ function addParticleOptions(component) {
         .setTooltip('The CustomModelData of the item used to make the particles')
     );
 
-    component.data.push(new ListValue('Arrangement', 'arrangement', ['Circle', 'Hemisphere', 'Sphere'], 'Circle')
+    component.data.push(new ListValue('Arrangement', 'arrangement', ['Circle', 'Hemisphere', 'Sphere'], 'Sphere')
         .setTooltip('The arrangement to use for the particles. Circle is a 2D circle, Hemisphere is half a 3D sphere, and Sphere is a 3D sphere')
     );
-    component.data.push(new AttributeValue('Radius', 'radius', 4, 0)
+    component.data.push(new AttributeValue('Radius', 'radius', 1, 0)
         .setTooltip('The radius of the arrangement in blocks')
     );
     component.data.push(new AttributeValue('Amount', 'particles', 20, 0)
@@ -3678,7 +3678,7 @@ function addEffectOptions(component, optional) {
         .setTooltip('How far away the effect can be seen from.')
     ));
 
-    component.data.push(opt(new ListValue('Particle', '-particle-type', getParticles, 'Barrier')
+    component.data.push(opt(new ListValue('Particle', '-particle-type', getParticles, 'Villager happy')
         .setTooltip('The type of particle to use.')
     ));
     component.data.push(opt(new ListValue('Material', '-particle-material', getMaterials, 'Dirt')
