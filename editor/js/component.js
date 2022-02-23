@@ -207,7 +207,7 @@ var saveIndex;
  *
  * @param {string}    name      - name of the component
  * @param {string}    type      - type of the component
- * @param {boolean}   container - whether or not the component can contain others
+ * @param {boolean}   container - whether the component can contain others
  * @param {Component} [parent]  - parent of the component if any
  *
  * @constructor
@@ -222,14 +222,14 @@ function Component(name, type, container, parent) {
     this.data       = [new StringValue('Icon Key', 'icon-key', '').setTooltip('The key used by the component in the Icon Lore. If this is set to "example" and has a value name of "value", it can be referenced using the string "{attr:example.value}".')];
     if (this.type == Type.MECHANIC) {
         this.data.push(new ListValue('Counts as Cast', 'counts', ['True', 'False'], 'True')
-            .setTooltip('Whether or not this mechanic running treats the skill as "casted" and will consume mana and start the cooldown. Set to false if it is a mechanic appled when the skill fails such as cleanup or an error message.')
+            .setTooltip('Whether this mechanic running treats the skill as "casted" and will consume mana and start the cooldown. Set to false if it is a mechanic appled when the skill fails such as cleanup or an error message.')
         );
     } else if (this.type == Type.TRIGGER && name != 'Cast' && name != 'Initialize' && name != 'Cleanup') {
         this.data.push(new ListValue('Mana', 'mana', ['True', 'False'], 'False')
-            .setTooltip('Whether or not this trigger requires the mana cost to activate')
+            .setTooltip('Whether this trigger requires the mana cost to activate')
         );
         this.data.push(new ListValue('Cooldown', 'cooldown', ['True', 'False'], 'False')
-            .setTooltip('Whether or not this trigger requires to be off cooldown to activate')
+            .setTooltip('Whether this trigger requires to be off cooldown to activate')
         );
     }
 
@@ -637,7 +637,7 @@ function TriggerCrouch() {
     this.description = 'Applies skill effects when a player starts or stops crouching using the shift key.';
 
     this.data.push(new ListValue('Type', 'type', ['Start Crouching', 'Stop Crouching', 'Both'], 'Start Crouching')
-        .setTooltip('Whether or not you want to apply components when crouching or not crouching')
+        .setTooltip('Whether you want to apply components when crouching or not crouching')
     );
 }
 
@@ -657,7 +657,7 @@ function TriggerDropItem() {
     this.description = 'Applies skill effects upon dropping an item';
 
     this.data.push(new ListValue('Drop multiple', 'drop multiple', ['True', 'False', 'Ignore'], 'Ignore')
-        .setTooltip('Wheter the player has to drop multiple items or a single item')
+        .setTooltip('Whether the player has to drop multiple items or a single item')
     );
 }
 
@@ -908,7 +908,7 @@ function TargetArea() {
     );
 	addTargetOptions(this);
     this.data.push(new ListValue("Random", "random", ['True', 'False'], 'False')
-        .setTooltip('Whether or not to randomize the targets selected')
+        .setTooltip('Whether to randomize the targets selected')
     );
 }
 
@@ -1037,7 +1037,7 @@ function TargetSingle() {
         .setTooltip('The alignment of targets to get')
     );
     this.data.push(new ListValue("Through Wall", "wall", ['True', 'False'], 'False')
-        .setTooltip('Whether or not to allow targets to be on the other side of a wall')
+        .setTooltip('Whether to allow targets to be on the other side of a wall')
     );
 }
 
@@ -1100,7 +1100,7 @@ function ConditionBiome() {
     this.description = 'Applies child components when in a specified biome.';
 
     this.data.push(new ListValue('Type', 'type', ['In Biome', 'Not In Biome'], 'In Biome')
-        .setTooltip('Whether or not the target should be in the biome. If checking for in the biome, they must be in any one of the checked biomes. If checking for the opposite, they must not be in any of the checked biomes.')
+        .setTooltip('Whether the target should be in the biome. If checking for in the biome, they must be in any one of the checked biomes. If checking for the opposite, they must not be in any of the checked biomes.')
     );
     this.data.push(new MultiListValue('Biome', 'biome', getBiomes, ['Forest'])
         .setTooltip('The biomes to check for. The expectation would be any of the selected biomes need to match')
@@ -1118,7 +1118,7 @@ function ConditionBlock() {
                                                       'Not On Block',
                                                       'In Block',
                                                       'Not In Block'], 'On Block')
-        .setTooltip('Specifies which block to check and whether or not it should match the selected mateiral. "On Block" is directly below the player while "In Block" is the block a player\'s feet are in.')
+        .setTooltip('Specifies which block to check and whether it should match the selected mateiral. "On Block" is directly below the player while "In Block" is the block a player\'s feet are in.')
     );
     this.data.push(new ListValue('Material', 'material', getMaterials, 'Dirt')
         .setTooltip('The type of the block to require the targets to stand on')
@@ -1176,7 +1176,7 @@ function ConditionClass() {
         .setTooltip('The class the player should be')
     );
     this.data.push(new ListValue('Exact', 'exact', ['True', 'False'], 'False')
-        .setTooltip('Whether or not the player must be exactly the given class. If false, they can be a later profession of the class.')
+        .setTooltip('Whether the player must be exactly the given class. If false, they can be a later profession of the class.')
     );
 }
 
@@ -1203,7 +1203,7 @@ function ConditionCombat() {
     this.description = 'Applies child components to targets that are in/out of combat, depending on the settings.';
 
     this.data.push(new ListValue('In Combat', 'combat', ['True', 'False'], 'True')
-        .setTooltip('Whether or not the target should be in or out of combat')
+        .setTooltip('Whether the target should be in or out of combat')
     );
     this.data.push(new DoubleValue('Seconds', 'seconds', 10)
         .setTooltip('The time in seconds since the last combat activity before something is considered not in combat')
@@ -1218,7 +1218,7 @@ function ConditionCrouch() {
     this.description = 'Applies child components if the target player(s) are crouching';
 
     this.data.push(new ListValue('Crouching', 'crouch', ['True', 'False'], 'True')
-        .setTooltip('Whether or not the player should be crouching')
+        .setTooltip('Whether the player should be crouching')
     );
 }
 
@@ -1283,7 +1283,7 @@ function ConditionFire() {
     this.description = 'Applies child components when the target is on fire.';
 
     this.data.push(new ListValue('Type', 'type', ['On Fire', 'Not On Fire'], 'On Fire')
-        .setTooltip('Whether or not the target should be on fire')
+        .setTooltip('Whether the target should be on fire')
     );
 }
 
@@ -1295,7 +1295,7 @@ function ConditionFlag() {
     this.description = 'Applies child components when the target is marked by the appropriate flag.';
 
     this.data.push(new ListValue('Type', 'type', ['Set', 'Not Set'], 'Set')
-        .setTooltip('Whether or not the flag should be set')
+        .setTooltip('Whether the flag should be set')
     );
     this.data.push(new StringValue('Key', 'key', 'key')
         .setTooltip('The unique key representing the flag. This should match the key for when you set it using the Flag mechanic or the Flat Toggle mechanic')
@@ -1328,7 +1328,7 @@ function ConditionGround() {
     this.description = 'Applies child components when the target is on the ground';
 
     this.data.push(new ListValue('Type', 'type', ['On Ground', 'Not On Ground'], 'On Ground')
-        .setTooltip('Whether or not the target should be on the ground')
+        .setTooltip('Whether the target should be on the ground')
     );
 }
 
@@ -1460,10 +1460,10 @@ function ConditionName() {
     this.description = 'Applies child components when the target has a name matching the settings.';
 
     this.data.push(new ListValue('Contains Text', 'contains', ['True', 'False'], 'True')
-        .setTooltip('Whether or not the target should have a name containing the text')
+        .setTooltip('Whether the target should have a name containing the text')
     );
     this.data.push(new ListValue('Regex', 'regex', ['True', 'False'], 'False')
-        .setTooltip('Whether or not the text is formatted as regex. If you do not know what regex is, ignore this option')
+        .setTooltip('Whether the text is formatted as regex. If you do not know what regex is, ignore this option')
     );
     this.data.push(new StringValue('Text', 'text', 'text')
         .setTooltip('The text to look for in the target\'s name')
@@ -1499,7 +1499,7 @@ function ConditionPotion() {
     this.description = 'Applies child components when the target has the potion effect.';
 
     this.data.push(new ListValue('Type', 'type', ['Active', 'Not Active'], 'Active')
-        .setTooltip('Whether or not the potion should be active')
+        .setTooltip('Whether the potion should be active')
     );
     this.data.push(new ListValue('Potion', 'potion', getAnyPotion, 'Any')
         .setTooltip('The type of potion to look for')
@@ -1551,7 +1551,7 @@ function ConditionStatus() {
     this.description = 'Applies child components when the target has the status condition.';
 
     this.data.push(new ListValue('Type', 'type', ['Active', 'Not Active'], 'Active')
-        .setTooltip('Whether or not the status should be active')
+        .setTooltip('Whether the status should be active')
     );
     this.data.push(new ListValue('Status', 'status', ['Any',
                                                       'Absorb',
@@ -1624,7 +1624,7 @@ function ConditionWater() {
     this.description = 'Applies child components when the target is in or out of water, depending on the settings.';
 
     this.data.push(new ListValue('State', 'state', ['In Water', 'Out Of Water'], 'In Water')
-        .setTooltip('Whether or not the target needs to be in the water')
+        .setTooltip('Whether the target needs to be in the water')
     );
 }
 
@@ -1636,7 +1636,7 @@ function ConditionWeather() {
     this.description = 'Applies child components when the target\'s location has the given weather condition';
 
     this.data.push(new ListValue('Type', 'type', ['None', 'Rain', 'Snow', 'Thunder'], 'Rain')
-        .setTooltip('Whether or not the target needs to be in the water')
+        .setTooltip('Whether the target needs to be in the water')
     );
 }
 
@@ -1649,7 +1649,7 @@ function ConditionWorld()
     this.description = 'Applies child components when the target is in a specific world';
 
     this.data.push(new ListValue('Blacklist', 'blacklist', ['True', 'False'], 'False')
-        .setTooltip('Whether or not the list should be seen as a blacklist')
+        .setTooltip('Whether the list should be seen as a blacklist')
     );
 
     this.data.push(new StringListValue('Worlds', 'worlds', [])
@@ -1680,7 +1680,7 @@ function MechanicAttribute() {
         .setTooltip('How long in seconds to give the attributes to the player')
     );
     this.data.push(new ListValue('Stackable', 'stackable', ['True', 'False'], 'False')
-        .setTooltip('[PREM] Whether or not applying multiple times stacks the effects')
+        .setTooltip('Whether applying multiple times stacks the effects')
     );
 }
 
@@ -1695,7 +1695,7 @@ function MechanicArmor() {
         .setTooltip('The slot number to set the item to')
     );
     this.data.push(new ListValue('Overwrite', 'overwrite', ['True', 'False'], 'False')
-        .setTooltip('USE WITH CAUTION. Whether or not to overwrite an existing item in the slot. If true, will permanently delete the existing iem')
+        .setTooltip('USE WITH CAUTION. Whether to overwrite an existing item in the slot. If true, will permanently delete the existing iem')
     );
 	addItemOptions(this)
 }
@@ -1717,25 +1717,25 @@ function MechanicArmorStand() {
         .setTooltip('The name the armor stand displays')
     );
     this.data.push(new ListValue('Name visible', 'name-visible', ['True', 'False'], 'False')
-        .setTooltip('Whether or not the armorstand\'s name should be visible from afar')
+        .setTooltip('Whether the armorstand\'s name should be visible from afar')
     );
     this.data.push(new ListValue('Follow target', 'follow', ['True', 'False'], 'False')
-        .setTooltip('Whether or not the armorstand should follow the target')
+        .setTooltip('Whether the armorstand should follow the target')
     );
     this.data.push(new ListValue('Apply gravity', 'gravity', ['True', 'False'], 'True')
-        .setTooltip('Whether or not the armorstand should be affected by gravity')
+        .setTooltip('Whether the armorstand should be affected by gravity')
     );
     this.data.push(new ListValue('Small', 'tiny', ['True', 'False'], 'False')
-        .setTooltip('Whether or not the armorstand should be small')
+        .setTooltip('Whether the armorstand should be small')
     );
     this.data.push(new ListValue('Show arms', 'arms', ['True', 'False'], 'False')
-        .setTooltip('Whether or not the armorstand should display its arms')
+        .setTooltip('Whether the armorstand should display its arms')
     );
     this.data.push(new ListValue('Show base plate', 'base', ['True', 'False'], 'False')
-        .setTooltip('Whether or not the armorstand should display its base plate')
+        .setTooltip('Whether the armorstand should display its base plate')
     );
     this.data.push(new ListValue('Visible', 'visible', ['True', 'False'], 'True')
-        .setTooltip('Whether or not the armorstand should be visible')
+        .setTooltip('Whether the armorstand should be visible')
     );
     this.data.push(new ListValue('Marker', 'marker', ['True', 'False'], 'True')
         .setTooltip('Setting this to true will remove the armor stand\'s hitbox')
@@ -1832,7 +1832,7 @@ function MechanicBuff() {
     this.description = 'Buffs combat stats of the target';
 
     this.data.push(new ListValue('Immediate', 'immediate', ['True', 'False'], 'False')
-        .setTooltip('Whether or not to apply the buff to the current damage trigger.')
+        .setTooltip('Whether to apply the buff to the current damage trigger.')
     );
     this.data.push(new ListValue('Type', 'type', ['DAMAGE',
                                                   'DEFENSE',
@@ -1886,7 +1886,7 @@ function MechanicChannel() {
     this.description = 'Applies child effects after a duration which can be interrupted. During the channel, the player cannot move, attack, or use other spells.';
 
     this.data.push(new ListValue('Still', 'still', ['True', 'False'], 'True')
-        .setTooltip('Whether or not to hold the player in place while channeling')
+        .setTooltip('Whether to hold the player in place while channeling')
     );
     this.data.push(new AttributeValue('Time', 'time', 3, 0)
         .setTooltip('The amouont of time, in seconds, to channel for')
@@ -1961,13 +1961,13 @@ function MechanicDamage() {
         .setTooltip('The amount of damage to deal')
     );
     this.data.push(new ListValue('True Damage', 'true', ['True', 'False'], 'False')
-        .setTooltip('Whether or not to deal true damage. True damage ignores armor and all plugin checks, and doesn not have a damage animation nor knockback')
+        .setTooltip('Whether to deal true damage. True damage ignores armor and all plugin checks, and doesn not have a damage animation nor knockback')
     );
     this.data.push(new StringValue('Classifier', 'classifier', 'default')
         .setTooltip('The type of damage to deal. Can act as elemental damage or fake physical damage')
     );
     this.data.push(new ListValue('Apply Knockback', 'knockback', ['True', 'False'], 'True')
-        .setTooltip('Whether or not the damage will inflict knockback. Ignored if it is True Damage')
+        .setTooltip('Whether the damage will inflict knockback. Ignored if it is True Damage')
     );
 }
 
@@ -1982,7 +1982,7 @@ function MechanicDamageBuff() {
         .setTooltip('The type of buff to apply. Flat increases damage by a fixed amount while multiplier increases it by a percentage.')
     );
     this.data.push(new ListValue('Skill Damage', 'skill', ['True', 'False'], 'False')
-        .setTooltip('Whether or not to buff skill damage. If false, it will affect physical damage.')
+        .setTooltip('Whether to buff skill damage. If false, it will affect physical damage.')
     );
     this.data.push(new AttributeValue('Value', 'value', 1, 0)
         .setTooltip('The amount to increase/decrease the damage by. A negative amoutn with the "Flat" type will decrease damage, similar to a number less than 1 for the multiplier.')
@@ -2009,10 +2009,10 @@ function MechanicDamageLore() {
         .setTooltip('The multiplier to use on the value to get the actual damage to deal')
     );
     this.data.push(new ListValue('True Damage', 'true', ['True', 'False'], 'False')
-        .setTooltip('Whether or not to deal true damage. True damage ignores armor and all plugin checks.')
+        .setTooltip('Whether to deal true damage. True damage ignores armor and all plugin checks.')
     );
     this.data.push(new StringValue('Classifier', 'classifier', 'default')
-        .setTooltip('[PREMIUM ONLY] The type of damage to deal. Can act as elemental damage or fake physical damage')
+        .setTooltip('The type of damage to deal. Can act as elemental damage or fake physical damage')
     );
 }
 
@@ -2027,7 +2027,7 @@ function MechanicDefenseBuff() {
         .setTooltip('The type of buff to apply. Flat will increase/reduce incoming damage by a fixed amount where Multiplier does it by a percentage of the damage. Multipliers above 1 will increase damage taken while multipliers below 1 reduce damage taken.')
     );
     this.data.push(new ListValue('Skill Defense', 'skill', ['True', 'False'], 'False')
-        .setTooltip('Whether or not to buff skill defense. If false, it will affect physical defense.')
+        .setTooltip('Whether to buff skill defense. If false, it will affect physical defense.')
     );
     this.data.push(new AttributeValue('Value', 'value', 1, 0)
         .setTooltip('The amount to increase/decrease incoming damage by')
@@ -2107,7 +2107,7 @@ function MechanicDisguise() {
     );
     this.data.push(new ListValue('Adult', 'adult', ['True', 'False',], 'True')
         .requireValue('type', ['Mob'])
-        .setTooltip('Whether or not to use the adult variant of the mob')
+        .setTooltip('Whether to use the adult variant of the mob')
     );
 
     this.data.push(new StringValue('Player', 'player', 'Eniripsa96')
@@ -2205,7 +2205,7 @@ function MechanicDurability() {
         .setTooltip('Amount to reduce the item\'s durability by')
     );
     this.data.push(new ListValue('Offhand', 'offhand', ['True', 'False'], 'False')
-        .setTooltip('Whether or not to apply to the offhand slot')
+        .setTooltip('Whether to apply to the offhand slot')
     );
 }
 
@@ -2220,10 +2220,10 @@ function MechanicExplosion() {
         .setTooltip('The strength of the explosion')
     );
     this.data.push(new ListValue('Damage Blocks', 'damage', ['True', 'False'], 'False')
-        .setTooltip('Whether or not to damage blocks with the explosion')
+        .setTooltip('Whether to damage blocks with the explosion')
     );
     this.data.push(new ListValue('Fire', 'fire', ['True', 'False'], 'False')
-        .setTooltip('Whether or not to set affected blocks on fire')
+        .setTooltip('Whether to set affected blocks on fire')
     );
 }
 
@@ -2448,7 +2448,7 @@ function MechanicLaunch() {
 
     this.description = 'Launches the target relative to their forward direction. Use negative values to go in the opposite direction (e.g. negative forward makes the target go backwards)';
 
-    this.data.push(new ListValue('[PREM] Relative', 'relative', ['Target', 'Caster', 'Between'], 'Target')
+    this.data.push(new ListValue('Relative', 'relative', ['Target', 'Caster', 'Between'], 'Target')
         .setTooltip('Determines what is considered "forward". Target uses the direction the target is facing, Caster uses the direction the caster is facing, and Between uses the direction from the caster to the target.')
     );
     this.data.push(new AttributeValue('Forward Speed', 'forward', 0, 0)
@@ -2526,7 +2526,7 @@ function MechanicMine() {
         .setTooltip('The types of blocks allowed to be broken. \'Origin\' refers to the material at the targeted location')
     );
     this.data.push(new ListValue('Drop', 'drop', ['True', 'False'], 'True')
-        .setTooltip('Whether or not to create drops for the destroyed blocks')
+        .setTooltip('Whether to create drops for the destroyed blocks')
     );
     this.data.push(new ListValue('Tool', 'tool', ['Caster', 'Target', ...getMaterials()], 'Diamond pickaxe').requireValue('drop', ['True'])
         .setTooltip('What tool to use when breaking the blocks. This allows to take into account the fact that, for example, Diamond Ore does not drop when mined with a Stone Pickaxe, as well as to consider enchantments like Looting and Silk Touch. \'Caster\' an \'Target\' refers to the items in their respective main hands')
@@ -2673,7 +2673,7 @@ function MechanicParticleProjectile() {
         .setTooltip('How much gravity to apply each tick. Negative values make it fall while positive values make it rise')
     );
     this.data.push(new ListValue('Pierce', 'pierce', ['True', 'False'], 'False')
-        .setTooltip('Whether or not this projectile should pierce through initial targets and continue hitting those behind them')
+        .setTooltip('Whether this projectile should pierce through initial targets and continue hitting those behind them')
     );
     this.data.push(new ListValue("Group", "group", ["Ally", "Enemy"], "Enemy")
         .setTooltip('The alignment of targets to hit')
@@ -2728,7 +2728,7 @@ function MechanicPotion() {
         .setTooltip('The type of potion effect to apply')
     );
     this.data.push(new ListValue('Ambient Particles', 'ambient', ['True', 'False'], 'True')
-        .setTooltip('Whether or not to show ambient particles')
+        .setTooltip('Whether to show ambient particles')
     );
     this.data.push(new AttributeValue('Tier', 'tier', 1, 0)
         .setTooltip('The strength of the potion')
@@ -2752,7 +2752,7 @@ function MechanicPotionProjectile() {
         .setTooltip('The alignment of entities to hit')
     );
     this.data.push(new ListValue('Linger', 'linger', ['True', 'False'], 'False')
-        .setTooltip('Whether or not the potion should be a lingering potion (for 1.9+ only)')
+        .setTooltip('Whether the potion should be a lingering potion (for 1.9+ only)')
     );
 }
 
@@ -2772,7 +2772,7 @@ function MechanicProjectile() {
         .setTooltip('The type of projectile to fire')
     );
     this.data.push(new ListValue('Flaming', 'flaming', ['True', 'False'], 'False')
-        .setTooltip('Whether or not to make the launched projectiles on fire.')
+        .setTooltip('Whether to make the launched projectiles on fire.')
     );
     this.data.push(new ListValue('Cost', 'cost', ['None', 'All', 'One'], 'None')
         .setTooltip('The item cost of the skill. "One" will only charge the player 1 item of it\'s type, whereas "All" will charge 1 for each fired projectile.')
@@ -2844,7 +2844,7 @@ function MechanicRepeat() {
         .setTooltip('The initial delay before starting to apply child components')
     );
     this.data.push(new ListValue('Stop on Fail', 'stop-on-fail', ['True', 'False'], 'False')
-        .setTooltip('Whether or not to stop the repeat task early if the effects fail')
+        .setTooltip('Whether to stop the repeat task early if the effects fail')
     );
 }
 
@@ -2910,7 +2910,7 @@ function MechanicStat() {
         .setTooltip('How long in seconds to give the stat to the player')
     );
     this.data.push(new ListValue('Stackable', 'stackable', ['True', 'False'], 'False')
-        .setTooltip('Whether or not applying multiple times stacks the effects')
+        .setTooltip('Whether applying multiple times stacks the effects')
     );
 }
 
@@ -2983,10 +2983,10 @@ function MechanicTrigger() {
         .setTooltip('How long to listen to the trigger for')
     );
     this.data.push(new ListValue('Stackable', 'stackable', ['True', 'False',], 'True')
-        .setTooltip('Whether or not different players (or the same player) can listen to the same target at the same time')
+        .setTooltip('Whether different players (or the same player) can listen to the same target at the same time')
     );
     this.data.push(new ListValue('Once', 'once', ['True', 'False'], 'True')
-        .setTooltip('Whether or not the trigger should only be used once each cast. When false, the trigger can execute as many times as it happens for the duration.')
+        .setTooltip('Whether the trigger should only be used once each cast. When false, the trigger can execute as many times as it happens for the duration.')
     );
 
     //BLOCK
@@ -3011,13 +3011,13 @@ function MechanicTrigger() {
     // CROUCH
     this.data.push(new ListValue('Type', 'type', ['Start Crouching', 'Stop Crouching', 'Both'], 'Start Crouching')
         .requireValue('trigger', ['Crouch'])
-        .setTooltip('Whether or not you want to apply components when crouching or not crouching')
+        .setTooltip('Whether you want to apply components when crouching or not crouching')
     );
 
     //DROP_ITEM
     this.data.push(new ListValue('Drop multiple', 'drop multiple', ['True', 'False', 'Ignore'], 'Ignore')
         .requireValue('trigger', ['Drop Item'])
-        .setTooltip('Wheter the player has to drop multiple items or a single item')
+        .setTooltip('Whether the player has to drop multiple items or a single item')
     );
 
     // ENVIRONMENT_DAMAGE
@@ -3298,7 +3298,7 @@ function MechanicWarp() {
     this.description = 'Warps the target relative to their forward direction. Use negative numbers to go in the opposite direction (e.g. negative forward will cause the target to warp backwards).';
 
     this.data.push(new ListValue('Through Walls', 'walls', ['True', 'False'], 'False')
-        .setTooltip('Whether or not to allow the target to teleport through walls')
+        .setTooltip('Whether to allow the target to teleport through walls')
     );
     this.data.push(new SectionMarker('Position'));
     this.data.push(new AttributeValue('Forward', 'forward', 3, 1)
@@ -3347,10 +3347,10 @@ function MechanicWarpRandom() {
     this.description = 'Warps the target in a random direction the given distance.';
 
     this.data.push(new ListValue('Only Horizontal', 'horizontal', ['True', 'False'], 'True')
-        .setTooltip('Whether or not to limit the random position to the horizontal plane')
+        .setTooltip('Whether to limit the random position to the horizontal plane')
     );
     this.data.push(new ListValue('Through Walls', 'walls', ['True', 'False'], 'False')
-        .setTooltip('Whether or not to allow the target to teleport through walls')
+        .setTooltip('Whether to allow the target to teleport through walls')
     );
     this.data.push(new AttributeValue('Distance', 'distance', 3, 1)
         .setTooltip('The max distance in blocks to teleport')
@@ -3409,7 +3409,7 @@ function MechanicWolf() {
         .setTooltip('The damage dealt by the wolf each attack')
     );
     this.data.push(new ListValue('Sitting', 'sitting', ['True', 'False'], 'False')
-        .setTooltip('[PREMIUM] whether or not the wolf starts of sitting')
+        .setTooltip('Whether the wolf starts off sitting')
     );
     this.data.push(new AttributeValue('Duration', 'seconds', 10, 0)
         .setTooltip('How long to summon the wolf for')
@@ -3452,7 +3452,7 @@ function addItemOptions(component) {
         .setTooltip('Flags to hide from the item')
     );
     component.data.push(new ListValue('Custom Name/Lore', 'custom', ['True', 'False'], 'False')
-        .setTooltip('Whether or not to apply a custom name/lore to the item')
+        .setTooltip('Whether to apply a custom name/lore to the item')
     );
 
     component.data.push(new StringValue('Name', 'name', 'Name').requireValue('custom', ['True'])
@@ -3489,7 +3489,7 @@ function addItemOptions(component) {
 function addItemConditionOptions(component) {
 
     component.data.push(new ListValue('Check Material', 'check-mat', ['True', 'False'], 'True')
-        .setTooltip('Whether or not the item needs to be a certain type')
+        .setTooltip('Whether the item needs to be a certain type')
     );
     component.data.push(new ListValue('Material', 'material', getMaterials, 'Arrow')
         .requireValue('check-mat', ['True'])
@@ -3497,7 +3497,7 @@ function addItemConditionOptions(component) {
     );
 
     component.data.push(new ListValue('Check Data', 'check-data', ['True', 'False'], 'False')
-        .setTooltip('Whether or not the item needs to have a certain data value')
+        .setTooltip('Whether the item needs to have a certain data value')
     );
     component.data.push(new IntValue('Data', 'data', 0)
         .requireValue('check-data', ['True'])
@@ -3505,7 +3505,7 @@ function addItemConditionOptions(component) {
     );
 
     component.data.push(new ListValue('Check Lore', 'check-lore', ['True', 'False'], 'False')
-        .setTooltip('Whether or not the item requires a bit of text in its lore')
+        .setTooltip('Whether the item requires a bit of text in its lore')
     );
     component.data.push(new StringValue('Lore', 'lore', 'text')
         .requireValue('check-lore', ['True'])
@@ -3513,7 +3513,7 @@ function addItemConditionOptions(component) {
     );
 
     component.data.push(new ListValue('Check Name', 'check-name', ['True', 'False'], 'False')
-        .setTooltip('Whether or not the item needs to have a bit of text in its display name')
+        .setTooltip('Whether the item needs to have a bit of text in its display name')
     );
     component.data.push(new StringValue('Name', 'name', 'name')
         .requireValue('check-name', ['True'])
@@ -3521,7 +3521,7 @@ function addItemConditionOptions(component) {
     );
 
     component.data.push(new ListValue('Regex', 'regex', ['True', 'False'], 'False')
-        .setTooltip('Whether or not the name and lore checks are regex strings. If you do not know what regex is, leave this option alone.')
+        .setTooltip('Whether the name and lore checks are regex strings. If you do not know what regex is, leave this option alone.')
     );
 }
 
@@ -3586,7 +3586,6 @@ function addParticleOptions(component) {
                                                                                                               'Block crack',
                                                                                                               'Block dust',
                                                                                                               'Falling dust',
-                                                                                                              'Block Crack',
                                                                                                               'Item Crack'])
         .setTooltip('The material to use for the particles')
     );
@@ -3642,7 +3641,7 @@ function addEffectOptions(component, optional) {
         opt = appendOptional;
 
         component.data.push(new ListValue('Use Effect', 'use-effect', ['True', 'False'], 'False')
-            .setTooltip('Whether or not to use the premium particle effects.')
+            .setTooltip('Whether to use a particle effect.')
         );
     }
 
@@ -3726,7 +3725,7 @@ function addTargetOptions(component) {
         .setTooltip('The alignment of targets to get')
     );
     component.data.push(new ListValue("Through Wall", "wall", ['True', 'False'], 'False')
-        .setTooltip('Whether or not to allow targets to be on the other side of a wall')
+        .setTooltip('Whether to allow targets to be on the other side of a wall')
     );
     component.data.push(new ListValue("Include Caster", "caster", ['True', 'False', 'In area'], 'False')
         .setTooltip('Whether to include the caster in the target list. "True" will always include them, "False" will never, and "In area" will only if they are within the targeted area')
