@@ -162,8 +162,8 @@ public class ItemSerializer {
                 nbtTagList_get = nbtTagList.getDeclaredMethod("get", int.class);
             }
 
-                nbtTagList_add = nbtTagList.getDeclaredMethod("add", nbtBase);
-                nbtTagList_size = nbtTagList.getDeclaredMethod("size");
+            nbtTagList_add = nbtTagList.getDeclaredMethod("add", nbtBase);
+            nbtTagList_size = nbtTagList.getDeclaredMethod("size");
 
             nbtCompressedStreamTools_write = nbtCompressedStreamTools.getDeclaredMethod("a", nbtTagCompound, DataOutput.class);
             nbtCompressedStreamTools_read = nbtCompressedStreamTools.getDeclaredMethod("a", DataInputStream.class);
@@ -357,7 +357,8 @@ public class ItemSerializer {
                     ItemMeta     meta = is.getItemMeta();
                     List<String> lore = meta.getLore();
                     if (lore == null) lore = new ArrayList<>();
-                    lore.add(itemAttribute[1]);
+                    if (itemAttribute.length >= 1)
+                        lore.add(itemAttribute[1]);
                     meta.setLore(lore);
                     is.setItemMeta(meta);
                 }
