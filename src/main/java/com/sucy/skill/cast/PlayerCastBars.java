@@ -111,13 +111,13 @@ public class PlayerCastBars implements InventoryHolder {
      *
      * @throws Exception
      */
-    public List<Object> getHoverPackets(Player player, int step)
+    public void playHoverParticles(Player player, int step)
             throws Exception {
-        if (hovered == null)
-            return null;
-
+        if (hovered == null) {
+            return;
+        }
         hovered.updateIndicators(player);
-        return hovered.makePackets(step);
+        hovered.playParticles(player, step);
     }
 
     /**

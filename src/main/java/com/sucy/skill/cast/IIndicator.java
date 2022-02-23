@@ -28,8 +28,7 @@ package com.sucy.skill.cast;
 
 import com.sucy.skill.api.particle.ParticleSettings;
 import org.bukkit.Location;
-
-import java.util.List;
+import org.bukkit.entity.Player;
 
 public interface IIndicator
 {
@@ -37,6 +36,6 @@ public interface IIndicator
 
     public void moveTo(double x, double y, double z);
 
-    public void makePackets(List<Object> packets, ParticleSettings particle, int step)
+    public void playParticles(Player player, ParticleSettings particle, int step)
         throws Exception;
 }

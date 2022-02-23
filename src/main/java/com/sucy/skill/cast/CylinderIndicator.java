@@ -28,8 +28,7 @@ package com.sucy.skill.cast;
 
 import com.sucy.skill.api.particle.ParticleSettings;
 import org.bukkit.Location;
-
-import java.util.List;
+import org.bukkit.entity.Player;
 
 public class CylinderIndicator implements IIndicator
 {
@@ -98,14 +97,13 @@ public class CylinderIndicator implements IIndicator
     /**
      * Creates the packets for the indicator, adding them to the list
      *
-     * @param packets  packet list to add to
      * @param particle particle type to use
      * @param step     animation step
      *
      * @throws Exception
      */
     @Override
-    public void makePackets(List<Object> packets, ParticleSettings particle, int step)
+    public void playParticles(Player player, ParticleSettings particle, int step)
         throws Exception
     {
         // Offset angle for animation
@@ -116,14 +114,14 @@ public class CylinderIndicator implements IIndicator
         // Make the packets
         for (int i = 0; i < particles; i++)
         {
-            packets.add(particle.instance(x + rSin, y, z + rCos));
-            packets.add(particle.instance(x + rSin, y + height, z + rCos));
+            particle.instance(player, x + rSin, y, z + rCos);
+            particle.instance(player, x + rSin, y + height, z + rCos);
 
             if (i % vert == 0)
             {
                 for (int j = 0; j < vertParticles; j++)
                 {
-                    packets.add(particle.instance(x + rSin, y + vertOffset * j, z + rCos));
+                    particle.instance(player, x + rSin, y + vertOffset * j, z + rCos);
                 }
             }
 

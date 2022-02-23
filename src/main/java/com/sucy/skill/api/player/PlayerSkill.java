@@ -394,12 +394,10 @@ public final class PlayerSkill
      *
      * @throws Exception
      */
-    public List<Object> makePackets(int step)
+    public void playParticles(Player player, int step)
         throws Exception
     {
-        List<Object> packets = new ArrayList<Object>();
         for (IIndicator indicator : indicators)
-            indicator.makePackets(packets, IndicatorSettings.particle, step);
-        return packets;
+            indicator.playParticles(player, IndicatorSettings.particle, step);
     }
 }

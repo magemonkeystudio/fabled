@@ -27,7 +27,10 @@
 package com.sucy.skill.api.particle;
 
 import mc.promcteam.engine.mccore.config.parse.DataSection;
+import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.entity.Player;
 
 /**
  * Settings for playing a particle
@@ -42,10 +45,12 @@ public class ParticleSettings {
             DX_KEY = "dx",
             DY_KEY = "dy",
             DZ_KEY = "dz",
-            SPEED_KEY = "speed";
+            SPEED_KEY = "speed",
+            DUST_COLOR = "dust-color",
+            DUST_SIZE = "dust-size";
 
     // Particle type
-    public final org.bukkit.Particle type;
+    public final Particle type;
 
     // Offset values
     public final float dx, dy, dz;
@@ -56,38 +61,10 @@ public class ParticleSettings {
     // Particle amount
     public final int amount;
 
-    // Particle extra data
-    public Material material;
-    public int durability;
-    public int data;
+    public final Object object;
 
     /**
-     * Sets up a particle that doesn't require material data
-     *
-     * @param type   particle type
-     * @param dx     DX value
-     * @param dy     DY value
-     * @param dz     DZ value
-     * @param speed  particle speed
-     * @param amount particle amount
-     */
-    public ParticleSettings(org.bukkit.Particle type, float dx, float dy, float dz, float speed, int amount) {
-        this.type = type;
-        this.dx = dx;
-        this.dy = dy;
-        this.dz = dz;
-        this.speed = speed;
-        this.amount = amount;
-        if (Particle.usesData(type)) {
-            throw new IllegalArgumentException("Must provide material data for " + type.name());
-        } else {
-            material = null;
-            data = 0;
-        }
-    }
-
-    /**
-     * Sets up a particle that requires material data
+     * Sets up a particle that requires material cmd
      *
      * @param type     particle type
      * @param dx       DX value
@@ -96,29 +73,28 @@ public class ParticleSettings {
      * @param speed    particle speed
      * @param amount   particle amount
      * @param material material to use
-     * @param data     material data value
+     * @param cmd     material cmd value
      */
     public ParticleSettings(
-            org.bukkit.Particle type,
+            Particle type,
             float dx,
             float dy,
             float dz,
             float speed,
             int amount,
             Material material,
-            int data,
-            int durability) {
+            int cmd,
+            int durability,
+            Color dustColor,
+            float dusSize
+            ) {
         this.type = type;
         this.dx = dx;
         this.dy = dy;
         this.dz = dz;
         this.speed = speed;
         this.amount = amount;
-        if (Particle.usesData(type)) {
-            this.material = material;
-            this.data = data;
-            this.durability = durability;
-        }
+        this.object =  ParticleHelper.makeObject(type, material, cmd, durability, dustColor, dusSize);
     }
 
     /**
@@ -127,30 +103,17 @@ public class ParticleSettings {
      * @param config config data to load from
      */
     public ParticleSettings(DataSection config) {
-        String type = config.getString(PARTICLE_KEY);
-        this.type = ParticleLookup.find(type);
+        this.type = ParticleHelper.getFromKey(config.getString(PARTICLE_KEY, "Villager happy"));
         this.dx = config.getFloat(DX_KEY, 0);
         this.dy = config.getFloat(DY_KEY, 0);
         this.dz = config.getFloat(DZ_KEY, 0);
         this.speed = config.getFloat(SPEED_KEY, 1);
         this.amount = config.getInt(AMOUNT_KEY, 1);
-
-        if (Particle.usesData(this.type)) {
-            Material mat = null;
-            int data = 0;
-            int durability = 0;
-            try {
-                mat = Material.valueOf(config.getString(MATERIAL_KEY).toUpperCase().replace(" ", "_"));
-                durability = config.getInt(DURABILITY_KEY, 0);
-                data = config.getInt(DATA_KEY, 0);
-            } catch (Exception ex) { /* */ }
-            this.material = mat;
-            this.data = data;
-            this.durability = durability;
-        } else {
-            this.material = null;
-            this.data = 0;
-        }
+        this.object =  ParticleHelper.makeObject(type, Material.valueOf(config.getString(MATERIAL_KEY, "Dirt").toUpperCase().replace(" ", "_")),
+                                                 config.getInt(DATA_KEY, 0),
+                                                 config.getInt(DURABILITY_KEY, 0),
+                                                 Color.fromRGB(Integer.parseInt(config.getString(DUST_COLOR, "#FF0000").substring(1), 16)),
+                                                 (float) config.getDouble(DUST_SIZE, 1));
     }
 
     /**
@@ -164,8 +127,8 @@ public class ParticleSettings {
      *
      * @throws Exception
      */
-    public Object instance(double x, double y, double z)
+    public void instance(Player player, double x, double y, double z)
             throws Exception {
-        return Particle.make(this, x, y, z);
+        player.spawnParticle(type, x, y, z, amount, dx, dy, dz, speed, object);
     }
 }

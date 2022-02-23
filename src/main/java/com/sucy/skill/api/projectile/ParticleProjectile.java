@@ -31,7 +31,7 @@ import com.sucy.skill.api.event.ParticleProjectileExpireEvent;
 import com.sucy.skill.api.event.ParticleProjectileHitEvent;
 import com.sucy.skill.api.event.ParticleProjectileLandEvent;
 import com.sucy.skill.api.event.ParticleProjectileLaunchEvent;
-import com.sucy.skill.api.util.ParticleHelper;
+import com.sucy.skill.api.particle.ParticleHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;

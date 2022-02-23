@@ -28,6 +28,7 @@ package com.sucy.skill.cast;
 
 import com.sucy.skill.api.particle.ParticleSettings;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -110,14 +111,13 @@ public class ConeIndicator implements IIndicator
     /**
      * Creates the packets for the indicator, adding them to the list
      *
-     * @param packets  packet list to add to
      * @param particle particle type to use
      * @param step     animation step
      *
      * @throws Exception
      */
     @Override
-    public void makePackets(List<Object> packets, ParticleSettings particle, int step)
+    public void playParticles(Player player, ParticleSettings particle, int step)
         throws Exception
     {
         double base = (IndicatorSettings.animation * 0.05 * step) % offset;
@@ -128,13 +128,13 @@ public class ConeIndicator implements IIndicator
         double jj = Math.cos(startAngle + yaw) * radius;
 
         // Packets along the edges
-        make(packets, particle, base, fx * rCos + fz * rSin, fz * rCos - fx * rSin);
-        make(packets, particle, offset - base, fx * rCos - fz * rSin, fx * rSin + fz * rCos);
+        make(player, particle, base, fx * rCos + fz * rSin, fz * rCos - fx * rSin);
+        make(player, particle, offset - base, fx * rCos - fz * rSin, fx * rSin + fz * rCos);
 
         // Packets around the curve
         while (startAngle < arc)
         {
-            packets.add(particle.instance(x + ii, y, z + jj));
+            particle.instance(player, x + ii, y, z + jj);
 
             double temp = ii * cos - jj * sin;
             jj = ii * sin + jj * cos;
@@ -144,12 +144,12 @@ public class ConeIndicator implements IIndicator
         }
     }
 
-    private void make(List<Object> packets, ParticleSettings particle, double pos, double rfx, double rfz)
+    private void make(Player player, ParticleSettings particle, double pos, double rfx, double rfz)
         throws Exception
     {
         while (pos <= radius)
         {
-            packets.add(particle.instance(x + pos * rfx, y, z + pos * rfz));
+            particle.instance(player, x + pos * rfx, y, z + pos * rfz);
             pos += offset;
         }
     }

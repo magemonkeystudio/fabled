@@ -28,9 +28,8 @@ package com.sucy.skill.cast;
 
 import com.sucy.skill.api.particle.ParticleSettings;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-
-import java.util.List;
 
 /**
  * Represents a preview indicator for showing the direction of projectiles to fire
@@ -113,20 +112,19 @@ public class ProjectileIndicator implements IIndicator
     /**
      * Creates the packets for the indicator, adding them to the list
      *
-     * @param packets  packet list to add to
      * @param particle particle type to use
      * @param step     animation step
      *
      * @throws Exception
      */
     @Override
-    public void makePackets(List<Object> packets, ParticleSettings particle, int step)
+    public void playParticles(Player player, ParticleSettings particle, int step)
         throws Exception
     {
         double px = x + velX * tBase;
         double py = y + velY * tBase - gravity * tBase * tBase;
         double pz = z + velZ * tBase;
 
-        packets.add(particle.instance(px, py, pz));
+        particle.instance(player, px, py, pz);
     }
 }

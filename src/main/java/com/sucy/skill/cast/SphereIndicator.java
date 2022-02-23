@@ -28,8 +28,7 @@ package com.sucy.skill.cast;
 
 import com.sucy.skill.api.particle.ParticleSettings;
 import org.bukkit.Location;
-
-import java.util.List;
+import org.bukkit.entity.Player;
 
 /**
  * A fancier sphere indicator
@@ -94,14 +93,13 @@ public class SphereIndicator implements IIndicator
     /**
      * Creates the packets for the indicator, adding them to the list
      *
-     * @param packets  packet list to add to
      * @param particle particle type to use
      * @param step     animation step
      *
      * @throws Exception
      */
     @Override
-    public void makePackets(List<Object> packets, ParticleSettings particle, int step)
+    public void playParticles(Player player, ParticleSettings particle, int step)
         throws Exception
     {
         // Offset angle for animation
@@ -116,9 +114,9 @@ public class SphereIndicator implements IIndicator
         // Flat circle packets
         for (int i = 0; i < particles; i++)
         {
-            packets.add(particle.instance(x + rs, y, z + rc));
-            packets.add(particle.instance(x + rs * urc, y + rc, z + rs * urs));
-            packets.add(particle.instance(x + (rc - rs * urs) * COS_45, y + rs * urc, z + (rc + rs * urs) * COS_45));
+            particle.instance(player, x + rs, y, z + rc);
+            particle.instance(player, x + rs * urc, y + rc, z + rs * urs);
+            particle.instance(player, x + (rc - rs * urs) * COS_45, y + rs * urc, z + (rc + rs * urs) * COS_45);
 
             double temp = rs * cos - rc * sin;
             rc = rs * sin + rc * cos;

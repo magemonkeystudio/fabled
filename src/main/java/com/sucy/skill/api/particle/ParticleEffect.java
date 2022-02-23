@@ -37,17 +37,18 @@ import com.sucy.skill.data.formula.IValue;
 import com.sucy.skill.data.formula.value.CustomValue;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * A particle effect that can be played
  */
 public class ParticleEffect {
     private static final XZHandler flatRot = (XZHandler) Directions.byName("XZ");
-
-    private final Object[] packets;
 
     private final PolarSettings    shape;
     private final PolarSettings    animation;
@@ -138,7 +139,6 @@ public class ParticleEffect {
 
         int points = shape.getPoints(shapeDir).length;
         animation.getPoints(animDir);
-        packets = new Object[animation.getCopies() * points];
     }
 
     /**
@@ -153,13 +153,6 @@ public class ParticleEffect {
      */
     public int getInterval() {
         return interval;
-    }
-
-    /**
-     * @return number of animation frames
-     */
-    public int getFrames() {
-        return animation.getSteps();
     }
 
     /**
@@ -183,21 +176,16 @@ public class ParticleEffect {
 
             int j = 0;
 
-            ArrayList<Player> players = new ArrayList<>();
-            for (Player player : loc.getWorld().getPlayers()) {
-                if (loc.distance(player.getLocation()) <= view) {
-                    players.add(player);
-                }
-            }
-            org.bukkit.Particle effect   = org.bukkit.Particle.valueOf(this.particle.type.name());
+            World world = Objects.requireNonNull(loc.getWorld());
+            Set<Player> players = ParticleHelper.filterPlayers(world.getPlayers(), loc, view);
+
+            Particle effect   = this.particle.type;
             int                 count      = this.particle.amount;
             double              dx         = this.particle.dx;
             double              dy         = this.particle.dy;
             double              dz         = this.particle.dz;
             float               speed      = this.particle.speed;
-            Material            material   = this.particle.material;
-            int                 data       = this.particle.data;
-            int                 durability = this.particle.durability;
+            Object              object     = this.particle.object;
 
             for (int i = frame * this.animation.getCopies(); i < next; ++i) {
                 Point3D p1       = animPoints[i];
@@ -213,20 +201,9 @@ public class ParticleEffect {
                     double x = p1.x * animSize + this.animDir.rotateX(p2, trig[j]) * size + loc.getX();
                     double y = p1.y * animSize + this.animDir.rotateY(p2, trig[j]) * size + loc.getY();
                     double z = p1.z * animSize + this.animDir.rotateZ(p2, trig[j]) * size + loc.getZ();
-                    Particle.play(
-                            players,
-                            effect,
-                            x,
-                            y,
-                            z,
-                            count,
-                            dx,
-                            dy,
-                            dz,
-                            speed,
-                            material,
-                            data,
-                            durability);
+
+                    players.forEach(player ->
+                            player.spawnParticle(effect, x, y, z, count, dx, dy, dz, speed, object));
                 }
                 ++j;
             }

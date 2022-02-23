@@ -29,11 +29,11 @@ package com.sucy.skill.dynamic.mechanic;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.particle.EffectPlayer;
+import com.sucy.skill.api.particle.ParticleHelper;
 import com.sucy.skill.api.particle.target.FollowTarget;
 import com.sucy.skill.api.projectile.CustomProjectile;
 import com.sucy.skill.api.projectile.ParticleProjectile;
 import com.sucy.skill.api.projectile.ProjectileCallback;
-import com.sucy.skill.api.util.ParticleHelper;
 import com.sucy.skill.cast.*;
 import com.sucy.skill.dynamic.TempEntity;
 import org.bukkit.Location;
@@ -140,7 +140,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
 
         final Settings copy = new Settings(settings);
         copy.set(ParticleProjectile.SPEED, parseValues(caster, ParticleProjectile.SPEED, level, 1), 0);
-        copy.set(ParticleHelper.PARTICLES_KEY, parseValues(caster, ParticleHelper.PARTICLES_KEY, level, 1), 0);
+        copy.set(ParticleHelper.POINTS_KEY, parseValues(caster, ParticleHelper.POINTS_KEY, level, 1), 0);
         copy.set(ParticleHelper.RADIUS_KEY, parseValues(caster, ParticleHelper.RADIUS_KEY, level, 0), 0);
 
         // Fire from each target
