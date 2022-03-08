@@ -137,10 +137,7 @@ public abstract class LevelTree extends InventoryTree
                 }
             }
         }
-        if (height == 0)
-        {
-            height = 1;
-        }
+        height = Math.max(height, 1);
     }
 
     /**

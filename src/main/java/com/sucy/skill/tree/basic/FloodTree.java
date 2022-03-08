@@ -67,7 +67,7 @@ public class FloodTree extends InventoryTree
         {
             skillSlots.put(i, skills.get(i));
         }
-        height = (skills.size() + 8) / 9;
+        height = Math.max((skills.size() + 8) / 9, 1);
     }
 
     /**

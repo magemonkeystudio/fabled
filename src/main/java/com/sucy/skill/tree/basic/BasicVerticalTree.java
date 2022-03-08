@@ -74,6 +74,7 @@ public class BasicVerticalTree extends InventoryTree
             skillSlots.put(i, skill);
             width = placeChildren(skills, skill, i + 9, 0);
         }
+        height = Math.max(height, 1);
 
         // Too large
         if (width >= 9)

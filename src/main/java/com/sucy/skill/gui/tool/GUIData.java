@@ -26,6 +26,7 @@
  */
 package com.sucy.skill.gui.tool;
 
+import com.google.common.base.Preconditions;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.tree.basic.InventoryTree;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
@@ -54,12 +55,14 @@ public class GUIData {
 
     GUIData(InventoryTree skillTree) {
         rows = skillTree.getHeight();
+        Preconditions.checkArgument(rows>0 && rows < 6);
         this.pageMap.add(new GUIPage(this, skillTree.getSkillSlots()));
     }
 
     GUIData(DataSection data) {
         if (data != null) {
             rows = data.getInt(ROWS, rows);
+            Preconditions.checkArgument(rows>0 && rows < 6);
             this.pages = data.getInt(PAGES, this.pages);
             DataSection pages = data.getSection(SLOTS);
             if (pages != null)
