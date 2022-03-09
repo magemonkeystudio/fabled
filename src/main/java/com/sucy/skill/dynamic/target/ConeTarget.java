@@ -27,7 +27,9 @@
 package com.sucy.skill.dynamic.target;
 
 import com.sucy.skill.api.target.TargetHelper;
-import com.sucy.skill.cast.IIndicator;
+import com.sucy.skill.cast.ConePreview;
+import com.sucy.skill.cast.Preview;
+import com.sucy.skill.cast.PreviewSettings;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -41,12 +43,17 @@ public class ConeTarget extends TargetComponent {
     private static final String ANGLE  = "angle";
     private static final String RANGE  = "range";
 
+    private ConePreview preview;
+
     /** {@inheritDoc} */
     @Override
-    void makeIndicators(List<IIndicator> list, Player caster, LivingEntity target, int level) {
-        double range = parseValues(caster, RANGE, level, 3.0);
-        double angle = parseValues(caster, ANGLE, level, 90.0);
-        makeConeIndicator(list, target, range, angle);
+    void playPreview(Player caster, int level, LivingEntity target, int step) {
+        double arc = parseValues(caster, ANGLE, level, 90.0)* Math.PI / 180;
+        double radius = parseValues(caster, RANGE, level, 3.0);
+        if (preview == null || preview.getArc() != arc || preview.getRadius() != radius) {
+            preview = new ConePreview(arc, radius);
+        }
+        preview.playParticles(caster, PreviewSettings.particle, target.getLocation(), step);
     }
 
     /** {@inheritDoc} */

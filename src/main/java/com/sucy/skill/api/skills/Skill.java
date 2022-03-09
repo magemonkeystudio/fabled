@@ -36,7 +36,6 @@ import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkill;
 import com.sucy.skill.api.util.DamageLoreRemover;
 import com.sucy.skill.api.util.Data;
-import com.sucy.skill.cast.IIndicator;
 import com.sucy.skill.data.Permissions;
 import com.sucy.skill.dynamic.TempEntity;
 import com.sucy.skill.gui.tool.IconHolder;
@@ -798,26 +797,14 @@ public abstract class Skill implements IconHolder {
     }
 
     /**
-     * Initializes the indicators for a skill.
+     * Plays the skill previews.
      * This should be implemented by each skill.
      *
-     * @param list   list to store indicators in
      * @param player player to base location on
      * @param level  the level of the skill to create for
+     * @param step   the current progress of the indicator
      */
-    public void createPreview(List<IIndicator> list, Player player, int level) {
-    }
-
-    /**
-     * Updates the positions of indicators for a skill.
-     * This should be implemented by each skill.
-     *
-     * @param list   list to update
-     * @param player player to base location on
-     * @param level  level of the skill updating for
-     */
-    public void updateIndicators(List<IIndicator> list, Player player, int level) {
-    }
+    public void playPreview(Player player, int level, int step) { }
 
     /**
      * Saves the skill data to the configuration, overwriting all previous data

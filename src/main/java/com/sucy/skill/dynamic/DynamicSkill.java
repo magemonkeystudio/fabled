@@ -31,11 +31,11 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.skills.PassiveSkill;
 import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.api.skills.SkillShot;
-import com.sucy.skill.cast.IIndicator;
 import com.sucy.skill.dynamic.trigger.TriggerComponent;
 import com.sucy.skill.log.Logger;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.util.TextFormatter;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -265,30 +265,18 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
     }
 
     /**
-     * Initializes the indicators for a skill.
+     * Plays the skill previews.
+     * This should be implemented by each skill.
      *
-     * @param list   list to store indicators in
      * @param player player to base location on
      * @param level  the level of the skill to create for
+     * @param step   the current progress of the indicator
      */
     @Override
-    public void createPreview(final List<IIndicator> list, final Player player, final int level) {
-        list.clear();
+    public void playPreview(Player player, int level, int step) {
         if (castTrigger != null) {
-            castTrigger.makeIndicators(list, player, ImmutableList.of(player), level);
+            castTrigger.playPreview(player, level, ImmutableList.of(player), level);
         }
-    }
-
-    /**
-     * Updates the positions of indicators for a skill.
-     *
-     * @param list   list to store indicators in
-     * @param player player to base location on
-     * @param level  the level of the skill to create for
-     */
-    @Override
-    public void updateIndicators(final List<IIndicator> list, final Player player, final int level) {
-        createPreview(list, player, level);
     }
 
     /**

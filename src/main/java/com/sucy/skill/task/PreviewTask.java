@@ -27,9 +27,8 @@
 package com.sucy.skill.task;
 
 import com.sucy.skill.SkillAPI;
-import com.sucy.skill.api.particle.ParticleHelper;
 import com.sucy.skill.api.player.PlayerData;
-import com.sucy.skill.cast.IndicatorSettings;
+import com.sucy.skill.cast.PreviewSettings;
 import com.sucy.skill.thread.RepeatThreadTask;
 import org.bukkit.entity.Player;
 
@@ -41,7 +40,7 @@ public class PreviewTask extends RepeatThreadTask
 
     public PreviewTask(Player player)
     {
-        super(0, IndicatorSettings.interval);
+        super(0, PreviewSettings.interval);
 
         this.player = player;
         this.data = SkillAPI.getPlayerData(player);
@@ -57,12 +56,6 @@ public class PreviewTask extends RepeatThreadTask
             return;
         }
 
-        // Update and play the effect
-        try {
-            data.getCastBars().playHoverParticles(player, step++);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            expired = true;
-        }
+        data.getCastBars().playHoverParticles(player, step++);
     }
 }

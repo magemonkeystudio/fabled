@@ -27,7 +27,7 @@
 package com.sucy.skill.dynamic.target;
 
 import com.sucy.skill.api.util.Nearby;
-import com.sucy.skill.cast.IIndicator;
+import com.sucy.skill.cast.*;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -42,6 +42,9 @@ import java.util.List;
  */
 public class NearestTarget extends TargetComponent {
     private static final String RADIUS = "radius";
+
+    private Preview preview;
+    private double radius = 0;
 
     /** {@inheritDoc} */
     @Override
@@ -62,8 +65,15 @@ public class NearestTarget extends TargetComponent {
 
     /** {@inheritDoc} */
     @Override
-    void makeIndicators(final List<IIndicator> list, final Player caster, final LivingEntity target, final int level) {
-        makeCircleIndicator(list, target, parseValues(caster, RADIUS, level, 3.0));
+    void playPreview(Player caster, final int level, final LivingEntity target, int step) {
+        double currentRadius = parseValues(caster, RADIUS, level, 3.0);
+        if (preview == null || currentRadius != radius) {
+            radius = currentRadius;
+            preview = previewType == PreviewType.DIM_2 ?
+                    new CirclePreview(radius) :
+                    new SpherePreview(radius);
+        }
+        preview.playParticles(caster, PreviewSettings.particle, target.getLocation().add(0, 0.1, 0), step);
     }
 
     @Override

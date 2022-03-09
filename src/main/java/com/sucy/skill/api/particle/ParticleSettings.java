@@ -27,6 +27,7 @@
 package com.sucy.skill.api.particle;
 
 import mc.promcteam.engine.mccore.config.parse.DataSection;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -122,13 +123,8 @@ public class ParticleSettings {
      * @param x X-axis coordinates
      * @param y Y-axis coordinates
      * @param z Z-axis coordinates
-     *
-     * @return packet instance
-     *
-     * @throws Exception
      */
-    public void instance(Player player, double x, double y, double z)
-            throws Exception {
+    public void instance(Player player, double x, double y, double z) {
         player.spawnParticle(type, x, y, z, amount, dx, dy, dz, speed, object);
     }
 }

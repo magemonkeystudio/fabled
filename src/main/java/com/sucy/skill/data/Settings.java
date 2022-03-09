@@ -35,7 +35,7 @@ import com.sucy.skill.api.CombatProtection;
 import com.sucy.skill.api.DefaultCombatProtection;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.skills.Skill;
-import com.sucy.skill.cast.IndicatorSettings;
+import com.sucy.skill.cast.PreviewSettings;
 import com.sucy.skill.data.formula.Formula;
 import com.sucy.skill.data.formula.value.CustomValue;
 import com.sucy.skill.dynamic.DynamicSkill;
@@ -1082,7 +1082,7 @@ public class Settings {
         hoverItem = GUITool.parseItem(config.getSection(CAST_HOVER));
         instantItem = GUITool.parseItem(config.getSection(CAST_INSTANT));
         castEnabled = castEnabled && castItem != null;
-        IndicatorSettings.load(config.getSection(CAST_INDICATOR));
+        PreviewSettings.load(config.getSection(CAST_INDICATOR));
     }
 
     private void loadComboSettings() {

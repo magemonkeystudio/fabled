@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.cast.SphereIndicator
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,61 +33,26 @@ import org.bukkit.entity.Player;
 /**
  * A fancier sphere indicator
  */
-public class SphereIndicator implements IIndicator
-{
-    private static final double COS_45 = Math.cos(Math.PI / 4);
-
-    private double x, y, z;
+public class SpherePreview extends RoundPreview {
+    private static final double COS_45 = Math.cos(Math.PI/4);
     private double radius;
     private double sin, cos;
     private double angleStep;
-    private int    particles;
+    private int particles;
 
     /**
      * @param radius radius of the circle
      */
-    public SphereIndicator(double radius)
-    {
-        if (radius == 0)
-            throw new IllegalArgumentException("Invalid radius - cannot be 0");
+    public SpherePreview(double radius) {
+        if (radius == 0) { throw new IllegalArgumentException("Invalid radius - cannot be 0"); }
 
         this.radius = Math.abs(radius);
-        particles = (int) (IndicatorSettings.density * radius * 2 * Math.PI);
-        angleStep = IndicatorSettings.animation * IndicatorSettings.interval / (20 * this.radius);
+        particles = (int) (PreviewSettings.density*radius*2*Math.PI);
+        angleStep = PreviewSettings.animation*PreviewSettings.interval/(20*this.radius);
 
-        double angle = Math.PI * 2 / particles;
+        double angle = Math.PI*2/particles;
         sin = Math.sin(angle);
         cos = Math.cos(angle);
-    }
-
-    /**
-     * Updates the position of the indicator to be centered
-     * at the given coordinates
-     *
-     * @param loc location to move to
-     */
-    @Override
-    public void moveTo(Location loc)
-    {
-        this.x = loc.getX();
-        this.y = loc.getY();
-        this.z = loc.getZ();
-    }
-
-    /**
-     * Updates the position of the indicator to be centered
-     * at the given coordinates
-     *
-     * @param x X-axis coordinate
-     * @param y Y-axis coordinate
-     * @param z Z-axis coordinate
-     */
-    @Override
-    public void moveTo(double x, double y, double z)
-    {
-        this.x = x;
-        this.y = y;
-        this.z = z;
     }
 
     /**
@@ -95,32 +60,34 @@ public class SphereIndicator implements IIndicator
      *
      * @param particle particle type to use
      * @param step     animation step
-     *
-     * @throws Exception
      */
     @Override
-    public void playParticles(Player player, ParticleSettings particle, int step)
-        throws Exception
-    {
+    public void playParticles(Player player, ParticleSettings particle, Location location, int step) {
+        double x = location.getX();
+        double y = location.getY();
+        double z = location.getZ();
+
         // Offset angle for animation
-        double startAngle = step * angleStep;
+        double startAngle = step*angleStep;
 
         double urs = Math.sin(startAngle);
         double urc = Math.cos(startAngle);
 
-        double rs = urs * radius;
-        double rc = urc * radius;
+        double rs = urs*radius;
+        double rc = urc*radius;
 
         // Flat circle packets
-        for (int i = 0; i < particles; i++)
-        {
-            particle.instance(player, x + rs, y, z + rc);
-            particle.instance(player, x + rs * urc, y + rc, z + rs * urs);
-            particle.instance(player, x + (rc - rs * urs) * COS_45, y + rs * urc, z + (rc + rs * urs) * COS_45);
+        for (int i = 0; i < particles; i++) {
+            particle.instance(player, x+rs, y, z+rc);
+            particle.instance(player, x+rs*urc, y+rc, z+rs*urs);
+            particle.instance(player, x+(rc-rs*urs)*COS_45, y+rs*urc, z+(rc+rs*urs)*COS_45);
 
-            double temp = rs * cos - rc * sin;
-            rc = rs * sin + rc * cos;
+            double temp = rs*cos-rc*sin;
+            rc = rs*sin+rc*cos;
             rs = temp;
         }
     }
+
+    @Override
+    public double getRadius() { return radius; }
 }

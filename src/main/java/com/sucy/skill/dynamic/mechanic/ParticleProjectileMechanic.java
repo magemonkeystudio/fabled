@@ -66,53 +66,51 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
     private static final String USE_EFFECT = "use-effect";
     private static final String EFFECT_KEY = "effect-key";
 
-    /**
-     * Creates the list of indicators for the skill
-     *
-     * @param list    list to store indicators in
-     * @param caster  caster reference
-     * @param targets location to base location on
-     * @param level   the level of the skill to create for
-     */
+    private Preview preview;
+
+    /** {@inheritDoc} */
     @Override
-    public void makeIndicators(List<IIndicator> list, Player caster, List<LivingEntity> targets, int level) {
-        targets.forEach(target -> {
-            // Get common values
-            int    amount = (int) parseValues(caster, AMOUNT, level, 1.0);
-            double speed  = parseValues(caster, VELOCITY, level, 1);
-            String spread = settings.getString(SPREAD, "cone").toLowerCase();
+    public void playPreview(Player caster, int level, List<LivingEntity> targets, int step) {
+        double speed  = parseValues(caster, VELOCITY, level, 1);
+        String spread = settings.getString(SPREAD, "cone").toLowerCase();
+        double radius = parseValues(caster, RADIUS, level, 2.0);
 
-            // Apply the spread type
-            if (spread.equals("rain")) {
-                double radius = parseValues(caster, RADIUS, level, 2.0);
-
-                if (indicatorType == IndicatorType.DIM_2) {
-                    IIndicator indicator = new CircleIndicator(radius);
-                    indicator.moveTo(target.getLocation().add(0, 0.1, 0));
-                    list.add(indicator);
-                } else {
-                    double     height    = parseValues(caster, HEIGHT, level, 8.0);
-                    IIndicator indicator = new CylinderIndicator(radius, height);
-                    indicator.moveTo(target.getLocation());
-                    list.add(indicator);
+        if (spread.equals("rain")) {
+            if (previewType == PreviewType.DIM_2) {
+                CirclePreview circlePreview = (CirclePreview) preview;
+                if (preview == null || circlePreview.getRadius() != radius) {
+                    preview = new CirclePreview(radius);
                 }
             } else {
-                Vector dir = target.getLocation().getDirection();
-                if (spread.equals("horizontal cone")) {
-                    dir.setY(0);
-                    dir.normalize();
-                }
-                double            angle = parseValues(caster, ANGLE, level, 30.0);
-                ArrayList<Vector> dirs  = CustomProjectile.calcSpread(dir, angle, amount);
-                Location          loc   = caster.getLocation().add(0, caster.getEyeHeight(), 0);
-                for (Vector d : dirs) {
-                    ProjectileIndicator indicator = new ProjectileIndicator(speed, 0);
-                    indicator.setDirection(d);
-                    indicator.moveTo(loc);
-                    list.add(indicator);
+                CylinderPreview cylinderPreview = (CylinderPreview) preview;
+                double height = parseValues(caster, HEIGHT, level, 8.0);
+                if (preview == null || cylinderPreview.getRadius() != radius || cylinderPreview.getHeight() != height) {
+                    preview = new CylinderPreview(radius, height);
                 }
             }
-        });
+            targets.forEach(target -> {
+                preview.playParticles(caster, PreviewSettings.particle, target.getLocation().add(0, 0.1, 0), step);
+            });
+        } else {
+            int amount = (int) parseValues(caster, AMOUNT, level, 1.0);
+            ProjectilePreview projectilePreview = (ProjectilePreview) preview;
+            if (preview == null || projectilePreview.getSpeed() != speed) {
+                preview = new ProjectilePreview(speed, 0);
+            }
+            targets.forEach(target -> {
+                Location location = target.getEyeLocation();
+                if (spread.equals("horizontal cone")) {
+                    location.setDirection(location.getDirection().setY(0).normalize());
+                }
+                double angle = parseValues(caster, ANGLE, level, 30.0);
+                ArrayList<Vector> dirs = CustomProjectile.calcSpread(location.getDirection(), angle, amount);
+                for (Vector d : dirs) {
+                    Location spreadLocation = location.clone();
+                    spreadLocation.setDirection(d);
+                    preview.playParticles(caster, PreviewSettings.particle, spreadLocation, step);
+                }
+            });
+        }
     }
 
     @Override

@@ -1,21 +1,21 @@
 /**
  * SkillAPI
- * com.sucy.skill.cast.CircleIndicator
- *
+ * com.sucy.skill.cast.CylinderIndicator
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -30,60 +30,32 @@ import com.sucy.skill.api.particle.ParticleSettings;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-/**
- * An indicator for a circular pattern
- */
-public class CircleIndicator implements IIndicator
-{
-    private double x, y, z;
+public class CylinderPreview extends RoundPreview {
     private double radius;
-    private double sin, cos;
+    private double height;
+    private double sin;
+    private double cos;
     private int particles;
+    private int vertParticles;
+    private double vertOffset;
+    private int vert;
 
     /**
      * @param radius radius of the circle
      */
-    public CircleIndicator(double radius)
-    {
-        if (radius == 0)
-            throw new IllegalArgumentException("Invalid radius - cannot be 0");
+    public CylinderPreview(double radius, double height) {
+        if (radius == 0) { throw new IllegalArgumentException("Invalid radius - cannot be 0"); }
 
         this.radius = Math.abs(radius);
-        particles = (int) (IndicatorSettings.density * radius * 2 * Math.PI);
+        this.height = height;
+        particles = (int) (PreviewSettings.density*radius*2*Math.PI);
+        vert = particles/8;
+        vertParticles = (int) (PreviewSettings.density*height);
+        vertOffset = height/vertParticles;
 
-        double angle = Math.PI * 2 / particles;
+        double angle = Math.PI*2/particles;
         sin = Math.sin(angle);
         cos = Math.cos(angle);
-    }
-
-    /**
-     * Updates the position of the indicator to be centered
-     * at the given coordinates
-     *
-     * @param loc location to move to
-     */
-    @Override
-    public void moveTo(Location loc)
-    {
-        this.x = loc.getX();
-        this.y = loc.getY();
-        this.z = loc.getZ();
-    }
-
-    /**
-     * Updates the position of the indicator to be centered
-     * at the given coordinates
-     *
-     * @param x X-axis coordinate
-     * @param y Y-axis coordinate
-     * @param z Z-axis coordinate
-     */
-    @Override
-    public void moveTo(double x, double y, double z)
-    {
-        this.x = x;
-        this.y = y;
-        this.z = z;
     }
 
     /**
@@ -91,26 +63,37 @@ public class CircleIndicator implements IIndicator
      *
      * @param particle particle type to use
      * @param step     animation step
-     *
-     * @throws Exception
      */
     @Override
-    public void playParticles(Player player, ParticleSettings particle, int step)
-        throws Exception
-    {
+    public void playParticles(Player player, ParticleSettings particle, Location location, int step) {
+        double x = location.getX();
+        double y = location.getY();
+        double z = location.getZ();
+
         // Offset angle for animation
-        double startAngle = step * IndicatorSettings.animation / (20 * radius);
-        double ii = Math.sin(startAngle) * radius;
-        double jj = Math.cos(startAngle) * radius;
+        double startAngle = step*PreviewSettings.animation/(20*radius);
+        double rSin = Math.sin(startAngle)*radius;
+        double rCos = Math.cos(startAngle)*radius;
 
         // Make the packets
-        for (int i = 0; i < particles; i++)
-        {
-            particle.instance(player, x + ii, y, z + jj);
+        for (int i = 0; i < particles; i++) {
+            particle.instance(player, x+rSin, y, z+rCos);
+            particle.instance(player, x+rSin, y+height, z+rCos);
 
-            double temp = ii * cos - jj * sin;
-            jj = ii * sin + jj * cos;
-            ii = temp;
+            if (i%vert == 0) {
+                for (int j = 0; j < vertParticles; j++) {
+                    particle.instance(player, x+rSin, y+vertOffset*j, z+rCos);
+                }
+            }
+
+            double temp = rSin*cos-rCos*sin;
+            rCos = rSin*sin+rCos*cos;
+            rSin = temp;
         }
     }
+
+    @Override
+    public double getRadius() { return radius; }
+
+    public double getHeight() { return height; }
 }

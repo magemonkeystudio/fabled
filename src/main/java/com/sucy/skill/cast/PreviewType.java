@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.cast.IndicatorSettings
+ * com.sucy.skill.cast.IndicatorType
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -26,25 +26,40 @@
  */
 package com.sucy.skill.cast;
 
-import com.sucy.skill.api.particle.ParticleSettings;
-import mc.promcteam.engine.mccore.config.parse.DataSection;
-
 /**
- * An indicator for a player's skill
+ * The type of indicator display to use
  */
-public class IndicatorSettings {
-    public static ParticleSettings particle;
+public enum PreviewType {
+    // 3-dimensional effect (sphere, cuboid, etc.)
+    DIM_3("3D"),
 
-    public static boolean enabled;
-    public static double density;
-    public static double animation;
-    public static int interval;
+    // 2-dimensional effect (circle, rectangle, etc.)
+    DIM_2("2D"),
 
-    public static void load(DataSection data) {
-        enabled = data.getBoolean("enabled");
-        density = data.getDouble("density");
-        animation = data.getDouble("animation");
-        interval = (int) Math.ceil(20 / data.getDouble("frequency"));
-        particle = new ParticleSettings(data.getSection("particle"));
+    // No effect
+    NONE("None");
+
+    private String key;
+
+    PreviewType(String key) {
+        this.key = key;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    /**
+     * Gets the indicator type by key
+     *
+     * @param key key
+     * @return indicator type
+     */
+    public static PreviewType getByKey(String key) {
+        if (key == null) { return NONE; } else if (key.equalsIgnoreCase("3D")) {
+            return DIM_3;
+        } else if (key.equalsIgnoreCase("2D")) {
+            return DIM_2;
+        } else { return NONE; }
     }
 }
