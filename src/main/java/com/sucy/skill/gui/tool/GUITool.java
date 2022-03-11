@@ -50,19 +50,12 @@ import java.util.*;
 
 public class GUITool implements ToolMenu {
     // Page buttons
-    private static final String NEXT_PAGE = "NEXT_PAGE";
-    private static final String PREV_PAGE = "PREV_PAGE";
-
-    private static boolean inUse = false;
-
-    public static boolean isInUse() {
-        return inUse;
-    }
-
-    private static final HashMap<String, GUIData>   setups = new HashMap<String, GUIData>();
-    private static final HashMap<String, ItemStack> items  = new HashMap<String, ItemStack>();
-
-    private static CommentedConfig config;
+    private static final String                     NEXT_PAGE = "NEXT_PAGE";
+    private static final String                     PREV_PAGE = "PREV_PAGE";
+    private static final HashMap<String, GUIData>   setups    = new HashMap<>();
+    private static final HashMap<String, ItemStack> items     = new HashMap<>();
+    private static       boolean                    inUse     = false;
+    private static       CommentedConfig            config;
 
     private static ItemStack
             NEXT,
@@ -76,9 +69,30 @@ public class GUITool implements ToolMenu {
             NEXT_PROFESSION,
             PREV_PROFESSION;
 
-    private static RPGClass[] availableClasses;
-    private static RPGClass[] availableProfesses;
-    private static String[]   availableGroups;
+    private static RPGClass[]    availableClasses;
+    private static RPGClass[]    availableProfesses;
+    private static String[]      availableGroups;
+    private static GUIType       type;
+    private static int           classId;
+    private static int           professId;
+    private final  Player        player;
+    private        InventoryData data;
+    private        Inventory     inventory;
+    private        RPGClass      rpgClass;
+    private        Skill         skill;
+    private        GUIData       guiData;
+    private        ItemStack[]   playerContents;
+    private        ItemStack[]   inventoryContents;
+    private        int           i;
+    private        boolean       switching = false;
+
+    public GUITool(Player player) {
+        this.player = player;
+    }
+
+    public static boolean isInUse() {
+        return inUse;
+    }
 
     public static void init() {
         if (NEXT != null)
@@ -96,11 +110,16 @@ public class GUITool implements ToolMenu {
         PREV_PROFESSION = make(Material.IRON_HOE, ChatColor.GOLD + "Previous Profession");
 
         availableClasses = SkillAPI.getClasses().values().toArray(new RPGClass[SkillAPI.getClasses().size()]);
-        HashSet<RPGClass> professes = new HashSet<RPGClass>();
-        HashSet<String>   groups    = new HashSet<String>();
+        Set<RPGClass> professes = new HashSet<>();
+        Set<String>   groups    = new HashSet<>();
         professes.add(null);
         for (RPGClass c : availableClasses) {
-            setups.put(GUIType.SKILL_TREE.getPrefix() + c.getName(), new GUIData(c.getSkillTree()));
+            try {
+                setups.put(GUIType.SKILL_TREE.getPrefix() + c.getName(), new GUIData(c.getSkillTree()));
+            } catch (IllegalArgumentException e) {
+                SkillAPI.inst().getLogger().warning("Failed to load skill tree for " + c.getName());
+                e.printStackTrace();
+            }
             if (c.hasParent())
                 professes.add(c.getParent());
             groups.add(c.getGroup());
@@ -111,9 +130,14 @@ public class GUITool implements ToolMenu {
         config = SkillAPI.getConfig("gui");
         DataSection data = config.getConfig();
         for (String key : data.keys()) {
-            GUIData loaded = new GUIData(data.getSection(key));
-            if (loaded.isValid())
-                setups.put(key, loaded);
+            try {
+                GUIData loaded = new GUIData(data.getSection(key));
+                if (loaded.isValid())
+                    setups.put(key, loaded);
+            } catch (IllegalArgumentException e) {
+                SkillAPI.inst().getLogger().warning("Failed to load GUI data for " + key);
+                e.printStackTrace();
+            }
         }
 
         CommentedConfig itemFile = SkillAPI.getConfig("tool");
@@ -240,29 +264,14 @@ public class GUITool implements ToolMenu {
         return item;
     }
 
-    private static GUIType type;
-    private static int     classId;
-    private static int     professId;
-
-    private final Player player;
-
-    private InventoryData data;
-
-    private Inventory inventory;
-
-    private RPGClass rpgClass;
-    private Skill    skill;
-    private GUIData  guiData;
-
-    private ItemStack[] playerContents;
-    private ItemStack[] inventoryContents;
-
-    private int i;
-
-    private boolean switching = false;
-
-    public GUITool(Player player) {
-        this.player = player;
+    public static void addPageButtons(ItemStack[] contents) {
+        if (contents.length > 9) {
+            contents[8] = items.get(PREV_PAGE);
+            contents[17] = items.get(NEXT_PAGE);
+        } else {
+            contents[7] = items.get(PREV_PAGE);
+            contents[8] = items.get(NEXT_PAGE);
+        }
     }
 
     public void open() {
@@ -340,16 +349,6 @@ public class GUITool implements ToolMenu {
             addPageButtons(inventoryContents);
 
         return name;
-    }
-
-    public static void addPageButtons(ItemStack[] contents) {
-        if (contents.length > 9) {
-            contents[8] = items.get(PREV_PAGE);
-            contents[17] = items.get(NEXT_PAGE);
-        } else {
-            contents[7] = items.get(PREV_PAGE);
-            contents[8] = items.get(NEXT_PAGE);
-        }
     }
 
     private ItemStack toPlaceholder(String key, ItemStack custom) {

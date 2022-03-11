@@ -27,6 +27,7 @@
 package com.sucy.skill.gui.tool;
 
 import com.google.common.base.Preconditions;
+import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.tree.basic.InventoryTree;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
@@ -39,15 +40,15 @@ import java.util.HashMap;
 
 public class GUIData {
     private static final String
-            ROWS = "rows",
+            ROWS  = "rows",
             PAGES = "pages",
             SLOTS = "slots";
 
     private final ArrayList<GUIPage> pageMap = new ArrayList<GUIPage>();
 
-    private int rows = 3;
+    private int rows  = 3;
     private int pages = 1;
-    private int nav = 0;
+    private int nav   = 0;
 
     GUIData() {
         pageMap.add(new GUIPage(this));
@@ -55,14 +56,24 @@ public class GUIData {
 
     GUIData(InventoryTree skillTree) {
         rows = skillTree.getHeight();
-        Preconditions.checkArgument(rows>0 && rows < 6);
+        try {
+            Preconditions.checkArgument(rows > 0 && rows < 6);
+        } catch (IllegalArgumentException e) {
+            SkillAPI.inst().getLogger().warning("Error loading GUI:  Rows should be > 0 and < 6. Rows: " + rows);
+            throw e;
+        }
         this.pageMap.add(new GUIPage(this, skillTree.getSkillSlots()));
     }
 
     GUIData(DataSection data) {
         if (data != null) {
             rows = data.getInt(ROWS, rows);
-            Preconditions.checkArgument(rows>0 && rows < 6);
+            try {
+                Preconditions.checkArgument(rows > 0 && rows < 6);
+            } catch (IllegalArgumentException e) {
+                SkillAPI.inst().getLogger().warning("Error loading GUI:  Rows should be > 0 and < 6. Rows: " + rows);
+                throw e;
+            }
             this.pages = data.getInt(PAGES, this.pages);
             DataSection pages = data.getSection(SLOTS);
             if (pages != null)
@@ -75,7 +86,7 @@ public class GUIData {
     }
 
     public void show(GUIHolder handler, PlayerData player, String title, HashMap<String, ? extends IconHolder> data) {
-        Inventory inv = Bukkit.getServer().createInventory(handler, rows * 9, title);
+        Inventory   inv      = Bukkit.getServer().createInventory(handler, rows * 9, title);
         ItemStack[] contents = pageMap.get(0).instance(player, data);
         if (pages > 1)
             GUITool.addPageButtons(contents);
@@ -177,7 +188,7 @@ public class GUIData {
         data.set(ROWS, rows);
         data.set(PAGES, pages);
         DataSection slots = data.createSection(SLOTS);
-        int i = 0;
+        int         i     = 0;
         for (GUIPage page : pageMap) {
             page.save(slots.createSection((++i) + ""));
         }
