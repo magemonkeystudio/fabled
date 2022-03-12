@@ -91,12 +91,14 @@ public class CmdChangeClass implements IFunction {
                 return;
             }
 
-            boolean        bar      = data.getSkillBar().isEnabled();
-            PlayerSkillBar skillBar = data.getSkillBar();
-            skillBar.clear(player);
-            skillBar.reset();
-            if (bar)
+            boolean bar = data.getSkillBar().isEnabled() && SkillAPI.getSettings().isSkillBarEnabled();
+            if (bar) {
+                PlayerSkillBar skillBar = data.getSkillBar();
+                skillBar.toggleEnabled();
+                skillBar.reset();
                 data.getSkillBar().toggleEnabled();
+            }
+
             clazz.setClassData(target);
             unload(player);
             SkillAPI.getPlayerAccountData(player).getActiveData().init(player);
