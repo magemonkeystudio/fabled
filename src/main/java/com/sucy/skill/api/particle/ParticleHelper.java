@@ -82,7 +82,7 @@ public final class ParticleHelper {
 
         String arrangement = settings.getString(ARRANGEMENT_KEY, "").toLowerCase();
         int level = settings.getInt(LEVEL, 1);
-        int points = settings.getInt(POINTS_KEY, 20);
+        int points = (int) settings.getAttr(POINTS_KEY, 0, 20);
         switch (arrangement) {
             case "circle":
                 fillCircle(loc, settings, level, points, visibleRadius, particle, amount, dx, dy, dz, speed, object);
