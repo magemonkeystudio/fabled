@@ -54,6 +54,7 @@ public class EffectPlayer {
     public static final String DURABILITY = "-particle-durability";
     public static final String CMD = "-particle-data";
     public static final String DUST_COLOR = "-particle-dust-color";
+    public static final String FINAL_DUST_COLOR = "-particle-final-dust-color";
     public static final String DUST_SIZE = "-particle-dust-size";
     public static final String AMOUNT = "-particle-amount";
     public static final String DX     = "-particle-dx";
@@ -135,6 +136,7 @@ public class EffectPlayer {
                     settings.getInt(keyMod +CMD, 0),
                     settings.getInt(keyMod + DURABILITY, 0),
                     Color.fromRGB(Integer.parseInt(settings.getString(DUST_COLOR, "#FF0000").substring(1), 16)),
+                    Color.fromRGB(Integer.parseInt(settings.getString(FINAL_DUST_COLOR, "#FF0000").substring(1), 16)),
                     (float) settings.getDouble(DUST_SIZE, 1)
 
             );

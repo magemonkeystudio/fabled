@@ -48,6 +48,7 @@ public class ParticleSettings {
             DZ_KEY = "dz",
             SPEED_KEY = "speed",
             DUST_COLOR = "dust-color",
+            FINAL_DUST_COLOR = "final-dust-color",
             DUST_SIZE = "dust-size";
 
     // Particle type
@@ -87,6 +88,7 @@ public class ParticleSettings {
             int cmd,
             int durability,
             Color dustColor,
+            Color toColor,
             float dusSize
             ) {
         this.type = type;
@@ -95,7 +97,7 @@ public class ParticleSettings {
         this.dz = dz;
         this.speed = speed;
         this.amount = amount;
-        this.object =  ParticleHelper.makeObject(type, material, cmd, durability, dustColor, dusSize);
+        this.object =  ParticleHelper.makeObject(type, material, cmd, durability, dustColor, toColor, dusSize);
     }
 
     /**
@@ -114,6 +116,7 @@ public class ParticleSettings {
                                                  config.getInt(DATA_KEY, 0),
                                                  config.getInt(DURABILITY_KEY, 0),
                                                  Color.fromRGB(Integer.parseInt(config.getString(DUST_COLOR, "#FF0000").substring(1), 16)),
+                                                 Color.fromRGB(Integer.parseInt(config.getString(FINAL_DUST_COLOR, "#FF0000").substring(1), 16)),
                                                  (float) config.getDouble(DUST_SIZE, 1));
     }
 
