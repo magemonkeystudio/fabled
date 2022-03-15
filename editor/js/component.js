@@ -3579,38 +3579,46 @@ function addProjectileOptions(component) {
 function addParticleOptions(component) {
     component.data.push(new SectionMarker('Particle Options'));
     component.data.push(new ListValue('Particle', 'particle', getParticles, 'Villager happy')
-        .setTooltip('The type of particle to display. Particle effects that show the DX, DY, and DZ options are not compatible with Cauldron')
+        .setTooltip('The type of particle to display')
     );
 
     component.data.push(new ListValue('Material', 'material', getMaterials, 'Dirt').requireValue('particle', ['Item crack',
                                                                                                               'Block crack',
                                                                                                               'Block dust',
                                                                                                               'Falling dust',
-                                                                                                              'Item Crack'])
+                                                                                                              'Block marker'])
         .setTooltip('The material to use for the particles')
     );
-    component.data.push(new IntValue('Durability', 'durability', 0).requireValue('particle', ['Item crack', 'Item Crack'])
+    component.data.push(new IntValue('Durability', 'durability', 0).requireValue('particle', ['Item crack'])
         .setTooltip('The durability to be reduced from the item used to make the particles')
     );
-    component.data.push(new IntValue('CustomModelData', 'type', 0).requireValue('particle', ['Item crack', 'Item Crack'])
+    component.data.push(new IntValue('CustomModelData', 'type', 0).requireValue('particle', ['Item crack'])
         .setTooltip('The CustomModelData of the item used to make the particles')
     );
+    component.data.push(new StringValue('Dust Color', 'dust-color', '#FF0000').requireValue('particle', ['Redstone', 'Dust color transition'])
+        .setTooltip('The color of the dust particles in hex RGB')
+    );
+    component.data.push(new StringValue('Final Dust Color', 'final-dust-color', '#FF0000').requireValue('particle', ['Dust color transition'])
+        .setTooltip('The color to transition to, in hex RGB')
+    );
+    component.data.push(new DoubleValue('Dust Size', 'dust-size', 1).requireValue('particle', ['Redstone', 'Dust color transition'])
+        .setTooltip('The size of the dust particles')
+    );
 
-    component.data.push(new ListValue('Arrangement', 'arrangement', ['Circle', 'Hemisphere', 'Sphere'], 'Sphere')
+    component.data.push(new ListValue('Arrangement', 'arrangement', ['Sphere', 'Circle', 'Hemisphere'], 'Sphere')
         .setTooltip('The arrangement to use for the particles. Circle is a 2D circle, Hemisphere is half a 3D sphere, and Sphere is a 3D sphere')
     );
-    component.data.push(new AttributeValue('Radius', 'radius', 1, 0)
-        .setTooltip('The radius of the arrangement in blocks')
-    );
-    component.data.push(new AttributeValue('Amount', 'particles', 20, 0)
-        .setTooltip('The amount of points that conform the chosen arrangement')
-    );
-
     // Circle arrangement direction
     component.data.push(new ListValue('Circle Direction', 'direction', ['XY',
                                                                         'XZ',
                                                                         'YZ'], 'XZ').requireValue('arrangement', ['Circle'])
         .setTooltip('The orientation of the circle. XY and YZ are vertical circles while XZ is a horizontal circle.')
+    );
+    component.data.push(new AttributeValue('Radius', 'radius', 1, 0)
+        .setTooltip('The radius of the arrangement in blocks')
+    );
+    component.data.push(new AttributeValue('Points', 'particles', 20, 0)
+        .setTooltip('The amount of points that conform the chosen arrangement')
     );
 
     // Bukkit particle data value
@@ -3628,7 +3636,7 @@ function addParticleOptions(component) {
     );
     component.data.push(new DoubleValue('DZ', 'dz', 0).setTooltip('Offset in the Z direction, used as the Blue value for some particles.')
     );
-    component.data.push(new DoubleValue('Packet Amount', 'amount', 1).setTooltip('Number of particles to play per point. For "spell" and "effect" particles, set to 0 to control the particle color.')
+    component.data.push(new DoubleValue('Amount', 'amount', 1).setTooltip('Number of particles to play per point. For "Spell mob" and "Spell mob ambient" particles, set to 0 to control the particle color.')
     );
     component.data.push(new DoubleValue('Speed', 'speed', 0.1).setTooltip('Speed of the particle. For some particles controls other parameters, such as size.')
     );
@@ -3681,24 +3689,28 @@ function addEffectOptions(component, optional) {
         .setTooltip('The type of particle to use.')
     ));
     component.data.push(opt(new ListValue('Material', '-particle-material', getMaterials, 'Dirt')
-        .requireValue('-particle-type', ['Item crack',
-                                         'Item Crack',
-                                         'Block crack',
-                                         'Block Crack',
-                                         'Block dust',
-                                         'Falling dust'])
+        .requireValue('-particle-type', ['Item crack', 'Block crack', 'Block dust', 'Falling dust', 'Block marker'])
         .setTooltip('The material to use for the particle.')
     ));
     component.data.push(opt(new IntValue('Durability', '-particle-durability', 0)
-		.requireValue('particle', ['Item crack', 'Item Crack'])
+		.requireValue('particle', ['Item crack'])
         .setTooltip('The durability to be reduced from the item used to make the particles')
     ));
-    component.data.push(opt(new IntValue('Data', '-particle-data', 0)
-        .requireValue('-particle-type', ['Item crack', 'Item Crack'])
+    component.data.push(opt(new IntValue('CustomModelData', '-particle-data', 0)
+        .requireValue('-particle-type', ['Item crack'])
         .setTooltip('The data value for the material used by the particle. For 1.14+ determines the CustomModelData of the item.')
     ));
+    component.data.push(new StringValue('Dust Color', '-particle-dust-color', '#FF0000').requireValue('-particle-type', ['Redstone', 'Dust color transition'])
+        .setTooltip('The color of the dust particles in hex RGB')
+    );
+    component.data.push(new StringValue('Final Dust Color', '-particle-final-dust-color', '#FF0000').requireValue('particle', ['Dust color transition'])
+        .setTooltip('The color to transition to, in hex RGB')
+    );
+    component.data.push(new DoubleValue('Dust Size', '-particle-dust-size', 1).requireValue('-particle-type', ['Redstone', 'Dust color transition'])
+        .setTooltip('The size of the dust particles')
+    );
     component.data.push(opt(new IntValue('Amount', '-particle-amount', 1)
-        .setTooltip('Number of particles to play per point. For "spell" and "effect" particles, set to 0 to control the particle color.')
+        .setTooltip('Number of particles to play per point. For "Spell mob" and "Spell mob ambient" particles, set to 0 to control the particle color.')
     ));
     component.data.push(opt(new DoubleValue('DX', '-particle-dx', 0)
         .setTooltip('Offset in the X direction, used as the Red value for some particles.')
