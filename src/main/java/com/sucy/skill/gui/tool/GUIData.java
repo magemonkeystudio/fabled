@@ -57,9 +57,9 @@ public class GUIData {
     GUIData(InventoryTree skillTree) {
         rows = skillTree.getHeight();
         try {
-            Preconditions.checkArgument(rows > 0 && rows < 6);
+            Preconditions.checkArgument(rows > 0 && rows <= 6);
         } catch (IllegalArgumentException e) {
-            SkillAPI.inst().getLogger().warning("Error loading GUI:  Rows should be > 0 and < 6. Rows: " + rows);
+            SkillAPI.inst().getLogger().warning("Error loading GUI: Rows should be > 0 and <= 6. Rows: " + rows);
             throw e;
         }
         this.pageMap.add(new GUIPage(this, skillTree.getSkillSlots()));
@@ -69,9 +69,9 @@ public class GUIData {
         if (data != null) {
             rows = data.getInt(ROWS, rows);
             try {
-                Preconditions.checkArgument(rows > 0 && rows < 6);
+                Preconditions.checkArgument(rows > 0 && rows <= 6);
             } catch (IllegalArgumentException e) {
-                SkillAPI.inst().getLogger().warning("Error loading GUI:  Rows should be > 0 and < 6. Rows: " + rows);
+                SkillAPI.inst().getLogger().warning("Error loading GUI: Rows should be > 0 and <= 6. Rows: " + rows);
                 throw e;
             }
             this.pages = data.getInt(PAGES, this.pages);
