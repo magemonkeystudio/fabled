@@ -3703,7 +3703,7 @@ function addEffectOptions(component, optional) {
     component.data.push(new StringValue('Dust Color', '-particle-dust-color', '#FF0000').requireValue('-particle-type', ['Redstone', 'Dust color transition'])
         .setTooltip('The color of the dust particles in hex RGB')
     );
-    component.data.push(new StringValue('Final Dust Color', '-particle-final-dust-color', '#FF0000').requireValue('particle', ['Dust color transition'])
+    component.data.push(new StringValue('Final Dust Color', '-particle-final-dust-color', '#FF0000').requireValue('-particle-type', ['Dust color transition'])
         .setTooltip('The color to transition to, in hex RGB')
     );
     component.data.push(new DoubleValue('Dust Size', '-particle-dust-size', 1).requireValue('-particle-type', ['Redstone', 'Dust color transition'])
