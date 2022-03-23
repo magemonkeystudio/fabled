@@ -26,6 +26,7 @@
  */
 package com.sucy.skill.api.player;
 
+import com.google.common.base.Preconditions;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.enums.ExpSource;
@@ -356,10 +357,12 @@ public class PlayerClass {
      * This does not lower experience below 0 and will launch an event before
      * taking the experience.
      *
-     * @param percent percent of experience to lose
+     * @param amount percent of experience to lose
+     * @param percent whether to take the amount as a percentage
      */
-    public void loseExp(double percent) {
-        double amount = percent * getRequiredExp();
+    public void loseExp(double amount, boolean percent) {
+        Preconditions.checkArgument(amount > 0, "Amount must be positive");
+        if (percent) { amount *= getRequiredExp(); }
 
         // Launch the event
         PlayerExperienceLostEvent event = new PlayerExperienceLostEvent(this, amount);
@@ -379,10 +382,19 @@ public class PlayerClass {
                         RPGFilter.EXP.setReplacement((int) amount + ""),
                         RPGFilter.CLASS.setReplacement(classData.getName()),
                         Filter.AMOUNT.setReplacement((int) amount + "")
-                );
+                                 );
             }
         }
     }
+
+    /**
+     * Causes the player to lose experience as a penalty (generally for dying).
+     * This does not lower experience below 0 and will launch an event before
+     * taking the experience.
+     *
+     * @param percent percent of experience to lose
+     */
+    public void loseExp(double percent) { loseExp(percent, true); }
 
     /**
      * <p>Checks whether or not the player has leveled up based on

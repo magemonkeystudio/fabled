@@ -47,13 +47,12 @@ import java.util.regex.Pattern;
  * THE SOFTWARE.
  */
 public class CmdExp implements IFunction {
-    private static final Pattern IS_NUMBER = Pattern.compile("[0-9]+");
+    private static final Pattern IS_NUMBER = Pattern.compile("-?[0-9]+");
     private static final Pattern IS_BOOL = Pattern.compile("(true)|(false)");
 
     private static final String NOT_PLAYER = "not-player";
-    private static final String NOT_POSITIVE = "not-positive";
     private static final String GAVE_EXP = "gave-exp";
-    private static final String RECEIVED_EXP = "received-exp";
+    private static final String TOOK_EXP = "took-exp";
     private static final String DISABLED = "world-disabled";
 
     /**
@@ -85,14 +84,9 @@ public class CmdExp implements IFunction {
             PlayerData data = SkillAPI.getPlayerData(target);
 
             // Parse the experience
-            double amount;
-            amount = NumberParser.parseDouble(args[numberIndex]);
+            double amount = NumberParser.parseDouble(args[numberIndex]);
 
-            // Invalid amount of experience
-            if (amount <= 0) {
-                cmd.sendMessage(sender, NOT_POSITIVE, ChatColor.RED + "You must give a positive amount of experience");
-                return;
-            }
+            if (amount == 0) { return; }
 
             int lastArg = args.length - 1;
             boolean message = IS_BOOL.matcher(args[lastArg]).matches();
@@ -103,33 +97,61 @@ public class CmdExp implements IFunction {
             // Give experience to a specific class group
             if (numberIndex + 1 <= lastArg) {
                 PlayerClass playerClass = data.getClass(CmdManager.join(args, numberIndex + 1, lastArg));
-                if (playerClass == null)
-                    return;
+                if (playerClass == null) { return; }
 
-                playerClass.giveExp(amount, ExpSource.COMMAND, showMessage);
+                if (amount > 0) {
+                    playerClass.giveExp(amount, ExpSource.COMMAND, showMessage);
+                    if (showMessage) {
+                        if (target != sender) {
+                            cmd.sendMessage(
+                                    sender,
+                                    GAVE_EXP,
+                                    ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD + "{player} {exp}{class} experience",
+                                    Filter.PLAYER.setReplacement(target.getName()),
+                                    RPGFilter.EXP.setReplacement("" + amount),
+                                    RPGFilter.CLASS.setReplacement(' '+playerClass.getData().getGroup()));
+                        }
+                    }
+                } else {
+                    playerClass.loseExp(-amount, false);
+                    if (showMessage && target != sender) {
+                        cmd.sendMessage(
+                                sender,
+                                TOOK_EXP,
+                                ChatColor.DARK_GREEN + "You have taken " + ChatColor.GOLD + "{exp}{class} experience " + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}",
+                                Filter.PLAYER.setReplacement(target.getName()),
+                                RPGFilter.EXP.setReplacement("" + -amount),
+                                RPGFilter.CLASS.setReplacement(' '+playerClass.getData().getGroup()));
+                    }
+                }
             }
 
             // Give experience
-            else
-                data.giveExp(amount, ExpSource.COMMAND, showMessage);
-
-            // Messages
-            if (showMessage) {
-                if (target != sender) {
-                    cmd.sendMessage(
-                            sender,
-                            GAVE_EXP,
-                            ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD + "{player} {exp} experience",
-                            Filter.PLAYER.setReplacement(target.getName()),
-                            RPGFilter.EXP.setReplacement("" + amount));
-                }
-                if (target.isOnline()) {
-                    cmd.sendMessage(
-                            target.getPlayer(),
-                            RECEIVED_EXP,
-                            ChatColor.DARK_GREEN + "You have received " + ChatColor.GOLD + "{exp} experience " + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}",
-                            Filter.PLAYER.setReplacement(sender.getName()),
-                            RPGFilter.EXP.setReplacement("" + amount));
+            else {
+                if (amount > 0) {
+                    data.giveExp(amount, ExpSource.COMMAND, showMessage);
+                    if (showMessage) {
+                        if (target != sender) {
+                            cmd.sendMessage(
+                                    sender,
+                                    GAVE_EXP,
+                                    ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD + "{player} {exp}{class} experience",
+                                    Filter.PLAYER.setReplacement(target.getName()),
+                                    RPGFilter.EXP.setReplacement("" + amount),
+                                    RPGFilter.CLASS.setReplacement(""));
+                        }
+                    }
+                } else {
+                    data.loseExp(-amount, false);
+                    if (showMessage && target != sender) {
+                        cmd.sendMessage(
+                                sender,
+                                TOOK_EXP,
+                                ChatColor.DARK_GREEN + "You have taken " + ChatColor.GOLD + "{exp}{class} experience " + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}",
+                                Filter.PLAYER.setReplacement(target.getName()),
+                                RPGFilter.EXP.setReplacement("" + -amount),
+                                RPGFilter.CLASS.setReplacement(""));
+                    }
                 }
             }
         }
