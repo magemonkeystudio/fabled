@@ -13,7 +13,7 @@ You can download ProSkillAPI form our marketplace
 * https://promcteam.com/resources/
 
 ## PROMCTEAM:
-* Discord | https://discord.gg/RhTyRReKyP
+* Discord | https://discord.gg/6UzkTe6RvW
 
 # Development 
 
