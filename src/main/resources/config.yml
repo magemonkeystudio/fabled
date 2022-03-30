@@ -277,6 +277,7 @@ GUI:
   # Second lines of messages will be displayed in the subtitle
   # Ones you can use include:
   #   level_up
+  #   level_down
   #   exp_gained
   #   exp_lost
   #   status
@@ -526,8 +527,11 @@ Experience:
   # Whether to display a message when gaining a level
   level-message-enabled: true
   #
-  # Whether to show a message when losing exp de to dying
+  # Whether to show a message when losing exp
   lose-exp-message: true
+  #
+  # Whether to display a message when losing a level
+  lose-level-message: true
   #
   # Worlds where experience is not lost on death
   lose-exp-blacklist:

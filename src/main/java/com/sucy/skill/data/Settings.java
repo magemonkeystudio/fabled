@@ -507,11 +507,16 @@ public class Settings {
     @Getter private boolean      showLevelMessages;
     /**
      * Checks whether or not messages should be displayed
-     * when a player dies and loses experience
+     * when a loses experience
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean      showLossMessages;
+    @Getter private boolean showLossExpMessages;
+    /**
+     * Checks whether messages should be displayed
+     * when a player loses a level
+     */
+    @Getter private boolean showLossLevelMessages;
     private         Set<String>  expLostBlacklist;
     /**
      * Checks whether or not the skill bar is enabled
@@ -1147,7 +1152,8 @@ public class Settings {
         this.blockCreative = config.getBoolean(EXP_BASE + "block-creative");
         this.showExpMessages = config.getBoolean(EXP_BASE + "exp-message-enabled");
         this.showLevelMessages = config.getBoolean(EXP_BASE + "level-message-enabled");
-        this.showLossMessages = config.getBoolean(EXP_BASE + "lose-exp-message");
+        this.showLossExpMessages = config.getBoolean(EXP_BASE + "lose-exp-message");
+        this.showLossLevelMessages = config.getBoolean(EXP_BASE + "lose-level-message");
         this.expLostBlacklist = new HashSet<>(config.getList(EXP_BASE + "lose-exp-blacklist"));
 
         DataSection formula = config.getSection(EXP_BASE + "formula");

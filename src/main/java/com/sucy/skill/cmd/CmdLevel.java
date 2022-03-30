@@ -50,11 +50,10 @@ import java.util.regex.Pattern;
  * A command that gives a player class levels
  */
 public class CmdLevel implements IFunction {
-    private static final Pattern IS_NUMBER = Pattern.compile("[0-9]+");
+    private static final Pattern IS_NUMBER = Pattern.compile("-?[0-9]+");
     private static final Pattern IS_BOOL = Pattern.compile("(true)|(false)");
 
     private static final String NOT_PLAYER = "not-player";
-    private static final String NOT_POSITIVE = "not-positive";
     private static final String GAVE_LEVEL = "gave-level";
     private static final String RECEIVED_LEVEL = "received-level";
     private static final String DISABLED = "world-disabled";
@@ -90,14 +89,10 @@ public class CmdLevel implements IFunction {
             PlayerData data = SkillAPI.getPlayerData(target);
 
             // Parse the levels
-            int amount;
-            amount = NumberParser.parseInt(args[numberIndex]);
+            int amount = NumberParser.parseInt(args[numberIndex]);
 
             // Invalid amount of levels
-            if (amount <= 0) {
-                cmd.sendMessage(sender, NOT_POSITIVE, ChatColor.RED + "You must give a positive amount of levels");
-                return;
-            }
+            if (amount == 0) { return; }
 
             int lastArg = args.length - 1;
             boolean message = IS_BOOL.matcher(args[lastArg]).matches();
@@ -114,13 +109,23 @@ public class CmdLevel implements IFunction {
                     return;
                 }
 
-                playerClass.giveLevels(amount);
+                if (amount > 0) {
+                    playerClass.giveLevels(amount);
+                } else {
+                    playerClass.loseLevels(-amount);
+                }
                 success = true;
             }
 
             // Give levels
-            else
-                success = data.giveLevels(amount, ExpSource.COMMAND);
+            else {
+                if (amount > 0) {
+                    success = data.giveLevels(amount, ExpSource.COMMAND);
+                } else {
+                    data.loseLevels(-amount);
+                    success = true;
+                }
+            }
 
             // Messages
             if (showMessage) {

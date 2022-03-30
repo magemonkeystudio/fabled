@@ -113,7 +113,7 @@ public class CmdExp implements IFunction {
                         }
                     }
                 } else {
-                    playerClass.loseExp(-amount, false);
+                    playerClass.loseExp(-amount, false, true);
                     if (showMessage && target != sender) {
                         cmd.sendMessage(
                                 sender,
@@ -142,7 +142,7 @@ public class CmdExp implements IFunction {
                         }
                     }
                 } else {
-                    data.loseExp(-amount, false);
+                    data.loseExp(-amount, false, true);
                     if (showMessage && target != sender) {
                         cmd.sendMessage(
                                 sender,

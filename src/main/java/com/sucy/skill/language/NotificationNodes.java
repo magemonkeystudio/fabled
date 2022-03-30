@@ -36,5 +36,6 @@ public class NotificationNodes
         CAST = BASE + "cast",
         EXP  = BASE + "gain-exp",
         LVL  = BASE + "gain-lvl",
-        LOSE = BASE + "lose-exp";
+        EXP_LOSE = BASE + "lose-exp",
+        LVL_LOSE  = BASE + "lose-lvl";
 }

@@ -13,6 +13,7 @@ Notifications:
   gain-exp: '&2You have gained &6{exp} experience'
   gain-lvl: '&6Level Up! &2You are now a &6level {level} {class}'
   lose-exp: '&4You have lost &6{exp} {class} &4experience'
+  lose-lvl: '&6Level down... &4You are now a &6level {level} {class}'
 Errors:
   on-cooldown: '&6{skill} &4cooldown - &6{cooldown} &4seconds left'
   no-mana: '&4You need &6{missing} &4more mana'

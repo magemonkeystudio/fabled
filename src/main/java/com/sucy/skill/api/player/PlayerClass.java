@@ -31,10 +31,7 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.enums.ExpSource;
 import com.sucy.skill.api.enums.PointSource;
-import com.sucy.skill.api.event.PlayerExperienceGainEvent;
-import com.sucy.skill.api.event.PlayerExperienceLostEvent;
-import com.sucy.skill.api.event.PlayerGainSkillPointsEvent;
-import com.sucy.skill.api.event.PlayerLevelUpEvent;
+import com.sucy.skill.api.event.*;
 import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.data.TitleType;
 import com.sucy.skill.dynamic.DynamicSkill;
@@ -169,7 +166,7 @@ public class PlayerClass {
      */
     public void setLevel(int level) {
         if (level < 1)
-            throw new IllegalArgumentException("Cannot be a level less than 0");
+            throw new IllegalArgumentException("Cannot be a level less than 1");
 
         this.level = level;
     }
@@ -353,48 +350,50 @@ public class PlayerClass {
     }
 
     /**
-     * Causes the player to lose experience as a penalty (generally for dying).
-     * This does not lower experience below 0 and will launch an event before
-     * taking the experience.
+     * Causes the player to lose experience
+     * This will launch a {@link PlayerExperienceLostEvent} event before taking the experience.
      *
      * @param amount percent of experience to lose
      * @param percent whether to take the amount as a percentage
+     * @param changeLevel whether to lower the level if the exp lost exceeds the current exp,
+     *                    or to cap at 0 exp and keep the current level
      */
-    public void loseExp(double amount, boolean percent) {
+    public void loseExp(double amount, boolean percent, boolean changeLevel) {
         Preconditions.checkArgument(amount > 0, "Amount must be positive");
         if (percent) { amount *= getRequiredExp(); }
 
         // Launch the event
-        PlayerExperienceLostEvent event = new PlayerExperienceLostEvent(this, amount);
+        PlayerExperienceLostEvent event = new PlayerExperienceLostEvent(this, amount, changeLevel);
         Bukkit.getPluginManager().callEvent(event);
 
         // Subtract the experience
         if (!event.isCancelled()) {
-            amount = Math.min(event.getExp(), exp);
+            changeLevel = event.isLevelChangeAllowed();
+            if (!changeLevel) { amount = Math.min(event.getExp(), exp); }
             exp = exp - amount;
 
+
             // Exp loss message
-            if (SkillAPI.getSettings().isShowLossMessages() && (int) amount > 0) {
+            if (SkillAPI.getSettings().isShowLossExpMessages() && (int) amount > 0) {
                 TitleManager.show(
                         player.getPlayer(),
                         TitleType.EXP_LOST,
-                        NotificationNodes.LOSE,
+                        NotificationNodes.EXP_LOSE,
                         RPGFilter.EXP.setReplacement((int) amount + ""),
                         RPGFilter.CLASS.setReplacement(classData.getName()),
-                        Filter.AMOUNT.setReplacement((int) amount + "")
-                                 );
+                        Filter.AMOUNT.setReplacement((int) amount + ""));
             }
+            checkLevelDown();
         }
     }
 
     /**
-     * Causes the player to lose experience as a penalty (generally for dying).
-     * This does not lower experience below 0 and will launch an event before
-     * taking the experience.
+     * Causes the player to lose experience
+     * This will launch a {@link PlayerExperienceLostEvent} event before taking the experience.
      *
      * @param percent percent of experience to lose
      */
-    public void loseExp(double percent) { loseExp(percent, true); }
+    public void loseExp(double percent) { loseExp(percent, true, false); }
 
     /**
      * <p>Checks whether or not the player has leveled up based on
@@ -425,6 +424,33 @@ public class PlayerClass {
                         Filter.AMOUNT.setReplacement(levels + "")
                 );
             }
+        }
+    }
+
+    private void checkLevelDown() {
+        int levels = 0;
+        while (exp < 0) {
+            if (level - levels == 1) {
+                exp = 0;
+                break;
+            }
+            levels++;
+            exp += classData.getRequiredExp(level - levels);
+        }
+
+        if (levels == 0) { return; }
+        loseLevels(levels);
+
+        // Level down message
+        if (SkillAPI.getSettings().isShowLossLevelMessages()) {
+            TitleManager.show(
+                    player.getPlayer(),
+                    TitleType.LEVEL_DOWN,
+                    NotificationNodes.LVL_LOSE,
+                    RPGFilter.LEVEL.setReplacement(level + ""),
+                    RPGFilter.CLASS.setReplacement(classData.getName()),
+                    RPGFilter.POINTS.setReplacement(points + ""),
+                    Filter.AMOUNT.setReplacement(levels + ""));
         }
     }
 
@@ -459,6 +485,35 @@ public class PlayerClass {
 
         // Call the event
         PlayerLevelUpEvent event = new PlayerLevelUpEvent(this, amount);
+        Bukkit.getPluginManager().callEvent(event);
+
+        // Apply the effect
+        if (SkillAPI.getSettings().hasLevelUpEffect()) {
+            DynamicSkill skill = SkillAPI.getSettings().getLevelUpSkill();
+            skill.cast(player, level);
+        }
+    }
+
+    public void loseLevels(int amount) {
+        if (amount < 0) { throw new IllegalArgumentException("Invalid level amount - cannot be less than 1"); }
+
+        // Level up
+        amount = Math.min(amount, level-1);
+        if (amount <= 0) { return; }
+        level -= amount;
+        points += classData.getGroupSettings().getPointsForLevels(level, level + amount);
+        getPlayerData().giveAttribPoints(classData.getGroupSettings().getAttribsForLevels(level, level + amount));
+
+        // Update health/mana
+        final Player player = getPlayerData().getPlayer();
+        if (player != null) {
+            getPlayerData().updatePlayerStat(getPlayerData().getPlayer());
+            getPlayerData().getEquips().update(getPlayerData().getPlayer());
+        }
+        getPlayerData().autoLevel();
+
+        // Call the event
+        PlayerLevelDownEvent event = new PlayerLevelDownEvent(this, amount);
         Bukkit.getPluginManager().callEvent(event);
 
         // Apply the effect
