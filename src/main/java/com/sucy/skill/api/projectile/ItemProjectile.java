@@ -30,13 +30,16 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.event.*;
 import com.sucy.skill.api.util.DamageLoreRemover;
 import org.bukkit.Bukkit;
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
@@ -52,6 +55,9 @@ public class ItemProjectile extends CustomProjectile
 
     private final Item item;
     private int life;
+    private final boolean walls;
+    private final double halfHeight;
+    private final double halfWidth;
 
     /**
      * <p>Constructs a new item projectile.</p>
@@ -60,8 +66,9 @@ public class ItemProjectile extends CustomProjectile
      * @param loc     the location to shoot from
      * @param item    the item to represent the projectile
      * @param vel     the velocity of the projectile
+     * @param collideWalls whether to consider wall collisions as the projectile landing
      */
-    public ItemProjectile(LivingEntity thrower, Location loc, ItemStack item, Vector vel, int lifespan)
+    public ItemProjectile(LivingEntity thrower, Location loc, ItemStack item, Vector vel, int lifespan, boolean collideWalls)
     {
         super(thrower);
 
@@ -73,6 +80,9 @@ public class ItemProjectile extends CustomProjectile
         this.item = thrower.getWorld().dropItem(loc.add(0, 1, 0), item);
         this.item.setVelocity(vel);
         this.item.setPickupDelay(Integer.MAX_VALUE);
+        this.walls = collideWalls;
+        halfHeight = this.item.getHeight()/2;
+        halfWidth = this.item.getWidth()/2;
         this.life = lifespan;
         SkillAPI.setMeta(this.item, ITEM_PROJECTILE, this);
 
@@ -119,13 +129,49 @@ public class ItemProjectile extends CustomProjectile
         return new ItemProjectileHitEvent(this, entity);
     }
 
+    private static final Vector X_AXIS = new Vector(1, 0, 0);
+    private static final Vector Y_AXIS = new Vector(0, 1, 0);
+    private static final Vector Z_AXIS = new Vector(0, 0, 1);
+
     /**
      * @return true if item is on the ground, false otherwise
      */
     @Override
     protected boolean landed()
     {
-        return item.isOnGround();
+        if (item.isOnGround()) { return true; }
+        if (walls) {
+            Vector velocity = item.getVelocity();
+            RayTraceResult raytrace = item.getWorld().rayTraceBlocks(item.getLocation(),
+                                                                     velocity,
+                                                                     velocity.length(),
+                                                                     FluidCollisionMode.NEVER,
+                                                                     true);
+            if (raytrace == null) { raytrace = collideWall(velocity, X_AXIS); }
+            if (raytrace == null) { raytrace = collideWall(velocity, Z_AXIS); }
+            if (raytrace == null) { raytrace = collideWall(velocity, Y_AXIS); }
+            if (raytrace != null) {
+                item.teleport(raytrace.getHitPosition().toLocation(item.getWorld()));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Nullable
+    private RayTraceResult collideWall(Vector direction, Vector defaultDirection) {
+        direction = direction.clone();
+        direction.multiply(defaultDirection);
+        if (direction.lengthSquared() == 0) {
+            RayTraceResult result = collideWall(defaultDirection, defaultDirection);
+            if (result == null) { result = collideWall(defaultDirection.clone().multiply(-1), defaultDirection); }
+            return result;
+        }
+        return item.getWorld().rayTraceBlocks(item.getLocation().add(0, halfHeight, 0),
+                                              direction,
+                                              halfWidth+0.1,
+                                              FluidCollisionMode.NEVER,
+                                              true);
     }
 
     /**
@@ -185,10 +231,12 @@ public class ItemProjectile extends CustomProjectile
      * @param angle    angle of the spread
      * @param amount   number of projectiles to fire
      * @param callback optional callback for when projectiles hit
+     * @param lifespan maximum duration of the projectile
+     * @param collideWalls whether to consider wall collisions as the projectiles landing
      *
      * @return list of fired projectiles
      */
-    public static ArrayList<ItemProjectile> spread(LivingEntity shooter, Vector center, Location loc, ItemStack item, double angle, int amount, ProjectileCallback callback, int lifespan)
+    public static ArrayList<ItemProjectile> spread(LivingEntity shooter, Vector center, Location loc, ItemStack item, double angle, int amount, ProjectileCallback callback, int lifespan, boolean collideWalls)
     {
         double speed = center.length();
         center.normalize();
@@ -197,7 +245,7 @@ public class ItemProjectile extends CustomProjectile
         for (Vector dir : dirs)
         {
             Vector vel = dir.multiply(speed);
-            ItemProjectile p = new ItemProjectile(shooter, loc.clone(), item, vel, lifespan);
+            ItemProjectile p = new ItemProjectile(shooter, loc.clone(), item, vel, lifespan, collideWalls);
             p.setCallback(callback);
             list.add(p);
         }
@@ -215,10 +263,12 @@ public class ItemProjectile extends CustomProjectile
      * @param speed    speed of the projectiles
      * @param amount   number of projectiles to fire
      * @param callback optional callback for when projectiles hit
+     * @param lifespan maximum duration of the projectile
+     * @param collideWalls whether to consider wall collisions as the projectiles landing
      *
      * @return list of fired projectiles
      */
-    public static ArrayList<ItemProjectile> rain(LivingEntity shooter, Location center, ItemStack item, double radius, double height, double speed, int amount, ProjectileCallback callback, int lifespan)
+    public static ArrayList<ItemProjectile> rain(LivingEntity shooter, Location center, ItemStack item, double radius, double height, double speed, int amount, ProjectileCallback callback, int lifespan, boolean collideWalls)
     {
         Vector vel = new Vector(0, speed, 0);
         if (vel.getY() == 0)
@@ -230,7 +280,7 @@ public class ItemProjectile extends CustomProjectile
         for (Location l : locs)
         {
             l.setDirection(vel);
-            ItemProjectile p = new ItemProjectile(shooter, l, item, vel, lifespan);
+            ItemProjectile p = new ItemProjectile(shooter, l, item, vel, lifespan, collideWalls);
             p.setCallback(callback);
             list.add(p);
         }

@@ -51,6 +51,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
     private static final Vector UP = new Vector(0, 1, 0);
 
     private static final String ALLY    = "group";
+    private static final String WALLS = "walls";
     private static final String VELOCITY = "velocity";
     private static final String LIFESPAN = "lifespan";
     private static final String SPREAD  = "spread";
@@ -137,6 +138,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
         int     amount = (int) parseValues(caster, AMOUNT, level, 1.0);
         String  spread = settings.getString(SPREAD, "cone").toLowerCase();
         boolean ally   = settings.getString(ALLY, "enemy").equalsIgnoreCase("ally");
+        boolean walls = settings.getBool(WALLS, false);
         int lifespan = (int) (parseValues(caster, LIFESPAN, level, 9999)*20);
 
         // Fire from each target
@@ -148,7 +150,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
             if (spread.equals("rain")) {
                 double radius = parseValues(caster, RADIUS, level, 2.0);
                 double height = parseValues(caster, HEIGHT, level, 8.0);
-                list = ItemProjectile.rain(caster, loc, item, radius, height, speed, amount, this, lifespan);
+                list = ItemProjectile.rain(caster, loc, item, radius, height, speed, amount, this, lifespan, walls);
             } else {
                 Vector dir = target.getLocation().getDirection();
 
@@ -174,7 +176,8 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
                         angle,
                         amount,
                         this,
-                        lifespan
+                        lifespan,
+                        walls
                 );
             }
 

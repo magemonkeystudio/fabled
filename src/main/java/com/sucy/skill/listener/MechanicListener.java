@@ -167,7 +167,7 @@ public class MechanicListener extends SkillAPIListener {
      * @param event event details
      */
     @EventHandler
-    public void onItemLand(final InventoryPickupItemEvent event) {
+    public void onItemPickup(final InventoryPickupItemEvent event) {
         final Object meta = SkillAPI.getMeta(event.getItem(), ITEM_PROJECTILE);
         if (meta != null) {
             event.setCancelled(true);
