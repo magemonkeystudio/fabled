@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.dynamic.mechanic.ParticleAnimationMechanic
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -39,20 +39,20 @@ import java.util.List;
 /**
  * Plays a particle effect
  */
-public class ParticleAnimationMechanic extends MechanicComponent
-{
-    private static final String FORWARD  = "forward";
-    private static final String UPWARD   = "upward";
-    private static final String RIGHT    = "right";
-    private static final String STEPS    = "steps";
-    private static final String FREQ     = "frequency";
-    private static final String ANGLE    = "angle";
-    private static final String START    = "start";
-    private static final String DURATION = "duration";
-    private static final String H_TRANS  = "h-translation";
-    private static final String V_TRANS  = "v-translation";
-    private static final String H_CYCLES = "h-cycles";
-    private static final String V_CYCLES = "v-cycles";
+public class ParticleAnimationMechanic extends MechanicComponent {
+    public static final  String WITH_ROTATION = "-with-rotation";
+    private static final String FORWARD       = "forward";
+    private static final String UPWARD        = "upward";
+    private static final String RIGHT         = "right";
+    private static final String STEPS         = "steps";
+    private static final String FREQ          = "frequency";
+    private static final String ANGLE         = "angle";
+    private static final String START         = "start";
+    private static final String DURATION      = "duration";
+    private static final String H_TRANS       = "h-translation";
+    private static final String V_TRANS       = "v-translation";
+    private static final String H_CYCLES      = "h-cycles";
+    private static final String V_CYCLES      = "v-cycles";
 
     @Override
     public String getKey() {
@@ -65,15 +65,12 @@ public class ParticleAnimationMechanic extends MechanicComponent
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
     @Override
-    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force)
-    {
-        if (targets.size() == 0)
-        {
+    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
+        if (targets.size() == 0) {
             return false;
         }
 
@@ -85,37 +82,35 @@ public class ParticleAnimationMechanic extends MechanicComponent
         return targets.size() > 0;
     }
 
-    private class ParticleTask extends BukkitRunnable
-    {
+    private class ParticleTask extends BukkitRunnable {
 
-        private List<LivingEntity> targets;
-        private double[]           rots;
-        private Vector             offset;
-        private Vector             dir;
+        private final List<LivingEntity> targets;
+        private final double[]           rots;
+        private final Vector             offset;
+        private final Vector             dir;
 
-        private double forward;
-        private double right;
-        private double upward;
+        private final double forward;
+        private final double right;
+        private final double upward;
 
-        private int    steps;
-        private int    freq;
-        private int    angle;
-        private int    startAngle;
-        private int    duration;
-        private int    life;
-        private int    hc;
-        private int    vc;
-        private int    hl;
-        private int    vl;
-        private double ht;
-        private double vt;
-        private double cos;
-        private double sin;
+        private final int      steps;
+        private final int      freq;
+        private final int      angle;
+        private final int      startAngle;
+        private final int      duration;
+        private final int      hc;
+        private final int      vc;
+        private final int      hl;
+        private final int      vl;
+        private final double   ht;
+        private final double   vt;
+        private final double   cos;
+        private final Settings settings;
+        private final double   sin;
+        private       int      life;
+        private       boolean  withRotation = false;
 
-        private Settings settings;
-
-        ParticleTask(LivingEntity caster, List<LivingEntity> targets, int level, Settings settings)
-        {
+        ParticleTask(LivingEntity caster, List<LivingEntity> targets, int level, Settings settings) {
             this.targets = targets;
             this.settings = settings;
 
@@ -135,22 +130,20 @@ public class ParticleAnimationMechanic extends MechanicComponent
             this.vc = settings.getInt(V_CYCLES, 1);
             this.hl = duration / hc;
             this.vl = duration / vc;
+            this.withRotation = settings.getBool(WITH_ROTATION);
 
             this.cos = Math.cos(angle * Math.PI / (180 * duration));
             this.sin = Math.sin(angle * Math.PI / (180 * duration));
 
-            rots = new double[targets.size() * 2];
-            for (int i = 0; i < targets.size(); i++)
-            {
-                Vector dir = targets.get(i).getLocation().getDirection().setY(0).normalize();
-                rots[i * 2] = dir.getX();
-                rots[i * 2 + 1] = dir.getZ();
+            rots = new double[targets.size()];
+            for (int i = 0; i < targets.size(); i++) {
+                rots[i] = targets.get(i).getLocation().getYaw();
             }
-            this.dir = new Vector(1, 0, 0);
-            this.offset = new Vector(forward, upward, right);
+            this.dir = new Vector(0, 0, 1);
+            this.offset = new Vector(right, upward, forward);
 
-            double sc = Math.cos(startAngle * Math.PI / 180);
-            double ss = Math.sin(startAngle * Math.PI / 180);
+            double sc = Math.cos(Math.toRadians(startAngle));
+            double ss = Math.sin(Math.toRadians(startAngle));
             rotate(offset, sc, ss);
             rotate(dir, sc, ss);
 
@@ -158,21 +151,38 @@ public class ParticleAnimationMechanic extends MechanicComponent
         }
 
         @Override
-        public void run()
-        {
-            for (int i = 0; i < steps; i++)
-            {
+        public void run() {
+            for (int i = 0; i < steps; i++) {
                 // Play the effect
                 int j = 0;
-                for (LivingEntity target : targets)
-                {
+                for (LivingEntity target : targets) {
                     Location loc = target.getLocation();
 
-                    rotate(offset, rots[j], rots[j + 1]);
-                    loc.add(offset);
-                    ParticleHelper.play(loc, settings);
-                    loc.subtract(offset);
-                    rotate(offset, rots[j++], -rots[j++]);
+                    // Calculate the target rotation and add that
+                    double targetAngle = loc.getYaw();
+                    double targetCos;
+                    double targetSin;
+                    if (withRotation) {
+                        targetCos = Math.cos(Math.toRadians(targetAngle));
+                        targetSin = Math.sin(Math.toRadians(targetAngle));
+                        rotate(offset, targetCos, targetSin);
+
+                        loc.add(offset);
+                        ParticleHelper.play(loc, settings);
+                        loc.subtract(offset);
+
+                        targetCos = Math.cos(Math.toRadians(-targetAngle));
+                        targetSin = Math.sin(Math.toRadians(-targetAngle));
+                        rotate(offset, targetCos, targetSin);
+                    } else {
+                        rotate(offset, Math.cos(Math.toRadians(rots[j])), Math.sin(Math.toRadians(rots[j])));
+                        loc.add(offset);
+                        ParticleHelper.play(loc, settings);
+                        loc.subtract(offset);
+
+                        rotate(offset, Math.cos(Math.toRadians(-rots[j])), Math.sin(Math.toRadians(-rots[j])));
+                        j += 1;
+                    }
                 }
 
                 // Update the lifespan of the animation
@@ -188,24 +198,21 @@ public class ParticleAnimationMechanic extends MechanicComponent
                 offset.setY(upward + heightAt(this.life));
             }
 
-            if (this.life >= this.duration)
-            {
+            if (this.life >= this.duration) {
                 cancel();
             }
         }
 
-        private double heightAt(int step)
-        {
+        private double heightAt(int step) {
             return vt * (vl - Math.abs(vl - step % (2 * vl))) / vl;
         }
 
-        private double radAt(int step)
-        {
+        private double radAt(int step) {
             return ht * (hl - Math.abs(hl - step % (2 * hl))) / hl;
         }
 
-        private void rotate(Vector vec, double cos, double sin)
-        {
+        private void
+        rotate(Vector vec, double cos, double sin) {
             double x = vec.getX() * cos - vec.getZ() * sin;
             vec.setZ(vec.getX() * sin + vec.getZ() * cos);
             vec.setX(x);
