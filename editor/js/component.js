@@ -2650,6 +2650,10 @@ function MechanicParticleAnimation() {
     this.data.push(new DoubleValue('Right Offset', 'right', 0)
         .setTooltip('How far to the right of the target to play the particles. A negative value will go to the left.')
     );
+
+    this.data.push(new ListValue('Rotate w/ Player', '-with-rotation', ['True', 'False'], 'False')
+        .setTooltip('Whether to follow the rotation of the player for the effect.')
+    );
 }
 
 extend('MechanicParticleEffect', 'Component');
