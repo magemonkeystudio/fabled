@@ -13,12 +13,13 @@ Notifications:
   gain-exp: '&2You have gained &6{exp} experience'
   gain-lvl: '&6Level Up! &2You are now a &6level {level} {class}'
   lose-exp: '&4You have lost &6{exp} {class} &4experience'
+  attr-refunded: 'Attribute refunded.'
 Errors:
   on-cooldown: '&6{skill} &4cooldown - &6{cooldown} &4seconds left'
   no-mana: '&4You need &6{missing} &4more mana'
   no-skills: '&4That class does not have any skills'
   cannot-use: '&4You cannot equip that item'
-  attribute-no-money: 'You don''t have enough money to refund this attribute.'
+  no-money: 'You don''t have enough money to refund this attribute.'
 GUI:
   attribute-title: 'Attributes ({points} points)'
   profess-title: 'Profess'

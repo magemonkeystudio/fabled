@@ -29,14 +29,15 @@ package com.sucy.skill.gui.handlers;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.gui.tool.GUIHolder;
 import com.sucy.skill.hook.VaultHook;
+import com.sucy.skill.language.ErrorNodes;
+import com.sucy.skill.language.NotificationNodes;
 import com.sucy.skill.manager.AttributeManager;
+import mc.promcteam.engine.mccore.config.FilterType;
 
 import java.util.HashMap;
 
 public class AttributeHandler extends GUIHolder<AttributeManager.Attribute> {
     private HashMap<String, Integer> start = new HashMap<String, Integer>();
-
-    private static final String NOMONEY = "attribute-no-money";
 
     @Override
     protected void onSetup() {
@@ -53,11 +54,12 @@ public class AttributeHandler extends GUIHolder<AttributeManager.Attribute> {
             if (SkillAPI.getSettings().getAttributesDowngradePrice() > 0 && VaultHook.isEconomyValid() && VaultHook.hasBalance(player.getPlayer(), SkillAPI.getSettings().getAttributesDowngradePrice())) {
                 VaultHook.withdraw(player.getPlayer(), Double.parseDouble(String.valueOf(SkillAPI.getSettings().getAttributesDowngradePrice())));
                 if (player.refundAttribute(type.getKey())) {
+                    SkillAPI.getLanguage().sendMessage(NotificationNodes.ATTR_REFUNDED, player.getPlayer(), FilterType.COLOR);
                     setPage(page);
                 }
                 return;
             } else if (!VaultHook.hasBalance(player.getPlayer(), SkillAPI.getSettings().getAttributesDowngradePrice())) {
-               SkillAPI.getLanguage().sendMessage(NOMONEY, player.getPlayer());
+                SkillAPI.getLanguage().sendMessage(ErrorNodes.NO_MONEY, player.getPlayer(), FilterType.COLOR);
                 return;
             }
 

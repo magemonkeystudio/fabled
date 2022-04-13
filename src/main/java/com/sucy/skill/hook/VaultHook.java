@@ -130,7 +130,7 @@ public class VaultHook
     }
 
     public static double getBalance(Player player) {
-        return economy.getBalance(player, player.getWorld().getName());
+        return economy.getBalance(player);
     }
 
     public static Boolean hasBalance(Player player, double balance) {
@@ -138,10 +138,10 @@ public class VaultHook
     }
 
     public static EconomyResponse withdraw(Player player, double amount) {
-        return economy.withdrawPlayer(player, player.getWorld().getName(), amount);
+        return economy.withdrawPlayer(player, amount);
     }
 
     public static EconomyResponse deposit(Player player, double amount) {
-        return economy.depositPlayer(player, player.getWorld().getName(), amount);
+        return economy.depositPlayer(player, amount);
     }
 }
