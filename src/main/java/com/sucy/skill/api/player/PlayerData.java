@@ -1599,6 +1599,9 @@ public class PlayerData {
             } else {
                 player.setMaxHealth(this.maxHealth);
             }
+            if (player.getHealth() > modifiedMax) {
+                player.setHealth(this.maxHealth);
+            }
         }
 
         // Health scaling is available starting with 1.6.2
@@ -1609,9 +1612,7 @@ public class PlayerData {
             player.setHealthScaled(false);
         }
 
-        if (player.getHealth() > modifiedMax) {
-            player.setHealth(this.maxHealth);
-        }
+
     }
 
     private void updateMCAttribute(Player player, Attribute attribute, String attribKey, double min, double max) {
