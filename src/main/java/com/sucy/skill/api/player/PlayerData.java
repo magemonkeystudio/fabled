@@ -85,33 +85,33 @@ import java.util.Map.Entry;
  * try to instantaite your own PlayerData object.
  */
 public class PlayerData {
-    public final HashMap<String, Integer> attributes = new HashMap<>();
-    private final HashMap<String, PlayerClass> classes = new HashMap<>();
-    private final HashMap<String, PlayerSkill> skills = new HashMap<>();
-    private final HashMap<Material, PlayerSkill> binds = new HashMap<>();
+    public final  HashMap<String, Integer>                       attributes          = new HashMap<>();
+    private final HashMap<String, PlayerClass>                   classes             = new HashMap<>();
+    private final HashMap<String, PlayerSkill>                   skills              = new HashMap<>();
+    private final HashMap<Material, PlayerSkill>                 binds               = new HashMap<>();
     private final HashMap<String, List<PlayerAttributeModifier>> attributesModifiers = new HashMap<>();
-    private final HashMap<String, List<PlayerStatModifier>> statModifiers = new HashMap<>();
+    private final HashMap<String, List<PlayerStatModifier>>      statModifiers       = new HashMap<>();
 
-    private final DataSection extraData = new DataSection();
-    private final UUID playerUUID;
+    private final DataSection    extraData  = new DataSection();
+    private final UUID           playerUUID;
     private final PlayerSkillBar skillBar;
     private final PlayerCastBars castBars;
-    private final PlayerCombos combos;
-    private final PlayerEquips equips;
-    private final List<UUID> onCooldown = new ArrayList<>();
-    public int attribPoints;
-    private String scheme;
-    private String menuClass;
-    private double mana;
-    private double maxMana;
-    private double lastHealth;
-    private double health;
-    private double maxHealth;
-    private double hunger;
-    private boolean init;
-    private boolean passive;
-    private long skillTimer;
-    private BukkitTask removeTimer;
+    private final PlayerCombos   combos;
+    private final PlayerEquips   equips;
+    private final List<UUID>     onCooldown = new ArrayList<>();
+    public        int            attribPoints;
+    private       String         scheme;
+    private       String         menuClass;
+    private       double         mana;
+    private       double         maxMana;
+    private       double         lastHealth;
+    private       double         health;
+    private       double         maxHealth;
+    private       double         hunger;
+    private       boolean        init;
+    private       boolean        passive;
+    private       long           skillTimer;
+    private       BukkitTask     removeTimer;
 
     /**
      * Initializes a new account data representation for a player.
@@ -129,7 +129,7 @@ public class PlayerData {
         this.hunger = 1;
         for (String group : SkillAPI.getGroups()) {
             GroupSettings settings = SkillAPI.getSettings().getGroupSettings(group);
-            RPGClass rpgClass = settings.getDefault();
+            RPGClass      rpgClass = settings.getDefault();
 
             if (rpgClass != null && settings.getPermission() == null) {
                 setClass(rpgClass, true);
@@ -236,7 +236,7 @@ public class PlayerData {
 
     public int subtractHungerValue(final double amount) {
         final double scaled = amount / scaleStat(AttributeManager.HUNGER, amount, 0D, Double.MAX_VALUE);
-        final int lost = scaled >= hunger ? (int) (scaled - hunger) + 1 : 0;
+        final int    lost   = scaled >= hunger ? (int) (scaled - hunger) + 1 : 0;
         this.hunger += lost - amount;
         return lost;
     }
@@ -378,7 +378,7 @@ public class PlayerData {
     public boolean upAttribute(String key) {
         key = key.toLowerCase();
         int current = getInvestedAttribute(key);
-        int max = SkillAPI.getAttributeManager().getAttribute(key).getMax();
+        int max     = SkillAPI.getAttributeManager().getAttribute(key).getMax();
         if (attribPoints > 0 && current < max) {
             attributes.put(key, current + 1);
             attribPoints--;
@@ -405,7 +405,7 @@ public class PlayerData {
     public void giveAttribute(String key, int amount) {
         key = key.toLowerCase();
         int current = getInvestedAttribute(key);
-        int max = SkillAPI.getAttributeManager().getAttribute(key).getMax();
+        int max     = SkillAPI.getAttributeManager().getAttribute(key).getMax();
         amount = Math.min(amount + current, max);
         if (amount > current) {
             attributes.put(key, amount);
@@ -836,9 +836,9 @@ public class PlayerData {
             return false;
         }
 
-        int level = data.getPlayerClass().getLevel();
+        int level  = data.getPlayerClass().getLevel();
         int points = data.getPlayerClass().getPoints();
-        int cost = data.getCost();
+        int cost   = data.getCost();
         if (!data.isMaxed() && level >= data.getLevelReq() && points >= cost) {
             // Upgrade event
             PlayerSkillUpgradeEvent event = new PlayerSkillUpgradeEvent(this, data, cost);
@@ -1281,7 +1281,7 @@ public class PlayerData {
         }
 
         PlayerClass playerClass = classes.remove(group);
-        int points = 0;
+        int         points      = 0;
         if (playerClass != null) {
             // Remove skills
             RPGClass data = playerClass.getData();
@@ -1357,7 +1357,7 @@ public class PlayerData {
     public boolean profess(RPGClass rpgClass) {
         if (rpgClass != null && canProfess(rpgClass)) {
             final PlayerClass previousData = classes.get(rpgClass.getGroup());
-            final RPGClass previous = previousData == null ? null : previousData.getData();
+            final RPGClass    previous     = previousData == null ? null : previousData.getData();
 
             // Pre-class change event in case someone wants to stop it
             final PlayerPreClassChangeEvent event = new PlayerPreClassChangeEvent(this, previousData, previous, rpgClass);
@@ -1368,7 +1368,7 @@ public class PlayerData {
 
             // Reset data if applicable
             final boolean isResetting = SkillAPI.getSettings().getGroupSettings(rpgClass.getGroup()).isProfessReset();
-            boolean isSubclass = previous != null && rpgClass.getParent().getName().equals(previous.getName());
+            boolean       isSubclass  = previous != null && rpgClass.getParent().getName().equals(previous.getName());
             int skillPoints = isResetting
                     ? reset(rpgClass.getGroup(), isSubclass)
                     : -1;
@@ -1556,7 +1556,7 @@ public class PlayerData {
 
     private double getModifiedMaxHealth(Player player) {
         final double baseMaxHealth = this.maxHealth;
-        double modifiedMax = this.maxHealth;
+        double       modifiedMax   = this.maxHealth;
         // Actually apply other modifiers (Like from RPGItems
         for (ItemStack equipment : EntityUT.getEquipment(player)) {
             if (equipment == null || equipment.getType().isAir() || equipment.getItemMeta() == null) continue;
@@ -1586,6 +1586,7 @@ public class PlayerData {
      */
     public void updateHealth(Player player) {
         if (!SkillAPI.getSettings().isModifyHealth()) return;
+
         if (this.maxHealth <= 0) {
             this.maxHealth = SkillAPI.getSettings().getDefaultHealth();
             this.health = this.maxHealth;
@@ -1599,6 +1600,7 @@ public class PlayerData {
         } else {
             player.setMaxHealth(this.maxHealth);
         }
+
         // Health scaling is available starting with 1.6.2
         if (SkillAPI.getSettings().isOldHealth()) {
             player.setHealthScaled(true);
@@ -1606,6 +1608,7 @@ public class PlayerData {
         } else {
             player.setHealthScaled(false);
         }
+
         if (player.getHealth() > modifiedMax) {
             player.setHealth(this.maxHealth);
         }
@@ -1615,8 +1618,8 @@ public class PlayerData {
     private void updateMCAttribute(Player player, Attribute attribute, String attribKey, double min, double max) {
 
         AttributeInstance instance = player.getAttribute(attribute);
-        double def = instance.getDefaultValue();
-        double modified = this.scaleStat(attribKey, def, min, max);
+        double            def      = instance.getDefaultValue();
+        double            modified = this.scaleStat(attribKey, def, min, max);
         instance.setBaseValue(/*def + */modified);
     }
 
@@ -1748,8 +1751,8 @@ public class PlayerData {
      */
     public void removeStatModifier(UUID uuid, boolean update) {
         for (Entry<String, List<PlayerStatModifier>> entry : this.statModifiers.entrySet()) {
-            List<PlayerStatModifier> modifiers = entry.getValue();
-            Iterator<PlayerStatModifier> i = modifiers.iterator();
+            List<PlayerStatModifier>     modifiers = entry.getValue();
+            Iterator<PlayerStatModifier> i         = modifiers.iterator();
 
             while (i.hasNext()) {
                 PlayerStatModifier modifier = i.next();
@@ -1771,8 +1774,8 @@ public class PlayerData {
      */
     public void clearStatModifier() {
         for (Entry<String, List<PlayerStatModifier>> entry : this.statModifiers.entrySet()) {
-            List<PlayerStatModifier> modifiers = entry.getValue();
-            Iterator<PlayerStatModifier> i = modifiers.iterator();
+            List<PlayerStatModifier>     modifiers = entry.getValue();
+            Iterator<PlayerStatModifier> i         = modifiers.iterator();
 
             while (i.hasNext()) {
                 PlayerStatModifier modifier = i.next();
@@ -1795,8 +1798,8 @@ public class PlayerData {
      */
     public void removeAttributeModifier(UUID uuid, boolean update) {
         for (Entry<String, List<PlayerAttributeModifier>> entry : this.attributesModifiers.entrySet()) {
-            List<PlayerAttributeModifier> modifiers = entry.getValue();
-            Iterator<PlayerAttributeModifier> i = modifiers.iterator();
+            List<PlayerAttributeModifier>     modifiers = entry.getValue();
+            Iterator<PlayerAttributeModifier> i         = modifiers.iterator();
 
             while (i.hasNext()) {
                 PlayerAttributeModifier modifier = i.next();
@@ -1824,8 +1827,8 @@ public class PlayerData {
      */
     public void clearAttributeModifiers() {
         for (Entry<String, List<PlayerAttributeModifier>> entry : this.attributesModifiers.entrySet()) {
-            List<PlayerAttributeModifier> modifiers = entry.getValue();
-            Iterator<PlayerAttributeModifier> i = modifiers.iterator();
+            List<PlayerAttributeModifier>     modifiers = entry.getValue();
+            Iterator<PlayerAttributeModifier> i         = modifiers.iterator();
 
             while (i.hasNext()) {
                 PlayerAttributeModifier modifier = i.next();
@@ -2154,8 +2157,8 @@ public class PlayerData {
         }
 
         SkillStatus status = skill.getStatus();
-        int level = skill.getLevel();
-        double cost = skill.getData().getManaCost(level);
+        int         level  = skill.getLevel();
+        double      cost   = skill.getData().getManaCost(level);
 
         // Not unlocked
         if (level <= 0) {
