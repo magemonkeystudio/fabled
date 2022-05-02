@@ -1428,6 +1428,19 @@ public class PlayerData {
     }
 
     /**
+     * Causes the player to lose experience
+     * This will launch a {@link PlayerExperienceLostEvent} event before taking the experience.
+     *
+     * @param amount percent of experience to lose
+     * @param percent whether to take the amount as a percentage
+     */
+    public void loseExp(double amount, boolean percent, boolean changeLevel) {
+        for (PlayerClass playerClass : classes.values()) {
+            playerClass.loseExp(amount, percent, changeLevel);
+        }
+    }
+
+    /**
      * Causes the player to lose experience as a penalty (generally for dying)
      */
     public void loseExp() {
@@ -1462,6 +1475,15 @@ public class PlayerData {
         }
         this.updatePlayerStat(getPlayer());
         return success;
+    }
+
+    /**
+     * Causes the player to lose levels
+     */
+    public void loseLevels(int amount) {
+        for (PlayerClass playerClass : classes.values()) {
+            if (amount > 0) { playerClass.loseLevels(amount);; }
+        }
     }
 
     /**

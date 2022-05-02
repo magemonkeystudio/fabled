@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.cast.IndicatorSettings
+ * com.sucy.skill.cast.IIndicator
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -27,24 +27,9 @@
 package com.sucy.skill.cast;
 
 import com.sucy.skill.api.particle.ParticleSettings;
-import mc.promcteam.engine.mccore.config.parse.DataSection;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
-/**
- * An indicator for a player's skill
- */
-public class IndicatorSettings {
-    public static ParticleSettings particle;
-
-    public static boolean enabled;
-    public static double density;
-    public static double animation;
-    public static int interval;
-
-    public static void load(DataSection data) {
-        enabled = data.getBoolean("enabled");
-        density = data.getDouble("density");
-        animation = data.getDouble("animation");
-        interval = (int) Math.ceil(20 / data.getDouble("frequency"));
-        particle = new ParticleSettings(data.getSection("particle"));
-    }
+public abstract class Preview {
+    public abstract void playParticles(Player player, ParticleSettings particle, Location location, int step);
 }

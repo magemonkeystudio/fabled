@@ -12,6 +12,7 @@ import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,9 @@ public abstract class TargetComponent extends EffectComponent {
     private static final String WALL   = "wall";
     private static final String CASTER = "caster";
     private static final String MAX    = "max";
+
+    protected static final SpherePreview spherePreview = new SpherePreview(0.5);
+    protected static final CirclePreview circlePreview = new CirclePreview(0.5);
 
     boolean everyone;
     boolean allies;
@@ -70,52 +74,24 @@ public abstract class TargetComponent extends EffectComponent {
             final int level,
             final List<LivingEntity> targets);
 
-    abstract void makeIndicators(final List<IIndicator> list, final Player caster, final LivingEntity target, final int level);
+    abstract void playPreview(final Player caster, final int level, final LivingEntity target, int step);
 
-    /**
-     * Creates the list of indicators for the skill
-     *
-     * @param list   list to store indicators in
-     * @param caster caster reference
-     * @param targets location to base location on
-     * @param level  the level of the skill to create for
-     */
+    /** {@inheritDoc} */
     @Override
-    public void makeIndicators(List<IIndicator> list, Player caster, List<LivingEntity> targets, int level) {
-        targets.forEach(target -> makeIndicators(list, caster, target, level));
-
-        List<LivingEntity> childTargets = null;
-        for (final EffectComponent component : children) {
-            if (component.hasEffect) {
-                if (childTargets == null) { childTargets = getTargets(caster, level, targets); }
-
-                component.makeIndicators(list, caster, childTargets, level);
+    public void playPreview(Player caster, int level, List<LivingEntity> targets, int step) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (previewType != PreviewType.NONE) { targets.forEach(target -> playPreview(caster, level, target, step)); }
+                List<LivingEntity> childTargets = null;
+                for (final EffectComponent component : children) {
+                    if (component.hasPreview()) {
+                        if (childTargets == null) { childTargets = getTargets(caster, level, targets); }
+                        component.playPreview(caster, level, childTargets, step);
+                    }
+                }
             }
-        }
-    }
-
-    void makeConeIndicator(final List<IIndicator> list, final LivingEntity target, final double range, final double angle) {
-        if (indicatorType != IndicatorType.NONE) {
-            Location loc = target.getLocation();
-            ConeIndicator indicator = new ConeIndicator(angle, range);
-            indicator.moveTo(loc.getX(), loc.getY() + 0.1, loc.getZ());
-            indicator.setDirection(loc.getYaw());
-            list.add(indicator);
-        }
-    }
-
-    void makeCircleIndicator(final List<IIndicator> list, final LivingEntity source, final double radius) {
-        if (indicatorType == IndicatorType.DIM_3) {
-            final Location loc = source.getLocation();
-            IIndicator indicator = new SphereIndicator(radius);
-            indicator.moveTo(loc.getX(), loc.getY() + 0.1, loc.getZ());
-            list.add(indicator);
-        } else if (indicatorType == IndicatorType.DIM_2) {
-            final Location loc = source.getLocation();
-            IIndicator indicator = new CircleIndicator(radius);
-            indicator.moveTo(loc.getX(), loc.getY() + 0.1, loc.getZ());
-            list.add(indicator);
-        }
+        }.runTask(SkillAPI.inst());
     }
 
     List<LivingEntity> determineTargets(

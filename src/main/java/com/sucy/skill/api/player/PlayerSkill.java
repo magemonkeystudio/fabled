@@ -29,14 +29,9 @@ package com.sucy.skill.api.player;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.enums.SkillStatus;
 import com.sucy.skill.api.skills.Skill;
-import com.sucy.skill.cast.IIndicator;
-import com.sucy.skill.cast.IndicatorSettings;
 import com.sucy.skill.manager.AttributeManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Represents player-specific data for a skill such as the player's
@@ -44,7 +39,6 @@ import java.util.List;
  */
 public final class PlayerSkill
 {
-    protected final List<IIndicator> indicators = new ArrayList<IIndicator>();
 
     private Skill       skill;
     private PlayerData  player;
@@ -365,41 +359,12 @@ public final class PlayerSkill
     }
 
     /**
-     * Initializes the indicators for the skill
-     *
-     * @param player player to base location off of
-     */
-    public void initIndicators(Player player)
-    {
-        indicators.clear();
-        skill.createPreview(indicators, player, level);
-    }
-
-    /**
-     * Updates the preview indicators each interval
-     *
-     * @param player player to base location off of
-     */
-    public void updateIndicators(Player player)
-    {
-        skill.updateIndicators(indicators, player, level);
-    }
-
-    /**
      * Makes the packets for active indicators
      *
      * @param step animation step
-     *
-     * @return packet list
-     *
-     * @throws Exception
      */
-    public List<Object> makePackets(int step)
-        throws Exception
+    public void playParticles(Player player, int step)
     {
-        List<Object> packets = new ArrayList<Object>();
-        for (IIndicator indicator : indicators)
-            indicator.makePackets(packets, IndicatorSettings.particle, step);
-        return packets;
+        skill.playPreview(player, level, step);
     }
 }

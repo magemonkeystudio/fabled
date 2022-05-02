@@ -61,10 +61,10 @@ public class CmdLore implements IFunction {
         // Must be a player with an argument
         if (args.length >= 1 && sender instanceof Player) {
             Player player = (Player) sender;
-            ItemStack held = player.getInventory().getItemInHand();
+            ItemStack held = player.getInventory().getItemInMainHand();
 
             // No held item
-            if (held == null) {
+            if (held == null || held.getType().isAir()) {
                 cmd.sendMessage(sender, NO_ITEM, ChatColor.RED + "You are not holding an item");
                 return;
             }

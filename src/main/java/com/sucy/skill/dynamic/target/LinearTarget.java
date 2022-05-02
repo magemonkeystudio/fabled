@@ -27,7 +27,7 @@
 package com.sucy.skill.dynamic.target;
 
 import com.sucy.skill.api.target.TargetHelper;
-import com.sucy.skill.cast.IIndicator;
+import com.sucy.skill.cast.Preview;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -52,8 +52,7 @@ public class LinearTarget extends TargetComponent {
 
     /** {@inheritDoc} */
     @Override
-    void makeIndicators(
-            final List<IIndicator> list, final Player caster, final LivingEntity target, final int level) {
+    void playPreview(final Player caster, final int level, final LivingEntity target, int step) {
         // TODO - add indicators for linear targeting
     }
 

@@ -34,5 +34,6 @@ public enum TitleType
     EXP_GAINED,
     EXP_LOST,
     LEVEL_UP,
+    LEVEL_DOWN,
     STATUS,
 }

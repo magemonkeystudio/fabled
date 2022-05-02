@@ -26,6 +26,8 @@
  */
 package com.sucy.skill.thread;
 
+import org.bukkit.plugin.IllegalPluginAccessException;
+
 import java.util.ConcurrentModificationException;
 import java.util.Objects;
 
@@ -80,7 +82,11 @@ public class MainThread extends Thread {
      * Disables the main thread, stopping future runs
      */
     public void disable() {
-        for (IThreadTask task : tasks) { task.run(); }
+        for (IThreadTask task : tasks) {
+            try {
+                task.run();
+            } catch (IllegalPluginAccessException ignored) { }
+        }
         tasks.clear();
         enabled = false;
     }

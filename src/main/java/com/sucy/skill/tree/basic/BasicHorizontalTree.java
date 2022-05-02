@@ -70,6 +70,7 @@ public class BasicHorizontalTree extends InventoryTree
             skillSlots.put(9 * height, skill);
             height += placeChildren(skills, skill, height * 9 + 1, 0);
         }
+        height = Math.max(height, 1);
     }
 
     /**

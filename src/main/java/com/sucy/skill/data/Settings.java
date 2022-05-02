@@ -35,7 +35,7 @@ import com.sucy.skill.api.CombatProtection;
 import com.sucy.skill.api.DefaultCombatProtection;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.skills.Skill;
-import com.sucy.skill.cast.IndicatorSettings;
+import com.sucy.skill.cast.PreviewSettings;
 import com.sucy.skill.data.formula.Formula;
 import com.sucy.skill.data.formula.value.CustomValue;
 import com.sucy.skill.dynamic.DynamicSkill;
@@ -507,11 +507,16 @@ public class Settings {
     @Getter private boolean      showLevelMessages;
     /**
      * Checks whether or not messages should be displayed
-     * when a player dies and loses experience
+     * when a loses experience
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean      showLossMessages;
+    @Getter private boolean showLossExpMessages;
+    /**
+     * Checks whether messages should be displayed
+     * when a player loses a level
+     */
+    @Getter private boolean showLossLevelMessages;
     private         Set<String>  expLostBlacklist;
     /**
      * Checks whether or not the skill bar is enabled
@@ -1082,7 +1087,7 @@ public class Settings {
         hoverItem = GUITool.parseItem(config.getSection(CAST_HOVER));
         instantItem = GUITool.parseItem(config.getSection(CAST_INSTANT));
         castEnabled = castEnabled && castItem != null;
-        IndicatorSettings.load(config.getSection(CAST_INDICATOR));
+        PreviewSettings.load(config.getSection(CAST_INDICATOR));
     }
 
     private void loadComboSettings() {
@@ -1147,7 +1152,8 @@ public class Settings {
         this.blockCreative = config.getBoolean(EXP_BASE + "block-creative");
         this.showExpMessages = config.getBoolean(EXP_BASE + "exp-message-enabled");
         this.showLevelMessages = config.getBoolean(EXP_BASE + "level-message-enabled");
-        this.showLossMessages = config.getBoolean(EXP_BASE + "lose-exp-message");
+        this.showLossExpMessages = config.getBoolean(EXP_BASE + "lose-exp-message");
+        this.showLossLevelMessages = config.getBoolean(EXP_BASE + "lose-level-message");
         this.expLostBlacklist = new HashSet<>(config.getList(EXP_BASE + "lose-exp-blacklist"));
 
         DataSection formula = config.getSection(EXP_BASE + "formula");

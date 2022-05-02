@@ -30,6 +30,7 @@ import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.particle.direction.Directions;
 import com.sucy.skill.api.particle.target.EffectTarget;
 import com.sucy.skill.log.Logger;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 
@@ -51,7 +52,10 @@ public class EffectPlayer {
     public static final String P_TYPE = "-particle-type";
     public static final String MAT    = "-particle-material";
     public static final String DURABILITY = "-particle-durability";
-    public static final String DATA   = "-particle-data";
+    public static final String CMD = "-particle-data";
+    public static final String DUST_COLOR = "-particle-dust-color";
+    public static final String FINAL_DUST_COLOR = "-particle-final-dust-color";
+    public static final String DUST_SIZE = "-particle-dust-size";
     public static final String AMOUNT = "-particle-amount";
     public static final String DX     = "-particle-dx";
     public static final String DY     = "-particle-dy";
@@ -117,7 +121,7 @@ public class EffectPlayer {
         String keyMod = noPrefix ? "" : key;
 
         // Grab the particle type
-        Particle         particleType = ParticleLookup.find(settings.getString(keyMod + P_TYPE, "SPELL"));
+        Particle particleType = ParticleHelper.getFromKey(settings.getString(keyMod + P_TYPE, "Villager happy"));
         ParticleSettings particle;
 
         try {
@@ -129,8 +133,11 @@ public class EffectPlayer {
                     (float) settings.getDouble(keyMod + SPEED, 1),
                     settings.getInt(keyMod + AMOUNT, 1),
                     Material.matchMaterial(settings.getString(keyMod + MAT, "DIRT")),
-                    settings.getInt(keyMod + DATA, 0),
-                    settings.getInt(keyMod + DURABILITY, 0)
+                    settings.getInt(keyMod +CMD, 0),
+                    settings.getInt(keyMod + DURABILITY, 0),
+                    Color.fromRGB(Integer.parseInt(settings.getString(DUST_COLOR, "#FF0000").substring(1), 16)),
+                    Color.fromRGB(Integer.parseInt(settings.getString(FINAL_DUST_COLOR, "#FF0000").substring(1), 16)),
+                    (float) settings.getDouble(DUST_SIZE, 1)
 
             );
         } catch (Exception ex) {

@@ -151,6 +151,7 @@ public class RequirementTree extends InventoryTree
         {
             height = row + 1;
         }
+        height = Math.max(height, 1);
     }
 
     /**

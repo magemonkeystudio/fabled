@@ -30,8 +30,7 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkill;
-import com.sucy.skill.cast.IIndicator;
-import com.sucy.skill.cast.IndicatorType;
+import com.sucy.skill.cast.PreviewType;
 import com.sucy.skill.log.Logger;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.util.MobManager;
@@ -50,7 +49,7 @@ public abstract class EffectComponent {
     private static final String                     ICON_KEY   = "icon-key";
     private static final String                     COUNTS_KEY = "counts";
     private static final String                     TYPE       = "type";
-    private static final String                     INDICATOR  = "indicator";
+    private static final String                     PREVIEW    = "indicator";
     private static       boolean                    passed;
     /**
      * Child components
@@ -61,9 +60,9 @@ public abstract class EffectComponent {
      */
     protected final      Settings                   settings   = new Settings();
     /**
-     * Whether or not the component has preview effects
+     * Whether the component has preview effects
      */
-    public               boolean                    hasEffect;
+    public               boolean                    hasPreview;
     /**
      * Parent class of the component
      */
@@ -71,7 +70,7 @@ public abstract class EffectComponent {
     /**
      * Type of indicators to show
      */
-    protected            IndicatorType              indicatorType;
+    protected PreviewType                           previewType;
     private              String                     instanceKey;
 
     private static String filterSpecialChars(String string) {
@@ -131,23 +130,11 @@ public abstract class EffectComponent {
     }
 
     /**
-     * Checks whether or not the component or its children have an effect
+     * Whether the component or its children have a preview effect
      *
-     * @return true if has an effect, false otherwise
+     * @return true if has a preview, false otherwise
      */
-    private boolean hasEffect() {
-        if (indicatorType != IndicatorType.NONE) {
-            return true;
-        }
-
-        for (EffectComponent child : children) {
-            if (child.hasEffect()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
+    public boolean hasPreview() { return hasPreview; }
 
     /**
      * Retrieves an attribute value while applying attribute
@@ -337,16 +324,14 @@ public abstract class EffectComponent {
     /**
      * Creates the list of indicators for the skill
      *
-     * @param list    list to store indicators in
      * @param caster  caster reference
      * @param targets location to base location on
      * @param level   the level of the skill to create for
+     * @param step    the current progress of the indicator
      */
-    public void makeIndicators(List<IIndicator> list, Player caster, List<LivingEntity> targets, int level) {
-        if (hasEffect) {
-            for (EffectComponent component : children) {
-                component.makeIndicators(list, caster, targets, level);
-            }
+    public void playPreview(Player caster, int level, List<LivingEntity> targets, int step) {
+        if (hasPreview) {
+            for (EffectComponent component : children) { component.playPreview(caster, level, targets, step); }
         }
     }
 
@@ -357,7 +342,7 @@ public abstract class EffectComponent {
      */
     public void save(DataSection config) {
         config.set(TYPE, getType().name().toLowerCase());
-        config.set(INDICATOR, indicatorType.getKey());
+        config.set(PREVIEW, previewType.getKey());
         settings.save(config.createSection("data"));
         DataSection children = config.createSection("children");
         for (EffectComponent child : this.children) {
@@ -383,7 +368,7 @@ public abstract class EffectComponent {
                 skill.setAttribKey(key, this);
             }
         }
-        indicatorType = IndicatorType.getByKey(settings.getString(INDICATOR, "2D"));
+        previewType = PreviewType.getByKey(config.getString(PREVIEW, "NONE"));
 
         DataSection children = config.getSection("children");
         if (children != null) {
@@ -407,6 +392,14 @@ public abstract class EffectComponent {
             }
         }
 
-        hasEffect = hasEffect();
+        hasPreview = previewType != PreviewType.NONE;
+        if (!hasPreview) {
+            for (EffectComponent child : this.children) {
+                if (child.hasPreview()) {
+                    hasPreview = true;
+                    break;
+                }
+            }
+        }
     }
 }

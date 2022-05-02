@@ -6,7 +6,7 @@
 
     <groupId>mc.promcteam</groupId>
     <artifactId>proskillapi</artifactId>
-    <version>1.1.7.15</version>
+    <version>1.1.7.17</version>
     <packaging>jar</packaging>
 
     <name>ProSkillAPI</name>
@@ -75,7 +75,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.18.1-R0.1-SNAPSHOT</version>
+            <version>1.18.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -88,12 +88,6 @@
             <groupId>com.github.promcteam</groupId>
             <artifactId>proskillapiparties</artifactId>
             <version>4edd1b5e56</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-            <version>4.1.70.Final</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -128,9 +122,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>io.lumine.xikage</groupId>
-            <artifactId>MythicMobs</artifactId>
-            <version>4.9.1</version>
+            <groupId>io.lumine</groupId>
+            <artifactId>Mythic-Dist</artifactId>
+            <version>5.0.3-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -172,7 +166,7 @@
         <dependency>
             <groupId>mc.promcteam</groupId>
             <artifactId>promccore</artifactId>
-            <version>1.0.3.7</version>
+            <version>1.0.3.9</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -184,6 +178,7 @@
     </dependencies>
 
     <build>
+        <directory>../ProBuilds</directory>
         <finalName>${project.artifactId}-${project.version}-${maven.build.timestamp}</finalName>
         <plugins>
             <plugin>

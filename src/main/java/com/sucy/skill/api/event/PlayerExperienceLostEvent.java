@@ -38,8 +38,9 @@ import org.bukkit.event.HandlerList;
 public class PlayerExperienceLostEvent extends Event implements Cancellable
 {
     private static final HandlerList handlers = new HandlerList();
-    private PlayerClass playerClass;
+    private final PlayerClass playerClass;
     private boolean     cancelled;
+    private boolean     changeLevel;
     private double      amount;
 
     /**
@@ -48,10 +49,11 @@ public class PlayerExperienceLostEvent extends Event implements Cancellable
      * @param playerClass class of the player losing experience
      * @param amount      amount of experience being lost
      */
-    public PlayerExperienceLostEvent(PlayerClass playerClass, double amount)
+    public PlayerExperienceLostEvent(PlayerClass playerClass, double amount, boolean changeLevel)
     {
         this.playerClass = playerClass;
         this.amount = amount;
+        this.changeLevel = changeLevel;
         cancelled = false;
     }
 
@@ -80,6 +82,12 @@ public class PlayerExperienceLostEvent extends Event implements Cancellable
     }
 
     /**
+     * @return whether to lower the level if the exp lost exceeds the current exp,
+     * or to cap at 0 exp and keep the current level
+     */
+    public boolean isLevelChangeAllowed() { return changeLevel; }
+
+    /**
      * Sets the amount of experience being gained
      *
      * @param amount new amount of experience
@@ -95,6 +103,12 @@ public class PlayerExperienceLostEvent extends Event implements Cancellable
 
         this.amount = amount;
     }
+
+    /**
+     * Sets whether to lower the level if the exp lost exceeds the current exp,
+     * or to cap at 0 exp and keep the current level
+     */
+    public void setLevelChangeAllowed(boolean changeLevel) { this.changeLevel = changeLevel; }
 
     /**
      * @return whether or not the gain in experience is cancelled

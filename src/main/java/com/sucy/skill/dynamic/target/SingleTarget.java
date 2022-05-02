@@ -28,7 +28,9 @@ package com.sucy.skill.dynamic.target;
 
 import com.google.common.collect.ImmutableList;
 import com.sucy.skill.api.target.TargetHelper;
-import com.sucy.skill.cast.IIndicator;
+import com.sucy.skill.cast.ConePreview;
+import com.sucy.skill.cast.Preview;
+import com.sucy.skill.cast.PreviewSettings;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -42,12 +44,17 @@ public class SingleTarget extends TargetComponent {
     private static final String RANGE     = "range";
     private static final String TOLERANCE = "tolerance";
 
+    private ConePreview preview;
+
     /** {@inheritDoc} */
     @Override
-    public void makeIndicators(List<IIndicator> list, Player caster, LivingEntity target, int level) {
-        double range = parseValues(caster, RANGE, level, 3.0);
-        double angle = parseValues(caster, TOLERANCE, level, 4.0);
-        makeConeIndicator(list, target, range, angle);
+    public void playPreview(Player caster, int level, LivingEntity target, int step) {
+        double arc = parseValues(caster, TOLERANCE, level, 4.0)* Math.PI / 180;
+        double radius = parseValues(caster, RANGE, level, 3.0);
+        if (preview == null || preview.getArc() != arc || preview.getRadius() != radius) {
+            preview = new ConePreview(arc, radius);
+        }
+        preview.playParticles(caster, PreviewSettings.particle, target.getLocation(), step);
     }
 
     /** {@inheritDoc} */

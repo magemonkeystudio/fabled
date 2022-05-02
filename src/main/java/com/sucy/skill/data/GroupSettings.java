@@ -221,11 +221,13 @@ public class GroupSettings {
 
     private int computePoints(int newLevel, int oldLevel, boolean custom, int[] data, double perLevel) {
         if (custom) {
-            int total = 0;
-            for (int i = oldLevel + 1; i < data.length && i <= newLevel; i++) {
-                total += data[i];
-            }
-            return total;
+            int newPoints = 0;
+            for (int i = 1; i < data.length && i <= newLevel; i++) { newPoints += data[i]; }
+
+            int oldPoints = 0;
+            for (int i = 1; i < data.length && i <= oldLevel; i++) { oldPoints += data[i]; }
+
+            return newPoints - oldPoints;
         } else {
             return (int) (newLevel * perLevel) - (int) (oldLevel * perLevel);
         }

@@ -27,7 +27,8 @@
 package com.sucy.skill.dynamic.target;
 
 import com.google.common.collect.ImmutableList;
-import com.sucy.skill.cast.IIndicator;
+import com.sucy.skill.cast.Preview;
+import com.sucy.skill.cast.PreviewSettings;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -40,8 +41,15 @@ public class SelfTarget extends TargetComponent {
 
     /** {@inheritDoc} */
     @Override
-    public void makeIndicators(List<IIndicator> list, Player caster, LivingEntity target, int level) {
-        makeCircleIndicator(list, caster, 0.5);
+    public void playPreview(Player caster, final int level, final LivingEntity target, int step) {
+        switch (previewType) {
+            case DIM_2:
+                circlePreview.playParticles(caster, PreviewSettings.particle, caster.getLocation().add(0, 0.1, 0), step);
+                break;
+            case DIM_3:
+                spherePreview.playParticles(caster, PreviewSettings.particle, caster.getLocation().add(0, 0.1, 0), step);
+                break;
+        }
     }
 
     /** {@inheritDoc} */

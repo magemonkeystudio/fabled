@@ -1,6 +1,6 @@
 package com.sucy.skill.hook;
 
-import io.lumine.xikage.mythicmobs.MythicMobs;
+import mc.promcteam.engine.NexEngine;
 import org.bukkit.entity.LivingEntity;
 
 /**
@@ -10,15 +10,10 @@ import org.bukkit.entity.LivingEntity;
 public class MythicMobsHook {
 
     public static void taunt(final LivingEntity target, final LivingEntity source, final double amount) {
-        if (amount > 0) {
-            MythicMobs.inst().getAPIHelper().addThreat(target, source, amount);
-        }
-        else if (amount < 0) {
-            MythicMobs.inst().getAPIHelper().reduceThreat(target, source, -amount);
-        }
+        NexEngine.get().getMythicMobs().taunt(target, source, amount);
     }
 
     public static boolean isMonster(final LivingEntity target) {
-        return MythicMobs.inst().getAPIHelper().isMythicMob(target);
+        return NexEngine.get().getMythicMobs().isMythicMob(target);
     }
 }

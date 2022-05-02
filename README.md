@@ -28,7 +28,7 @@ If you wish to use ProSkillAPI as a dependency in your projects, include the fol
 <dependency>
     <groupId>mc.promcteam</groupId>
     <artifactId>proskillapi</artifactId>
-    <version>1.1.7.15</version>
+    <version>1.1.7.17</version>
 </dependency>
 ```
 

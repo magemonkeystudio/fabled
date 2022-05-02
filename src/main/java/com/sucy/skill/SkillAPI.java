@@ -27,7 +27,6 @@ package com.sucy.skill;
 import com.sucy.skill.api.armorstand.ArmorStandManager;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.particle.EffectManager;
-import com.sucy.skill.api.particle.Particle;
 import com.sucy.skill.api.player.PlayerAccounts;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.player.PlayerData;
@@ -605,7 +604,6 @@ public class SkillAPI extends JavaPlugin {
         singleton = this;
 
         mainThread = new MainThread();
-        Particle.init();
         EffectManager.init();
         ArmorStandManager.init();
 
