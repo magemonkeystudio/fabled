@@ -66,6 +66,7 @@ public class Settings {
     private static final String GUI_BASE = "GUI.";
     private static final String
                                 GUI_OLD  = GUI_BASE + "old-health-bar",
+            GUI_DOWNSCALE                = GUI_BASE + "downscale-under",
             GUI_FORCE                    = GUI_BASE + "force-scaling",
             GUI_LVLBAR                   = GUI_BASE + "level-bar",
             GUI_FOOD                     = GUI_BASE + "food-bar",
@@ -83,7 +84,7 @@ public class Settings {
             GUI_FADEO                    = GUI_BASE + "title-fade-out",
             GUI_LIST                     = GUI_BASE + "title-messages",
 
-            DEFAULT_YIELD          = "default",
+    DEFAULT_YIELD                  = "default",
             ACCOUNT_BASE           = "Accounts.",
             ACCOUNT_MAIN           = ACCOUNT_BASE + "main-class-group",
             ACCOUNT_EACH           = ACCOUNT_BASE + "one-per-class",
@@ -178,7 +179,7 @@ public class Settings {
     @Getter private final boolean[]                      lockedSlots      = new boolean[9];
     @Getter
     @Accessors(fluent = true)
-    private         boolean                          useBoundingBoxes;
+    private               boolean                        useBoundingBoxes;
 
     private         Map<String, Map<String, Double>> breakYields;
     private         Map<String, Map<String, Double>> placeYields;
@@ -333,11 +334,17 @@ public class Settings {
     private String attrPre, attrPost;
     private         List<String> titleMessages;
     /**
-     * Checks whether or not old health bars (fixed 10 hearts) are enabled
+     * Checks whether old health bars (fixed 10 hearts) are enabled
      *
      * @return true if enabled, false otherwise
      */
     @Getter private boolean      oldHealth;
+    /**
+     * Whether health less than 10 hearts should be scaled down instead of filling the full 10 hearts.
+     *
+     * @return true if hearts should be allowed to be less than 10
+     */
+    @Getter private boolean downScaling;
     /**
      * @return true if forces the SkillAPI health scaling, false otherwise
      */
@@ -511,12 +518,12 @@ public class Settings {
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean showLossExpMessages;
+    @Getter private boolean      showLossExpMessages;
     /**
      * Checks whether messages should be displayed
      * when a player loses a level
      */
-    @Getter private boolean showLossLevelMessages;
+    @Getter private boolean      showLossLevelMessages;
     private         Set<String>  expLostBlacklist;
     /**
      * Checks whether or not the skill bar is enabled
@@ -1044,6 +1051,7 @@ public class Settings {
 
     private void loadGUISettings() {
         oldHealth = config.getBoolean(GUI_OLD);
+        downScaling = config.getBoolean(GUI_DOWNSCALE);
         forceScaling = config.getBoolean(GUI_FORCE);
         levelBar = config.getString(GUI_LVLBAR);
         levelText = TextFormatter.colorString(config.getString(GUI_LVLTXT, "Level"));
@@ -1185,7 +1193,7 @@ public class Settings {
         ItemMeta meta = unassigned.getItemMeta();
 
         final int data = icon.getInt("data", 0);
-        if (data != 0) { meta.setCustomModelData(data); }
+        if (data != 0) {meta.setCustomModelData(data);}
 
         if (icon.isList("text")) {
             List<String> format = TextFormatter.colorStringList(icon.getList("text"));

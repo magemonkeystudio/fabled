@@ -1432,7 +1432,7 @@ public class PlayerData {
      * Causes the player to lose experience
      * This will launch a {@link PlayerExperienceLostEvent} event before taking the experience.
      *
-     * @param amount percent of experience to lose
+     * @param amount  percent of experience to lose
      * @param percent whether to take the amount as a percentage
      */
     public void loseExp(double amount, boolean percent, boolean changeLevel) {
@@ -1482,9 +1482,9 @@ public class PlayerData {
      * Causes the player to lose levels
      */
     public void loseLevels(int amount) {
-        for (PlayerClass playerClass : classes.values()) {
-            if (amount > 0) { playerClass.loseLevels(amount);; }
-        }
+        classes.values().stream()
+                .filter(playerClass -> amount > 0)
+                .forEach(playerClass -> playerClass.loseLevels(amount));
     }
 
     /**
@@ -1619,21 +1619,22 @@ public class PlayerData {
         if (VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
             final AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
             attribute.setBaseValue(this.maxHealth);
-        } else {
+        } else
             player.setMaxHealth(this.maxHealth);
-        }
 
         // Health scaling is available starting with 1.6.2
         if (SkillAPI.getSettings().isOldHealth()) {
-            player.setHealthScaled(true);
-            player.setHealthScale(20);
-        } else {
+            if (SkillAPI.getSettings().isDownScaling() && player.getMaxHealth() < 20)
+                player.setHealthScaled(false);
+            else {
+                player.setHealthScaled(true);
+                player.setHealthScale(20);
+            }
+        } else
             player.setHealthScaled(false);
-        }
 
-        if (player.getHealth() > modifiedMax) {
+        if (player.getHealth() > modifiedMax)
             player.setHealth(this.maxHealth);
-        }
 
     }
 

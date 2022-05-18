@@ -228,6 +228,9 @@ GUI:
   # This does not affect total health, only the display
   old-health-bar: true
   #
+  # Should the health bar be downscaled to real health if the max is under 20?
+  downscale-under: false
+  #
   # Whether to force SkillAPI to override
   # health scaling of other plugins
   force-scaling: false
