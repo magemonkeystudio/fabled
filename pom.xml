@@ -85,12 +85,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.promcteam</groupId>
-            <artifactId>proskillapiparties</artifactId>
-            <version>4edd1b5e56</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>LibsDisguises</groupId>
             <artifactId>LibsDisguises</artifactId>
             <version>10.0.21</version>
