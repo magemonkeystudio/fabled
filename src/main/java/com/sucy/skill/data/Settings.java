@@ -28,10 +28,8 @@ package com.sucy.skill.data;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-/*
 import com.sucy.party.Parties;
 import com.sucy.party.Party;
-*/
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.CombatProtection;
 import com.sucy.skill.api.DefaultCombatProtection;
@@ -740,10 +738,10 @@ public class Settings {
                 if (playerAlly || playerWorlds.contains(attacker.getWorld().getName())) {return false;}
 
                 if (PluginChecker.isPartiesActive() && partiesAlly) {
-//                    final Parties parties = Parties.getPlugin(Parties.class);
-//                    final Party   p1      = parties.getJoinedParty(player);
-//                    final Party   p2      = parties.getJoinedParty((Player) target);
-//                    return p1 == null || p1 != p2;
+                    final Parties parties = Parties.getPlugin(Parties.class);
+                    final Party   p1      = parties.getJoinedParty(player);
+                    final Party   p2      = parties.getJoinedParty((Player) target);
+                    return p1 == null || p1 != p2;
                 }
                 return combatProtection.canAttack(player, (Player) target);
             }

@@ -156,7 +156,13 @@
         <dependency>
             <groupId>com.github.promcteam</groupId>
             <artifactId>promccore</artifactId>
-            <version>-SNAPSHOT</version>
+            <version>master-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.promcteam</groupId>
+            <artifactId>proskillapiparties</artifactId>
+            <version>master-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
