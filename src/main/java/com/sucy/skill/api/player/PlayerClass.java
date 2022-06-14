@@ -311,8 +311,8 @@ public class PlayerClass {
      * <p>Gives experience to the class under the context of the experience source.</p>
      * <p>This will also check for leveling up after the experience is added.</p>
      * <p>If the class does not normally receive experience from the source,
-     * it will still launch an experience event, just it will start off as
-     * cancelled in case it should still be given in select circumstances.</p>
+     * or the player is already max level, it will still launch an experience event,
+     * just it will start off as cancelled in case it should still be given in select circumstances.</p>
      *
      * @param amount      amount of experience to give
      * @param source      type of the source of the experience
@@ -320,13 +320,11 @@ public class PlayerClass {
      */
     public void giveExp(double amount, ExpSource source, boolean showMessage) {
         // Cannot give a non-positive amount of exp
-        if (amount <= 0 || level >= classData.getMaxLevel()) {
-            return;
-        }
+        if (amount <= 0) { return; }
 
         // Call an event for the experience gained
         PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this, amount, source);
-        event.setCancelled(!classData.receivesExp(source));
+        event.setCancelled(!classData.receivesExp(source) || level >= classData.getMaxLevel());
         Bukkit.getPluginManager().callEvent(event);
 
         int rounded = (int) Math.ceil(event.getExp());
