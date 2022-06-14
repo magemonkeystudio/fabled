@@ -29,13 +29,13 @@ package com.sucy.skill.task;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.player.PlayerData;
-import com.sucy.skill.api.util.ActionBar;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.log.LogType;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.thread.RepeatThreadTask;
 import mc.promcteam.engine.mccore.util.TextFormatter;
 import mc.promcteam.engine.mccore.util.VersionManager;
+import mc.promcteam.engine.utils.MsgUT;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
@@ -76,7 +76,7 @@ public class GUITask extends RepeatThreadTask {
         forceScaling = SkillAPI.getSettings().isForceScaling();
         oldHealth = SkillAPI.getSettings().isOldHealth();
 
-        useAction = SkillAPI.getSettings().isUseActionBar() && ActionBar.isSupported();
+        useAction = SkillAPI.getSettings().isUseActionBar();
         actionText = TextFormatter.colorString(SkillAPI.getSettings().getActionText());
 
         Logger.log(LogType.GUI, 1, "GUI Settings: " + levelMana + "/" + levelLevel + "/" + foodMana + "/" + foodExp + "/" + useAction + "/" + actionText);
@@ -151,7 +151,7 @@ public class GUITask extends RepeatThreadTask {
 
             // Action bar options
             if (useAction && data.hasClass()) {
-                Logger.log(LogType.GUI, 2, "Updating action bar (Working=" + ActionBar.isSupported() + ")");
+                Logger.log(LogType.GUI, 2, "Updating action bar");
                 PlayerClass main = data.getMainClass();
                 String filtered = (main.getData().hasActionBarText() ? main.getData().getActionBarText() : actionText)
                         .replace("{combo}", data.getComboData().getCurrentComboString())
@@ -177,7 +177,7 @@ public class GUITask extends RepeatThreadTask {
                 if (VersionManager.isVersionAtLeast(11000)) {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(filtered));
                 } else {
-                    ActionBar.show(player, filtered);
+                    MsgUT.sendActionBar(player, filtered);
                 }
             }
         }

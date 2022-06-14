@@ -141,7 +141,7 @@ public class ProjectileMechanic extends MechanicComponent {
         }
 
         // Fire from each target
-        ArrayList<Entity> projectiles = new ArrayList<Entity>();
+        ArrayList<Entity> projectiles = new ArrayList<>();
         for (LivingEntity target : targets) {
             // Apply the spread type
             if (spread.equals("rain")) {
