@@ -117,9 +117,8 @@ public class ItemSerializer {
 
         try {
             String nms   = Reflex.getNMSPackage();
-            String craft = Reflex.getCraftPackage();
 
-            Class<?> craftItemStack = Class.forName(craft + "inventory.CraftItemStack");
+            Class<?> craftItemStack = Reflex.getCraftClass("inventory.CraftItemStack");
             Class<?> nmsItemStack = Version.MINOR_VERSION >= 17
                     ? Reflex.getClass("net.minecraft.world.item.ItemStack")
                     : Class.forName(nms + "ItemStack");
