@@ -32,6 +32,7 @@ import com.sucy.skill.api.event.ParticleProjectileHitEvent;
 import com.sucy.skill.api.event.ParticleProjectileLandEvent;
 import com.sucy.skill.api.event.ParticleProjectileLaunchEvent;
 import com.sucy.skill.api.particle.ParticleHelper;
+import com.sucy.skill.api.target.TargetHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
@@ -67,15 +68,15 @@ public class ParticleProjectile extends CustomProjectile
 
     private static final String PIERCE = "pierce";
 
-    private Location loc;
-    private Settings settings;
-    private Vector   vel;
-    private int      steps;
-    private int      count;
-    private int      freq;
-    private int      life;
-    private Vector   gravity;
-    private boolean pierce;
+    private       Location loc;
+    private final Settings settings;
+    private       Vector   vel;
+    private final int    steps;
+    private       int    count;
+    private final int freq;
+    private       int life;
+    private final Vector  gravity;
+    private final boolean pierce;
 
     /**
      * Constructor
@@ -149,7 +150,7 @@ public class ParticleProjectile extends CustomProjectile
     @Override
     protected boolean landed()
     {
-        return getLocation().getBlock().getType().isSolid();
+        return TargetHelper.isSolid(getLocation().getBlock().getType());
     }
 
     /**
