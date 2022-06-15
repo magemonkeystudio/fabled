@@ -116,17 +116,17 @@ public class ItemSerializer {
         initialized = true;
 
         try {
-            String nms   = Reflex.getNMSPackage();
+            String nms = Reflex.getNMSPackage();
 
             Class<?> craftItemStack = Reflex.getCraftClass("inventory.CraftItemStack");
             Class<?> nmsItemStack = Version.MINOR_VERSION >= 17
                     ? Reflex.getClass("net.minecraft.world.item.ItemStack")
                     : Class.forName(nms + "ItemStack");
-            craftItemConstructor = craftItemStack.getDeclaredConstructor(ItemStack.class);
+            craftItemConstructor = Reflex.getConstructor(craftItemStack, ItemStack.class);
             craftItemConstructor.setAccessible(true);
-            craftItemNMSConstructor = craftItemStack.getDeclaredConstructor(nmsItemStack);
+            craftItemNMSConstructor = Reflex.getConstructor(craftItemStack, nmsItemStack);
             craftItemNMSConstructor.setAccessible(true);
-            craftItemStack_getHandle = craftItemStack.getDeclaredField("handle");
+            craftItemStack_getHandle = Reflex.getField(craftItemStack, "handle");
             craftItemStack_getHandle.setAccessible(true);
 
             Class<?> nbtBase = Version.MINOR_VERSION >= 17
@@ -141,31 +141,31 @@ public class ItemSerializer {
             Class<?> nbtCompressedStreamTools = Version.MINOR_VERSION >= 17
                     ? Reflex.getClass("net.minecraft.nbt.NBTCompressedStreamTools")
                     : Class.forName(nms + "NBTCompressedStreamTools");
-            nmsItemConstructor = nmsItemStack.getDeclaredConstructor(nbtTagCompound);
+            nmsItemConstructor = Reflex.getConstructor(nmsItemStack, nbtTagCompound);
             nmsItemConstructor.setAccessible(true);
             nbtTagCompoundConstructor = nbtTagCompound.getConstructor();
             nbtTagListConstructor = nbtTagList.getConstructor();
             if (Version.MINOR_VERSION >= 18) {
-                nbtTagCompound_set = nbtTagCompound.getDeclaredMethod("a", String.class, nbtBase);
-                nbtTagCompound_getList = nbtTagCompound.getDeclaredMethod("c", String.class, int.class);
-                nbtTagCompound_isEmpty = nbtTagCompound.getDeclaredMethod("f");
+                nbtTagCompound_set = Reflex.getMethod(nbtTagCompound, "a", String.class, nbtBase);
+                nbtTagCompound_getList = Reflex.getMethod(nbtTagCompound, "c", String.class, int.class);
+                nbtTagCompound_isEmpty = Reflex.getMethod(nbtTagCompound, "f");
 
-                itemStack_save = nmsItemStack.getDeclaredMethod("b", nbtTagCompound);
-                nbtTagList_get = nbtTagList.getDeclaredMethod("k", int.class);
+                itemStack_save = Reflex.getMethod(nmsItemStack, "b", nbtTagCompound);
+                nbtTagList_get = Reflex.getMethod(nbtTagList, "k", int.class);
             } else {
-                nbtTagCompound_set = nbtTagCompound.getDeclaredMethod("set", String.class, nbtBase);
-                nbtTagCompound_getList = nbtTagCompound.getDeclaredMethod("getList", String.class, int.class);
-                nbtTagCompound_isEmpty = nbtTagCompound.getDeclaredMethod("isEmpty");
+                nbtTagCompound_set = Reflex.getMethod(nbtTagCompound, "set", String.class, nbtBase);
+                nbtTagCompound_getList = Reflex.getMethod(nbtTagCompound, "getList", String.class, int.class);
+                nbtTagCompound_isEmpty = Reflex.getMethod(nbtTagCompound, "isEmpty");
 
-                itemStack_save = nmsItemStack.getDeclaredMethod("save", nbtTagCompound);
-                nbtTagList_get = nbtTagList.getDeclaredMethod("get", int.class);
+                itemStack_save = Reflex.getMethod(nmsItemStack, "save", nbtTagCompound);
+                nbtTagList_get = Reflex.getMethod(nbtTagList, "get", int.class);
             }
 
-            nbtTagList_add = nbtTagList.getDeclaredMethod("add", nbtBase);
-            nbtTagList_size = nbtTagList.getDeclaredMethod("size");
+            nbtTagList_add = Reflex.getMethod(nbtTagList, "add", nbtBase);
+            nbtTagList_size = Reflex.getMethod(nbtTagList, "size");
 
-            nbtCompressedStreamTools_write = nbtCompressedStreamTools.getDeclaredMethod("a", nbtTagCompound, DataOutput.class);
-            nbtCompressedStreamTools_read = nbtCompressedStreamTools.getDeclaredMethod("a", DataInputStream.class);
+            nbtCompressedStreamTools_write = Reflex.getMethod(nbtCompressedStreamTools, "a", nbtTagCompound, DataOutput.class);
+            nbtCompressedStreamTools_read = Reflex.getMethod(nbtCompressedStreamTools, "a", DataInputStream.class);
         } catch (Exception ex) {
             SkillAPI.inst().getLogger().warning("Server doesn't support NBT serialization - resorting to a less complete implementation");
         }
@@ -181,23 +181,23 @@ public class ItemSerializer {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             DataOutputStream      dataOutput   = new DataOutputStream(outputStream);
-            Object                itemList     = nbtTagListConstructor.newInstance();
+            Object                itemList     = Reflex.invokeConstructor(nbtTagListConstructor);
 
             // Save every element in the list
             for (ItemStack item : items) {
-                Object outputObject = nbtTagCompoundConstructor.newInstance();
+                Object outputObject = Reflex.invokeConstructor(nbtTagCompoundConstructor);
                 Object craft        = getCraftVersion(item);
 
                 // Convert the item stack to a NBT compound
                 if (craft != null)
-                    itemStack_save.invoke(craftItemStack_getHandle.get(craft), outputObject);
-                nbtTagList_add.invoke(itemList, outputObject);
+                    Reflex.invokeMethod(itemStack_save, craftItemStack_getHandle.get(craft), outputObject);
+                Reflex.invokeMethod(nbtTagList_add, itemList, outputObject);
             }
 
-            Object wrapper = nbtTagCompoundConstructor.newInstance();
-            nbtTagCompound_set.invoke(wrapper, "i", itemList);
+            Object wrapper = Reflex.invokeConstructor(nbtTagCompoundConstructor);
+            Reflex.invokeMethod(nbtTagCompound_set, wrapper, "i", itemList);
 
-            nbtCompressedStreamTools_write.invoke(null, wrapper, dataOutput);
+            Reflex.invokeMethod(nbtCompressedStreamTools_write, null, wrapper, dataOutput);
 
             // Serialize that array
             return new BigInteger(1, outputStream.toByteArray()).toString(32);
@@ -216,16 +216,16 @@ public class ItemSerializer {
         try {
             ByteArrayInputStream inputStream     = new ByteArrayInputStream(new BigInteger(data, 32).toByteArray());
             DataInputStream      dataInputStream = new DataInputStream(inputStream);
-            Object               wrapper         = nbtCompressedStreamTools_read.invoke(null, dataInputStream);
-            Object               itemList        = nbtTagCompound_getList.invoke(wrapper, "i", 10);
-            ItemStack[]          items           = new ItemStack[(Integer) nbtTagList_size.invoke(itemList)];
+            Object               wrapper         = Reflex.invokeMethod(nbtCompressedStreamTools_read, null, dataInputStream);
+            Object               itemList        = Reflex.invokeMethod(nbtTagCompound_getList, wrapper, "i", 10);
+            ItemStack[]          items           = new ItemStack[(Integer) Reflex.invokeMethod(nbtTagList_size, itemList)];
 
             for (int i = 0; i < items.length; i++) {
-                Object inputObject = nbtTagList_get.invoke(itemList, i);
+                Object inputObject = Reflex.invokeMethod(nbtTagList_get, itemList, i);
 
                 // IsEmpty
-                if (!(Boolean) nbtTagCompound_isEmpty.invoke(inputObject)) {
-                    items[i] = (ItemStack) craftItemNMSConstructor.newInstance(nmsItemConstructor.newInstance(inputObject));
+                if (!(Boolean) Reflex.invokeMethod(nbtTagCompound_isEmpty, inputObject)) {
+                    items[i] = (ItemStack) Reflex.invokeConstructor(craftItemNMSConstructor, Reflex.invokeConstructor(nmsItemConstructor, inputObject));
                 }
             }
 
@@ -241,7 +241,7 @@ public class ItemSerializer {
         if (stack == null)
             return null;
         else if (stack.getClass() == ItemStack.class)
-            return craftItemConstructor.newInstance(stack);
+            return Reflex.invokeConstructor(craftItemConstructor, stack);
         else
             return stack;
     }
