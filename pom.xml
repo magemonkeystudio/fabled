@@ -6,7 +6,7 @@
 
     <groupId>mc.promcteam</groupId>
     <artifactId>proskillapi</artifactId>
-    <version>1.1.7.17</version>
+    <version>1.1.7.17-${maven.build.timestamp}</version>
     <packaging>jar</packaging>
 
     <name>ProSkillAPI</name>
