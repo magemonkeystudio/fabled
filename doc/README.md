@@ -1,4 +1,5 @@
-[![Build](https://github.com/promcteam/proskillapi/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/promcteam/proskillapi/actions/workflows/maven.yml/badge.svg)
+[![Build](https://github.com/promcteam/proskillapi/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/promcteam/promccore/packages/1203744)
+[![Build](https://github.com/promcteam/proskillapi/actions/workflows/publish.yml/badge.svg?branch=development)](https://github.com/promcteam/promccore/packages/1203744)
 
 # ${project.name}
 Our fork is based on the original skillapi and the forked skillapi by Sentropic.
@@ -28,8 +29,12 @@ If you wish to use ${project.name} as a dependency in your projects, include the
 <dependency>
     <groupId>${project.groupId}</groupId>
     <artifactId>${project.artifactId}</artifactId>
-    <version>${project.version}</version>
+    <version>VERSION</version>
 </dependency>
 ```
 
+Find version numbers [here](https://github.com/promcteam/promccore/packages/1203744).
+
 Additionally, you'll need to make sure that you have properly configured [Authentication with GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry#authenticating-to-github-packages).
+
+You may also use JitPack!

@@ -1,6 +1,7 @@
 import requests
 import simplejson as json
 import re
+import sys
 
 def get_info():
 	headers = {'User-Agent': 'PostmanRuntime/7.29.0', 'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate, br', 'Connection': 'keep-alive'}
@@ -22,7 +23,7 @@ embed = {
 	'color': 5341129
 }
 
-requests.post('https://discord.com/api/webhooks/986510243364212766/DeNfjabb5DltiCVZZ9_7aCQK7BH__iE1dHFcxuTLoqrV-eRQOQzKoSD5fxbDxkEHFZm1',
+requests.post(sys.argv[1],
 	headers={'Content-Type': 'application/json'},
 	data=json.dumps({'embeds': [embed]})
 )
