@@ -157,14 +157,14 @@ public class Settings {
             WG_SKILLS              = "disable-skills",
             WG_EXP                 = "disable-exp";
 
-    private final         HashMap<String, Double>        yields           = new HashMap<String, Double>();
-    private final         HashMap<String, GroupSettings> groups           = new HashMap<String, GroupSettings>();
+    private final         HashMap<String, Double>        yields           = new HashMap<>();
+    private final         HashMap<String, GroupSettings> groups           = new HashMap<>();
     private final         SkillAPI                       plugin;
     private final         DataSection                    config;
-    private final         HashMap<String, Integer>       permAccounts     = new HashMap<String, Integer>();
-    private final         ArrayList<String>              monsterWorlds    = new ArrayList<String>();
-    private final         ArrayList<String>              passiveWorlds    = new ArrayList<String>();
-    private final         ArrayList<String>              playerWorlds     = new ArrayList<String>();
+    private final         HashMap<String, Integer>       permAccounts     = new HashMap<>();
+    private final         ArrayList<String>              monsterWorlds    = new ArrayList<>();
+    private final         ArrayList<String>              passiveWorlds    = new ArrayList<>();
+    private final         ArrayList<String>              playerWorlds     = new ArrayList<>();
     /**
      * Retrieves the default skill bar layout
      *
@@ -344,7 +344,7 @@ public class Settings {
      *
      * @return true if hearts should be allowed to be less than 10
      */
-    @Getter private boolean downScaling;
+    @Getter private boolean      downScaling;
     /**
      * @return true if forces the SkillAPI health scaling, false otherwise
      */
@@ -690,15 +690,15 @@ public class Settings {
      * @return number of allowed accounts
      */
     public int getMaxAccounts(Player player) {
-        if (player == null) {
-            return getMaxAccounts();
-        }
+        if (player == null) return getMaxAccounts();
+
         int max = getMaxAccounts();
         for (Map.Entry<String, Integer> entry : permAccounts.entrySet()) {
             if (player.hasPermission(entry.getKey())) {
                 max = Math.max(max, entry.getValue());
             }
         }
+
         return max;
     }
 

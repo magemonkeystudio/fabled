@@ -34,6 +34,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * Represents the collection of accounts owned by a single player.
@@ -44,9 +45,8 @@ import java.util.HashMap;
  */
 public class PlayerAccounts {
     private final HashMap<Integer, PlayerData> classData = new HashMap<Integer, PlayerData>();
-
-    private       int           active;
-    private final OfflinePlayer player;
+    private final UUID player;
+    private       int  active;
 
     /**
      * Initializes a new container for player account data.
@@ -56,7 +56,7 @@ public class PlayerAccounts {
      * @param player player to store data for
      */
     public PlayerAccounts(OfflinePlayer player) {
-        this.player = player;
+        this.player = player.getUniqueId();
 
         PlayerData data = new PlayerData(player, true);
         classData.put(1, data);
@@ -87,7 +87,7 @@ public class PlayerAccounts {
      * @return Bukkit player object or null if offline/dead
      */
     public Player getPlayer() {
-        return player.getPlayer();
+        return Bukkit.getPlayer(player);
     }
 
     /**
@@ -96,7 +96,7 @@ public class PlayerAccounts {
      * @return Bukkit offline player object
      */
     public OfflinePlayer getOfflinePlayer() {
-        return player;
+        return Bukkit.getOfflinePlayer(player);
     }
 
     /**
@@ -105,7 +105,7 @@ public class PlayerAccounts {
      * @return owner's name
      */
     public String getPlayerName() {
-        return player.getName();
+        return getOfflinePlayer().getName();
     }
 
     /**

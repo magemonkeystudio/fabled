@@ -45,19 +45,29 @@ public enum Click {
     Q(7, "Q"),
     F(8, "F");
 
-    public static final int BITS = 4;
-    public static final int BIT_MASK = (1 << BITS) - 1;
+    public static final int BITS           = 4;
+    public static final int BIT_MASK       = (1 << BITS) - 1;
     public static final int MAX_COMBO_SIZE = 32 / BITS;
 
-    private static final Click[] CLICKS = new Click[]{null, LEFT, RIGHT, SHIFT, LEFT_SHIFT, RIGHT_SHIFT, SPACE, Q, F};
+    private static final Click[]            CLICKS    = new Click[]{
+            null,
+            LEFT,
+            RIGHT,
+            SHIFT,
+            LEFT_SHIFT,
+            RIGHT_SHIFT,
+            SPACE,
+            Q,
+            F
+    };
     private static final Map<String, Click> CLICK_MAP = new HashMap<String, Click>() {{
         for (final Click click : Click.values()) {
             put(click.name().toLowerCase(), click);
             put(click.key.toLowerCase(), click);
         }
     }};
-    private int id;
-    private String key;
+    private final        int                id;
+    private final        String             key;
 
     Click(int id, String key) {
         this.id = id;
@@ -69,7 +79,6 @@ public enum Click {
      * this will instead return null.
      *
      * @param id click ID
-     *
      * @return Click enum value or null if not found
      */
     public static Click getById(int id) {
@@ -82,7 +91,6 @@ public enum Click {
      * this will return null instead.
      *
      * @param name click name
-     *
      * @return Click enum value or null if not found
      */
     public static Click getByName(String name) {
