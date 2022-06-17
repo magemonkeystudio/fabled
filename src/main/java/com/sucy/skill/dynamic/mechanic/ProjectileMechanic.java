@@ -31,6 +31,7 @@ import com.sucy.skill.api.projectile.CustomProjectile;
 import com.sucy.skill.dynamic.TempEntity;
 import com.sucy.skill.listener.MechanicListener;
 import com.sucy.skill.task.RemoveTask;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
@@ -67,12 +68,12 @@ public class ProjectileMechanic extends MechanicComponent {
         put("ghast fireball", LargeFireball.class);
         put("snowball", Snowball.class);
     }};
-    private static final HashMap<String, Material> MATERIALS          = new HashMap<String, Material>() {{
+    private static final HashMap<String, Material>                    MATERIALS          = new HashMap<String, Material>() {{
         put("arrow", Material.ARROW);
         put("egg", Material.EGG);
         put("snowball", snowBall());
     }};
-    private static final Class<Enum<?>>            PICKUP_STATUS_ENUM = null;
+    private static final Class<Enum<?>>                               PICKUP_STATUS_ENUM = null;
 
     private static Class<? extends Projectile> getProjectileClass(String projectileName) {
         StringBuilder conditionedName = new StringBuilder();
@@ -106,7 +107,6 @@ public class ProjectileMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -219,7 +219,7 @@ public class ProjectileMechanic extends MechanicComponent {
                 }
             }
         }
-        new RemoveTask(projectiles, (int) parseValues(caster, LIFESPAN, level, 9999)*20);
+        new RemoveTask(projectiles, (int) parseValues(caster, LIFESPAN, level, 9999) * 20);
 
         return targets.size() > 0;
     }
@@ -231,13 +231,15 @@ public class ProjectileMechanic extends MechanicComponent {
      * @param hit        the entity hit by the projectile, if any
      */
     public void callback(Projectile projectile, LivingEntity hit) {
-        if (hit == null)
-            hit = new TempEntity(projectile.getLocation());
+        if (hit == null) hit = new TempEntity(projectile.getLocation());
 
-        ArrayList<LivingEntity> targets = new ArrayList<LivingEntity>();
-        targets.add(hit);
-        executeChildren((LivingEntity) projectile.getShooter(), SkillAPI.getMetaInt(projectile, LEVEL), targets, skill.isForced((LivingEntity) projectile.getShooter()));
-        SkillAPI.removeMeta(projectile, MechanicListener.P_CALL);
-        projectile.remove();
+        LivingEntity finalHit = hit;
+        Bukkit.getScheduler().runTaskLater(SkillAPI.inst(), () -> {
+            ArrayList<LivingEntity> targets = new ArrayList<>();
+            targets.add(finalHit);
+            executeChildren((LivingEntity) projectile.getShooter(), SkillAPI.getMetaInt(projectile, LEVEL), targets, skill.isForced((LivingEntity) projectile.getShooter()));
+            SkillAPI.removeMeta(projectile, MechanicListener.P_CALL);
+            projectile.remove();
+        }, 1L);
     }
 }
