@@ -47,6 +47,11 @@ import java.util.List;
 import java.util.Map;
 
 // Based on the thread https://bukkit.org/threads/help-with-serialized-nbttagcompounds.116335/
+
+/**
+ * Will be removed in lieu of ProMCCore's ItemUT from/toBase64
+ */
+@Deprecated
 public class ItemSerializer {
 
     // Missing the following (not sure what to do with these):

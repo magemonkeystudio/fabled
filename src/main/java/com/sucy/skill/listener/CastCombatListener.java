@@ -34,6 +34,7 @@ import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.api.util.ItemSerializer;
 import com.sucy.skill.gui.handlers.SkillHandler;
 import com.sucy.skill.hook.CitizensHook;
+import mc.promcteam.engine.utils.ItemUT;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -51,6 +52,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -60,9 +62,9 @@ import java.util.UUID;
 public class CastCombatListener extends SkillAPIListener {
     private final String ITEM_SAVE_KEY = "combatItems";
 
-    private final HashMap<UUID, ItemStack[]> backup = new HashMap<UUID, ItemStack[]>();
+    private final HashMap<UUID, ItemStack[]> backup = new HashMap<>();
 
-    private final HashSet<UUID> ignored = new HashSet<UUID>();
+    private final HashSet<UUID> ignored = new HashSet<>();
 
     private final int slot = SkillAPI.getSettings().getCastSlot();
 
@@ -70,32 +72,38 @@ public class CastCombatListener extends SkillAPIListener {
     public void init() {
         MainListener.registerJoin(this::init);
         MainListener.registerClear(this::handleClear);
-        for (Player player : Bukkit.getOnlinePlayers())
-            init(player);
+        Bukkit.getOnlinePlayers().forEach(this::init);
     }
 
     @Override
     public void cleanup() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
-                cleanup(player);
-            }
-        }
+        Bukkit.getOnlinePlayers().stream()
+                .filter(player -> SkillAPI.getSettings().isWorldEnabled(player.getWorld()))
+                .forEach(this::cleanup);
     }
 
     private void init(Player player) {
-        if (!SkillAPI.getSettings().isWorldEnabled(player.getWorld()))
-            return;
+        if (!SkillAPI.getSettings().isWorldEnabled(player.getWorld())) return;
 
         PlayerData data = SkillAPI.getPlayerData(player);
         if (data.getExtraData().has(ITEM_SAVE_KEY)) {
-            ItemStack[] items = ItemSerializer.fromBase64(data.getExtraData().getString(ITEM_SAVE_KEY));
-            if (items != null)
-                backup.put(player.getUniqueId(), items);
-            else
-                backup.put(player.getUniqueId(), new ItemStack[9]);
+            ItemStack[] items;
+            if(data.getExtraData().get(ITEM_SAVE_KEY) instanceof String) {
+                items = ItemSerializer.fromBase64(data.getExtraData().getString(ITEM_SAVE_KEY));
+            } else {
+                items = ItemUT.fromBase64(data.getExtraData().getList(ITEM_SAVE_KEY));
+                for (int i = 0; i < items.length; i++) {
+                    ItemStack item = items[i];
+                    if (item.getType() == Material.AIR)
+                        items[i] = null;
+                }
+            }
+
+            if (items != null) backup.put(player.getUniqueId(), items);
+            else backup.put(player.getUniqueId(), new ItemStack[9]);
         } else
             backup.put(player.getUniqueId(), new ItemStack[9]);
+
         if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
             PlayerInventory inv  = player.getInventory();
             ItemStack       item = inv.getItem(slot);
@@ -123,8 +131,10 @@ public class CastCombatListener extends SkillAPIListener {
         if (bar.isSetup())
             toggle(player);
         player.getInventory().setItem(slot, null);
-        ItemStack[] restore = backup.remove(player.getUniqueId());
-        data.getExtraData().set(ITEM_SAVE_KEY, ItemSerializer.toBase64(restore));
+        ItemStack[]  restore = backup.remove(player.getUniqueId());
+        List<String> base64  = ItemUT.toBase64(restore);
+
+        data.getExtraData().set(ITEM_SAVE_KEY, base64);
     }
 
     private void toggle(Player player) {
