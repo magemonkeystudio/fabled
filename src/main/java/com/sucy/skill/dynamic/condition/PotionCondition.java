@@ -67,9 +67,9 @@ public class PotionCondition extends ConditionComponent {
     private boolean has(LivingEntity target, PotionEffectType type, int min, int max) {
         int rank;
         if (VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
-            rank = target.getPotionEffect(type).getAmplifier();
             if (!target.hasPotionEffect(type))
                 return false;
+            rank = target.getPotionEffect(type).getAmplifier();
         } else {
             rank = target.getActivePotionEffects().stream()
                     .filter(effect -> effect.getType() == type)
