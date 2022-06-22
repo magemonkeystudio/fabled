@@ -121,12 +121,10 @@ public class ItemSerializer {
         initialized = true;
 
         try {
-            String nms = Reflex.getNMSPackage();
-
             Class<?> craftItemStack = Reflex.getCraftClass("inventory.CraftItemStack");
             Class<?> nmsItemStack = Version.MINOR_VERSION >= 17
                     ? Reflex.getClass("net.minecraft.world.item.ItemStack")
-                    : Class.forName(nms + "ItemStack");
+                    : Reflex.getNMSClass("ItemStack");
             craftItemConstructor = Reflex.getConstructor(craftItemStack, ItemStack.class);
             craftItemConstructor.setAccessible(true);
             craftItemNMSConstructor = Reflex.getConstructor(craftItemStack, nmsItemStack);
@@ -145,7 +143,7 @@ public class ItemSerializer {
                     : Reflex.getNMSClass("NBTTagList");
             Class<?> nbtCompressedStreamTools = Version.MINOR_VERSION >= 17
                     ? Reflex.getClass("net.minecraft.nbt.NBTCompressedStreamTools")
-                    : Class.forName(nms + "NBTCompressedStreamTools");
+                    : Reflex.getNMSClass("NBTCompressedStreamTools");
             nmsItemConstructor = Reflex.getConstructor(nmsItemStack, nbtTagCompound);
             nmsItemConstructor.setAccessible(true);
             nbtTagCompoundConstructor = nbtTagCompound.getConstructor();
