@@ -44,9 +44,9 @@ import java.util.UUID;
  * to extend functionality for handling the inactive accounts.
  */
 public class PlayerAccounts {
-    private final HashMap<Integer, PlayerData> classData = new HashMap<Integer, PlayerData>();
-    private final UUID player;
-    private       int  active;
+    private final HashMap<Integer, PlayerData> classData = new HashMap<>();
+    private final UUID                         player;
+    private       int                          active;
 
     /**
      * Initializes a new container for player account data.
@@ -118,7 +118,7 @@ public class PlayerAccounts {
     }
 
     /**
-     * Checks whether or not there is any data for the given account ID. If
+     * Checks whether there is any data for the given account ID. If
      * the player has not switched to the account, there will be no data
      * unless the setting to initialize one account for each class is enabled.
      *

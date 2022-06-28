@@ -413,7 +413,7 @@ public class GUITool implements ToolMenu {
         while (current != null) {
             for (Skill skill : current.getSkills()) {
                 int index = page.getIndex(skill.getName());
-                if (index != -1)
+                if (index != -1 && index < inventoryContents.length)
                     inventoryContents[index] = skill.getToolIndicator();
                 else if (!guiData.has(skill.getName()) && i < playerContents.length) {
                     playerContents[i++] = skill.getToolIndicator();
