@@ -526,7 +526,7 @@ public abstract class Skill implements IconHolder {
         ItemStack item = indicator.clone();
         item.setAmount(Math.max(1, skillData.getLevel()));
         ItemMeta          meta = item.hasItemMeta() ? item.getItemMeta() : Bukkit.getItemFactory().getItemMeta(item.getType());
-        ArrayList<String> lore = new ArrayList<String>();
+        ArrayList<String> lore = new ArrayList<>();
 
         String MET     = SkillAPI.getLanguage().getMessage(SkillNodes.REQUIREMENT_MET, true, FilterType.COLOR).get(0);
         String NOT_MET = SkillAPI.getLanguage().getMessage(SkillNodes.REQUIREMENT_NOT_MET, true, FilterType.COLOR).get(0);
@@ -554,7 +554,8 @@ public abstract class Skill implements IconHolder {
                         .replace("{req:skill}", skillReq)
                         .replace("{max}", "" + maxLevel)
                         .replace("{name}", name)
-                        .replace("{type}", type);
+                        .replace("{type}", type)
+                        .replace("{skill_points}", String.valueOf(skillData.getPlayerClass().getPoints()));
 
                 // Attributes
                 while (line.contains("{attr:")) {
