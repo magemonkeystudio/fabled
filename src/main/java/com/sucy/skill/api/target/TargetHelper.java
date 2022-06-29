@@ -147,8 +147,13 @@ public abstract class TargetHelper {
     public static boolean isInFront(Entity entity, Entity target) {
 
         // Get the necessary vectors
-        Vector facing   = entity.getLocation().getDirection();
-        Vector relative = target.getLocation().clone().add(0, getHeight(entity) * 0.5, 0).subtract(entity.getLocation()).toVector();
+        Vector facing = entity.getLocation().getDirection();
+        Vector relative = target.getLocation().clone()
+                // Get the target's location and add half their height, so we have the "center of mass"
+                .add(0, getHeight(entity) * -0.5, 0)
+                // Subtract the entity location so we translate to our origin
+                .subtract(entity.getLocation())
+                .toVector();
 
         // If the dot product is positive, the target is in front
         return facing.dot(relative) >= 0;
@@ -169,7 +174,10 @@ public abstract class TargetHelper {
         // Get the necessary data
         double dotTarget = Math.cos(angle);
         Vector facing    = entity.getLocation().getDirection();
-        Vector relative  = target.getLocation().clone().add(0, getHeight(entity) * 0.5, 0).subtract(entity.getLocation()).toVector().normalize();
+        Vector relative = target.getLocation().clone()
+                .add(0, getHeight(entity) * -0.5, 0)
+                .subtract(entity.getLocation())
+                .toVector().normalize();
 
         // Compare the target dot product with the actual result
         return facing.dot(relative) >= dotTarget;
@@ -195,20 +203,11 @@ public abstract class TargetHelper {
      * @return true if the target is behind the entity
      */
     public static boolean isBehind(Entity entity, Entity target, double angle) {
-        if (angle <= 0) return false;
-        if (angle >= 360) return true;
-
-        // Get the necessary data
-        double dotTarget = Math.cos(angle);
-        Vector facing    = entity.getLocation().getDirection();
-        Vector relative  = entity.getLocation().clone().add(0, getHeight(entity) * 0.5, 0).subtract(target.getLocation()).toVector().normalize();
-
-        // Compare the target dot product and the actual result
-        return facing.dot(relative) >= dotTarget;
+        return !isInFront(entity, target, angle);
     }
 
     /**
-     * Checks whether or not the line between the two points is obstructed
+     * Checks whether the line between the two points is obstructed
      *
      * @param loc1 first location
      * @param loc2 second location
@@ -236,7 +235,7 @@ public abstract class TargetHelper {
      *
      * @param loc1        start location of the path
      * @param loc2        end location of the path
-     * @param throughWall whether or not going through walls is allowed
+     * @param throughWall whether going through walls is allowed
      * @return the farthest open location along the path
      */
     public static Location getOpenLocation(Location loc1, Location loc2, boolean throughWall) {

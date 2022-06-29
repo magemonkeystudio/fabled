@@ -187,7 +187,7 @@ public abstract class Skill implements IconHolder {
     }
 
     /**
-     * Checks whether or not the current damage event is due to
+     * Checks whether the current damage event is due to
      * skills damaging an entity. This method is used by the API
      * and shouldn't be used by other plugins.
      *
@@ -198,7 +198,7 @@ public abstract class Skill implements IconHolder {
     }
 
     /**
-     * Checks whether or not the skill has been assigned
+     * Checks whether the skill has been assigned
      * a click combination.
      *
      * @return true if has a combo, false otherwise
@@ -208,7 +208,7 @@ public abstract class Skill implements IconHolder {
     }
 
     /**
-     * Checks whether or not the skill can automatically
+     * Checks whether the skill can automatically
      * level up to the next stage.
      *
      * @return true if can level up automatically, false otherwise
@@ -220,7 +220,7 @@ public abstract class Skill implements IconHolder {
     }
 
     /**
-     * Checks whether or not the skill can automatically
+     * Checks whether the skill can automatically
      * level up to the next stage.
      *
      * @param level - the current level of the skill
@@ -258,7 +258,7 @@ public abstract class Skill implements IconHolder {
     }
 
     /**
-     * Checks whether or not the skill has a message to display when cast.
+     * Checks whether the skill has a message to display when cast.
      *
      * @return true if has a message, false otherwise
      */
@@ -302,7 +302,7 @@ public abstract class Skill implements IconHolder {
     }
 
     /**
-     * Checks whether or not the skill needs a permission for a player to use it.
+     * Checks whether the skill needs a permission for a player to use it.
      *
      * @return true if requires a permission, false otherwise
      */
@@ -329,7 +329,7 @@ public abstract class Skill implements IconHolder {
     }
 
     /**
-     * Checks whether or not the skill requires another before leveling up
+     * Checks whether the skill requires another before leveling up
      *
      * @return true if requires another skill, false otherwise
      */
@@ -434,7 +434,7 @@ public abstract class Skill implements IconHolder {
     }
 
     /**
-     * Checks whether or not this skill can be cast by players
+     * Checks whether this skill can be cast by players
      *
      * @return true if can be cast, false otherwise
      */
