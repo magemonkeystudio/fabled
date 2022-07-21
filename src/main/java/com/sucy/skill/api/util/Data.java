@@ -45,6 +45,7 @@ public class Data {
     private static final String DATA       = "icon-data";
     private static final String DURABILITY = "icon-durability";
     private static final String LORE       = "icon-lore";
+    private static final String NAME       = "name";
 
     private static ItemStack parse(final String mat, final int dur, final int data, final List<String> lore) {
         try {
@@ -58,9 +59,10 @@ public class Data {
             if (data != 0) {meta.setCustomModelData(data);}
             if (lore != null && !lore.isEmpty()) {
                 final List<String> colored = TextFormatter.colorStringList(lore);
-                meta.setDisplayName(colored.remove(0));
+                    meta.setDisplayName(colored.remove(0));
                 meta.setLore(colored);
             }
+
             if (meta instanceof Damageable) {
                 ((Damageable) meta).setDamage(dur);
             }
@@ -89,7 +91,7 @@ public class Data {
 
         if (meta.hasDisplayName()) {
             List<String> lore = item.getItemMeta().getLore();
-            if (lore == null) {lore = new ArrayList<>();}
+            if (lore == null) lore = new ArrayList<>();
             lore.add(0, item.getItemMeta().getDisplayName());
             int count = lore.size();
             for (int i = 0; i < count; i++) {

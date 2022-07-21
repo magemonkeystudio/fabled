@@ -448,15 +448,15 @@ public abstract class Skill implements IconHolder {
      * @return GUI tool indicator
      */
     public ItemStack getToolIndicator() {
-        ItemStack item = indicator.clone();
-        ItemMeta  meta = item.getItemMeta();
-        meta.setDisplayName(name);
-
-        ArrayList<String> lore = new ArrayList<>();
+        ItemStack    item = new ItemStack(indicator.getType());
+        ItemMeta     meta = item.getItemMeta();
+        List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
+        if (meta.hasDisplayName())
+            lore.add(0, meta.getDisplayName());
         lore.add("Level: " + getLevelReq(0));
         lore.add("Cost: " + getCost(0));
         meta.setLore(lore);
-
+        meta.setDisplayName(name);
         item.setItemMeta(meta);
 
         return item;
@@ -525,7 +525,9 @@ public abstract class Skill implements IconHolder {
 
         ItemStack item = indicator.clone();
         item.setAmount(Math.max(1, skillData.getLevel()));
-        ItemMeta          meta = item.hasItemMeta() ? item.getItemMeta() : Bukkit.getItemFactory().getItemMeta(item.getType());
+        ItemMeta meta = item.hasItemMeta()
+                ? item.getItemMeta()
+                : Bukkit.getItemFactory().getItemMeta(item.getType());
         ArrayList<String> lore = new ArrayList<>();
 
         String MET     = SkillAPI.getLanguage().getMessage(SkillNodes.REQUIREMENT_MET, true, FilterType.COLOR).get(0);
@@ -805,7 +807,7 @@ public abstract class Skill implements IconHolder {
      * @param level  the level of the skill to create for
      * @param step   the current progress of the indicator
      */
-    public void playPreview(Player player, int level, int step) { }
+    public void playPreview(Player player, int level, int step) {}
 
     /**
      * Saves the skill data to the configuration, overwriting all previous data

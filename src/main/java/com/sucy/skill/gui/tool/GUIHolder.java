@@ -40,7 +40,7 @@ import java.util.HashMap;
 
 public abstract class GUIHolder<T extends IconHolder> implements InventoryHolder
 {
-    protected HashMap<String, T> data = new HashMap<String, T>();
+    protected HashMap<String, T> data = new HashMap<>();
 
     protected GUIData    gui;
     protected PlayerData player;

@@ -239,14 +239,15 @@ public class GUITool implements ToolMenu {
             case CLASS_SELECTION:
                 if (professId == 0)
                     key = type.name();
-                else
+                else if (availableProfesses.length > professId)
                     key += availableProfesses[professId].getName();
                 break;
             case CLASS_DETAILS:
                 key = type.name();
                 break;
             case SKILL_TREE:
-                key += availableClasses[classId].getName();
+                if (availableClasses.length > classId)
+                    key += availableClasses[classId].getName();
                 break;
             case ATTRIBUTES:
                 key = type.name();
