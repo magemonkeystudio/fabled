@@ -17,30 +17,30 @@ import java.util.List;
 import java.util.Objects;
 
 public final class ItemStackReader {
-    private static final String MATERIAL   = "material";
-    private static final String AMOUNT     = "amount";
-    private static final String DURABILITY = "durability";
+    private static final String MATERIAL    = "material";
+    private static final String AMOUNT      = "amount";
+    private static final String DURABILITY  = "durability";
     private static final String UNBREAKABLE = "unbreakable";
-    private static final String CMD        = "cmd";
-    private static final String HIDE_FLAGS = "hide-flags";
-    private static final String CUSTOM     = "custom";
-    private static final String NAME       = "name";
-    private static final String LORE       = "lore";
+    private static final String CMD         = "cmd";
+    private static final String HIDE_FLAGS  = "hide-flags";
+    private static final String CUSTOM      = "custom";
+    private static final String NAME        = "name";
+    private static final String LORE        = "lore";
 
     private static final String POTION_COLOR    = "potion_color";
     private static final String POTION_TYPE     = "potion_type";
     private static final String POTION_LEVEL    = "potion_level";
     private static final String POTION_DURATION = "potion_duration";
-    private static final String ARMOR_COLOR = "armor_color";
+    private static final String ARMOR_COLOR     = "armor_color";
 
     // Retrocompatibility
 
-    private static final String DATA = "data"; // Previously used instead of 'durability'
-    private static final String BYTE = "byte"; // Previously used instead of 'cmd'
-    private static final String ITEM = "item"; // Previously used instead of 'material' in ItemProjectileMechanic
+    private static final String DATA      = "data"; // Previously used instead of 'durability'
+    private static final String BYTE      = "byte"; // Previously used instead of 'cmd'
+    private static final String ITEM      = "item"; // Previously used instead of 'material' in ItemProjectileMechanic
     private static final String ITEM_DATA = "item-data"; // Previously used instead of 'cmd' in ItemProjectileMechanic
 
-    private ItemStackReader() { }
+    private ItemStackReader() {}
 
     public static Material readMaterial(Settings settings) {
         String string = null;
@@ -50,8 +50,10 @@ public final class ItemStackReader {
             string = settings.getString(ITEM);
         }
 
-        try { return Material.valueOf(string.toUpperCase().replace(" ", "_")); }
-        catch (NullPointerException | IllegalArgumentException e) { return Material.ARROW; }
+        try {return Material.valueOf(string.toUpperCase().replace(" ", "_"));} catch (NullPointerException |
+                                                                                      IllegalArgumentException e) {
+            return Material.ARROW;
+        }
     }
 
     public static int readDurability(Settings settings) {
@@ -74,19 +76,19 @@ public final class ItemStackReader {
 
     public static ItemStack read(Settings settings) {
         ItemStack item = new ItemStack(readMaterial(settings), settings.getInt(AMOUNT, 1));
-        ItemMeta meta = Objects.requireNonNull(item.getItemMeta());
+        ItemMeta  meta = Objects.requireNonNull(item.getItemMeta());
 
         if (meta instanceof Damageable) {
             Damageable damageable = (Damageable) meta;
             damageable.setDamage(readDurability(settings));
-            damageable.setUnbreakable(settings.getBool(UNBREAKABLE, false));
+            meta.setUnbreakable(settings.getBool(UNBREAKABLE, false));
         }
         meta.setCustomModelData(readCustomModelData(settings));
 
         for (String hideFlag : settings.getStringList(HIDE_FLAGS)) {
             try {
-                meta.addItemFlags(ItemFlag.valueOf("HIDE_"+hideFlag.toUpperCase().replace(' ', '_')));
-            } catch (IllegalArgumentException ignored) { }
+                meta.addItemFlags(ItemFlag.valueOf("HIDE_" + hideFlag.toUpperCase().replace(' ', '_')));
+            } catch (IllegalArgumentException ignored) {}
         }
 
         if (settings.getString(CUSTOM, "false").equalsIgnoreCase("true")) {
@@ -104,19 +106,19 @@ public final class ItemStackReader {
             try {
                 pm.addCustomEffect(new PotionEffect(
                         PotionEffectType.getByName(settings.getString(POTION_TYPE).replace(" ", "_")),
-                        settings.getInt(POTION_DURATION)*20,
+                        settings.getInt(POTION_DURATION) * 20,
                         settings.getInt(POTION_LEVEL)), true);
-            } catch (Exception ignored) { }
+            } catch (Exception ignored) {}
             try {
                 pm.setColor(Color.fromRGB(Integer.parseInt(settings.getString(POTION_COLOR, "#385dc6").substring(1), 16)));
-            } catch (Exception ignored) { }
+            } catch (Exception ignored) {}
         }
 
         if (meta instanceof LeatherArmorMeta) {
             LeatherArmorMeta leatherMeta = (LeatherArmorMeta) meta;
             try {
                 leatherMeta.setColor(Color.fromRGB(Integer.parseInt(settings.getString(ARMOR_COLOR, "#a06540").substring(1), 16)));
-            } catch (Exception ignored) { }
+            } catch (Exception ignored) {}
         }
 
         item.setItemMeta(meta);
