@@ -55,6 +55,7 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import java.util.*;
 
@@ -696,6 +697,14 @@ public class Settings {
         for (Map.Entry<String, Integer> entry : permAccounts.entrySet()) {
             if (player.hasPermission(entry.getKey())) {
                 max = Math.max(max, entry.getValue());
+            }
+        }
+        for (PermissionAttachmentInfo permission : player.getEffectivePermissions()) {
+            String permString = permission.getPermission();
+            if (permString.startsWith(Permissions.MAX_ACCOUNTS)) {
+                try {
+                    max = Math.max(max, Integer.parseInt(permString.substring(Permissions.MAX_ACCOUNTS.length()+1)));
+                } catch (NumberFormatException ignored) { }
             }
         }
 

@@ -25,6 +25,7 @@ Accounts:
   #
   # The max number of accounts users can have with certain permissions
   # must be in the format '<permission>:<accounts>'
+  # Note that you can use 'skillapi.max_accounts.<accounts> instead'
   perm-accounts:
   - 'skillapi.account.admin:10'
 #
