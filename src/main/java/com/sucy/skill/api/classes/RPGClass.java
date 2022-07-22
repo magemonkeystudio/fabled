@@ -39,6 +39,7 @@ import com.sucy.skill.gui.tool.IconHolder;
 import com.sucy.skill.log.LogType;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.tree.basic.InventoryTree;
+import lombok.Getter;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.util.TextFormatter;
 import org.bukkit.Bukkit;
@@ -89,9 +90,10 @@ public abstract class RPGClass implements IconHolder {
     ///////////////////////////////////////////////////////
     private final ReadOnlySettings readOnlySettings = new ReadOnlySettings(settings);
     /**
-     * Whether or not the class requires permissions
+     * Whether the class requires permissions
      * in order to be professed into
      */
+    @Getter
     protected     boolean          needsPermission;
     ///////////////////////////////////////////////////////
     //                                                   //
@@ -198,16 +200,6 @@ public abstract class RPGClass implements IconHolder {
     }
 
     /**
-     * Checks whether or not the class needs permission in
-     * order to profess as it
-     *
-     * @return true if needs permission, false otherwise
-     */
-    public boolean isNeedsPermission() {
-        return needsPermission;
-    }
-
-    /**
      * Retrieves the color of the class's prefix
      *
      * @return prefix color
@@ -248,7 +240,7 @@ public abstract class RPGClass implements IconHolder {
     }
 
     /**
-     * Checks whether or not the class professes from another class
+     * Checks whether the class professes from another class
      *
      * @return true if professes from another class, false otherwise
      */
@@ -487,10 +479,19 @@ public abstract class RPGClass implements IconHolder {
      *
      * @return list of skills provided by the class
      */
-    public ArrayList<Skill> getSkills() {
-        ArrayList<Skill> skills = new ArrayList<Skill>();
+    public List<Skill> getSkills() {
+        return getSkills(true);
+    }
+
+    /**
+     * Retrieves the list of skills this class provides a player
+     * @param includeParent Whether to include the parent skills or not
+     * @return list of skills provided by the class
+     */
+    public List<Skill> getSkills(boolean includeParent) {
+        List<Skill> skills = new ArrayList<>();
         skills.addAll(this.skills);
-        if (hasParent() && !getGroupSettings().isProfessReset()) skills.addAll(getParent().getSkills());
+        if (hasParent() && includeParent) skills.addAll(getParent().getSkills());
         return skills;
     }
 
@@ -528,7 +529,7 @@ public abstract class RPGClass implements IconHolder {
      * @return list of child classes
      */
     public ArrayList<RPGClass> getOptions() {
-        ArrayList<RPGClass> list = new ArrayList<RPGClass>();
+        ArrayList<RPGClass> list = new ArrayList<>();
         for (RPGClass c : SkillAPI.getClasses().values())
             if (c.getParent() == this)
                 list.add(c);

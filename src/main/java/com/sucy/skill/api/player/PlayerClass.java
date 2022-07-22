@@ -528,7 +528,8 @@ public class PlayerClass {
      * @param classData class data to switch to
      */
     public void setClassData(RPGClass classData) {
+        RPGClass previous = this.classData;
         this.classData = classData;
-        getPlayerData().setClass(classData, false);
+        getPlayerData().setClass(previous, classData, false);
     }
 }

@@ -47,6 +47,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Handles loading and accessing individual
@@ -269,17 +270,16 @@ public class AttributeManager {
          */
         @Override
         public ItemStack getIcon(PlayerData data) {
-            ItemStack item = icon.clone();
-            ItemMeta  meta = item.getItemMeta();
-            meta.setDisplayName(filter(data, meta.getDisplayName()));
-            List<String> lore = meta.getLore();
-            if (lore != null) {
-                for (int j = 0; j < lore.size(); j++) {
-                    lore.set(j, filter(data, lore.get(j)));
-                }
-                meta.setLore(lore);
-            }
+            ItemStack item     = new ItemStack(icon.getType());
+            ItemMeta  iconMeta = icon.getItemMeta();
+            ItemMeta  meta     = item.getItemMeta();
+            meta.setDisplayName(filter(data, iconMeta.getDisplayName()));
+            List<String> iconLore = iconMeta.getLore();
+            List<String> lore = iconLore != null
+                    ? iconLore.stream().map(iconLine -> filter(data, iconLine)).collect(Collectors.toList())
+                    : new ArrayList<>();
 
+            meta.setLore(lore);
             item.setItemMeta(meta);
             return DamageLoreRemover.removeAttackDmg(item);
         }
@@ -306,9 +306,16 @@ public class AttributeManager {
          * @return icon for the attribute for use in the GUI editor
          */
         public ItemStack getToolIcon() {
-            ItemStack icon = this.icon.clone();
-            ItemMeta meta = icon.getItemMeta();
+            ItemStack icon = new ItemStack(this.icon.getType());
+            ItemMeta  meta = icon.getItemMeta();
             meta.setDisplayName(key);
+            List<String> lore =
+                    this.icon.hasItemMeta() && this.icon.getItemMeta().hasLore()
+                            ? this.icon.getItemMeta().getLore()
+                            : new ArrayList<>();
+            if (this.icon.hasItemMeta() && this.icon.getItemMeta().hasDisplayName())
+                lore.add(0, this.icon.getItemMeta().getDisplayName());
+            meta.setLore(lore);
             icon.setItemMeta(meta);
             return icon;
         }

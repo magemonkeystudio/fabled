@@ -62,6 +62,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -523,7 +524,7 @@ public abstract class Skill implements IconHolder {
     public ItemStack getIndicator(PlayerSkill skillData, boolean brief) {
         Player player = skillData.getPlayerData().getPlayer();
 
-        ItemStack item = indicator.clone();
+        ItemStack item = new ItemStack(indicator.getType());
         item.setAmount(Math.max(1, skillData.getLevel()));
         ItemMeta meta = item.hasItemMeta()
                 ? item.getItemMeta()
@@ -566,16 +567,14 @@ public abstract class Skill implements IconHolder {
                     String attr      = line.substring(start + 6, end);
                     Object currValue = getAttr(player, attr, Math.max(1, skillData.getLevel()));
                     Object nextValue = getAttr(player, attr, Math.min(skillData.getLevel() + 1, maxLevel));
-                    if (attr.equals("level") || attr.equals("cost")) {
-                        nextValue = (int) Math.floor(NumberParser.parseDouble(nextValue.toString().replace(',', '.')));
-                        currValue = nextValue;
-                    }
+                    if (attr.equals("level") || attr.equals("cost"))
+                        currValue = nextValue =
+                                (int) Math.floor(NumberParser.parseDouble(nextValue.toString().replace(',', '.')));
 
-                    if (currValue.equals(nextValue) || brief) {
+                    if (currValue.equals(nextValue) || brief)
                         line = line.replace("{attr:" + attr + "}", attrStatic.replace("{name}", getAttrName(attr)).replace("{value}", currValue.toString()));
-                    } else {
+                    else
                         line = line.replace("{attr:" + attr + "}", attrChanging.replace("{name}", getAttrName(attr)).replace("{value}", currValue.toString()).replace("{new}", nextValue.toString()));
-                    }
                 }
 
                 // Full description
@@ -612,10 +611,7 @@ public abstract class Skill implements IconHolder {
         // Click string at the bottom
         if (SkillAPI.getSettings().isCombosEnabled() && canCast()) {
             PlayerCombos combos = skillData.getPlayerData().getComboData();
-            if (combos.hasCombo(this)) {
-                lore.add("");
-                lore.add(combos.getComboString(this));
-            }
+            if (combos.hasCombo(this)) lore.addAll(Arrays.asList("", combos.getComboString(this)));
         }
 
         // Binds
@@ -625,9 +621,7 @@ public abstract class Skill implements IconHolder {
             lore.add(SkillAPI.getSettings().getBindText().replace("{material}", type));
         }
 
-        if (lore.size() > 0) {
-            meta.setDisplayName(lore.remove(0));
-        }
+        if (lore.size() > 0) meta.setDisplayName(lore.remove(0));
 
         meta.setLore(lore);
         item.setItemMeta(meta);

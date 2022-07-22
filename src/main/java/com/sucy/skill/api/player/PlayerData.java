@@ -132,7 +132,7 @@ public class PlayerData {
             RPGClass      rpgClass = settings.getDefault();
 
             if (rpgClass != null && settings.getPermission() == null) {
-                setClass(rpgClass, true);
+                setClass(null, rpgClass, true);
             }
         }
     }
@@ -1167,16 +1167,38 @@ public class PlayerData {
      * @param rpgClass class to assign to the player
      * @return the player-specific data for the new class
      */
-    public PlayerClass setClass(RPGClass rpgClass, boolean reset) {
+    public PlayerClass setClass(RPGClass previous, RPGClass rpgClass, boolean reset) {
         PlayerClass c = classes.remove(rpgClass.getGroup());
         if (c != null) {
             for (Skill skill : c.getData().getSkills()) {
-                String nm = skill.getName().toLowerCase();
-                if (!reset && SkillAPI.getSettings().isRefundOnClassChange() && skills.containsKey(nm))
-                    givePoints(skills.get(nm).getPoints(), ExpSource.SPECIAL);
+                String      nm = skill.getName().toLowerCase();
+                PlayerSkill ps = skills.get(nm);
+                if (previous != null && rpgClass.hasParent() && rpgClass.getParent().getName().equals(previous.getName())) {
+                    GroupSettings group = SkillAPI.getSettings().getGroupSettings(rpgClass.getGroup());
+                    if (group.isProfessReset()) {
+                        if (group.isProfessRefundSkills() && ps.getInvestedCost() > 0)
+                            c.givePoints(ps.getInvestedCost(), PointSource.REFUND);
 
-                skills.remove(nm);
-                combos.removeSkill(skill);
+                        if (group.isProfessRefundAttributes())
+                            resetAttribs();
+
+                        skills.remove(nm);
+                        combos.removeSkill(skill);
+                    }
+                } else {
+                    if (!reset && SkillAPI.getSettings().isRefundOnClassChange() && skills.containsKey(nm)) {
+                        if (ps.getInvestedCost() > 0)
+                            c.givePoints(ps.getInvestedCost(), PointSource.REFUND);
+                        skills.remove(nm);
+                        combos.removeSkill(skill);
+                    }
+
+                    if (reset) {
+                        skills.remove(nm);
+                        combos.removeSkill(skill);
+                    }
+                    resetAttribs();
+                }
             }
         } else {
             attribPoints += rpgClass.getGroupSettings().getStartingAttribs();
@@ -1305,7 +1327,7 @@ public class PlayerData {
         // Restore default class if applicable
         RPGClass rpgClass = settings.getDefault();
         if (rpgClass != null && settings.getPermission() == null) {
-            setClass(rpgClass, true);
+            setClass(null, rpgClass, true);
         }
         binds.clear();
 
@@ -1387,7 +1409,7 @@ public class PlayerData {
 
 
             // Add skills
-            for (Skill skill : rpgClass.getSkills()) {
+            for (Skill skill : rpgClass.getSkills(!isResetting)) {
                 if (!skills.containsKey(skill.getKey())) {
                     skills.put(skill.getKey(), new PlayerSkill(this, skill, current));
                     combos.addSkill(skill);
@@ -1395,8 +1417,8 @@ public class PlayerData {
             }
 
             Bukkit.getPluginManager().callEvent(new PlayerClassChangeEvent(current, previous, current.getData()));
-            resetAttribs();
-            if (skillPoints < 0) skillPoints = rpgClass.getGroupSettings().getStartingPoints();
+            if (skillPoints < 0 || (isResetting && skillPoints == 0))
+                skillPoints = rpgClass.getGroupSettings().getStartingPoints();
             current.setPoints(skillPoints);
             updateScoreboard();
             return true;
