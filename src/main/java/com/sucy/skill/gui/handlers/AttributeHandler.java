@@ -31,17 +31,14 @@ import com.sucy.skill.gui.tool.GUIHolder;
 import com.sucy.skill.hook.VaultHook;
 import com.sucy.skill.manager.AttributeManager;
 
-import java.util.HashMap;
-
 public class AttributeHandler extends GUIHolder<AttributeManager.Attribute> {
-    private static final String NOMONEY = "attribute-no-money";
-    private final HashMap<String, Integer> start = new HashMap<String, Integer>();
+    private static final String NO_MONEY = "attribute-no-money";
 
     @Override
     public void onClick(AttributeManager.Attribute type, int slot, boolean left, boolean shift) {
         if (left) {
-            if (player.upAttribute(type.getKey())) {setPage(page);}
-        } else if (SkillAPI.getSettings().isAttributesDowngrade() || player.getAttribute(type.getKey()) > start.get(type.getKey())) {
+            if (player.upAttribute(type.getKey())) setPage(page);
+        } else if (SkillAPI.getSettings().isAttributesDowngrade() && player.getAttribute(type.getKey()) > 0) {
 
             if (SkillAPI.getSettings().getAttributesDowngradePrice() > 0 && !VaultHook.isEconomyValid()) {
                 SkillAPI.inst().getLogger().info("Attributes should cost " + SkillAPI.getSettings().getAttributesDowngradePrice() + " to refund " +
@@ -49,13 +46,13 @@ public class AttributeHandler extends GUIHolder<AttributeManager.Attribute> {
             }
 
             if (SkillAPI.getSettings().getAttributesDowngradePrice() > 0 && VaultHook.isEconomyValid() && VaultHook.hasBalance(player.getPlayer(), SkillAPI.getSettings().getAttributesDowngradePrice())) {
-                VaultHook.withdraw(player.getPlayer(), Double.parseDouble(String.valueOf(SkillAPI.getSettings().getAttributesDowngradePrice())));
                 if (player.refundAttribute(type.getKey())) {
+                    VaultHook.withdraw(player.getPlayer(), Double.parseDouble(String.valueOf(SkillAPI.getSettings().getAttributesDowngradePrice())));
                     setPage(page);
                 }
                 return;
             } else if (VaultHook.isEconomyValid() && !VaultHook.hasBalance(player.getPlayer(), SkillAPI.getSettings().getAttributesDowngradePrice())) {
-                SkillAPI.getLanguage().sendMessage(NOMONEY, player.getPlayer());
+                SkillAPI.getLanguage().sendMessage(NO_MONEY, player.getPlayer());
                 return;
             }
 
@@ -63,11 +60,5 @@ public class AttributeHandler extends GUIHolder<AttributeManager.Attribute> {
                 setPage(page);
             }
         }
-    }
-
-    @Override
-    protected void onSetup() {
-        AttributeManager manager = SkillAPI.getAttributeManager();
-        for (String key : manager.getKeys()) {start.put(key, player.getAttribute(key));}
     }
 }
