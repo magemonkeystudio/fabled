@@ -35,17 +35,17 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class SkillDetailMenu extends MapMenu {
-    private static final String BACKGROUND = "background";
-    private static final String DETAIL = "detail";
-    private static final String BACK_ON = "back1";
-    private static final String UP_ON = "up1";
-    private static final String DOWN_ON = "down1";
-    private static final String MORE_ON = "more1";
-    private static final String BACK_OFF = "back0";
-    private static final String UP_OFF = "up0";
-    private static final String DOWN_OFF = "down0";
-    private static final String MORE_OFF = "more0";
-    private SkillAPI api;
+    private static final String   BACKGROUND = "background";
+    private static final String   DETAIL     = "detail";
+    private static final String   BACK_ON    = "back1";
+    private static final String   UP_ON      = "up1";
+    private static final String   DOWN_ON    = "down1";
+    private static final String   MORE_ON    = "more1";
+    private static final String   BACK_OFF   = "back0";
+    private static final String   UP_OFF     = "up0";
+    private static final String   DOWN_OFF   = "down0";
+    private static final String   MORE_OFF   = "more0";
+    private              SkillAPI api;
 
     public SkillDetailMenu(SkillAPI api) {
         this.api = api;
@@ -93,7 +93,7 @@ public class SkillDetailMenu extends MapMenu {
     @Override
     public void onRight(Player player) {
         int button = getButton(player);
-        int page = getPage(player);
+        int page   = getPage(player);
 
         button = Math.min(3, button + 1);
         boolean down = SkillAPI.getSettings().isAllowDowngrade();
@@ -109,13 +109,14 @@ public class SkillDetailMenu extends MapMenu {
 
     @Override
     public void onDown(Player player) {
+        if (!SkillAPI.getSettings().isAllowDowngrade()) return;
         SkillAPI.getPlayerData(player).downgradeSkill(SkillListMenu.getSkill(player).getData());
     }
 
     @Override
     public void onSelect(Player player) {
         int button = getButton(player);
-        int page = getPage(player);
+        int page   = getPage(player);
 
         // Back button
         if (button == 0) {
@@ -129,7 +130,8 @@ public class SkillDetailMenu extends MapMenu {
 
         // Downgrade button
         else if (button == 2) {
-            SkillAPI.getPlayerData(player).downgradeSkill(SkillListMenu.getSkill(player).getData());
+            if (SkillAPI.getSettings().isAllowDowngrade())
+                SkillAPI.getPlayerData(player).downgradeSkill(SkillListMenu.getSkill(player).getData());
         }
 
         // More info button
@@ -143,24 +145,24 @@ public class SkillDetailMenu extends MapMenu {
     @Override
     public void setup(Player player) {
         MapScheme scheme = MapScheme.get(api, SkillAPI.getPlayerData(player).getScheme());
-        MapScene scene = getScene(player);
-        int page = getPage(player);
+        MapScene  scene  = getScene(player);
+        int       page   = getPage(player);
 
         scene.add(BACKGROUND, new MapObject(scheme.getImage(Menu.BACKGROUND), 0, 0));
 
         // Get text to draw
-        PlayerSkill skill = SkillListMenu.getSkill(player);
-        ItemStack icon = skill.getData().getIndicator(skill, true);
-        List<String> lore = icon.getItemMeta().getLore();
+        PlayerSkill  skill = SkillListMenu.getSkill(player);
+        ItemStack    icon  = skill.getData().getIndicator(skill, true);
+        List<String> lore  = icon.getItemMeta().getLore();
         lore.add(0, icon.getItemMeta().getDisplayName());
 
         // Find page details
-        MapFont font = scheme.getFont(Menu.DETAIL);
-        int linesPerPage = 90 / (font.getFont().getSize() + 3);
-        int pages = (lore.size() + linesPerPage - 1) / linesPerPage;
+        MapFont font         = scheme.getFont(Menu.DETAIL);
+        int     linesPerPage = 90 / (font.getFont().getSize() + 3);
+        int     pages        = (lore.size() + linesPerPage - 1) / linesPerPage;
 
         // Add the text
-        int y = font.getFont().getSize() + 5;
+        int y     = font.getFont().getSize() + 5;
         int start = linesPerPage * page;
         for (int i = start; i < start + linesPerPage && i < lore.size(); i++) {
             String line = lore.get(i);
@@ -170,7 +172,7 @@ public class SkillDetailMenu extends MapMenu {
 
         // Get position for upgrade arrow
         boolean down = SkillAPI.getSettings().isAllowDowngrade();
-        int x;
+        int     x;
         if (down) x = 42;
         else x = 56;
 
@@ -193,8 +195,8 @@ public class SkillDetailMenu extends MapMenu {
 
     @Override
     public void render(MapBuffer mapBuffer, Player player) {
-        int button = getButton(player);
-        MapScene scene = getScene(player);
+        int      button = getButton(player);
+        MapScene scene  = getScene(player);
 
         // Draw buttons
         scene.get(BACK_ON).setVisible(button == 0);

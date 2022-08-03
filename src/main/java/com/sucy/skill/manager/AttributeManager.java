@@ -44,6 +44,7 @@ import mc.promcteam.engine.mccore.config.CommentedConfig;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
@@ -278,6 +279,14 @@ public class AttributeManager {
             List<String> lore = iconLore != null
                     ? iconLore.stream().map(iconLine -> filter(data, iconLine)).collect(Collectors.toList())
                     : new ArrayList<>();
+
+            if (meta instanceof Damageable) {
+                ((Damageable) meta).setDamage(((Damageable) iconMeta).getDamage());
+            }
+
+            if (iconMeta.hasCustomModelData()) {
+                meta.setCustomModelData(iconMeta.getCustomModelData());
+            }
 
             meta.setLore(lore);
             item.setItemMeta(meta);

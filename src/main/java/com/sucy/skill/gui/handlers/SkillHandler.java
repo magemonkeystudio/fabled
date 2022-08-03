@@ -30,23 +30,15 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.gui.tool.GUIHolder;
 
-import java.util.HashMap;
-
 public class SkillHandler extends GUIHolder<Skill> {
-    private HashMap<String, Integer> start = new HashMap<String, Integer>();
-
-    @Override
-    public void onSetup() {
-        for (String key : data.keySet()) { start.put(key, player.getSkillLevel(key)); }
-    }
-
     @Override
     public void onClick(Skill type, int slot, boolean left, boolean shift) {
         if (left) {
-            if (player.upgradeSkill(type)) { setPage(page); }
-        } else if ((SkillAPI.getSettings()
-                .isAllowDowngrade() || player.getSkillLevel(type.getKey()) > start.get(type.getKey()))
-                && player.downgradeSkill(type)) { setPage(page); }
+            if (player.upgradeSkill(type)) setPage(page);
+        } else if (SkillAPI.getSettings().isAllowDowngrade() && player.getSkillLevel(type.getKey()) > 0
+                && player.downgradeSkill(type)) {
+            setPage(page);
+        }
     }
 
     @Override

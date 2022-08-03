@@ -242,15 +242,15 @@ public class Settings {
     private         boolean             showAutoSkills;
     private         boolean             attributesEnabled;
     /**
-     * Checks whether or not attribute points can be refunded
+     * Checks whether attribute points can be refunded
      *
-     * @return true if can refund, false otherwise
+     * @return if true, can refund, false otherwise
      */
     @Getter private boolean             attributesDowngrade;
     @Getter private int                 attributesDowngradePrice;
     private         String              levelUpSkill;
     /**
-     * Checks whether or not mana is enabled
+     * Checks whether mana is enabled
      *
      * @return true if enabled, false otherwise
      */
@@ -268,19 +268,19 @@ public class Settings {
      */
     @Getter private ArrayList<Material> filteredBlocks;
     /**
-     * Checks whether or not downgrades are allowed
+     * Checks whether downgrades are allowed
      *
      * @return true if allowed, false otherwise
      */
     @Getter private boolean             allowDowngrade;
     /**
-     * Checks whether or not skill messages are enabled
+     * Checks whether skill messages are enabled
      *
      * @return true if enabled, false otherwise
      */
     @Getter private boolean             showSkillMessages;
     /**
-     * @return whether or not knockback should be applied when dealing 0 damage
+     * @return whether knockback should be applied when dealing 0 damage
      */
     @Getter private boolean             knockback;
     /**
@@ -291,7 +291,7 @@ public class Settings {
     @Getter private int                 messageRadius;
     private         boolean             skillModelData;
     /**
-     * Checks whether or not lore requirements are enabled
+     * Checks whether lore requirements are enabled
      *
      * @return true if enabled, false otherwise
      */
@@ -371,7 +371,7 @@ public class Settings {
      */
     @Getter private String       levelText;
     /**
-     * Checks whether or not the action bar is being used
+     * Checks whether the action bar is being used
      *
      * @return true if used, false otherwise
      */
@@ -383,20 +383,20 @@ public class Settings {
      */
     @Getter private String       actionText;
     /**
-     * Checks whether or not the stats scoreboard is to be shown
+     * Checks whether the stats scoreboard is to be shown
      *
      * @return true if shown, false otherwise
      */
     @Getter private boolean      showScoreboard;
     /**
-     * Checks whether or not a player's class name is to be
+     * Checks whether a player's class name is to be
      * shown next to their name
      *
      * @return true if shown, false otherwise
      */
     @Getter private boolean      showClassName;
     /**
-     * Checks whether or not a player's class level is to be
+     * Checks whether a player's class level is to be
      * shown below their name
      *
      * @return true if shown, false otherwise
@@ -442,13 +442,13 @@ public class Settings {
      */
     @Getter private boolean[]    enabledClicks;
     /**
-     * Checks whether or not click combos are enabled
+     * Checks whether click combos are enabled
      *
      * @return true if enabled, false otherwise
      */
     @Getter private boolean      combosEnabled;
     /**
-     * Checks whether or not players can customize their click combos
+     * Checks whether players can customize their click combos
      *
      * @return true if can customize them, false otherwise
      */
@@ -472,49 +472,49 @@ public class Settings {
     private         Formula      expCustom;
     private         boolean      useCustomExp;
     /**
-     * Checks whether or not experience is to be gained through
+     * Checks whether experience is to be gained through
      * vanilla experience orbs
      *
      * @return true if enabled, false otherwise
      */
     @Getter private boolean      useOrbs;
     /**
-     * Checks whether or not experience from mobs spawned
+     * Checks whether experience from mobs spawned
      * via a mob spawner is to be blocked.
      *
      * @return true if blocked, false otherwise
      */
     @Getter private boolean      blockSpawner;
     /**
-     * Checks whether or not experience from mobs spawned
+     * Checks whether experience from mobs spawned
      * via eggs are to be blocked
      *
      * @return true if blocked, false otherwise
      */
     @Getter private boolean      blockEgg;
     /**
-     * Checks whether or not players in creative mode
+     * Checks whether players in creative mode
      * are blocked from receiving experience.
      *
      * @return true if blocked, false otherwise
      */
     @Getter private boolean      blockCreative;
     /**
-     * Checks whether or not messages should
+     * Checks whether messages should
      * be displayed when a player gains experience
      *
      * @return true if enabled, false otherwise
      */
     @Getter private boolean      showExpMessages;
     /**
-     * Checks whether or not messages should be displayed
+     * Checks whether messages should be displayed
      * when a player gains a level
      *
      * @return true if enabled, false otherwise
      */
     @Getter private boolean      showLevelMessages;
     /**
-     * Checks whether or not messages should be displayed
+     * Checks whether messages should be displayed
      * when a loses experience
      *
      * @return true if enabled, false otherwise
@@ -527,13 +527,13 @@ public class Settings {
     @Getter private boolean      showLossLevelMessages;
     private         Set<String>  expLostBlacklist;
     /**
-     * Checks whether or not the skill bar is enabled
+     * Checks whether the skill bar is enabled
      *
      * @return true if enabled, false otherwise
      */
     @Getter private boolean      skillBarEnabled;
     /**
-     * Checks whether or not the skill bar is to display cooldowns
+     * Checks whether the skill bar is to display cooldowns
      *
      * @return true if enabled, false otherwise
      */
@@ -737,7 +737,7 @@ public class Settings {
     }
 
     /**
-     * Checks whether or not something can be attacked
+     * Checks whether something can be attacked
      *
      * @param attacker the attacking entity
      * @param target   the target entity
@@ -774,7 +774,7 @@ public class Settings {
     }
 
     /**
-     * Checks whether or not something is an ally
+     * Checks whether something is an ally
      *
      * @param attacker the attacking entity
      * @param target   the target entity
@@ -785,7 +785,7 @@ public class Settings {
     }
 
     /**
-     * Checks whether or not a target is a valid target.
+     * Checks whether a target is a valid target.
      *
      * @param target target to check
      * @return true if a valid target, false otherwise
@@ -826,7 +826,7 @@ public class Settings {
     }
 
     /**
-     * Checks whether or not auto saving is enabled
+     * Checks whether auto saving is enabled
      *
      * @return true if enabled, false otherwise
      */
@@ -844,7 +844,7 @@ public class Settings {
     }
 
     /**
-     * Checks whether or not the plugin is using SQL Database saving
+     * Checks whether the plugin is using SQL Database saving
      *
      * @return true if enabled, false otherwise
      */
@@ -895,7 +895,7 @@ public class Settings {
     }
 
     /**
-     * Checks whether or not SkillAPI should modify the max health of players
+     * Checks whether SkillAPI should modify the max health of players
      *
      * @return true if enabled, false otherwise
      */
@@ -913,7 +913,7 @@ public class Settings {
     }
 
     /**
-     * Checks whether or not auto-leveled skills are to be shown.
+     * Checks whether auto-leveled skills are to be shown.
      *
      * @return true if shown, false otherwise
      */
@@ -922,7 +922,7 @@ public class Settings {
     }
 
     /**
-     * Checks whether or not attributes are enabled
+     * Checks whether attributes are enabled
      *
      * @return true if enabled, false otherwise
      */
@@ -931,7 +931,7 @@ public class Settings {
     }
 
     /**
-     * Checks whether or not the plugin has a valid skill for
+     * Checks whether the plugin has a valid skill for
      * level up effects loaded.
      *
      * @return true if one is available, false otherwise
@@ -1048,7 +1048,7 @@ public class Settings {
     }
 
     /**
-     * Check whether or not to use the title display
+     * Check whether to use the title display
      * on the given message type
      *
      * @param type type of message to check for
@@ -1241,7 +1241,7 @@ public class Settings {
     }
 
     /**
-     * Checks whether or not SkillAPI is active in the world
+     * Checks whether SkillAPI is active in the world
      *
      * @param world world to check
      * @return true if active, false otherwise
@@ -1251,7 +1251,7 @@ public class Settings {
     }
 
     /**
-     * Checks whether or not SkillAPI is active in the world with
+     * Checks whether SkillAPI is active in the world with
      * the given name.
      *
      * @param world world name

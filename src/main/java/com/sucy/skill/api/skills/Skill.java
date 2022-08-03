@@ -58,6 +58,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.text.DecimalFormat;
@@ -529,6 +530,16 @@ public abstract class Skill implements IconHolder {
         ItemMeta meta = item.hasItemMeta()
                 ? item.getItemMeta()
                 : Bukkit.getItemFactory().getItemMeta(item.getType());
+        ItemMeta iconMeta = indicator.getItemMeta();
+
+        if (meta instanceof Damageable) {
+            ((Damageable) meta).setDamage(((Damageable) iconMeta).getDamage());
+        }
+
+        if (iconMeta.hasCustomModelData()) {
+            meta.setCustomModelData(iconMeta.getCustomModelData());
+        }
+
         ArrayList<String> lore = new ArrayList<>();
 
         String MET     = SkillAPI.getLanguage().getMessage(SkillNodes.REQUIREMENT_MET, true, FilterType.COLOR).get(0);
