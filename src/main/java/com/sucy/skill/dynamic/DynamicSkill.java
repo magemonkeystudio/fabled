@@ -255,6 +255,7 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
      */
     @Override
     public boolean cast(final LivingEntity user, final int level, boolean force) {
+        if (!force && !SkillAPI.getSettings().isWorldEnabled(user.getWorld())) return false;
         if (force && !isForced(user)) forced.add(user.getEntityId());
         return trigger(user, user, level, castTrigger, force);
     }

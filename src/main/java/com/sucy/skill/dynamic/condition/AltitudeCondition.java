@@ -6,7 +6,7 @@ import com.sucy.skill.dynamic.DynamicSkill;
 
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 
-public class AltitudeCondition extends ConditionComponent{
+public class AltitudeCondition extends ConditionComponent {
 
 	private static final String MIN = "min";
 	private static final String MAX = "max";
