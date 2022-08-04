@@ -69,9 +69,11 @@ body:
       value: |
         <details><summary>latest.log</summary>
         <p>
+        
         ```log
-           # paste log here...
+        # paste log here...
         ```
+        
         </p>
         </details>
     validations:
