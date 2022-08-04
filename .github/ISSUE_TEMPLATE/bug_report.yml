@@ -66,6 +66,14 @@ body:
       description: |
         Assuming this bug causes an error, please stop your server, start it again, reproduce the error and then stop your server.
         Upload your latest.log either directly here or through a paste service like [pastebin](https://pastebin.com).
+      value: |
+        <details><summary>latest.log</summary>
+        <p>
+        ```log
+           # paste log here...
+        ```
+        </p>
+        </details>
     validations:
       required: false
   - type: textarea
