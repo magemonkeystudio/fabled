@@ -54,7 +54,6 @@ public class ProjectilePreview extends Preview {
      *
      * @param particle particle type to use
      * @param step     animation step
-     * @throws Exception
      */
     @Override
     public void playParticles(Player player, ParticleSettings particle, Location location, int step) {

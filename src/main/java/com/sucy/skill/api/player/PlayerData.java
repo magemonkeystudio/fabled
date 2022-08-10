@@ -2104,20 +2104,15 @@ public class PlayerData {
         int level = skill.getLevel();
 
         // Not unlocked or on cooldown
-        if (!check(skill, true, true)) {
-            return false;
-        }
+        if (!check(skill, true, true)) return false;
 
         // Dead players can't cast skills
         Player p = getPlayer();
-        if (p.isDead()) {
-            return PlayerSkillCastFailedEvent.invoke(skill, Cause.CASTER_DEAD);
-        }
+        if (p.isDead()) return PlayerSkillCastFailedEvent.invoke(skill, Cause.CASTER_DEAD);
 
         // Disable casting in spectator mode
-        if (p.getGameMode().name().equals("SPECTATOR")) {
+        if (p.getGameMode().name().equals("SPECTATOR"))
             return PlayerSkillCastFailedEvent.invoke(skill, Cause.SPECTATOR);
-        }
 
         // Skill Shots
         if (skill.getData() instanceof SkillShot) {
