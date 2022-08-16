@@ -2,14 +2,16 @@ package com.sucy.skill.dynamic.target;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.target.TargetHelper;
-import com.sucy.skill.cast.*;
+import com.sucy.skill.cast.CirclePreview;
+import com.sucy.skill.cast.PreviewType;
+import com.sucy.skill.cast.SpherePreview;
 import com.sucy.skill.dynamic.ComponentType;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.dynamic.EffectComponent;
 import com.sucy.skill.dynamic.TempEntity;
 import com.sucy.skill.listener.MechanicListener;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
-import org.bukkit.Location;
+import org.bukkit.GameMode;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -32,9 +34,9 @@ public abstract class TargetComponent extends EffectComponent {
     protected static final SpherePreview spherePreview = new SpherePreview(0.5);
     protected static final CirclePreview circlePreview = new CirclePreview(0.5);
 
-    boolean everyone;
-    boolean allies;
-    boolean throughWall;
+    boolean       everyone;
+    boolean       allies;
+    boolean       throughWall;
     IncludeCaster self;
 
     @Override
@@ -48,7 +50,6 @@ public abstract class TargetComponent extends EffectComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -76,17 +77,23 @@ public abstract class TargetComponent extends EffectComponent {
 
     abstract void playPreview(final Player caster, final int level, final LivingEntity target, int step);
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void playPreview(Player caster, int level, List<LivingEntity> targets, int step) {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (previewType != PreviewType.NONE) { targets.forEach(target -> playPreview(caster, level, target, step)); }
+                if (previewType != PreviewType.NONE) {
+                    targets.forEach(target -> playPreview(caster, level, target, step));
+                }
                 List<LivingEntity> childTargets = null;
                 for (final EffectComponent component : children) {
                     if (component.hasPreview()) {
-                        if (childTargets == null) { childTargets = getTargets(caster, level, targets); }
+                        if (childTargets == null) {
+                            childTargets = getTargets(caster, level, targets);
+                        }
                         component.playPreview(caster, level, childTargets, step);
                     }
                 }
@@ -105,11 +112,11 @@ public abstract class TargetComponent extends EffectComponent {
         final List<LivingEntity> list = new ArrayList<>();
         from.forEach(target -> {
             final List<LivingEntity> found = conversion.apply(target);
-            int count = 0;
+            int                      count = 0;
 
             for (LivingEntity entity : found) {
                 if (count >= max) break;
-                if (isValidTarget(caster, target, entity) || (self.equals(IncludeCaster.IN_AREA) && caster==entity)) {
+                if (isValidTarget(caster, target, entity) || (self.equals(IncludeCaster.IN_AREA) && caster == entity)) {
                     list.add(entity);
                     count++;
                 }
@@ -122,6 +129,9 @@ public abstract class TargetComponent extends EffectComponent {
     boolean isValidTarget(final LivingEntity caster, final LivingEntity from, final LivingEntity target) {
         if (SkillAPI.getMeta(target, MechanicListener.ARMOR_STAND) != null) return false;
         if (target instanceof TempEntity) return true;
+        if (target instanceof Player && (
+                ((Player) target).getGameMode() == GameMode.SPECTATOR || ((Player) target).getGameMode() == GameMode.CREATIVE
+        )) return false;
 
         return target != caster && SkillAPI.getSettings().isValidTarget(target)
                 && (throughWall || !TargetHelper.isObstructed(from.getEyeLocation(), target.getEyeLocation()))

@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.dynamic.target.NearestTarget
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,6 +28,7 @@ package com.sucy.skill.dynamic.target;
 
 import com.sucy.skill.api.util.Nearby;
 import com.sucy.skill.cast.*;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -44,20 +45,25 @@ public class NearestTarget extends TargetComponent {
     private static final String RADIUS = "radius";
 
     private Preview preview;
-    private double radius = 0;
+    private double  radius = 0;
 
     /** {@inheritDoc} */
     @Override
     List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
 
-        final double radius = parseValues(caster, RADIUS, level, 3.0);
+        final double             radius = parseValues(caster, RADIUS, level, 3.0);
         final List<LivingEntity> result = new ArrayList<>();
         for (LivingEntity target : targets) {
             final Comparator<LivingEntity> comparator = new DistanceComparator(target.getLocation());
             Nearby.getLivingNearby(target, radius).stream()
                     .min(comparator)
-                    .ifPresent(result::add);
+                    .ifPresent(e -> {
+                        GameMode gm = e instanceof Player ? ((Player) e).getGameMode() : GameMode.SURVIVAL;
+                        if (gm == GameMode.SPECTATOR || gm == GameMode.CREATIVE) return;
+
+                        result.add(e);
+                    });
 
         }
         return result;
