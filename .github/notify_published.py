@@ -8,8 +8,8 @@ def get_info():
 	r = requests.get('https://github.com/promcteam/promccore/packages/1203744', headers=headers)
 
 	if r.status_code == 200:
-		version = re.findall('&amp;lt;version&amp;gt;((.|\w|\n)*?)&amp;lt;\/version&amp;gt;', str(r.content))[0][0]
-		id = re.findall('&amp;lt;artifactId&amp;gt;((.|\w|\n)*?)&amp;lt;\/artifactId&amp;gt;', str(r.content))[0][0]
+		version = re.findall('&lt;version&gt;((.|\w|\n)*?)&lt;\/version&gt;', str(r.content))[0][0]
+		id = re.findall('&lt;artifactId&gt;((.|\w|\n)*?)&lt;\/artifactId&gt;', str(r.content))[0][0]
 		return version, id
 
 version, name = get_info()
