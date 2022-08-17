@@ -18,7 +18,7 @@ locations = {}
 
 def get_files(fold):
     global locations
-    files_lst = [];
+    files_lst = []
     for (dirPath, dirNames, fileNames) in os.walk(fold):
         files_lst.extend(fileNames)
         intersections = []
@@ -29,10 +29,10 @@ def get_files(fold):
         for int in intersections:
             path = os.path.join(dirPath, int)
             print("Found", int, "at", path)
-            locations[int] = path;
+            locations[int] = path
 
         # break
-    return files_lst;
+    return files_lst
 
 
 folder = os.getcwd()
@@ -132,7 +132,7 @@ assert len(biomes) > 0, "Couldn't read any Biome in Biome.java"
 print("Successfully read", len(biomes), "Biomes.")
 
 # Get DamageTypes
-damages = read_enum(locations['EntityDamageEvent.java'], 'public enum DamageCause {')
+damages = read_enum(locations['EntityDamageEvent.java'], 'public static enum DamageCause {')
 assert len(damages) > 0, "Couldn't read any DamageType in EntityDamageEvent.java"
 # print(damages)
 print("Successfully read", len(damages), "DamageTypes.")
