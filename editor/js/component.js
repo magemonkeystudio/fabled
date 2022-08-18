@@ -1051,13 +1051,13 @@ function ConditionAltitude()
 
     this.description = "Applies child components whenever the player is on a certain height-level";
 
-    this.data.push(new IntValue('Min', 'min', 0)
+    this.data.push(new AttributeValue('Min', 'min', 0, 0)
         .setTooltip('The minimum height a player has to be on')
-        );
+    );
 
-    this.data.push(new IntValue('Max', 'max', 0)
+    this.data.push(new AttributeValue('Max', 'max', 0, 0)
         .setTooltip('The maximum height a player can be on')
-        );
+    );
 
 }
 
