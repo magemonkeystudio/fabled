@@ -12,6 +12,7 @@
 # Copy the generated .js file to the data directory.
 
 import os
+import re
 
 locations = {}
 
@@ -44,6 +45,7 @@ print()
 version = input('Enter Minecraft version with the correct format (Example: 1.16): ')
 version = version[2:]
 
+damageable = []
 
 def read_enum(file_name, enum_start):
     # Init sets
@@ -62,6 +64,11 @@ def read_enum(file_name, enum_start):
             reached_enum = True
         elif reached_enum:
             # Currently in enum
+            if file_name.endswith('Material.java'):
+                match = re.search(r'^\s*?(?!LEGACY_)([A-Z_]+)\(.*?, .*?, (\d*?)\)', line)
+                if not match is None:
+                    value = match.group(1)
+                    damageable.append(value[0] + value[1:].lower().replace('_', ' '))
             if '(' in line:
                 line = line[:line.find('(')]
             if line.isupper():
@@ -86,7 +93,7 @@ def read_enum(file_name, enum_start):
                         values.append(value)
             elif line.split(' ', 1)[0] in enum_enders:
                 # Reached last value, stop
-                break;
+                break
             elif line == '@Deprecated':
                 is_deprecated = True
     read_file.close()
@@ -108,7 +115,7 @@ def read_class(file_name, instance_definer):
                 if is_deprecated or line[:7] == 'LEGACY_':
                     # Is deprecated or legacy, don't add it
                     is_deprecated = False
-                    continue;
+                    continue
                 else:
                     # Add it
                     values.append(line[0].upper() + line[1:].lower().replace('_', ' '))
@@ -170,10 +177,10 @@ print("Successfully read", len(sounds), "Sounds.")
 # Generate javascript file
 file = open('../1.' + version + '.js', "w")
 fileContent = 'var DATA_' + version + ' = {\n    MATERIALS: ' + list_to_string(
-    materials) + ',\n    SOUNDS: ' + list_to_string(sounds) + ',\n    ENTITIES: ' + list_to_string(
-    entities) + ',\n    BIOMES: ' + list_to_string(biomes) + ',\n    POTIONS: ' + list_to_string(
-    effects) + ',\n    PARTICLES: ' + list_to_string(particles) + ',\n    DAMAGE_TYPES: ' + list_to_string(
-    damages) + '\n};\n\nvar keys = Object.keys(DATA_' + version + ');\nfor (var i = 0; i < keys.length; i++) {\n    DATA_' + version + '[keys[i]].sort();\n}\nDATA_' + version + '.ANY_POTION = DATA_' + version + '.POTIONS.slice().splice(0, 0, \'Any\');'
+    materials) + ',\n    DAMAGEABLE_MATERIALS: ' + list_to_string(damageable) + ',\n    SOUNDS: ' + list_to_string(
+    sounds) + ',\n    ENTITIES: ' + list_to_string(entities) + ',\n    BIOMES: ' + list_to_string(
+    biomes) + ',\n    POTIONS: ' + list_to_string(effects) + ',\n    PARTICLES: ' + list_to_string(
+    particles) + ',\n    DAMAGE_TYPES: ' + list_to_string(damages) + '\n};\n\nvar keys = Object.keys(DATA_' + version + ');\nfor (var i = 0; i < keys.length; i++) {\n    DATA_' + version + '[keys[i]].sort();\n}\nDATA_' + version + '.ANY_POTION = DATA_' + version + '.POTIONS.slice().splice(0, 0, \'Any\');'
 file.write(fileContent)
 file.close()
 print('1.' + version + '.js succesfully generated.')
