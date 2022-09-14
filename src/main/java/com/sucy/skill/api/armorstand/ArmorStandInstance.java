@@ -8,13 +8,13 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 
 public class ArmorStandInstance {
-    private static final Vector UP = new Vector(0, 1, 0);
-    private final ArmorStand armorStand;
-    private final LivingEntity target;
-    private final boolean follow;
-    private double forward;
-    private double upward;
-    private double right;
+    private static final Vector       UP = new Vector(0, 1, 0);
+    private final        ArmorStand   armorStand;
+    private final        LivingEntity target;
+    private final        boolean      follow;
+    private              double       forward;
+    private              double       upward;
+    private              double       right;
 
     public ArmorStandInstance(ArmorStand armorStand, LivingEntity target) {
         this.armorStand = armorStand;
@@ -50,11 +50,13 @@ public class ArmorStandInstance {
      */
     public void tick() {
         if (follow) {
-            Location loc = target.getLocation().clone();
-            Vector dir = loc.getDirection().setY(0).normalize();
-            Vector side = dir.clone().crossProduct(UP);
-            loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
-            armorStand.teleport(loc);
+            Bukkit.getScheduler().runTask(SkillAPI.inst(), () -> {
+                Location loc  = target.getLocation().clone();
+                Vector   dir  = loc.getDirection().setY(0).normalize();
+                Vector   side = dir.clone().crossProduct(UP);
+                loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
+                armorStand.teleport(loc);
+            });
         }
     }
 }
