@@ -734,6 +734,7 @@ public abstract class Skill implements IconHolder {
         if (target instanceof TempEntity) {
             return;
         }
+        if (target.equals(source)) knockback = false;
 
         // We have to check if the damage event would get cancelled, since we aren't _really_ calling
         // EntityDamageByEntityEvent unless we use knockback

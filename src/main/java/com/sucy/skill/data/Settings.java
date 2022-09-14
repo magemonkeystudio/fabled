@@ -158,397 +158,462 @@ public class Settings {
             WG_SKILLS              = "disable-skills",
             WG_EXP                 = "disable-exp";
 
-    private final         HashMap<String, Double>        yields           = new HashMap<>();
-    private final         HashMap<String, GroupSettings> groups           = new HashMap<>();
-    private final         SkillAPI                       plugin;
-    private final         DataSection                    config;
-    private final         HashMap<String, Integer>       permAccounts     = new HashMap<>();
-    private final         ArrayList<String>              monsterWorlds    = new ArrayList<>();
-    private final         ArrayList<String>              passiveWorlds    = new ArrayList<>();
-    private final         ArrayList<String>              playerWorlds     = new ArrayList<>();
+    private final HashMap<String, Double>        yields           = new HashMap<>();
+    private final HashMap<String, GroupSettings> groups           = new HashMap<>();
+    private final SkillAPI                       plugin;
+    private final DataSection                    config;
+    private final HashMap<String, Integer>       permAccounts     = new HashMap<>();
+    private final ArrayList<String>              monsterWorlds    = new ArrayList<>();
+    private final ArrayList<String>              passiveWorlds    = new ArrayList<>();
+    private final ArrayList<String>              playerWorlds     = new ArrayList<>();
     /**
      * Retrieves the default skill bar layout
      *
      * @return default skill bar layout
      */
-    @Getter private final boolean[]                      defaultBarLayout = new boolean[9];
+    @Getter
+    private final boolean[]                      defaultBarLayout = new boolean[9];
     /**
      * Retrieves the list of locked skill bar slots
      *
      * @return list of locked skill bar slots
      */
-    @Getter private final boolean[]                      lockedSlots      = new boolean[9];
+    @Getter
+    private final boolean[]                      lockedSlots      = new boolean[9];
     @Getter
     @Accessors(fluent = true)
-    private               boolean                        useBoundingBoxes;
+    private       boolean                        useBoundingBoxes;
 
-    private         Map<String, Map<String, Double>> breakYields;
-    private         Map<String, Map<String, Double>> placeYields;
-    private         Map<String, Map<String, Double>> craftYields;
-    @Getter private boolean                          trackBreak, yieldsEnabled;
+    private Map<String, Map<String, Double>> breakYields;
+    private Map<String, Map<String, Double>> placeYields;
+    private Map<String, Map<String, Double>> craftYields;
+    @Getter
+    private boolean                          trackBreak, yieldsEnabled;
     /**
      * Retrieves whether accounts should be initialized with
      * one file per class.
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean             onePerClass;
+    @Getter
+    private boolean             onePerClass;
     /**
      * Retrieves the main class group for displaying prefixes
      * or showing account information
      *
      * @return main class group
      */
-    @Getter private String              mainGroup;
+    @Getter
+    private String              mainGroup;
     /**
      * Retrieves the max accounts allowed for most players
      *
      * @return max accounts allowed for most players
      */
-    @Getter private int                 maxAccounts;
-    private         boolean             monsterEnemy;
-    private         boolean             passiveAlly;
-    private         boolean             playerAlly;
-    private         boolean             partiesAlly;
-    private         boolean             affectNpcs;
-    private         boolean             affectArmorStands;
-    private         CombatProtection    combatProtection = new DefaultCombatProtection();
-    private         boolean             auto;
-    private         boolean             useSql;
-    private         int                 minutes;
-    private         int                 sqlDelay;
+    @Getter
+    private int                 maxAccounts;
+    private boolean             monsterEnemy;
+    private boolean             passiveAlly;
+    private boolean             playerAlly;
+    private boolean             partiesAlly;
+    private boolean             affectNpcs;
+    private boolean             affectArmorStands;
+    private CombatProtection    combatProtection = new DefaultCombatProtection();
+    private boolean             auto;
+    private boolean             useSql;
+    private int                 minutes;
+    private int                 sqlDelay;
     /**
      * Retrieves the host IP for the database
      *
      * @return host IP for SQL database
      */
-    @Getter private String              sqlHost;
+    @Getter
+    private String              sqlHost;
     /**
      * Retrieves the host port for the database
      *
      * @return host port for SQL database
      */
-    @Getter private String              sqlPort;
+    @Getter
+    private String              sqlPort;
     /**
      * Retrieves the name of the SQL database
      *
      * @return SQL database name
      */
-    @Getter private String              sqlDatabase;
-    private         String              sqlUser;
-    private         String              sqlPass;
-    private         boolean             modifyHealth;
-    private         int                 defaultHealth;
-    private         boolean             showAutoSkills;
-    private         boolean             attributesEnabled;
+    @Getter
+    private String              sqlDatabase;
+    private String              sqlUser;
+    private String              sqlPass;
+    private boolean             modifyHealth;
+    private int                 defaultHealth;
+    private boolean             showAutoSkills;
+    private boolean             attributesEnabled;
     /**
      * Checks whether attribute points can be refunded
      *
      * @return if true, can refund, false otherwise
      */
-    @Getter private boolean             attributesDowngrade;
-    @Getter private int                 attributesDowngradePrice;
-    private         String              levelUpSkill;
+    @Getter
+    private boolean             attributesDowngrade;
+    @Getter
+    private int                 attributesDowngradePrice;
+    private String              levelUpSkill;
     /**
      * Checks whether mana is enabled
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean             manaEnabled;
+    @Getter
+    private boolean             manaEnabled;
     /**
      * Retrieves the frequency of mana gain
      *
      * @return the frequency of mana gain
      */
-    @Getter private int                 gainFreq;
+    @Getter
+    private int                 gainFreq;
     /**
      * Retrieves the list of filtered blocks
      *
      * @return list of blocks
      */
-    @Getter private ArrayList<Material> filteredBlocks;
+    @Getter
+    private ArrayList<Material> filteredBlocks;
     /**
      * Checks whether downgrades are allowed
      *
      * @return true if allowed, false otherwise
      */
-    @Getter private boolean             allowDowngrade;
+    @Getter
+    private boolean             allowDowngrade;
     /**
      * Checks whether skill messages are enabled
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean             showSkillMessages;
+    @Getter
+    private boolean             showSkillMessages;
     /**
      * @return whether knockback should be applied when dealing 0 damage
      */
-    @Getter private boolean             knockback;
+    @Getter
+    private boolean             knockback;
     /**
      * Gets the radius in which skill messages are sent out
      *
      * @return skill message radius
      */
-    @Getter private int                 messageRadius;
-    private         boolean             skillModelData;
+    @Getter
+    private int                 messageRadius;
+    private boolean             skillModelData;
     /**
      * Checks whether lore requirements are enabled
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean             checkLore;
+    @Getter
+    private boolean             checkLore;
     /**
      * @return true if should check for attribute bonuses
      */
-    @Getter private boolean             checkAttributes;
+    @Getter
+    private boolean             checkAttributes;
     /**
      * @return true if should check for skill requirements
      */
-    @Getter private boolean             checkSkills;
+    @Getter
+    private boolean             checkSkills;
     /**
      * @return checks if weapons are dropped when hovered
      */
-    @Getter private boolean             dropWeapon;
+    @Getter
+    private boolean             dropWeapon;
     /**
      * Retrieves the text used for class requirements on items
      *
      * @return lore text for class requirements
      */
-    @Getter private String              loreClassText;
+    @Getter
+    private String              loreClassText;
     /**
      * Retrieves the text used for level requirements on items
      *
      * @return lore text for level requirements
      */
-    @Getter private String              loreLevelText;
+    @Getter
+    private String              loreLevelText;
     /**
      * Retrieves the text used for excluded classes on items
      *
      * @return lore text for excluded classes
      */
-    @Getter private String              loreExcludeText;
+    @Getter
+    private String              loreExcludeText;
     /**
      * @return slots checked for requirements and attributes
      */
-    @Getter private int[]               slots;
-    private         String              skillPre, skillPost;
+    @Getter
+    private int[]               slots;
+    private String              skillPre, skillPost;
     private String attrReqPre, attrReqPost;
     private String attrPre, attrPost;
-    private         List<String> titleMessages;
+    private List<String> titleMessages;
     /**
      * Checks whether old health bars (fixed 10 hearts) are enabled
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean      oldHealth;
+    @Getter
+    private boolean      oldHealth;
     /**
      * Whether health less than 10 hearts should be scaled down instead of filling the full 10 hearts.
      *
      * @return true if hearts should be allowed to be less than 10
      */
-    @Getter private boolean      downScaling;
+    @Getter
+    private boolean      downScaling;
     /**
      * @return true if forces the SkillAPI health scaling, false otherwise
      */
-    @Getter private boolean      forceScaling;
+    @Getter
+    private boolean      forceScaling;
     /**
      * Gets the setting for using the level bar
      *
      * @return level bar setting
      */
-    @Getter private String       levelBar;
+    @Getter
+    private String       levelBar;
     /**
      * Gets the setting for using the food bar
      *
      * @return food bar setting
      */
-    @Getter private String       foodBar;
+    @Getter
+    private String       foodBar;
     /**
      * @return boolean whether classes should be refunded their skill points on changing.
      */
-    @Getter private boolean      refundOnClassChange;
+    @Getter
+    private boolean      refundOnClassChange;
     /**
      * @return text shown alongside the class level
      */
-    @Getter private String       levelText;
+    @Getter
+    private String       levelText;
     /**
      * Checks whether the action bar is being used
      *
      * @return true if used, false otherwise
      */
-    @Getter private boolean      useActionBar;
+    @Getter
+    private boolean      useActionBar;
     /**
      * Gets the text to display on the action bar
      *
      * @return action bar text
      */
-    @Getter private String       actionText;
+    @Getter
+    private String       actionText;
     /**
      * Checks whether the stats scoreboard is to be shown
      *
      * @return true if shown, false otherwise
      */
-    @Getter private boolean      showScoreboard;
+    @Getter
+    private boolean      showScoreboard;
     /**
      * Checks whether a player's class name is to be
      * shown next to their name
      *
      * @return true if shown, false otherwise
      */
-    @Getter private boolean      showClassName;
+    @Getter
+    private boolean      showClassName;
     /**
      * Checks whether a player's class level is to be
      * shown below their name
      *
      * @return true if shown, false otherwise
      */
-    @Getter private boolean      showClassLevel;
-    @Getter private boolean      showBinds;
-    @Getter private String       bindText;
-    private         boolean      useTitle;
+    @Getter
+    private boolean      showClassLevel;
+    @Getter
+    private boolean      showBinds;
+    @Getter
+    private String       bindText;
+    private boolean      useTitle;
     /**
      * @return duration of the title display in ticks
      */
-    @Getter private int          titleDuration;
+    @Getter
+    private int          titleDuration;
     /**
      * @return fade in time of the title display in ticks
      */
-    @Getter private int          titleFadeIn;
+    @Getter
+    private int          titleFadeIn;
     /**
      * @return fade out time of the title display in ticks
      */
-    @Getter private int          titleFadeOut;
+    @Getter
+    private int          titleFadeOut;
     /**
      * @return true if default casting is enabled
      */
-    @Getter private boolean      castEnabled;
-    private         boolean      castBars;
-    private         boolean      combatEnabled;
+    @Getter
+    private boolean      castEnabled;
+    private boolean      castBars;
+    private boolean      combatEnabled;
     /**
      * @return slot the cast item is stored in
      */
-    @Getter private int          castSlot;
+    @Getter
+    private int          castSlot;
     /**
      * @return global cooldown for casting
      */
-    @Getter private long         castCooldown;
+    @Getter
+    private long         castCooldown;
     /**
      * @return cast item to use in the slot
      */
-    @Getter private ItemStack    castItem;
-    @Getter private ItemStack    hoverItem;
-    @Getter private ItemStack    instantItem;
+    @Getter
+    private ItemStack    castItem;
+    @Getter
+    private ItemStack    hoverItem;
+    @Getter
+    private ItemStack    instantItem;
     /**
      * @return enabled clicks as an array of booleans indexed by click ID
      */
-    @Getter private boolean[]    enabledClicks;
+    @Getter
+    private boolean[]    enabledClicks;
     /**
      * Checks whether click combos are enabled
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean      combosEnabled;
+    @Getter
+    private boolean      combosEnabled;
     /**
      * Checks whether players can customize their click combos
      *
      * @return true if can customize them, false otherwise
      */
-    @Getter private boolean      customCombosAllowed;
+    @Getter
+    private boolean      customCombosAllowed;
     @Getter
     @Accessors(fluent = true)
-    private         boolean      shouldAutoAssignCombos;
+    private boolean      shouldAutoAssignCombos;
     /**
      * Retrieves the max length of combos to be used
      *
      * @return max length of combos to be used
      */
-    @Getter private int          comboSize;
+    @Getter
+    private int          comboSize;
     /**
      * Retrieves the amount of seconds allowed between clicks before the combo resets
      *
      * @return number of seconds before a click combo resets
      */
-    @Getter private int          clickTime;
-    private         ExpFormula   expFormula;
-    private         Formula      expCustom;
-    private         boolean      useCustomExp;
+    @Getter
+    private int          clickTime;
+    private ExpFormula   expFormula;
+    private Formula      expCustom;
+    private boolean      useCustomExp;
     /**
      * Checks whether experience is to be gained through
      * vanilla experience orbs
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean      useOrbs;
+    @Getter
+    private boolean      useOrbs;
     /**
      * Checks whether experience from mobs spawned
      * via a mob spawner is to be blocked.
      *
      * @return true if blocked, false otherwise
      */
-    @Getter private boolean      blockSpawner;
+    @Getter
+    private boolean      blockSpawner;
     /**
      * Checks whether experience from mobs spawned
      * via eggs are to be blocked
      *
      * @return true if blocked, false otherwise
      */
-    @Getter private boolean      blockEgg;
+    @Getter
+    private boolean      blockEgg;
     /**
      * Checks whether players in creative mode
      * are blocked from receiving experience.
      *
      * @return true if blocked, false otherwise
      */
-    @Getter private boolean      blockCreative;
+    @Getter
+    private boolean      blockCreative;
     /**
      * Checks whether messages should
      * be displayed when a player gains experience
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean      showExpMessages;
+    @Getter
+    private boolean      showExpMessages;
     /**
      * Checks whether messages should be displayed
      * when a player gains a level
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean      showLevelMessages;
+    @Getter
+    private boolean      showLevelMessages;
     /**
      * Checks whether messages should be displayed
      * when a loses experience
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean      showLossExpMessages;
+    @Getter
+    private boolean      showLossExpMessages;
     /**
      * Checks whether messages should be displayed
      * when a player loses a level
      */
-    @Getter private boolean      showLossLevelMessages;
-    private         Set<String>  expLostBlacklist;
+    @Getter
+    private boolean      showLossLevelMessages;
+    private Set<String>  expLostBlacklist;
     /**
      * Checks whether the skill bar is enabled
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean      skillBarEnabled;
+    @Getter
+    private boolean      skillBarEnabled;
     /**
      * Checks whether the skill bar is to display cooldowns
      *
      * @return true if enabled, false otherwise
      */
-    @Getter private boolean      skillBarCooldowns;
+    @Getter
+    private boolean      skillBarCooldowns;
     /**
      * Retrieves the indicator for an unassigned skill slot
      *
      * @return unassigned indicator
      */
-    @Getter private ItemStack    unassigned;
-    private         List<String> worlds;
-    private         boolean      worldEnabled;
-    private         boolean      worldEnableList;
-    private         Set<String>  skillDisabledRegions;
-    private         Set<String>  expDisabledRegions;
+    @Getter
+    private ItemStack    unassigned;
+    private List<String> worlds;
+    private boolean      worldEnabled;
+    private boolean      worldEnableList;
+    private Set<String>  skillDisabledRegions;
+    private Set<String>  expDisabledRegions;
 
     /**
      * <p>Initializes a new settings manager.</p>
@@ -703,8 +768,9 @@ public class Settings {
             String permString = permission.getPermission();
             if (permString.startsWith(Permissions.MAX_ACCOUNTS)) {
                 try {
-                    max = Math.max(max, Integer.parseInt(permString.substring(Permissions.MAX_ACCOUNTS.length()+1)));
-                } catch (NumberFormatException ignored) { }
+                    max = Math.max(max, Integer.parseInt(permString.substring(Permissions.MAX_ACCOUNTS.length() + 1)));
+                } catch (NumberFormatException ignored) {
+                }
             }
         }
 
@@ -744,14 +810,22 @@ public class Settings {
      * @return true if can be attacked, false otherwise
      */
     public boolean canAttack(LivingEntity attacker, LivingEntity target) {
+        if (attacker.equals(target)) return true;
+
         if (attacker instanceof Player) {
             final Player player = (Player) attacker;
             if (target instanceof Animals && !(target instanceof Tameable)) {
-                if (passiveAlly || passiveWorlds.contains(attacker.getWorld().getName())) {return false;}
+                if (passiveAlly || passiveWorlds.contains(attacker.getWorld().getName())) {
+                    return false;
+                }
             } else if (target instanceof Monster) {
-                if (monsterEnemy || monsterWorlds.contains(attacker.getWorld().getName())) {return true;}
+                if (monsterEnemy || monsterWorlds.contains(attacker.getWorld().getName())) {
+                    return true;
+                }
             } else if (target instanceof Player) {
-                if (playerAlly || playerWorlds.contains(attacker.getWorld().getName())) {return false;}
+                if (playerAlly || playerWorlds.contains(attacker.getWorld().getName())) {
+                    return false;
+                }
 
                 if (PluginChecker.isPartiesActive() && partiesAlly) {
                     final Parties parties = Parties.getPlugin(Parties.class);
@@ -768,7 +842,9 @@ public class Settings {
                 return (tameable.getOwner() != target)
                         && canAttack((LivingEntity) tameable.getOwner(), target);
             }
-        } else {return !(target instanceof Monster);}
+        } else {
+            return !(target instanceof Monster);
+        }
 
         return combatProtection.canAttack(attacker, target);
     }
@@ -808,17 +884,23 @@ public class Settings {
         if (config.isList(TARGET_MONSTER)) {
             monsterWorlds.addAll(config.getList(TARGET_MONSTER));
             monsterEnemy = false;
-        } else {monsterEnemy = config.getBoolean(TARGET_MONSTER);}
+        } else {
+            monsterEnemy = config.getBoolean(TARGET_MONSTER);
+        }
 
         if (config.isList(TARGET_PASSIVE)) {
             passiveWorlds.addAll(config.getList(TARGET_PASSIVE));
             passiveAlly = false;
-        } else {passiveAlly = config.getBoolean(TARGET_PASSIVE);}
+        } else {
+            passiveAlly = config.getBoolean(TARGET_PASSIVE);
+        }
 
         if (config.isList(TARGET_PLAYER)) {
             playerWorlds.addAll(config.getList(TARGET_PLAYER));
             playerAlly = false;
-        } else {playerAlly = config.getBoolean(TARGET_PLAYER);}
+        } else {
+            playerAlly = config.getBoolean(TARGET_PLAYER);
+        }
 
         partiesAlly = config.getBoolean(TARGET_PARTIES);
         affectArmorStands = config.getBoolean(TARGET_STANDS);
@@ -1042,9 +1124,13 @@ public class Settings {
         attrPost = temp.substring(index + 6);
 
         List<String> slotList = config.getList(ITEM_SLOTS);
-        if (!VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {slotList.remove("40");}
+        if (!VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
+            slotList.remove("40");
+        }
         slots = new int[slotList.size()];
-        for (int i = 0; i < slots.length; i++) {slots[i] = NumberParser.parseInt(slotList.get(i));}
+        for (int i = 0; i < slots.length; i++) {
+            slots[i] = NumberParser.parseInt(slotList.get(i));
+        }
     }
 
     /**
@@ -1196,19 +1282,25 @@ public class Settings {
 
         DataSection icon = bar.getSection("empty-icon");
         Material    mat  = Material.matchMaterial(icon.getString("material", "PUMPKIN_SEEDS"));
-        if (mat == null) {mat = Material.PUMPKIN_SEEDS;}
+        if (mat == null) {
+            mat = Material.PUMPKIN_SEEDS;
+        }
         unassigned = new ItemStack(mat);
 
         ItemMeta meta = unassigned.getItemMeta();
 
         final int data = icon.getInt("data", 0);
-        if (data != 0) {meta.setCustomModelData(data);}
+        if (data != 0) {
+            meta.setCustomModelData(data);
+        }
 
         if (icon.isList("text")) {
             List<String> format = TextFormatter.colorStringList(icon.getList("text"));
             meta.setDisplayName(format.remove(0));
             meta.setLore(format);
-        } else {meta.setDisplayName(TextFormatter.colorString(icon.getString("text", "&7Unassigned")));}
+        } else {
+            meta.setDisplayName(TextFormatter.colorString(icon.getString("text", "&7Unassigned")));
+        }
 
         if (meta instanceof Damageable) {
             ((Damageable) meta).setDamage(icon.getInt("durability", 0));
