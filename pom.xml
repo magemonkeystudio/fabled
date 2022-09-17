@@ -4,82 +4,68 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>mc.promcteam</groupId>
+        <artifactId>promc-parent</artifactId>
+        <version>1.19.2</version>
+    </parent>
+
     <groupId>mc.promcteam</groupId>
     <artifactId>proskillapi</artifactId>
     <version>1.1.7.17-${maven.build.timestamp}</version>
-    <packaging>jar</packaging>
-
     <name>ProSkillAPI</name>
 
     <description>A Minecraft Bukkit plugin aiming to provide an easy code API and skill editor for all server owners to
         create unique and fully custom classes and skills.
     </description>
-    <properties>
-        <java.version>1.8</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.build.timestamp.format>wwuHHmm</maven.build.timestamp.format>
-    </properties>
-    <url>https://www.spigotmc.org/resources/proskillapi-create-custom-races-classes-skills-spells-with-an-easy-online-editor.91913/</url>
+    <url>
+        https://www.spigotmc.org/resources/proskillapi-create-custom-races-classes-skills-spells-with-an-easy-online-editor.91913/
+    </url>
 
     <repositories>
+        <!-- ProMCTeam Repo -->
         <repository>
-            <id>bungeecord-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
-        <repository>
-            <id>spigotmc-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
-            <id>sonatype</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>md_5-snapshots</id>
-            <url>https://repo.md-5.net/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
-            <id>nexus</id>
-            <name>Lumine Releases</name>
-            <url>https://mvn.lumine.io/repository/maven-public/</url>
-        </repository>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
+            <id>promcteam</id>
+            <url>https://maven.pkg.github.com/promcteam/promccore</url>
         </repository>
         <repository>
             <id>sk89q-repo</id>
             <url>https://maven.enginehub.org/repo/</url>
         </repository>
-        <repository>
-            <id>placeholderapi</id>
-            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
-        </repository>
-        <repository>
-            <id>md_5-public</id>
-            <url>https://repo.md-5.net/content/groups/public/</url>
-        </repository>
     </repositories>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-install-plugin</artifactId>
-            <version>3.0.0-M1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.19-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>net.md-5</groupId>
+            <artifactId>bungeecord-api</artifactId>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.lumine</groupId>
+            <artifactId>Mythic-Dist</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ru.endlesscode.mimic</groupId>
+            <artifactId>mimic-bukkit-api</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.22</version>
-            <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>LibsDisguises</groupId>
             <artifactId>LibsDisguises</artifactId>
@@ -93,41 +79,10 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>me.clip</groupId>
-            <artifactId>placeholderapi</artifactId>
-            <version>2.10.10</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.md-5</groupId>
-            <artifactId>bungeecord-api</artifactId>
-            <version>1.19-R0.1-SNAPSHOT</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>fr.neatmonster</groupId>
             <artifactId>nocheatplus</artifactId>
             <version>3.16.1-SNAPSHOT</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.lumine</groupId>
-            <artifactId>Mythic-Dist</artifactId>
-            <version>5.0.3-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.MilkBowl</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>1.7</version>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.bukkit</groupId>
-                    <artifactId>bukkit</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>
@@ -165,10 +120,11 @@
             <version>master-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
-            <groupId>ru.endlesscode.mimic</groupId>
-            <artifactId>mimic-bukkit-api</artifactId>
-            <version>0.7</version>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-install-plugin</artifactId>
+            <version>3.0.1</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -264,12 +220,4 @@
             </resource>
         </resources>
     </build>
-
-    <distributionManagement>
-        <repository>
-            <id>promcteam</id>
-            <name>ProMCTeam</name>
-            <url>https://maven.pkg.github.com/promcteam/promccore</url>
-        </repository>
-    </distributionManagement>
 </project>
