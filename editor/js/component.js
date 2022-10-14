@@ -72,47 +72,48 @@ var Target = {
  * Available condition component data
  */
 var Condition = {
-    ALTITUDE    : { name: 'Altitude',    container: true, construct: ConditionAltitude   },
-    ARMOR       : { name: 'Armor',       container: true, construct: ConditionArmor      },
-    ATTRIBUTE   : { name: 'Attribute',   container: true, construct: ConditionAttribute  },
-    BIOME       : { name: 'Biome',       container: true, construct: ConditionBiome      },
-    BLOCK       : { name: 'Block',       container: true, construct: ConditionBlock      },
-    BURNING     : { name: 'Burning',     container: true, construct: ConditionBurning    },
-    CEILING     : { name: 'Ceiling',     container: true, construct: ConditionCeiling    },
-    CHANCE      : { name: 'Chance',      container: true, construct: ConditionChance     },
-    CLASS       : { name: 'Class',       container: true, construct: ConditionClass      },
-    CLASS_LEVEL : { name: 'Class Level', container: true, construct: ConditionClassLevel },
-    COMBAT      : { name: 'Combat',      container: true, construct: ConditionCombat     },
-    CROUCH      : { name: 'Crouch',      container: true, construct: ConditionCrouch     },
-    DIRECTION   : { name: 'Direction',   container: true, construct: ConditionDirection  },
-    ELEVATION   : { name: 'Elevation',   container: true, construct: ConditionElevation  },
-    ELSE        : { name: 'Else',        container: true, construct: ConditionElse       },
-    ENTITY_TYPE : { name: 'Entity Type', container: true, construct: ConditionEntityType },
-    FIRE        : { name: 'Fire',        container: true, construct: ConditionFire       },
-    FLAG        : { name: 'Flag',        container: true, construct: ConditionFlag       },
-    FOOD        : { name: 'Food',        container: true, construct: ConditionFood       },
-    GROUND      : { name: 'Ground',      container: true, construct: ConditionGround     },
-    HEALTH      : { name: 'Health',      container: true, construct: ConditionHealth     },
-    INVENTORY   : { name: 'Inventory',   container: true, construct: ConditionInventory  },
-    ITEM        : { name: 'Item',        container: true, construct: ConditionItem       },
-    LIGHT       : { name: 'Light',       container: true, construct: ConditionLight      },
-    MANA        : { name: 'Mana',        container: true, construct: ConditionMana       },
-    MONEY       : { name: 'Money',       container: true, construct: ConditionMoney      },
-    MOUNTED     : { name: 'Mounted',     container: true, construct: ConditionMounted    },
-    MOUNTING    : { name: 'Mounting',    container: true, construct: ConditionMounting   },
-    NAME        : { name: 'Name',        container: true, construct: ConditionName       },
-    OFFHAND     : { name: 'Offhand',     container: true, construct: ConditionOffhand    },
-    PERMISSION  : { name: 'Permission',  container: true, construct: ConditionPermission },
-    POTION      : { name: 'Potion',      container: true, construct: ConditionPotion     },
-    SKILL_LEVEL : { name: 'Skill Level', container: true, construct: ConditionSkillLevel },
-    SLOT        : { name: 'Slot',        container: true, construct: ConditionSlot       },
-    STATUS      : { name: 'Status',      container: true, construct: ConditionStatus     },
-    TIME        : { name: 'Time',        container: true, construct: ConditionTime       },
-    TOOL        : { name: 'Tool',        container: true, construct: ConditionTool       },
-    VALUE       : { name: 'Value',       container: true, construct: ConditionValue      },
-    WATER       : { name: 'Water',       container: true, construct: ConditionWater      },
-    WEATHER     : { name: 'Weather',     container: true, construct: ConditionWeather    },
-    WORLD       : { name: 'World',       container: true, construct: ConditionWorld      }
+    ALTITUDE       : { name: 'Altitude',       container: true, construct: ConditionAltitude      },
+    ARMOR          : { name: 'Armor',          container: true, construct: ConditionArmor         },
+    ATTRIBUTE      : { name: 'Attribute',      container: true, construct: ConditionAttribute     },
+    BIOME          : { name: 'Biome',          container: true, construct: ConditionBiome         },
+    BLOCK          : { name: 'Block',          container: true, construct: ConditionBlock         },
+    BURNING        : { name: 'Burning',        container: true, construct: ConditionBurning       },
+    CEILING        : { name: 'Ceiling',        container: true, construct: ConditionCeiling       },
+    CHANCE         : { name: 'Chance',         container: true, construct: ConditionChance        },
+    CLASS          : { name: 'Class',          container: true, construct: ConditionClass         },
+    CLASS_LEVEL    : { name: 'Class Level',    container: true, construct: ConditionClassLevel    },
+    COMBAT         : { name: 'Combat',         container: true, construct: ConditionCombat        },
+    CROUCH         : { name: 'Crouch',         container: true, construct: ConditionCrouch        },
+    DIRECTION      : { name: 'Direction',      container: true, construct: ConditionDirection     },
+    ELEVATION      : { name: 'Elevation',      container: true, construct: ConditionElevation     },
+    ELSE           : { name: 'Else',           container: true, construct: ConditionElse          },
+    ENTITY_TYPE    : { name: 'Entity Type',    container: true, construct: ConditionEntityType    },
+    FIRE           : { name: 'Fire',           container: true, construct: ConditionFire          },
+    FLAG           : { name: 'Flag',           container: true, construct: ConditionFlag          },
+    FOOD           : { name: 'Food',           container: true, construct: ConditionFood          },
+    GROUND         : { name: 'Ground',         container: true, construct: ConditionGround        },
+    HEALTH         : { name: 'Health',         container: true, construct: ConditionHealth        },
+    INVENTORY      : { name: 'Inventory',      container: true, construct: ConditionInventory     },
+    ITEM           : { name: 'Item',           container: true, construct: ConditionItem          },
+    LIGHT          : { name: 'Light',          container: true, construct: ConditionLight         },
+    MANA           : { name: 'Mana',           container: true, construct: ConditionMana          },
+    MONEY          : { name: 'Money',          container: true, construct: ConditionMoney         },
+    MOUNTED        : { name: 'Mounted',        container: true, construct: ConditionMounted       },
+    MOUNTING       : { name: 'Mounting',       container: true, construct: ConditionMounting      },
+    MYTHICMOB_TYPE : { name: 'MythicMob Type', container: true, construct: ConditionMythicMobType },
+    NAME           : { name: 'Name',           container: true, construct: ConditionName          },
+    OFFHAND        : { name: 'Offhand',        container: true, construct: ConditionOffhand       },
+    PERMISSION     : { name: 'Permission',     container: true, construct: ConditionPermission    },
+    POTION         : { name: 'Potion',         container: true, construct: ConditionPotion        },
+    SKILL_LEVEL    : { name: 'Skill Level',    container: true, construct: ConditionSkillLevel    },
+    SLOT           : { name: 'Slot',           container: true, construct: ConditionSlot          },
+    STATUS         : { name: 'Status',         container: true, construct: ConditionStatus        },
+    TIME           : { name: 'Time',           container: true, construct: ConditionTime          },
+    TOOL           : { name: 'Tool',           container: true, construct: ConditionTool          },
+    VALUE          : { name: 'Value',          container: true, construct: ConditionValue         },
+    WATER          : { name: 'Water',          container: true, construct: ConditionWater         },
+    WEATHER        : { name: 'Weather',        container: true, construct: ConditionWeather       },
+    WORLD          : { name: 'World',          container: true, construct: ConditionWorld         }
 };
 
 /**
@@ -1450,6 +1451,18 @@ function ConditionMounting() {
         .setTooltip('The entity types the target can be mounting')
     );
 
+}
+
+extend('ConditionMythicMobType', 'Component');
+
+function ConditionMythicMobType() {
+    this.super('MythicMob Type', Type.CONDITION, true);
+
+    this.description = 'Applies child elements if the target corresponds to one of the entered MythicMob types, or is not a MythicMob if left empty'
+
+    this.data.push(new StringListValue('MythicMob Types', 'types', [])
+        .setTooltip('The MythicMob types to target')
+    );
 }
 
 extend('ConditionName', 'Component');
