@@ -32,18 +32,27 @@ import com.sucy.skill.api.util.StatusFlag;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Purges a target of positive potion or status effects
  */
 public class PurgeMechanic extends MechanicComponent
 {
-    private static final Set<String> POTIONS = ImmutableSet.of(
-            "ABSORPTION", "DAMAGE_RESISTANCE", "FAST_DIGGING", "FIRE_RESISTANCE", "HEALTH_BOOST",
-            "INCREASE_DAMAGE", "INVISIBILITY", "JUMP", "NIGHT_VISION", "REGENERATION",
-            "SATURATION", "SPEED", "WATER_BREATHING"
+    private static final Set<PotionEffectType> POTIONS = ImmutableSet.of(
+            PotionEffectType.ABSORPTION,
+            PotionEffectType.DAMAGE_RESISTANCE,
+            PotionEffectType.FAST_DIGGING,
+            PotionEffectType.FIRE_RESISTANCE,
+            PotionEffectType.HEALTH_BOOST,
+            PotionEffectType.INCREASE_DAMAGE,
+            PotionEffectType.INVISIBILITY,
+            PotionEffectType.JUMP,
+            PotionEffectType.NIGHT_VISION,
+            PotionEffectType.REGENERATION,
+            PotionEffectType.SATURATION,
+            PotionEffectType.SPEED,
+            PotionEffectType.WATER_BREATHING
     );
 
     private static final String STATUS = "status";
@@ -65,55 +74,39 @@ public class PurgeMechanic extends MechanicComponent
      * @return true if applied to something, false otherwise
      */
     @Override
-    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force)
-    {
+    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         boolean worked = false;
-        String status = settings.getString(STATUS, "None").toLowerCase();
-        String potion = settings.getString(POTION).toUpperCase().replace(' ', '_');
-        PotionEffectType type = null;
-        try
-        {
-            type = PotionEffectType.getByName(potion);
+        Set<String> statusSet = new HashSet<>();
+        for (String string : settings.getStringList(STATUS)) {
+            if (string.equalsIgnoreCase("All")) {
+                for (String status : StatusFlag.POSITIVE) { statusSet.add(status); }
+                break;
+            }
+            statusSet.add(string.toLowerCase());
         }
-        catch (Exception ex)
-        {
-            // Invalid potion type
+        Set<PotionEffectType> potionSet = new HashSet<>();
+        for (String string : settings.getStringList(POTION)) {
+            if (string.equalsIgnoreCase("All")) {
+                potionSet.addAll(POTIONS);
+                break;
+            }
+            try {
+                potionSet.add(Objects.requireNonNull(PotionEffectType.getByName(string.toLowerCase().replace(' ', '_'))));
+            } catch (IllegalArgumentException | NullPointerException ignored) { }
         }
 
-        for (LivingEntity target : targets)
-        {
-            if (status.equals("all"))
-            {
-                for (String flag : StatusFlag.POSITIVE)
-                {
-                    if (FlagManager.hasFlag(target, flag))
-                    {
-                        FlagManager.removeFlag(target, flag);
-                        worked = true;
-                    }
+        for (LivingEntity target : targets) {
+            for (String status : statusSet) {
+                if (FlagManager.hasFlag(target, status)) {
+                    FlagManager.removeFlag(target, status);
+                    worked = true;
                 }
             }
-            else if (FlagManager.hasFlag(target, status))
-            {
-                FlagManager.removeFlag(target, status);
-                worked = true;
-            }
-
-            if (potion.equals("ALL"))
-            {
-                for (PotionEffectType p : PotionEffectType.values())
-                {
-                    if (target.hasPotionEffect(p) && POTIONS.contains(p.getName()))
-                    {
-                        target.removePotionEffect(p);
-                        worked = true;
-                    }
+            for (PotionEffectType type : potionSet) {
+                if (target.hasPotionEffect(type)) {
+                    target.removePotionEffect(type);
+                    worked = true;
                 }
-            }
-            else if (type != null && target.hasPotionEffect(type))
-            {
-                target.removePotionEffect(type);
-                worked = true;
             }
         }
         return worked;
