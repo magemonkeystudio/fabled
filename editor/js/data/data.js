@@ -61,12 +61,12 @@ function getAnyPotion() {
 
 function getGoodPotions() {
     const list = DATA.POTIONS.filter(type => GOOD_POTIONS.includes(type));
-    return [ 'All', 'None', ...list ];
+    return [ 'All', ...list ];
 }
 
 function getBadPotions() {
     const list = DATA.POTIONS.filter(type => BAD_POTIONS.includes(type));
-    return [ 'All', 'None', ...list ];
+    return [ 'All', ...list ];
 }
 
 function getDyes() {

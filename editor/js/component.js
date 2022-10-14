@@ -1900,16 +1900,10 @@ function MechanicCleanse() {
 
     this.description = 'Cleanses negative potion or status effects from the targets.';
 
-    this.data.push(new ListValue('Potion', 'potion', getBadPotions, 'All')
+    this.data.push(new MultiListValue('Potion', 'potion', getBadPotions)
         .setTooltip('The type of potion effect to remove from the target')
     );
-    this.data.push(new ListValue('Status', 'status', ['None',
-                                                      'All',
-                                                      'Curse',
-                                                      'Disarm',
-                                                      'Root',
-                                                      'Silence',
-                                                      'Stun'], 'All')
+    this.data.push(new MultiListValue('Status', 'status', ['All', 'Curse', 'Disarm', 'Root', 'Silence', 'Stun'])
         .setTooltip('The status to remove from the target')
     );
 }
@@ -2804,10 +2798,10 @@ function MechanicPurge() {
 
     this.description = 'Purges the target of positive potion effects or statuses';
 
-    this.data.push(new ListValue('Potion', 'potion', getGoodPotions, 'All')
+    this.data.push(new MultiListValue('Potion', 'potion', getGoodPotions)
         .setTooltip('The potion effect to remove from the target, if any')
     );
-    this.data.push(new ListValue('Status', 'status', ['None', 'All', 'Absorb', 'Invincible'], 'All')
+    this.data.push(new MultiListValue('Status', 'status', ['All', 'Absorb', 'Invincible'])
         .setTooltip('The status to remove from the target, if any')
     );
 }
