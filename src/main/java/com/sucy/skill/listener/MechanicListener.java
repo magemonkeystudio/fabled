@@ -47,8 +47,11 @@ import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.metadata.MetadataValue;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -65,6 +68,7 @@ public class MechanicListener extends SkillAPIListener {
     public static final String SPEED_KEY         = "sapiSpeedKey";
     public static final String DISGUISE_KEY      = "sapiDisguiseKey";
     public static final String ARMOR_STAND       = "asMechanic";
+    public static final String DAMAGE_CAUSE      = "damageCause";
 
     private static final HashMap<UUID, Double> flying = new HashMap<UUID, Double>();
 
@@ -257,6 +261,25 @@ public class MechanicListener extends SkillAPIListener {
         } else if (event.getCause().equals(EntityDamageEvent.DamageCause.FIRE_TICK) && entity.hasMetadata(FireMechanic.META_KEY)) {
             event.setDamage(SkillAPI.getMetaDouble(entity, FireMechanic.META_KEY));
         }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onEntityDamageCause(EntityDamageEvent event) {
+        Entity entity = event.getEntity();
+        List<MetadataValue> metadataList = entity.getMetadata(DAMAGE_CAUSE);
+        if (metadataList.isEmpty()) { return; }
+        Object metadataValue = metadataList.get(0).value();
+        if (!(metadataValue instanceof EntityDamageEvent.DamageCause)) { return; }
+        if (event.getCause() != metadataValue) {
+            try {
+                Field causeField = EntityDamageEvent.class.getDeclaredField("cause");
+                causeField.setAccessible(true);
+                causeField.set(event, metadataValue);
+            } catch (Exception e) {
+                new UnsupportedOperationException("Failed to change DamageCause", e).printStackTrace();
+            }
+        }
+        entity.removeMetadata(DAMAGE_CAUSE, SkillAPI.inst());
     }
 
     @EventHandler(ignoreCancelled = true)

@@ -27,6 +27,7 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class DamageMechanic extends MechanicComponent {
     private static final String TRUE       = "true";
     private static final String CLASSIFIER = "classifier";
     private static final String KNOCKBACK  = "knockback";
+    private static final String CAUSE      = "cause";
 
     @Override
     public String getKey() {
@@ -84,7 +86,7 @@ public class DamageMechanic extends MechanicComponent {
             if (trueDmg) {
                 skill.trueDamage(target, amount, caster);
             } else {
-                skill.damage(target, amount, caster, classification, knockback);
+                skill.damage(target, amount, caster, classification, knockback, EntityDamageEvent.DamageCause.valueOf(settings.getString(CAUSE, "Entity Attack").toUpperCase().replace(' ', '_')));
             }
         }
         return targets.size() > 0;

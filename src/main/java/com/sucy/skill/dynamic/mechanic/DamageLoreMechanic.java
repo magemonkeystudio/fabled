@@ -30,6 +30,7 @@ import mc.promcteam.engine.mccore.config.parse.NumberParser;
 import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -45,6 +46,8 @@ public class DamageLoreMechanic extends MechanicComponent {
     private static final String HAND       = "hand";
     private static final String TRUE       = "true";
     private static final String CLASSIFIER = "classifier";
+    private static final String KNOCKBACK  = "knockback";
+    private static final String CAUSE      = "cause";
 
     @Override
     public String getKey() {
@@ -104,7 +107,7 @@ public class DamageLoreMechanic extends MechanicComponent {
                             if (trueDmg) {
                                 skill.trueDamage(target, base * m, caster);
                             } else {
-                                skill.damage(target, base * m, caster, classification);
+                                skill.damage(target, base * m, caster, classification, settings.getBool(KNOCKBACK, true),  EntityDamageEvent.DamageCause.valueOf(settings.getString(CAUSE, "Entity Attack").toUpperCase().replace(' ', '_')));
                             }
                         }
                         worked = targets.size() > 0;

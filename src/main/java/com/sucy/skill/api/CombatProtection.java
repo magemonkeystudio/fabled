@@ -14,6 +14,10 @@ import org.bukkit.event.entity.EntityDamageEvent;
  */
 public interface CombatProtection {
     static boolean canAttack(LivingEntity attacker, LivingEntity target, boolean passiveAlly) {
+        return CombatProtection.canAttack(attacker, target, passiveAlly, EntityDamageEvent.DamageCause.CUSTOM);
+    }
+
+    static boolean canAttack(LivingEntity attacker, LivingEntity target, boolean passiveAlly, EntityDamageEvent.DamageCause cause) {
         if (attacker == target) {
             return false;
         } else {
@@ -29,7 +33,7 @@ public interface CombatProtection {
                 return false;
             }
 
-            DefaultCombatProtection.FakeEntityDamageByEntityEvent event = new DefaultCombatProtection.FakeEntityDamageByEntityEvent(attacker, target, EntityDamageEvent.DamageCause.CUSTOM, 1.0D);
+            DefaultCombatProtection.FakeEntityDamageByEntityEvent event = new DefaultCombatProtection.FakeEntityDamageByEntityEvent(attacker, target, cause, 1.0D);
             Bukkit.getPluginManager().callEvent(event);
             boolean attackable = !event.isExternallyCancelled();
 
@@ -44,5 +48,11 @@ public interface CombatProtection {
     boolean canAttack(final Player attacker, final LivingEntity defender);
 
     boolean canAttack(final LivingEntity attacker, final LivingEntity defender);
+
+    boolean canAttack(final Player attacker, final Player defender, EntityDamageEvent.DamageCause cause);
+
+    boolean canAttack(final Player attacker, final LivingEntity defender, EntityDamageEvent.DamageCause cause);
+
+    boolean canAttack(final LivingEntity attacker, final LivingEntity defender, EntityDamageEvent.DamageCause cause);
 
 }

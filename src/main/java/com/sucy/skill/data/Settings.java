@@ -52,6 +52,7 @@ import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.*;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -810,6 +811,18 @@ public class Settings {
      * @return true if can be attacked, false otherwise
      */
     public boolean canAttack(LivingEntity attacker, LivingEntity target) {
+        return canAttack(attacker, target, EntityDamageEvent.DamageCause.CUSTOM);
+    }
+
+    /**
+     * Checks whether something can be attacked
+     *
+     * @param attacker the attacking entity
+     * @param target   the target entity
+     * @param cause    the cause of the damage, might affect death messages
+     * @return true if can be attacked, false otherwise
+     */
+    public boolean canAttack(LivingEntity attacker, LivingEntity target, EntityDamageEvent.DamageCause cause) {
         if (attacker.equals(target)) return true;
 
         if (attacker instanceof Player) {
@@ -833,9 +846,9 @@ public class Settings {
                     final Party   p2      = parties.getJoinedParty((Player) target);
                     return p1 == null || p1 != p2;
                 }
-                return combatProtection.canAttack(player, (Player) target);
+                return combatProtection.canAttack(player, (Player) target, cause);
             }
-            return combatProtection.canAttack(player, target);
+            return combatProtection.canAttack(player, target, cause);
         } else if (attacker instanceof Tameable) {
             Tameable tameable = (Tameable) attacker;
             if (tameable.isTamed() && (tameable.getOwner() instanceof LivingEntity)) {
@@ -846,7 +859,7 @@ public class Settings {
             return !(target instanceof Monster);
         }
 
-        return combatProtection.canAttack(attacker, target);
+        return combatProtection.canAttack(attacker, target, cause);
     }
 
     /**

@@ -44,6 +44,7 @@ import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.language.NotificationNodes;
 import com.sucy.skill.language.RPGFilter;
 import com.sucy.skill.language.SkillNodes;
+import com.sucy.skill.listener.MechanicListener;
 import com.sucy.skill.log.Logger;
 import mc.promcteam.engine.mccore.config.Filter;
 import mc.promcteam.engine.mccore.config.FilterType;
@@ -57,9 +58,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -731,6 +734,20 @@ public abstract class Skill implements IconHolder {
      * @param knockback      whether the damage should apply knockback
      */
     public void damage(LivingEntity target, double damage, LivingEntity source, String classification, boolean knockback) {
+        damage(target, damage, source, classification, knockback, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+    }
+
+    /**
+     * Applies skill damage to the target, launching the skill damage event
+     *
+     * @param target         target to receive the damage
+     * @param damage         amount of damage to deal
+     * @param source         source of the damage (skill caster)
+     * @param classification type of damage to deal
+     * @param knockback      whether the damage should apply knockback
+     * @param cause          the cause of the damage, might affect death messages
+     */
+    public void damage(LivingEntity target, double damage, LivingEntity source, String classification, boolean knockback, EntityDamageEvent.DamageCause cause) {
         if (target instanceof TempEntity) {
             return;
         }
@@ -738,11 +755,12 @@ public abstract class Skill implements IconHolder {
 
         // We have to check if the damage event would get cancelled, since we aren't _really_ calling
         // EntityDamageByEntityEvent unless we use knockback
-        if (!SkillAPI.getSettings().canAttack(source, target)) return;
+        if (!SkillAPI.getSettings().canAttack(source, target, cause)) { return; }
 
         SkillDamageEvent event = new SkillDamageEvent(this, source, target, damage, classification, knockback);
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
+            target.setMetadata(MechanicListener.DAMAGE_CAUSE, new FixedMetadataValue(SkillAPI.inst(), cause));
             if (source instanceof Player) {
                 Player player = (Player) source;
                 if (PluginChecker.isNoCheatActive()) NoCheatHook.exempt(player);
