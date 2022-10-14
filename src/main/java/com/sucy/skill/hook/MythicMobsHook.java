@@ -1,6 +1,7 @@
 package com.sucy.skill.hook;
 
 import mc.promcteam.engine.NexEngine;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
 /**
@@ -15,5 +16,9 @@ public class MythicMobsHook {
 
     public static boolean isMonster(final LivingEntity target) {
         return NexEngine.get().getMythicMobs().isMythicMob(target);
+    }
+
+    public static String getMythicMobId(Entity entity) {
+        return NexEngine.get().getMythicMobs().getMythicNameByEntity(entity);
     }
 }

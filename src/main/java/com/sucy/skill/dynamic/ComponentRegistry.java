@@ -100,6 +100,7 @@ public class ComponentRegistry {
         register(new MoneyCondition());
         register(new MountedCondition());
         register(new MountingCondition());
+        register(new MythicMobTypeCondition());
         register(new NameCondition());
         register(new OffhandCondition());
         register(new PermissionCondition());
