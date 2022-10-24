@@ -13,7 +13,7 @@ softdepend:
   - WorldGuard
   - WorldEdit
   - Mimic
-loadbefore: [ Quests ]
+loadbefore: [ Quests, TAB ]
 api-version: 1.14
 
 permissions:
