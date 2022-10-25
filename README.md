@@ -18,23 +18,12 @@ You can download ProSkillAPI form our marketplace
 
 # Development 
 
-If you wish to use ProSkillAPI as a dependency in your projects, include the following in your `pom.xml`
+If you wish to use ProSkillAPI as a dependency in your projects, ProSkillAPI is available through Maven Central.
 
 ```xml
-<repository>
-    <id>github</id>
-    <url>https://maven.pkg.github.com/promcteam/promccore</url>
-</repository>
-        ...
 <dependency>
-    <groupId>mc.promcteam</groupId>
+    <groupId>com.promcteam</groupId>
     <artifactId>proskillapi</artifactId>
-    <version>VERSION</version>
+    <version>1.1.7.18-SNAPSHOT</version>
 </dependency>
 ```
-
-Find version numbers [here](https://github.com/promcteam/promccore/packages/1203744).
-
-Additionally, you'll need to make sure that you have properly configured [Authentication with GitHub Packages](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry#authenticating-to-github-packages).
-
-You may also use JitPack!

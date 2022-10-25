@@ -5,16 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>mc.promcteam</groupId>
+        <groupId>com.promcteam</groupId>
         <artifactId>promc-parent</artifactId>
-        <version>1.19.2</version>
+        <version>1.19.2-SNAPSHOT</version>
     </parent>
 
-    <groupId>mc.promcteam</groupId>
+    <groupId>com.promcteam</groupId>
     <artifactId>proskillapi</artifactId>
-    <version>1.1.7.17-${maven.build.timestamp}</version>
-    <name>ProSkillAPI</name>
+    <version>1.1.7.18-SNAPSHOT</version>
 
+    <name>ProSkillAPI</name>
     <description>A Minecraft Bukkit plugin aiming to provide an easy code API and skill editor for all server owners to
         create unique and fully custom classes and skills.
     </description>
@@ -23,11 +23,6 @@
     </url>
 
     <repositories>
-        <!-- ProMCTeam Repo -->
-        <repository>
-            <id>promcteam</id>
-            <url>https://maven.pkg.github.com/promcteam/promccore</url>
-        </repository>
         <repository>
             <id>sk89q-repo</id>
             <url>https://maven.enginehub.org/repo/</url>
@@ -173,15 +168,6 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.2.0</version>
-                <configuration>
-                    <reportOutputDirectory>${project.basedir}</reportOutputDirectory>
-                    <destDir>gh-pages/javadocs</destDir>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.1.0</version>
                 <executions>
@@ -220,4 +206,25 @@
             </resource>
         </resources>
     </build>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>ProMCTeam</name>
+            <organization>ProMCTeam</organization>
+            <organizationUrl>https://promcteam.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/promcteam/${artifactId}.git</connection>
+        <developerConnection>scm:git:ssh://github.com:promcteam/${artifactId}.git</developerConnection>
+        <url>https://github.com/promcteam/${artifactId}</url>
+    </scm>
 </project>

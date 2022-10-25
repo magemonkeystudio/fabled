@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.event.TrueDamageEvent
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,14 +35,13 @@ import org.bukkit.event.HandlerList;
 /**
  * Event for when true damage is dealt (damage ignoring armor)
  */
-public class TrueDamageEvent extends Event implements Cancellable
-{
-    private static final HandlerList handlers = new HandlerList();
-    private LivingEntity damager;
-    private LivingEntity target;
-    private Skill        skill;
-    private double       damage;
-    private boolean      cancelled;
+public class TrueDamageEvent extends Event implements Cancellable {
+    private static final HandlerList  handlers = new HandlerList();
+    private              LivingEntity damager;
+    private              LivingEntity target;
+    private              Skill        skill;
+    private              double       damage;
+    private              boolean      cancelled;
 
     /**
      * Initializes a new event
@@ -51,8 +50,7 @@ public class TrueDamageEvent extends Event implements Cancellable
      * @param target  entity receiving the damage
      * @param damage  the amount of damage dealt
      */
-    public TrueDamageEvent(Skill skill, LivingEntity damager, LivingEntity target, double damage)
-    {
+    public TrueDamageEvent(Skill skill, LivingEntity damager, LivingEntity target, double damage) {
         this.skill = skill;
         this.damager = damager;
         this.target = target;
@@ -72,8 +70,7 @@ public class TrueDamageEvent extends Event implements Cancellable
      *
      * @return entity that dealt the damage
      */
-    public LivingEntity getDamager()
-    {
+    public LivingEntity getDamager() {
         return damager;
     }
 
@@ -82,8 +79,7 @@ public class TrueDamageEvent extends Event implements Cancellable
      *
      * @return entity that received the damage
      */
-    public LivingEntity getTarget()
-    {
+    public LivingEntity getTarget() {
         return target;
     }
 
@@ -92,8 +88,7 @@ public class TrueDamageEvent extends Event implements Cancellable
      *
      * @return amount of damage dealt
      */
-    public double getDamage()
-    {
+    public double getDamage() {
         return damage;
     }
 
@@ -102,19 +97,17 @@ public class TrueDamageEvent extends Event implements Cancellable
      *
      * @param amount amount of damage dealt
      */
-    public void setDamage(double amount)
-    {
+    public void setDamage(double amount) {
         damage = amount;
     }
 
     /**
-     * Checks whether or not the event is cancelled
+     * Checks whether the event is cancelled
      *
      * @return true if cancelled, false otherwise
      */
     @Override
-    public boolean isCancelled()
-    {
+    public boolean isCancelled() {
         return cancelled;
     }
 
@@ -124,8 +117,7 @@ public class TrueDamageEvent extends Event implements Cancellable
      * @param cancelled the cancelled state of the event
      */
     @Override
-    public void setCancelled(boolean cancelled)
-    {
+    public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
     }
 
@@ -135,8 +127,7 @@ public class TrueDamageEvent extends Event implements Cancellable
      * @return list of event handlers
      */
     @Override
-    public HandlerList getHandlers()
-    {
+    public HandlerList getHandlers() {
         return handlers;
     }
 
@@ -145,8 +136,7 @@ public class TrueDamageEvent extends Event implements Cancellable
      *
      * @return list of event handlers
      */
-    public static HandlerList getHandlerList()
-    {
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 }
