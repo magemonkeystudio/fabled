@@ -108,16 +108,12 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.github.promcteam</groupId>
+            <groupId>com.promcteam</groupId>
             <artifactId>promccore</artifactId>
-            <version>dev-SNAPSHOT</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.promcteam</groupId>
+            <groupId>com.promcteam</groupId>
             <artifactId>proskillapiparties</artifactId>
-            <version>master-SNAPSHOT</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
