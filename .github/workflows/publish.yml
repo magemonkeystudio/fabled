@@ -6,7 +6,6 @@ on:
 
 jobs:
   deploy:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -15,20 +14,26 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 17
-          server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
+          server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
           settings-path: ${{ github.workspace }} # location for the settings.xml file
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
       - name: 'Create settings.xml'
         uses: s4u/maven-settings-action@v2.4.1
         with:
           githubServer: false
-          servers: '[{"id": "promcteam", "username": "Travja", "password": "${{ secrets.DEPLOY_KEY }}"}]'
-      - name: Build with Maven
-        run: mvn clean package -e
+          servers: '[{"id": "ossrh", "username": "Travja", "password": "${{ secrets.SONATYPE_DEPLOY_KEY }}"}]'
+#      - name: Build with Maven
+#        run: mvn clean package -e
+#        env:
+#          GITHUB_TOKEN_REF: ${{ secrets.GH_PAT_FOR_ACTIONS_TOKEN }}
+      - name: Publish to Maven Central
         env:
-          GITHUB_TOKEN_REF: ${{ secrets.GH_PAT_FOR_ACTIONS_TOKEN }}
-      - name: Publish artifact on GitHub Packages
-        run: mvn clean deploy -e -DskipTests
-        env:
-          GITHUB_TOKEN: ${{ secrets.DEPLOY_KEY }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: mvn clean deploy -P gpg,publish -DcreateChecksum=true | tee log.txt
+#      - name: Publish artifact on GitHub Packages
+#        run: mvn clean deploy -e -DskipTests
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.DEPLOY_KEY }}
       - name: Notify Discord
         run: python ./.github/notify_published.py ${{ secrets.SKILLAPI_WEBHOOK }}
