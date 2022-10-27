@@ -110,6 +110,7 @@
         <dependency>
             <groupId>com.promcteam</groupId>
             <artifactId>promccore</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.promcteam</groupId>
