@@ -768,13 +768,7 @@ function TriggerLaunch() {
 
     this.description = 'Applies skill effects when a player launches a projectile.';
 
-    this.data.push(new ListValue('Type', 'type', ['Any',
-                                                  'Arrow',
-                                                  'Egg',
-                                                  'Ender Pearl',
-                                                  'Fireball',
-                                                  'Fishing Hook',
-                                                  'Snowball'], 'Any')
+    this.data.push(new ListValue('Type', 'type', getAnyProjectiles(), 'Any')
         .setTooltip('The type of projectile that should be launched.')
     );
 }
@@ -2081,45 +2075,7 @@ function MechanicDisguise() {
         .setTooltip('The type of disguise to use, as defined by the LibsDisguise plugin.')
     );
 
-    this.data.push(new ListValue('Mob', 'mob', ['Bat',
-                                                'Blaze',
-                                                'Cave Spider',
-                                                'Chicken',
-                                                'Cow',
-                                                'Creeper',
-                                                'Donkey',
-                                                'Elder Guardian',
-                                                'Ender Dragon',
-                                                'Enderman',
-                                                'Endermite',
-                                                'Ghast',
-                                                'Giant',
-                                                'Guardian',
-                                                'Horse',
-                                                'Iron Golem',
-                                                'Magma Cube',
-                                                'Mule',
-                                                'Mushroom Cow',
-                                                'Ocelot',
-                                                'Pig',
-                                                'Pig Zombie',
-                                                'Rabbit',
-                                                'Sheep',
-                                                'Shulker',
-                                                'Silverfish',
-                                                'Skeleton',
-                                                'Slime',
-                                                'Snowman',
-                                                'Spider',
-                                                'Squid',
-                                                'Undead Horse',
-                                                'Villager',
-                                                'Witch',
-                                                'Wither',
-                                                'Wither Skeleton',
-                                                'Wolf',
-                                                'Zombie',
-                                                'Zombie Villager'], 'Zombie')
+    this.data.push(new ListValue('Mob', 'mob', getMobDisguises(), 'Zombie')
         .requireValue('type', ['Mob'])
         .setTooltip('The type of mob to disguise the target as')
     );
@@ -2133,75 +2089,42 @@ function MechanicDisguise() {
         .setTooltip('The player to disguise the target as')
     );
 
-    this.data.push(new ListValue('Misc', 'misc', ['Area Effect Cloud',
-                                                  'Armor Stand',
-                                                  'Arrow',
-                                                  'Boat',
-                                                  'Dragon Fireball',
-                                                  'Dropped Item',
-                                                  'Egg',
-                                                  'Ender Crystal',
-                                                  'Ender Pearl',
-                                                  'Ender Signal',
-                                                  'Experience Orb',
-                                                  'Falling Block',
-                                                  'Fireball',
-                                                  'Firework',
-                                                  'Fishing Hook',
-                                                  'Item Frame',
-                                                  'Leash Hitch',
-                                                  'Minecart',
-                                                  'Minecart Chest',
-                                                  'Minecart Command',
-                                                  'Minecart Furnace',
-                                                  'Minecart Hopper',
-                                                  'Minecart Mob Spawner',
-                                                  'Minecart TNT',
-                                                  'Painting',
-                                                  'Primed TNT',
-                                                  'Shulker Bullet',
-                                                  'Snowball',
-                                                  'Spectral Arrow',
-                                                  'Splash Potion',
-                                                  'Tipped Arrow',
-                                                  'Thrown EXP Bottle',
-                                                  'Wither Skull'], 'Painting')
+    this.data.push(new ListValue('Misc', 'misc', getMiscDisguises(), 'Painting')
         .requireValue('type', ['Misc'])
         .setTooltip('The object to disguise the target as')
     );
     this.data.push(new IntValue('Data', 'data', 0)
         // .requireValue('type', [ 'Misc' ])
-        .requireValue('misc', ['Area Effect Cloud',
-                               'Armor Stand',
+        .requireValue('misc', ['Area effect cloud',
+                               'Armor stand',
                                'Arrow',
                                'Boat',
-                               'Dragon Fireball',
+                               'Dragon fireball',
                                'Egg',
-                               'Ender Crystal',
-                               'Ender Pearl',
-                               'Ender Signal',
-                               'Experience Orb',
+                               'Ender crystal',
+                               'Ender pearl',
+                               'Ender signal',
+                               'Experience orb',
                                'Fireball',
                                'Firework',
-                               'Fishing Hook',
-                               'Item Frame',
-                               'Leash Hitch',
+                               'Fishing hook',
+                               'Item frame',
+                               'Leash hitch',
                                'Minecart',
-                               'Minecart Chest',
-                               'Minecart Command',
-                               'Minecart Furnace',
-                               'Minecart Hopper',
-                               'Minecart Mob Spawner',
-                               'Minecart TNT',
+                               'Minecart chest',
+                               'Minecart command',
+                               'Minecart furnace',
+                               'Minecart hopper',
+                               'Minecart mob spawner',
+                               'Minecart tnt',
                                'Painting',
-                               'Primed TNT',
-                               'Shulker Bullet',
+                               'Primed tnt',
+                               'Shulker bullet',
                                'Snowball',
-                               'Spectral Arrow',
-                               'Splash Potion',
-                               'Tipped Arrow',
-                               'Thrown EXP Bottle',
-                               'Wither Skull'])
+                               'Spectral arrow',
+                               'Splash potion',
+                               'Thrown exp bottle',
+                               'Wither skull'])
         .setTooltip('Data value to use for the disguise type. What it does depends on the disguise')
     );
 
@@ -2785,12 +2708,7 @@ function MechanicProjectile() {
 
     this.description = 'Launches a projectile that applies child components on hit. The target supplied will be the struck target.';
 
-    this.data.push(new ListValue('Projectile', 'projectile', ['Arrow',
-                                                              'Egg',
-                                                              'Snowball',
-                                                              'Fireball',
-                                                              'Large Fireball',
-                                                              'Small fireball'], 'Arrow')
+    this.data.push(new ListValue('Projectile', 'projectile', getProjectiles(), 'Arrow')
         .setTooltip('The type of projectile to fire')
     );
     this.data.push(new ListValue('Flaming', 'flaming', ['True', 'False'], 'False')
@@ -3063,13 +2981,7 @@ function MechanicTrigger() {
     );
 
     // LAUNCH
-    this.data.push(new ListValue('Type', 'type', ['Any',
-                                                  'Arrow',
-                                                  'Egg',
-                                                  'Ender Pearl',
-                                                  'Fireball',
-                                                  'Fishing Hook',
-                                                  'Snowball'], 'Any')
+    this.data.push(new ListValue('Type', 'type', getAnyProjectiles(), 'Any')
         .requireValue('trigger', ['Launch'])
         .setTooltip('The type of projectile that should be launched.')
     );
