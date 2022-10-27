@@ -49,7 +49,7 @@ public class DataGenerator {
             out.write(("    ],\n    POTIONS: [\n").getBytes());
             for (Field field : PotionEffectType.class.getDeclaredFields()) {
                 if (field.getType().isAssignableFrom(PotionEffectType.class) && !field.isAnnotationPresent(Deprecated.class)) {
-                    out.write(("        \""+sentenceCase(field.getName())+"\"\n").getBytes());
+                    out.write(("        \""+sentenceCase(field.getName())+"\",\n").getBytes());
                 }
             }
             out.write(("    ],\n    PARTICLES: [\n").getBytes());
@@ -67,11 +67,11 @@ public class DataGenerator {
                     writeEnumConstant(out, entityType);
                 }
             }
-            out.write(("    ],\n    MOB_ENTITIES: [\n").getBytes());
+            out.write(("    ],\n    MOB_DISGUISES: [\n").getBytes());
             for (EntityType entityType : EntityType.values()) {
                 if (DisguiseType.getType(entityType).isMob()) { writeEnumConstant(out, entityType); }
             }
-            out.write(("    ],\n    MISC_ENTITIES: [\n").getBytes());
+            out.write(("    ],\n    MOB_DISGUISES: [\n").getBytes());
             for (EntityType entityType : EntityType.values()) {
                 if (DisguiseType.getType(entityType).isMisc()) { writeEnumConstant(out, entityType); }
             }
@@ -94,7 +94,7 @@ public class DataGenerator {
             if (field.isAnnotationPresent(Deprecated.class)) { return; }
             String name = enumConstant.name();
             if (name.contains("LEGACY") || name.equals("UNKNOWN")) { return; }
-            out.write(("        \""+sentenceCase(enumConstant.name())+"\"\n").getBytes());
+            out.write(("        \""+sentenceCase(enumConstant.name())+"\",\n").getBytes());
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
