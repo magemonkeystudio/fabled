@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.util.Nearby
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -30,16 +30,14 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Fetches nearby entities by going through possible chunks
  * instead of all entities in a world
  */
-public class Nearby
-{
+public class Nearby {
     /**
      * Gets entities nearby a location using a given radius
      *
@@ -48,8 +46,7 @@ public class Nearby
      *
      * @return nearby entities
      */
-    public static List<Entity> getNearby(Location loc, double radius)
-    {
+    public static List<Entity> getNearby(Location loc, double radius) {
         List<Entity> result = new ArrayList<Entity>();
 
         int minX = (int) (loc.getX() - radius) >> 4;
@@ -85,7 +82,8 @@ public class Nearby
     }
 
     private static List<LivingEntity> getLivingNearby(Entity source, Location loc, double radius, boolean includeCaster) {
-        TreeMap<Double, LivingEntity> result = new TreeMap<>();
+        List<LivingEntity> result    = new ArrayList<>();
+        Map<UUID, Double>  distances = new HashMap<>();
 
         int minX = (int) (loc.getX() - radius) >> 4;
         int maxX = (int) (loc.getX() + radius) >> 4;
@@ -100,10 +98,14 @@ public class Nearby
                     if ((includeCaster || entity != source)
                             && entity instanceof LivingEntity
                             && entity.getWorld() == loc.getWorld()
-                            && entity.getLocation().distanceSquared(loc) < radius)
-                        result.put(entity.getLocation().distance(loc), (LivingEntity) entity);
+                            && entity.getLocation().distanceSquared(loc) < radius) {
+                        result.add((LivingEntity) entity);
+                        distances.put(entity.getUniqueId(), entity.getLocation().distance(loc));
+                    }
 
-        return new ArrayList<>(result.values());
+        return result.stream().sorted(
+                Comparator.comparingDouble(entity -> distances.get(entity.getUniqueId()))
+        ).collect(Collectors.toList());
     }
 
     /**
@@ -114,8 +116,7 @@ public class Nearby
      *
      * @return nearby entities
      */
-    public static List<Entity> getNearby(Entity entity, double radius)
-    {
+    public static List<Entity> getNearby(Entity entity, double radius) {
         return getNearby(entity.getLocation(), radius);
     }
 
@@ -135,8 +136,7 @@ public class Nearby
         return getLivingNearby(entity, entity.getLocation(), radius, includeCaster);
     }
 
-    public static List<Entity> getNearbyBox(Location loc, double radius)
-    {
+    public static List<Entity> getNearbyBox(Location loc, double radius) {
         List<Entity> result = new ArrayList<Entity>();
 
         int minX = (int) (loc.getX() - radius) >> 4;
@@ -153,8 +153,7 @@ public class Nearby
         return result;
     }
 
-    public static List<LivingEntity> getLivingNearbyBox(Location loc, double radius)
-    {
+    public static List<LivingEntity> getLivingNearbyBox(Location loc, double radius) {
         List<LivingEntity> result = new ArrayList<LivingEntity>();
 
         int minX = (int) (loc.getX() - radius) >> 4;
@@ -171,8 +170,7 @@ public class Nearby
         return result;
     }
 
-    private static double boxDistance(Location loc1, Location loc2)
-    {
+    private static double boxDistance(Location loc1, Location loc2) {
         return Math.max(Math.max(Math.abs(loc1.getX() - loc2.getX()), Math.abs(loc1.getY() - loc2.getY())), Math.abs(loc1.getZ() - loc2.getZ()));
     }
 }
