@@ -35,6 +35,7 @@ import com.sucy.skill.dynamic.DynamicClass;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.log.LogType;
 import com.sucy.skill.log.Logger;
+import com.sucy.skill.util.ConfigurationException;
 import mc.promcteam.engine.mccore.config.CommentedConfig;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.Bukkit;
@@ -53,14 +54,14 @@ import java.nio.file.Path;
  * added.</p>
  */
 public class RegistrationManager {
-    private static final String SKILL_FOLDER = "dynamic" + File.separator + "skill";
-    private static final String CLASS_FOLDER = "dynamic" + File.separator + "class";
-    private static final String SKILL_DIR = SKILL_FOLDER + File.separator;
-    private static final String CLASS_DIR = CLASS_FOLDER + File.separator;
-    private final SkillAPI        api;
-    private final CommentedConfig skillConfig;
-    private final CommentedConfig classConfig;
-    private       Mode            mode = Mode.STARTUP;
+    private static final String          SKILL_FOLDER = "dynamic" + File.separator + "skill";
+    private static final String          CLASS_FOLDER = "dynamic" + File.separator + "class";
+    private static final String          SKILL_DIR    = SKILL_FOLDER + File.separator;
+    private static final String          CLASS_DIR    = CLASS_FOLDER + File.separator;
+    private final        SkillAPI        api;
+    private final        CommentedConfig skillConfig;
+    private final        CommentedConfig classConfig;
+    private              Mode            mode         = Mode.STARTUP;
 
     /**
      * <p>Creates a new Registration Manager for handling registering new
@@ -168,17 +169,14 @@ public class RegistrationManager {
             Path skillRootPath = skillRoot.toPath();
             try {
                 Files.walk(skillRootPath).forEach(path -> {
-                    String longName = skillRootPath.relativize(path).toString();
-                    if (!longName.endsWith(".yml")) {
-                        return;
-                    }
-                    String name = path.getFileName().toString();
-                    longName = longName.replace(".yml", "");
-                    name = name.replace(".yml", "");
+                    String longName = getQualifiedFileName(skillRootPath, path);
+                    if (longName == null) return;
+                    String name = path.getFileName().toString().replace(".yml", "");
                     try {
                         CommentedConfig sConfig = new CommentedConfig(api, SKILL_DIR + longName);
-                        DynamicSkill skill = new DynamicSkill(name);
-                        skill.load(sConfig.getConfig().getSection(name));
+                        DynamicSkill    skill   = new DynamicSkill(name);
+                        DataSection     section = getBaseSection(sConfig, name);
+                        skill.load(section);
                         if (!SkillAPI.isSkillRegistered(skill.getName())) {
                             api.addDynamicSkill(skill);
                             skill.registerEvents(api);
@@ -194,8 +192,8 @@ public class RegistrationManager {
                         }
                     } catch (Exception ex) {
                         Logger.invalid("Failed to load skill: " + name + " - " + ex.getMessage());
-                        if(ex instanceof NullPointerException)
-                            Logger.log("Please check that " + (SKILL_DIR + name) + ".yml exists");
+                        if (ex instanceof NullPointerException)
+                            Logger.log("Please check that " + (SKILL_DIR + name) + ".yml exists and has proper contents");
                         ex.printStackTrace();
                     }
                 });
@@ -259,17 +257,14 @@ public class RegistrationManager {
             Path classRootPath = classRoot.toPath();
             try {
                 Files.walk(classRootPath).forEach(path -> {
-                    String longName = classRootPath.relativize(path).toString();
-                    if (!longName.endsWith(".yml")) {
-                        return;
-                    }
-                    String name = path.getFileName().toString();
-                    longName = longName.replace(".yml", "");
-                    name = name.replace(".yml", "");
+                    String longName = getQualifiedFileName(classRootPath, path);
+                    if (longName == null) return;
+                    String name = path.getFileName().toString().replace(".yml", "");
                     try {
                         CommentedConfig cConfig = new CommentedConfig(api, CLASS_DIR + longName);
-                        DynamicClass tree = new DynamicClass(api, name);
-                        tree.load(cConfig.getConfig().getSection(name));
+                        DynamicClass    tree    = new DynamicClass(api, name);
+                        DataSection     section = getBaseSection(cConfig, name);
+                        tree.load(section);
                         if (!SkillAPI.isClassRegistered(tree.getName())) {
                             api.addDynamicClass(tree);
                             cConfig.clear();
@@ -307,13 +302,41 @@ public class RegistrationManager {
         Logger.log(LogType.REGISTRATION, 0, " - " + SkillAPI.getClasses().size() + " classes");
     }
 
+    private String getQualifiedFileName(Path root, Path path) {
+        String longName = root.relativize(path).toString();
+        if (!longName.endsWith(".yml")) {
+            return null;
+        }
+        longName = longName.replace(".yml", "");
+
+        return longName;
+    }
+
+    /**
+     * Gets the {@link DataSection} from the config identified by the name, or fetches
+     * the first base-level config section and attempts to use that.
+     * If there is no base-level section available, an exception is thrown.
+     *
+     * @param config The source config to use
+     * @param name   The desired data section to fetch
+     * @return {@link DataSection} from the target config
+     * @throws ConfigurationException
+     */
+    private DataSection getBaseSection(CommentedConfig config, String name) throws ConfigurationException {
+        DataSection configSection = config.getConfig();
+        String      sectionName   = name;
+        if (name == null || name.isBlank() || !configSection.has(name)) {
+            sectionName = configSection.keys().stream().findFirst().orElseThrow(() -> new ConfigurationException(name + ".yml does not appear to contain any class data"));
+        }
+        return configSection.getSection(sectionName);
+    }
+
     /**
      * <p>Validates a skill, making sure it is being registered during the
      * appropriate time, it isn't null, and it doesn't conflict with other
      * registered skills.</p>
      *
      * @param skill skill to validate
-     *
      * @return the class if valid, null otherwise
      */
     public Skill validate(Skill skill) {
@@ -337,7 +360,7 @@ public class RegistrationManager {
         else {
 
             CommentedConfig singleFile = new CommentedConfig(api, "skill" + File.separator + skill.getName());
-            DataSection config = singleFile.getConfig();
+            DataSection     config     = singleFile.getConfig();
 
             try {
                 // Soft save to ensure optional data starts off in the config
@@ -371,7 +394,6 @@ public class RegistrationManager {
      * registered classes.</p>
      *
      * @param rpgClass class to validate
-     *
      * @return the class if valid, null otherwise
      */
     public RPGClass validate(RPGClass rpgClass) {
@@ -395,7 +417,7 @@ public class RegistrationManager {
         else {
 
             CommentedConfig singleFile = new CommentedConfig(api, "class" + File.separator + rpgClass.getName());
-            DataSection config = singleFile.getConfig();
+            DataSection     config     = singleFile.getConfig();
 
             try {
 
