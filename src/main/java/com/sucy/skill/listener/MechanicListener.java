@@ -36,6 +36,7 @@ import com.sucy.skill.dynamic.mechanic.*;
 import com.sucy.skill.hook.DisguiseHook;
 import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.hook.VaultHook;
+import com.sucy.skill.task.RemoveTask;
 import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.*;
@@ -47,13 +48,11 @@ import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.metadata.MetadataValue;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * The listener for handling events related to dynamic mechanics
@@ -302,5 +301,17 @@ public class MechanicListener extends SkillAPIListener {
         if (SkillAPI.getMeta(entity, ARMOR_STAND) != null) {
             event.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void onChunkLoad(ChunkLoadEvent event) {
+        List<Entity> entities = new ArrayList<>();
+        for (Entity entity : event.getChunk().getEntities()) {
+            if (entity.hasMetadata(WolfMechanic.SKILL_META)
+                    || entity.hasMetadata(ARMOR_STAND)) {
+                entities.add(entity);
+            }
+        }
+        if (!entities.isEmpty()) { new RemoveTask(entities, 1); }
     }
 }

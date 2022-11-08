@@ -62,11 +62,14 @@ public class ArmorStandMechanic extends MechanicComponent {
             loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
 
             ArmorStand armorStand = target.getWorld().spawn(loc, ArmorStand.class, as -> {
-                try {
+                try { // 1.13+
+                    as.setPersistent(false);
+                } catch (NoSuchMethodError ignored) {}
+                try { // 1.19+
                     as.setMarker(marker);
                     as.setInvulnerable(true);
                 } catch (NoSuchMethodError ignored) {}
-                try {
+                try { // 1.10+
                     as.setSilent(true);
                 } catch (NoSuchMethodError ignored) {}
                 as.setGravity(gravity);
