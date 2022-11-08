@@ -6,7 +6,6 @@ import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkill;
 import com.sucy.skill.dynamic.trigger.Trigger;
 import com.sucy.skill.dynamic.trigger.TriggerComponent;
-
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -27,9 +26,9 @@ public class TriggerHandler implements Listener {
 
     private final HashMap<Integer, Integer> active = new HashMap<>();
 
-    private final DynamicSkill skill;
-    private final String key;
-    private final Trigger<?> trigger;
+    private final DynamicSkill     skill;
+    private final String           key;
+    private final Trigger<?>       trigger;
     private final TriggerComponent component;
 
     public TriggerHandler(
@@ -76,31 +75,37 @@ public class TriggerHandler implements Listener {
      * @param plugin plugin reference
      */
     public void register(final SkillAPI plugin) {
-    	
-    	if(trigger.getEvent().getTypeName().equals("org.bukkit.event.player.PlayerInteractEvent")) {
-    		plugin.getServer().getPluginManager().registerEvent(
+
+        if (trigger.getEvent().getTypeName().equals("org.bukkit.event.player.PlayerInteractEvent")
+                || trigger.getEvent().getTypeName().contains("PlayerSwapHandItemsEvent")) {
+            plugin.getServer().getPluginManager().registerEvent(
                     trigger.getEvent(), this, EventPriority.HIGHEST, getExecutor(trigger), plugin, false);
-    	}
-    	else {
-    		plugin.getServer().getPluginManager().registerEvent(
+        } else {
+            plugin.getServer().getPluginManager().registerEvent(
                     trigger.getEvent(), this, EventPriority.HIGHEST, getExecutor(trigger), plugin, true);
-    	}
-        
+        }
+
     }
 
     <T extends Event> void apply(final T event, final Trigger<T> trigger) {
 
         final LivingEntity caster = trigger.getCaster(event);
-        if (caster == null || !active.containsKey(caster.getEntityId())) { return; }
+        if (caster == null || !active.containsKey(caster.getEntityId())) {
+            return;
+        }
 
         final int level = active.get(caster.getEntityId());
-        if (!trigger.shouldTrigger(event, level, component.settings)) { return; }
+        if (!trigger.shouldTrigger(event, level, component.settings)) {
+            return;
+        }
 
         final LivingEntity target = trigger.getTarget(event, component.settings);
         trigger.setValues(event, DynamicSkill.getCastData(caster));
         trigger(caster, target, level);
-       
-        if (event instanceof Cancellable) { skill.applyCancelled((Cancellable) event); }
+
+        if (event instanceof Cancellable) {
+            skill.applyCancelled((Cancellable) event);
+        }
         trigger.postProcess(event, skill);
     }
 
@@ -110,17 +115,23 @@ public class TriggerHandler implements Listener {
         }
 
         if (user instanceof Player) {
-            final PlayerData data = SkillAPI.getPlayerData((Player) user);
+            final PlayerData  data  = SkillAPI.getPlayerData((Player) user);
             final PlayerSkill skill = data.getSkill(this.skill.getName());
-            final boolean cd = component.getSettings().getBool("cooldown", false);
-            final boolean mana = component.getSettings().getBool("mana", false);
+            final boolean     cd    = component.getSettings().getBool("cooldown", false);
+            final boolean     mana  = component.getSettings().getBool("mana", false);
 
-            if ((cd || mana) && !data.check(skill, cd, mana)) { return false; }
+            if ((cd || mana) && !data.check(skill, cd, mana)) {
+                return false;
+            }
 
             //TODO Make sure that FALSE is appropriate here.
             if (component.trigger(user, target, level, false)) {
-                if (cd) { skill.startCooldown(); }
-                if (mana) { data.useMana(skill.getManaCost(), ManaCost.SKILL_CAST); }
+                if (cd) {
+                    skill.startCooldown();
+                }
+                if (mana) {
+                    data.useMana(skill.getManaCost(), ManaCost.SKILL_CAST);
+                }
 
                 return true;
             } else {

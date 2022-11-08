@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.listener.ClickListener
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -30,8 +30,6 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.event.KeyPressEvent;
 import com.sucy.skill.api.player.PlayerCombos;
 import com.sucy.skill.data.Click;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.*;
 
@@ -130,11 +128,11 @@ public class ComboListener extends SkillAPIListener {
         }
     }
 
-    @EventHandler
+    @EventHandler (ignoreCancelled = true)
     public void onFClick(final PlayerSwapHandItemsEvent event) {
         SkillAPI.getPlayerData(event.getPlayer()).getComboData().applyClick(Click.F);
 
-        if(SkillAPI.getComboManager().isClickEnabled(Click.F.getId())) {
+        if (SkillAPI.getComboManager().isClickEnabled(Click.F.getId())) {
             event.setCancelled(true);
         }
     }
