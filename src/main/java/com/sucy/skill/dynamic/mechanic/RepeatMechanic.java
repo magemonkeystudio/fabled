@@ -59,7 +59,7 @@ public class RepeatMechanic extends MechanicComponent {
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (targets.size() > 0) {
-            final int count = (int) parseValues(caster, REPETITIONS, level, 3.0);
+            int count = (int) parseValues(caster, REPETITIONS, level, 3.0);
             if (count <= 0) {
                 return false;
             }
@@ -67,12 +67,34 @@ public class RepeatMechanic extends MechanicComponent {
             final int        delay      = (int) (settings.getDouble(DELAY, 0.0) * 20);
             final int        period     = (int) (settings.getDouble(PERIOD, 1.0) * 20);
             final boolean    stopOnFail = settings.getBool(STOP_ON_FAIL, false);
-            final RepeatTask task       = new RepeatTask(caster, targets, count, delay, period, stopOnFail, force);
-            tasks.computeIfAbsent(caster.getEntityId(), ArrayList::new).add(task);
-
+            if (period <= 0) {
+                // 0 tick loop
+                while (count > 0) { count = execute(caster, targets, count, stopOnFail, force); }
+            } else {
+                final RepeatTask task       = new RepeatTask(caster, targets, count, delay, period, stopOnFail, force);
+                tasks.computeIfAbsent(caster.getEntityId(), ArrayList::new).add(task);
+            }
             return true;
         }
         return false;
+    }
+
+    private int execute(LivingEntity caster, List<LivingEntity> targets, int count, boolean stopOnFail, boolean force) {
+        for (int i = 0; i < targets.size(); i++) {
+            if (targets.get(i).isDead() || !targets.get(i).isValid()) {
+                targets.remove(i);
+            }
+        }
+
+        if ((!skill.isActive(caster) && !force) || targets.size() == 0) { return 0; }
+
+        final int level   = skill.getActiveLevel(caster);
+        boolean   success = executeChildren(caster, level, targets, force);
+
+        if (--count <= 0 || (!success && stopOnFail)) { return 0; }
+
+        if (skill.checkCancelled()) { return 0; }
+        return count;
     }
 
     @Override
@@ -124,27 +146,8 @@ public class RepeatMechanic extends MechanicComponent {
 
         @Override
         public void run() {
-            for (int i = 0; i < targets.size(); i++) {
-                if (targets.get(i).isDead() || !targets.get(i).isValid()) {
-                    targets.remove(i);
-                }
-            }
-
-            if ((!skill.isActive(caster) && !force) || targets.size() == 0) {
-                cancel();
-                return;
-            }
-
-            final int level   = skill.getActiveLevel(caster);
-            boolean   success = executeChildren(caster, level, targets, force);
-
-            if (--count <= 0 || (!success && stopOnFail)) {
-                cancel();
-            }
-
-            if (skill.checkCancelled()) {
-                cancel();
-            }
+            count = execute(caster, targets, count, stopOnFail, force);
+            if (count <= 0) { cancel(); }
         }
     }
 }

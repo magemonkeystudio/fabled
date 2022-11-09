@@ -224,8 +224,8 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/promcteam/${artifactId}.git</connection>
-        <developerConnection>scm:git:ssh://github.com:promcteam/${artifactId}.git</developerConnection>
-        <url>https://github.com/promcteam/${artifactId}</url>
+        <connection>scm:git:git://github.com/promcteam/${project.artifactId}.git</connection>
+        <developerConnection>scm:git:ssh://github.com:promcteam/${project.artifactId}.git</developerConnection>
+        <url>https://github.com/promcteam/${project.artifactId}</url>
     </scm>
 </project>
