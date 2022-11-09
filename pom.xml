@@ -112,10 +112,6 @@
             <artifactId>promccore</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.promcteam</groupId>
-            <artifactId>proskillapiparties</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>

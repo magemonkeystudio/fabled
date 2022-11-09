@@ -96,7 +96,6 @@ public class Settings {
             TARGET_MONSTER         = TARGET_BASE + "monsters-enemy",
             TARGET_PASSIVE         = TARGET_BASE + "passive-ally",
             TARGET_PLAYER          = TARGET_BASE + "player-ally",
-            TARGET_PARTIES         = TARGET_BASE + "parties-ally",
             TARGET_NPC             = TARGET_BASE + "affect-npcs",
             TARGET_STANDS          = TARGET_BASE + "affect-armor-stands",
             SAVE_BASE              = "Saving.",
@@ -216,7 +215,6 @@ public class Settings {
     private boolean             monsterEnemy;
     private boolean             passiveAlly;
     private boolean             playerAlly;
-    private boolean             partiesAlly;
     private boolean             affectNpcs;
     private boolean             affectArmorStands;
     private CombatProtection    combatProtection = new DefaultCombatProtection();
@@ -840,12 +838,6 @@ public class Settings {
                     return false;
                 }
 
-                if (PluginChecker.isPartiesActive() && partiesAlly) {
-                    final Parties parties = Parties.getPlugin(Parties.class);
-                    final Party   p1      = parties.getJoinedParty(player);
-                    final Party   p2      = parties.getJoinedParty((Player) target);
-                    return p1 == null || p1 != p2;
-                }
                 return combatProtection.canAttack(player, (Player) target, cause);
             }
             return combatProtection.canAttack(player, target, cause);
@@ -915,7 +907,6 @@ public class Settings {
             playerAlly = config.getBoolean(TARGET_PLAYER);
         }
 
-        partiesAlly = config.getBoolean(TARGET_PARTIES);
         affectArmorStands = config.getBoolean(TARGET_STANDS);
         affectNpcs = config.getBoolean(TARGET_NPC);
     }
