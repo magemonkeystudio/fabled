@@ -88,7 +88,7 @@ public class TempEntity implements LivingEntity {
     }
 
     public Location getEyeLocation() {
-        return getLocation().add(0, 1, 0);
+        return getLocation().add(0, 0, 0);
     }
 
     public List<Block> getLineOfSight(HashSet<Byte> hashSet, int i) {
