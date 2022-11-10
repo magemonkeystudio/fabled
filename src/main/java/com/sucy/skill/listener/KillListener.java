@@ -35,8 +35,8 @@ import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.util.BuffManager;
 import com.sucy.skill.api.util.FlagManager;
 import com.sucy.skill.data.Permissions;
-import com.sucy.skill.util.Version;
 import mc.promcteam.engine.utils.Reflex;
+import mc.promcteam.engine.utils.reflection.ReflectionUtil;
 import org.bukkit.GameMode;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -61,20 +61,20 @@ public class KillListener extends SkillAPIListener {
 
     public KillListener() {
         try {
-            Class<?> living = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.entity.EntityLiving")
+            Class<?> living = ReflectionUtil.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.entity.EntityLiving")
                     : Reflex.getNMSClass("EntityLiving");
             handle = Reflex.getCraftClass("entity.CraftEntity").getDeclaredMethod("getHandle");
 
-            if (Version.MINOR_VERSION == 17)
+            if (ReflectionUtil.MINOR_VERSION == 17)
                 killer = living.getDeclaredField("bc");
-            else if (Version.MINOR_VERSION >= 18)
+            else if (ReflectionUtil.MINOR_VERSION >= 18)
                 killer = living.getDeclaredField("bd");
             else
                 killer = living.getDeclaredField("killer");
 
-            if (Version.MINOR_VERSION == 17)
+            if (ReflectionUtil.MINOR_VERSION == 17)
                 damageTime = living.getDeclaredField("bd");
-            else if (Version.MINOR_VERSION >= 18)
+            else if (ReflectionUtil.MINOR_VERSION >= 18)
                 damageTime = living.getDeclaredField("be");
             else
                 damageTime = living.getDeclaredField("lastDamageByPlayerTime");

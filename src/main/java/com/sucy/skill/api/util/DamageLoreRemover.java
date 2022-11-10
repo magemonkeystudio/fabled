@@ -27,8 +27,8 @@
 package com.sucy.skill.api.util;
 
 import com.sucy.skill.log.Logger;
-import com.sucy.skill.util.Version;
 import mc.promcteam.engine.utils.Reflex;
+import mc.promcteam.engine.utils.reflection.ReflectionUtil;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Method;
@@ -59,25 +59,25 @@ public class DamageLoreRemover {
     private static void setup() {
 
         try {
-            NBT_BASE = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.nbt.NBTBase")
+            NBT_BASE = ReflectionUtil.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.nbt.NBTBase")
                     : Reflex.getNMSClass("NBTBase");
-            NBT_COMPOUND = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.nbt.NBTTagCompound")
+            NBT_COMPOUND = ReflectionUtil.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.nbt.NBTTagCompound")
                     : Reflex.getNMSClass("NBTTagCompound");
-            NBT_LIST = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.nbt.NBTTagList")
+            NBT_LIST = ReflectionUtil.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.nbt.NBTTagList")
                     : Reflex.getNMSClass("NBTTagList");
-            NMS_ITEM = Version.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.item.ItemStack")
+            NMS_ITEM = ReflectionUtil.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.item.ItemStack")
                     : Reflex.getNMSClass("ItemStack");
             CRAFT_ITEM = Reflex.getCraftClass("inventory.CraftItemStack");
 
             AS_NMS = CRAFT_ITEM.getMethod("asNMSCopy", ItemStack.class);
             AS_CRAFT = CRAFT_ITEM.getMethod("asCraftMirror", NMS_ITEM);
-            GET_TAG = NMS_ITEM.getMethod(Version.MINOR_VERSION >= 18 ? "s" : "getTag");
-            SET_TAG = NMS_ITEM.getMethod(Version.MINOR_VERSION >= 18 ? "c" : "setTag", NBT_COMPOUND);
-            SET = NBT_COMPOUND.getMethod(Version.MINOR_VERSION >= 18 ? "a" : "set", String.class, NBT_BASE);
-            SET_BOOL = NBT_COMPOUND.getMethod(Version.MINOR_VERSION >= 18
+            GET_TAG = NMS_ITEM.getMethod(ReflectionUtil.MINOR_VERSION >= 18 ? "s" : "getTag");
+            SET_TAG = NMS_ITEM.getMethod(ReflectionUtil.MINOR_VERSION >= 18 ? "c" : "setTag", NBT_COMPOUND);
+            SET = NBT_COMPOUND.getMethod(ReflectionUtil.MINOR_VERSION >= 18 ? "a" : "set", String.class, NBT_BASE);
+            SET_BOOL = NBT_COMPOUND.getMethod(ReflectionUtil.MINOR_VERSION >= 18
                     ? "a"
                     : "setBoolean", String.class, boolean.class);
-            SET_INT = NBT_COMPOUND.getMethod(Version.MINOR_VERSION >= 18 ? "a" : "setInt", String.class, int.class);
+            SET_INT = NBT_COMPOUND.getMethod(ReflectionUtil.MINOR_VERSION >= 18 ? "a" : "setInt", String.class, int.class);
         } catch (Exception ex) {
             Logger.bug("Failed to set up reflection for removing damage lores.");
         }

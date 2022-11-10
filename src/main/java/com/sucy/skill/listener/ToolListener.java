@@ -76,7 +76,9 @@ public class ToolListener extends SkillAPIListener
     public void onQuit(PlayerQuitEvent event)
     {
         InventoryView view = event.getPlayer().getOpenInventory();
-        if (view != null && view.getTopInventory().getHolder() instanceof ToolMenu)
+        if (view != null
+                && view.getTopInventory() != null
+                && view.getTopInventory().getHolder() instanceof ToolMenu)
         {
             event.getPlayer().setItemOnCursor(null);
             ((ToolMenu) view.getTopInventory().getHolder()).restore();
