@@ -6,12 +6,14 @@ import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.player.PlayerData;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * SkillAPI © 2018
@@ -56,6 +58,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer player, String identifier){
+        identifier = PlaceholderAPI.setBracketPlaceholders(player, identifier);
 
         PlayerData playerData = SkillAPI.getPlayerData(player);
 
@@ -200,6 +203,18 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
                 }
             }
+        }
+
+        String[] args = identifier.split("_");
+        if ((args.length == 3 && args[0].equals("default")) || (args.length == 4 && args[0].equals("player"))) {
+            // Another player
+            String playerName = args[args.length-1];
+            UUID uuid = null;
+            try {
+                uuid = UUID.fromString(playerName);
+            } catch (IllegalArgumentException ignored) { }
+            player = uuid == null ? Bukkit.getOfflinePlayer(playerName) : Bukkit.getOfflinePlayer(uuid);
+            identifier = identifier.substring(0, identifier.length()-playerName.length()-1);
         }
 
         if (player == null) {
