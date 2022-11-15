@@ -288,6 +288,9 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
             if (identifier.equals("default_currentavailableattributepoints")) {
                 return String.valueOf(data.getMainClass().getPlayerData().getAttributePoints());
             }
+            if (identifier.equals("default_currentavailableskillpoints")) {
+                return String.valueOf(data.getMainClass().getPoints());
+            }
             if (identifier.equals("default_currentprefix")) {
                 return String.valueOf(data.getMainClass().getData().getPrefix());
             }
