@@ -325,6 +325,9 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
                     if (identifier.equals("player_" + groupName + "_availableattributepoints")) {
                         return String.valueOf(playerClass.getPlayerData().getAttributePoints());
                     }
+                    if (identifier.equals("player_" + groupName + "_availableskillpoints")) {
+                        return String.valueOf(playerClass.getPoints());
+                    }
                     if (identifier.startsWith("player_" + groupName + "_investedattributepoints:")) {
                         String[] idSplit = identifier.split(":");
                         try {
