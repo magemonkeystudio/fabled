@@ -23,12 +23,12 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
     private SkillAPI plugin;
 
-    public PlaceholderAPIHook(SkillAPI plugin){
+    public PlaceholderAPIHook(SkillAPI plugin) {
         this.plugin = plugin;
     }
 
     @Override
-    public boolean persist(){
+    public boolean persist() {
         return true;
     }
 
@@ -37,27 +37,27 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
     }
 
     @Override
-    public boolean canRegister(){
+    public boolean canRegister() {
         return true;
     }
 
     @Override
-    public String getAuthor(){
+    public String getAuthor() {
         return "Spark";
     }
 
     @Override
-    public String getIdentifier(){
+    public String getIdentifier() {
         return "sapi";
     }
 
     @Override
-    public String getVersion(){
+    public String getVersion() {
         return "1.0.0";
     }
 
     @Override
-    public String onRequest(OfflinePlayer player, String identifier){
+    public String onRequest(OfflinePlayer player, String identifier) {
         identifier = PlaceholderAPI.setBracketPlaceholders(player, identifier);
 
         PlayerData playerData = SkillAPI.getPlayerData(player);
@@ -65,7 +65,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         if (identifier.startsWith("group_")) {
             if (!SkillAPI.getClasses().isEmpty()) {
                 for (RPGClass group : SkillAPI.getClasses().values()) {
-                    String groupName = group.getGroup().toLowerCase();
+                    String      groupName   = group.getGroup().toLowerCase();
                     PlayerClass playerClass = playerData.getClass(groupName);
 
                     if (identifier.equals("group_" + groupName + "_basehealth")) {
@@ -208,13 +208,14 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         String[] args = identifier.split("_");
         if ((args.length == 3 && args[0].equals("default")) || (args.length == 4 && args[0].equals("player"))) {
             // Another player
-            String playerName = args[args.length-1];
-            UUID uuid = null;
+            String playerName = args[args.length - 1];
+            UUID   uuid       = null;
             try {
                 uuid = UUID.fromString(playerName);
-            } catch (IllegalArgumentException ignored) { }
+            } catch (IllegalArgumentException ignored) {
+            }
             player = uuid == null ? Bukkit.getOfflinePlayer(playerName) : Bukkit.getOfflinePlayer(uuid);
-            identifier = identifier.substring(0, identifier.length()-playerName.length()-1);
+            identifier = identifier.substring(0, identifier.length() - playerName.length() - 1);
         }
 
         if (player == null) {
@@ -285,10 +286,13 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
             if (identifier.equals("default_currentgroupname")) {
                 return String.valueOf(data.getMainClass().getData().getName());
             }
-            if (identifier.equals("default_currentavailableattributepoints")) {
+            if (identifier.equals("default_currentavailableattributepoints")
+                    || identifier.equals("default_attributepoints")) {
                 return String.valueOf(data.getMainClass().getPlayerData().getAttributePoints());
             }
-            if (identifier.equals("default_currentavailableskillpoints")) {
+            if (identifier.equals("default_currentavailableskillpoints")
+                    || identifier.equals("default_skillpoints")
+                    || identifier.equals("default_currentlyavailablesuperawesomeultramegagigaamazingskillpoints")) {
                 return String.valueOf(data.getMainClass().getPoints());
             }
             if (identifier.equals("default_currentprefix")) {
@@ -314,7 +318,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         if (identifier.startsWith("player_")) {
             if (!data.getClasses().isEmpty()) {
                 for (PlayerClass group : data.getClasses()) {
-                    String groupName = group.getData().getGroup();
+                    String      groupName   = group.getData().getGroup();
                     PlayerClass playerClass = playerData.getClass(groupName);
 
                     if (identifier.startsWith("player_" + groupName + "_attribute:")) {
@@ -325,10 +329,13 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
                             return "0";
                         }
                     }
-                    if (identifier.equals("player_" + groupName + "_availableattributepoints")) {
+                    if (identifier.equals("player_" + groupName + "_availableattributepoints")
+                            || identifier.equals("player_" + groupName + "_attributepoints")) {
                         return String.valueOf(playerClass.getPlayerData().getAttributePoints());
                     }
-                    if (identifier.equals("player_" + groupName + "_availableskillpoints")) {
+                    if (identifier.equals("player_" + groupName + "_availableskillpoints")
+                            || identifier.equals("player_" + groupName + "_skillpoints")
+                            || identifier.equals("player_" + groupName + "_availablesuperawesomeultramegagigaamazingskillpoints")) {
                         return String.valueOf(playerClass.getPoints());
                     }
                     if (identifier.startsWith("player_" + groupName + "_investedattributepoints:")) {
