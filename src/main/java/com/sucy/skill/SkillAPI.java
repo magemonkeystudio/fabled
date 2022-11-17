@@ -79,10 +79,10 @@ import java.util.List;
 public class SkillAPI extends JavaPlugin {
     private static SkillAPI singleton;
 
-    private final HashMap<String, com.sucy.skill.api.skills.Skill>          skills  = new HashMap<>();
-    private final HashMap<String, RPGClass>       classes = new HashMap<>();
-    private final HashMap<String, PlayerAccounts> players = new HashMap<>();
-    private final ArrayList<String>               groups  = new ArrayList<>();
+    private final HashMap<String, com.sucy.skill.api.skills.Skill> skills  = new HashMap<>();
+    private final HashMap<String, RPGClass>                        classes = new HashMap<>();
+    private final HashMap<String, PlayerAccounts>                  players = new HashMap<>();
+    private final ArrayList<String>                                groups  = new ArrayList<>();
 
     private final List<SkillAPIListener> listeners = new ArrayList<>();
 
@@ -191,7 +191,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Checks whether or not a skill is registered.
+     * Checks whether a skill is registered.
      *
      * @param name name of the skill
      * @return true if registered, false otherwise
@@ -201,7 +201,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Checks whether or not a skill is registered
+     * Checks whether a skill is registered
      *
      * @param skill the skill to check
      * @return true if registered, false otherwise
@@ -211,7 +211,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Checks whether or not a skill is registered
+     * Checks whether a skill is registered
      *
      * @param skill the skill to check
      * @return true if registered, false otherwise
@@ -260,7 +260,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Checks whether or not a class is registered.
+     * Checks whether a class is registered.
      *
      * @param name name of the class
      * @return true if registered, false otherwise
@@ -270,7 +270,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Checks whether or not a class is registered.
+     * Checks whether a class is registered.
      *
      * @param playerClass the class to check
      * @return true if registered, false otherwise
@@ -280,7 +280,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Checks whether or not a class is registered.
+     * Checks whether a class is registered.
      *
      * @param rpgClass the class to check
      * @return true if registered, false otherwise
@@ -344,7 +344,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Do not use this method outside of onJoin. This will delete any progress a player
+     * Do not use this method outside onJoin. This will delete any progress a player
      * has made since joining.
      */
     public static void reloadPlayerData(final Player player) {
@@ -361,7 +361,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Checks whether or not SkillAPI currently has loaded data for the
+     * Checks whether SkillAPI currently has loaded data for the
      * given player. This returning false doesn't necessarily mean the
      * player doesn't have any data at all, just not data that is
      * currently loaded.

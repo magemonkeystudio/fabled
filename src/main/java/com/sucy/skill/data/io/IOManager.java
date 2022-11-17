@@ -113,7 +113,7 @@ public abstract class IOManager {
      */
     public void saveAll() {
         for (PlayerAccounts data : SkillAPI.getPlayerAccountData().values()) {
-            if (!MainListener.loadingPlayers.containsKey(data.getOfflinePlayer().getUniqueId())) {
+            if (data.isLoaded() && !MainListener.loadingPlayers.containsKey(data.getOfflinePlayer().getUniqueId())) {
                 saveData(data);
             }
         }
@@ -258,6 +258,7 @@ public abstract class IOManager {
         data.setAccount(file.getInt(ACTIVE, data.getActiveId()), false);
         data.getActiveData().setLastHealth(file.getDouble(HEALTH));
         data.getActiveData().setMana(file.getDouble(MANA, data.getActiveData().getMana()));
+        data.isLoaded(true);
 
         return data;
     }

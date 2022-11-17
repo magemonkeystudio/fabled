@@ -29,6 +29,9 @@ package com.sucy.skill.api.player;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.event.PlayerAccountChangeEvent;
 import com.sucy.skill.manager.ClassBoardManager;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -47,6 +50,10 @@ public class PlayerAccounts {
     private final HashMap<Integer, PlayerData> classData = new HashMap<>();
     private final UUID                         player;
     private       int                          active;
+    @Getter
+    @Setter
+    @Accessors(fluent = true)
+    private       boolean                      isLoaded  = false;
 
     /**
      * Initializes a new container for player account data.
@@ -147,18 +154,19 @@ public class PlayerAccounts {
      *
      * @param id     account ID
      * @param player offline player reference
-     * @param init   whether or not the data is being initialized
+     * @param init   whether the data is being initialized
      * @return account data or null if invalid id or player
      */
     public PlayerData getData(int id, OfflinePlayer player, boolean init) {
         if (!hasData(id) && id > 0 && player != null) {
             classData.put(id, new PlayerData(player, init));
         }
+
         return classData.get(id);
     }
 
     /**
-     * Retrieves all of the data for the owner. Modifying this map will
+     * Retrieves all the data for the owner. Modifying this map will
      * alter the player's actual data.
      *
      * @return all account data for the player
@@ -184,7 +192,7 @@ public class PlayerAccounts {
      * dead, this will not do anything.
      *
      * @param id    ID of the account to switch to
-     * @param apply whether or not to apply the switch
+     * @param apply whether to apply the switch
      */
     public void setAccount(int id, boolean apply) {
         Player player = getPlayer();
