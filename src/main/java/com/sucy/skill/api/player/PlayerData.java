@@ -1421,6 +1421,7 @@ public class PlayerData {
                 skillPoints = rpgClass.getGroupSettings().getStartingPoints();
             current.setPoints(skillPoints);
             updateScoreboard();
+            updatePlayerStat(getPlayer());
             return true;
         } else {
             return false;
