@@ -1533,10 +1533,10 @@ public class PlayerData {
      * to update attribute/stats that comes with equipments
      */
     public void updatePlayerStat(Player player) {
-
         if (!this.hasClass()) {
             this.maxHealth = 0;
-            this.updateHealth(player);
+            if (player != null)
+                this.updateHealth(player);
             return;
         }
 
