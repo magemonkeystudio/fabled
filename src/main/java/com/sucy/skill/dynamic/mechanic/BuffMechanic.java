@@ -4,6 +4,7 @@ import com.sucy.skill.api.util.Buff;
 import com.sucy.skill.api.util.BuffManager;
 import com.sucy.skill.api.util.BuffType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -12,12 +13,11 @@ import java.util.List;
  * com.sucy.skill.dynamic.mechanic.BuffMechanic
  */
 public class BuffMechanic extends MechanicComponent {
-
-    private static final String MODIFIER = "modifier";
-    private static final String CATEGORY = "category";
-    private static final String TYPE     = "type";
-    private static final String VALUE    = "value";
-    private static final String SECONDS  = "seconds";
+    private static final String MODIFIER  = "modifier";
+    private static final String CATEGORY  = "category";
+    private static final String TYPE      = "type";
+    private static final String VALUE     = "value";
+    private static final String SECONDS   = "seconds";
     private static final String IMMEDIATE = "immediate";
 
     @Override
@@ -31,7 +31,6 @@ public class BuffMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -40,8 +39,8 @@ public class BuffMechanic extends MechanicComponent {
         if (targets.size() == 0) return false;
 
         boolean immediate = settings.getString(IMMEDIATE, "false").equalsIgnoreCase("true");
-        double value = parseValues(caster, VALUE, level, 1.0);
-        boolean percent = settings.getString(MODIFIER, "flat").equalsIgnoreCase("multiplier");
+        double  value     = parseValues(caster, VALUE, level, 1.0);
+        boolean percent   = settings.getString(MODIFIER, "flat").equalsIgnoreCase("multiplier");
 
         if (immediate) {
             skill.setImmediateBuff(value, !percent);
