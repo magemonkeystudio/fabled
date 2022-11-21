@@ -538,6 +538,10 @@ Experience:
   lose-exp-blacklist:
   - 'pvpWorld'
   #
+  # If false use formula
+  # If true use levels.yml
+  use-levels: false
+  #
   # The formula used for calculating required experience
   # The formula is: x*lvl*lvl + y*lvl + z
   formula:

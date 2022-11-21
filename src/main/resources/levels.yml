@@ -1,0 +1,16 @@
+# Experience needed for each level
+# The first entry is the required exp for level 2 and so on
+# If the maximum level possible exceeds the number of entries,
+# the missing ones will use the last entry
+# Enable config.yml.Experience.use-levels to use this
+level-exp:
+- 50
+- 300
+- 450
+- 500
+- 800
+- 1600
+- 3500
+- 7000
+- 15000
+- 30000

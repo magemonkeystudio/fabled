@@ -517,10 +517,11 @@ public class Settings {
      * @return number of seconds before a click combo resets
      */
     @Getter
-    private int          clickTime;
-    private ExpFormula   expFormula;
-    private Formula      expCustom;
-    private boolean      useCustomExp;
+    private int           clickTime;
+    private List<Integer> levelsExp;
+    private ExpFormula    expFormula;
+    private Formula       expCustom;
+    private boolean       useCustomExp;
     /**
      * Checks whether experience is to be gained through
      * vanilla experience orbs
@@ -1219,6 +1220,9 @@ public class Settings {
      * @return required experience to gain a level
      */
     public int getRequiredExp(int level) {
+        if (levelsExp != null) {
+            return level-1 >= levelsExp.size() ? levelsExp.get(levelsExp.size()-1) : levelsExp.get(level-1);
+        }
         if (useCustomExp) {
             double result = expCustom.compute(level, 0);
             return (int) result;
@@ -1260,14 +1264,30 @@ public class Settings {
         this.showLossLevelMessages = config.getBoolean(EXP_BASE + "lose-level-message");
         this.expLostBlacklist = new HashSet<>(config.getList(EXP_BASE + "lose-exp-blacklist"));
 
-        DataSection formula = config.getSection(EXP_BASE + "formula");
-        int         x       = formula.getInt("x");
-        int         y       = formula.getInt("y");
-        int         z       = formula.getInt("z");
-        expFormula = new ExpFormula(x, y, z);
+        CommentedConfig levelsConfig = SkillAPI.getConfig("levels");
+        levelsConfig.saveDefaultConfig();
+        if (config.getBoolean(EXP_BASE + "use-levels", false)) {
+            List<Integer> levelsExp = new ArrayList<>();
+            try {
+                for (String line : levelsConfig.getConfig().getList("level-exp")) {
+                    levelsExp.add(Integer.parseInt(line));
+                }
+                if (levelsExp.size() < 1) { throw new IndexOutOfBoundsException(); }
+                this.levelsExp = levelsExp;
+            } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                SkillAPI.inst().getLogger().warning("Failed to load levels.yml, resorting to exp formula");
+            }
+        }
+        if (this.levelsExp == null) {
+            DataSection formula = config.getSection(EXP_BASE + "formula");
+            int         x       = formula.getInt("x");
+            int         y       = formula.getInt("y");
+            int         z       = formula.getInt("z");
+            expFormula = new ExpFormula(x, y, z);
 
-        expCustom = new Formula(config.getString(EXP_BASE + "custom-formula"), new CustomValue("lvl"));
-        useCustomExp = config.getBoolean(EXP_BASE + "use-custom") && expCustom.isValid();
+            expCustom = new Formula(config.getString(EXP_BASE + "custom-formula"), new CustomValue("lvl"));
+            useCustomExp = config.getBoolean(EXP_BASE + "use-custom") && expCustom.isValid();
+        }
 
         DataSection yields = config.getSection(EXP_BASE + "yields");
         this.yields.clear();
