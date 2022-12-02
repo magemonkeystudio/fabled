@@ -35,25 +35,27 @@ public class CylinderPreview extends RoundPreview {
     private double height;
     private double sin;
     private double cos;
-    private int particles;
-    private int vertParticles;
+    private int    particles;
+    private int    vertParticles;
     private double vertOffset;
-    private int vert;
+    private int    vert;
 
     /**
      * @param radius radius of the circle
      */
     public CylinderPreview(double radius, double height) {
-        if (radius == 0) { throw new IllegalArgumentException("Invalid radius - cannot be 0"); }
+        if (radius == 0) {
+            throw new IllegalArgumentException("Invalid radius - cannot be 0");
+        }
 
         this.radius = Math.abs(radius);
         this.height = height;
-        particles = (int) (PreviewSettings.density*radius*2*Math.PI);
-        vert = particles/8;
-        vertParticles = (int) (PreviewSettings.density*height);
-        vertOffset = height/vertParticles;
+        particles = (int) (PreviewSettings.density * radius * 2 * Math.PI);
+        vert = particles / 8;
+        vertParticles = (int) (PreviewSettings.density * height);
+        vertOffset = height / vertParticles;
 
-        double angle = Math.PI*2/particles;
+        double angle = Math.PI * 2 / particles;
         sin = Math.sin(angle);
         cos = Math.cos(angle);
     }
@@ -71,29 +73,29 @@ public class CylinderPreview extends RoundPreview {
         double z = location.getZ();
 
         // Offset angle for animation
-        double startAngle = step*PreviewSettings.animation/(20*radius);
-        double rSin = Math.sin(startAngle)*radius;
-        double rCos = Math.cos(startAngle)*radius;
+        double startAngle = step * PreviewSettings.animation / (20 * radius);
+        double rSin       = Math.sin(startAngle) * radius;
+        double rCos       = Math.cos(startAngle) * radius;
 
         // Make the packets
         for (int i = 0; i < particles; i++) {
-            particle.instance(player, x+rSin, y, z+rCos);
-            particle.instance(player, x+rSin, y+height, z+rCos);
+            particle.instance(player, x + rSin, y, z + rCos);
+            particle.instance(player, x + rSin, y + height, z + rCos);
 
-            if (i%vert == 0) {
+            if (i % vert == 0) {
                 for (int j = 0; j < vertParticles; j++) {
-                    particle.instance(player, x+rSin, y+vertOffset*j, z+rCos);
+                    particle.instance(player, x + rSin, y + vertOffset * j, z + rCos);
                 }
             }
 
-            double temp = rSin*cos-rCos*sin;
-            rCos = rSin*sin+rCos*cos;
+            double temp = rSin * cos - rCos * sin;
+            rCos = rSin * sin + rCos * cos;
             rSin = temp;
         }
     }
 
     @Override
-    public double getRadius() { return radius; }
+    public double getRadius() {return radius;}
 
-    public double getHeight() { return height; }
+    public double getHeight() {return height;}
 }

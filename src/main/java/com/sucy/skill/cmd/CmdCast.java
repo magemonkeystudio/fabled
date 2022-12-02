@@ -40,11 +40,11 @@ import org.bukkit.plugin.Plugin;
  * Command to bind a skill to an item
  */
 public class CmdCast implements IFunction {
-    private static final String NOT_SKILL = "not-skill";
+    private static final String NOT_SKILL     = "not-skill";
     private static final String NOT_AVAILABLE = "not-available";
-    private static final String NOT_UNLOCKED = "not-unlocked";
-    private static final String NOT_PLAYER = "not-player";
-    private static final String DISABLED = "world-disabled";
+    private static final String NOT_UNLOCKED  = "not-unlocked";
+    private static final String NOT_PLAYER    = "not-player";
+    private static final String DISABLED      = "world-disabled";
 
     /**
      * Executes the command

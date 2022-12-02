@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.particle.EffectData
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,8 +34,7 @@ import java.util.Iterator;
 /**
  * A collection of effects played on a target
  */
-public class EffectData
-{
+public class EffectData {
     private HashMap<String, EffectInstance> effects = new HashMap<String, EffectInstance>();
 
     private EffectTarget target;
@@ -43,8 +42,7 @@ public class EffectData
     /**
      * @param target target of each effect
      */
-    public EffectData(EffectTarget target)
-    {
+    public EffectData(EffectTarget target) {
         this.target = target;
     }
 
@@ -55,8 +53,7 @@ public class EffectData
      *
      * @return true if running
      */
-    public boolean isEffectActive(String key)
-    {
+    public boolean isEffectActive(String key) {
         return this.effects.containsKey(key);
     }
 
@@ -67,16 +64,14 @@ public class EffectData
      *
      * @return active effect or null if not found
      */
-    public EffectInstance getEffect(String key)
-    {
+    public EffectInstance getEffect(String key) {
         return effects.get(key);
     }
 
     /**
      * @return true if should keep the data, false otherwise
      */
-    public boolean isValid()
-    {
+    public boolean isValid() {
         return effects.size() > 0 && target.isValid();
     }
 
@@ -89,8 +84,7 @@ public class EffectData
      * @param ticks  ticks to run for
      * @param level  effect level
      */
-    public void runEffect(ParticleEffect effect, int ticks, int level)
-    {
+    public void runEffect(ParticleEffect effect, int ticks, int level) {
         EffectInstance instance = new EffectInstance(effect, target, level);
         instance.extend(ticks);
         effects.put(effect.getName(), instance);
@@ -108,11 +102,9 @@ public class EffectData
     /**
      * Ticks each effect for the target
      */
-    public void tick()
-    {
+    public void tick() {
         Iterator<EffectInstance> iterator = effects.values().iterator();
-        while (iterator.hasNext())
-        {
+        while (iterator.hasNext()) {
             EffectInstance effect = iterator.next();
             if (effect.isValid())
                 effect.tick();

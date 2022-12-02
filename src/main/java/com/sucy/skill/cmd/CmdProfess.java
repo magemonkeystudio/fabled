@@ -41,12 +41,12 @@ import org.bukkit.plugin.Plugin;
  * A command that allows a player to profess through classes
  */
 public class CmdProfess implements IFunction {
-    private static final String CANNOT_USE = "cannot-use";
-    private static final String INVALID_CLASS = "invalid-class";
-    private static final String PROFESSED = "professed";
+    private static final String CANNOT_USE     = "cannot-use";
+    private static final String INVALID_CLASS  = "invalid-class";
+    private static final String PROFESSED      = "professed";
     private static final String CANNOT_PROFESS = "cannot-profess";
-    private static final String DISABLED = "world-disabled";
-    private static final String NOT_AVAILABLE = "not-available";
+    private static final String DISABLED       = "world-disabled";
+    private static final String NOT_AVAILABLE  = "not-available";
 
     /**
      * Runs the command

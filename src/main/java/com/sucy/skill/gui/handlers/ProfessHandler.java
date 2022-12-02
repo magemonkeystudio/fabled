@@ -30,8 +30,7 @@ import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.gui.tool.GUIHolder;
 import com.sucy.skill.manager.CmdManager;
 
-public class ProfessHandler extends GUIHolder<RPGClass>
-{
+public class ProfessHandler extends GUIHolder<RPGClass> {
     /**
      * Professes as the clicked class
      *
@@ -39,9 +38,8 @@ public class ProfessHandler extends GUIHolder<RPGClass>
      * @param slot slot number
      */
     @Override
-    protected void onClick(RPGClass type, int slot, boolean left, boolean shift)
-    {
+    protected void onClick(RPGClass type, int slot, boolean left, boolean shift) {
         player.getPlayer().closeInventory();
-        CmdManager.PROFESS_COMMAND.execute(player.getPlayer(), new String[] { type.getName() });
+        CmdManager.PROFESS_COMMAND.execute(player.getPlayer(), new String[]{type.getName()});
     }
 }

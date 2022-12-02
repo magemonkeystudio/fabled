@@ -32,8 +32,7 @@ import com.sucy.skill.gui.tool.GUIHolder;
 /**
  * Handles interactions with the class details menu
  */
-public class DetailsHandler extends GUIHolder<RPGClass>
-{
+public class DetailsHandler extends GUIHolder<RPGClass> {
     /**
      * Shows class details when clicked
      *
@@ -41,8 +40,7 @@ public class DetailsHandler extends GUIHolder<RPGClass>
      * @param slot slot number
      */
     @Override
-    protected void onClick(RPGClass type, int slot, boolean left, boolean shift)
-    {
+    protected void onClick(RPGClass type, int slot, boolean left, boolean shift) {
         player.showSkills(player.getPlayer(), player.getClass(type.getGroup()));
     }
 }

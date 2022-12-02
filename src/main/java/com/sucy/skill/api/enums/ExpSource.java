@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.enums.ExpSource
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -31,8 +31,7 @@ package com.sucy.skill.api.enums;
  * <p>This is used when gaining experience to determine where it came
  * from so some effects can act differently accordingly.</p>
  */
-public enum ExpSource
-{
+public enum ExpSource {
     /**
      * Experience resulted from defeating a monster
      */
@@ -88,8 +87,7 @@ public enum ExpSource
      *
      * @param id ID of the experience source (should use a unique bit)
      */
-    ExpSource(int id)
-    {
+    ExpSource(int id) {
         this.id = id;
     }
 
@@ -98,8 +96,7 @@ public enum ExpSource
      *
      * @return ID of the experience source
      */
-    public int getId()
-    {
+    public int getId() {
         return id;
     }
 }

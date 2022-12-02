@@ -40,7 +40,7 @@ import org.bukkit.plugin.Plugin;
  */
 public class CmdAttribute implements IFunction {
     private static final String CANNOT_USE = "cannot-use";
-    private static final String DISABLED = "world-disabled";
+    private static final String DISABLED   = "world-disabled";
 
     /**
      * Runs the command
@@ -59,7 +59,7 @@ public class CmdAttribute implements IFunction {
 
         // Only plays have skills to view
         else if (sender instanceof Player) {
-            Player p = (Player) sender;
+            Player     p    = (Player) sender;
             PlayerData data = SkillAPI.getPlayerData(p);
             data.openAttributeMenu();
         }

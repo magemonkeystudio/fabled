@@ -51,13 +51,13 @@ import java.util.regex.Pattern;
  */
 public class CmdLevel implements IFunction {
     private static final Pattern IS_NUMBER = Pattern.compile("-?[0-9]+");
-    private static final Pattern IS_BOOL = Pattern.compile("(true)|(false)");
+    private static final Pattern IS_BOOL   = Pattern.compile("(true)|(false)");
 
-    private static final String NOT_PLAYER = "not-player";
-    private static final String GAVE_LEVEL = "gave-level";
+    private static final String NOT_PLAYER     = "not-player";
+    private static final String GAVE_LEVEL     = "gave-level";
     private static final String RECEIVED_LEVEL = "received-level";
-    private static final String DISABLED = "world-disabled";
-    private static final String NO_CLASSES = "no-classes";
+    private static final String DISABLED       = "world-disabled";
+    private static final String NO_CLASSES     = "no-classes";
 
     /**
      * Runs the command
@@ -92,10 +92,12 @@ public class CmdLevel implements IFunction {
             int amount = NumberParser.parseInt(args[numberIndex]);
 
             // Invalid amount of levels
-            if (amount == 0) { return; }
+            if (amount == 0) {
+                return;
+            }
 
-            int lastArg = args.length - 1;
-            boolean message = IS_BOOL.matcher(args[lastArg]).matches();
+            int     lastArg     = args.length - 1;
+            boolean message     = IS_BOOL.matcher(args[lastArg]).matches();
             boolean showMessage = !message || Boolean.parseBoolean(args[lastArg]);
             if (message) lastArg--;
 

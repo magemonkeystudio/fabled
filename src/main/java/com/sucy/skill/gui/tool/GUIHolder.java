@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.gui.tool.GUIHolder
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -38,8 +38,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 
-public abstract class GUIHolder<T extends IconHolder> implements InventoryHolder
-{
+public abstract class GUIHolder<T extends IconHolder> implements InventoryHolder {
     protected HashMap<String, T> data = new HashMap<>();
 
     protected GUIData    gui;
@@ -47,8 +46,7 @@ public abstract class GUIHolder<T extends IconHolder> implements InventoryHolder
     protected Inventory  inventory;
     protected int        page;
 
-    public void set(GUIData gui, PlayerData player, Inventory inv, HashMap<String, T> data)
-    {
+    public void set(GUIData gui, PlayerData player, Inventory inv, HashMap<String, T> data) {
         this.gui = gui;
         this.player = player;
         this.inventory = inv;
@@ -62,18 +60,15 @@ public abstract class GUIHolder<T extends IconHolder> implements InventoryHolder
         return identifier == null ? null : data.get(identifier);
     }
 
-    public void next()
-    {
+    public void next() {
         setPage((page + 1) % gui.getPages());
     }
 
-    public void prev()
-    {
+    public void prev() {
         setPage((page + gui.getPages() - 1) % gui.getPages());
     }
 
-    public void setPage(int page)
-    {
+    public void setPage(int page) {
         this.page = page;
         ItemStack[] contents = gui.getPage(page).instance(player, data);
         if (gui.getPages() > 1)
@@ -81,54 +76,47 @@ public abstract class GUIHolder<T extends IconHolder> implements InventoryHolder
         inventory.setContents(contents);
     }
 
-    public void handleDrag(InventoryDragEvent event)
-    {
+    public void handleDrag(InventoryDragEvent event) {
         event.setCancelled(true);
     }
 
     @SuppressWarnings("unchecked")
-    public void handleClick(InventoryClickEvent event)
-    {
+    public void handleClick(InventoryClickEvent event) {
         event.setCancelled(true);
-        boolean top = event.getRawSlot() < event.getView().getTopInventory().getSize();
-        T result = get(event.getSlot());
-        if (top && result != null && result.isAllowed((Player) event.getWhoClicked()))
-        {
+        boolean top    = event.getRawSlot() < event.getView().getTopInventory().getSize();
+        T       result = get(event.getSlot());
+        if (top && result != null && result.isAllowed((Player) event.getWhoClicked())) {
             if (event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD || event.getAction() == InventoryAction.HOTBAR_SWAP)
                 onHotBar(result, event.getSlot(), event.getHotbarButton());
             else
                 onClick(result, event.getSlot(), event.isLeftClick(), event.isShiftClick());
-        }
-        else if (top && gui.getPages() > 1) {
+        } else if (top && gui.getPages() > 1) {
             if (gui.getSize() == 9) {
                 if (event.getSlot() == 7)
                     prev();
                 if (event.getSlot() == 8)
                     next();
-            }
-            else if (event.getSlot() == 8)
+            } else if (event.getSlot() == 8)
                 prev();
             else if (event.getSlot() == 17)
                 next();
         }
     }
 
-    public void handleClose(InventoryCloseEvent event)
-    {
+    public void handleClose(InventoryCloseEvent event) {
         onClose((Player) event.getPlayer());
     }
 
     protected abstract void onClick(T type, int slot, boolean left, boolean shift);
 
-    protected void onHotBar(T type, int from, int to) { }
+    protected void onHotBar(T type, int from, int to) {}
 
-    protected void onSetup() { }
+    protected void onSetup() {}
 
-    protected void onClose(Player player) { }
+    protected void onClose(Player player) {}
 
     @Override
-    public Inventory getInventory()
-    {
+    public Inventory getInventory() {
         return inventory;
     }
 }

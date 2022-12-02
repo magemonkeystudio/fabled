@@ -39,8 +39,8 @@ import org.bukkit.plugin.Plugin;
  */
 public class CmdClearBinds implements IFunction {
     private static final String NOT_PLAYER = "not-player";
-    private static final String UNBOUND = "skills-unbound";
-    private static final String DISABLED = "world-disabled";
+    private static final String UNBOUND    = "skills-unbound";
+    private static final String DISABLED   = "world-disabled";
 
     /**
      * Executes the command

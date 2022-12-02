@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.tree.basic.FloodTree
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -39,16 +39,14 @@ import java.util.List;
  * <p>Root class for tree implementations based on levels</p>
  * <p>This is still in development to make it work as intended</p>
  */
-public class FloodTree extends InventoryTree
-{
+public class FloodTree extends InventoryTree {
     /**
      * Constructor
      *
      * @param api  api reference
      * @param tree class reference
      */
-    public FloodTree(SkillAPI api, RPGClass tree)
-    {
+    public FloodTree(SkillAPI api, RPGClass tree) {
         super(api, tree);
     }
 
@@ -60,11 +58,9 @@ public class FloodTree extends InventoryTree
      * @throws com.sucy.skill.api.exception.SkillTreeException
      */
     @Override
-    protected void arrange(List<Skill> skills) throws SkillTreeException
-    {
+    protected void arrange(List<Skill> skills) throws SkillTreeException {
         Collections.sort(skills, levelComparator);
-        for (int i = 0; i < skills.size(); i++)
-        {
+        for (int i = 0; i < skills.size(); i++) {
             skillSlots.put(i, skills.get(i));
         }
         height = Math.max((skills.size() + 8) / 9, 1);
@@ -73,8 +69,7 @@ public class FloodTree extends InventoryTree
     /**
      * Comparator for skills for level trees
      */
-    private static final Comparator<Skill> levelComparator = new Comparator<Skill>()
-    {
+    private static final Comparator<Skill> levelComparator = new Comparator<Skill>() {
         /**
          * Compares skills based on their stats for skill tree arrangement
          *  -> Skills with lower level requirements come first
@@ -86,13 +81,12 @@ public class FloodTree extends InventoryTree
          * @return      -1, 0, or 1
          */
         @Override
-        public int compare(Skill skill1, Skill skill2)
-        {
+        public int compare(Skill skill1, Skill skill2) {
             return skill1.getLevelReq(0) > skill2.getLevelReq(0) ? 1
-                : skill1.getLevelReq(0) < skill2.getLevelReq(0) ? -1
-                : skill1.getCost(0) > skill2.getCost(0) ? 1
-                : skill1.getCost(0) < skill2.getCost(0) ? -1
-                : skill1.getName().compareTo(skill2.getName());
+                    : skill1.getLevelReq(0) < skill2.getLevelReq(0) ? -1
+                            : skill1.getCost(0) > skill2.getCost(0) ? 1
+                                    : skill1.getCost(0) < skill2.getCost(0) ? -1
+                                            : skill1.getName().compareTo(skill2.getName());
         }
     };
 }

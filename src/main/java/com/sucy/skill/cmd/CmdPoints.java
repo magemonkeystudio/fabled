@@ -34,7 +34,6 @@ import mc.promcteam.engine.mccore.commands.CommandManager;
 import mc.promcteam.engine.mccore.commands.ConfigurableCommand;
 import mc.promcteam.engine.mccore.commands.IFunction;
 import mc.promcteam.engine.mccore.config.Filter;
-import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -46,12 +45,12 @@ import org.bukkit.plugin.Plugin;
  * A command that gives a player class experience
  */
 public class CmdPoints implements IFunction {
-    private static final String NOT_PLAYER = "not-player";
-    private static final String NOT_NUMBER = "not-number";
+    private static final String NOT_PLAYER   = "not-player";
+    private static final String NOT_NUMBER   = "not-number";
     private static final String NOT_POSITIVE = "not-positive";
-    private static final String GAVE_SP = "gave-points";
-    private static final String RECEIVED_SP = "received-points";
-    private static final String DISABLED = "world-disabled";
+    private static final String GAVE_SP      = "gave-points";
+    private static final String RECEIVED_SP  = "received-points";
+    private static final String DISABLED     = "world-disabled";
 
     /**
      * Runs the command

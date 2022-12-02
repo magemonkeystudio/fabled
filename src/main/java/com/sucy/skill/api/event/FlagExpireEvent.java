@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.event.FlagExpireEvent
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,12 +33,11 @@ import org.bukkit.event.HandlerList;
 /**
  * Event called when a flag expired on an entity
  */
-public class FlagExpireEvent extends Event
-{
-    private static final HandlerList handlers = new HandlerList();
-    private LivingEntity entity;
-    private String       flag;
-    private ExpireReason reason;
+public class FlagExpireEvent extends Event {
+    private static final HandlerList  handlers = new HandlerList();
+    private              LivingEntity entity;
+    private              String       flag;
+    private              ExpireReason reason;
 
     /**
      * Constructor
@@ -47,8 +46,7 @@ public class FlagExpireEvent extends Event
      * @param flag   the flag that expired
      * @param reason the expiration reason
      */
-    public FlagExpireEvent(LivingEntity entity, String flag, ExpireReason reason)
-    {
+    public FlagExpireEvent(LivingEntity entity, String flag, ExpireReason reason) {
         this.entity = entity;
         this.flag = flag;
         this.reason = reason;
@@ -59,8 +57,7 @@ public class FlagExpireEvent extends Event
      *
      * @return the entity that the flag was on
      */
-    public LivingEntity getEntity()
-    {
+    public LivingEntity getEntity() {
         return entity;
     }
 
@@ -69,16 +66,14 @@ public class FlagExpireEvent extends Event
      *
      * @return the flag that expired
      */
-    public String getFlag()
-    {
+    public String getFlag() {
         return flag;
     }
 
     /**
      * @return reason for the flag expiring
      */
-    public ExpireReason getReason()
-    {
+    public ExpireReason getReason() {
         return reason;
     }
 
@@ -86,24 +81,21 @@ public class FlagExpireEvent extends Event
      * @return gets the handlers for the event
      */
     @Override
-    public HandlerList getHandlers()
-    {
+    public HandlerList getHandlers() {
         return handlers;
     }
 
     /**
      * @return gets the handlers for the event
      */
-    public static HandlerList getHandlerList()
-    {
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 
     /**
      * The reason the flag expired
      */
-    public enum ExpireReason
-    {
+    public enum ExpireReason {
         // Expired due to running out of time
         TIME,
 

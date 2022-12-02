@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.event.PlayerSkillDowngradeEvent
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,15 +35,14 @@ import org.bukkit.event.HandlerList;
 /**
  * Event called when a player downgrades a skill
  */
-public class PlayerSkillDowngradeEvent extends Event implements Cancellable
-{
+public class PlayerSkillDowngradeEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
 
     private PlayerData  player;
     private PlayerSkill downgradedSkill;
-    private boolean cancelled = false;
-    private int refund;
+    private boolean     cancelled = false;
+    private int         refund;
 
     /**
      * Constructor
@@ -52,8 +51,7 @@ public class PlayerSkillDowngradeEvent extends Event implements Cancellable
      * @param downgradedSkill the skill that was downgraded
      * @param refund          the amount of refunded skill points
      */
-    public PlayerSkillDowngradeEvent(PlayerData playerData, PlayerSkill downgradedSkill, int refund)
-    {
+    public PlayerSkillDowngradeEvent(PlayerData playerData, PlayerSkill downgradedSkill, int refund) {
         this.player = playerData;
         this.downgradedSkill = downgradedSkill;
         this.refund = refund;
@@ -62,24 +60,21 @@ public class PlayerSkillDowngradeEvent extends Event implements Cancellable
     /**
      * @return data of the player unlocking the skill
      */
-    public PlayerData getPlayerData()
-    {
+    public PlayerData getPlayerData() {
         return player;
     }
 
     /**
      * @return skill that was unlocked
      */
-    public PlayerSkill getDowngradedSkill()
-    {
+    public PlayerSkill getDowngradedSkill() {
         return downgradedSkill;
     }
 
     /**
      * @return amount of refunded points from the downgrade
      */
-    public int getRefund()
-    {
+    public int getRefund() {
         return refund;
     }
 
@@ -87,8 +82,7 @@ public class PlayerSkillDowngradeEvent extends Event implements Cancellable
      * @return true if cancelled, false otherwise
      */
     @Override
-    public boolean isCancelled()
-    {
+    public boolean isCancelled() {
         return cancelled;
     }
 
@@ -98,8 +92,7 @@ public class PlayerSkillDowngradeEvent extends Event implements Cancellable
      * @param value true if cancelled, false otherwise
      */
     @Override
-    public void setCancelled(boolean value)
-    {
+    public void setCancelled(boolean value) {
         cancelled = value;
     }
 
@@ -107,16 +100,14 @@ public class PlayerSkillDowngradeEvent extends Event implements Cancellable
     /**
      * @return gets the handlers for the event
      */
-    public HandlerList getHandlers()
-    {
+    public HandlerList getHandlers() {
         return handlers;
     }
 
     /**
      * @return gets the handlers for the event
      */
-    public static HandlerList getHandlerList()
-    {
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

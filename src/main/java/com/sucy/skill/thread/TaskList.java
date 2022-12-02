@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.thread.TaskList
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,54 +28,46 @@ package com.sucy.skill.thread;
 
 import java.util.Iterator;
 
-public class TaskList implements Iterable<IThreadTask>, Iterator<IThreadTask>
-{
+public class TaskList implements Iterable<IThreadTask>, Iterator<IThreadTask> {
     private Entry iteratee;
     private Entry head;
     private Entry tail;
     private int   size;
 
-    public TaskList()
-    {
+    public TaskList() {
         head = tail = new Entry();
     }
 
-    public int size()
-    {
+    public int size() {
         return size;
     }
 
-    public void add(IThreadTask task)
-    {
+    public void add(IThreadTask task) {
         tail.next = new Entry(task);
         tail.next.prev = tail;
         tail = tail.next;
         size++;
     }
 
-    public void clear()
-    {
+    public void clear() {
         head.next = null;
         tail = head;
         size = 0;
     }
 
     @Override
-    public Iterator<IThreadTask> iterator()
-    {
+    public Iterator<IThreadTask> iterator() {
         iteratee = head;
         return this;
     }
 
     @Override
-    public boolean hasNext()
-    {
+    public boolean hasNext() {
         return iteratee.next != null;
     }
 
     @Override
-    public IThreadTask next()
-    {
+    public IThreadTask next() {
         if (iteratee == null || iteratee.next == null) {
             return null;
         }
@@ -84,10 +76,8 @@ public class TaskList implements Iterable<IThreadTask>, Iterator<IThreadTask>
     }
 
     @Override
-    public void remove()
-    {
-        if (iteratee != null && iteratee.prev != null)
-        {
+    public void remove() {
+        if (iteratee != null && iteratee.prev != null) {
             if (iteratee == tail)
                 tail = iteratee.prev;
             iteratee.prev.next = iteratee.next;
@@ -95,12 +85,10 @@ public class TaskList implements Iterable<IThreadTask>, Iterator<IThreadTask>
         }
     }
 
-    private static class Entry
-    {
-        public Entry() { }
+    private static class Entry {
+        public Entry() {}
 
-        public Entry(IThreadTask task)
-        {
+        public Entry(IThreadTask task) {
             this.task = task;
         }
 

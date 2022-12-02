@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.event.PlayerAccountChangeEvent
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -37,21 +37,19 @@ import org.bukkit.event.HandlerList;
 /**
  * Event called when a player changes classes
  */
-public class PlayerComboFinishEvent extends Event implements Cancellable
-{
-    private static final HandlerList handlers = new HandlerList();
+public class PlayerComboFinishEvent extends Event implements Cancellable {
+    private static final HandlerList handlers  = new HandlerList();
     private final        PlayerData  player;
     private              boolean     cancelled = false;
-    private final int     combo;
-    private final String  skill;
+    private final        int         combo;
+    private final        String      skill;
 
     /**
      * @param player player performing the combo
      * @param combo  combo that was performed
      * @param skill  skill used
      */
-    public PlayerComboFinishEvent(PlayerData player, int combo, String skill)
-    {
+    public PlayerComboFinishEvent(PlayerData player, int combo, String skill) {
         this.player = player;
         this.combo = combo;
         this.skill = skill;
@@ -60,48 +58,42 @@ public class PlayerComboFinishEvent extends Event implements Cancellable
     /**
      * @return gets the handlers for the event
      */
-    public static HandlerList getHandlerList()
-    {
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 
     /**
      * @return data of the player performing the combo
      */
-    public PlayerData getPlayerData()
-    {
+    public PlayerData getPlayerData() {
         return player;
     }
 
     /**
      * @return player performing the combo
      */
-    public Player getPlayer()
-    {
+    public Player getPlayer() {
         return player.getPlayer();
     }
 
     /**
      * @return the combo performed
      */
-    public int getCombo()
-    {
+    public int getCombo() {
         return combo;
     }
 
     /**
      * @return skill to cast from the combo
      */
-    public Skill getSkill()
-    {
+    public Skill getSkill() {
         return SkillAPI.getSkill(skill);
     }
 
     /**
      * @return name of the skill to cast from the combo
      */
-    public String getSkillName()
-    {
+    public String getSkillName() {
         return skill;
     }
 
@@ -111,8 +103,7 @@ public class PlayerComboFinishEvent extends Event implements Cancellable
      * @return true if cancelled, false otherwise
      */
     @Override
-    public boolean isCancelled()
-    {
+    public boolean isCancelled() {
         return cancelled;
     }
 
@@ -121,16 +112,14 @@ public class PlayerComboFinishEvent extends Event implements Cancellable
      *
      * @param cancelled cancelled state of the event
      */
-    public void setCancelled(boolean cancelled)
-    {
+    public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
     }
 
     /**
      * @return gets the handlers for the event
      */
-    public HandlerList getHandlers()
-    {
+    public HandlerList getHandlers() {
         return handlers;
     }
 }

@@ -42,10 +42,10 @@ import org.bukkit.plugin.Plugin;
  * Command for refunding invested skill points
  */
 public class CmdRefund implements IFunction {
-    private static final String CANNOT_USE = "cannot-use";
-    private static final String NO_CLASS = "no-class";
-    private static final String REFUNDED = "refunded";
-    private static final String REFUNDED_OTHER = "refunded-other";
+    private static final String CANNOT_USE         = "cannot-use";
+    private static final String NO_CLASS           = "no-class";
+    private static final String REFUNDED           = "refunded";
+    private static final String REFUNDED_OTHER     = "refunded-other";
     private static final String REFUNDED_OTHER_ALL = "refunded-other-all";
 
     /**
@@ -72,8 +72,8 @@ public class CmdRefund implements IFunction {
                 cmd.sendMessage(sender, REFUNDED, "&2Your skill points have been refunded");
             } else if (args.length > 2 && args[1].equals("attribute")) {
 
-                OfflinePlayer player1 = Bukkit.getOfflinePlayer(args[0]);
-                PlayerData playerData = SkillAPI.getPlayerData(player1);
+                OfflinePlayer player1    = Bukkit.getOfflinePlayer(args[0]);
+                PlayerData    playerData = SkillAPI.getPlayerData(player1);
 
                 int current = playerData.getInvestedAttribute(args[2].toLowerCase());
 
@@ -96,11 +96,11 @@ public class CmdRefund implements IFunction {
                 }
             } else if (args.length == 2 && args[1].equals("attribute")) {
 
-                OfflinePlayer player1 = Bukkit.getOfflinePlayer(args[0]);
-                PlayerData playerData = SkillAPI.getPlayerData(player1);
+                OfflinePlayer player1    = Bukkit.getOfflinePlayer(args[0]);
+                PlayerData    playerData = SkillAPI.getPlayerData(player1);
 
                 playerData.refundAttributes();
-                cmd.sendMessage(sender, REFUNDED_OTHER_ALL, "&2Refunded &6"+args[0]+"&2's attribute points");
+                cmd.sendMessage(sender, REFUNDED_OTHER_ALL, "&2Refunded &6" + args[0] + "&2's attribute points");
             }
         }
         // Console doesn't have profession options

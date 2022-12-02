@@ -46,15 +46,15 @@ import org.bukkit.plugin.Plugin;
  */
 public class CmdInfo implements IFunction {
     private static final String NEEDS_ARGS = "needs-player";
-    private static final String TITLE = "title";
-    private static final String CATEGORY = "category";
+    private static final String TITLE      = "title";
+    private static final String CATEGORY   = "category";
     private static final String PROFESSION = "profession";
-    private static final String EXP = "exp";
-    private static final String SEPARATOR = "separator";
-    private static final String END = "end";
-    private static final String NO_CLASS = "no-class";
+    private static final String EXP        = "exp";
+    private static final String SEPARATOR  = "separator";
+    private static final String END        = "end";
+    private static final String NO_CLASS   = "no-class";
     private static final String NOT_PLAYER = "not-player";
-    private static final String DISABLED = "world-disabled";
+    private static final String DISABLED   = "world-disabled";
 
     /**
      * Runs the command
@@ -81,8 +81,8 @@ public class CmdInfo implements IFunction {
 
             PlayerData data = SkillAPI.getPlayerData(target);
             cmd.sendMessage(sender, TITLE, ChatColor.DARK_GRAY + "--" + ChatColor.DARK_GREEN + " {player} " + ChatColor.DARK_GRAY + "-----------", Filter.PLAYER.setReplacement(target.getName()));
-            String separator = cmd.getMessage(SEPARATOR, ChatColor.DARK_GRAY + "----------------------------");
-            boolean first = true;
+            String  separator = cmd.getMessage(SEPARATOR, ChatColor.DARK_GRAY + "----------------------------");
+            boolean first     = true;
             if (data != null) {
                 for (String group : SkillAPI.getGroups()) {
                     PlayerClass c = data.getClass(group);

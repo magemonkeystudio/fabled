@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.particle.target.EntityTarget
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,16 +34,14 @@ import java.util.Objects;
 /**
  * Causes an effect to follow the target entity
  */
-public class EntityTarget implements EffectTarget
-{
+public class EntityTarget implements EffectTarget {
     private Entity   entity;
     private Location loc;
 
     /**
      * @param target entity to follow
      */
-    public EntityTarget(Entity target)
-    {
+    public EntityTarget(Entity target) {
         this.entity = target;
         this.loc = target.getLocation();
     }
@@ -53,8 +51,7 @@ public class EntityTarget implements EffectTarget
      *
      * @return effect location
      */
-    public Location getLocation()
-    {
+    public Location getLocation() {
         return entity.getLocation(loc);
     }
 
@@ -65,8 +62,7 @@ public class EntityTarget implements EffectTarget
     /**
      * @return tue if target is still valid, false otherwise
      */
-    public boolean isValid()
-    {
+    public boolean isValid() {
         return entity.isValid() && !entity.isDead();
     }
 
@@ -78,7 +74,7 @@ public class EntityTarget implements EffectTarget
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof EntityTarget)) return false;
-        final EntityTarget target = (EntityTarget)o;
+        final EntityTarget target = (EntityTarget) o;
         return target.entity == entity && target.loc.equals(loc);
     }
 }

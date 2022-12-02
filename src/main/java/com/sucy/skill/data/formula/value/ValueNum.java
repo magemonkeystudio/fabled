@@ -53,7 +53,6 @@ public class ValueNum implements IValue {
      * Gets the value using the two inputs
      *
      * @param input the input data
-     *
      * @return result value
      */
     @Override

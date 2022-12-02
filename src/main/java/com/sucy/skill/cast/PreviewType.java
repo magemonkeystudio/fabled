@@ -56,10 +56,14 @@ public enum PreviewType {
      * @return indicator type
      */
     public static PreviewType getByKey(String key) {
-        if (key == null) { return NONE; } else if (key.equalsIgnoreCase("3D")) {
+        if (key == null) {
+            return NONE;
+        } else if (key.equalsIgnoreCase("3D")) {
             return DIM_3;
         } else if (key.equalsIgnoreCase("2D")) {
             return DIM_2;
-        } else { return NONE; }
+        } else {
+            return NONE;
+        }
     }
 }

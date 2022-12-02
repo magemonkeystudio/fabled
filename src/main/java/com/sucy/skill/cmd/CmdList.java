@@ -45,11 +45,11 @@ import org.bukkit.plugin.Plugin;
  */
 public class CmdList implements IFunction {
     private static final String NEEDS_ARGS = "needs-player";
-    private static final String TITLE = "title";
-    private static final String LINE = "line";
-    private static final String END = "end";
+    private static final String TITLE      = "title";
+    private static final String LINE       = "line";
+    private static final String END        = "end";
     private static final String NOT_PLAYER = "not-player";
-    private static final String DISABLED = "world-disabled";
+    private static final String DISABLED   = "world-disabled";
 
     /**
      * Runs the command
@@ -79,10 +79,10 @@ public class CmdList implements IFunction {
             String line = cmd.getMessage(LINE, ChatColor.GRAY + "[" + ChatColor.GOLD + "{id}" + ChatColor.GRAY + "] " + ChatColor.DARK_GREEN + "Lv" + ChatColor.GOLD + "{level} {class}");
             if (accounts != null) {
                 for (int i = 1; i <= accounts.getAccountLimit(); i++) {
-                    PlayerData data = accounts.getData(i);
+                    PlayerData  data  = accounts.getData(i);
                     PlayerClass cData = data == null ? null : data.getMainClass();
-                    String name = cData == null ? ChatColor.GRAY + "Not Professed" : cData.getData().getPrefix();
-                    String level = cData == null ? "0" : cData.getLevel() + "";
+                    String      name  = cData == null ? ChatColor.GRAY + "Not Professed" : cData.getData().getPrefix();
+                    String      level = cData == null ? "0" : cData.getLevel() + "";
                     sender.sendMessage(
                             line
                                     .replace("{id}", i + "")

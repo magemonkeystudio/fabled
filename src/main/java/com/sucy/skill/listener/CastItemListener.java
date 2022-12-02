@@ -103,7 +103,7 @@ public class CastItemListener extends SkillAPIListener {
     @EventHandler
     public void onWorldChange(PlayerChangedWorldEvent event) {
         boolean from = SkillAPI.getSettings().isWorldEnabled(event.getFrom());
-        boolean to = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
+        boolean to   = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
         if (from && !to)
             event.getPlayer().getInventory().setItem(SkillAPI.getSettings().getCastSlot(), null);
         else
@@ -129,9 +129,9 @@ public class CastItemListener extends SkillAPIListener {
             data.put(player.getUniqueId(), slotData);
             slotData.init(SkillAPI.getPlayerData(player));
 
-            PlayerInventory inv = player.getInventory();
-            int slot = SkillAPI.getSettings().getCastSlot();
-            ItemStack item = inv.getItem(slot);
+            PlayerInventory inv  = player.getInventory();
+            int             slot = SkillAPI.getSettings().getCastSlot();
+            ItemStack       item = inv.getItem(slot);
             slotData.updateItem(player);
             if (item != null && item.getType() != Material.AIR)
                 inv.addItem(item);

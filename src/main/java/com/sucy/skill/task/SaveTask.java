@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.task.SaveTask
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -32,19 +32,17 @@ import com.sucy.skill.thread.RepeatThreadTask;
 /**
  * Handles auto saving periodically
  */
-public class SaveTask extends RepeatThreadTask
-{
+public class SaveTask extends RepeatThreadTask {
     /**
      * Sets up the save task. This shouldn't be used by other plugins
      * as it is set up by the API.
      *
      * @param api API reference
      */
-    public SaveTask(SkillAPI api)
-    {
+    public SaveTask(SkillAPI api) {
         super(
-            SkillAPI.getSettings().getSaveFreq(),
-            SkillAPI.getSettings().getSaveFreq()
+                SkillAPI.getSettings().getSaveFreq(),
+                SkillAPI.getSettings().getSaveFreq()
         );
     }
 
@@ -52,8 +50,7 @@ public class SaveTask extends RepeatThreadTask
      * Saves all player data
      */
     @Override
-    public void run()
-    {
+    public void run() {
         SkillAPI.saveData();
     }
 }

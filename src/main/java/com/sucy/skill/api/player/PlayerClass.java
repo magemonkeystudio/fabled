@@ -320,7 +320,9 @@ public class PlayerClass {
      */
     public void giveExp(double amount, ExpSource source, boolean showMessage) {
         // Cannot give a non-positive amount of exp
-        if (amount <= 0) { return; }
+        if (amount <= 0) {
+            return;
+        }
 
         // Call an event for the experience gained
         PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this, amount, source);
@@ -351,14 +353,16 @@ public class PlayerClass {
      * Causes the player to lose experience
      * This will launch a {@link PlayerExperienceLostEvent} event before taking the experience.
      *
-     * @param amount percent of experience to lose
-     * @param percent whether to take the amount as a percentage
+     * @param amount      percent of experience to lose
+     * @param percent     whether to take the amount as a percentage
      * @param changeLevel whether to lower the level if the exp lost exceeds the current exp,
      *                    or to cap at 0 exp and keep the current level
      */
     public void loseExp(double amount, boolean percent, boolean changeLevel) {
         Preconditions.checkArgument(amount > 0, "Amount must be positive");
-        if (percent) { amount *= getRequiredExp(); }
+        if (percent) {
+            amount *= getRequiredExp();
+        }
 
         // Launch the event
         PlayerExperienceLostEvent event = new PlayerExperienceLostEvent(this, amount, changeLevel);
@@ -367,7 +371,9 @@ public class PlayerClass {
         // Subtract the experience
         if (!event.isCancelled()) {
             changeLevel = event.isLevelChangeAllowed();
-            if (!changeLevel) { amount = Math.min(event.getExp(), exp); }
+            if (!changeLevel) {
+                amount = Math.min(event.getExp(), exp);
+            }
             exp = exp - amount;
 
 
@@ -391,7 +397,7 @@ public class PlayerClass {
      *
      * @param percent percent of experience to lose
      */
-    public void loseExp(double percent) { loseExp(percent, true, false); }
+    public void loseExp(double percent) {loseExp(percent, true, false);}
 
     /**
      * <p>Checks whether or not the player has leveled up based on
@@ -436,7 +442,9 @@ public class PlayerClass {
             exp += classData.getRequiredExp(level - levels);
         }
 
-        if (levels == 0) { return; }
+        if (levels == 0) {
+            return;
+        }
         loseLevels(levels);
 
         // Level down message
@@ -493,11 +501,15 @@ public class PlayerClass {
     }
 
     public void loseLevels(int amount) {
-        if (amount < 0) { throw new IllegalArgumentException("Invalid level amount - cannot be less than 1"); }
+        if (amount < 0) {
+            throw new IllegalArgumentException("Invalid level amount - cannot be less than 1");
+        }
 
         // Level up
-        amount = Math.min(amount, level-1);
-        if (amount <= 0) { return; }
+        amount = Math.min(amount, level - 1);
+        if (amount <= 0) {
+            return;
+        }
         level -= amount;
         points += classData.getGroupSettings().getPointsForLevels(level, level + amount);
         getPlayerData().giveAttribPoints(classData.getGroupSettings().getAttribsForLevels(level, level + amount));

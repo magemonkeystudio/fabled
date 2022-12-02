@@ -243,7 +243,8 @@ public abstract class IOManager {
             acc.setHungerValue(account.getDouble(HUNGER, 1));
 
             // Extra data
-            if (account.has(EXTRA) && account.getSection(EXTRA) != null) acc.getExtraData().applyDefaults(account.getSection(EXTRA));
+            if (account.has(EXTRA) && account.getSection(EXTRA) != null)
+                acc.getExtraData().applyDefaults(account.getSection(EXTRA));
 
             acc.endInit();
 

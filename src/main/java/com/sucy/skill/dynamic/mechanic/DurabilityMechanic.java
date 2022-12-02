@@ -30,14 +30,16 @@ public class DurabilityMechanic extends MechanicComponent {
             return false;
         }
 
-        final Player player = (Player) caster;
+        final Player  player  = (Player) caster;
         final boolean offhand = settings.getBool(OFFHAND, false);
-        final short amount = (short) (parseValues(caster, AMOUNT, level, 1) * targets.size());
+        final short   amount  = (short) (parseValues(caster, AMOUNT, level, 1) * targets.size());
 
         final ItemStack item;
         if (offhand && VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
             item = player.getInventory().getItemInOffHand();
-        } else { item = player.getInventory().getItemInHand(); }
+        } else {
+            item = player.getInventory().getItemInHand();
+        }
 
         if (item == null || item.getType().getMaxDurability() == 0) {
             return false;

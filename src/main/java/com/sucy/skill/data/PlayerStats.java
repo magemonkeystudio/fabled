@@ -39,14 +39,15 @@ import java.util.List;
  * Stat provider for the MCCore stat scoreboard
  */
 public class PlayerStats implements StatHolder {
-    private static final String BASE = "Stats.";
-    private static final String EXP = "exp";
-    private static final String HEALTH = "health";
-    private static final String LEVEL = "level";
-    private static final String POINTS = "points";
-    private static final String ATTRIB = "attrib";
+    private static final String                  BASE    = "Stats.";
+    private static final String                  EXP     = "exp";
+    private static final String                  HEALTH  = "health";
+    private static final String                  LEVEL   = "level";
+    private static final String                  POINTS  = "points";
+    private static final String                  ATTRIB  = "attrib";
     private static final HashMap<String, String> statMap = new HashMap<String, String>();
     private final        PlayerClass             player;
+
     /**
      * Constructor
      *

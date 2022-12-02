@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.tree.basic.RequirementTree
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -36,16 +36,14 @@ import java.util.*;
 /**
  * Tree implementation based on requirement chains
  */
-public class RequirementTree extends InventoryTree
-{
+public class RequirementTree extends InventoryTree {
     /**
      * Constructor
      *
      * @param api  api reference
      * @param tree class reference
      */
-    public RequirementTree(SkillAPI api, RPGClass tree)
-    {
+    public RequirementTree(SkillAPI api, RPGClass tree) {
         super(api, tree);
     }
 
@@ -55,41 +53,33 @@ public class RequirementTree extends InventoryTree
      * @throws SkillTreeException
      */
     @Override
-    public void arrange(List<Skill> skills) throws SkillTreeException
-    {
+    public void arrange(List<Skill> skills) throws SkillTreeException {
 
         // Organize skills into chained and unchained
-        List<Skill> chained = new ArrayList<Skill>();
+        List<Skill> chained   = new ArrayList<Skill>();
         List<Skill> unchained = new ArrayList<Skill>();
-        for (Skill skill : skills)
-        {
-            if (isChained(skills, skill))
-            {
+        for (Skill skill : skills) {
+            if (isChained(skills, skill)) {
                 chained.add(skill);
-            }
-            else
-            {
+            } else {
                 unchained.add(skill);
             }
         }
 
         // Determine the widths for each group
         int unchainedWidth = (unchained.size() + 5) / 6;
-        int chainedWidth = 8 - unchainedWidth;
-        if (unchainedWidth == 0)
-        {
+        int chainedWidth   = 8 - unchainedWidth;
+        if (unchainedWidth == 0) {
             chainedWidth = 8;
         }
-        if (unchainedWidth > 0)
-        {
+        if (unchainedWidth > 0) {
             height = (unchained.size() + unchainedWidth - 1) / unchainedWidth;
         }
 
         // Fill in the unchained group
         int index = 0;
         Collections.sort(unchained, comparator);
-        for (Skill skill : unchained)
-        {
+        for (Skill skill : unchained) {
             int x = index % unchainedWidth;
             int y = index / unchainedWidth;
             index++;
@@ -97,36 +87,28 @@ public class RequirementTree extends InventoryTree
         }
 
         // Fill in the chained group
-        HashMap<Skill, Integer> tier = new HashMap<Skill, Integer>();
+        HashMap<Skill, Integer> tier     = new HashMap<Skill, Integer>();
         HashMap<Skill, Integer> prevTier = new HashMap<Skill, Integer>();
-        int row = 0;
+        int                     row      = 0;
         index = 0;
 
-        do
-        {
+        do {
             // Get the next tier of skills
             tier.clear();
-            for (Skill skill : chained)
-            {
+            for (Skill skill : chained) {
                 boolean hasSkillReq = skill.getSkillReq() != null && SkillAPI.isSkillRegistered(skill.getSkillReq());
-                if ((!hasSkillReq && prevTier.size() == 0))
-                {
+                if ((!hasSkillReq && prevTier.size() == 0)) {
                     tier.put(skill, index++);
-                }
-                else if (hasSkillReq && prevTier.containsKey(SkillAPI.getSkill(skill.getSkillReq())))
-                {
+                } else if (hasSkillReq && prevTier.containsKey(SkillAPI.getSkill(skill.getSkillReq()))) {
                     tier.put(skill, prevTier.get(SkillAPI.getSkill(skill.getSkillReq())));
                 }
             }
 
             // Fill in the tier
             int filled = 0;
-            for (int i = 0; i < index; i++)
-            {
-                for (Map.Entry<Skill, Integer> entry : tier.entrySet())
-                {
-                    if (entry.getValue() == i)
-                    {
+            for (int i = 0; i < index; i++) {
+                for (Map.Entry<Skill, Integer> entry : tier.entrySet()) {
+                    if (entry.getValue() == i) {
                         int x = filled % chainedWidth + unchainedWidth + 1;
                         int y = filled / chainedWidth + row;
                         filled++;
@@ -137,8 +119,7 @@ public class RequirementTree extends InventoryTree
 
             // Move the current tier to the previous tier
             prevTier.clear();
-            for (Map.Entry<Skill, Integer> entry : tier.entrySet())
-            {
+            for (Map.Entry<Skill, Integer> entry : tier.entrySet()) {
                 prevTier.put(entry.getKey(), entry.getValue());
             }
 
@@ -147,8 +128,7 @@ public class RequirementTree extends InventoryTree
         }
         while (tier.size() > 0);
 
-        if (row + 1 > height)
-        {
+        if (row + 1 > height) {
             height = row + 1;
         }
         height = Math.max(height, 1);
@@ -162,16 +142,12 @@ public class RequirementTree extends InventoryTree
      *
      * @return true if attached, false otherwise
      */
-    private boolean isChained(List<Skill> skills, Skill skill)
-    {
-        if (SkillAPI.getSkill(skill.getSkillReq()) != null)
-        {
+    private boolean isChained(List<Skill> skills, Skill skill) {
+        if (SkillAPI.getSkill(skill.getSkillReq()) != null) {
             return true;
         }
-        for (Skill s : skills)
-        {
-            if (SkillAPI.getSkill(s.getSkillReq()) == skill)
-            {
+        for (Skill s : skills) {
+            if (SkillAPI.getSkill(s.getSkillReq()) == skill) {
                 return true;
             }
         }

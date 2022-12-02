@@ -44,11 +44,11 @@ import org.bukkit.plugin.Plugin;
  */
 public class CmdForceAttr implements IFunction {
     private static final String NOT_PLAYER = "not-player";
-    private static final String RESET = "reset";
-    private static final String RESET_ONE = "reset-one";
-    private static final String NOT_ATTR = "not-attribute";
-    private static final String NOT_NUM = "not-number";
-    private static final String GAVE_ATTR = "gave-attributes";
+    private static final String RESET      = "reset";
+    private static final String RESET_ONE  = "reset-one";
+    private static final String NOT_ATTR   = "not-attribute";
+    private static final String NOT_NUM    = "not-number";
+    private static final String GAVE_ATTR  = "gave-attributes";
 
     /**
      * Runs the command

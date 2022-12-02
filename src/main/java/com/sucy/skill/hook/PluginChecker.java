@@ -110,7 +110,9 @@ public class PluginChecker extends SkillAPIListener {
         try {
             Class.forName("net.md_5.bungee.Util");
             bungee = true;
-        } catch (Exception ex) {bungee = false;}
+        } catch (Exception ex) {
+            bungee = false;
+        }
         mythicMobs = pluginManager.isPluginEnabled("MythicMobs");
         worldGuard = pluginManager.isPluginEnabled("WorldGuard");
         parties = pluginManager.isPluginEnabled("ProSkillAPIParties");

@@ -39,11 +39,11 @@ import org.bukkit.plugin.Plugin;
  * A command that allows a player to profess through classes
  */
 public class CmdReset implements IFunction {
-    private static final String CANNOT_USE = "cannot-use";
-    private static final String RESET = "reset";
-    private static final String CONFIRM = "confirm";
+    private static final String CANNOT_USE   = "cannot-use";
+    private static final String RESET        = "reset";
+    private static final String CONFIRM      = "confirm";
     private static final String INSTRUCTIONS = "instructions";
-    private static final String DISABLED = "world-disabled";
+    private static final String DISABLED     = "world-disabled";
 
     /**
      * Runs the command

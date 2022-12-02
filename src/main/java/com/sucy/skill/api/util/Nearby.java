@@ -43,7 +43,6 @@ public class Nearby {
      *
      * @param loc    location centered around
      * @param radius radius to get within
-     *
      * @return nearby entities
      */
     public static List<Entity> getNearby(Location loc, double radius) {
@@ -70,7 +69,6 @@ public class Nearby {
      *
      * @param loc    location centered around
      * @param radius radius to get within
-     *
      * @return nearby entities
      */
     public static List<LivingEntity> getLivingNearby(Location loc, double radius) {
@@ -113,7 +111,6 @@ public class Nearby {
      *
      * @param entity entity to get nearby ones for
      * @param radius radius to get within
-     *
      * @return nearby entities
      */
     public static List<Entity> getNearby(Entity entity, double radius) {
@@ -125,7 +122,6 @@ public class Nearby {
      *
      * @param entity entity to get nearby ones for
      * @param radius radius to get within
-     *
      * @return nearby entities
      */
     public static List<LivingEntity> getLivingNearby(Entity entity, double radius) {

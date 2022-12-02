@@ -16,15 +16,22 @@ public class AABB {
          */
         public static final Vec3D UNIT_MAX = new Vec3D(1, 1, 1);
 
-        /** X coordinate. */
+        /**
+         * X coordinate.
+         */
         public final double x;
-        /** Y coordinate. */
+        /**
+         * Y coordinate.
+         */
         public final double y;
-        /** Z coordinate. */
+        /**
+         * Z coordinate.
+         */
         public final double z;
 
         /**
          * Creates a new vector with the given coordinates.
+         *
          * @param x the x
          * @param y the y
          * @param z the z
@@ -37,6 +44,7 @@ public class AABB {
 
         /**
          * Creates a new vector with the coordinates of the given vector.
+         *
          * @param v vector to copy.
          */
         public Vec3D(Vec3D v) {
@@ -47,6 +55,7 @@ public class AABB {
 
         /**
          * Construct a vector from a Bukkit location.
+         *
          * @param loc - the Bukkit location.
          */
         public static Vec3D fromLocation(Location loc) {
@@ -55,6 +64,7 @@ public class AABB {
 
         /**
          * Construct a copy of our immutable vector from Bukkit's mutable vector.
+         *
          * @param v - Bukkit vector.
          * @return A copy of the given vector.
          */
@@ -76,7 +86,6 @@ public class AABB {
          * Scales vector uniformly and returns result as new vector.
          *
          * @param s scale factor
-         *
          * @return new vector
          */
         public Vec3D scale(double s) {
@@ -85,6 +94,7 @@ public class AABB {
 
         /**
          * Normalizes the vector so that its magnitude = 1.
+         *
          * @return The normalized vector.
          */
         public Vec3D normalize() {
@@ -124,6 +134,7 @@ public class AABB {
 
         /**
          * Construct a 3D ray from a location.
+         *
          * @param loc - the Bukkit location.
          */
         public Ray3D(Location loc) {
@@ -156,14 +167,16 @@ public class AABB {
 
     /**
      * Create a new AABB from a given block.
+     *
      * @param block - the block.
      */
     public AABB(Location block) {
         this(Vec3D.fromLocation(block), Vec3D.fromLocation(block).add(Vec3D.UNIT_MAX));
     }
 
-    public Vec3D getMax() { return max; }
-    public Vec3D getMin() { return min; }
+    public Vec3D getMax() {return max;}
+
+    public Vec3D getMin() {return min;}
 
     public void expand(double expand) {
         min = min.add(new Vec3D(-expand, -expand, -expand));
@@ -181,11 +194,11 @@ public class AABB {
      * Efficient and Robust Ray-Box Intersection Algorithm" Journal of graphics
      * tools, 10(1):49-54, 2005</code>
      *
-     * @param ray incident ray
+     * @param ray     incident ray
      * @param minDist
      * @param maxDist
      * @return intersection point on the bounding box (only the first is
-     *         returned) or null if no intersection
+     * returned) or null if no intersection
      */
     public Vec3D intersectsRay(Ray3D ray, float minDist, double maxDist) {
         Vec3D invDir = new Vec3D(1f / ray.dir.x, 1f / ray.dir.y, 1f / ray.dir.z);
@@ -194,7 +207,7 @@ public class AABB {
         boolean signDirY = invDir.y < 0;
         boolean signDirZ = invDir.z < 0;
 
-        Vec3D bbox = signDirX ? max : min;
+        Vec3D  bbox = signDirX ? max : min;
         double tmin = (bbox.x - ray.x) * invDir.x;
         bbox = signDirX ? min : max;
         double tmax = (bbox.x - ray.x) * invDir.x;

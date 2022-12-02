@@ -14,9 +14,9 @@ public class HomingProjectile extends CustomProjectile {
     private static final Vector UP = new Vector(0, 1, 0);
 
     private final CustomProjectile baseProjectile;
-    private final EffectTarget target;
-    private final double threshold;
-    private final double angle;
+    private final EffectTarget     target;
+    private final double           threshold;
+    private final double           angle;
 
     public HomingProjectile(final CustomProjectile baseProjectile, final EffectTarget target, final double angle) {
         super(baseProjectile.getShooter());
@@ -68,17 +68,17 @@ public class HomingProjectile extends CustomProjectile {
 
     @Override
     public void run() {
-        final Vector vel = getVelocity();
-        final double speed = vel.length();
-        final Vector dir = vel.multiply(1 / speed);
-        final Vector towards = target.getLocation().toVector().subtract(getLocation().toVector());
+        final Vector vel       = getVelocity();
+        final double speed     = vel.length();
+        final Vector dir       = vel.multiply(1 / speed);
+        final Vector towards   = target.getLocation().toVector().subtract(getLocation().toVector());
         final Vector targetDir = towards.normalize();
-        final double dot = dir.dot(targetDir);
+        final double dot       = dir.dot(targetDir);
         if (dot >= threshold) {
             setVelocity(targetDir.multiply(speed));
         } else {
-            final double diff = Math.acos(dot);
-            final double t = angle / diff;
+            final double diff     = Math.acos(dot);
+            final double t        = angle / diff;
             final double sinAngle = Math.sin(diff);
             //final double m = Math.sin()
             //baseProjectile.setVelocity(result);

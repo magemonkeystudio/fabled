@@ -42,7 +42,6 @@ public class BuffManager {
      * no existing data is found.
      *
      * @param entity entity to retrieve the data for
-     *
      * @return the buff data for the entity
      */
     public static BuffData getBuffData(final LivingEntity entity) {
@@ -56,7 +55,6 @@ public class BuffManager {
      *
      * @param entity entity to get the buff data for
      * @param create whether or not to create new data if it doesn't exist
-     *
      * @return the buff data for an enemy
      */
     public static BuffData getBuffData(final LivingEntity entity, final boolean create) {
@@ -98,36 +96,44 @@ public class BuffManager {
     /**
      * Adds an offensive buff to the entity
      *
-     * @param entity entity to give the buff to
-     * @param type   type of buff to add
+     * @param entity   entity to give the buff to
+     * @param type     type of buff to add
      * @param category sub category of the buff to add
-     * @param buff   buff to add
-     * @param ticks  ticks to apply the buff for
+     * @param buff     buff to add
+     * @param ticks    ticks to apply the buff for
      */
     public static void addBuff(final LivingEntity entity, final BuffType type, final String category, final Buff buff, final int ticks) {
         if (entity == null) return;
         getBuffData(entity, true).addBuff(type, category, buff, ticks);
     }
 
-    /** @deprecated use {@link BuffManager#addBuff(LivingEntity, BuffType, Buff, int)} instead */
+    /**
+     * @deprecated use {@link BuffManager#addBuff(LivingEntity, BuffType, Buff, int)} instead
+     */
     @Deprecated
     public static void addDamageBuff(final LivingEntity entity, final Buff buff, final int ticks) {
         addBuff(entity, BuffType.DAMAGE, buff, ticks);
     }
 
-    /** @deprecated use {@link BuffManager#addBuff(LivingEntity, BuffType, Buff, int)} instead */
+    /**
+     * @deprecated use {@link BuffManager#addBuff(LivingEntity, BuffType, Buff, int)} instead
+     */
     @Deprecated
     public static void addDefenseBuff(final LivingEntity entity, final Buff buff, final int ticks) {
         addBuff(entity, BuffType.DEFENSE, buff, ticks);
     }
 
-    /** @deprecated use {@link BuffManager#addBuff(LivingEntity, BuffType, Buff, int)} instead */
+    /**
+     * @deprecated use {@link BuffManager#addBuff(LivingEntity, BuffType, Buff, int)} instead
+     */
     @Deprecated
     public static void addSkillDamageBuff(final LivingEntity entity, final Buff buff, final int ticks) {
         addBuff(entity, BuffType.SKILL_DAMAGE, buff, ticks);
     }
 
-    /** @deprecated use {@link BuffManager#addBuff(LivingEntity, BuffType, Buff, int)} instead */
+    /**
+     * @deprecated use {@link BuffManager#addBuff(LivingEntity, BuffType, Buff, int)} instead
+     */
     @Deprecated
     public static void addSkillDefenseBuff(final LivingEntity entity, final Buff buff, final int ticks) {
         addBuff(entity, BuffType.SKILL_DEFENSE, buff, ticks);
@@ -140,7 +146,6 @@ public class BuffManager {
      * @param entity entity to use the data of
      * @param type   type of buffs to apply
      * @param amount base amount to modify
-     *
      * @return modified number
      */
     public static double apply(final LivingEntity entity, final BuffType type, final double amount) {
@@ -152,11 +157,10 @@ public class BuffManager {
      * Modifies the amount of dealt damage using damage buff
      * multipliers and bonuses.
      *
-     * @param entity entity to use the data of
-     * @param type   type of buffs to apply
+     * @param entity   entity to use the data of
+     * @param type     type of buffs to apply
      * @param category sub category of the buffs to apply
-     * @param amount base amount to modify
-     *
+     * @param amount   base amount to modify
      * @return modified number
      */
     public static double apply(final LivingEntity entity, final BuffType type, final String category, final double amount) {
@@ -164,25 +168,33 @@ public class BuffManager {
         return data == null ? amount : data.apply(type, category, amount);
     }
 
-    /** @deprecated use {@link BuffManager#apply(LivingEntity, BuffType, double)} instead */
+    /**
+     * @deprecated use {@link BuffManager#apply(LivingEntity, BuffType, double)} instead
+     */
     @Deprecated
     public static double modifyDealtDamage(final LivingEntity entity, final double damage) {
         return apply(entity, BuffType.DAMAGE, damage);
     }
 
-    /** @deprecated use {@link BuffManager#apply(LivingEntity, BuffType, double)} instead */
+    /**
+     * @deprecated use {@link BuffManager#apply(LivingEntity, BuffType, double)} instead
+     */
     @Deprecated
     public static double modifyTakenDefense(final LivingEntity entity, final double damage) {
         return apply(entity, BuffType.DEFENSE, damage);
     }
 
-    /** @deprecated use {@link BuffManager#apply(LivingEntity, BuffType, double)} instead */
+    /**
+     * @deprecated use {@link BuffManager#apply(LivingEntity, BuffType, double)} instead
+     */
     @Deprecated
     public static double modifySkillDealtDamage(LivingEntity entity, double damage) {
         return apply(entity, BuffType.SKILL_DAMAGE, damage);
     }
 
-    /** @deprecated use {@link BuffManager#apply(LivingEntity, BuffType, double)} instead */
+    /**
+     * @deprecated use {@link BuffManager#apply(LivingEntity, BuffType, double)} instead
+     */
     @Deprecated
     public static double modifySkillTakenDefense(LivingEntity entity, double damage) {
         return apply(entity, BuffType.SKILL_DEFENSE, damage);

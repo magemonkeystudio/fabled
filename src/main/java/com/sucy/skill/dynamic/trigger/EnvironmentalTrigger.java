@@ -13,32 +13,42 @@ import java.util.Map;
  */
 public class EnvironmentalTrigger implements Trigger<EntityDamageEvent> {
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getKey() {
         return "ENVIRONMENT_DAMAGE";
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Class<EntityDamageEvent> getEvent() {
         return EntityDamageEvent.class;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean shouldTrigger(final EntityDamageEvent event, final int level, final Settings settings) {
         final String type = settings.getString("type", "any").replace(' ', '_').toUpperCase();
         return type.equalsIgnoreCase("ANY") || type.equalsIgnoreCase(event.getCause().name());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setValues(final EntityDamageEvent event, final Map<String, Object> data) {
         data.put("api-taken", event.getDamage());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LivingEntity getCaster(final EntityDamageEvent event) {
         if (event.getEntity() instanceof LivingEntity) {
@@ -48,7 +58,9 @@ public class EnvironmentalTrigger implements Trigger<EntityDamageEvent> {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LivingEntity getTarget(final EntityDamageEvent event, final Settings settings) {
         return getCaster(event);

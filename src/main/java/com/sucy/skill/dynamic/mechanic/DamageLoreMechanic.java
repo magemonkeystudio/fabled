@@ -107,7 +107,7 @@ public class DamageLoreMechanic extends MechanicComponent {
                             if (trueDmg) {
                                 skill.trueDamage(target, base * m, caster);
                             } else {
-                                skill.damage(target, base * m, caster, classification, settings.getBool(KNOCKBACK, true),  EntityDamageEvent.DamageCause.valueOf(settings.getString(CAUSE, "Entity Attack").toUpperCase().replace(' ', '_')));
+                                skill.damage(target, base * m, caster, classification, settings.getBool(KNOCKBACK, true), EntityDamageEvent.DamageCause.valueOf(settings.getString(CAUSE, "Entity Attack").toUpperCase().replace(' ', '_')));
                             }
                         }
                         worked = targets.size() > 0;

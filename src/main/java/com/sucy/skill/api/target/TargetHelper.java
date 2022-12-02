@@ -295,7 +295,8 @@ public abstract class TargetHelper {
                 FakeBoundingBox boundingBox = DisguiseHook.getFakeBoundingBox(entity);
                 return new AABB(origin.add(new AABB.Vec3D(-boundingBox.getX(), 0, -boundingBox.getZ())), origin.add(new AABB.Vec3D(boundingBox.getX(), boundingBox.getY(), boundingBox.getZ())));
             }
-        } catch (NullPointerException ignored) {}
+        } catch (NullPointerException ignored) {
+        }
         double halfWidth = entity.getWidth() / 2;
         return new AABB(origin.add(new AABB.Vec3D(-halfWidth, 0, -halfWidth)), origin.add(new AABB.Vec3D(halfWidth, entity.getHeight(), halfWidth)));
     }

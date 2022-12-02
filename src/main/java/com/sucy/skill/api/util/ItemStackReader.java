@@ -50,8 +50,10 @@ public final class ItemStackReader {
             string = settings.getString(ITEM);
         }
 
-        try {return Material.valueOf(string.toUpperCase().replace(" ", "_"));} catch (NullPointerException |
-                                                                                      IllegalArgumentException e) {
+        try {
+            return Material.valueOf(string.toUpperCase().replace(" ", "_"));
+        } catch (NullPointerException |
+                 IllegalArgumentException e) {
             return Material.ARROW;
         }
     }
@@ -88,7 +90,8 @@ public final class ItemStackReader {
         for (String hideFlag : settings.getStringList(HIDE_FLAGS)) {
             try {
                 meta.addItemFlags(ItemFlag.valueOf("HIDE_" + hideFlag.toUpperCase().replace(' ', '_')));
-            } catch (IllegalArgumentException ignored) {}
+            } catch (IllegalArgumentException ignored) {
+            }
         }
 
         if (settings.getString(CUSTOM, "false").equalsIgnoreCase("true")) {
@@ -108,17 +111,20 @@ public final class ItemStackReader {
                         PotionEffectType.getByName(settings.getString(POTION_TYPE).replace(" ", "_")),
                         settings.getInt(POTION_DURATION) * 20,
                         settings.getInt(POTION_LEVEL)), true);
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             try {
                 pm.setColor(Color.fromRGB(Integer.parseInt(settings.getString(POTION_COLOR, "#385dc6").substring(1), 16)));
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
 
         if (meta instanceof LeatherArmorMeta) {
             LeatherArmorMeta leatherMeta = (LeatherArmorMeta) meta;
             try {
                 leatherMeta.setColor(Color.fromRGB(Integer.parseInt(settings.getString(ARMOR_COLOR, "#a06540").substring(1), 16)));
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
 
         item.setItemMeta(meta);

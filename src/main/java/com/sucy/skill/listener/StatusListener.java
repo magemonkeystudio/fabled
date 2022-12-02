@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.listener.StatusListener
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,7 +26,6 @@
  */
 package com.sucy.skill.listener;
 
-import mc.promcteam.engine.mccore.util.VersionManager;
 import com.sucy.skill.api.event.FlagApplyEvent;
 import com.sucy.skill.api.event.PhysicalDamageEvent;
 import com.sucy.skill.api.event.PlayerCastSkillEvent;
@@ -36,6 +35,7 @@ import com.sucy.skill.api.util.StatusFlag;
 import com.sucy.skill.data.TitleType;
 import com.sucy.skill.language.RPGFilter;
 import com.sucy.skill.manager.TitleManager;
+import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -57,18 +57,15 @@ import java.util.HashSet;
  * Listener for applying default status flags for the API. You should
  * not use this class as it is already set up by the API.
  */
-public class StatusListener extends SkillAPIListener
-{
+public class StatusListener extends SkillAPIListener {
     private static final HashMap<String, Long> messageTimers = new HashMap<String, Long>();
 
-    private static final HashSet<String> interrupts = new HashSet<String>()
-    {{
+    private static final HashSet<String> interrupts = new HashSet<String>() {{
         add(StatusFlag.STUN);
         add(StatusFlag.SILENCE);
     }};
 
-    private static final HashMap<String, String> messageMap = new HashMap<String, String>()
-    {{
+    private static final HashMap<String, String> messageMap = new HashMap<String, String>() {{
         put(StatusFlag.STUN, "stunned");
         put(StatusFlag.ROOT, "rooted");
         put(StatusFlag.INVINCIBLE, "invincible");
@@ -85,8 +82,7 @@ public class StatusListener extends SkillAPIListener
      * Cleans up the listener data on shutdown
      */
     @Override
-    public void cleanup()
-    {
+    public void cleanup() {
         messageTimers.clear();
     }
 
@@ -96,8 +92,7 @@ public class StatusListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onQuit(PlayerQuitEvent event)
-    {
+    public void onQuit(PlayerQuitEvent event) {
         FlagManager.clearFlags(event.getPlayer());
     }
 
@@ -107,10 +102,8 @@ public class StatusListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onMove(PlayerMoveEvent event)
-    {
-        if (((event.getPlayer()).isOnGround() || event.getTo().getY() > event.getFrom().getY()) && check(event, event.getPlayer(), event.getPlayer(), StatusFlag.STUN, StatusFlag.ROOT, StatusFlag.CHANNELING))
-        {
+    public void onMove(PlayerMoveEvent event) {
+        if (((event.getPlayer()).isOnGround() || event.getTo().getY() > event.getFrom().getY()) && check(event, event.getPlayer(), event.getPlayer(), StatusFlag.STUN, StatusFlag.ROOT, StatusFlag.CHANNELING)) {
             event.getPlayer().setVelocity(ZERO);
         }
     }
@@ -121,10 +114,8 @@ public class StatusListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onInterrupt(FlagApplyEvent event)
-    {
-        if (interrupts.contains(event.getFlag()) && FlagManager.hasFlag(event.getEntity(), StatusFlag.CHANNELING))
-        {
+    public void onInterrupt(FlagApplyEvent event) {
+        if (interrupts.contains(event.getFlag()) && FlagManager.hasFlag(event.getEntity(), StatusFlag.CHANNELING)) {
             FlagManager.removeFlag(event.getEntity(), StatusFlag.CHANNELING);
             FlagManager.removeFlag(event.getEntity(), StatusFlag.CHANNEL);
         }
@@ -137,14 +128,11 @@ public class StatusListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onFlag(FlagApplyEvent event)
-    {
+    public void onFlag(FlagApplyEvent event) {
         if (event.getFlag().equals(StatusFlag.STUN)
-            || event.getFlag().equals(StatusFlag.ROOT)
-            || event.getFlag().equals(StatusFlag.CHANNELING))
-        {
-            if (!(event.getEntity() instanceof Player))
-            {
+                || event.getFlag().equals(StatusFlag.ROOT)
+                || event.getFlag().equals(StatusFlag.CHANNELING)) {
+            if (!(event.getEntity() instanceof Player)) {
                 event.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, event.getTicks(), 100));
             }
         }
@@ -156,8 +144,7 @@ public class StatusListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onDamage(EntityDamageByEntityEvent event)
-    {
+    public void onDamage(EntityDamageByEntityEvent event) {
         if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM)
             return;
 
@@ -176,10 +163,9 @@ public class StatusListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onDamaged(EntityDamageEvent event)
-    {
+    public void onDamaged(EntityDamageEvent event) {
         if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM
-            || !(event.getEntity() instanceof LivingEntity))
+                || !(event.getEntity() instanceof LivingEntity))
             return;
 
         checkAbsorbAndInvincible((LivingEntity) event.getEntity(), event, event.getDamage());
@@ -190,8 +176,7 @@ public class StatusListener extends SkillAPIListener
      *
      * @param event event details
      */
-    public void onTrueDamage(TrueDamageEvent event)
-    {
+    public void onTrueDamage(TrueDamageEvent event) {
         checkAbsorbAndInvincible(event.getTarget(), event, event.getDamage());
     }
 
@@ -202,8 +187,7 @@ public class StatusListener extends SkillAPIListener
      * @param event  event details
      * @param damage damage amount
      */
-    private void checkAbsorbAndInvincible(LivingEntity entity, Cancellable event, double damage)
-    {
+    private void checkAbsorbAndInvincible(LivingEntity entity, Cancellable event, double damage) {
         if (check(event, entity, null, StatusFlag.ABSORB))
             VersionManager.heal(entity, damage);
         else
@@ -216,10 +200,8 @@ public class StatusListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onLaunch(ProjectileLaunchEvent event)
-    {
-        if (event.getEntity().getShooter() instanceof LivingEntity)
-        {
+    public void onLaunch(ProjectileLaunchEvent event) {
+        if (event.getEntity().getShooter() instanceof LivingEntity) {
             LivingEntity shooter = (LivingEntity) event.getEntity().getShooter();
             check(event, shooter, shooter, StatusFlag.STUN, StatusFlag.DISARM, StatusFlag.CHANNELING);
         }
@@ -231,8 +213,7 @@ public class StatusListener extends SkillAPIListener
      * @param event event details
      */
     @EventHandler(ignoreCancelled = true)
-    public void onCast(PlayerCastSkillEvent event)
-    {
+    public void onCast(PlayerCastSkillEvent event) {
         check(event, event.getPlayer(), event.getPlayer(), StatusFlag.SILENCE, StatusFlag.STUN, StatusFlag.CHANNEL);
     }
 
@@ -243,11 +224,9 @@ public class StatusListener extends SkillAPIListener
      *
      * @return true if can send a message, false otherwise
      */
-    private boolean checkTime(Player player)
-    {
+    private boolean checkTime(Player player) {
         if (!messageTimers.containsKey(player.getName())
-            || System.currentTimeMillis() - messageTimers.get(player.getName()) > 1000)
-        {
+                || System.currentTimeMillis() - messageTimers.get(player.getName()) > 1000) {
             messageTimers.put(player.getName(), System.currentTimeMillis());
             return true;
         }
@@ -264,22 +243,17 @@ public class StatusListener extends SkillAPIListener
      *
      * @return the canceled state of the event
      */
-    private boolean check(Cancellable event, LivingEntity entity, LivingEntity receiver, String... flags)
-    {
-        for (String flag : flags)
-        {
-            if (FlagManager.hasFlag(entity, flag))
-            {
-                if (receiver instanceof Player)
-                {
+    private boolean check(Cancellable event, LivingEntity entity, LivingEntity receiver, String... flags) {
+        for (String flag : flags) {
+            if (FlagManager.hasFlag(entity, flag)) {
+                if (receiver instanceof Player) {
                     Player player = (Player) receiver;
-                    if (checkTime(player))
-                    {
+                    if (checkTime(player)) {
                         TitleManager.show(
-                            player,
-                            TitleType.STATUS,
-                            "Status." + messageMap.get(flag),
-                            RPGFilter.DURATION.setReplacement("" + FlagManager.getTimeLeft(entity, flag))
+                                player,
+                                TitleType.STATUS,
+                                "Status." + messageMap.get(flag),
+                                RPGFilter.DURATION.setReplacement("" + FlagManager.getTimeLeft(entity, flag))
                         );
                     }
                 }

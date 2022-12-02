@@ -47,7 +47,9 @@ public class NearestTarget extends TargetComponent {
     private Preview preview;
     private double  radius = 0;
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
@@ -69,7 +71,9 @@ public class NearestTarget extends TargetComponent {
         return result;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     void playPreview(Player caster, final int level, final LivingEntity target, int step) {
         double currentRadius = parseValues(caster, RADIUS, level, 3.0);

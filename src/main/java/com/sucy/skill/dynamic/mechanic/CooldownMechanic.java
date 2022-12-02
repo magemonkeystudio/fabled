@@ -59,7 +59,9 @@ public class CooldownMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (!(caster instanceof Player)) {return false;}
+        if (!(caster instanceof Player)) {
+            return false;
+        }
 
         String skill = settings.getString(SKILL, "");
         String type  = settings.getString(TYPE, "all").toLowerCase();

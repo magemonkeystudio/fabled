@@ -24,20 +24,32 @@ public class MythicMobTypeCondition extends ConditionComponent {
         if (stringList.stream().anyMatch(str -> str.equalsIgnoreCase("any"))) {
             types.add("any");
         } else {
-            for (String string : stringList) { if (!string.isEmpty()) { types.add(string); } }
+            for (String string : stringList) {
+                if (!string.isEmpty()) {
+                    types.add(string);
+                }
+            }
         }
     }
 
     @Override
-    public String getKey() { return "mythicmob type"; }
+    public String getKey() {return "mythicmob type";}
 
     @Override
     boolean test(LivingEntity caster, int level, LivingEntity target) {
-        if (!PluginChecker.isMythicMobsActive()) { return false; }
+        if (!PluginChecker.isMythicMobsActive()) {
+            return false;
+        }
         if (MythicMobsHook.isMonster(target)) {
-            if (types.contains("any")) { return true; }
+            if (types.contains("any")) {
+                return true;
+            }
             String type = MythicMobsHook.getMythicMobId(target);
-            for (String string : types) { if (string.equals(type)) { return true; } }
+            for (String string : types) {
+                if (string.equals(type)) {
+                    return true;
+                }
+            }
             return false;
         } else {
             return types.isEmpty();

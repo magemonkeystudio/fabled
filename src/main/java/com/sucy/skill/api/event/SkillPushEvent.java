@@ -66,8 +66,8 @@ public class SkillPushEvent extends Event implements Cancellable {
     /**
      * Initializes a new event
      *
-     * @param caster entity doing the pushing
-     * @param target entity receiving the push
+     * @param caster   entity doing the pushing
+     * @param target   entity receiving the push
      * @param velocity the amount of damage dealt
      */
     public SkillPushEvent(LivingEntity caster, LivingEntity target, Vector velocity) {
@@ -88,6 +88,7 @@ public class SkillPushEvent extends Event implements Cancellable {
 
     /**
      * Sets the {@link Vector} the push will use.
+     *
      * @param velocity
      */
     public void setVelocity(Vector velocity) {

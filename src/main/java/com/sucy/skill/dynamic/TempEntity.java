@@ -769,7 +769,7 @@ public class TempEntity implements LivingEntity {
 
     @NotNull
     @Override
-    public SpawnCategory getSpawnCategory() { return SpawnCategory.MISC; }
+    public SpawnCategory getSpawnCategory() {return SpawnCategory.MISC;}
 
     public void playEffect(EntityEffect entityEffect) {
     }

@@ -14,8 +14,8 @@ import java.util.Objects;
  * Sets the specified armor slot of the target to the item defined by the settings
  */
 public class ArmorMechanic extends MechanicComponent {
-    private static final String SLOT       = "slot";
-    private static final String OVERWRITE  = "overwrite";
+    private static final String SLOT      = "slot";
+    private static final String OVERWRITE = "overwrite";
 
     @Override
     public String getKey() {
@@ -39,13 +39,13 @@ public class ArmorMechanic extends MechanicComponent {
         } catch (IllegalArgumentException exception) {
             return false;
         }
-        ItemStack item = ItemStackReader.read(settings);
-        boolean overwrite  = settings.getBool(OVERWRITE, false);
+        ItemStack item      = ItemStackReader.read(settings);
+        boolean   overwrite = settings.getBool(OVERWRITE, false);
 
         boolean success = false;
         for (LivingEntity target : targets) {
             EntityEquipment equipment = Objects.requireNonNull(target.getEquipment());
-            boolean proceed = overwrite;
+            boolean         proceed   = overwrite;
             if (!overwrite) {
                 switch (slot) {
                     case FEET:

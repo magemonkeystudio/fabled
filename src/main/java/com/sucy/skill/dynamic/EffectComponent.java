@@ -70,7 +70,7 @@ public abstract class EffectComponent {
     /**
      * Type of indicators to show
      */
-    protected PreviewType                           previewType;
+    protected            PreviewType                previewType;
     private              String                     instanceKey;
 
     private static String filterSpecialChars(String string) {
@@ -134,7 +134,7 @@ public abstract class EffectComponent {
      *
      * @return true if has a preview, false otherwise
      */
-    public boolean hasPreview() { return hasPreview; }
+    public boolean hasPreview() {return hasPreview;}
 
     /**
      * Retrieves an attribute value while applying attribute
@@ -331,7 +331,9 @@ public abstract class EffectComponent {
      */
     public void playPreview(Player caster, int level, List<LivingEntity> targets, int step) {
         if (hasPreview) {
-            for (EffectComponent component : children) { component.playPreview(caster, level, targets, step); }
+            for (EffectComponent component : children) {
+                component.playPreview(caster, level, targets, step);
+            }
         }
     }
 

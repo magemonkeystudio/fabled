@@ -88,7 +88,7 @@ public class CastCombatListener extends SkillAPIListener {
         PlayerData data = SkillAPI.getPlayerData(player);
         if (data.getExtraData().has(ITEM_SAVE_KEY)) {
             ItemStack[] items;
-            if(data.getExtraData().get(ITEM_SAVE_KEY) instanceof String) {
+            if (data.getExtraData().get(ITEM_SAVE_KEY) instanceof String) {
                 items = ItemSerializer.fromBase64(data.getExtraData().getString(ITEM_SAVE_KEY));
             } else {
                 items = ItemUT.fromBase64(data.getExtraData().getList(ITEM_SAVE_KEY));

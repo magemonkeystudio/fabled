@@ -10,7 +10,7 @@ import java.util.List;
  * com.sucy.skill.dynamic.mechanic.FoodMechanic
  */
 public class FoodMechanic extends MechanicComponent {
-    private static final String FOOD = "food";
+    private static final String FOOD       = "food";
     private static final String SATURATION = "saturation";
 
     @Override
@@ -24,13 +24,12 @@ public class FoodMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        double food = parseValues(caster, FOOD, level, 1.0);
+        double food       = parseValues(caster, FOOD, level, 1.0);
         double saturation = parseValues(caster, SATURATION, level, 1.0);
         for (LivingEntity target : targets) {
             if (target instanceof Player) {

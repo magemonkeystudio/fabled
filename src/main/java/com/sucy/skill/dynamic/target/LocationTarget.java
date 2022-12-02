@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.dynamic.target.LocationTarget
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,7 +27,7 @@
 package com.sucy.skill.dynamic.target;
 
 import com.google.common.collect.ImmutableList;
-import com.sucy.skill.cast.*;
+import com.sucy.skill.cast.PreviewSettings;
 import com.sucy.skill.dynamic.TempEntity;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
@@ -44,11 +44,11 @@ import java.util.List;
  * Applies child components to a location using the caster's faced direction
  */
 public class LocationTarget extends TargetComponent {
-    private static final String RANGE = "range";
+    private static final String RANGE    = "range";
     private static final String ENTITIES = "entities";
-    private static final String FLUIDS = "fluids";
+    private static final String FLUIDS   = "fluids";
     private static final String PASSABLE = "passable";
-    private static final String CENTER = "center";
+    private static final String CENTER   = "center";
 
     //LEGACY
     private static final String GROUND = "ground";
@@ -71,11 +71,11 @@ public class LocationTarget extends TargetComponent {
     @Override
     List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
-        final double range = parseValues(caster, RANGE, level, 5.0);
+        final double  range    = parseValues(caster, RANGE, level, 5.0);
         final boolean entities = settings.getBool(ENTITIES, true);
-        final boolean fluids = settings.getBool(FLUIDS, false);
+        final boolean fluids   = settings.getBool(FLUIDS, false);
         final boolean passable = settings.has(PASSABLE) ? settings.getBool(PASSABLE) : settings.getBool(GROUND, true);
-        final boolean center = settings.getBool(CENTER, false);
+        final boolean center   = settings.getBool(CENTER, false);
         return determineTargets(caster, level, targets, t -> getTargetLoc(caster, t, range, entities, fluids, passable, center));
     }
 
@@ -87,10 +87,10 @@ public class LocationTarget extends TargetComponent {
             final boolean fluids,
             final boolean passable,
             final boolean center) {
-        World world = t.getWorld();
-        Location startLocation = t.getEyeLocation();
-        Vector direction = startLocation.getDirection();
-        FluidCollisionMode fluidMode = fluids ? FluidCollisionMode.ALWAYS : FluidCollisionMode.NEVER;
+        World              world         = t.getWorld();
+        Location           startLocation = t.getEyeLocation();
+        Vector             direction     = startLocation.getDirection();
+        FluidCollisionMode fluidMode     = fluids ? FluidCollisionMode.ALWAYS : FluidCollisionMode.NEVER;
         RayTraceResult rayTrace = entities ?
                 world.rayTrace(startLocation, direction, range, fluidMode, !passable, 0, entity -> entity != caster) :
                 world.rayTraceBlocks(startLocation, direction, range, fluidMode, !passable);
@@ -112,9 +112,9 @@ public class LocationTarget extends TargetComponent {
     }
 
     private void center(Location location) {
-        location.setX(location.getBlockX()+0.5);
-        location.setY(location.getBlockY()+0.5);
-        location.setZ(location.getBlockZ()+0.5);
+        location.setX(location.getBlockX() + 0.5);
+        location.setY(location.getBlockY() + 0.5);
+        location.setZ(location.getBlockZ() + 0.5);
     }
 
     @Override

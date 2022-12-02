@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.particle.direction.YZHandler
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -32,8 +32,7 @@ import com.sucy.skill.data.Point3D;
 /**
  * Handles the YZ direction
  */
-public class YZHandler implements DirectionHandler
-{
+public class YZHandler implements DirectionHandler {
     public static YZHandler instance = new YZHandler();
 
     /**
@@ -43,8 +42,7 @@ public class YZHandler implements DirectionHandler
      * @param n1    first value
      * @param n2    second value
      */
-    public void apply(Point3D point, double n1, double n2)
-    {
+    public void apply(Point3D point, double n1, double n2) {
         point.x = 0;
         point.y = n1;
         point.z = n2;
@@ -58,8 +56,7 @@ public class YZHandler implements DirectionHandler
      *
      * @return rotation
      */
-    public double rotateX(Point3D p, Point2D trig)
-    {
+    public double rotateX(Point3D p, Point2D trig) {
         return p.x;
     }
 
@@ -71,8 +68,7 @@ public class YZHandler implements DirectionHandler
      *
      * @return rotation
      */
-    public double rotateY(Point3D p, Point2D trig)
-    {
+    public double rotateY(Point3D p, Point2D trig) {
         return p.y * trig.x - p.z * trig.y;
     }
 
@@ -84,8 +80,7 @@ public class YZHandler implements DirectionHandler
      *
      * @return rotation
      */
-    public double rotateZ(Point3D p, Point2D trig)
-    {
+    public double rotateZ(Point3D p, Point2D trig) {
         return p.y * trig.y + p.z * trig.x;
     }
 }

@@ -46,7 +46,7 @@ public class ProjectilePreview extends Preview {
     public ProjectilePreview(double speed, double gravity) {
         this.speed = speed;
         this.gravity = gravity;
-        this.tBase = 3/this.speed;
+        this.tBase = 3 / this.speed;
     }
 
     /**
@@ -57,19 +57,19 @@ public class ProjectilePreview extends Preview {
      */
     @Override
     public void playParticles(Player player, ParticleSettings particle, Location location, int step) {
-        double x = location.getX();
-        double y = location.getY();
-        double z = location.getZ();
+        double x         = location.getX();
+        double y         = location.getY();
+        double z         = location.getZ();
         Vector direction = location.getDirection();
 
-        double px = x+direction.getX()*tBase;
-        double py = y+direction.getY()*tBase-gravity*tBase*tBase;
-        double pz = z+direction.getZ()*tBase;
+        double px = x + direction.getX() * tBase;
+        double py = y + direction.getY() * tBase - gravity * tBase * tBase;
+        double pz = z + direction.getZ() * tBase;
 
         particle.instance(player, px, py, pz);
     }
 
-    public double getSpeed() { return speed; }
+    public double getSpeed() {return speed;}
 
-    public double getGravity() { return gravity; }
+    public double getGravity() {return gravity;}
 }

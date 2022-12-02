@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.event.PlayerLevelUpEvent
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,12 +34,11 @@ import org.bukkit.event.HandlerList;
 /**
  * Event called when a player leveled up
  */
-public class PlayerLevelUpEvent extends Event
-{
+public class PlayerLevelUpEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private PlayerClass playerClass;
-    private int         level;
-    private int         amount;
+    private              PlayerClass playerClass;
+    private              int         level;
+    private              int         amount;
 
     /**
      * Constructor
@@ -47,8 +46,7 @@ public class PlayerLevelUpEvent extends Event
      * @param playerClass data of the player leveling up
      * @param amount how many levels the player's class gained
      */
-    public PlayerLevelUpEvent(PlayerClass playerClass, int amount)
-    {
+    public PlayerLevelUpEvent(PlayerClass playerClass, int amount) {
         this.playerClass = playerClass;
         this.level = playerClass.getLevel();
         this.amount = amount;
@@ -57,32 +55,28 @@ public class PlayerLevelUpEvent extends Event
     /**
      * @return data of the player whose class leveled up
      */
-    public PlayerData getPlayerData()
-    {
+    public PlayerData getPlayerData() {
         return playerClass.getPlayerData();
     }
 
     /**
      * @return the player's class that is leveling up
      */
-    public PlayerClass getPlayerClass()
-    {
+    public PlayerClass getPlayerClass() {
         return playerClass;
     }
 
     /**
      * @return new level of the player's class
      */
-    public int getLevel()
-    {
+    public int getLevel() {
         return level;
     }
 
     /**
      * @return how many levels the player's class gained
      */
-    public int getAmount()
-    {
+    public int getAmount() {
         return amount;
     }
 
@@ -90,16 +84,14 @@ public class PlayerLevelUpEvent extends Event
      * @return gets the handlers for the event
      */
     @Override
-    public HandlerList getHandlers()
-    {
+    public HandlerList getHandlers() {
         return handlers;
     }
 
     /**
      * @return gets the handlers for the event
      */
-    public static HandlerList getHandlerList()
-    {
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

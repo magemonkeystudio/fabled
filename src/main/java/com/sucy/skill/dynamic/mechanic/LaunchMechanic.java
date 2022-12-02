@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.dynamic.mechanic.LaunchMechanic
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,11 +35,11 @@ import java.util.List;
  * Launches the target in a given direction relative to their forward direction
  */
 public class LaunchMechanic extends MechanicComponent {
-    private static final String FORWARD = "forward";
-    private static final String UPWARD  = "upward";
-    private static final String RIGHT   = "right";
+    private static final String FORWARD  = "forward";
+    private static final String UPWARD   = "upward";
+    private static final String RIGHT    = "right";
     private static final String RELATIVE = "relative";
-    private Vector up = new Vector(0, 1, 0);
+    private              Vector up       = new Vector(0, 1, 0);
 
     @Override
     public String getKey() {
@@ -62,9 +62,9 @@ public class LaunchMechanic extends MechanicComponent {
             return false;
         }
 
-        double forward = parseValues(caster, FORWARD, level, 0);
-        double upward = parseValues(caster, UPWARD, level, 0);
-        double right = parseValues(caster, RIGHT, level, 0);
+        double forward  = parseValues(caster, FORWARD, level, 0);
+        double upward   = parseValues(caster, UPWARD, level, 0);
+        double right    = parseValues(caster, RIGHT, level, 0);
         String relative = settings.getString(RELATIVE, "target").toLowerCase();
         for (LivingEntity target : targets) {
             final Vector dir;

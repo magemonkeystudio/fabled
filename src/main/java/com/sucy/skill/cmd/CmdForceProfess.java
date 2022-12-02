@@ -45,13 +45,13 @@ import org.bukkit.plugin.Plugin;
  * A command that allows a player to profess through classes
  */
 public class CmdForceProfess implements IFunction {
-    private static final String NOT_PLAYER = "not-player";
-    private static final String CANNOT_USE = "cannot-use";
-    private static final String INVALID_CLASS = "invalid-class";
-    private static final String SUCCESSS = "success";
-    private static final String PROFESSED = "professed";
+    private static final String NOT_PLAYER     = "not-player";
+    private static final String CANNOT_USE     = "cannot-use";
+    private static final String INVALID_CLASS  = "invalid-class";
+    private static final String SUCCESSS       = "success";
+    private static final String PROFESSED      = "professed";
     private static final String CANNOT_PROFESS = "cannot-profess";
-    private static final String DISABLED = "world-disabled";
+    private static final String DISABLED       = "world-disabled";
 
     /**
      * Runs the command
@@ -76,8 +76,8 @@ public class CmdForceProfess implements IFunction {
             String name = args[1];
             for (int i = 2; i < args.length; i++) name += ' ' + args[i];
 
-            PlayerData data = SkillAPI.getPlayerData(player);
-            RPGClass target = SkillAPI.getClass(name);
+            PlayerData data   = SkillAPI.getPlayerData(player);
+            RPGClass   target = SkillAPI.getClass(name);
 
             // Invalid class
             if (target == null) {

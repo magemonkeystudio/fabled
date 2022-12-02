@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.manager.ComboManager
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -39,8 +39,7 @@ import java.util.List;
  * Manages click combos with what combos are active and
  * what skills result from various combinations
  */
-public class ComboManager
-{
+public class ComboManager {
     private int       comboSize;
     private boolean[] clicks;
 
@@ -48,8 +47,7 @@ public class ComboManager
      * Initializes the combo manager, grabbing settings from
      * the configuration to prepare data
      */
-    public ComboManager()
-    {
+    public ComboManager() {
         comboSize = Math.min(SkillAPI.getSettings().getComboSize(), Click.MAX_COMBO_SIZE);
         clicks = SkillAPI.getSettings().getEnabledClicks();
     }
@@ -59,8 +57,7 @@ public class ComboManager
      *
      * @return the accepted size of combos
      */
-    public int getComboSize()
-    {
+    public int getComboSize() {
         return comboSize;
     }
 
@@ -71,8 +68,7 @@ public class ComboManager
      *
      * @return true if enabled, false otherwise
      */
-    public boolean isClickEnabled(int id)
-    {
+    public boolean isClickEnabled(int id) {
         return id < clicks.length && id >= 0 && clicks[id];
     }
 
@@ -83,13 +79,10 @@ public class ComboManager
      *
      * @return true if valid, false otherwise
      */
-    public boolean isValidCombo(int id)
-    {
+    public boolean isValidCombo(int id) {
         if (id <= 0) return false;
-        while (id > 0)
-        {
-            if (!isClickEnabled(Click.BIT_MASK & id))
-            {
+        while (id > 0) {
+            if (!isClickEnabled(Click.BIT_MASK & id)) {
                 return false;
             }
             id >>= Click.BITS;
@@ -104,8 +97,7 @@ public class ComboManager
      *
      * @return true if valid, false otherwise
      */
-    public boolean isValidDefaultCombo(int id)
-    {
+    public boolean isValidDefaultCombo(int id) {
         return isValidCombo(id) && id < (1 << (Click.BITS * comboSize)) && id >= (1 << (Click.BITS * (comboSize - 1)));
     }
 
@@ -116,11 +108,9 @@ public class ComboManager
      *
      * @return click combination or null if invalid
      */
-    public List<Click> convertId(int id)
-    {
+    public List<Click> convertId(int id) {
         ArrayList<Click> clicks = new ArrayList<Click>();
-        while (id > 0)
-        {
+        while (id > 0) {
             Click click = Click.getById(id & Click.BIT_MASK);
             if (click == null) return null;
             clicks.add(click);
@@ -138,14 +128,11 @@ public class ComboManager
      *
      * @return true if conflicts, false otherwise
      */
-    public boolean conflicts(int c1, int c2)
-    {
+    public boolean conflicts(int c1, int c2) {
         c1 = reverse(c1);
         c2 = reverse(c2);
-        while (c1 > 0 && c2 > 0)
-        {
-            if ((c1 & Click.BIT_MASK) != (c2 & Click.BIT_MASK))
-            {
+        while (c1 > 0 && c2 > 0) {
+            if ((c1 & Click.BIT_MASK) != (c2 & Click.BIT_MASK)) {
                 return false;
             }
             c1 >>= Click.BITS;
@@ -161,11 +148,9 @@ public class ComboManager
      *
      * @return reversed combo ID
      */
-    public int reverse(int id)
-    {
+    public int reverse(int id) {
         int result = 0;
-        while (id > 0)
-        {
+        while (id > 0) {
             result <<= Click.BITS;
             result += id & Click.BIT_MASK;
             id >>= Click.BITS;
@@ -181,11 +166,9 @@ public class ComboManager
      *
      * @return combo ID
      */
-    public int convertCombo(Click[] clicks, int amount)
-    {
+    public int convertCombo(Click[] clicks, int amount) {
         int id = 0;
-        for (int i = 0; i < clicks.length && i < amount; i++)
-        {
+        for (int i = 0; i < clicks.length && i < amount; i++) {
             id <<= Click.BITS;
             id |= clicks[i].getId();
         }
@@ -199,11 +182,9 @@ public class ComboManager
      *
      * @return combo ID
      */
-    public int convertCombo(Click[] clicks)
-    {
+    public int convertCombo(Click[] clicks) {
         int id = 0;
-        for (Click click : clicks)
-        {
+        for (Click click : clicks) {
             id <<= Click.BITS;
             id |= click.getId();
         }
@@ -217,8 +198,7 @@ public class ComboManager
      *
      * @return combo ID
      */
-    public int convertCombo(Collection<Click> clicks)
-    {
+    public int convertCombo(Collection<Click> clicks) {
         return convertCombo(clicks.toArray(new Click[clicks.size()]));
     }
 
@@ -230,8 +210,7 @@ public class ComboManager
      *
      * @return formatted string for the combo
      */
-    public String getComboString(int combo)
-    {
+    public String getComboString(int combo) {
         if (combo == -1) return "";
         return getComboString(convertId(combo));
     }
@@ -244,14 +223,12 @@ public class ComboManager
      *
      * @return formatted string for the combo
      */
-    public String getComboString(List<Click> clicks)
-    {
+    public String getComboString(List<Click> clicks) {
         if (clicks == null)
             return "";
 
         String result = "";
-        for (Click click : clicks)
-        {
+        for (Click click : clicks) {
             if (result.length() > 0) result += ", ";
             result += click.getName();
         }
@@ -266,8 +243,7 @@ public class ComboManager
      *
      * @return formatted string for the combo
      */
-    public String getSaveString(int combo)
-    {
+    public String getSaveString(int combo) {
         return getSaveString(convertId(combo));
     }
 
@@ -279,11 +255,9 @@ public class ComboManager
      *
      * @return formatted string for the combo
      */
-    public String getSaveString(List<Click> clicks)
-    {
+    public String getSaveString(List<Click> clicks) {
         String result = "";
-        for (Click click : clicks)
-        {
+        for (Click click : clicks) {
             if (result.length() > 0) result += ' ';
             result += click.getKey();
         }
@@ -297,16 +271,14 @@ public class ComboManager
      *
      * @return ID of the combo or -1 if invalid
      */
-    public int parseCombo(String combo)
-    {
+    public int parseCombo(String combo) {
         if (combo == null || combo.length() == 0)
             return -1;
 
-        String[] parts = combo.toLowerCase().split(" ");
-        Click[] clicks = new Click[parts.length];
-        int i = 0;
-        for (String part : parts)
-        {
+        String[] parts  = combo.toLowerCase().split(" ");
+        Click[]  clicks = new Click[parts.length];
+        int      i      = 0;
+        for (String part : parts) {
             clicks[i] = Click.getByName(part);
             if (clicks[i] == null) {
                 Logger.invalid("Invalid combo click type: " + part);

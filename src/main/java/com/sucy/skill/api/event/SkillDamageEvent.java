@@ -39,29 +39,33 @@ import org.bukkit.event.HandlerList;
  * another entity with the use of a skill.
  */
 public class SkillDamageEvent extends Event implements Cancellable {
-    private static final  HandlerList  handlers  = new HandlerList();
+    private static final HandlerList  handlers  = new HandlerList();
     /**
      * Retrieves the entity that dealt the damage
      *
      * @return entity that dealt the damage
      */
-    @Getter private final LivingEntity damager;
+    @Getter
+    private final        LivingEntity damager;
     /**
      * Retrieves the entity that received the damage
      *
      * @return entity that received the damage
      */
-    @Getter private final LivingEntity target;
-    @Getter private final String       classification;
+    @Getter
+    private final        LivingEntity target;
+    @Getter
+    private final        String       classification;
     /**
      * @return skill used to deal the damage
      */
-    @Getter private final Skill        skill;
-    private               double       damage;
+    @Getter
+    private final        Skill        skill;
+    private              double       damage;
     @Getter
     @Setter
-    private               boolean      knockback;
-    private               boolean      cancelled = false;
+    private              boolean      knockback;
+    private              boolean      cancelled = false;
 
     /**
      * Initializes a new event

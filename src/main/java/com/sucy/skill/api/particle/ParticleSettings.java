@@ -27,7 +27,6 @@
 package com.sucy.skill.api.particle;
 
 import mc.promcteam.engine.mccore.config.parse.DataSection;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -38,18 +37,18 @@ import org.bukkit.entity.Player;
  */
 public class ParticleSettings {
     private static final String
-            PARTICLE_KEY = "particle",
-            MATERIAL_KEY = "material",
-            DURABILITY_KEY = "durability",
-            DATA_KEY = "type",
-            AMOUNT_KEY = "amount",
-            DX_KEY = "dx",
-            DY_KEY = "dy",
-            DZ_KEY = "dz",
-            SPEED_KEY = "speed",
-            DUST_COLOR = "dust-color",
+            PARTICLE_KEY     = "particle",
+            MATERIAL_KEY     = "material",
+            DURABILITY_KEY   = "durability",
+            DATA_KEY         = "type",
+            AMOUNT_KEY       = "amount",
+            DX_KEY           = "dx",
+            DY_KEY           = "dy",
+            DZ_KEY           = "dz",
+            SPEED_KEY        = "speed",
+            DUST_COLOR       = "dust-color",
             FINAL_DUST_COLOR = "final-dust-color",
-            DUST_SIZE = "dust-size";
+            DUST_SIZE        = "dust-size";
 
     // Particle type
     public final Particle type;
@@ -75,7 +74,7 @@ public class ParticleSettings {
      * @param speed    particle speed
      * @param amount   particle amount
      * @param material material to use
-     * @param cmd     material cmd value
+     * @param cmd      material cmd value
      */
     public ParticleSettings(
             Particle type,
@@ -90,14 +89,14 @@ public class ParticleSettings {
             Color dustColor,
             Color toColor,
             float dusSize
-            ) {
+    ) {
         this.type = type;
         this.dx = dx;
         this.dy = dy;
         this.dz = dz;
         this.speed = speed;
         this.amount = amount;
-        this.object =  ParticleHelper.makeObject(type, material, cmd, durability, dustColor, toColor, dusSize);
+        this.object = ParticleHelper.makeObject(type, material, cmd, durability, dustColor, toColor, dusSize);
     }
 
     /**
@@ -112,12 +111,12 @@ public class ParticleSettings {
         this.dz = config.getFloat(DZ_KEY, 0);
         this.speed = config.getFloat(SPEED_KEY, 1);
         this.amount = config.getInt(AMOUNT_KEY, 1);
-        this.object =  ParticleHelper.makeObject(type, Material.valueOf(config.getString(MATERIAL_KEY, "Dirt").toUpperCase().replace(" ", "_")),
-                                                 config.getInt(DATA_KEY, 0),
-                                                 config.getInt(DURABILITY_KEY, 0),
-                                                 Color.fromRGB(Integer.parseInt(config.getString(DUST_COLOR, "#FF0000").substring(1), 16)),
-                                                 Color.fromRGB(Integer.parseInt(config.getString(FINAL_DUST_COLOR, "#FF0000").substring(1), 16)),
-                                                 (float) config.getDouble(DUST_SIZE, 1));
+        this.object = ParticleHelper.makeObject(type, Material.valueOf(config.getString(MATERIAL_KEY, "Dirt").toUpperCase().replace(" ", "_")),
+                config.getInt(DATA_KEY, 0),
+                config.getInt(DURABILITY_KEY, 0),
+                Color.fromRGB(Integer.parseInt(config.getString(DUST_COLOR, "#FF0000").substring(1), 16)),
+                Color.fromRGB(Integer.parseInt(config.getString(FINAL_DUST_COLOR, "#FF0000").substring(1), 16)),
+                (float) config.getDouble(DUST_SIZE, 1));
     }
 
     /**

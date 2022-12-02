@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.thread.MainThread
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -60,7 +60,11 @@ public class MainThread extends Thread {
         while (enabled) {
             try {
                 tasks.iterator();
-                while (tasks.hasNext()) { if (tasks.next().tick()) { tasks.remove(); } }
+                while (tasks.hasNext()) {
+                    if (tasks.next().tick()) {
+                        tasks.remove();
+                    }
+                }
 
                 long current = System.currentTimeMillis();
                 time += 50;
@@ -85,7 +89,8 @@ public class MainThread extends Thread {
         for (IThreadTask task : tasks) {
             try {
                 task.run();
-            } catch (IllegalPluginAccessException ignored) { }
+            } catch (IllegalPluginAccessException ignored) {
+            }
         }
         tasks.clear();
         enabled = false;

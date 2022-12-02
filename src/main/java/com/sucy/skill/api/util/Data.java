@@ -56,10 +56,12 @@ public class Data {
 
             final ItemStack item = new ItemStack(material);
             final ItemMeta  meta = item.getItemMeta();
-            if (data != 0) {meta.setCustomModelData(data);}
+            if (data != 0) {
+                meta.setCustomModelData(data);
+            }
             if (lore != null && !lore.isEmpty()) {
                 final List<String> colored = TextFormatter.colorStringList(lore);
-                    meta.setDisplayName(colored.remove(0));
+                meta.setDisplayName(colored.remove(0));
                 meta.setLore(colored);
             }
 
@@ -85,7 +87,9 @@ public class Data {
         ItemMeta meta = item.getItemMeta();
         config.set(DATA, meta.hasCustomModelData() ? meta.getCustomModelData() : 0);
 
-        if (meta instanceof Damageable) {config.set(DURABILITY, ((Damageable) meta).getDamage());} else {
+        if (meta instanceof Damageable) {
+            config.set(DURABILITY, ((Damageable) meta).getDamage());
+        } else {
             config.set(DURABILITY, 0);
         }
 

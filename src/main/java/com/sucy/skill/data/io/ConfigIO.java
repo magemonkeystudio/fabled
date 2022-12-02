@@ -67,8 +67,8 @@ public class ConfigIO extends IOManager {
      */
     @Override
     public PlayerAccounts loadData(OfflinePlayer player) {
-        String playerKey = player.getUniqueId().toString().toLowerCase();
-        CommentedConfig config = new CommentedConfig(api, "players/" + playerKey);
+        String          playerKey  = player.getUniqueId().toString().toLowerCase();
+        CommentedConfig config     = new CommentedConfig(api, "players/" + playerKey);
         CommentedConfig nameConfig = new CommentedConfig(api, "players/" + player.getName());
         if (!playerKey.equals(player.getName()) && nameConfig.getConfigFile().exists()) {
             DataSection old = nameConfig.getConfig();
@@ -107,7 +107,7 @@ public class ConfigIO extends IOManager {
     @Override
     public void saveAll() {
         HashMap<String, PlayerAccounts> data = SkillAPI.getPlayerAccountData();
-        ArrayList<String> keys = new ArrayList<String>(data.keySet());
+        ArrayList<String>               keys = new ArrayList<String>(data.keySet());
         for (String key : keys)
             saveData(data.get(key));
     }

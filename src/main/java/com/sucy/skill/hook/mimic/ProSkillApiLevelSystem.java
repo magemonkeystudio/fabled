@@ -49,7 +49,7 @@ public class ProSkillApiLevelSystem extends BukkitLevelSystem {
     public void takeLevels(int lvlAmount) {
         PlayerClass playerClass = getPlayerClass();
         if (playerClass != null) {
-            int newLevel = Math.max(getLevel() - lvlAmount, 1);
+            int    newLevel      = Math.max(getLevel() - lvlAmount, 1);
             double fractionalExp = getFractionalExp(); // Save fractional exp to restore it later
             setLevel(newLevel);
             setFractionalExp(fractionalExp);

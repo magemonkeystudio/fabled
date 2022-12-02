@@ -15,7 +15,7 @@
  * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
@@ -39,7 +39,6 @@ import com.sucy.skill.data.io.SQLIO;
 import com.sucy.skill.dynamic.DynamicClass;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.gui.tool.GUITool;
-import com.sucy.skill.hook.BungeeHook;
 import com.sucy.skill.hook.PlaceholderAPIHook;
 import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.hook.mimic.MimicHook;
@@ -367,7 +366,7 @@ public class SkillAPI extends JavaPlugin {
      * currently loaded.
      *
      * @param player player to check for
-     * @return true if has loaded data, false otherwise
+     * @return true if data has loaded, false otherwise
      */
     public static boolean hasPlayerData(OfflinePlayer player) {
         return singleton != null && player != null && singleton.players.containsKey(player.getUniqueId().toString().toLowerCase());
@@ -491,7 +490,7 @@ public class SkillAPI extends JavaPlugin {
      */
     public static Object getMeta(Metadatable target, String key) {
         List<MetadataValue> meta = target.getMetadata(key);
-        return meta == null || meta.size() == 0 ? null : meta.get(0).value();
+        return meta.size() == 0 ? null : meta.get(0).value();
     }
 
     /**
@@ -627,9 +626,6 @@ public class SkillAPI extends JavaPlugin {
         language.save();
 
         // Hook plugins
-        if (PluginChecker.isBungeeActive()) {
-            BungeeHook.init(this);
-        }
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PlaceholderAPIHook(this).register();
             getLogger().info("ProSkillAPI hook into PlaceholderAPI: " + ChatColor.GREEN + "success.");
@@ -743,7 +739,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Registers a new skill with SkillAPI. If this is called outside of the method
+     * Registers a new skill with SkillAPI. If this is called outside the method
      * provided in SkillPlugin, this will throw an error. You should implement SkillPlugin
      * in your main class and call this from the provided "registerSkills" method.
      *
@@ -757,7 +753,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Registers multiple new skills with SkillAPI. If this is called outside of the method
+     * Registers multiple new skills with SkillAPI. If this is called outside the method
      * provided in SkillPlugin, this will throw an error. You should implement SkillPlugin
      * in your main class and call this from the provided "registerSkills" method.
      *
@@ -770,7 +766,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Registers a new class with SkillAPI. If this is called outside of the method
+     * Registers a new class with SkillAPI. If this is called outside the method
      * provided in SkillPlugin, this will throw an error. You should implement SkillPlugin
      * in your main class and call this from the provided "registerClasses" method.
      *
@@ -805,7 +801,7 @@ public class SkillAPI extends JavaPlugin {
     }
 
     /**
-     * Registers a new class with SkillAPI. If this is called outside of the method
+     * Registers a new class with SkillAPI. If this is called outside the method
      * provided in SkillPlugin, this will throw an error. You should implement SkillPlugin
      * in your main class and call this from the provided "registerClasses" method.
      *

@@ -21,7 +21,7 @@ import java.util.UUID;
 
 /**
  * Series of fixes/improvements created by EvrimSen and touched up by Eniripsa96
- *
+ * <p>
  * See https://www.spigotmc.org/resources/addonforskillapi.55857/ for extra features
  */
 public class AddonListener extends SkillAPIListener {
@@ -44,7 +44,7 @@ public class AddonListener extends SkillAPIListener {
             final PlayerData defenderData = SkillAPI.getPlayerData((Player) event.getEntity());
 
             for (final String group : SkillAPI.getGroups()) {
-                final boolean friendly = SkillAPI.getSettings().getGroupSettings(group).isFriendly();
+                final boolean     friendly = SkillAPI.getSettings().getGroupSettings(group).isFriendly();
                 final PlayerClass attacker = attackerData.getClass(group);
                 final PlayerClass defender = defenderData.getClass(group);
                 if (friendly && attacker != null && defender != null && attacker.getData().getRoot() == defender.getData().getRoot()) {
@@ -56,6 +56,7 @@ public class AddonListener extends SkillAPIListener {
 
     /**
      * Tracks when a player changes worlds for avoiding accidental skill casts
+     *
      * @see AddonListener#onSkillUse(PlayerCastSkillEvent)
      */
     @EventHandler
@@ -65,6 +66,7 @@ public class AddonListener extends SkillAPIListener {
 
     /**
      * Tracks when a player joins for avoiding accidental skill casts
+     *
      * @see AddonListener#onSkillUse(PlayerCastSkillEvent)
      */
     @EventHandler

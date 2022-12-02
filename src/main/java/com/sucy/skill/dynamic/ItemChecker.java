@@ -42,16 +42,16 @@ import java.util.regex.Pattern;
  * Handles checking items for dynamic effects
  */
 public class ItemChecker {
-    private static final String CHECK_MAT = "check-mat";
-    private static final String MATERIAL = "material";
+    private static final String CHECK_MAT  = "check-mat";
+    private static final String MATERIAL   = "material";
     private static final String CHECK_DATA = "check-data";
-    private static final String DATA = "data";
+    private static final String DATA       = "data";
     private static final String CHECK_LORE = "check-lore";
-    private static final String LORE = "lore";
-    private static final String REGEX = "regex";
+    private static final String LORE       = "lore";
+    private static final String REGEX      = "regex";
     private static final String CHECK_NAME = "check-name";
-    private static final String NAME = "name";
-    private static final String AMOUNT = "amount";
+    private static final String NAME       = "name";
+    private static final String AMOUNT     = "amount";
 
     /**
      * Checks the player inventory for items matching the settings
@@ -60,7 +60,6 @@ public class ItemChecker {
      * @param level     level of the effect
      * @param component effect component checking for
      * @param remove    whether or not to remove matching items
-     *
      * @return true if all conditions met, false otherwise
      */
     public static boolean check(Player player, int level, EffectComponent component, boolean remove) {
@@ -69,17 +68,17 @@ public class ItemChecker {
         int count = (int) component.parseValues(player, AMOUNT, level, 1);
 
         // Checks to do
-        boolean mat = settings.getBool(CHECK_MAT, true);
-        boolean data = settings.getBool(CHECK_DATA, true);
-        boolean lore = settings.getBool(CHECK_LORE, false);
-        boolean name = settings.getBool(CHECK_NAME, false);
+        boolean mat   = settings.getBool(CHECK_MAT, true);
+        boolean data  = settings.getBool(CHECK_DATA, true);
+        boolean lore  = settings.getBool(CHECK_LORE, false);
+        boolean name  = settings.getBool(CHECK_NAME, false);
         boolean regex = settings.getBool(REGEX, false);
 
         // Values to compare to
         String material = settings.getString(MATERIAL, "ARROW").toUpperCase().replace(" ", "_");
-        int dur = settings.getInt(DATA, 0);
-        String text = settings.getString(LORE, "");
-        String display = settings.getString(NAME, "");
+        int    dur      = settings.getInt(DATA, 0);
+        String text     = settings.getString(LORE, "");
+        String display  = settings.getString(NAME, "");
 
         ItemStack[] contents = player.getInventory().getContents();
         for (int i = 0; i < contents.length; i++) {
@@ -116,22 +115,21 @@ public class ItemChecker {
      * @param item     item to check
      * @param level    level of the effect
      * @param settings settings to apply
-     *
      * @return true if passes all conditions, false otherwise
      */
     public static boolean check(ItemStack item, int level, Settings settings) {
         // Checks to do
-        boolean mat = settings.getBool(CHECK_MAT, true);
-        boolean data = settings.getBool(CHECK_DATA, true);
-        boolean lore = settings.getBool(CHECK_LORE, false);
-        boolean name = settings.getBool(CHECK_NAME, false);
+        boolean mat   = settings.getBool(CHECK_MAT, true);
+        boolean data  = settings.getBool(CHECK_DATA, true);
+        boolean lore  = settings.getBool(CHECK_LORE, false);
+        boolean name  = settings.getBool(CHECK_NAME, false);
         boolean regex = settings.getBool(REGEX, false);
 
         // Values to compare to
         String material = settings.getString(MATERIAL, "ARROW").toUpperCase().replace(" ", "_");
-        int dur = settings.getInt(DATA, 0);
-        String text = settings.getString(LORE, "");
-        String display = settings.getString(NAME, "");
+        int    dur      = settings.getInt(DATA, 0);
+        String text     = settings.getString(LORE, "");
+        String display  = settings.getString(NAME, "");
 
         return item != null
                 && (!mat || item.getType().name().equals(material))
@@ -146,7 +144,6 @@ public class ItemChecker {
      * @param item   item to check
      * @param target display name desired
      * @param regex  whether or not the target is a regex pattern
-     *
      * @return true if matches, false otherwise
      */
     public static boolean checkName(ItemStack item, String target, boolean regex) {
@@ -172,7 +169,6 @@ public class ItemChecker {
      * @param item   item to check
      * @param target lore text desired
      * @param regex  whether or not the target is a regex pattern
-     *
      * @return true if matches, false otherwise
      */
     public static boolean checkLore(ItemStack item, String target, boolean regex) {

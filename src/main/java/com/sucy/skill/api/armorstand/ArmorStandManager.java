@@ -27,7 +27,6 @@ public class ArmorStandManager {
 
     /**
      * Removes all armor stand instances
-     *
      */
     public static void cleanUp() {
         instances.values().forEach(ArmorStandData::remove);
@@ -58,11 +57,12 @@ public class ArmorStandManager {
      *
      * @param target target to get the armor stand for
      * @param key    armor stand key
-     *
      * @return active armor stand or null if not found
      */
     public static ArmorStandInstance getArmorStand(LivingEntity target, String key) {
-        if (!instances.containsKey(target)) { return null; }
+        if (!instances.containsKey(target)) {
+            return null;
+        }
         return instances.get(target).getArmorStands(key);
     }
 
@@ -70,11 +70,13 @@ public class ArmorStandManager {
      * Registers an active armor stand for the given target
      *
      * @param armorStand armor stand to register
-     * @param target target to register the armor stand for
-     * @param key    armor stand key
+     * @param target     target to register the armor stand for
+     * @param key        armor stand key
      */
     public static void register(ArmorStandInstance armorStand, LivingEntity target, String key) {
-        if (!instances.containsKey(target)) { instances.put(target, new ArmorStandData(target)); }
+        if (!instances.containsKey(target)) {
+            instances.put(target, new ArmorStandData(target));
+        }
         instances.get(target).register(armorStand, key);
     }
 
@@ -85,7 +87,9 @@ public class ArmorStandManager {
         Iterator<ArmorStandData> iterator = instances.values().iterator();
         while (iterator.hasNext()) {
             ArmorStandData data = iterator.next();
-            if (data.isValid()) { data.tick(); } else {
+            if (data.isValid()) {
+                data.tick();
+            } else {
                 data.remove();
                 iterator.remove();
             }

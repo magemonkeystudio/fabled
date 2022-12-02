@@ -219,7 +219,7 @@ public class ComponentRegistry {
 
     @SuppressWarnings("unchecked")
     public static <T extends Event> void register(final Trigger<T> trigger) {
-    	
+
         if (getTrigger(trigger.getKey()) != null) {
             throw new IllegalArgumentException("Trigger with key " + trigger.getKey() + " already exists");
         } else if (trigger.getKey().contains("-")) {

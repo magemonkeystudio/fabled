@@ -4,7 +4,6 @@ import com.sucy.skill.api.util.Buff;
 import com.sucy.skill.api.util.BuffManager;
 import com.sucy.skill.api.util.BuffType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -48,9 +47,9 @@ public class BuffMechanic extends MechanicComponent {
         }
 
         BuffType buffType = BuffType.valueOf(settings.getString(TYPE, "DAMAGE"));
-        double seconds = parseValues(caster, SECONDS, level, 3.0);
-        String category = settings.getString(CATEGORY, null);
-        int ticks = (int) (seconds * 20);
+        double   seconds  = parseValues(caster, SECONDS, level, 3.0);
+        String   category = settings.getString(CATEGORY, null);
+        int      ticks    = (int) (seconds * 20);
         for (LivingEntity target : targets) {
             BuffManager.getBuffData(target).addBuff(
                     buffType,

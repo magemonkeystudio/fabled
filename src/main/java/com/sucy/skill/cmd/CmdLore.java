@@ -45,7 +45,7 @@ import java.util.List;
  */
 public class CmdLore implements IFunction {
     private static final String NOT_PLAYER = "not-player";
-    private static final String NO_ITEM = "no-item";
+    private static final String NO_ITEM    = "no-item";
     private static final String LORE_ADDED = "lore-added";
 
     /**
@@ -60,8 +60,8 @@ public class CmdLore implements IFunction {
     public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
         // Must be a player with an argument
         if (args.length >= 1 && sender instanceof Player) {
-            Player player = (Player) sender;
-            ItemStack held = player.getInventory().getItemInMainHand();
+            Player    player = (Player) sender;
+            ItemStack held   = player.getInventory().getItemInMainHand();
 
             // No held item
             if (held == null || held.getType().isAir()) {
@@ -69,7 +69,7 @@ public class CmdLore implements IFunction {
                 return;
             }
 
-            ItemMeta meta = held.getItemMeta();
+            ItemMeta     meta = held.getItemMeta();
             List<String> lore = meta.getLore();
             if (lore == null) lore = new ArrayList<String>();
             String combined = args[0];

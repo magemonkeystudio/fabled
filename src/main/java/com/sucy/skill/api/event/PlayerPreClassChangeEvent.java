@@ -13,11 +13,11 @@ import org.bukkit.event.HandlerList;
  */
 public class PlayerPreClassChangeEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    private PlayerData  playerData;
-    private PlayerClass playerClass;
-    private RPGClass    previousClass;
-    private RPGClass    newClass;
-    private boolean     cancelled;
+    private              PlayerData  playerData;
+    private              PlayerClass playerClass;
+    private              RPGClass    previousClass;
+    private              RPGClass    newClass;
+    private              boolean     cancelled;
 
     /**
      * Constructor

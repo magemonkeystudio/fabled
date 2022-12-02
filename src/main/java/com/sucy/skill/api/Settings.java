@@ -40,7 +40,7 @@ import java.util.List;
  * <p>Represents a set of settings that store configurable data for an object.</p>
  */
 public class Settings {
-    private static final String BASE = "-base";
+    private static final String BASE  = "-base";
     private static final String SCALE = "-scale";
 
     private final HashMap<String, Object> settings;

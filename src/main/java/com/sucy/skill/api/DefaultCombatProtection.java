@@ -31,6 +31,7 @@ public class DefaultCombatProtection implements CombatProtection {
     public boolean canAttack(final LivingEntity attacker, final LivingEntity defender) {
         return canAttack(attacker, defender, EntityDamageEvent.DamageCause.CUSTOM);
     }
+
     @Override
     public boolean canAttack(final Player attacker, final Player defender, EntityDamageEvent.DamageCause cause) {
         return canAttack((LivingEntity) attacker, defender, cause);

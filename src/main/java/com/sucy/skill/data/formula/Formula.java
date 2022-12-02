@@ -66,16 +66,17 @@ public class Formula implements IValue {
         put("tan", Tan.class);
     }};
 
-    private         IValue[]    values;
-    private         IOperator[] operations;
+    private IValue[]    values;
+    private IOperator[] operations;
     /**
      * Whether the equation was valid when parsed.
      *
      * @return whether the equation was valid
      */
-    @Getter private boolean     valid;
-    private         boolean     negative;
-    private         String      equation;
+    @Getter
+    private boolean     valid;
+    private boolean     negative;
+    private String      equation;
 
     /**
      * Creates a new formula from a config string

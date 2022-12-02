@@ -6,9 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.AreaEffectCloudApplyEvent;
 import org.bukkit.event.entity.LingeringPotionSplashEvent;
 
-import static com.sucy.skill.listener.MechanicListener.POTION_PROJECTILE;
-import static com.sucy.skill.listener.MechanicListener.SKILL_CASTER;
-import static com.sucy.skill.listener.MechanicListener.SKILL_LEVEL;
+import static com.sucy.skill.listener.MechanicListener.*;
 
 /**
  * SkillAPI © 2017

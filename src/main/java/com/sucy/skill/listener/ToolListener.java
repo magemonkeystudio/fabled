@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.listener.GUIToolListener
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,25 +35,20 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.InventoryView;
 
-public class ToolListener extends SkillAPIListener
-{
+public class ToolListener extends SkillAPIListener {
     @EventHandler
-    public void onClick(InventoryClickEvent event)
-    {
-        if (event.getInventory().getHolder() instanceof ToolMenu)
-        {
+    public void onClick(InventoryClickEvent event) {
+        if (event.getInventory().getHolder() instanceof ToolMenu) {
             if (event.getAction().name().startsWith("DROP"))
                 event.setCancelled(true);
             else
                 ((ToolMenu) event.getInventory().getHolder()).handleClick(event);
-        }
-        else if (event.getInventory().getHolder() instanceof GUIHolder)
+        } else if (event.getInventory().getHolder() instanceof GUIHolder)
             ((GUIHolder) event.getInventory().getHolder()).handleClick(event);
     }
 
     @EventHandler
-    public void onDrag(InventoryDragEvent event)
-    {
+    public void onDrag(InventoryDragEvent event) {
         if (event.getInventory().getHolder() instanceof ToolMenu)
             event.setCancelled(true);
         else if (event.getInventory().getHolder() instanceof GUIHolder)
@@ -61,25 +56,20 @@ public class ToolListener extends SkillAPIListener
     }
 
     @EventHandler
-    public void onClose(InventoryCloseEvent event)
-    {
-        if (event.getInventory().getHolder() instanceof ToolMenu)
-        {
+    public void onClose(InventoryCloseEvent event) {
+        if (event.getInventory().getHolder() instanceof ToolMenu) {
             event.getPlayer().setItemOnCursor(null);
             ((ToolMenu) event.getInventory().getHolder()).restore();
-        }
-        else if (event.getInventory().getHolder() instanceof GUIHolder)
+        } else if (event.getInventory().getHolder() instanceof GUIHolder)
             ((GUIHolder) event.getInventory().getHolder()).handleClose(event);
     }
 
     @EventHandler
-    public void onQuit(PlayerQuitEvent event)
-    {
+    public void onQuit(PlayerQuitEvent event) {
         InventoryView view = event.getPlayer().getOpenInventory();
         if (view != null
                 && view.getTopInventory() != null
-                && view.getTopInventory().getHolder() instanceof ToolMenu)
-        {
+                && view.getTopInventory().getHolder() instanceof ToolMenu) {
             event.getPlayer().setItemOnCursor(null);
             ((ToolMenu) view.getTopInventory().getHolder()).restore();
         }

@@ -40,12 +40,12 @@ import org.bukkit.plugin.Plugin;
  * Command to forcefully modify a skill's level
  */
 public class CmdForceSkill implements IFunction {
-    private static final String NOT_PLAYER = "not-player";
-    private static final String NOT_SKILL = "not-skill";
+    private static final String NOT_PLAYER   = "not-player";
+    private static final String NOT_SKILL    = "not-skill";
     private static final String NOT_FUNCTION = "not-function";
-    private static final String UPGRADED = "skill-upped";
-    private static final String DOWNGRADED = "skill-downed";
-    private static final String RESET = "skill-reset";
+    private static final String UPGRADED     = "skill-upped";
+    private static final String DOWNGRADED   = "skill-downed";
+    private static final String RESET        = "skill-reset";
 
     /**
      * Executes the command
@@ -71,8 +71,8 @@ public class CmdForceSkill implements IFunction {
                 return;
             }
 
-            PlayerData playerData = SkillAPI.getPlayerData(player);
-            StringBuilder skillName = new StringBuilder(args[2]);
+            PlayerData    playerData = SkillAPI.getPlayerData(player);
+            StringBuilder skillName  = new StringBuilder(args[2]);
             for (int i = 3; i < args.length; i++) skillName.append(" " + args[i]);
             PlayerSkill skill = playerData.getSkill(skillName.toString());
 

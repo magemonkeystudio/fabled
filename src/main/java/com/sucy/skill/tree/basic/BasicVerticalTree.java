@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.tree.basic.BasicVerticalTree
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -37,8 +37,7 @@ import java.util.List;
 /**
  * A basic implementation of a horizontally ascending skill tree
  */
-public class BasicVerticalTree extends InventoryTree
-{
+public class BasicVerticalTree extends InventoryTree {
     private int width;
 
     /**
@@ -47,8 +46,7 @@ public class BasicVerticalTree extends InventoryTree
      * @param api  api reference
      * @param tree class reference
      */
-    public BasicVerticalTree(SkillAPI api, RPGClass tree)
-    {
+    public BasicVerticalTree(SkillAPI api, RPGClass tree) {
         super(api, tree);
     }
 
@@ -58,27 +56,24 @@ public class BasicVerticalTree extends InventoryTree
      * @throws SkillTreeException
      */
     @Override
-    public void arrange(List<Skill> skills) throws SkillTreeException
-    {
+    public void arrange(List<Skill> skills) throws SkillTreeException {
 
         // Arrange the skill tree
         Collections.sort(skills, comparator);
         height = 0;
-        int i = -1;
+        int   i = -1;
         Skill skill;
 
         // Cycle through all skills that do not have children, put them
         // at the far left, and branch their children to the right
-        while (++i < skills.size() && (skill = skills.get(i)).getSkillReq() == null)
-        {
+        while (++i < skills.size() && (skill = skills.get(i)).getSkillReq() == null) {
             skillSlots.put(i, skill);
             width = placeChildren(skills, skill, i + 9, 0);
         }
         height = Math.max(height, 1);
 
         // Too large
-        if (width >= 9)
-        {
+        if (width >= 9) {
             throw new SkillTreeException("Error generating the skill tree: " + tree.getName() + " - too large of a tree!");
         }
     }
@@ -93,25 +88,20 @@ public class BasicVerticalTree extends InventoryTree
      *
      * @throws SkillTreeException
      */
-    private int placeChildren(List<Skill> skills, Skill skill, int slot, int depth) throws SkillTreeException
-    {
+    private int placeChildren(List<Skill> skills, Skill skill, int slot, int depth) throws SkillTreeException {
 
         // Update tree height
-        if (depth + 1 > height)
-        {
+        if (depth + 1 > height) {
             height = depth + 1;
         }
 
         // Add in all children
         int width = 0;
-        for (Skill s : skills)
-        {
-            if (s.getSkillReq() == null)
-            {
+        for (Skill s : skills) {
+            if (s.getSkillReq() == null) {
                 continue;
             }
-            if (s.getSkillReq().equalsIgnoreCase(skill.getName()))
-            {
+            if (s.getSkillReq().equalsIgnoreCase(skill.getName())) {
                 skillSlots.put(slot + width, s);
                 width += placeChildren(skills, s, slot + width + 9, depth + 1);
             }

@@ -128,7 +128,7 @@ public class ComboListener extends SkillAPIListener {
         }
     }
 
-    @EventHandler (ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true)
     public void onFClick(final PlayerSwapHandItemsEvent event) {
         SkillAPI.getPlayerData(event.getPlayer()).getComboData().applyClick(Click.F);
 

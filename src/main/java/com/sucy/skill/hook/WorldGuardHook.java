@@ -22,9 +22,9 @@ public class WorldGuardHook {
 
     private static Method regionMethod;
 
-    private static Class<?> vectorClass;
+    private static Class<?>       vectorClass;
     private static Constructor<?> vectorConstructor;
-    private static Method applicableRegionsMethod;
+    private static Method         applicableRegionsMethod;
 
     /**
      * Fetches the list of region IDs applicable to a given location
@@ -38,11 +38,11 @@ public class WorldGuardHook {
                     .getPlatform()
                     .getRegionContainer()
                     .get(BukkitAdapter.adapt(loc.getWorld()))
-                    .getApplicableRegionsIDs(BlockVector3.at(loc.getX(), loc.getY(),loc.getZ()));
+                    .getApplicableRegionsIDs(BlockVector3.at(loc.getX(), loc.getY(), loc.getZ()));
         } catch (NoClassDefFoundError ex) {
             try {
                 final WorldGuardPlugin plugin = SkillAPI.getPlugin(WorldGuardPlugin.class);
-                return (List<String>) getApplicableRegionsMethod().invoke((getRegionMethod().invoke(plugin, loc.getWorld())), vectorConstructor.newInstance(loc.getX(), loc.getY(),loc.getZ()));
+                return (List<String>) getApplicableRegionsMethod().invoke((getRegionMethod().invoke(plugin, loc.getWorld())), vectorConstructor.newInstance(loc.getX(), loc.getY(), loc.getZ()));
             } catch (final Exception e) {
                 // Cannot handle world guard
                 e.printStackTrace();

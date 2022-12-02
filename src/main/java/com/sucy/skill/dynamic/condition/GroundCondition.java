@@ -11,7 +11,7 @@ public class GroundCondition extends ConditionComponent {
 
     @Override
     boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        final boolean onGround = target.isOnGround();
+        final boolean onGround     = target.isOnGround();
         final boolean wantOnGround = settings.getString(type, "on ground").equalsIgnoreCase("on ground");
         return onGround == wantOnGround;
     }

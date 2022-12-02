@@ -39,7 +39,6 @@ public interface SkillShot {
      *
      * @param user  user of the skill
      * @param level skill level
-     *
      * @param force force the cast
      * @return true if could cast, false otherwise
      */
@@ -50,7 +49,6 @@ public interface SkillShot {
      *
      * @param user  user of the skill
      * @param level skill level
-     *
      * @return true if could cast, false otherwise
      */
     boolean cast(LivingEntity user, int level);

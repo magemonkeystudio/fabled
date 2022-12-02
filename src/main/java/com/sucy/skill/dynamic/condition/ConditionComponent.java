@@ -13,13 +13,17 @@ import java.util.stream.Collectors;
  */
 public abstract class ConditionComponent extends EffectComponent {
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ComponentType getType() {
         return ComponentType.CONDITION;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean execute(
             final LivingEntity caster, final int level, final List<LivingEntity> targets, boolean force) {

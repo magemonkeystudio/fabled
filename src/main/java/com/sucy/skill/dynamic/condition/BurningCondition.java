@@ -1,33 +1,31 @@
 package com.sucy.skill.dynamic.condition;
 
+import com.sucy.skill.dynamic.DynamicSkill;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.entity.LivingEntity;
 
-import com.sucy.skill.dynamic.DynamicSkill;
+public class BurningCondition extends ConditionComponent {
 
-import mc.promcteam.engine.mccore.config.parse.DataSection;
+    private static final String BURN = "burn";
 
-public class BurningCondition extends ConditionComponent{
-	
-	private static final String BURN = "burn";
-	
-	private String burn;
-	
-	@Override
-	boolean test(LivingEntity caster, int level, LivingEntity target) {
+    private String burn;
 
-		return (caster.getFireTicks() > 0) == burn.equalsIgnoreCase("Burn");
-	}
+    @Override
+    boolean test(LivingEntity caster, int level, LivingEntity target) {
 
-	@Override
-	public void load(DynamicSkill skill, DataSection config) {
-		super.load(skill, config);
-		
-		burn = settings.getString(BURN);
-	}
-	
-	@Override
-	public String getKey() {
-		return "Burning";
-	}
+        return (caster.getFireTicks() > 0) == burn.equalsIgnoreCase("Burn");
+    }
+
+    @Override
+    public void load(DynamicSkill skill, DataSection config) {
+        super.load(skill, config);
+
+        burn = settings.getString(BURN);
+    }
+
+    @Override
+    public String getKey() {
+        return "Burning";
+    }
 
 }

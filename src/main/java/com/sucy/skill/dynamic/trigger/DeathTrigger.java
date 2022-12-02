@@ -12,35 +12,47 @@ import java.util.Map;
  */
 public class DeathTrigger implements Trigger<EntityDeathEvent> {
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getKey() {
         return "DEATH";
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Class<EntityDeathEvent> getEvent() {
         return EntityDeathEvent.class;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean shouldTrigger(final EntityDeathEvent event, final int level, final Settings settings) {
         return !isTargetingKiller(settings) || event.getEntity().getKiller() != null;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void setValues(final EntityDeathEvent event, final Map<String, Object> data) { }
+    public void setValues(final EntityDeathEvent event, final Map<String, Object> data) {}
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LivingEntity getCaster(final EntityDeathEvent event) {
         return event.getEntity();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LivingEntity getTarget(final EntityDeathEvent event, final Settings settings) {
         return isTargetingKiller(settings) ? event.getEntity().getKiller() : event.getEntity();

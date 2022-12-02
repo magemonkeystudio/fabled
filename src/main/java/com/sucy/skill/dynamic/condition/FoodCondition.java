@@ -15,8 +15,8 @@ public class FoodCondition extends ConditionComponent {
         }
 
         final String type = settings.getString(TYPE).toLowerCase();
-        final double min = parseValues(caster, MIN, level, 0);
-        final double max = parseValues(caster, MAX, level, 999);
+        final double min  = parseValues(caster, MIN, level, 0);
+        final double max  = parseValues(caster, MAX, level, 999);
 
         double value;
         switch (type) {

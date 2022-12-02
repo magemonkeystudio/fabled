@@ -12,25 +12,33 @@ import java.util.Map;
  */
 public class SkillDealtTrigger extends SkillTrigger {
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getKey() {
         return "SKILL_DAMAGE";
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LivingEntity getCaster(final SkillDamageEvent event) {
         return event.getDamager();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LivingEntity getTarget(final SkillDamageEvent event, final Settings settings) {
         return isUsingTarget(settings) ? event.getTarget() : event.getDamager();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setValues(final SkillDamageEvent event, final Map<String, Object> data) {
         data.put("api-dealt", event.getDamage());

@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.player.PlayerCombos
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -120,7 +120,9 @@ public class PlayerCombos {
      */
     public void applyClick(Click click) {
         // Don't count disabled clicks
-        if (!SkillAPI.getComboManager().isClickEnabled(click.getId())) { return; }
+        if (!SkillAPI.getComboManager().isClickEnabled(click.getId())) {
+            return;
+        }
 
         checkExpired();
 
@@ -157,12 +159,16 @@ public class PlayerCombos {
      * @return current combo string
      */
     public String getCurrentComboString() {
-        if (clickIndex == 0) { return ""; } else if (clickIndex == clicks.length) {
+        if (clickIndex == 0) {
+            return "";
+        } else if (clickIndex == clicks.length) {
             final int id = SkillAPI.getComboManager().convertCombo(clicks);
             checkExpired();
             if (skills.containsKey(id)) {
                 return SkillAPI.getSkill(skills.get(id)).getName();
-            } else { return ""; }
+            } else {
+                return "";
+            }
         }
 
         checkExpired();
@@ -195,10 +201,12 @@ public class PlayerCombos {
      * @return ID of conflict or -1 if no conflict
      */
     public List<Integer> getConflicts(int id) {
-        ComboManager cm = SkillAPI.getComboManager();
+        ComboManager  cm        = SkillAPI.getComboManager();
         List<Integer> conflicts = new ArrayList<>();
         for (int taken : skills.keySet()) {
-            if (cm.conflicts(id, taken)) { conflicts.add(taken); }
+            if (cm.conflicts(id, taken)) {
+                conflicts.add(taken);
+            }
         }
         return conflicts;
     }
@@ -210,7 +218,9 @@ public class PlayerCombos {
      * @param skill skill to add
      */
     public void addSkill(Skill skill) {
-        if (skill == null || !skill.canCast() || !SkillAPI.getSettings().isCombosEnabled()) { return; }
+        if (skill == null || !skill.canCast() || !SkillAPI.getSettings().isCombosEnabled()) {
+            return;
+        }
 
         // Can't already be added
         if (skill.hasCombo()) {
@@ -221,16 +231,20 @@ public class PlayerCombos {
         }
 
         // Get next available combo
-        ComboManager cm = SkillAPI.getComboManager();
-        int combo = 1 << (Click.BITS * (cm.getComboSize() - 1));
-        int max = (1 << (Click.BITS * cm.getComboSize())) - 1;
-        while (combo <= max && (!cm.isValidDefaultCombo(combo) || hasConflict(combo))) { combo++; }
+        ComboManager cm    = SkillAPI.getComboManager();
+        int          combo = 1 << (Click.BITS * (cm.getComboSize() - 1));
+        int          max   = (1 << (Click.BITS * cm.getComboSize())) - 1;
+        while (combo <= max && (!cm.isValidDefaultCombo(combo) || hasConflict(combo))) {
+            combo++;
+        }
 
         // Add it if valid
         if (combo <= max) {
             skills.put(combo, skill.getName().toLowerCase());
             reverse.put(skill.getName(), combo);
-        } else { Logger.invalid("Failed to assign combo for " + skill.getName() + " - no remaining combos"); }
+        } else {
+            Logger.invalid("Failed to assign combo for " + skill.getName() + " - no remaining combos");
+        }
     }
 
     /**
@@ -239,7 +253,9 @@ public class PlayerCombos {
      * @param skill skill to remove
      */
     public void removeSkill(Skill skill) {
-        if (skill == null || !reverse.containsKey(skill.getName())) { return; }
+        if (skill == null || !reverse.containsKey(skill.getName())) {
+            return;
+        }
         skills.remove(reverse.remove(skill.getName()));
     }
 
@@ -289,7 +305,9 @@ public class PlayerCombos {
      * @return true if set successfully, false otherwise
      */
     public boolean setSkill(Skill skill, int id) {
-        if (skill == null || !skill.canCast() || !isValidCombo(id)) { return false; }
+        if (skill == null || !skill.canCast() || !isValidCombo(id)) {
+            return false;
+        }
 
         removeSkill(skill);
         List<Integer> conflicts = getConflicts(id);

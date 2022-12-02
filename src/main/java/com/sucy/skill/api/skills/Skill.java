@@ -755,7 +755,9 @@ public abstract class Skill implements IconHolder {
 
         // We have to check if the damage event would get cancelled, since we aren't _really_ calling
         // EntityDamageByEntityEvent unless we use knockback
-        if (!SkillAPI.getSettings().canAttack(source, target, cause)) { return; }
+        if (!SkillAPI.getSettings().canAttack(source, target, cause)) {
+            return;
+        }
 
         SkillDamageEvent event = new SkillDamageEvent(this, source, target, damage, classification, knockback);
         Bukkit.getPluginManager().callEvent(event);

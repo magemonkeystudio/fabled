@@ -43,10 +43,10 @@ import org.bukkit.plugin.Plugin;
  * Command to clear all bound skills
  */
 public class CmdForceAccount implements IFunction {
-    private static final String NOT_PLAYER = "not-player";
+    private static final String NOT_PLAYER  = "not-player";
     private static final String NOT_ACCOUNT = "not-account";
-    private static final String CHANGED = "account-changed";
-    private static final String TARGET = "target-notice";
+    private static final String CHANGED     = "account-changed";
+    private static final String TARGET      = "target-notice";
 
     /**
      * Executes the command

@@ -42,12 +42,14 @@ public class CirclePreview extends RoundPreview {
      * @param radius radius of the circle
      */
     public CirclePreview(double radius) {
-        if (radius == 0) { throw new IllegalArgumentException("Invalid radius - cannot be 0"); }
+        if (radius == 0) {
+            throw new IllegalArgumentException("Invalid radius - cannot be 0");
+        }
 
         this.radius = Math.abs(radius);
-        particles = (int) (PreviewSettings.density*radius*2*Math.PI);
+        particles = (int) (PreviewSettings.density * radius * 2 * Math.PI);
 
-        double angle = Math.PI*2/particles;
+        double angle = Math.PI * 2 / particles;
         sin = Math.sin(angle);
         cos = Math.cos(angle);
     }
@@ -65,20 +67,20 @@ public class CirclePreview extends RoundPreview {
         double z = location.getZ();
 
         // Offset angle for animation
-        double startAngle = step*PreviewSettings.animation/(20*radius);
-        double ii = Math.sin(startAngle)*radius;
-        double jj = Math.cos(startAngle)*radius;
+        double startAngle = step * PreviewSettings.animation / (20 * radius);
+        double ii         = Math.sin(startAngle) * radius;
+        double jj         = Math.cos(startAngle) * radius;
 
         // Make the packets
         for (int i = 0; i < particles; i++) {
-            particle.instance(player, x+ii, y, z+jj);
+            particle.instance(player, x + ii, y, z + jj);
 
-            double temp = ii*cos-jj*sin;
-            jj = ii*sin+jj*cos;
+            double temp = ii * cos - jj * sin;
+            jj = ii * sin + jj * cos;
             ii = temp;
         }
     }
 
     @Override
-    public double getRadius() { return radius; }
+    public double getRadius() {return radius;}
 }

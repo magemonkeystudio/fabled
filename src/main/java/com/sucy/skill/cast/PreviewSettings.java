@@ -36,15 +36,15 @@ public class PreviewSettings {
     public static ParticleSettings particle;
 
     public static boolean enabled;
-    public static double density;
-    public static double animation;
-    public static int interval;
+    public static double  density;
+    public static double  animation;
+    public static int     interval;
 
     public static void load(DataSection data) {
         enabled = data.getBoolean("enabled");
         density = data.getDouble("density");
         animation = data.getDouble("animation");
-        interval = (int) Math.ceil(20/data.getDouble("frequency"));
+        interval = (int) Math.ceil(20 / data.getDouble("frequency"));
         particle = new ParticleSettings(data.getSection("particle"));
     }
 }

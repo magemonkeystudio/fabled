@@ -485,6 +485,7 @@ public abstract class RPGClass implements IconHolder {
 
     /**
      * Retrieves the list of skills this class provides a player
+     *
      * @param includeParent Whether to include the parent skills or not
      * @return list of skills provided by the class
      */

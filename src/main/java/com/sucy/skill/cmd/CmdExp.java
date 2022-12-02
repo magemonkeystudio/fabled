@@ -48,12 +48,12 @@ import java.util.regex.Pattern;
  */
 public class CmdExp implements IFunction {
     private static final Pattern IS_NUMBER = Pattern.compile("-?[0-9]+");
-    private static final Pattern IS_BOOL = Pattern.compile("(true)|(false)");
+    private static final Pattern IS_BOOL   = Pattern.compile("(true)|(false)");
 
     private static final String NOT_PLAYER = "not-player";
-    private static final String GAVE_EXP = "gave-exp";
-    private static final String TOOK_EXP = "took-exp";
-    private static final String DISABLED = "world-disabled";
+    private static final String GAVE_EXP   = "gave-exp";
+    private static final String TOOK_EXP   = "took-exp";
+    private static final String DISABLED   = "world-disabled";
 
     /**
      * Runs the command
@@ -86,10 +86,12 @@ public class CmdExp implements IFunction {
             // Parse the experience
             double amount = NumberParser.parseDouble(args[numberIndex]);
 
-            if (amount == 0) { return; }
+            if (amount == 0) {
+                return;
+            }
 
-            int lastArg = args.length - 1;
-            boolean message = IS_BOOL.matcher(args[lastArg]).matches();
+            int     lastArg     = args.length - 1;
+            boolean message     = IS_BOOL.matcher(args[lastArg]).matches();
             boolean showMessage = !message || Boolean.parseBoolean(args[lastArg]);
             if (message) lastArg--;
 
@@ -97,7 +99,9 @@ public class CmdExp implements IFunction {
             // Give experience to a specific class group
             if (numberIndex + 1 <= lastArg) {
                 PlayerClass playerClass = data.getClass(CmdManager.join(args, numberIndex + 1, lastArg));
-                if (playerClass == null) { return; }
+                if (playerClass == null) {
+                    return;
+                }
 
                 if (amount > 0) {
                     playerClass.giveExp(amount, ExpSource.COMMAND, showMessage);
@@ -109,7 +113,7 @@ public class CmdExp implements IFunction {
                                     ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD + "{player} {exp}{class} experience",
                                     Filter.PLAYER.setReplacement(target.getName()),
                                     RPGFilter.EXP.setReplacement("" + amount),
-                                    RPGFilter.CLASS.setReplacement(' '+playerClass.getData().getGroup()));
+                                    RPGFilter.CLASS.setReplacement(' ' + playerClass.getData().getGroup()));
                         }
                     }
                 } else {
@@ -121,7 +125,7 @@ public class CmdExp implements IFunction {
                                 ChatColor.DARK_GREEN + "You have taken " + ChatColor.GOLD + "{exp}{class} experience " + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}",
                                 Filter.PLAYER.setReplacement(target.getName()),
                                 RPGFilter.EXP.setReplacement("" + -amount),
-                                RPGFilter.CLASS.setReplacement(' '+playerClass.getData().getGroup()));
+                                RPGFilter.CLASS.setReplacement(' ' + playerClass.getData().getGroup()));
                     }
                 }
             }

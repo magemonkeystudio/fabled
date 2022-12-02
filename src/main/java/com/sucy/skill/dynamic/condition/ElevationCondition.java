@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.dynamic.condition.ElevationCondition
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -57,8 +57,8 @@ public class ElevationCondition extends ConditionComponent {
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         String type = settings.getString(TYPE).toLowerCase();
-        double min = parseValues(caster, MIN, level, 0);
-        double max = parseValues(caster, MAX, level, 255);
+        double min  = parseValues(caster, MIN, level, 0);
+        double max  = parseValues(caster, MAX, level, 255);
 
         ArrayList<LivingEntity> list = new ArrayList<LivingEntity>();
         for (LivingEntity target : targets) {
@@ -78,8 +78,8 @@ public class ElevationCondition extends ConditionComponent {
     @Override
     boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
         final String type = settings.getString(TYPE);
-        final double min = parseValues(caster, MIN, level, 0);
-        final double max = parseValues(caster, MAX, level, 255);
+        final double min  = parseValues(caster, MIN, level, 0);
+        final double max  = parseValues(caster, MAX, level, 255);
 
         double value;
         if (type.equalsIgnoreCase("difference")) {

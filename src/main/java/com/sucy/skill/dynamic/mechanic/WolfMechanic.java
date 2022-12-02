@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.dynamic.mechanic.WolfMechanic
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -80,13 +80,13 @@ public class WolfMechanic extends MechanicComponent {
 
         final Player player = (Player) caster;
 
-        String color = settings.getString(COLOR);
-        double health = parseValues(player, HEALTH, level, 10.0);
-        String name = TextFormatter.colorString(settings.getString(NAME, "").replace("{player}", player.getName()));
-        double damage = parseValues(player, DAMAGE, level, 3.0);
-        double amount = parseValues(player, AMOUNT, level, 1.0);
-        boolean sitting = settings.getString(SITTING, "false").equalsIgnoreCase("true");
-        List<String> skills = settings.getStringList(SKILLS);
+        String       color   = settings.getString(COLOR);
+        double       health  = parseValues(player, HEALTH, level, 10.0);
+        String       name    = TextFormatter.colorString(settings.getString(NAME, "").replace("{player}", player.getName()));
+        double       damage  = parseValues(player, DAMAGE, level, 3.0);
+        double       amount  = parseValues(player, AMOUNT, level, 1.0);
+        boolean      sitting = settings.getString(SITTING, "false").equalsIgnoreCase("true");
+        List<String> skills  = settings.getStringList(SKILLS);
 
         DyeColor dye = null;
         if (color != null) {
@@ -95,9 +95,9 @@ public class WolfMechanic extends MechanicComponent {
             } catch (Exception ex) { /* Invalid color */ }
         }
 
-        double seconds = parseValues(player, SECONDS, level, 10.0);
-        int ticks = (int) (seconds * 20);
-        List<LivingEntity> wolves = new ArrayList<>();
+        double             seconds = parseValues(player, SECONDS, level, 10.0);
+        int                ticks   = (int) (seconds * 20);
+        List<LivingEntity> wolves  = new ArrayList<>();
         for (LivingEntity target : targets) {
             for (int i = 0; i < amount; i++) {
                 Wolf wolf = target.getWorld().spawn(target.getLocation(), Wolf.class);

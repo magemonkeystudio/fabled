@@ -67,13 +67,17 @@ public class GroupSettings {
      *
      * @return true if resets upon profession, false otherwise
      */
-    @Getter private      boolean professReset              = false;
-    @Getter private      boolean professRefundSkills       = false;
-    @Getter private      boolean professRefundAttributes   = false;
+    @Getter
+    private              boolean professReset              = false;
+    @Getter
+    private              boolean professRefundSkills       = false;
+    @Getter
+    private              boolean professRefundAttributes   = false;
     /**
      * @return Whether to show the scoreboard or not
      */
-    @Getter private      boolean showScoreboard            = true;
+    @Getter
+    private              boolean showScoreboard            = true;
     /**
      * @return true if the group is allowed to reset, false otherwise
      */
@@ -83,7 +87,8 @@ public class GroupSettings {
     /**
      * @return true if players with the same class under this group are allies
      */
-    @Getter private      boolean friendly                  = false;
+    @Getter
+    private              boolean friendly                  = false;
     private              boolean useCustomPoints           = false;
     private              boolean useCustomAttribs          = false;
     private              int[]   customPoints              = POINTS;
@@ -93,29 +98,34 @@ public class GroupSettings {
      *
      * @return death penalty
      */
-    @Getter private      double  deathPenalty              = 0;
+    @Getter
+    private              double  deathPenalty              = 0;
     /**
      * Retrieves the number of skill points classes in this group start with
      *
      * @return starting skill points
      */
-    @Getter private      int     startingPoints            = 1;
+    @Getter
+    private              int     startingPoints            = 1;
     /**
      * Retrieves the number of skill points gained in the group per level
      *
      * @return skill points per level
      */
-    @Getter private      double  pointsPerLevel            = 1;
+    @Getter
+    private              double  pointsPerLevel            = 1;
     /**
      * Retrieves the number of attribute points gained each level
      *
      * @return attribute points gained each level
      */
-    @Getter private      double  attribsPerLevel           = 1;
+    @Getter
+    private              double  attribsPerLevel           = 1;
     /**
      * @return attribute points classes in the group start with
      */
-    @Getter private      int     startingAttribs           = 0;
+    @Getter
+    private              int     startingAttribs           = 0;
 
     /**
      * Initializes group settings with default settings
@@ -158,7 +168,9 @@ public class GroupSettings {
                     if (level < points.size()) {
                         points.set(level, data.getInt(key, 0));
                     } else {
-                        while (level > points.size()) {points.add(0);}
+                        while (level > points.size()) {
+                            points.add(0);
+                        }
                         points.add(data.getInt(key, 0));
                     }
                 } catch (final NumberFormatException ex) {
@@ -222,10 +234,14 @@ public class GroupSettings {
     private int computePoints(int newLevel, int oldLevel, boolean custom, int[] data, double perLevel) {
         if (custom) {
             int newPoints = 0;
-            for (int i = 1; i < data.length && i <= newLevel; i++) { newPoints += data[i]; }
+            for (int i = 1; i < data.length && i <= newLevel; i++) {
+                newPoints += data[i];
+            }
 
             int oldPoints = 0;
-            for (int i = 1; i < data.length && i <= oldLevel; i++) { oldPoints += data[i]; }
+            for (int i = 1; i < data.length && i <= oldLevel; i++) {
+                oldPoints += data[i];
+            }
 
             return newPoints - oldPoints;
         } else {
@@ -345,7 +361,9 @@ public class GroupSettings {
 
     private void savePoints(final DataSection destination, final int[] points) {
         for (int i = 0; i < points.length; i++) {
-            if (points[i] > 0) {destination.set(Integer.toString(i), points[i]);}
+            if (points[i] > 0) {
+                destination.set(Integer.toString(i), points[i]);
+            }
         }
     }
 }

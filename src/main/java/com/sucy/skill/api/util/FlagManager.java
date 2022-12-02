@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.util.FlagManager
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,8 +33,7 @@ import java.util.HashMap;
 /**
  * The manager for temporary entity flag data
  */
-public class FlagManager
-{
+public class FlagManager {
     private static final HashMap<Integer, FlagData> data = new HashMap<Integer, FlagData>();
 
     /**
@@ -45,8 +44,7 @@ public class FlagManager
      *
      * @return the flag data for the entity
      */
-    public static FlagData getFlagData(LivingEntity entity)
-    {
+    public static FlagData getFlagData(LivingEntity entity) {
         return getFlagData(entity, true);
     }
 
@@ -60,14 +58,11 @@ public class FlagManager
      *
      * @return the flag data for an enemy
      */
-    public static FlagData getFlagData(LivingEntity entity, boolean create)
-    {
-        if (entity == null)
-        {
+    public static FlagData getFlagData(LivingEntity entity, boolean create) {
+        if (entity == null) {
             return null;
         }
-        if (!data.containsKey(entity.getEntityId()) && create)
-        {
+        if (!data.containsKey(entity.getEntityId()) && create) {
             data.put(entity.getEntityId(), new FlagData(entity));
         }
         return data.get(entity.getEntityId());
@@ -80,11 +75,9 @@ public class FlagManager
      * @param flag   the flag to add
      * @param ticks  the duration to add the flag for
      */
-    public static void addFlag(LivingEntity entity, String flag, int ticks)
-    {
+    public static void addFlag(LivingEntity entity, String flag, int ticks) {
         FlagData data = getFlagData(entity, true);
-        if (data != null)
-        {
+        if (data != null) {
             data.addFlag(flag, ticks);
         }
     }
@@ -95,11 +88,9 @@ public class FlagManager
      * @param entity entity to remove the flag from
      * @param flag   flag to remove
      */
-    public static void removeFlag(LivingEntity entity, String flag)
-    {
+    public static void removeFlag(LivingEntity entity, String flag) {
         FlagData data = getFlagData(entity, false);
-        if (data != null)
-        {
+        if (data != null) {
             data.removeFlag(flag);
         }
     }
@@ -112,8 +103,7 @@ public class FlagManager
      *
      * @return true if the flag is active on the entity, false otherwise
      */
-    public static boolean hasFlag(LivingEntity entity, String flag)
-    {
+    public static boolean hasFlag(LivingEntity entity, String flag) {
         return entity != null && data.containsKey(entity.getEntityId()) && getFlagData(entity, false).hasFlag(flag);
     }
 
@@ -125,10 +115,8 @@ public class FlagManager
      *
      * @return time left on the flag in seconds for the entity
      */
-    public static int getTimeLeft(LivingEntity entity, String flag)
-    {
-        if (entity == null)
-        {
+    public static int getTimeLeft(LivingEntity entity, String flag) {
+        if (entity == null) {
             return 0;
         }
         return data.containsKey(entity.getEntityId()) ? getFlagData(entity).getSecondsLeft(flag) : 0;
@@ -139,15 +127,12 @@ public class FlagManager
      *
      * @param entity entity to clear the flags for
      */
-    public static void clearFlags(LivingEntity entity)
-    {
-        if (entity == null)
-        {
+    public static void clearFlags(LivingEntity entity) {
+        if (entity == null) {
             return;
         }
         FlagData result = data.remove(entity.getEntityId());
-        if (result != null)
-        {
+        if (result != null) {
             result.clear();
         }
     }

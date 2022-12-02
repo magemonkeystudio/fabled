@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.cmd.CmdBind
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,14 +26,14 @@
  */
 package com.sucy.skill.cmd;
 
-import mc.promcteam.engine.mccore.commands.CommandManager;
-import mc.promcteam.engine.mccore.commands.ConfigurableCommand;
-import mc.promcteam.engine.mccore.commands.IFunction;
-import mc.promcteam.engine.mccore.util.TextFormatter;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkill;
 import com.sucy.skill.language.RPGFilter;
+import mc.promcteam.engine.mccore.commands.CommandManager;
+import mc.promcteam.engine.mccore.commands.ConfigurableCommand;
+import mc.promcteam.engine.mccore.commands.IFunction;
+import mc.promcteam.engine.mccore.util.TextFormatter;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -43,8 +43,7 @@ import org.bukkit.plugin.Plugin;
 /**
  * Command to bind a skill to an item
  */
-public class CmdBind implements IFunction
-{
+public class CmdBind implements IFunction {
     private static final String NOT_PLAYER   = "not-player";
     private static final String NOT_SKILL    = "not-skill";
     private static final String NOT_UNLOCKED = "not-unlocked";
@@ -61,24 +60,17 @@ public class CmdBind implements IFunction
      * @param args    arguments
      */
     @Override
-    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args)
-    {
-        if (!(sender instanceof Player))
-        {
+    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
             command.sendMessage(sender, NOT_PLAYER, "&4Only players can use this command");
         }
 
         // Disabled world
-        else if (!SkillAPI.getSettings().isWorldEnabled(((Player) sender).getWorld()))
-        {
+        else if (!SkillAPI.getSettings().isWorldEnabled(((Player) sender).getWorld())) {
             command.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
-        }
-
-        else if (args.length >= 1)
-        {
+        } else if (args.length >= 1) {
             ItemStack item = ((Player) sender).getItemInHand();
-            if (item == null || item.getType() == Material.AIR)
-            {
+            if (item == null || item.getType() == Material.AIR) {
                 command.sendMessage(sender, NO_ITEM, "&4You are not holding an item");
                 return;
             }
@@ -86,29 +78,21 @@ public class CmdBind implements IFunction
             PlayerData player = SkillAPI.getPlayerData((Player) sender);
 
             String name = args[0];
-            for (int i = 1; i < args.length; i++)
-            {
+            for (int i = 1; i < args.length; i++) {
                 name += ' ' + args[i];
             }
 
             PlayerSkill skill = player.getSkill(name);
 
-            if (skill == null)
-            {
+            if (skill == null) {
                 command.sendMessage(sender, NOT_SKILL, "&4You do not have that skill");
-            }
-            else if (skill.getLevel() == 0)
-            {
+            } else if (skill.getLevel() == 0) {
                 command.sendMessage(sender, NOT_UNLOCKED, "&4You have not unlocked that skill");
-            }
-            else
-            {
+            } else {
                 player.bind(item.getType(), skill);
                 command.sendMessage(sender, SKILL_BOUND, "&6{skill} &2has been bound to &6{item}", RPGFilter.SKILL.setReplacement(skill.getData().getName()), RPGFilter.ITEM.setReplacement(TextFormatter.format(item.getType().name())));
             }
-        }
-        else
-        {
+        } else {
             CommandManager.displayUsage(command, sender);
         }
     }

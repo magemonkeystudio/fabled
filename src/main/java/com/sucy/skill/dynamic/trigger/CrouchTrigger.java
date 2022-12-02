@@ -12,36 +12,48 @@ import java.util.Map;
  */
 public class CrouchTrigger implements Trigger<PlayerToggleSneakEvent> {
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getKey() {
         return "CROUCH";
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Class<PlayerToggleSneakEvent> getEvent() {
         return PlayerToggleSneakEvent.class;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean shouldTrigger(final PlayerToggleSneakEvent event, final int level, final Settings settings) {
         final String type = settings.getString("type", "start crouching");
         return type.equalsIgnoreCase("both") || event.isSneaking() != type.equalsIgnoreCase("stop crouching");
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void setValues(final PlayerToggleSneakEvent event, final Map<String, Object> data) { }
+    public void setValues(final PlayerToggleSneakEvent event, final Map<String, Object> data) {}
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LivingEntity getCaster(final PlayerToggleSneakEvent event) {
         return event.getPlayer();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LivingEntity getTarget(final PlayerToggleSneakEvent event, final Settings settings) {
         return event.getPlayer();

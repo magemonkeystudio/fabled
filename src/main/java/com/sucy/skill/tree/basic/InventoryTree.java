@@ -54,7 +54,7 @@ public abstract class InventoryTree extends SkillTree {
     /**
      * Comparator for skills for most trees
      */
-    protected static final Comparator<Skill> comparator = new Comparator<Skill>() {
+    protected static final Comparator<Skill>       comparator    = new Comparator<Skill>() {
 
         /**
          * Compares skills based on their stats for skill tree arrangement
@@ -71,16 +71,16 @@ public abstract class InventoryTree extends SkillTree {
         public int compare(Skill skill1, Skill skill2) {
             return skill1.getSkillReq() != null && skill2.getSkillReq() == null ? 1
                     : skill1.getSkillReq() == null && skill2.getSkillReq() != null ? -1
-                    : skill1.getLevelReq(0) > skill2.getLevelReq(0) ? 1
-                    : skill1.getLevelReq(0) < skill2.getLevelReq(0) ? -1
-                    : skill1.getCost(0) > skill2.getCost(0) ? 1
-                    : skill1.getCost(0) < skill2.getCost(0) ? -1
-                    : skill1.getName().compareTo(skill2.getName());
+                            : skill1.getLevelReq(0) > skill2.getLevelReq(0) ? 1
+                                    : skill1.getLevelReq(0) < skill2.getLevelReq(0) ? -1
+                                            : skill1.getCost(0) > skill2.getCost(0) ? 1
+                                                    : skill1.getCost(0) < skill2.getCost(0) ? -1
+                                                            : skill1.getName().compareTo(skill2.getName());
         }
     };
-    private static final String INVENTORY_KEY = "SAPI_ST";
-    protected final HashMap<Integer, Skill> skillSlots = new HashMap<Integer, Skill>();
-    protected int height;
+    private static final   String                  INVENTORY_KEY = "SAPI_ST";
+    protected final        HashMap<Integer, Skill> skillSlots    = new HashMap<Integer, Skill>();
+    protected              int                     height;
 
     /**
      * Constructor

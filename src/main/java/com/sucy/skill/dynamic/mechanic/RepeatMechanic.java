@@ -52,7 +52,6 @@ public class RepeatMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -64,14 +63,16 @@ public class RepeatMechanic extends MechanicComponent {
                 return false;
             }
 
-            final int        delay      = (int) (settings.getDouble(DELAY, 0.0) * 20);
-            final int        period     = (int) (settings.getDouble(PERIOD, 1.0) * 20);
-            final boolean    stopOnFail = settings.getBool(STOP_ON_FAIL, false);
+            final int     delay      = (int) (settings.getDouble(DELAY, 0.0) * 20);
+            final int     period     = (int) (settings.getDouble(PERIOD, 1.0) * 20);
+            final boolean stopOnFail = settings.getBool(STOP_ON_FAIL, false);
             if (period <= 0) {
                 // 0 tick loop
-                while (count > 0) { count = execute(caster, targets, count, stopOnFail, force); }
+                while (count > 0) {
+                    count = execute(caster, targets, count, stopOnFail, force);
+                }
             } else {
-                final RepeatTask task       = new RepeatTask(caster, targets, count, delay, period, stopOnFail, force);
+                final RepeatTask task = new RepeatTask(caster, targets, count, delay, period, stopOnFail, force);
                 tasks.computeIfAbsent(caster.getEntityId(), ArrayList::new).add(task);
             }
             return true;
@@ -86,14 +87,20 @@ public class RepeatMechanic extends MechanicComponent {
             }
         }
 
-        if ((!skill.isActive(caster) && !force) || targets.size() == 0) { return 0; }
+        if ((!skill.isActive(caster) && !force) || targets.size() == 0) {
+            return 0;
+        }
 
         final int level   = skill.getActiveLevel(caster);
         boolean   success = executeChildren(caster, level, targets, force);
 
-        if (--count <= 0 || (!success && stopOnFail)) { return 0; }
+        if (--count <= 0 || (!success && stopOnFail)) {
+            return 0;
+        }
 
-        if (skill.checkCancelled()) { return 0; }
+        if (skill.checkCancelled()) {
+            return 0;
+        }
         return count;
     }
 
@@ -147,7 +154,9 @@ public class RepeatMechanic extends MechanicComponent {
         @Override
         public void run() {
             count = execute(caster, targets, count, stopOnFail, force);
-            if (count <= 0) { cancel(); }
+            if (count <= 0) {
+                cancel();
+            }
         }
     }
 }

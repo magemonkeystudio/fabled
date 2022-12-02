@@ -40,7 +40,7 @@ import java.util.Map;
  * Represents buffs set on an entity
  */
 public class BuffData {
-    private final  Map<String, Map<String, Buff>> buffs = new HashMap<>();
+    private final Map<String, Map<String, Buff>> buffs = new HashMap<>();
 
     private LivingEntity entity;
 

@@ -36,7 +36,6 @@ import com.sucy.skill.data.formula.Formula;
 import com.sucy.skill.data.formula.IValue;
 import com.sucy.skill.data.formula.value.CustomValue;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -176,16 +175,16 @@ public class ParticleEffect {
 
             int j = 0;
 
-            World world = Objects.requireNonNull(loc.getWorld());
+            World       world   = Objects.requireNonNull(loc.getWorld());
             Set<Player> players = ParticleHelper.filterPlayers(world.getPlayers(), loc, view);
 
-            Particle effect   = this.particle.type;
-            int                 count      = this.particle.amount;
-            double              dx         = this.particle.dx;
-            double              dy         = this.particle.dy;
-            double              dz         = this.particle.dz;
-            float               speed      = this.particle.speed;
-            Object              object     = this.particle.object;
+            Particle effect = this.particle.type;
+            int      count  = this.particle.amount;
+            double   dx     = this.particle.dx;
+            double   dy     = this.particle.dy;
+            double   dz     = this.particle.dz;
+            float    speed  = this.particle.speed;
+            Object   object = this.particle.object;
 
             for (int i = frame * this.animation.getCopies(); i < next; ++i) {
                 Point3D p1       = animPoints[i];

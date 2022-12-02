@@ -43,10 +43,10 @@ import org.bukkit.plugin.Plugin;
  * Command to clear all bound skills
  */
 public class CmdForceReset implements IFunction {
-    private static final String NOT_PLAYER = "not-player";
+    private static final String NOT_PLAYER  = "not-player";
     private static final String NOT_ACCOUNT = "not-account";
-    private static final String RESET = "account-reset";
-    private static final String TARGET = "target-notice";
+    private static final String RESET       = "account-reset";
+    private static final String TARGET      = "target-notice";
 
     /**
      * Executes the command
@@ -73,7 +73,7 @@ public class CmdForceReset implements IFunction {
             }
 
             PlayerAccounts accounts = SkillAPI.getPlayerAccountData(player);
-            int id = accounts.getActiveId();
+            int            id       = accounts.getActiveId();
 
             if (args.length > 1)
                 id = NumberParser.parseInt(args[1]);

@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.event.PlayerManaGainEvent
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,13 +35,12 @@ import org.bukkit.event.HandlerList;
 /**
  * Event called when a player regenerates mana via natural regeneration
  */
-public class PlayerManaGainEvent extends Event implements Cancellable
-{
+public class PlayerManaGainEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
-    private PlayerData player;
-    private ManaSource source;
-    private boolean    cancelled;
-    private double     amount;
+    private              PlayerData  player;
+    private              ManaSource  source;
+    private              boolean     cancelled;
+    private              double      amount;
 
     /**
      * Constructor
@@ -50,8 +49,7 @@ public class PlayerManaGainEvent extends Event implements Cancellable
      * @param amount amount of mana regenerated
      * @param source the source of the gained mana
      */
-    public PlayerManaGainEvent(PlayerData player, double amount, ManaSource source)
-    {
+    public PlayerManaGainEvent(PlayerData player, double amount, ManaSource source) {
         this.player = player;
         this.source = source;
         this.amount = amount;
@@ -61,24 +59,21 @@ public class PlayerManaGainEvent extends Event implements Cancellable
     /**
      * @return data of the player gaining experience
      */
-    public PlayerData getPlayerData()
-    {
+    public PlayerData getPlayerData() {
         return player;
     }
 
     /**
      * @return amount of experience being gained
      */
-    public double getAmount()
-    {
+    public double getAmount() {
         return amount;
     }
 
     /**
      * @return source of the gained mana
      */
-    public ManaSource getSource()
-    {
+    public ManaSource getSource() {
         return source;
     }
 
@@ -89,10 +84,8 @@ public class PlayerManaGainEvent extends Event implements Cancellable
      *
      * @throws IllegalArgumentException if experience is less than 0
      */
-    public void setAmount(double amount)
-    {
-        if (amount < 0)
-        {
+    public void setAmount(double amount) {
+        if (amount < 0) {
             throw new IllegalArgumentException("Regenerated mana cannot be negative");
         }
 
@@ -103,8 +96,7 @@ public class PlayerManaGainEvent extends Event implements Cancellable
      * @return whether or not the gain in experience is cancelled
      */
     @Override
-    public boolean isCancelled()
-    {
+    public boolean isCancelled() {
         return cancelled;
     }
 
@@ -114,8 +106,7 @@ public class PlayerManaGainEvent extends Event implements Cancellable
      * @param cancelled true/false
      */
     @Override
-    public void setCancelled(boolean cancelled)
-    {
+    public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
     }
 
@@ -123,16 +114,14 @@ public class PlayerManaGainEvent extends Event implements Cancellable
      * @return gets the handlers for the event
      */
     @Override
-    public HandlerList getHandlers()
-    {
+    public HandlerList getHandlers() {
         return handlers;
     }
 
     /**
      * @return gets the handlers for the event
      */
-    public static HandlerList getHandlerList()
-    {
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

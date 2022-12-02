@@ -1,25 +1,28 @@
 package com.sucy.skill.dynamic.trigger;
 
+import com.sucy.skill.api.Settings;
 import org.bukkit.event.player.PlayerFishEvent;
 
-import com.sucy.skill.api.Settings;
+public class FishingFailTrigger extends FishingTrigger {
 
-public class FishingFailTrigger extends FishingTrigger{
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getKey() {
+        return "FISHING_FAIL";
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public String getKey() {
-		return "FISHING_FAIL";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean shouldTrigger(PlayerFishEvent event, int level, Settings settings) {
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean shouldTrigger(PlayerFishEvent event, int level, Settings settings) {
-		
-		if(event.getState() == PlayerFishEvent.State.FAILED_ATTEMPT) {
-			return true;
-		}
-		return false;
-	}
+        if (event.getState() == PlayerFishEvent.State.FAILED_ATTEMPT) {
+            return true;
+        }
+        return false;
+    }
 
 }

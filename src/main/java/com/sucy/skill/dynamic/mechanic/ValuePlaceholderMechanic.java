@@ -13,10 +13,9 @@ import java.util.List;
  * SkillAPI © 2018
  * com.sucy.skill.dynamic.mechanic.ValuePlaceholderMechanic
  */
-public class ValuePlaceholderMechanic extends MechanicComponent
-{
-    private static final String KEY  = "key";
-    private static final String TYPE = "type";
+public class ValuePlaceholderMechanic extends MechanicComponent {
+    private static final String KEY         = "key";
+    private static final String TYPE        = "type";
     private static final String PLACEHOLDER = "placeholder";
 
     @Override
@@ -30,24 +29,21 @@ public class ValuePlaceholderMechanic extends MechanicComponent
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
     @Override
-    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force)
-    {
+    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (!PluginChecker.isPlaceholderAPIActive()) {
             return false;
         }
 
-        if (targets.get(0) instanceof Player)
-        {
-            final String key = settings.getString(KEY);
+        if (targets.get(0) instanceof Player) {
+            final String key         = settings.getString(KEY);
             final String placeholder = settings.getString(PLACEHOLDER);
-            final String type = settings.getString(TYPE).toUpperCase();
+            final String type        = settings.getString(TYPE).toUpperCase();
 
-            final String value = PlaceholderAPIHook.format(placeholder, (Player)targets.get(0));
+            final String value = PlaceholderAPIHook.format(placeholder, (Player) targets.get(0));
 
             switch (type.charAt(0)) {
                 case 'S': // STRING

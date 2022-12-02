@@ -37,7 +37,8 @@ public class CustomValue implements IValue {
     /**
      * @return defining token
      */
-    @Getter private final String token;
+    @Getter
+    private final String token;
     /**
      * Sets the argument index for the value.
      * This is handled by formulas so you shouldn't
@@ -45,7 +46,8 @@ public class CustomValue implements IValue {
      *
      * @param index argument index
      */
-    @Setter private       int    index;
+    @Setter
+    private       int    index;
 
     /**
      * A defined value used in formulas

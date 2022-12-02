@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.task.ManaTask
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,12 +26,12 @@
  */
 package com.sucy.skill.task;
 
-import mc.promcteam.engine.mccore.util.VersionManager;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.log.LogType;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.thread.RepeatThreadTask;
+import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.entity.Player;
 
 /**
@@ -39,30 +39,26 @@ import org.bukkit.entity.Player;
  * <p>This task is run by the API and you should not
  * use this task yourself.</p>
  */
-public class ManaTask extends RepeatThreadTask
-{
+public class ManaTask extends RepeatThreadTask {
     /**
      * Starts a new task for regenerating mana over time. The task is
      * started automatically so don't initialize this class unless wanting to
      * start a new task.
      */
-    public ManaTask()
-    {
+    public ManaTask() {
         super(
-            SkillAPI.getSettings().getGainFreq(),
-            SkillAPI.getSettings().getGainFreq()
+                SkillAPI.getSettings().getGainFreq(),
+                SkillAPI.getSettings().getGainFreq()
         );
     }
 
     /**
      * <p>Checks all players for mana regeneration each interval</p>
      */
-    public void run()
-    {
+    public void run() {
         Player[] players = VersionManager.getOnlinePlayers();
         Logger.log(LogType.MANA, 1, "Applying mana regen for " + players.length + " players");
-        for (Player player : players)
-        {
+        for (Player player : players) {
             PlayerData data = SkillAPI.getPlayerData(player);
             data.regenMana();
         }

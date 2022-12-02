@@ -51,7 +51,6 @@ public class ReadOnlySettings {
      * not set, this will instead return 0.
      *
      * @param key setting key
-     *
      * @return double setting value
      */
     public double getDouble(String key) {
@@ -64,7 +63,6 @@ public class ReadOnlySettings {
      *
      * @param key          setting key
      * @param defaultValue the default value in case not set
-     *
      * @return double setting value
      */
     public double getDouble(String key, double defaultValue) {
@@ -76,7 +74,6 @@ public class ReadOnlySettings {
      * not set, this will instead return 0.
      *
      * @param key setting key
-     *
      * @return integer setting value
      */
     public int getInt(String key) {
@@ -89,7 +86,6 @@ public class ReadOnlySettings {
      *
      * @param key          setting key
      * @param defaultValue the default value in case not set
-     *
      * @return integer setting value
      */
     public int getInt(String key, int defaultValue) {
@@ -101,7 +97,6 @@ public class ReadOnlySettings {
      * not set, this will instead return false.
      *
      * @param key setting key
-     *
      * @return boolean setting value
      */
     public boolean getBool(String key) {
@@ -114,7 +109,6 @@ public class ReadOnlySettings {
      *
      * @param key          setting key
      * @param defaultValue the default value in case not set
-     *
      * @return boolean setting value
      */
     public boolean getBool(String key, boolean defaultValue) {
@@ -126,7 +120,6 @@ public class ReadOnlySettings {
      * not set, this will instead return null.
      *
      * @param key setting key
-     *
      * @return String setting value
      */
     public String getString(String key) {
@@ -139,7 +132,6 @@ public class ReadOnlySettings {
      *
      * @param key          setting key
      * @param defaultValue the default value in case not set
-     *
      * @return String setting value
      */
     public String getString(String key, String defaultValue) {
@@ -150,7 +142,6 @@ public class ReadOnlySettings {
      * Retrieves a string list from the settings
      *
      * @param key settings key
-     *
      * @return string list or empty list if not found
      */
     public List<String> getStringList(String key) {
@@ -163,7 +154,6 @@ public class ReadOnlySettings {
      *
      * @param key   scaling setting name
      * @param level level of scaling
-     *
      * @return scaled setting value
      */
     public double getAttr(String key, int level) {
@@ -178,7 +168,6 @@ public class ReadOnlySettings {
      * @param key          scaling setting name
      * @param level        level of scaling
      * @param defaultValue the default value in case not set
-     *
      * @return scaled setting value
      */
     public double getAttr(String key, int level, double defaultValue) {
@@ -190,7 +179,6 @@ public class ReadOnlySettings {
      * <p>If the attribute is not set, this will return 0.</p>
      *
      * @param key attribute name
-     *
      * @return base value
      */
     public double getBase(String key) {
@@ -202,7 +190,6 @@ public class ReadOnlySettings {
      * <p>If the attribute is not set, this will return 0.</p>
      *
      * @param key attribute name
-     *
      * @return change in value per level
      */
     public double getScale(String key) {
@@ -215,7 +202,6 @@ public class ReadOnlySettings {
      *
      * @param key   attribute name
      * @param level level of scaling
-     *
      * @return attribute value or 0 if not found
      */
     public Object getObj(String key, int level) {
@@ -228,7 +214,6 @@ public class ReadOnlySettings {
      * any of the setter methods or while loading from the configuration.</p>
      *
      * @param key name of the setting
-     *
      * @return true if defined, false otherwise
      */
     public boolean has(String key) {

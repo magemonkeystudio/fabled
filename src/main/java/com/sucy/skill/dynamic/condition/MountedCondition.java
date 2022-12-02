@@ -1,7 +1,7 @@
 package com.sucy.skill.dynamic.condition;
 
-import mc.promcteam.engine.mccore.config.parse.DataSection;
 import com.sucy.skill.dynamic.DynamicSkill;
+import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.Collections;
@@ -32,6 +32,6 @@ public class MountedCondition extends ConditionComponent {
         Set<String> passengers = target.getPassengers().stream()
                 .map(e -> e.getType().name())
                 .collect(Collectors.toSet());
-        return !passengers.isEmpty() && (types.isEmpty() || types.contains("ANY") || !Collections.disjoint(passengers,types));
+        return !passengers.isEmpty() && (types.isEmpty() || types.contains("ANY") || !Collections.disjoint(passengers, types));
     }
 }

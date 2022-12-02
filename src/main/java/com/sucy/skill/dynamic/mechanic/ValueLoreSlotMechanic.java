@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.dynamic.mechanic.ValueLoreSlot
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2016 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -56,12 +56,14 @@ public class ValueLoreSlotMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0 || !settings.has(KEY) || !(caster instanceof Player)) { return false; }
+        if (targets.size() == 0 || !settings.has(KEY) || !(caster instanceof Player)) {
+            return false;
+        }
 
-        String key = settings.getString(KEY);
+        String key        = settings.getString(KEY);
         double multiplier = parseValues(caster, MULTIPLIER, level, 1);
-        int slot = settings.getInt(SLOT);
-        String regex = settings.getString(REGEX, "Damage: {value}");
+        int    slot       = settings.getInt(SLOT);
+        String regex      = settings.getString(REGEX, "Damage: {value}");
 
         ItemStack item = ((Player) caster).getInventory().getItem(slot);
 

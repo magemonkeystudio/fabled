@@ -34,23 +34,25 @@ import org.bukkit.entity.Player;
  * A fancier sphere indicator
  */
 public class SpherePreview extends RoundPreview {
-    private static final double COS_45 = Math.cos(Math.PI/4);
-    private double radius;
-    private double sin, cos;
+    private static final double COS_45 = Math.cos(Math.PI / 4);
+    private              double radius;
+    private              double sin, cos;
     private double angleStep;
-    private int particles;
+    private int    particles;
 
     /**
      * @param radius radius of the circle
      */
     public SpherePreview(double radius) {
-        if (radius == 0) { throw new IllegalArgumentException("Invalid radius - cannot be 0"); }
+        if (radius == 0) {
+            throw new IllegalArgumentException("Invalid radius - cannot be 0");
+        }
 
         this.radius = Math.abs(radius);
-        particles = (int) (PreviewSettings.density*radius*2*Math.PI);
-        angleStep = PreviewSettings.animation*PreviewSettings.interval/(20*this.radius);
+        particles = (int) (PreviewSettings.density * radius * 2 * Math.PI);
+        angleStep = PreviewSettings.animation * PreviewSettings.interval / (20 * this.radius);
 
-        double angle = Math.PI*2/particles;
+        double angle = Math.PI * 2 / particles;
         sin = Math.sin(angle);
         cos = Math.cos(angle);
     }
@@ -68,26 +70,26 @@ public class SpherePreview extends RoundPreview {
         double z = location.getZ();
 
         // Offset angle for animation
-        double startAngle = step*angleStep;
+        double startAngle = step * angleStep;
 
         double urs = Math.sin(startAngle);
         double urc = Math.cos(startAngle);
 
-        double rs = urs*radius;
-        double rc = urc*radius;
+        double rs = urs * radius;
+        double rc = urc * radius;
 
         // Flat circle packets
         for (int i = 0; i < particles; i++) {
-            particle.instance(player, x+rs, y, z+rc);
-            particle.instance(player, x+rs*urc, y+rc, z+rs*urs);
-            particle.instance(player, x+(rc-rs*urs)*COS_45, y+rs*urc, z+(rc+rs*urs)*COS_45);
+            particle.instance(player, x + rs, y, z + rc);
+            particle.instance(player, x + rs * urc, y + rc, z + rs * urs);
+            particle.instance(player, x + (rc - rs * urs) * COS_45, y + rs * urc, z + (rc + rs * urs) * COS_45);
 
-            double temp = rs*cos-rc*sin;
-            rc = rs*sin+rc*cos;
+            double temp = rs * cos - rc * sin;
+            rc = rs * sin + rc * cos;
             rs = temp;
         }
     }
 
     @Override
-    public double getRadius() { return radius; }
+    public double getRadius() {return radius;}
 }

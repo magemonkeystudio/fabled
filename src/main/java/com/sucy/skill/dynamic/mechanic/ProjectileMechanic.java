@@ -165,7 +165,8 @@ public class ProjectileMechanic extends MechanicComponent {
                                 Class<?> pickupStatusClass = Class.forName("org.bukkit.Arrow$PickupStatus");
                                 Arrow.class.getMethod("setPickupStatus", pickupStatusClass).invoke(arrow, pickupStatusClass.getMethod("valueOf", String.class).invoke(null, "DISALLOWED"));
                             }
-                        } catch (NoSuchMethodError | ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
+                        } catch (NoSuchMethodError | ClassNotFoundException | NoSuchMethodException |
+                                 IllegalAccessException | InvocationTargetException ignored) {
                         }
                     }
                     p.setVelocity(new Vector(0, speed, 0));
@@ -206,7 +207,8 @@ public class ProjectileMechanic extends MechanicComponent {
                                 Class<?> pickupStatusClass = Class.forName("org.bukkit.Arrow$PickupStatus");
                                 Arrow.class.getMethod("setPickupStatus", pickupStatusClass).invoke(arrow, pickupStatusClass.getMethod("valueOf", String.class).invoke(null, "DISALLOWED"));
                             }
-                        } catch (NoSuchMethodError | ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
+                        } catch (NoSuchMethodError | ClassNotFoundException | NoSuchMethodException |
+                                 IllegalAccessException | InvocationTargetException ignored) {
                         }
                     } else {
                         p.teleport(target.getLocation().add(looking).add(0, upward + 0.5, 0).add(p.getVelocity()).setDirection(d));

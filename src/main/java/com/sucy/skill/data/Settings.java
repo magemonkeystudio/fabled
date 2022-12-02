@@ -355,71 +355,71 @@ public class Settings {
     private String              skillPre, skillPost;
     private String attrReqPre, attrReqPost;
     private String attrPre, attrPost;
-    private List<String> titleMessages;
+    private List<String>  titleMessages;
     /**
      * Checks whether old health bars (fixed 10 hearts) are enabled
      *
      * @return true if enabled, false otherwise
      */
     @Getter
-    private boolean      oldHealth;
+    private boolean       oldHealth;
     /**
      * Whether health less than 10 hearts should be scaled down instead of filling the full 10 hearts.
      *
      * @return true if hearts should be allowed to be less than 10
      */
     @Getter
-    private boolean      downScaling;
+    private boolean       downScaling;
     /**
      * @return true if forces the SkillAPI health scaling, false otherwise
      */
     @Getter
-    private boolean      forceScaling;
+    private boolean       forceScaling;
     /**
      * Gets the setting for using the level bar
      *
      * @return level bar setting
      */
     @Getter
-    private String       levelBar;
+    private String        levelBar;
     /**
      * Gets the setting for using the food bar
      *
      * @return food bar setting
      */
     @Getter
-    private String       foodBar;
+    private String        foodBar;
     /**
      * @return boolean whether classes should be refunded their skill points on changing.
      */
     @Getter
-    private boolean      refundOnClassChange;
+    private boolean       refundOnClassChange;
     /**
      * @return text shown alongside the class level
      */
     @Getter
-    private String       levelText;
+    private String        levelText;
     /**
      * Checks whether the action bar is being used
      *
      * @return true if used, false otherwise
      */
     @Getter
-    private boolean      useActionBar;
+    private boolean       useActionBar;
     /**
      * Gets the text to display on the action bar
      *
      * @return action bar text
      */
     @Getter
-    private String       actionText;
+    private String        actionText;
     /**
      * Checks whether the stats scoreboard is to be shown
      *
      * @return true if shown, false otherwise
      */
     @Getter
-    private boolean      showScoreboard;
+    private boolean       showScoreboard;
     /**
      * Checks whether a player's class name is to be
      * shown next to their name
@@ -427,7 +427,7 @@ public class Settings {
      * @return true if shown, false otherwise
      */
     @Getter
-    private boolean      showClassName;
+    private boolean       showClassName;
     /**
      * Checks whether a player's class level is to be
      * shown below their name
@@ -435,82 +435,82 @@ public class Settings {
      * @return true if shown, false otherwise
      */
     @Getter
-    private boolean      showClassLevel;
+    private boolean       showClassLevel;
     @Getter
-    private boolean      showBinds;
+    private boolean       showBinds;
     @Getter
-    private String       bindText;
-    private boolean      useTitle;
+    private String        bindText;
+    private boolean       useTitle;
     /**
      * @return duration of the title display in ticks
      */
     @Getter
-    private int          titleDuration;
+    private int           titleDuration;
     /**
      * @return fade in time of the title display in ticks
      */
     @Getter
-    private int          titleFadeIn;
+    private int           titleFadeIn;
     /**
      * @return fade out time of the title display in ticks
      */
     @Getter
-    private int          titleFadeOut;
+    private int           titleFadeOut;
     /**
      * @return true if default casting is enabled
      */
     @Getter
-    private boolean      castEnabled;
-    private boolean      castBars;
-    private boolean      combatEnabled;
+    private boolean       castEnabled;
+    private boolean       castBars;
+    private boolean       combatEnabled;
     /**
      * @return slot the cast item is stored in
      */
     @Getter
-    private int          castSlot;
+    private int           castSlot;
     /**
      * @return global cooldown for casting
      */
     @Getter
-    private long         castCooldown;
+    private long          castCooldown;
     /**
      * @return cast item to use in the slot
      */
     @Getter
-    private ItemStack    castItem;
+    private ItemStack     castItem;
     @Getter
-    private ItemStack    hoverItem;
+    private ItemStack     hoverItem;
     @Getter
-    private ItemStack    instantItem;
+    private ItemStack     instantItem;
     /**
      * @return enabled clicks as an array of booleans indexed by click ID
      */
     @Getter
-    private boolean[]    enabledClicks;
+    private boolean[]     enabledClicks;
     /**
      * Checks whether click combos are enabled
      *
      * @return true if enabled, false otherwise
      */
     @Getter
-    private boolean      combosEnabled;
+    private boolean       combosEnabled;
     /**
      * Checks whether players can customize their click combos
      *
      * @return true if can customize them, false otherwise
      */
     @Getter
-    private boolean      customCombosAllowed;
+    private boolean       customCombosAllowed;
     @Getter
     @Accessors(fluent = true)
-    private boolean      shouldAutoAssignCombos;
+    private boolean       shouldAutoAssignCombos;
     /**
      * Retrieves the max length of combos to be used
      *
      * @return max length of combos to be used
      */
     @Getter
-    private int          comboSize;
+    private int           comboSize;
     /**
      * Retrieves the amount of seconds allowed between clicks before the combo resets
      *
@@ -529,7 +529,7 @@ public class Settings {
      * @return true if enabled, false otherwise
      */
     @Getter
-    private boolean      useOrbs;
+    private boolean       useOrbs;
     /**
      * Checks whether experience from mobs spawned
      * via a mob spawner is to be blocked.
@@ -537,7 +537,7 @@ public class Settings {
      * @return true if blocked, false otherwise
      */
     @Getter
-    private boolean      blockSpawner;
+    private boolean       blockSpawner;
     /**
      * Checks whether experience from mobs spawned
      * via eggs are to be blocked
@@ -545,7 +545,7 @@ public class Settings {
      * @return true if blocked, false otherwise
      */
     @Getter
-    private boolean      blockEgg;
+    private boolean       blockEgg;
     /**
      * Checks whether players in creative mode
      * are blocked from receiving experience.
@@ -553,7 +553,7 @@ public class Settings {
      * @return true if blocked, false otherwise
      */
     @Getter
-    private boolean      blockCreative;
+    private boolean       blockCreative;
     /**
      * Checks whether messages should
      * be displayed when a player gains experience
@@ -561,7 +561,7 @@ public class Settings {
      * @return true if enabled, false otherwise
      */
     @Getter
-    private boolean      showExpMessages;
+    private boolean       showExpMessages;
     /**
      * Checks whether messages should be displayed
      * when a player gains a level
@@ -569,7 +569,7 @@ public class Settings {
      * @return true if enabled, false otherwise
      */
     @Getter
-    private boolean      showLevelMessages;
+    private boolean       showLevelMessages;
     /**
      * Checks whether messages should be displayed
      * when a loses experience
@@ -577,40 +577,40 @@ public class Settings {
      * @return true if enabled, false otherwise
      */
     @Getter
-    private boolean      showLossExpMessages;
+    private boolean       showLossExpMessages;
     /**
      * Checks whether messages should be displayed
      * when a player loses a level
      */
     @Getter
-    private boolean      showLossLevelMessages;
-    private Set<String>  expLostBlacklist;
+    private boolean       showLossLevelMessages;
+    private Set<String>   expLostBlacklist;
     /**
      * Checks whether the skill bar is enabled
      *
      * @return true if enabled, false otherwise
      */
     @Getter
-    private boolean      skillBarEnabled;
+    private boolean       skillBarEnabled;
     /**
      * Checks whether the skill bar is to display cooldowns
      *
      * @return true if enabled, false otherwise
      */
     @Getter
-    private boolean      skillBarCooldowns;
+    private boolean       skillBarCooldowns;
     /**
      * Retrieves the indicator for an unassigned skill slot
      *
      * @return unassigned indicator
      */
     @Getter
-    private ItemStack    unassigned;
-    private List<String> worlds;
-    private boolean      worldEnabled;
-    private boolean      worldEnableList;
-    private Set<String>  skillDisabledRegions;
-    private Set<String>  expDisabledRegions;
+    private ItemStack     unassigned;
+    private List<String>  worlds;
+    private boolean       worldEnabled;
+    private boolean       worldEnableList;
+    private Set<String>   skillDisabledRegions;
+    private Set<String>   expDisabledRegions;
 
     /**
      * <p>Initializes a new settings manager.</p>
@@ -1221,7 +1221,7 @@ public class Settings {
      */
     public int getRequiredExp(int level) {
         if (levelsExp != null) {
-            return level-1 >= levelsExp.size() ? levelsExp.get(levelsExp.size()-1) : levelsExp.get(level-1);
+            return level - 1 >= levelsExp.size() ? levelsExp.get(levelsExp.size() - 1) : levelsExp.get(level - 1);
         }
         if (useCustomExp) {
             double result = expCustom.compute(level, 0);
@@ -1272,7 +1272,9 @@ public class Settings {
                 for (String line : levelsConfig.getConfig().getList("level-exp")) {
                     levelsExp.add(Integer.parseInt(line));
                 }
-                if (levelsExp.size() < 1) { throw new IndexOutOfBoundsException(); }
+                if (levelsExp.size() < 1) {
+                    throw new IndexOutOfBoundsException();
+                }
                 this.levelsExp = levelsExp;
             } catch (NumberFormatException | IndexOutOfBoundsException e) {
                 SkillAPI.inst().getLogger().warning("Failed to load levels.yml, resorting to exp formula");

@@ -1,21 +1,21 @@
 /**
  * SkillAPI
  * com.sucy.skill.api.util.Buff
- *
+ * <p>
  * The MIT License (MIT)
- *
+ * <p>
  * Copyright (c) 2014 Steven Sucy
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -31,8 +31,7 @@ import org.bukkit.scheduler.BukkitTask;
 /**
  * Represents a buff given to an entity
  */
-public class Buff
-{
+public class Buff {
     private double  value;
     private boolean percent;
     private String  key;
@@ -46,8 +45,7 @@ public class Buff
      * @param multiplier whether the value is a multiplier or a flat bonus
      */
     @Deprecated
-    public Buff(double value, boolean multiplier)
-    {
+    public Buff(double value, boolean multiplier) {
         this("Default", value, multiplier);
     }
 
@@ -58,25 +56,21 @@ public class Buff
      * @param value      value of the buff
      * @param multiplier whether the value is a multiplier or a flat bonus
      */
-    public Buff(String key, double value, boolean multiplier)
-    {
+    public Buff(String key, double value, boolean multiplier) {
         this.key = key;
         this.value = value;
         this.percent = multiplier;
     }
 
-    public String getKey()
-    {
+    public String getKey() {
         return key;
     }
 
-    public double getValue()
-    {
+    public double getValue() {
         return value;
     }
 
-    public boolean isPercent()
-    {
+    public boolean isPercent() {
         return percent;
     }
 }

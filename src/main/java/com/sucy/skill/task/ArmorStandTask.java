@@ -5,7 +5,7 @@ import com.sucy.skill.thread.RepeatThreadTask;
 
 public class ArmorStandTask extends RepeatThreadTask {
 
-    public ArmorStandTask() { super(1,1); }
+    public ArmorStandTask() {super(1, 1);}
 
     @Override
     public void run() {

@@ -28,7 +28,6 @@ package com.sucy.skill.log;
 
 import com.sucy.skill.SkillAPI;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
-import org.bukkit.Bukkit;
 
 import java.util.HashMap;
 

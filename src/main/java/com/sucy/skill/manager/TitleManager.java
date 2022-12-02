@@ -67,7 +67,7 @@ public class TitleManager {
             List<String> message = SkillAPI.getLanguage().getMessage(msgKey, true, FilterType.COLOR, filters);
             if (message != null && message.size() > 0) {
                 init();
-                String title = message.get(0);
+                String title    = message.get(0);
                 String subtitle = message.size() > 1 ? message.get(1) : null;
                 Title.send(player, title, subtitle, fadeIn, duration, fadeOut);
             }

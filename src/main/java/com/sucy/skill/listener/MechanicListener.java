@@ -197,7 +197,7 @@ public class MechanicListener extends SkillAPIListener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onDamageByEntity(EntityDamageByEntityEvent event) {
         Entity damager = event.getDamager();
-        Entity entity = event.getEntity();
+        Entity entity  = event.getEntity();
         if (damager instanceof Projectile) {
             Projectile p = (Projectile) damager;
             if (p.hasMetadata(P_CALL) && entity instanceof LivingEntity) {
@@ -264,11 +264,15 @@ public class MechanicListener extends SkillAPIListener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onEntityDamageCause(EntityDamageEvent event) {
-        Entity entity = event.getEntity();
+        Entity              entity       = event.getEntity();
         List<MetadataValue> metadataList = entity.getMetadata(DAMAGE_CAUSE);
-        if (metadataList.isEmpty()) { return; }
+        if (metadataList.isEmpty()) {
+            return;
+        }
         Object metadataValue = metadataList.get(0).value();
-        if (!(metadataValue instanceof EntityDamageEvent.DamageCause)) { return; }
+        if (!(metadataValue instanceof EntityDamageEvent.DamageCause)) {
+            return;
+        }
         if (event.getCause() != metadataValue) {
             try {
                 Field causeField = EntityDamageEvent.class.getDeclaredField("cause");
@@ -312,6 +316,8 @@ public class MechanicListener extends SkillAPIListener {
                 entities.add(entity);
             }
         }
-        if (!entities.isEmpty()) { new RemoveTask(entities, 1); }
+        if (!entities.isEmpty()) {
+            new RemoveTask(entities, 1);
+        }
     }
 }

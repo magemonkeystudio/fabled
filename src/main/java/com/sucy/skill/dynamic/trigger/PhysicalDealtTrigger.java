@@ -12,25 +12,33 @@ import java.util.Map;
  */
 public class PhysicalDealtTrigger extends PhysicalTrigger {
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getKey() {
         return "PHYSICAL_DAMAGE";
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LivingEntity getCaster(final PhysicalDamageEvent event) {
         return event.getDamager();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LivingEntity getTarget(final PhysicalDamageEvent event, final Settings settings) {
         return isUsingTarget(settings) ? event.getTarget() : event.getDamager();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setValues(final PhysicalDamageEvent event, final Map<String, Object> data) {
         data.put("api-dealt", event.getDamage());

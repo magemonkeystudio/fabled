@@ -43,10 +43,10 @@ import org.bukkit.plugin.Plugin;
  */
 public class CmdSkillMap implements IFunction {
     private static final String CANNOT_USE = "cannot-use";
-    private static final String NO_SKILLS = "no-skills";
-    private static final String DISABLED = "world-disabled";
-    private static final String MAP_GIVEN = "map-given";
-    private static final String MAP_OWNED = "map-owned";
+    private static final String NO_SKILLS  = "no-skills";
+    private static final String DISABLED   = "world-disabled";
+    private static final String MAP_GIVEN  = "map-given";
+    private static final String MAP_OWNED  = "map-owned";
 
     /**
      * Runs the command
@@ -65,7 +65,7 @@ public class CmdSkillMap implements IFunction {
 
         // Only plays have skills to view
         else if (sender instanceof Player) {
-            Player p = (Player) sender;
+            Player    p   = (Player) sender;
             ItemStack map = MapMenuManager.getData(Menu.SKILL_TREE).getMapItem();
             for (ItemStack i : p.getInventory().getContents()) {
                 if (i != null && i.getType() == Material.MAP && i.getDurability() == map.getDurability()) {

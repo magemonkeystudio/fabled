@@ -39,28 +39,28 @@ import java.io.File;
  */
 public class Menu {
     // Menu keys
-    public static final String SKILL_TREE = "sapiSkills";
+    public static final String          SKILL_TREE = "sapiSkills";
     // Images
-    static final String BACKGROUND = "background";
-    static final String TITLE = "title";
-    static final String NAMEPLATE = "nameplate";
-    static final String SELECTOR = "selector";
-    static final String UP_0 = "up0";
-    static final String UP_1 = "up1";
-    static final String DOWN_0 = "down0";
-    static final String DOWN_1 = "down1";
-    static final String MORE_0 = "more0";
-    static final String MORE_1 = "more1";
-    static final String BACK_0 = "back0";
-    static final String BACK_1 = "back1";
+    static final        String          BACKGROUND = "background";
+    static final        String          TITLE      = "title";
+    static final        String          NAMEPLATE  = "nameplate";
+    static final        String          SELECTOR   = "selector";
+    static final        String          UP_0       = "up0";
+    static final        String          UP_1       = "up1";
+    static final        String          DOWN_0     = "down0";
+    static final        String          DOWN_1     = "down1";
+    static final        String          MORE_0     = "more0";
+    static final        String          MORE_1     = "more1";
+    static final        String          BACK_0     = "back0";
+    static final        String          BACK_1     = "back1";
     // Fonts
-    static final String LIST = "list";
-    static final String DETAIL = "detail";
+    static final        String          LIST       = "list";
+    static final        String          DETAIL     = "detail";
     // Colors
-    static final String FONT = "font";
+    static final        String          FONT       = "font";
     // Menus
-    static SkillListMenu LIST_MENU;
-    static SkillDetailMenu DETAIL_MENU;
+    static              SkillListMenu   LIST_MENU;
+    static              SkillDetailMenu DETAIL_MENU;
 
     /**
      * Sets up the schemes for SkillAPI

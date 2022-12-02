@@ -40,10 +40,10 @@ import org.bukkit.plugin.Plugin;
  */
 public class CmdSkill implements IFunction {
     private static final String CANNOT_USE = "cannot-use";
-    private static final String NO_SKILLS = "no-skills";
-    private static final String DISABLED = "world-disabled";
-    private static final String MAP_GIVEN = "map-given";
-    private static final String MAP_OWNED = "map-owned";
+    private static final String NO_SKILLS  = "no-skills";
+    private static final String DISABLED   = "world-disabled";
+    private static final String MAP_GIVEN  = "map-given";
+    private static final String MAP_OWNED  = "map-owned";
 
     /**
      * Runs the command
@@ -62,7 +62,7 @@ public class CmdSkill implements IFunction {
 
         // Only plays have skills to view
         else if (sender instanceof Player) {
-            Player p = (Player) sender;
+            Player     p    = (Player) sender;
             PlayerData data = SkillAPI.getPlayerData(p);
             if (!data.showSkills(p)) {
                 cmd.sendMessage(sender, NO_SKILLS, ChatColor.RED + "You have no skills to view");
