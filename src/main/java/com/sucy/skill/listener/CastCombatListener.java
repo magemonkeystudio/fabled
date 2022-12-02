@@ -104,7 +104,7 @@ public class CastCombatListener extends SkillAPIListener {
         } else
             backup.put(player.getUniqueId(), new ItemStack[9]);
 
-        if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
+        if (SkillAPI.getSettings().isUsingBars() && SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
             PlayerInventory inv  = player.getInventory();
             ItemStack       item = inv.getItem(slot);
             inv.setItem(slot, SkillAPI.getSettings().getCastItem());
@@ -115,8 +115,14 @@ public class CastCombatListener extends SkillAPIListener {
             inv.getItem(slot).setAmount(1);
 
             int playerSlot = player.getInventory().getHeldItemSlot();
+            int tries = 0;
             while (!data.getSkillBar().isWeaponSlot(playerSlot) || slot == playerSlot) {
                 playerSlot = (playerSlot + 1) % 9;
+                if (++tries > 9) {
+                    SkillAPI.inst().getLogger().warning("You appear to have casting bars enabled, but don't have a slot for the player to equip a weapon. We're disabling cast bars until this is resolved.");
+                    SkillAPI.getSettings().setCastBars(false);
+                    break; // It's unknown that kind of behavior this will cause... but we need to break the loop sometime.
+                }
             }
             if (playerSlot != player.getInventory().getHeldItemSlot()) {
                 player.getInventory().setHeldItemSlot(playerSlot);

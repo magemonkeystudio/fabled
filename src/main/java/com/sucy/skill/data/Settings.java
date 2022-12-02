@@ -40,6 +40,7 @@ import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.gui.tool.GUITool;
 import com.sucy.skill.log.Logger;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import mc.promcteam.engine.mccore.config.CommentedConfig;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
@@ -461,6 +462,7 @@ public class Settings {
      */
     @Getter
     private boolean       castEnabled;
+    @Setter
     private boolean       castBars;
     private boolean       combatEnabled;
     /**
