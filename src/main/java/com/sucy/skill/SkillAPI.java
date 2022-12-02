@@ -490,7 +490,7 @@ public class SkillAPI extends JavaPlugin {
      */
     public static Object getMeta(Metadatable target, String key) {
         List<MetadataValue> meta = target.getMetadata(key);
-        return meta.size() == 0 ? null : meta.get(0).value();
+        return meta != null && meta.size() == 0 ? null : meta.get(0).value();
     }
 
     /**
