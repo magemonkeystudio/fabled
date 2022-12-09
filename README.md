@@ -1,5 +1,5 @@
-[![Build](https://github.com/promcteam/proskillapi/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/promcteam/promccore/packages/1203744)
-[![Build](https://github.com/promcteam/proskillapi/actions/workflows/publish.yml/badge.svg?branch=development)](https://github.com/promcteam/promccore/packages/1203744)
+[![Build](https://github.com/promcteam/proskillapi/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/promcteam/promccore/packages/1203744)
+[![Build](https://github.com/promcteam/proskillapi/actions/workflows/publish.yml/badge.svg?branch=dev)](https://github.com/promcteam/promccore/packages/1203744)
 
 # ProSkillAPI
 Our fork is based on the original skillapi and the forked skillapi by Sentropic.
