@@ -30,10 +30,13 @@ jobs:
       - name: Publish to Maven Central
         env:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        run: mvn clean deploy -P gpg,publish -DcreateChecksum=true | tee log.txt
+        run: |
+          mvn clean deploy -P gpg,publish -DcreateChecksum=true 2>&1 | tee log.txt
+          result_code=${PIPESTATUS[0]}
+          exit $result_code
 #      - name: Publish artifact on GitHub Packages
 #        run: mvn clean deploy -e -DskipTests
 #        env:
 #          GITHUB_TOKEN: ${{ secrets.DEPLOY_KEY }}
       - name: Notify Discord
-        run: python ./.github/notify_published.py ${{ secrets.SKILLAPI_WEBHOOK }}
+        run: pip install simplejson && python ./.github/notify_published.py ${{ secrets.SKILLAPI_WEBHOOK }}
