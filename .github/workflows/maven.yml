@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, dev ]
 
 jobs:
   build:
@@ -30,7 +30,3 @@ jobs:
         run: mvn clean package -e
         env:
           GITHUB_TOKEN_REF: ${{ secrets.GH_PAT_FOR_ACTIONS_TOKEN }}
-#    - uses: actions/upload-artifact@v1
-#      with:
-#        name: ProSkillAPI artifact
-#        path: target/ProSkillAPI-dev-build.jar

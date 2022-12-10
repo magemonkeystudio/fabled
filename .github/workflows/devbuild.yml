@@ -40,7 +40,7 @@ jobs:
       - name: Push to git
         run: |
           git add .
-          git reset settings.xml
+          git reset settings.xml log.txt
           git commit -m "Update dev version"
           git push
       - name: Notify Discord
