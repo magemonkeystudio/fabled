@@ -23,9 +23,14 @@ If you wish to use ProSkillAPI as a dependency in your projects, ProSkillAPI is 
 or snapshots through Sonatype.
 
 ```xml
+<repository>
+    <id>sonatype</id>
+    <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+</repository>
+...
 <dependency>
     <groupId>com.promcteam</groupId>
     <artifactId>proskillapi</artifactId>
-    <version>1.1.8</version>
+    <version>1.1.8.1-SNAPSHOT</version>
 </dependency>
 ```
