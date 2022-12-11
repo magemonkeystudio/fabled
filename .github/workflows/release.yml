@@ -28,6 +28,8 @@ jobs:
         with:
           githubServer: false
           servers: '[{"id": "ossrh", "username": "Travja", "password": "${{ secrets.SONATYPE_DEPLOY_KEY }}"}, {"id": "central", "username": "Travja", "password": "${{ secrets.SONATYPE_DEPLOY_KEY }}"}]'
+      - name: Update version
+        run: python ./.github/update_version.py false true
       - name: Publish to Maven Central
         env:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
@@ -48,7 +50,7 @@ jobs:
           git commit -m "Update release version"
           git push
           git checkout dev
-          git merge --no-edit main
+          git merge -X theirs --no-edit main
           git push
       - name: Notify Discord
-        run: pip install simplejson && python ./.github/notify_published.py ${{ secrets.SKILLAPI_WEBHOOK }}
+        run: pip install simplejson && python ./.github/notify_published.py ${{ secrets.WEBHOOK_URL }}
