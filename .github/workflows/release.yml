@@ -28,8 +28,6 @@ jobs:
         with:
           githubServer: false
           servers: '[{"id": "ossrh", "username": "Travja", "password": "${{ secrets.SONATYPE_DEPLOY_KEY }}"}, {"id": "central", "username": "Travja", "password": "${{ secrets.SONATYPE_DEPLOY_KEY }}"}]'
-      - name: Update version
-        run: python ./.github/update_version.py
       - name: Publish to Maven Central
         env:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
@@ -37,6 +35,8 @@ jobs:
           mvn clean deploy -P gpg,publish -DcreateChecksum=true 2>&1 | tee log.txt
           result_code=${PIPESTATUS[0]}
           exit $result_code
+      - name: Update version
+        run: python ./.github/update_version.py
       - name: Update version
         run: python ./.github/update_version.py true
       - name: Update README
@@ -46,6 +46,9 @@ jobs:
           git add .
           git reset settings.xml log.txt
           git commit -m "Update release version"
+          git push
+          git checkout dev
+          git merge --no-edit main
           git push
       - name: Notify Discord
         run: pip install simplejson && python ./.github/notify_published.py ${{ secrets.SKILLAPI_WEBHOOK }}

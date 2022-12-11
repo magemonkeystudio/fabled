@@ -28,8 +28,6 @@ jobs:
         with:
           githubServer: false
           servers: '[{"id": "ossrh", "username": "Travja", "password": "${{ secrets.SONATYPE_DEPLOY_KEY }}"}]'
-      - name: Update version
-        run: python ./.github/update_version.py true
       - name: Publish to Maven Central
         env:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
@@ -37,6 +35,8 @@ jobs:
           mvn clean deploy -P gpg,publish -DcreateChecksum=true 2>&1 | tee log.txt
           result_code=${PIPESTATUS[0]}
           exit $result_code
+      - name: Update version
+        run: python ./.github/update_version.py true
       - name: Push to git
         run: |
           git add .
