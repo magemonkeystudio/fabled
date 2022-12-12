@@ -1,7 +1,7 @@
 package com.sucy.skill.api.util;
 
 import mc.promcteam.engine.utils.Reflex;
-import mc.promcteam.engine.utils.reflection.ReflectionUtil;
+import mc.promcteam.engine.utils.reflection.ReflectionManager;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Constructor;
@@ -22,7 +22,7 @@ public class Title {
 
     private static void loadClasses() throws Exception { // This is not used...
         packetTitle = Reflex.getNMSClass("PacketPlayOutTitle");
-        Class<?> chatBaseComponent = ReflectionUtil.MINOR_VERSION >= 17
+        Class<?> chatBaseComponent = ReflectionManager.MINOR_VERSION >= 17
                 ? Reflex.getClass("net.minecraft.network.chat.IChatBaseComponent")
                 : Reflex.getNMSClass("IChatBaseComponent");
         serialize = chatBaseComponent.getDeclaredClasses()[0].getDeclaredMethod("a", String.class);
@@ -56,9 +56,9 @@ public class Title {
         Object chatText = serialize.invoke(null, "{\"text\":\"" + text + "\"}");
 
         Object packet = timesConstructor.newInstance(timesType, chatText, fadeIn, duration, fadeOut);
-        ReflectionUtil.sendPacket(player, packet);
+        ReflectionManager.getReflectionUtil().sendPacket(player, packet);
 
         packet = contentConstructor.newInstance(type, chatText);
-        ReflectionUtil.sendPacket(player, packet);
+        ReflectionManager.getReflectionUtil().sendPacket(player, packet);
     }
 }

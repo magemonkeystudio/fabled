@@ -21,7 +21,10 @@ public class DependencyResolver {
         String path = userHome + "/.m2/repository/" + (pieces[0] + "/" + pieces[1]).replace('.', '/')
                 + "/" + pieces[2] + "/" + pieces[1] + "-" + pieces[2] + ".jar";
         File file = new File(path);
-        if (file.exists()) return file;
+        if (file.exists()) {
+            log.info("Found " + dependency + " locally!");
+            return file;
+        }
         log.info("Could not find " + dependency + " locally. Searching repos.");
         return downloadArtifact(pieces[0], pieces[1], pieces[2]);
     }

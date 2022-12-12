@@ -58,13 +58,8 @@ public abstract class MockedTest {
     public void setupServer() {
         server = spy(MockBukkit.mock());
         String coreVersion  = System.getProperty("PROMCCORE_VERSION");
-        String itemsVersion = System.getProperty("ITEMS_VERSION");
 
         try {
-            File itemsJar = new File(server.getPluginsFolder().getAbsolutePath(), "ProRPGItems-" + itemsVersion + ".jar");
-            if (!itemsJar.exists()) itemsJar.createNewFile();
-            createZipArchive(itemsJar, "target/classes");
-
             File core = DependencyResolver.resolve("com.promcteam:promccore:" + coreVersion);
             File dest = new File(server.getPluginsFolder().getAbsolutePath(), "ProMCCore-" + coreVersion + ".jar");
             FileUtils.copyFile(core, dest);

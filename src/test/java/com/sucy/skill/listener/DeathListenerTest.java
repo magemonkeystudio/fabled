@@ -3,6 +3,7 @@ package com.sucy.skill.listener;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import com.sucy.skill.testutil.MockedTest;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -27,6 +28,12 @@ public class DeathListenerTest extends MockedTest {
         target = genPlayer("goflish");
         killListener = mockStatic(KillListener.class);
         deathListener = spy(new DeathListener());
+    }
+
+    @AfterEach
+    public void teardown() {
+        killListener.close();
+        killListener = null;
     }
     
     @Test

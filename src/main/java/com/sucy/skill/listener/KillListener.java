@@ -35,8 +35,7 @@ import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.util.BuffManager;
 import com.sucy.skill.api.util.FlagManager;
 import com.sucy.skill.data.Permissions;
-import mc.promcteam.engine.utils.Reflex;
-import mc.promcteam.engine.utils.reflection.ReflectionUtil;
+import mc.promcteam.engine.utils.reflection.ReflectionManager;
 import org.bukkit.GameMode;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -45,45 +44,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
 /**
  * Tracks who kills what entities and awards experience accordingly
  */
 public class KillListener extends SkillAPIListener {
     private static final String S_TYPE  = "sType";
     private static final int    SPAWNER = 0, EGG = 1;
-
-    private Method handle;
-    private Field  killer;
-    private Field  damageTime;
-
-    public KillListener() {
-        try {
-            Class<?> living = ReflectionUtil.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.entity.EntityLiving")
-                    : Reflex.getNMSClass("EntityLiving");
-            handle = Reflex.getCraftClass("entity.CraftEntity").getDeclaredMethod("getHandle");
-
-            if (ReflectionUtil.MINOR_VERSION == 17)
-                killer = living.getDeclaredField("bc");
-            else if (ReflectionUtil.MINOR_VERSION >= 18)
-                killer = living.getDeclaredField("bd");
-            else
-                killer = living.getDeclaredField("killer");
-
-            if (ReflectionUtil.MINOR_VERSION == 17)
-                damageTime = living.getDeclaredField("bd");
-            else if (ReflectionUtil.MINOR_VERSION >= 18)
-                damageTime = living.getDeclaredField("be");
-            else
-                damageTime = living.getDeclaredField("lastDamageByPlayerTime");
-
-            damageTime.setAccessible(true);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
 
     public static void giveExp(LivingEntity entity, Player killer, int exp) {
 
@@ -163,7 +129,7 @@ public class KillListener extends SkillAPIListener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPhysical(PhysicalDamageEvent event) {
         if (event.getDamager() instanceof Player)
-            setKiller(event.getTarget(), (Player) event.getDamager());
+            ReflectionManager.getReflectionUtil().setKiller(event.getTarget(), (Player) event.getDamager());
     }
 
     /**
@@ -174,7 +140,7 @@ public class KillListener extends SkillAPIListener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onSpell(SkillDamageEvent event) {
         if (event.getDamager() instanceof Player)
-            setKiller(event.getTarget(), (Player) event.getDamager());
+            ReflectionManager.getReflectionUtil().setKiller(event.getTarget(), (Player) event.getDamager());
     }
 
     /**
@@ -185,15 +151,6 @@ public class KillListener extends SkillAPIListener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onTrue(TrueDamageEvent event) {
         if (event.getDamager() instanceof Player)
-            setKiller(event.getTarget(), (Player) event.getDamager());
-    }
-
-    private void setKiller(LivingEntity entity, Player player) {
-        try {
-            Object hit    = handle.invoke(entity);
-            Object source = handle.invoke(player);
-            killer.set(hit, source);
-            damageTime.set(hit, 100);
-        } catch (Exception ex) { /* */ }
+            ReflectionManager.getReflectionUtil().setKiller(event.getTarget(), (Player) event.getDamager());
     }
 }
