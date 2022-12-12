@@ -247,7 +247,7 @@ public class ComponentRegistry {
             builder.append(']');
         }
 
-        final File file = new File(SkillAPI.getPlugin(SkillAPI.class).getDataFolder(), "tool-config.json");
+        final File file = new File(SkillAPI.inst().getDataFolder(), "tool-config.json");
         try (final FileOutputStream out = new FileOutputStream(file)) {
             final BufferedWriter write = new BufferedWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8));
             write.write(builder.toString());
