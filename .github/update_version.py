@@ -6,25 +6,27 @@ prep = not is_dev and len(sys.argv) >= 3 and bool(sys.argv[2])
 
 
 def replace_version():
-    regex = r'^[ ]{4}<version>((\d+\.?)+)((-pre)?-SNAPSHOT)?<\/version>$'
+    regex = r'^[ ]{4}<version>((((\d+\.?)+)((-R(\d+)\.?)(\d+)?)?)(-SNAPSHOT)?)<\/version>$'
     with open('pom.xml', 'r') as pom:
         contents = pom.read()
         ver = re.findall(regex, contents, re.MULTILINE)
         version = ver[0][0]
-        patch = int(ver[0][1])
+        bare_version = ver[0][2]
         if is_dev:
-            if len(version.split('.')) == 3:
-                new_version = version + ".0-pre-SNAPSHOT"
+            if not '-R' in version:
+                new_version = version + '-R0.1-SNAPSHOT'
+            elif not '-SNAPSHOT' in version:
+                new_version = version + '.1-SNAPSHOT'
             else:
-                if 'SNAPSHOT' in ver[0][2]:
-                    patch += 1
-                new_version = version[:-(len(str(patch)))] + str(patch) + '-pre-SNAPSHOT'
+                r_version = ver[0][5]
+                patch = int(ver[0][7]) + 1
+                new_version = bare_version + r_version + str(patch) + '-SNAPSHOT'
         elif prep:
-            new_version = version[:-(len(str(patch)))] + '0'
-            print(new_version)
+            r_version = int(ver[0][6]) + 1
+            new_version = bare_version + '-R' + str(r_version)
         else:
-            version = version[:-(len(str(patch)) + 1)]
-            minor = int(version.split('.')[-1])
+            version = ver[0][2]
+            minor = int(ver[0][3])
             new_version = version[:-(len(str(minor)))] + str(minor+1)
         contents = re.sub(regex,
                           '    <version>' + new_version + '</version>',

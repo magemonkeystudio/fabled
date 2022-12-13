@@ -49,6 +49,7 @@ import com.sucy.skill.task.GUITask;
 import com.sucy.skill.task.ManaTask;
 import com.sucy.skill.task.SaveTask;
 import com.sucy.skill.thread.MainThread;
+import mc.promcteam.engine.NexEngine;
 import mc.promcteam.engine.mccore.config.CommentedConfig;
 import mc.promcteam.engine.mccore.config.CommentedLanguageConfig;
 import mc.promcteam.engine.mccore.util.VersionManager;
@@ -611,6 +612,17 @@ public class SkillAPI extends JavaPlugin {
         if (singleton != null) {
             throw new IllegalStateException("Cannot enable SkillAPI twice!");
         }
+
+        String  coreVersion       = NexEngine.getEngine().getDescription().getVersion();
+        boolean minCoreVersionMet = coreVersion.compareTo(DependencyRequirement.MIN_CORE_VERSION) >= 0;
+
+        if (!minCoreVersionMet) {
+            getLogger().warning("Missing required ProMCCore version. " + coreVersion + " installed. "
+                    + DependencyRequirement.MIN_CORE_VERSION + " required. Disabling.");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
+
         singleton = this;
 
         mainThread = new MainThread();
