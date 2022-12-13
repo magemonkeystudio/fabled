@@ -20,6 +20,7 @@ import mc.promcteam.engine.utils.reflection.Reflection_1_17;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -90,6 +91,7 @@ public abstract class MockedTest {
         engine = mock(NexEngine.class);
         nexEngine = mockStatic(NexEngine.class);
         nexEngine.when(() -> NexEngine.get()).thenReturn(engine);
+        when(engine.getDescription()).thenReturn(new PluginDescriptionFile("ProMCCore", coreVersion, NexEngine.class.getName()));
         when(engine.getHooksManager()).thenReturn(hookManager);
         when(engine.getActionsManager()).thenReturn(actionsManager);
         when(engine.getNMS()).thenReturn(nms);
