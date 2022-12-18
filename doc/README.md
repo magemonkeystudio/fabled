@@ -11,7 +11,7 @@ You'll need to use this editor in order for your classes and skills to be compat
 * Online Editor: https://promcteam.github.io/proskillapi/
 
 ## Downloads
-You can download ${project.name} form our marketplace
+You can download ${project.name} from our marketplace
 * https://promcteam.com/resources/
 
 ## PROMCTEAM:
