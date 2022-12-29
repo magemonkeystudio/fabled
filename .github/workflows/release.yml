@@ -3,6 +3,7 @@ name: Release Build
 on:
   push:
     branches: [ main ]
+    paths: [ src/** ]
 
 jobs:
   deploy:
