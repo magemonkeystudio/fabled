@@ -1205,7 +1205,7 @@ public class PlayerData {
         }
 
         PlayerClass classData = new PlayerClass(this, rpgClass);
-        if (!reset) {
+        if (!reset && c != null) {
             classData.setLevel(c.getLevel());
             classData.setExp(c.getExp());
             classData.setPoints(c.getPoints());
