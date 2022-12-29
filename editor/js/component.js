@@ -1407,7 +1407,7 @@ function ConditionMoney() {
     this.super('Money', Type.CONDITION, true);
 
     this.description = "Applies child components when the target's balance matches the settings (requires Vault and an economy plugin). Always is false for non-player targets.";
-	
+
     this.data.push(new ListValue('Type', 'type', ['Min', 'Max', 'Between'], 'Min')
         .setTooltip('The type of comparison to make')
     );
@@ -3559,10 +3559,14 @@ function addParticleOptions(component) {
     );
 
     // Bukkit particle data value
-    component.data.push(new IntValue('Effect Data', 'data', 0).requireValue('particle', ['Smoke',
-                                                                                         'Ender Signal',
-                                                                                         'Mobspawner Flames',
-                                                                                         'Potion Break'])
+    component.data.push(new IntValue('Effect Data', 'data', 0).requireValue('particle',
+        [
+            'Smoke',
+            'Ender Signal',
+            'Mobspawner Flames',
+            'Potion Break',
+            'Sculk charge'
+        ])
         .setTooltip('The data value to use for the particle. The effect changes between particles such as the orientation for smoke particles or the color for potion break')
     );
     component.data.push(new IntValue('Visible Radius', 'visible-radius', 25).setTooltip('How far away players can see the particles from in blocks')
