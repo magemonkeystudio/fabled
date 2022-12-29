@@ -56,6 +56,7 @@ public final class ParticleHelper {
     public static final String DY_KEY             = "dy";
     public static final String DZ_KEY             = "dz";
     public static final String SPEED_KEY          = "speed";
+    public static final String DATA_KEY           = "data";
     public static final String DUST_COLOR         = "dust-color";
     public static final String FINAL_DUST_COLOR   = "final-dust-color";
     public static final String DUST_SIZE          = "dust-size";
@@ -211,13 +212,16 @@ public final class ParticleHelper {
     }
 
     public static Object makeObject(Particle particle, Settings settings) {
-        return makeObject(particle,
-                Material.valueOf(settings.getString(MATERIAL_KEY, "DIRT").toUpperCase().replace(" ", "_")),
-                settings.getInt(CMD_KEY, 0),
-                settings.getInt(DURABILITY_KEY, 0),
-                Color.fromRGB(Integer.parseInt(settings.getString(DUST_COLOR, "#FF0000").substring(1), 16)),
-                Color.fromRGB(Integer.parseInt(settings.getString(FINAL_DUST_COLOR, "#FF0000").substring(1), 16)),
-                (float) settings.getDouble(DUST_SIZE, 1));
+        return switch (particle) {
+            case SCULK_CHARGE -> Float.parseFloat(settings.getString(DATA_KEY, "0"));
+            default -> makeObject(particle,
+                    Material.valueOf(settings.getString(MATERIAL_KEY, "DIRT").toUpperCase().replace(" ", "_")),
+                    settings.getInt(CMD_KEY, 0),
+                    settings.getInt(DURABILITY_KEY, 0),
+                    Color.fromRGB(Integer.parseInt(settings.getString(DUST_COLOR, "#FF0000").substring(1), 16)),
+                    Color.fromRGB(Integer.parseInt(settings.getString(FINAL_DUST_COLOR, "#FF0000").substring(1), 16)),
+                    (float) settings.getDouble(DUST_SIZE, 1));
+        };
     }
 
     public static Object makeObject(Particle particle, Material material, int cmd, int durability, Color dustColor, Color toColor, float dustSize) {
