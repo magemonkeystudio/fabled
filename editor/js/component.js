@@ -1809,7 +1809,7 @@ function MechanicBlock() {
     this.data.push(new ListValue('Shape', 'shape', ['Sphere', 'Cuboid'], 'Sphere')
         .setTooltip('The shape of the region to change the blocks for')
     );
-    this.data.push(new ListValue('Type', 'type', ['Air', 'Any', 'Solid'], 'Solid')
+    this.data.push(new ListValue('Type', 'type', ['Air', 'Any', 'Solid', ...getMaterials()], 'Solid')
         .setTooltip('The type of blocks to replace. Air or any would be for making obstacles while solid would change the environment')
     );
     this.data.push(new ListValue('Block', 'block', getMaterials, 'Ice')
