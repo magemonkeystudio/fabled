@@ -30,6 +30,7 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.event.KeyPressEvent;
 import com.sucy.skill.api.player.PlayerCombos;
 import com.sucy.skill.data.Click;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.*;
 
@@ -121,7 +122,7 @@ public class ComboListener extends SkillAPIListener {
                 && onGround.contains(event.getPlayer().getUniqueId())) {
             SkillAPI.getPlayerData(event.getPlayer()).getComboData().applyClick(Click.SPACE);
         }
-        if (event.getPlayer().isOnGround()) {
+        if (((Entity) event.getPlayer()).isOnGround()) {
             onGround.add(event.getPlayer().getUniqueId());
         } else {
             onGround.remove(event.getPlayer().getUniqueId());

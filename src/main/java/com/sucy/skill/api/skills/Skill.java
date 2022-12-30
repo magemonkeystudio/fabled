@@ -56,6 +56,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -216,20 +217,8 @@ public abstract class Skill implements IconHolder {
      * Checks whether the skill can automatically
      * level up to the next stage.
      *
-     * @return true if can level up automatically, false otherwise
-     * @deprecated use {@link Skill#canAutoLevel(int)} instead
-     */
-    @Deprecated
-    public boolean canAutoLevel() {
-        return getCost(0) == 0 && getCost(1) == 0;
-    }
-
-    /**
-     * Checks whether the skill can automatically
-     * level up to the next stage.
-     *
      * @param level - the current level of the skill
-     * @return true if can level up automatically to the next level, false otherwise
+     * @return true if skill can level up automatically to the next level, false otherwise
      */
     public boolean canAutoLevel(final int level) {
         return getCost(level) == 0;
@@ -821,7 +810,7 @@ public abstract class Skill implements IconHolder {
         TrueDamageEvent event = new TrueDamageEvent(this, source, target, damage);
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled() && event.getDamage() != 0) {
-            target.setHealth(Math.max(Math.min(target.getHealth() - event.getDamage(), target.getMaxHealth()), 0));
+            target.setHealth(Math.max(Math.min(target.getHealth() - event.getDamage(), target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()), 0));
         }
     }
 
@@ -859,7 +848,7 @@ public abstract class Skill implements IconHolder {
     }
 
     /**
-     * Saves some of the skill data to the config, avoiding
+     * Saves some skill data to the config, avoiding
      * overwriting any pre-existing data
      *
      * @param config config to save to

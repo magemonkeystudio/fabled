@@ -13,6 +13,7 @@ import org.bukkit.World;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * SkillAPI © 2018
@@ -32,12 +33,13 @@ public class WorldGuardHook {
      * @param loc location to get region ids for
      * @return region IDs for the location
      */
+    @SuppressWarnings("unchecked")
     public static List<String> getRegionIds(final Location loc) {
         try {
-            return WorldGuard.getInstance()
-                    .getPlatform()
-                    .getRegionContainer()
-                    .get(BukkitAdapter.adapt(loc.getWorld()))
+            return Objects.requireNonNull(WorldGuard.getInstance()
+                            .getPlatform()
+                            .getRegionContainer()
+                            .get(BukkitAdapter.adapt(Objects.requireNonNull(loc.getWorld()))))
                     .getApplicableRegionsIDs(BlockVector3.at(loc.getX(), loc.getY(), loc.getZ()));
         } catch (NoClassDefFoundError ex) {
             try {

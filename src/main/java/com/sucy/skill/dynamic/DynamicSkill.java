@@ -226,7 +226,7 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
     @Override
     public void stopEffects(final LivingEntity user, final int level) {
         active.remove(user.getEntityId());
-        if (forced.contains(user.getEntityId())) forced.remove(new Integer(user.getEntityId()));
+        if (forced.contains(user.getEntityId())) forced.remove(Integer.valueOf(user.getEntityId()));
         for (final TriggerHandler triggerHandler : triggers) {
             triggerHandler.cleanup(user);
         }

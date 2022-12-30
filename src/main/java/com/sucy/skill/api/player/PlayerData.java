@@ -1644,11 +1644,8 @@ public class PlayerData {
 
         double modifiedMax = getModifiedMaxHealth(player);
 
-        if (VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
-            final AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-            attribute.setBaseValue(this.maxHealth);
-        } else
-            player.setMaxHealth(this.maxHealth);
+        final AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        attribute.setBaseValue(this.maxHealth);
 
         // Health scaling is available starting with 1.6.2
         if (SkillAPI.getSettings().isOldHealth()) {

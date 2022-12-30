@@ -67,7 +67,7 @@ public class CmdUnbind implements IFunction {
         else if (!SkillAPI.getSettings().isWorldEnabled(((Player) sender).getWorld())) {
             command.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
         } else {
-            ItemStack item = ((Player) sender).getItemInHand();
+            ItemStack item = ((Player) sender).getInventory().getItemInMainHand();
             if (item == null || item.getType() == Material.AIR) {
                 command.sendMessage(sender, NO_ITEM, "&4You are not holding an item");
                 return;

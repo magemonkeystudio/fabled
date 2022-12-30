@@ -39,6 +39,10 @@ import com.sucy.skill.hook.VaultHook;
 import com.sucy.skill.task.RemoveTask;
 import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -50,6 +54,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.util.BoundingBox;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -90,7 +95,7 @@ public class MechanicListener extends SkillAPIListener {
             return;
 
         boolean inMap = flying.containsKey(event.getPlayer().getUniqueId());
-        if (inMap == ((Entity) event.getPlayer()).isOnGround()) {
+        if (inMap == isOnGround(event.getTo())) {
             if (inMap) {
                 double maxHeight = flying.remove(event.getPlayer().getUniqueId());
                 Bukkit.getPluginManager().callEvent(new PlayerLandEvent(event.getPlayer(), maxHeight - event.getPlayer().getLocation().getY()));
@@ -100,6 +105,79 @@ public class MechanicListener extends SkillAPIListener {
             double y = flying.get(event.getPlayer().getUniqueId());
             flying.put(event.getPlayer().getUniqueId(), Math.max(y, event.getPlayer().getLocation().getY()));
         }
+    }
+
+    public boolean isOnGround(Location loc) {
+        loc = loc.clone();
+        Set<Block> blocksUnderneath = new HashSet<>();
+        double     dx               = loc.getX() % 1;
+        if (dx < 0) dx += 1;
+        double dz = loc.getZ() % 1;
+        if (dz < 0) dz += 1;
+
+        blocksUnderneath.add(loc.getBlock());
+        blocksUnderneath.add(loc.getBlock().getRelative(BlockFace.DOWN));
+        if (fuzzyEquals(loc.getY() % 1, 0.5))
+            loc.subtract(0, 0.5, 0);
+        loc.subtract(0, 0.07, 0);
+        if (dx < 0.3) {
+            blocksUnderneath.add(loc.clone().subtract(0.31, 0, 0).getBlock());
+            if (dz < 0.3) {
+                blocksUnderneath.add(loc.clone().subtract(0.31, 0, 0.31).getBlock());
+            } else if (dz > 0.7) {
+                blocksUnderneath.add(loc.clone().subtract(0.31, 0, -0.31).getBlock());
+            }
+        }
+
+        if (dz < 0.3) {
+            blocksUnderneath.add(loc.clone().subtract(0, 0, 0.31).getBlock());
+        }
+
+        if (dx > 0.7) {
+            blocksUnderneath.add(loc.clone().add(0.31, 0, 0).getBlock());
+            if (dz > 0.7) {
+                blocksUnderneath.add(loc.clone().add(0.31, 0, 0.31).getBlock());
+            } else if (dz < 0.3) {
+                blocksUnderneath.add(loc.clone().add(0.31, 0, -0.31).getBlock());
+            }
+        }
+
+        if (dz > 0.7) {
+            blocksUnderneath.add(loc.clone().add(0, 0, 0.31).getBlock());
+        }
+
+        Location finalLoc = loc.clone();
+        return blocksUnderneath.stream()
+                .anyMatch(b -> {
+                    boolean     solid = !b.isPassable();
+                    BoundingBox box   = b.getBoundingBox();
+                    box.expandDirectional(0, isTaller(b) ? 0.5 : 0, 0);
+                    boolean bounded = isIntersecting(box, finalLoc);
+
+                    return solid && bounded;
+                });
+    }
+
+    private boolean isTaller(Block b) {
+        Material type    = b.getType();
+        String   typeStr = type.toString();
+        return typeStr.contains("WALL") || typeStr.contains("FENCE");
+    }
+
+    private boolean isIntersecting(BoundingBox box, Location loc) {
+        boolean xContains = box.getMinX() <= loc.getX() && loc.getX() <= box.getMaxX() || fuzzyEquals(box.getMinX(), loc.getX(), 0.3) || fuzzyEquals(box.getMaxX(), loc.getX(), 0.3);
+        boolean yContains = box.getMinY() <= loc.getY() && loc.getY() <= box.getMaxY();
+        boolean zContains = box.getMinZ() <= loc.getZ() && loc.getZ() <= box.getMaxZ() || fuzzyEquals(box.getMinZ(), loc.getZ(), 0.3) || fuzzyEquals(box.getMaxZ(), loc.getZ(), 0.3);
+
+        return xContains && yContains && zContains;
+    }
+
+    private boolean fuzzyEquals(double input, double expected) {
+        return fuzzyEquals(input, expected, 0.07);
+    }
+
+    private boolean fuzzyEquals(double input, double expected, double epsilon) {
+        return Math.abs(input - expected) < epsilon;
     }
 
     /**

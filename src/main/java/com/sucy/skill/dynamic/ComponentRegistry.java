@@ -207,7 +207,7 @@ public class ComponentRegistry {
             throw new IllegalArgumentException("Invalid component key - " + key);
         }
         try {
-            return (EffectComponent) componentClass.newInstance();
+            return (EffectComponent) componentClass.getDeclaredConstructor().newInstance();
         } catch (final Exception ex) {
             throw new IllegalArgumentException("Invalid component - does not have a default constructor");
         }

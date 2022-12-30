@@ -42,9 +42,9 @@ public class ToolCondition extends ConditionComponent {
         final String tool     = "_" + settings.getString(TOOL, "").toUpperCase().replace("SHOVEL", "SPADE");
 
         final EntityEquipment equipment = target.getEquipment();
-        if (equipment == null || equipment.getItemInHand() == null) return false;
+        if (equipment == null || equipment.getItemInMainHand() == null) return false;
 
-        final String hand = equipment.getItemInHand().getType().name();
+        final String hand = equipment.getItemInMainHand().getType().name();
         return (material.equals("ANY") || hand.contains(material)) && (tool.equals("_ANY") || hand.contains(tool));
     }
 

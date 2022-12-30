@@ -104,7 +104,7 @@ public class CastCombatListener extends SkillAPIListener {
         } else
             backup.put(player.getUniqueId(), new ItemStack[9]);
 
-        if (SkillAPI.getSettings().isUsingBars() && SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
+        if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
             PlayerInventory inv  = player.getInventory();
             ItemStack       item = inv.getItem(slot);
             inv.setItem(slot, SkillAPI.getSettings().getCastItem());
@@ -115,7 +115,7 @@ public class CastCombatListener extends SkillAPIListener {
             inv.getItem(slot).setAmount(1);
 
             int playerSlot = player.getInventory().getHeldItemSlot();
-            int tries = 0;
+            int tries      = 0;
             while (!data.getSkillBar().isWeaponSlot(playerSlot) || slot == playerSlot) {
                 playerSlot = (playerSlot + 1) % 9;
                 if (++tries > 9) {
@@ -336,7 +336,9 @@ public class CastCombatListener extends SkillAPIListener {
         // Prevent moving skill icons
         int slot = event.getSlot();
         if (event.getSlot() < 9 && event.getRawSlot() > event.getView().getTopInventory().getSize()) {
-            if (event.getClick() == ClickType.LEFT || event.getClick() == ClickType.SHIFT_LEFT)
+            if (event.getSlot() == this.slot)
+                event.setCancelled(true);
+            else if (event.getClick() == ClickType.LEFT || event.getClick() == ClickType.SHIFT_LEFT)
                 event.setCancelled(!skillBar.isWeaponSlot(slot));
             else if ((event.getClick() == ClickType.RIGHT || event.getClick() == ClickType.SHIFT_RIGHT)
                     && (!skillBar.isWeaponSlot(slot) || (skillBar.isWeaponSlot(slot) && (event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR)))) {
