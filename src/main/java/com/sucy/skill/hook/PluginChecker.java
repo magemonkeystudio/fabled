@@ -26,8 +26,10 @@
  */
 package com.sucy.skill.hook;
 
+import com.sucy.skill.SkillAPI;
 import com.sucy.skill.hook.mimic.MimicHook;
 import com.sucy.skill.listener.SkillAPIListener;
+import com.sucy.skill.listener.attribute.RPGAttributeListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.server.PluginDisableEvent;
@@ -49,6 +51,7 @@ public class PluginChecker extends SkillAPIListener {
     private static boolean worldGuard;
     private static boolean parties;
     private static boolean mimic;
+    private static boolean rpgItems;
 
     /**
      * Checks if vault permissions is active on the server
@@ -91,6 +94,8 @@ public class PluginChecker extends SkillAPIListener {
     public static boolean isMythicMobsActive() {return mythicMobs;}
 
     public static boolean isWorldGuardActive() {return worldGuard;}
+
+    public static boolean isRPGItemsActive() {return rpgItems;}
 
     public static boolean isPartiesActive() {return parties || Bukkit.getPluginManager().isPluginEnabled("ProSkillAPIParties");}
 
@@ -154,6 +159,9 @@ public class PluginChecker extends SkillAPIListener {
                 break;
             case "Mimic":
                 mimic = isEnabled;
+                break;
+            case "ProRPGItems":
+                rpgItems = isEnabled;
                 break;
         }
     }

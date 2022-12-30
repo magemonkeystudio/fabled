@@ -13,6 +13,7 @@ softdepend:
   - WorldGuard
   - WorldEdit
   - Mimic
+  - ProRPGItems
 loadbefore: [ Quests, TAB ]
 api-version: 1.14
 

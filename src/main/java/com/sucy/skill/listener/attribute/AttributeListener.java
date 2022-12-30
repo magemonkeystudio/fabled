@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.listener.AttributeListener
+ * com.sucy.skill.listener.attribute.AttributeListener
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,7 +24,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.listener;
+package com.sucy.skill.listener.attribute;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.enums.ExpSource;
@@ -32,6 +32,10 @@ import com.sucy.skill.api.enums.ManaSource;
 import com.sucy.skill.api.event.*;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.hook.CitizensHook;
+import com.sucy.skill.hook.PluginChecker;
+import com.sucy.skill.hook.RPGItemsHook;
+import com.sucy.skill.listener.MainListener;
+import com.sucy.skill.listener.SkillAPIListener;
 import com.sucy.skill.log.LogType;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.manager.AttributeManager;
@@ -43,6 +47,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Listener for managing applying attribute bonuses for players
@@ -119,9 +124,11 @@ public class AttributeListener extends SkillAPIListener {
     public void onPhysicalDamage(PhysicalDamageEvent event) {
         // Physical Damage
         if (event.getDamager() instanceof Player) {
-            Player player = (Player) event.getDamager();
-            if (CitizensHook.isNPC(player))
-                return;
+            Player    player = (Player) event.getDamager();
+            ItemStack item = player.getInventory().getItemInMainHand();
+            // If it's an RPGItem, we'll handle this in RPGAttributeListener
+            if(PluginChecker.isRPGItemsActive() && RPGItemsHook.isRPGItem(item)) return;
+            if (CitizensHook.isNPC(player)) return;
 
             PlayerData data = SkillAPI.getPlayerData(player);
 

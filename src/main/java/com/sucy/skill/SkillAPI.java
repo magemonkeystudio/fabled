@@ -43,6 +43,8 @@ import com.sucy.skill.hook.PlaceholderAPIHook;
 import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.hook.mimic.MimicHook;
 import com.sucy.skill.listener.*;
+import com.sucy.skill.listener.attribute.AttributeListener;
+import com.sucy.skill.listener.attribute.RPGAttributeListener;
 import com.sucy.skill.manager.*;
 import com.sucy.skill.task.CooldownTask;
 import com.sucy.skill.task.GUITask;
@@ -684,6 +686,7 @@ public class SkillAPI extends JavaPlugin {
         listen(new LingeringPotionListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
         listen(new ExperienceListener(), settings.isYieldsEnabled());
         listen(new PluginChecker(), true);
+        listen(new RPGAttributeListener(), getServer().getPluginManager().isPluginEnabled("ProRPGItems"));
 
 
         // Set up tasks

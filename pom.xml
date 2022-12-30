@@ -129,6 +129,10 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.promcteam</groupId>
+            <artifactId>prorpgitems</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
