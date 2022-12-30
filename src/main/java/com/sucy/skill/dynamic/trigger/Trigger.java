@@ -49,8 +49,8 @@ public interface Trigger<E extends Event> {
     Class<E> getEvent();
 
     /**
-     * @param event event details
-     * @param level the level of the owning skill
+     * @param event    event details
+     * @param level    the level of the owning skill
      * @param settings skill settings
      * @return true if the skill should activate, false otherwise
      */
@@ -62,7 +62,7 @@ public interface Trigger<E extends Event> {
      * the speed a projectile was launched so mechanics can replace it with equally-fast projectiles.
      *
      * @param event event details
-     * @param data caster's value data to populate
+     * @param data  caster's value data to populate
      */
     void setValues(final E event, final Map<String, Object> data);
 
@@ -77,7 +77,7 @@ public interface Trigger<E extends Event> {
     /**
      * Fetches the target as determined by the triggering event. This can be the same as the caster.
      *
-     * @param event event details
+     * @param event    event details
      * @param settings skill settings
      * @return the one being affected by the trigger (initial target)
      */
