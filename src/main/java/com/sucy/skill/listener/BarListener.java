@@ -268,7 +268,7 @@ public class BarListener extends SkillAPIListener {
      *
      * @param event event details
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onChangeWorld(PlayerChangedWorldEvent event) {
         PlayerData data    = SkillAPI.getPlayerData(event.getPlayer());
         boolean    enabled = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());

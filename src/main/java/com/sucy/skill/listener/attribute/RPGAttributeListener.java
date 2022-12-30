@@ -7,7 +7,6 @@ import com.sucy.skill.listener.SkillAPIListener;
 import com.sucy.skill.manager.AttributeManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerMoveEvent;
 import su.nightexpress.quantumrpg.api.event.RPGDamageEvent;
 import su.nightexpress.quantumrpg.stats.items.attributes.DamageAttribute;
 import su.nightexpress.quantumrpg.stats.items.attributes.DefenseAttribute;

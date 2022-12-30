@@ -403,7 +403,7 @@ public class MainListener extends SkillAPIListener {
      *
      * @param event event details
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onWorldChange(PlayerChangedWorldEvent event) {
         if (event.getPlayer().hasMetadata("NPC"))
             return;
