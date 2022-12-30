@@ -123,6 +123,7 @@ public class BlockMechanic extends MechanicComponent {
         String  type     = settings.getString(TYPE, "solid").toLowerCase();
         boolean solid    = type.equals("solid");
         boolean air      = type.equals("air");
+        Material matType = !solid && !air && !type.equals("any") ? Material.valueOf(type.toUpperCase().replace(' ', '_')) : null;
         boolean resetYaw = settings.getBool(RESET_YAW, false);
 
         double forward = parseValues(caster, FORWARD, level, 0);
@@ -160,7 +161,8 @@ public class BlockMechanic extends MechanicComponent {
                             dz = z - k;
                             if (dx * dx + dy * dy + dz * dz < rSq) {
                                 Block b = w.getBlockAt(i, j, k);
-                                if ((!solid || b.getType().isSolid())
+                                if ((matType == null || matType == b.getType())
+                                        && (!solid || b.getType().isSolid())
                                         && (!air || b.getType().isAir())
                                         && !SkillAPI.getSettings().getFilteredBlocks().contains(b.getType())) {
                                     blocks.add(b);
