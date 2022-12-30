@@ -1799,6 +1799,9 @@ function MechanicBlock() {
     this.data.push(new IntValue('Block Data', 'data', 0)
         .setTooltip('The block data to apply, mostly applicable for things like signs, woods, steps, or the similar')
     );
+    this.data.push(new ListValue('Reset Yaw', 'reset-yaw', ['True', 'False'], 'False')
+        .setTooltip('Whether the target\'s yaw should be reset, effectively making the offsets cardinally aligned.')
+    );
     this.data.push(new AttributeValue('Seconds', 'seconds', 5, 0)
         .setTooltip('How long the blocks should be replaced for')
     );
