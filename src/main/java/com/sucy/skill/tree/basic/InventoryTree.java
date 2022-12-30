@@ -135,7 +135,7 @@ public abstract class InventoryTree extends SkillTree {
      * Checks a click for actions
      *
      * @param slot slot that was clicked
-     * @return whether or not the click should be cancelled (when it was a skill or link)
+     * @return whether the click should be cancelled (when it was a skill or link)
      */
     public boolean checkClick(int slot) {
         return skillSlots.containsKey(slot);

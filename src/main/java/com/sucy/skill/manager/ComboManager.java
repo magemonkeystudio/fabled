@@ -62,7 +62,7 @@ public class ComboManager {
     }
 
     /**
-     * Checks whether or not the click with the given ID is enabled
+     * Checks whether the click with the given ID is enabled
      *
      * @param id ID of the click
      *
@@ -73,7 +73,7 @@ public class ComboManager {
     }
 
     /**
-     * Checks whether or not the combo is a valid one
+     * Checks whether the combo is a valid one
      *
      * @param id ID of the combo
      *
@@ -91,7 +91,7 @@ public class ComboManager {
     }
 
     /**
-     * Checks whether or not the combo is a valid one
+     * Checks whether the combo is a valid one
      *
      * @param id ID of the combo
      *

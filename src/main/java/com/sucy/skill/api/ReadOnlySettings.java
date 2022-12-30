@@ -209,7 +209,7 @@ public class ReadOnlySettings {
     }
 
     /**
-     * <p>Checks whether or not the setting is defined.</p>
+     * <p>Checks whether the setting is defined.</p>
      * <p>A setting is defined when it is set at any point using
      * any of the setter methods or while loading from the configuration.</p>
      *

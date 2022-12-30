@@ -54,7 +54,7 @@ public class FlagManager {
      * if no data currently exists.
      *
      * @param entity entity to get the flag data for
-     * @param create whether or not to create new data if it doesn't exist
+     * @param create whether to create new data if it doesn't exist
      *
      * @return the flag data for an enemy
      */
@@ -96,7 +96,7 @@ public class FlagManager {
     }
 
     /**
-     * Checks whether or not the entity has the given flag
+     * Checks whether the entity has the given flag
      *
      * @param entity the entity to check for
      * @param flag   the flag to check for

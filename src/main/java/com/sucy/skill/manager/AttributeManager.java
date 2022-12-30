@@ -453,7 +453,7 @@ public class AttributeManager {
         }
 
         /**
-         * Checks whether or not the formula should be applied to the component
+         * Checks whether the formula should be applied to the component
          *
          * @param component component to check for conditions against
          * @return true if passes the conditions

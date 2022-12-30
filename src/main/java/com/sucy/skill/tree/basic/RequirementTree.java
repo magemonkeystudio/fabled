@@ -135,7 +135,7 @@ public class RequirementTree extends InventoryTree {
     }
 
     /**
-     * Checks whether or not the skill is attached to a chain
+     * Checks whether the skill is attached to a chain
      *
      * @param skills skill list to check in
      * @param skill  skill to check for

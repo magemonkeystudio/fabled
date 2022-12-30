@@ -36,7 +36,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
 /**
- * Handler for checking whether or not hooked plugins are present
+ * Handler for checking whether hooked plugins are present
  * and active before using related code.
  */
 public class PluginChecker extends SkillAPIListener {
@@ -66,14 +66,14 @@ public class PluginChecker extends SkillAPIListener {
 
 
     /**
-     * Checks whether or not Lib's Disguises is active
+     * Checks whether Lib's Disguises is active
      *
      * @return true if active
      */
     public static boolean isDisguiseActive() {return libsDisguises;}
 
     /**
-     * Checks whether or not NoCheatPlus is active on the server
+     * Checks whether NoCheatPlus is active on the server
      *
      * @return true if active, false otherwise
      */
@@ -82,7 +82,7 @@ public class PluginChecker extends SkillAPIListener {
     public static boolean isPlaceholderAPIActive() {return papi;}
 
     /**
-     * Checks whether or not bungee is present
+     * Checks whether bungee is present
      *
      * @return true if present, false otherwise
      */

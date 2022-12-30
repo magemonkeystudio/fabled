@@ -103,7 +103,7 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
     }
 
     /**
-     * Checks whether or not the dynamic skill can be cast
+     * Checks whether the dynamic skill can be cast
      *
      * @return true if can cast, false otherwise
      */
@@ -112,7 +112,7 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
     }
 
     /**
-     * Checks whether or not the caster's passives are currently active
+     * Checks whether the caster's passives are currently active
      *
      * @param caster caster to check for
      * @return true if active, false otherwise

@@ -54,7 +54,7 @@ public class BuffManager {
      * if no data currently exists.
      *
      * @param entity entity to get the buff data for
-     * @param create whether or not to create new data if it doesn't exist
+     * @param create whether to create new data if it doesn't exist
      * @return the buff data for an enemy
      */
     public static BuffData getBuffData(final LivingEntity entity, final boolean create) {

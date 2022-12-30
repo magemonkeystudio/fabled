@@ -181,7 +181,7 @@ public class PlayerCombos {
     }
 
     /**
-     * Checks whether or not there would be a conflict with the given combo ID
+     * Checks whether there would be a conflict with the given combo ID
      * if it were to be added
      *
      * @param id combo ID
@@ -193,7 +193,7 @@ public class PlayerCombos {
     }
 
     /**
-     * Checks whether or not there would be a conflict with the given combo ID
+     * Checks whether there would be a conflict with the given combo ID
      * if it were to be added
      *
      * @param id combo ID
@@ -283,7 +283,7 @@ public class PlayerCombos {
     }
 
     /**
-     * Checks whether or not the skill has a combo associated with it
+     * Checks whether the skill has a combo associated with it
      *
      * @param skill the skill to check
      *

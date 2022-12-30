@@ -39,7 +39,7 @@ public interface TargetSkill {
      * @param user   user of the skill
      * @param target target of the skill
      * @param level  skill level
-     * @param ally   whether or not the target is an ally
+     * @param ally   whether the target is an ally
      *
      * @return true if could cast, false otherwise
      */

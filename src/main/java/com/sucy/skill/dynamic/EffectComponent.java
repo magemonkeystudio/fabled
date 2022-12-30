@@ -201,7 +201,7 @@ public abstract class EffectComponent {
     }
 
     /**
-     * Checks whether or not the last component passed or not
+     * Checks whether the last component passed or not
      *
      * @return true if passed, false otherwise
      */

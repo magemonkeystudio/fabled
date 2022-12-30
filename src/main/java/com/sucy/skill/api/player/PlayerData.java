@@ -357,7 +357,7 @@ public class PlayerData {
     }
 
     /**
-     * Checks whether or not the player has any
+     * Checks whether the player has any
      * points invested in a given attribute
      *
      * @param key attribute key
@@ -373,7 +373,7 @@ public class PlayerData {
      * has no remaining points, this will do nothing.
      *
      * @param key attribute key
-     * @return whether or not it was successfully upgraded
+     * @return whether it was successfully upgraded
      */
     public boolean upAttribute(String key) {
         key = key.toLowerCase();
@@ -1103,7 +1103,7 @@ public class PlayerData {
     }
 
     /**
-     * Checks whether or not the player has as least one class they have professed as.
+     * Checks whether the player has as least one class they have professed as.
      *
      * @return true if professed, false otherwise
      */
@@ -1112,7 +1112,7 @@ public class PlayerData {
     }
 
     /**
-     * Checks whether or not a player has a class within the given group
+     * Checks whether a player has a class within the given group
      *
      * @param group class group to check
      * @return true if has a class in the group, false otherwise
@@ -1223,7 +1223,7 @@ public class PlayerData {
     }
 
     /**
-     * Checks whether or not the player is professed as the class
+     * Checks whether the player is professed as the class
      * without checking child classes.
      *
      * @param rpgClass class to check
@@ -1238,7 +1238,7 @@ public class PlayerData {
     }
 
     /**
-     * Checks whether or not the player is professed as the class
+     * Checks whether the player is professed as the class
      * or any of its children.
      *
      * @param rpgClass class to check
@@ -1266,7 +1266,7 @@ public class PlayerData {
     }
 
     /**
-     * Checks whether or not the player can profess into the given class. This
+     * Checks whether the player can profess into the given class. This
      * checks to make sure the player is currently professed as the parent of the
      * given class and is high enough of a level to do so.
      *
@@ -1443,7 +1443,7 @@ public class PlayerData {
      *
      * @param amount  amount of experience to give
      * @param source  source of the experience
-     * @param message whether or not to show the configured message if enabled
+     * @param message whether to show the configured message if enabled
      */
     public void giveExp(double amount, ExpSource source, boolean message) {
         for (PlayerClass playerClass : classes.values()) {
@@ -1690,7 +1690,7 @@ public class PlayerData {
     }
 
     /**
-     * Checks whether or not the player has at least the specified amount of mana
+     * Checks whether the player has at least the specified amount of mana
      *
      * @param amount required mana amount
      * @return true if has the amount of mana, false otherwise
@@ -1921,7 +1921,7 @@ public class PlayerData {
     }
 
     /**
-     * Checks whether or not the material has a skill bound to it
+     * Checks whether the material has a skill bound to it
      *
      * @param mat material to check
      * @return true if a skill is bound to it, false otherwise
@@ -2190,8 +2190,8 @@ public class PlayerData {
      * Checks the cooldown and mana requirements for a skill
      *
      * @param skill    skill to check for
-     * @param cooldown whether or not to check cooldowns
-     * @param mana     whether or not to check mana requirements
+     * @param cooldown whether to check cooldowns
+     * @param mana     whether to check mana requirements
      * @return true if can use
      */
     public boolean check(PlayerSkill skill, boolean cooldown, boolean mana) {

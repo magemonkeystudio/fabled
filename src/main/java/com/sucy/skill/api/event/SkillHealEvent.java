@@ -94,7 +94,7 @@ public class SkillHealEvent extends Event implements Cancellable {
     }
 
     /**
-     * Checks whether or not the event is cancelled
+     * Checks whether the event is cancelled
      *
      * @return true if cancelled, false otherwise
      */

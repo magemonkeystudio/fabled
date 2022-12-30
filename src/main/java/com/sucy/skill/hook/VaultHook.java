@@ -69,7 +69,7 @@ public class VaultHook {
     // Permissions
 
     /**
-     * Checks whether or not the Vault reference is valid with a permissions plugin
+     * Checks whether the Vault reference is valid with a permissions plugin
      *
      * @return true if valid, false otherwise
      */
@@ -102,7 +102,7 @@ public class VaultHook {
     }
 
     /**
-     * Checks whether or not the player has the permission
+     * Checks whether the player has the permission
      *
      * @param player player to check for
      * @param node   permission node to remove
@@ -115,7 +115,7 @@ public class VaultHook {
     // Economy
 
     /**
-     * Checks whether or not the Vault reference is valid with an economy plugin
+     * Checks whether the Vault reference is valid with an economy plugin
      *
      * @return true if valid, false otherwise
      */

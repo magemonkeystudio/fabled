@@ -104,7 +104,7 @@ public class PlayerExperienceLostEvent extends Event implements Cancellable {
     public void setLevelChangeAllowed(boolean changeLevel) {this.changeLevel = changeLevel;}
 
     /**
-     * @return whether or not the gain in experience is cancelled
+     * @return whether the gain in experience is cancelled
      */
     @Override
     public boolean isCancelled() {
@@ -112,7 +112,7 @@ public class PlayerExperienceLostEvent extends Event implements Cancellable {
     }
 
     /**
-     * Sets whether or not the gain in experience is cancelled
+     * Sets whether the gain in experience is cancelled
      *
      * @param cancelled true/false
      */

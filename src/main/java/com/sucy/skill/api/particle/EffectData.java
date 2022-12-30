@@ -47,7 +47,7 @@ public class EffectData {
     }
 
     /**
-     * Checks whether or not an effect is still running
+     * Checks whether an effect is still running
      *
      * @param key effect key
      *

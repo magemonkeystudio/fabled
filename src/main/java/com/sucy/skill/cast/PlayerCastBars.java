@@ -455,7 +455,7 @@ public class PlayerCastBars implements InventoryHolder {
      * Loads data from the config
      *
      * @param config config data
-     * @param hover  whether or not it's for the hover bar
+     * @param hover  whether it's for the hover bar
      */
     public void load(DataSection config, boolean hover) {
         if (config == null) {
@@ -472,7 +472,7 @@ public class PlayerCastBars implements InventoryHolder {
      * Saves data to the config
      *
      * @param config config data
-     * @param hover  whether or not it's for the hover bar
+     * @param hover  whether it's for the hover bar
      */
     public void save(DataSection config, boolean hover) {
         HashMap<Integer, String> bar = hover ? hoverBar : instantBar;

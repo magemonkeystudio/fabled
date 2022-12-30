@@ -62,7 +62,7 @@ public final class PlayerSkill {
     }
 
     /**
-     * Checks whether or not the skill is currently unlocked
+     * Checks whether the skill is currently unlocked
      * for the player. This requires the skill to be at least
      * level 1.
      *
@@ -159,7 +159,7 @@ public final class PlayerSkill {
     }
 
     /**
-     * Checks whether or not the skill is currently on cooldown
+     * Checks whether the skill is currently on cooldown
      *
      * @return true if on cooldown, false otherwise
      */
@@ -168,7 +168,7 @@ public final class PlayerSkill {
     }
 
     /**
-     * Checks whether or not the skill is at its maximum level
+     * Checks whether the skill is at its maximum level
      *
      * @return true if at max level, false otherwise
      */

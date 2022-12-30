@@ -49,7 +49,7 @@ public class PhysicalDamageEvent extends Event implements Cancellable {
      * @param damager    entity dealing the damage
      * @param target     entity receiving the damage
      * @param damage     the amount of damage dealt
-     * @param projectile whether or not it was a projectile attack
+     * @param projectile whether it was a projectile attack
      */
     public PhysicalDamageEvent(LivingEntity damager, LivingEntity target, double damage, boolean projectile) {
         this.damager = damager;
@@ -96,7 +96,7 @@ public class PhysicalDamageEvent extends Event implements Cancellable {
     }
 
     /**
-     * Checks whether or not it was a projectile attack
+     * Checks whether it was a projectile attack
      *
      * @return true if a projectile attack, false otherwise
      */
@@ -105,7 +105,7 @@ public class PhysicalDamageEvent extends Event implements Cancellable {
     }
 
     /**
-     * Checks whether or not the event is cancelled
+     * Checks whether the event is cancelled
      *
      * @return true if cancelled, false otherwise
      */

@@ -339,7 +339,7 @@ public abstract class RPGClass implements IconHolder {
     }
 
     /**
-     * Checks whether or not the class receives experience
+     * Checks whether the class receives experience
      * from the given source
      *
      * @param source source of experience to check
@@ -497,7 +497,7 @@ public abstract class RPGClass implements IconHolder {
     }
 
     /**
-     * Checks whether or not this class has mana regeneration
+     * Checks whether this class has mana regeneration
      *
      * @return true if has mana regeneration, false otherwise
      */

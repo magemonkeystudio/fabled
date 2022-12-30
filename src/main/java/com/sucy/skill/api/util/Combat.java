@@ -31,7 +31,7 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 
 /**
- * Helper method for checking whether or not an entity is in combat
+ * Helper method for checking whether an entity is in combat
  */
 public class Combat {
     private static HashMap<String, Long> timers = new HashMap<String, Long>();
@@ -55,7 +55,7 @@ public class Combat {
     }
 
     /**
-     * Checks whether or not the player is in combat or not
+     * Checks whether the player is in combat or not
      *
      * @param player  player to check for
      * @param seconds seconds before being counted as in combat
@@ -67,7 +67,7 @@ public class Combat {
     }
 
     /**
-     * Checks whether or not the player is out of combat or not
+     * Checks whether the player is out of combat or not
      *
      * @param player  player to check for
      * @param seconds seconds before being counted as out of combat

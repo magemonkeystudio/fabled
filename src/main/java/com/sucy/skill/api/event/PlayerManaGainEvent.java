@@ -93,7 +93,7 @@ public class PlayerManaGainEvent extends Event implements Cancellable {
     }
 
     /**
-     * @return whether or not the gain in experience is cancelled
+     * @return whether the gain in experience is cancelled
      */
     @Override
     public boolean isCancelled() {
@@ -101,7 +101,7 @@ public class PlayerManaGainEvent extends Event implements Cancellable {
     }
 
     /**
-     * Sets whether or not the gain in experience is cancelled
+     * Sets whether the gain in experience is cancelled
      *
      * @param cancelled true/false
      */

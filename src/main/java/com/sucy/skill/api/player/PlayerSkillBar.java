@@ -73,14 +73,14 @@ public class PlayerSkillBar {
     }
 
     /**
-     * @return whether or not the skill bar is enabled
+     * @return whether the skill bar is enabled
      */
     public boolean isEnabled() {
         return enabled;
     }
 
     /**
-     * Whether or not the skill bar has been set up recently
+     * whether the skill bar has been set up recently
      *
      * @return true if setup recently, false otherwise
      */

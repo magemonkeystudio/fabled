@@ -47,7 +47,7 @@ public class DisguiseHook {
      *
      * @param target target to disguise
      * @param type   type of mob to disguise as
-     * @param adult  whether or not the mob is an adult
+     * @param adult  whether the mob is an adult
      */
     public static void disguiseMob(LivingEntity target, String type, boolean adult) {
         try {

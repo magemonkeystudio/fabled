@@ -192,7 +192,7 @@ public class GroupSettings {
     }
 
     /**
-     * Retrieves whether or not the group requires a permission to use at all
+     * Retrieves whether the group requires a permission to use at all
      *
      * @return true if requires a permission, false otherwise
      */
@@ -287,18 +287,18 @@ public class GroupSettings {
 
         config.setComments(CAN_RESET, ImmutableList.of(
                 "",
-                " Whether or not this class is reset when players use the reset command"));
+                " whether this class is reset when players use the reset command"));
         config.set(CAN_RESET, canReset);
 
         config.setComments(FRIENDLY, ImmutableList.of(
                 "",
-                " Whether or not players professed as the same base class in this group",
+                " whether players professed as the same base class in this group",
                 " are considered allies and cannot attack each other"));
         config.set(FRIENDLY, friendly);
 
         config.setComments(SCOREBOARD, ImmutableList.of(
                 "",
-                " Whether or not to show a scoreboard for classes within this group.",
+                " whether to show a scoreboard for classes within this group.",
                 " Scoreboards must be enabled for this to work."));
         config.set(SCOREBOARD, showScoreboard);
 
@@ -333,13 +333,13 @@ public class GroupSettings {
         config.set(ATTRIB_PER_LEVEL, attribsPerLevel);
 
         config.setComments(CUSTOM_POINTS, ImmutableList.of("",
-                " Whether or not to use custom skill point distribution.",
+                " whether to use custom skill point distribution.",
                 " When enabled, skill points are given based on custom-points",
                 " instead of points-per-level"));
         config.set(CUSTOM_POINTS, useCustomPoints);
 
         config.setComments(CUSTOM_ATTRIBS, ImmutableList.of("",
-                " Whether or not to use custom attribute point distribution.",
+                " whether to use custom attribute point distribution.",
                 " When enabled, attribute points are given based on custom-attribute-points",
                 " instead of attribs-per-level"));
         config.set(CUSTOM_ATTRIBS, useCustomAttribs);

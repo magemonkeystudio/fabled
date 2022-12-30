@@ -83,7 +83,7 @@ public class FlagApplyEvent extends Event implements Cancellable {
     }
 
     /**
-     * Checks whether or not the event is cancelled
+     * Checks whether the event is cancelled
      *
      * @return true if cancelled, false otherwise
      */
@@ -93,7 +93,7 @@ public class FlagApplyEvent extends Event implements Cancellable {
     }
 
     /**
-     * Sets whether or not the event is cancelled
+     * Sets whether the event is cancelled
      *
      * @param cancelled true if cancelled, false otherwise
      */

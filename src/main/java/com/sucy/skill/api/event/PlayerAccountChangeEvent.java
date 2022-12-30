@@ -91,7 +91,7 @@ public class PlayerAccountChangeEvent extends Event implements Cancellable {
     }
 
     /**
-     * Checks whether or not the event is cancelled
+     * Checks whether the event is cancelled
      *
      * @return true if cancelled, false otherwise
      */
@@ -101,7 +101,7 @@ public class PlayerAccountChangeEvent extends Event implements Cancellable {
     }
 
     /**
-     * Sets whether or not the switch should be cancelled
+     * Sets whether the switch should be cancelled
      *
      * @param cancelled cancelled state of the event
      */

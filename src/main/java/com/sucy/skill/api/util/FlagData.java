@@ -162,7 +162,7 @@ public class FlagData {
     }
 
     /**
-     * Checks whether or not the entity currently has the flag set
+     * Checks whether the entity currently has the flag set
      *
      * @param flag the flag to check if set or not
      *
