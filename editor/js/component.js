@@ -46,6 +46,7 @@ var Trigger = {
     LAUNCH               : { name: 'Launch',               container: true, construct: TriggerLaunch             },
     LEFT_CLICK           : { name: 'Left Click',           container: true, construct: TriggerLeftClick          },
     MOVE                 : { name: 'Move',                 container: true, construct: TriggerMove               },
+    SKILL_CAST           : { name: 'Skill Cast',           container: true, construct: TriggerSkillCast          },
     PHYSICAL_DAMAGE      : { name: 'Physical Damage',      container: true, construct: TriggerPhysicalDamage     },
     RIGHT_CLICK          : { name: 'Right Click',          container: true, construct: TriggerRightClick         },
     SKILL_DAMAGE         : { name: 'Skill Damage',         container: true, construct: TriggerSkillDamage        },
@@ -791,6 +792,24 @@ function TriggerMove() {
     this.super('Move', Type.TRIGGER, true);
 
     this.description = 'Applies skill effects when a player moves around. This triggers every tick the player is moving, so use this sparingly. Use the "api-moved" value to check/use the distance traveled.';
+}
+
+extend('TriggerSkillCast', 'Component');
+
+function TriggerSkillCast() {
+    this.super('Skill Cast', Type.TRIGGER, true);
+
+    this.description = 'Applies skill effects when a player casts a skill.';
+
+    this.data.push(new ListValue('Cancel Cast', 'cancel', ['True', 'False'], 'False')
+        .setTooltip('True cancels the skill cast. False allows the skill cast'));
+
+    this.data.push(new StringListValue('Classes', 'allowed-classes', [])
+        .setTooltip('The list of classes which will trigger this effect. Leave blank to allow all to trigger. Use \'!xxx\' to exclude.')
+    );
+    this.data.push(new StringListValue('Skills', 'allowed-skills', [])
+        .setTooltip('The list of skills which will trigger this effect. Leave blank to allow all to trigger. Use \'!xxx\' to exclude.')
+    );
 }
 
 extend('TriggerPhysicalDamage', 'Component');
