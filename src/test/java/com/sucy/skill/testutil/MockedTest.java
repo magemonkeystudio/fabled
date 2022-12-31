@@ -18,15 +18,16 @@ import mc.promcteam.engine.utils.actions.ActionsManager;
 import mc.promcteam.engine.utils.reflection.ReflectionUtil;
 import mc.promcteam.engine.utils.reflection.Reflection_1_17;
 import org.apache.commons.io.FileUtils;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.*;
@@ -39,26 +40,40 @@ import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class MockedTest {
-    protected ServerMock                      server;
-    protected NexEngine                       engine;
-    protected SkillAPI                        plugin;
-    protected List<PlayerMock>                players          = new ArrayList<>();
-    protected Map<UUID, PlayerData>           activePlayerData = new HashMap<>();
-    protected MockedStatic<Reflex>            reflex;
-    protected MockedStatic<ReflectionUtil>    mockedReflection;
-    protected MockedStatic<Reflection_1_17>   mockedReflection17;
-    protected MockedStatic<NexEngine>         nexEngine;
-    protected MockedStatic<Board>             board;
-    protected MockedStatic<DamageLoreRemover> damageLoreRemover;
-    protected HookManager                     hookManager;
-    protected NMS                             nms;
-    protected ActionsManager                  actionsManager;
-    protected CoreLang                        coreLang;
+    private static org.slf4j.Logger                log              = LoggerFactory.getLogger(MockedTest.class);
+    protected      ServerMock                      server;
+    protected      NexEngine                       engine;
+    protected      SkillAPI                        plugin;
+    protected      List<PlayerMock>                players          = new ArrayList<>();
+    protected      Map<UUID, PlayerData>           activePlayerData = new HashMap<>();
+    protected      MockedStatic<Reflex>            reflex;
+    protected      MockedStatic<ReflectionUtil>    mockedReflection;
+    protected      MockedStatic<Reflection_1_17>   mockedReflection17;
+    protected      MockedStatic<NexEngine>         nexEngine;
+    protected      MockedStatic<Board>             board;
+    protected      MockedStatic<DamageLoreRemover> damageLoreRemover;
+    protected      HookManager                     hookManager;
+    protected      NMS                             nms;
+    protected      ActionsManager                  actionsManager;
+    protected      CoreLang                        coreLang;
+    private        Set<String>                     classesToLoad    = new HashSet<>();
+    protected      boolean                         loadClasses      = false;
+
+    public void preInit() {}
+
+    public void loadClasses(String... classes) {
+        loadClasses = true;
+        for (String aClass : classes) {
+            classesToLoad.add(aClass);
+        }
+    }
 
     @BeforeAll
     public void setupServer() {
+        preInit();
+
         server = spy(MockBukkit.mock());
-        String coreVersion  = System.getProperty("PROMCCORE_VERSION");
+        String coreVersion = System.getProperty("PROMCCORE_VERSION");
 
         try {
             File core = DependencyResolver.resolve("com.promcteam:promccore:" + coreVersion);
@@ -68,6 +83,8 @@ public abstract class MockedTest {
             throw new RuntimeException(e);
         }
         damageLoreRemover = mockStatic(DamageLoreRemover.class);
+        damageLoreRemover.when(() -> DamageLoreRemover.removeAttackDmg(any(ItemStack.class)))
+                .thenAnswer(a -> a.getArgument(0));
         board = mockStatic(Board.class);
         reflex = mockStatic(Reflex.class);
         mockedReflection = mockStatic(ReflectionUtil.class);
@@ -87,6 +104,7 @@ public abstract class MockedTest {
         when(nms.fixColors(anyString()))
                 .thenAnswer(args -> args.getArgument(0));
         when(nms.toBase64(any())).thenReturn("");
+        when(nms.fromBase64(any())).thenReturn(new ItemStack(Material.AIR));
 
         engine = mock(NexEngine.class);
         nexEngine = mockStatic(NexEngine.class);
@@ -99,16 +117,77 @@ public abstract class MockedTest {
         when(engine.getLogger()).thenReturn(Logger.getLogger("ProMCCore"));
         doReturn(server.getPluginManager())
                 .when(engine).getPluginManager();
-
         ItemUT.setEngine(engine);
+//        itemUT.when(() -> ItemUT.getEngine())
+//                        .thenReturn(engine);
+//        itemUT.when(() -> ItemUT.fromBase64(anyList()))
+//                .thenReturn(new ItemStack[0]);
+//        itemUT.when(() -> ItemUT.toBase64(any(ItemStack.class)))
+//                        .thenReturn(null);
+//        itemUT.when(() -> ItemUT.toBase64(anyList()))
+//                        .thenReturn(List.of());
+//        itemUT.when(() -> ItemUT.toBase64(any(ItemStack[].class)))
+//                        .thenReturn(List.of());
+//        itemSerializer.when(() -> ItemSerializer.fromBase64(anyString()))
+//                .thenReturn(new ItemStack[0]);
 
         plugin = MockBukkit.load(SkillAPI.class);
+        log.info("Plugin loaded");
     }
 
     @AfterAll
     public void destroy() {
         CommandManager.unregisterAll();
+
+        reflex.close();
+        mockedReflection.close();
+        mockedReflection17.close();
+        nexEngine.close();
+        board.close();
+        damageLoreRemover.close();
+//        itemUT.close();
+//        itemSerializer.close();
         MockBukkit.unmock();
+    }
+
+    @BeforeEach
+    public void initClasses() {
+        String sapiVersion = System.getProperty("PROSKILLAPI_VERSION");
+        File   classDir    = new File(server.getPluginsFolder().getAbsolutePath() + File.separator + "ProSkillAPI-" + sapiVersion + File.separator + "dynamic" + File.separator + "class");
+        if (!classDir.exists()) classDir.mkdirs();
+        try {
+            FileUtils.cleanDirectory(classDir);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (loadClasses && classesToLoad.isEmpty()) {
+            plugin.reload();
+            return;
+        }
+
+        classesToLoad.forEach(c -> {
+            File classFile = new File(server.getPluginsFolder().getAbsolutePath() + File.separator + "ProSkillAPI-" + sapiVersion + File.separator + "dynamic" + File.separator + "class", c + ".yml");
+            try {
+                if (!classFile.exists()) {
+                    classFile.createNewFile();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("classes" + File.separator + c + ".yml")));
+                 FileWriter writer = new FileWriter(classFile);) {
+                String str;
+                while ((str = in.readLine()) != null) {
+                    writer.write(str + "\n");
+                }
+                log.info("Saved classfile " + c);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        plugin.reload();
     }
 
     @AfterEach
@@ -116,6 +195,7 @@ public abstract class MockedTest {
         activePlayerData.clear();
         clearEvents();
         players.clear();
+        loadClasses = false;
     }
 
     public PlayerData generatePlayerData(Player player) {
@@ -125,6 +205,7 @@ public abstract class MockedTest {
         when(pd.getPlayer()).thenReturn(player);
         return pd;
     }
+
 
     public PlayerMock genPlayer(String name) {
         return genPlayer(name, true);

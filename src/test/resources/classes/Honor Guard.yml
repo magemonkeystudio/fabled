@@ -1,0 +1,46 @@
+Honor Guard: 
+  name: 'Honor Guard'
+  action-bar: ''
+  prefix: '&3&lHonor Guard'
+  group: 'class'
+  mana: '&9Aether'
+  max-level: 50
+  parent: ''
+  needs-permission: 'false'
+  attributes: 
+    health-base: '330'
+    health-scale: '95'
+    mana-base: '160'
+    mana-scale: '43'
+    vitality-base: '8'
+    vitality-scale: '7'
+    spirit-base: '6'
+    spirit-scale: '7'
+    intelligence-base: '5'
+    intelligence-scale: '5'
+    dexterity-base: '6'
+    dexterity-scale: '6'
+    strength-base: '7'
+    strength-scale: '7'
+  mana-regen: 17.5
+  tree: 'REQUIREMENT'
+  blacklist:  []
+  skills: 
+  - 'Brilliance Strike'
+  - 'Test'
+  - 'Item'
+  - 'Forcecast'
+  - 'ValAdd'
+  - 'Tir Rapide'
+  - 'Whee'
+  icon: 'DIAMOND_CHESTPLATE'
+  icon-data: 0
+  icon-durability: 0
+  icon-lore: 
+  - '&3&lHonor Guard &7&l The Honor Guard,'
+  - '&7&la honed skilled warrior in the art of combat'
+  - '&7&land the power of the holy light blessed upon'
+  - '&7&lthem by the crystal. With their heavy shield'
+  - '&7&land dense training, they can withstand generall'
+  - '&7&lall physical damage coming their way.'
+  exp-source: 273
