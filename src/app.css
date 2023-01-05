@@ -1,0 +1,78 @@
+@font-face {
+    font-family: 'Mojave-Web';
+    src: url('mojave-webfont.eot');
+    src: url('mojave-webfont.eot?#iefix') format('embedded-opentype'),
+    url('mojave-webfont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Sertig-Web';
+    src: url('sertig-webfont.eot');
+    src: url('sertig-webfont.eot?#iefix') format('embedded-opentype'),
+    url('sertig-webfont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.material-symbols-rounded {
+    font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 48;
+}
+
+body {
+    position: absolute;
+    overflow: auto;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: Sertig-Web;
+    font-size: 1.2rem;
+    min-width: 700px;
+}
+
+#svelte-body {
+    min-height: 100%;
+}
+
+:root {
+    --color-accent: #0083ef;
+    --color-fg: white;
+    --color-bg: #111;
+    --color-select-bg: #222;
+}
+
+* {
+    box-sizing: border-box;
+    position: relative;
+}
+
+.hcenter {
+    text-align: center;
+    justify-content: center;
+}
+
+.vcenter {
+    align-items: center;
+}
+
+.center {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.accent {
+    color: var(--color-accent);
+}
+
+h1, h2 {
+    font-family: Mojave-Web, sans-serif;
+    margin: 0.75rem;
+}
+
+hr {
+    width: 95%;
+}
