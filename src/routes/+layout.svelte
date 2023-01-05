@@ -2,7 +2,17 @@
   import "../app.css";
   import HeaderBar from "../components/HeaderBar.svelte";
   import { squish } from "../data/squish";
-  import { classes, importing, isShowClasses, showClasses, showSidebar, showSkills, skills } from "../data/store";
+  import {
+    active,
+    classes,
+    importing,
+    isShowClasses,
+    setActive,
+    showClasses,
+    showSidebar,
+    showSkills,
+    skills
+  } from "../data/store";
   import { fly } from "svelte/transition";
   import ImportModal from "../components/ImportModal.svelte";
 
@@ -35,16 +45,30 @@
     </div>
     <hr />
     {#if $isShowClasses}
-      {#each classes as cl, i}
-        <div class="sidebar-entry" in:fly={{x: -100, duration: 500, delay: 200 + 100*i}}>{cl}</div>
+      {#each classes as cl, i (cl.name)}
+        <div class="sidebar-entry"
+             class:active={$active == cl}
+             on:click={() => setActive(cl, 'class')}
+             in:fly={{x: -100, duration: 500, delay: 200 + 100*i}}>
+          {cl.name}
+        </div>
       {/each}
-      <div class="sidebar-entry" in:fly={{x: -100, duration: 500, delay: 200 + 100*(classes.length+1)}}>+ New Class
+      <div class="sidebar-entry"
+           in:fly={{x: -100, duration: 500, delay: 200 + 100*(classes.length+1)}}>
+        + New Class
       </div>
     {:else}
-      {#each skills as sk, i}
-        <div class="sidebar-entry" in:fly={{x: -100, duration: 500, delay: 200 + 100*i}}>{sk}</div>
+      {#each skills as sk, i (sk.name)}
+        <div class="sidebar-entry"
+             class:active={$active == sk}
+             on:click={() => setActive(sk, 'skill')}
+             in:fly={{x: -100, duration: 500, delay: 200 + 100*i}}>
+          {sk.name}
+        </div>
       {/each}
-      <div class="sidebar-entry" in:fly={{x: -100, duration: 500, delay: 200 + 100*(classes.length+1)}}>+ New Skill
+      <div class="sidebar-entry"
+           in:fly={{x: -100, duration: 500, delay: 200 + 100*(classes.length+1)}}>
+        + New Skill
       </div>
     {/if}
 
@@ -97,6 +121,8 @@
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
+        transition: background-color 0.25s ease-in-out;
+        user-select: none;
     }
 
     .sidebar-entry:hover {
@@ -176,5 +202,9 @@
 
     #type-selector > div:hover {
         cursor: pointer;
+    }
+
+    .active {
+        background-color: #005193;
     }
 </style>

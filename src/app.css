@@ -76,3 +76,7 @@ h1, h2 {
 hr {
     width: 95%;
 }
+
+.button {
+    user-select: none;
+}

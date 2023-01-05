@@ -1,7 +1,8 @@
 <script lang="ts">
   import DiscordLogo from "./DiscordLogo.svelte";
-  import { isShowClasses, setImporting, toggleSidebar } from "../data/store";
+  import { activeType, setImporting, toggleSidebar } from "../data/store";
   import { createPaste } from "../api/hastebin";
+  import type { Skill } from "../api/types";
 
   let serverOptions = ["1.19", "1.18", "1.17", "1.16"];
 
@@ -70,11 +71,14 @@
          title="Import Data">
       Import
     </div>
-    <div class="chip share"
-         on:click={haste}
-         title="Share {$isShowClasses ? 'Class' : 'Skill'}">
-      Share {$isShowClasses ? 'Class' : 'Skill'}
-    </div>
+
+    {#if $activeType}
+      <div class="chip share"
+           on:click={haste}
+           title="Share {$activeType == 'class' ? 'Class' : 'Skill'}">
+        Share {$activeType == 'class' ? 'Class' : 'Skill'}
+      </div>
+    {/if}
   </div>
 </nav>
 
