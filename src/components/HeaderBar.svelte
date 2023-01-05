@@ -1,13 +1,18 @@
 <script lang="ts">
   import DiscordLogo from "./DiscordLogo.svelte";
-  import { activeType, setImporting, toggleSidebar } from "../data/store";
+  import { active, activeType, setImporting, toggleSidebar } from "../data/store";
   import { createPaste } from "../api/hastebin";
   import type { Skill } from "../api/types";
+  import { get } from "svelte/store";
 
   let serverOptions = ["1.19", "1.18", "1.17", "1.16"];
 
   const haste = () => {
-    createPaste("Skill data will go here!")
+    let act = get(active);
+    if(!act) return;
+
+    let data = JSON.stringify(act, null, 2);
+    createPaste(data)
       .then((urlToPaste) => {
         console.log(urlToPaste);
         navigator.clipboard.writeText(urlToPaste);

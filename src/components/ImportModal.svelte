@@ -1,5 +1,6 @@
 <script lang="ts">
   import { setImporting } from "../data/store";
+  import { fade, fly } from "svelte/transition";
 
   let importUrl: string | undefined;
   let fileImport: any;
@@ -11,8 +12,8 @@
   const clickModal = (e: MouseEvent) => e.stopPropagation();
 </script>
 
-<div class="backdrop" on:click={closeModal}>
-  <div class="modal-content" on:click={clickModal}>
+<div class="backdrop" on:click={closeModal} transition:fade>
+  <div class="modal-content" on:click={clickModal} transition:fly={{y: -200}}>
     <div class="options">
       <div class="option">
         <div>Upload File</div>
@@ -60,6 +61,7 @@
         margin: 0.5rem 0;
         border-radius: 0.4rem;
         background-color: #0083ef;
+        font-weight: bold;
     }
 
     input {

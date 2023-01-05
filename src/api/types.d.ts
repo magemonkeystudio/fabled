@@ -47,7 +47,7 @@ export interface Skill {
   combo?: string;
   indicator: '2D' | '3D' | 'None';
   icon: Icon;
-  incompatible: Skill[];
+  incompatible?: Skill[];
 
   triggers: Trigger[];
 }

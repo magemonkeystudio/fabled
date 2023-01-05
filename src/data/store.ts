@@ -113,7 +113,6 @@ export const skills: Skill[] = [
       material: 'Diamond',
       customModelData: 0
     },
-    incompatible: [],
     triggers: []
   },
   {
@@ -138,7 +137,6 @@ export const skills: Skill[] = [
       material: 'Diamond',
       customModelData: 0
     },
-    incompatible: [],
     triggers: []
   },
   {
@@ -163,7 +161,6 @@ export const skills: Skill[] = [
       material: 'Diamond',
       customModelData: 0
     },
-    incompatible: [],
     triggers: []
   }
 ];
