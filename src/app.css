@@ -1,17 +1,17 @@
 @font-face {
     font-family: 'Mojave-Web';
-    src: url('mojave-webfont.eot');
-    src: url('mojave-webfont.eot?#iefix') format('embedded-opentype'),
-    url('mojave-webfont.ttf') format('truetype');
+    src: url('/mojave-webfont.eot');
+    src: url('/mojave-webfont.eot?#iefix') format('embedded-opentype'),
+    url('/mojave-webfont.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Sertig-Web';
-    src: url('sertig-webfont.eot');
-    src: url('sertig-webfont.eot?#iefix') format('embedded-opentype'),
-    url('sertig-webfont.ttf') format('truetype');
+    src: url('/sertig-webfont.eot');
+    src: url('/sertig-webfont.eot?#iefix') format('embedded-opentype'),
+    url('/sertig-webfont.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
