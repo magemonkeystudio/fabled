@@ -1,35 +1,39 @@
-export interface SapiClass {
-  name: string;
+import { ProSkill } from "./proskill";
+import { ProClass } from "./proclass";
+import { YAMLObject } from "./yaml";
+
+export interface ProClassData {
+  name?: string;
   prefix?: string;
-  group: string;
-  manaName: string;
-  maxLevel: number;
-  parent?: SapiClass;
-  permission: boolean;
-  expSources: string[];
-  health: number;
-  healthModifier: number;
-  mana: number;
-  manaModifier: number;
-  manaRegen: number;
-  attributes: {
+  group?: string;
+  manaName?: string;
+  maxLevel?: number;
+  parent?: ProClass;
+  permission?: boolean;
+  expSources?: string[];
+  health?: number;
+  healthModifier?: number;
+  mana?: number;
+  manaModifier?: number;
+  manaRegen?: number;
+  attributes?: {
     [key: string]: {
       base: number;
       modifier: number;
     }
   };
-  skillTree: 'Requirement' | 'Basic Horizontal' | 'Basic Vertical' | 'Level Horizontal' | 'Level Vertical' | 'Flood';
-  skills: Skill[];
-  icon: Icon;
-  usableItems: string[];
+  skillTree?: "Requirement" | "Basic Horizontal" | "Basic Vertical" | "Level Horizontal" | "Level Vertical" | "Flood";
+  skills?: ProSkill[];
+  icon?: Icon;
+  unusableItems?: string[];
   actionBar?: string;
 }
 
-export interface Skill {
+export interface ProSkillData {
   name: string;
   type: string;
   maxLevel: number;
-  skillReq?: Skill;
+  skillReq?: ProSkill;
   skillReqLevel?: number;
   permission: boolean;
   levelReq: number;
@@ -45,9 +49,9 @@ export interface Skill {
   minSpentModifier: number;
   castMessage: string;
   combo?: string;
-  indicator: '2D' | '3D' | 'None';
+  indicator: "2D" | "3D" | "None";
   icon: Icon;
-  incompatible?: Skill[];
+  incompatible?: ProSkill[];
 
   triggers: Trigger[];
 }
@@ -55,7 +59,7 @@ export interface Skill {
 export interface Icon {
   material: string;
   customModelData: number;
-  lore?: string;
+  lore?: string[];
 }
 
 export interface Trigger {
@@ -66,4 +70,8 @@ export interface Trigger {
 export interface SkillComponent {
   name: string;
   components: SkillComponent[];
+}
+
+export abstract class Serializable {
+  public abstract serializeYaml: () => YAMLObject;
 }

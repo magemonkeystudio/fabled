@@ -1,81 +1,19 @@
 <script lang="ts">
   import "../app.css";
   import HeaderBar from "../components/HeaderBar.svelte";
-  import { squish } from "../data/squish";
-  import {
-    active,
-    classes,
-    importing,
-    isShowClasses,
-    setActive,
-    showClasses,
-    showSidebar,
-    showSkills,
-    skills
-  } from "../data/store";
-  import { fly } from "svelte/transition";
+  import { importing, showSidebar } from "../data/store";
   import ImportModal from "../components/ImportModal.svelte";
-
-  let sidebar: HTMLElement;
-  let sidebarHeight = 200;
-
-  const listener = () => {
-    if (!sidebar) return;
-    const rect = sidebar.getBoundingClientRect();
-    const y = rect.y;
-    const height = window.innerHeight;
-    sidebarHeight = height - y;
-
-  };
-
-  $: if (sidebar) {
-    listener();
-  }
+  import Sidebar from "../components/sidebar/Sidebar.svelte";
+  import { active } from "../data/store.js";
 </script>
-
-<svelte:window on:scroll={listener} on:resize={listener} />
 
 <HeaderBar />
 
-{#if $showSidebar}
-  <div id="sidebar" style="height: {sidebarHeight}px" transition:squish bind:this={sidebar}>
-    <div id="type-selector" class:c-selected={$isShowClasses}>
-      <div class="classes" on:click={showClasses}>Classes</div>
-      <div class="skills" on:click={showSkills}>Skills</div>
-    </div>
-    <hr />
-    {#if $isShowClasses}
-      {#each classes as cl, i (cl.name)}
-        <div class="sidebar-entry"
-             class:active={$active == cl}
-             on:click={() => setActive(cl, 'class')}
-             in:fly={{x: -100, duration: 500, delay: 200 + 100*i}}>
-          {cl.name}
-        </div>
-      {/each}
-      <div class="sidebar-entry"
-           in:fly={{x: -100, duration: 500, delay: 200 + 100*(classes.length+1)}}>
-        + New Class
-      </div>
-    {:else}
-      {#each skills as sk, i (sk.name)}
-        <div class="sidebar-entry"
-             class:active={$active == sk}
-             on:click={() => setActive(sk, 'skill')}
-             in:fly={{x: -100, duration: 500, delay: 200 + 100*i}}>
-          {sk.name}
-        </div>
-      {/each}
-      <div class="sidebar-entry"
-           in:fly={{x: -100, duration: 500, delay: 200 + 100*(classes.length+1)}}>
-        + New Skill
-      </div>
-    {/if}
-
-  </div>
-{/if}
-<div id="body">
-  <div class="content">
+<div id="body-container">
+  {#if $showSidebar}
+    <Sidebar />
+  {/if}
+  <div id="body" class:centered={!$active}>
     <slot />
   </div>
 </div>
@@ -94,50 +32,22 @@
 {/if}
 
 <style>
-    #body {
-        display: flex;
-        justify-content: stretch;
-    }
-
-    #sidebar {
-        position: sticky;
-        top: 3.06rem;
-        float: left;
-        background-color: #222;
-        padding: 0.4rem;
-        width: 15rem;
-        min-width: 10rem;
-        max-width: 25vw;
-        overflow-x: hidden;
-        overflow-y: auto;
-    }
-
-    .sidebar-entry {
-        display: block;
-        background-color: #444;
-        border-radius: 0.5rem;
-        padding: 0.2rem 0.5rem;
-        margin: 0.2rem 0;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-        transition: background-color 0.25s ease-in-out;
-        user-select: none;
-    }
-
-    .sidebar-entry:hover {
-        cursor: pointer;
-    }
-
-    .content {
+    #body-container {
         flex: 1;
+        max-height: 100%;
+        overflow: auto;
+    }
+
+    #body {
         display: flex;
         flex-direction: column;
         align-items: center;
+        min-height: 100%;
+        padding-bottom: 1rem;
     }
 
-    .button:hover {
-        cursor: pointer;
+    #body.centered {
+        justify-content: center;
     }
 
     #floating-buttons {
@@ -161,50 +71,10 @@
     }
 
     #floating-buttons .button .material-symbols-rounded {
-        font-size: 3rem;
-    }
-
-    #floating-buttons .button.backup .material-symbols-rounded {
         font-size: 1.75rem;
     }
 
     #floating-buttons .save {
         background-color: #1dad36;
-    }
-
-    #type-selector {
-        overflow: hidden;
-        display: flex;
-        text-align: center;
-        background-color: #111;
-        border-radius: 0.4rem;
-    }
-
-    #type-selector:before {
-        content: '';
-        height: 100%;
-        width: 50%;
-        border-radius: 0.4rem;
-        background-color: #0083ef;
-        position: absolute;
-        left: 0;
-        transition: left 350ms ease-in-out;
-    }
-
-    #type-selector:not(.c-selected):before {
-        left: 50%;
-    }
-
-    #type-selector > div {
-        flex: 1;
-        padding: 0.2rem;
-    }
-
-    #type-selector > div:hover {
-        cursor: pointer;
-    }
-
-    .active {
-        background-color: #005193;
     }
 </style>

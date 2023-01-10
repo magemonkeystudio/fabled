@@ -2,14 +2,14 @@
   import DiscordLogo from "./DiscordLogo.svelte";
   import { active, activeType, setImporting, toggleSidebar } from "../data/store";
   import { createPaste } from "../api/hastebin";
-  import type { Skill } from "../api/types";
+  import type { ProSkill } from "../api/types";
   import { get } from "svelte/store";
 
   let serverOptions = ["1.19", "1.18", "1.17", "1.16"];
 
   const haste = () => {
     let act = get(active);
-    if(!act) return;
+    if (!act) return;
 
     let data = JSON.stringify(act, null, 2);
     createPaste(data)
@@ -92,7 +92,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin: 0.5rem;
+        padding: 0.5rem;
     }
 
     div > * {
@@ -145,7 +145,8 @@
     }
 
     nav {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
         background-color: #444;
         align-items: center;
         justify-content: space-between;
@@ -157,10 +158,9 @@
 
     nav .chip {
         background: var(--color-bg);
-        flex: 1;
         font-weight: bold;
         padding: 0.25rem;
-        font-size: 1.3rem;
+        font-size: 1.1rem;
         text-align: center;
         border-radius: 100vw;
         white-space: nowrap;
@@ -183,16 +183,15 @@
     }
 
     .chip.hamburger {
-        flex: unset;
         display: flex;
+        justify-self: flex-start;
         align-items: center;
         justify-content: center;
-        height: 100%;
-        aspect-ratio: 1;
     }
 
     .socials {
         display: flex;
+        justify-content: flex-end;
     }
 
     .social, .social:visited, .social:active {
