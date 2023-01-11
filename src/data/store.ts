@@ -252,20 +252,23 @@ export const deleteFolder = (folder: ProFolder) => {
   if (folder.parent) {
     folder.parent.deleteFolder(folder);
     updateFolders();
-  } else {
+  } else if (get(isShowClasses)) {
     const folders = get(classFolders).filter(f => f != folder);
     classFolders.set(folders);
+  } else {
+    const folders = get(skillFolders).filter(f => f != folder);
+    skillFolders.set(folders);
   }
 };
 
 export const updateFolders = () => {
   if (!get(showSidebar)) return;
-  if (get(activeType) == "class") {
+  if (get(isShowClasses)) {
     classFolders.set(sort<ProFolder>(get(classFolders)));
-    classes.set(sort<ProClass>(get(classes)))
+    classes.set(sort<ProClass>(get(classes)));
   } else {
     skillFolders.set(sort<ProFolder>(get(skillFolders)));
-    skills.set(sort<ProSkill>(get(skills)))
+    skills.set(sort<ProSkill>(get(skills)));
   }
 };
 

@@ -18,6 +18,7 @@
   import { goto } from "$app/navigation";
   import { onDestroy, onMount } from "svelte";
   import type { Unsubscriber } from "svelte/store";
+  import { get } from "svelte/store";
   import { ProFolder } from "../../api/profolder";
   import { ProClass } from "../../api/proclass";
   import { ProSkill } from "../../api/proskill";
@@ -32,7 +33,7 @@
 
   onMount(() => {
     classSub = classFolders.subscribe(fold => {
-      if (!isShowClasses) return;
+      if (!get(isShowClasses)) return;
       classIncluded = [];
       const appendIncluded = (item: Array<ProFolder | ProClass | ProSkill> | ProFolder | ProClass | ProSkill) => {
         if (item instanceof Array) item.forEach(fold => appendIncluded(fold));
@@ -44,7 +45,7 @@
     });
 
     skillSub = skillFolders.subscribe(fold => {
-      if (isShowClasses) return;
+      if (get(isShowClasses)) return;
       folders = fold;
       skillIncluded = [];
       const appendIncluded = (item: Array<ProFolder | ProClass | ProSkill> | ProFolder | ProClass | ProSkill) => {
