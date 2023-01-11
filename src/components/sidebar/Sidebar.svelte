@@ -35,6 +35,7 @@
 
   let width: number;
   let height: number;
+  let scrollY: number;
 
   onMount(() => {
     classSub = classFolders.subscribe(fold => {
@@ -76,15 +77,14 @@
   };
 </script>
 
-<svelte:window bind:innerWidth={width} />
+<svelte:window bind:innerWidth={width} bind:innerHeight={height} bind:scrollY={scrollY} />
 
 <div id="sidebar" transition:squish
      use:clickOutside
      on:outclick={clickOut}
      on:introend={() => sidebarOpen.set(true)}
      on:outroend={() => sidebarOpen.set(false)}
-     bind:clientHeight={height}
-     style:--height="-{height}px">
+     style:--height="calc({height}px - 6rem + min(3rem, {scrollY}px))">
   <div class="type-wrap">
     <div id="type-selector" class:c-selected={$isShowClasses}>
       <div class="classes" on:click={showClasses}>Classes</div>
@@ -152,10 +152,10 @@
         z-index: 3;
         background-color: #222;
         padding-bottom: 0.5rem;
-        max-height: calc(100vh - 3rem);
-        height: calc(100vh - 3rem);
+        max-height: var(--height);
+        height: var(--height);
         overflow-y: auto;
-        margin-bottom: var(--height);
+        margin-bottom: calc(-1 * var(--height));
         width: 75%;
     }
 
@@ -241,8 +241,6 @@
             float: left;
             width: 15rem;
             min-width: 10rem;
-            max-width: 25vw;
-            height: calc(100vh - 3rem);
             overflow-x: hidden;
             overflow-y: auto;
         }

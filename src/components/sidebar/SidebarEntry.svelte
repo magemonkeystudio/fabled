@@ -110,6 +110,7 @@
 
     .sidebar-entry:not(.in-folder):last-child {
         position: sticky;
+        margin-top: 0.5rem;
         bottom: 0;
         background-color: unset;
     }
