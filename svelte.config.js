@@ -13,7 +13,7 @@ const config = {
 			// these options are set automatically — see below
 			pages: 'gh-pages',
 			assets: 'gh-pages',
-			fallback: "index.html",
+			fallback: "404.html",
 			precompress: false,
 			strict: true
 		})
