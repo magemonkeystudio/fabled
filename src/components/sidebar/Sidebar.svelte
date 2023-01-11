@@ -6,6 +6,7 @@
     addSkillFolder,
     classes,
     classFolders,
+    closeSidebar,
     isShowClasses,
     showClasses,
     showSkills,
@@ -24,12 +25,16 @@
   import { ProSkill } from "../../api/proskill";
   import Folder from "../Folder.svelte";
   import { fly } from "svelte/transition";
+  import { clickOutside } from "../../api/clickoutside";
 
   let folders: ProFolder[] = [];
   let classSub: Unsubscriber;
   let skillSub: Unsubscriber;
   let classIncluded: Array<ProClass | ProSkill> = [];
   let skillIncluded: Array<ProClass | ProSkill> = [];
+
+  let width: number;
+  let height: number;
 
   onMount(() => {
     classSub = classFolders.subscribe(fold => {
@@ -62,11 +67,24 @@
     if (classSub) classSub();
     if (skillSub) skillSub();
   });
+
+  const clickOut = (e: any) => {
+    if (width < 500) {
+      e.detail.stopPropagation();
+      closeSidebar();
+    }
+  };
 </script>
 
+<svelte:window bind:innerWidth={width} />
+
 <div id="sidebar" transition:squish
+     use:clickOutside
+     on:outclick={clickOut}
      on:introend={() => sidebarOpen.set(true)}
-     on:outroend={() => sidebarOpen.set(false)}>
+     on:outroend={() => sidebarOpen.set(false)}
+     bind:clientHeight={height}
+     style:--height="-{height}px">
   <div class="type-wrap">
     <div id="type-selector" class:c-selected={$isShowClasses}>
       <div class="classes" on:click={showClasses}>Classes</div>
@@ -130,16 +148,15 @@
 <style>
     #sidebar {
         position: sticky;
-        top: 0;
-        float: left;
+        top: 3rem;
+        z-index: 3;
         background-color: #222;
-        width: 15rem;
-        min-width: 10rem;
-        max-width: 25vw;
-        overflow-x: hidden;
-        overflow-y: auto;
-        height: 100%;
         padding-bottom: 0.5rem;
+        max-height: calc(100vh - 3rem);
+        height: calc(100vh - 3rem);
+        overflow-y: auto;
+        margin-bottom: var(--height);
+        width: 75%;
     }
 
     hr {
@@ -195,19 +212,39 @@
         width: 100%;
         display: flex;
         justify-content: space-around;
+        margin: 0.3rem;
     }
 
     .new span {
+        display: block;
         flex: 1;
+        border-radius: 100vw;
         text-align: center;
-        padding: 0.4rem 0;
-    }
-
-    .new span:hover {
+        padding: 0.4rem 0.6rem;
         background-color: #333;
     }
 
-    .new .new-folder {
-        border-left: 2px solid #222;
+    .new span:first-child {
+        margin-right: 0.5rem;
+    }
+
+    .new span:last-child {
+        margin-left: 0.5rem;
+    }
+
+    .new span:hover {
+        background-color: #0083ef;
+    }
+
+    @media screen and (min-width: 500px) {
+        #sidebar {
+            float: left;
+            width: 15rem;
+            min-width: 10rem;
+            max-width: 25vw;
+            height: calc(100vh - 3rem);
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
     }
 </style>

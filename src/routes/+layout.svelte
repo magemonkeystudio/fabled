@@ -4,14 +4,16 @@
   import { active, importing, showSidebar } from "../data/store";
   import ImportModal from "../components/ImportModal.svelte";
   import Sidebar from "../components/sidebar/Sidebar.svelte";
+  import NavBar from "../components/NavBar.svelte";
 </script>
 
-<HeaderBar />
 
+<HeaderBar />
+<NavBar />
+{#if $showSidebar}
+  <Sidebar />
+{/if}
 <div id="body-container">
-  {#if $showSidebar}
-    <Sidebar />
-  {/if}
   <div id="body" class:centered={!$active}>
     <slot />
   </div>
@@ -31,10 +33,15 @@
 {/if}
 
 <style>
+    @media screen and (min-width: 500px) {
+        #body-container {
+            /*max-height: 100%;*/
+            overflow: visible;
+        }
+    }
+
     #body-container {
         flex: 1;
-        max-height: 100%;
-        overflow: auto;
     }
 
     #body {

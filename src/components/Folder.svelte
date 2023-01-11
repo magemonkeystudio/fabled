@@ -84,7 +84,7 @@
      on:dragover={dragOver}
      on:dragleave={() => over = false}
      on:click={() => folder.open = !folder.open}
-     transition:slide={{duration: ($sidebarOpen ? 0 : 400)}}>
+     in:slide={{duration: ($sidebarOpen ? 0 : 400)}}>
   <span class="material-symbols-rounded folder-icon">
     folder
   </span>
@@ -114,13 +114,12 @@
 </div>
 
 {#if folder.open}
-  <div class="folder-content">
+  <div class="folder-content" transition:slide>
     {#each folder.data as data, i (data.key)}
       {#if data.isFolder}
         <svelte:self folder={data} />
       {:else}
         <SidebarEntry {data}
-                      useSlide
                       on:click={() => goto(`/${data.isClass ? 'class' : 'skill'}/${data.name}`)}>
           {data.name}
         </SidebarEntry>

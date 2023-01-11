@@ -13,8 +13,7 @@
   import { ProClass } from "../../api/proclass";
   import { get } from "svelte/store";
   import { ProFolder } from "../../api/profolder";
-  import { fly, slide } from "svelte/transition";
-  import { flip } from "svelte/animate";
+  import { fly } from "svelte/transition";
 
   export let delay = 0;
   export let direction: "right" | "left" = "left";
@@ -62,47 +61,27 @@
   };
 </script>
 
-{#if useSlide}
-  <div class="sidebar-entry slide"
-       class:over={over}
-       class:active={$active == data}
-       draggable="{!!data}"
-       on:dragstart={startDrag}
-       on:drop={drop}
-       on:dragover={dragOver}
-       on:dragleave={() => over = false}
-       on:click
-       in:slide>
-    <slot />
-    {#if data}
-      <div class="download" title="Save {data.triggers ? 'Skill' : 'Class'}">
+
+<div class="sidebar-entry"
+     class:over
+     class:active={data && $active == data}
+     class:in-folder={!!getFolder(data)}
+     draggable="{!!data}"
+     on:dragstart={startDrag}
+     on:drop={drop}
+     on:dragover={dragOver}
+     on:dragleave={() => over = false}
+     on:click
+     in:fly={{x: (direction == "left" ? -100 : 100), duration: 500, delay: $sidebarOpen ? 0 : delay}}>
+  <slot />
+  {#if data}
+    <div class="download" title="Save {data.triggers ? 'Skill' : 'Class'}">
         <span class="material-symbols-rounded">
           save
         </span>
-      </div>
-    {/if}
-  </div>
-{:else}
-  <div class="sidebar-entry"
-       class:over
-       class:active={$active == data}
-       draggable="{!!data}"
-       on:dragstart={startDrag}
-       on:drop={drop}
-       on:dragover={dragOver}
-       on:dragleave={() => over = false}
-       on:click
-       in:fly={{x: (direction == "left" ? -100 : 100), duration: 500, delay: $sidebarOpen ? 0 : delay}}>
-    <slot />
-    {#if data}
-      <div class="download" title="Save {data.triggers ? 'Skill' : 'Class'}">
-        <span class="material-symbols-rounded">
-          save
-        </span>
-      </div>
-    {/if}
-  </div>
-{/if}
+    </div>
+  {/if}
+</div>
 
 <style>
     .sidebar-entry {
@@ -129,9 +108,10 @@
         cursor: pointer;
     }
 
-    .sidebar-entry:not(.slide):last-child {
-        border-radius: 0 0 0.5rem 0.5rem;
-
+    .sidebar-entry:not(.in-folder):last-child {
+        position: sticky;
+        bottom: 0;
+        background-color: unset;
     }
 
     .sidebar-entry:not(:last-child), :global(.folder-content .sidebar-entry) {

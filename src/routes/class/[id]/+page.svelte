@@ -117,7 +117,7 @@
 
     .container {
         display: grid;
-        grid-template-columns: 0.75fr 90%;
+        grid-template-columns: 0.75fr auto;
         align-items: center;
         margin-inline: 1rem;
     }

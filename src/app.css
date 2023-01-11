@@ -27,7 +27,6 @@ html {
 
 body, #svelte-body {
     min-height: 100%;
-    height: 100%;
 }
 
 body {
@@ -37,8 +36,8 @@ body {
     background-color: var(--color-bg);
     color: var(--color-fg);
     font-family: Sertig-Web;
-    font-size: 1.2rem;
-    min-width: 700px;
+    font-size: 1rem;
+    /*min-width: 700px;*/
 }
 
 #svelte-body {
@@ -122,4 +121,10 @@ select, input {
     font-weight: inherit;
     font-size: 1.2rem;
     border: none;
+}
+
+@media screen and (min-width: 500px) {
+    body {
+        font-size: 1.2rem;
+    }
 }
