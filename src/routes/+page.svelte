@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { active, activeType } from "../data/store.js";
+  import { active, activeType } from "../data/store";
 </script>
 
 <svelte:head>

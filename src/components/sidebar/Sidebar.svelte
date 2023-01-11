@@ -1,12 +1,16 @@
 <script lang="ts">
   import {
     addClass,
+    addClassFolder,
+    addSkill,
+    addSkillFolder,
     classes,
     classFolders,
-    closeSidebar,
     isShowClasses,
     showClasses,
     showSkills,
+    sidebarOpen,
+    skillFolders,
     skills
   } from "../../data/store";
   import SidebarEntry from "./SidebarEntry.svelte";
@@ -18,19 +22,35 @@
   import { ProClass } from "../../api/proclass";
   import { ProSkill } from "../../api/proskill";
   import Folder from "../Folder.svelte";
+  import { fly } from "svelte/transition";
 
   let folders: ProFolder[] = [];
   let classSub: Unsubscriber;
-  let included: Array<ProClass | ProSkill> = [];
+  let skillSub: Unsubscriber;
+  let classIncluded: Array<ProClass | ProSkill> = [];
+  let skillIncluded: Array<ProClass | ProSkill> = [];
 
   onMount(() => {
     classSub = classFolders.subscribe(fold => {
-      folders = fold;
-      included = [];
+      if (!isShowClasses) return;
+      classIncluded = [];
       const appendIncluded = (item: Array<ProFolder | ProClass | ProSkill> | ProFolder | ProClass | ProSkill) => {
         if (item instanceof Array) item.forEach(fold => appendIncluded(fold));
-        if (item instanceof ProFolder && item.isFolder) appendIncluded(item.data);
-        else if (item instanceof ProSkill || item instanceof ProClass) included.push(item);
+        if (item instanceof ProFolder) appendIncluded(item.data);
+        else if (item instanceof ProClass) classIncluded.push(item);
+      };
+
+      appendIncluded(fold);
+    });
+
+    skillSub = skillFolders.subscribe(fold => {
+      if (isShowClasses) return;
+      folders = fold;
+      skillIncluded = [];
+      const appendIncluded = (item: Array<ProFolder | ProClass | ProSkill> | ProFolder | ProClass | ProSkill) => {
+        if (item instanceof Array) item.forEach(fold => appendIncluded(fold));
+        if (item instanceof ProFolder) appendIncluded(item.data);
+        else if (item instanceof ProSkill) skillIncluded.push(item);
       };
 
       appendIncluded(fold);
@@ -39,19 +59,13 @@
 
   onDestroy(() => {
     if (classSub) classSub();
+    if (skillSub) skillSub();
   });
-
-  const addSkill = () => {
-    console.log("Hello!");
-  };
-
-  const go = (url: string) => {
-    closeSidebar();
-    goto(url);
-  };
 </script>
 
-<div id="sidebar" transition:squish>
+<div id="sidebar" transition:squish
+     on:introend={() => sidebarOpen.set(true)}
+     on:outroend={() => sidebarOpen.set(false)}>
   <div class="type-wrap">
     <div id="type-selector" class:c-selected={$isShowClasses}>
       <div class="classes" on:click={showClasses}>Classes</div>
@@ -60,33 +74,55 @@
     <hr />
   </div>
   {#if $isShowClasses}
-    {#each folders as cf}
-      <Folder folder={cf} />
-    {/each}
-    {#each $classes.filter(c => !included.includes(c)) as cl, i (cl.name)}
+    <div class="items"
+         in:fly={{x: -100}}
+         out:fly={{x: -100}}>
+      {#each $classFolders as cf}
+        <Folder folder={cf} />
+      {/each}
+      {#each $classes.filter(c => !classIncluded.includes(c)) as cl, i (cl.key)}
+        <SidebarEntry
+          data={cl}
+          delay={200 + 100*i}
+          on:click={() => goto(`/class/${cl.name}`)}>
+          {cl.name}
+        </SidebarEntry>
+      {/each}
       <SidebarEntry
-        data={cl}
-        delay={200 + 100*i}
-        on:click={() => go(`/class/${cl.name}`)} />
-    {/each}
-    <SidebarEntry
-      delay={200 + 100*($classes.length+1)}
-      on:click={addClass}>
-      + New Class
-    </SidebarEntry>
+        delay={200 + 100*($classes.length+1)}>
+        <div class="new">
+          <span on:click={addClass}>New Class</span>
+          <span class="new-folder"
+                on:click={() => addClassFolder(new ProFolder())}>New Folder</span>
+        </div>
+      </SidebarEntry>
+    </div>
   {:else}
-    {#each skills as sk, i (sk.name)}
+    <div class="items"
+         in:fly={{ x: 100 }}
+         out:fly={{ x: 100 }}>
+      {#each $skillFolders as sk}
+        <Folder folder={sk} />
+      {/each}
+      {#each $skills.filter(s => !skillIncluded.includes(s)) as sk, i (sk.key)}
+        <SidebarEntry
+          data={sk}
+          direction="right"
+          delay={200 + 100*i}
+          on:click={() => goto(`/skill/${sk.name}`)}>
+          {sk.name}
+        </SidebarEntry>
+      {/each}
       <SidebarEntry
-        data={sk}
-        type="skill"
-        delay={200 + 100*i}
-        on:click={() => go(`/skill/${sk.name}`)} />
-    {/each}
-    <SidebarEntry
-      delay={200 + 100*(skills.length+1)}
-      on:click={addSkill}>
-      + New Skill
-    </SidebarEntry>
+        delay={200 + 100*($skills.length+1)}
+        direction="right">
+        <div class="new">
+          <span on:click={addSkill}>New Skill</span>
+          <span class="new-folder"
+                on:click={() => addSkillFolder(new ProFolder())}>New Folder</span>
+        </div>
+      </SidebarEntry>
+    </div>
   {/if}
 </div>
 
@@ -147,5 +183,30 @@
 
     #type-selector > div:hover {
         cursor: pointer;
+    }
+
+    .items {
+        position: absolute;
+        width: 100%;
+    }
+
+    .new {
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .new span {
+        flex: 1;
+        text-align: center;
+        padding: 0.4rem 0;
+    }
+
+    .new span:hover {
+        background-color: #333;
+    }
+
+    .new .new-folder {
+        border-left: 2px solid #222;
     }
 </style>

@@ -1,43 +1,106 @@
 <script lang="ts">
-  import { active } from "../../data/store.js";
-  import { fly, slide } from "svelte/transition";
+  import {
+    active,
+    addClassFolder,
+    addSkillFolder,
+    dragging,
+    getFolder,
+    isShowClasses,
+    sidebarOpen,
+    updateFolders
+  } from "../../data/store";
   import { ProSkill } from "../../api/proskill";
   import { ProClass } from "../../api/proclass";
+  import { get } from "svelte/store";
+  import { ProFolder } from "../../api/profolder";
+  import { fly, slide } from "svelte/transition";
+  import { flip } from "svelte/animate";
 
-  export let delay: number;
-  export let data: ProSkill | ProClass;
-  export let useSlide;
+  export let delay = 0;
+  export let direction: "right" | "left" = "left";
+  export let data: ProSkill | ProClass | undefined = undefined;
+  export let useSlide = false;
+
+  let over = false;
+
+  const startDrag = (e: DragEvent) => {
+    if (!data) {
+      e.preventDefault();
+      return;
+    }
+    dragging.set(data);
+  };
+
+  const drop = () => {
+    const dragData: ProClass | ProSkill | ProFolder = get(dragging);
+    let targetFolder;
+    if (data) {
+      targetFolder = getFolder(data);
+    }
+
+    getFolder(dragData)?.remove(dragData);
+    if (targetFolder) {
+      targetFolder.add(dragData);
+      over = false;
+      updateFolders();
+      return;
+    }
+    if (dragData instanceof ProFolder) {
+      if (get(isShowClasses)) addClassFolder(dragData);
+      else addSkillFolder(dragData);
+      dragData.parent = undefined;
+    }
+
+    over = false;
+  };
+
+  const dragOver = (e: DragEvent) => {
+    const dragData = get(dragging);
+    if (data === dragData) return;
+    e.preventDefault();
+    over = true;
+  };
 </script>
 
 {#if useSlide}
   <div class="sidebar-entry slide"
-       class:active={!!data && $active == data}
+       class:over={over}
+       class:active={$active == data}
+       draggable="{!!data}"
+       on:dragstart={startDrag}
+       on:drop={drop}
+       on:dragover={dragOver}
+       on:dragleave={() => over = false}
        on:click
-       transition:slide>
+       in:slide>
+    <slot />
     {#if data}
-      {data.name}
       <div class="download" title="Save {data.triggers ? 'Skill' : 'Class'}">
-      <span class="material-symbols-rounded">
-        save
-      </span>
+        <span class="material-symbols-rounded">
+          save
+        </span>
       </div>
     {/if}
-    <slot />
   </div>
 {:else}
   <div class="sidebar-entry"
-       class:active={!!data && $active == data}
+       class:over
+       class:active={$active == data}
+       draggable="{!!data}"
+       on:dragstart={startDrag}
+       on:drop={drop}
+       on:dragover={dragOver}
+       on:dragleave={() => over = false}
        on:click
-       in:fly={{x: -100, duration: 500, delay}}>
+       in:fly={{x: (direction == "left" ? -100 : 100), duration: 500, delay: $sidebarOpen ? 0 : delay}}>
+    <slot />
     {#if data}
-      {data.name}
       <div class="download" title="Save {data.triggers ? 'Skill' : 'Class'}">
-      <span class="material-symbols-rounded">
-        save
-      </span>
+        <span class="material-symbols-rounded">
+          save
+        </span>
       </div>
     {/if}
-    <slot />
   </div>
 {/if}
 
@@ -58,16 +121,29 @@
         margin-inline: 0.4rem;
     }
 
+    .sidebar-entry:has(.new) {
+        padding: unset;
+    }
+
     .sidebar-entry:hover {
         cursor: pointer;
     }
 
     .sidebar-entry:not(.slide):last-child {
         border-radius: 0 0 0.5rem 0.5rem;
+
     }
 
-    .sidebar-entry:not(:last-child) {
+    .sidebar-entry:not(:last-child), :global(.folder-content .sidebar-entry) {
         border-bottom: 1px solid #aaa;
+    }
+
+    .sidebar-entry.over:not(:last-child) {
+        border-bottom: 10px solid rgba(0, 79, 143, 0.7);
+    }
+
+    .sidebar-entry.over:last-child {
+        border-top: 10px solid rgba(0, 79, 143, 0.7);
     }
 
     .active {

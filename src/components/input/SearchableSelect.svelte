@@ -1,12 +1,14 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
   import { flip } from "svelte/animate";
-  import { clickOutside } from "../api/clickoutside";
+  import { clickOutside } from "../../api/clickoutside";
 
   export let id: string;
   export let data: any[] = [];
   export let display: (input: any) => string = (input: any) => input.toString();
-  export let selected: any[] = [];
+  export let placeholder = "";
+  export let multiple = false;
+  export let selected: any[] | any = undefined;
   export let filtered: any[] = [];
 
   let focused = false;
@@ -15,8 +17,13 @@
 
   const select = (item: any, event: KeyboardEvent) => {
     if (event && event?.key != "Enter" && event?.key != " ") return;
-    if (selected.includes(item)) return;
+    if (!multiple) {
+      selected = item;
+      criteria = "";
+      return;
+    }
 
+    if (selected.includes(item)) return;
     selected.push(item);
     selected = [...selected];
     criteria = "";
@@ -25,7 +32,8 @@
 
   const remove = (e: MouseEvent, item: any) => {
     e.stopPropagation();
-    selected = selected.filter(s => s != item);
+    if (multiple) selected = selected.filter(s => s != item);
+    else selected = undefined;
   };
 
   const clickOut = () => {
@@ -33,7 +41,11 @@
     criteria = "";
   };
 
-  $: filtered = data.filter(s => criteria && display(s).toLowerCase().includes(criteria.toLowerCase()) && !selected.includes(s));
+  $: filtered = data.filter(s => {
+    if (!criteria) return false;
+    if (display(s).toLowerCase().includes(criteria.toLowerCase()))
+      return (multiple && !selected.includes(s)) || selected != s;
+  });
 </script>
 
 <div id="wrapper"
@@ -42,15 +54,22 @@
   <div {id} class="input"
        on:click={() => input.focus()}
        class:focused={focused}>
-    {#each selected as sel (display(sel))}
+    {#if multiple}
+      {#each selected as sel (display(sel))}
+        <div class="chip"
+             title="Click to remove"
+             transition:fly={{y: -25}}
+             animate:flip={{duration: 500}}
+             on:click={(e) => remove(e, sel)}>{display(sel)}</div>
+      {/each}
+    {:else if selected}
       <div class="chip"
            title="Click to remove"
            transition:fly={{y: -25}}
-           animate:flip={{duration: 500}}
-           on:click={(e) => remove(e, sel)}>{display(sel)}</div>
-    {/each}
+           on:click={(e) => remove(e, selected)}>{display(selected)}</div>
+    {/if}
     {#if !focused && !criteria && (!selected || selected.length == 0)}
-      <span class="placeholder" in:fly={{y: 25, delay: 250}}>No Skills</span>
+      <span class="placeholder" in:fly={{y: 25, delay: 250}}>{placeholder}</span>
     {/if}
     <div bind:this={input}
          bind:textContent={criteria}

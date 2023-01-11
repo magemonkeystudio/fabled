@@ -1,13 +1,14 @@
-import { closeSidebar, setActive, skills } from "../../../data/store";
-import type { ProSkill } from "../../../api/types";
+import { setActive, skills } from "../../../data/store";
 import { redirect } from "@sveltejs/kit";
+import type { ProSkill } from "../../../api/proskill";
+import { get } from "svelte/store";
 
 /** @type {import("./$types").PageLoad} */
 export async function load({ params }: any) {
   const name = params.id;
   let skill: ProSkill | undefined;
   let fallback: ProSkill | undefined;
-  for (const c of skills) {
+  for (const c of get(skills)) {
     if (!fallback) fallback = c;
 
     if (c.name == name) {
@@ -18,7 +19,6 @@ export async function load({ params }: any) {
 
   if (skill) {
     setActive(skill, "skill");
-    closeSidebar();
     return { skill: skill };
   } else {
     if (fallback) {

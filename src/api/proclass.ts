@@ -1,11 +1,11 @@
-import type { Icon, ProClassData, Serializable } from "./types";
+import type { Attribute, Icon, ProClassData, Serializable } from "./types";
 import type { ProSkill } from "./proskill";
 import { YAMLObject } from "./yaml";
 
 export class ProClass implements Serializable {
   isClass = true;
   public key = {};
-  name = "Class";
+  name: string;
   prefix?: string;
   group = "class";
   manaName = "&2Mana";
@@ -13,10 +13,14 @@ export class ProClass implements Serializable {
   parent?: ProClass;
   permission = false;
   expSources: string[] = [];
-  health = 20;
-  healthModifier = 0;
-  mana = 20;
-  manaModifier = 0;
+  health: Attribute = {
+    base: 20,
+    scale: 1
+  };
+  mana: Attribute = {
+    base: 20,
+    scale: 1
+  };
   manaRegen = 1;
   attributes: {
     [key: string]: {
@@ -34,7 +38,7 @@ export class ProClass implements Serializable {
   actionBar = "";
 
   constructor(data?: ProClassData) {
-    if (data?.name) this.name = data.name;
+    this.name = data ? data.name : "Class";
     if (data?.prefix) this.prefix = data.prefix;
     if (data?.group) this.group = data.group;
     if (data?.manaName) this.manaName = data.manaName;
@@ -43,9 +47,7 @@ export class ProClass implements Serializable {
     if (data?.permission) this.permission = data.permission;
     if (data?.expSources) this.expSources = data.expSources;
     if (data?.health) this.health = data.health;
-    if (data?.healthModifier) this.healthModifier = data.healthModifier;
     if (data?.mana) this.mana = data.mana;
-    if (data?.manaModifier) this.manaModifier = data.manaModifier;
     if (data?.manaRegen) this.manaRegen = data.manaRegen;
     if (data?.attributes) this.attributes = data.attributes;
     if (data?.skillTree) this.skillTree = data.skillTree;
@@ -73,15 +75,15 @@ export class ProClass implements Serializable {
     data.put("icon-data", this.icon.customModelData);
     data.put("icon-lore", this.icon.lore);
     data.put("action-bar", this.actionBar);
+    data.put("health-base", this.health.base);
+    data.put("health-scale", this.health.scale);
 
 
     //TODO
     data.put("skills", this.skillTree);
     data.put("attributes", this.attributes);
-    data.put("health-base", this.health);
-    data.put("health-scale", this.healthModifier);
-    data.put("mana-base", this.mana);
-    data.put("mana-scale", this.manaModifier);
+    data.put("mana-base", this.mana.base);
+    data.put("mana-scale", this.mana.scale);
     yaml.data = data.data;
 
     return yaml;

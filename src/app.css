@@ -113,3 +113,13 @@ hr {
 .clear {
     clear: both;
 }
+
+select, input {
+    color: var(--color-fg);
+    background-color: var(--color-select-bg);
+    padding: 0.3rem;
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: 1.2rem;
+    border: none;
+}

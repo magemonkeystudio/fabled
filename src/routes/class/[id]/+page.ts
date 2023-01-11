@@ -1,4 +1,4 @@
-import { classes, closeSidebar, setActive } from "../../../data/store";
+import { classes, setActive } from "../../../data/store";
 import { redirect } from "@sveltejs/kit";
 import { get } from "svelte/store";
 import type { ProClass } from "../../../api/proclass";
@@ -19,7 +19,6 @@ export async function load({ params }: any) {
 
   if (clazz) {
     setActive(clazz, "class");
-    closeSidebar();
     return { class: clazz };
   } else {
     if (fallback) {

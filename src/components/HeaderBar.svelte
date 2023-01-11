@@ -24,7 +24,6 @@
   };
 
   const openImport = () => {
-    console.log("Clicked open");
     setImporting(true);
   };
 </script>
@@ -135,9 +134,6 @@
 
     select {
         margin-left: 1rem;
-        color: var(--color-fg);
-        background-color: var(--color-select-bg);
-        padding: 0.25rem;
         font-family: inherit;
         font-weight: inherit;
         font-size: 1rem;

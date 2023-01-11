@@ -3,7 +3,10 @@
   import SidebarEntry from "./sidebar/SidebarEntry.svelte";
   import { goto } from "$app/navigation";
   import { slide } from "svelte/transition";
-  import { deleteFolder, updateFolders } from "../data/store";
+  import { deleteFolder, dragging, getFolder, removeFolder, sidebarOpen, updateFolders } from "../data/store";
+  import { ProClass } from "../api/proclass";
+  import { ProSkill } from "../api/proskill";
+  import { get } from "svelte/store";
 
   export let folder: ProFolder;
   let elm: HTMLElement;
@@ -39,14 +42,50 @@
 
   const addFolder = (e: MouseEvent) => {
     e.stopPropagation();
-    folder.addFolder();
+    folder.createFolder();
     folder.open = true;
     updateFolders();
   };
+
+
+  let over = false;
+
+  const startDrag = (e: DragEvent) => {
+    dragging.set(folder);
+  };
+
+  const drop = () => {
+    over = false;
+    const dragData: ProClass | ProSkill | ProFolder = get(dragging);
+    if (folder.data.includes(dragData)) return;
+
+    const containing = getFolder(dragData);
+    if (containing) containing.remove(dragData);
+    else if (dragData instanceof ProFolder) {
+      removeFolder(dragData);
+      dragData.parent = folder;
+    }
+
+    folder.add(dragData);
+  };
+
+  const dragOver = (e: DragEvent) => {
+    if (folder === get(dragging)) return;
+    e.preventDefault();
+    over = true;
+  };
 </script>
 
-<div class="entry" on:click={() => folder.open = !folder.open} transition:slide>
-  <span class="material-symbols-rounded folder">
+<div class="folder"
+     class:over
+     draggable="true"
+     on:dragstart={startDrag}
+     on:drop={drop}
+     on:dragover={dragOver}
+     on:dragleave={() => over = false}
+     on:click={() => folder.open = !folder.open}
+     transition:slide={{duration: ($sidebarOpen ? 0 : 400)}}>
+  <span class="material-symbols-rounded folder-icon">
     folder
   </span>
   <span class="name" contenteditable="false"
@@ -82,18 +121,20 @@
       {:else}
         <SidebarEntry {data}
                       useSlide
-                      on:click={() => goto(`/${data.isClass ? 'class' : 'skill'}/${data.name}`)} />
+                      on:click={() => goto(`/${data.isClass ? 'class' : 'skill'}/${data.name}`)}>
+          {data.name}
+        </SidebarEntry>
       {/if}
     {/each}
   </div>
 {/if}
 
 <style>
-    .folder {
+    .folder-icon {
         color: #0083ef;
     }
 
-    .entry {
+    .folder {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -110,11 +151,15 @@
         border-bottom: 1px solid #aaa;
     }
 
-    .entry:hover {
+    .folder.over {
+        border-bottom: 10px solid rgba(0, 79, 143, 0.7);
+    }
+
+    .folder:hover {
         cursor: pointer;
     }
 
-    .entry:hover .icon {
+    .folder:hover .icon {
         opacity: 1;
     }
 

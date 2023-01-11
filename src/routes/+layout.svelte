@@ -1,10 +1,9 @@
 <script lang="ts">
   import "../app.css";
   import HeaderBar from "../components/HeaderBar.svelte";
-  import { importing, showSidebar } from "../data/store";
+  import { active, importing, showSidebar } from "../data/store";
   import ImportModal from "../components/ImportModal.svelte";
   import Sidebar from "../components/sidebar/Sidebar.svelte";
-  import { active } from "../data/store.js";
 </script>
 
 <HeaderBar />

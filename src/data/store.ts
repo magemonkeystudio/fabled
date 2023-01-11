@@ -6,10 +6,12 @@ import { ProFolder } from "../api/profolder";
 
 export const active: Writable<ProClass | ProSkill> = writable();
 export const activeType: Writable<"class" | "skill"> = writable();
+export const dragging: Writable<ProClass | ProSkill | ProFolder> = writable();
 export const showSidebar: Writable<boolean> = writable(true);
+export const sidebarOpen: Writable<boolean> = writable(true);
 export const isShowClasses: Writable<boolean> = writable(true);
 export const importing: Writable<boolean> = writable(false);
-export let skills: ProSkill[] = [
+export const skills: Writable<ProSkill[]> = writable([
   new ProSkill({
     name: "Particle Blast",
     type: "Dynamic",
@@ -82,7 +84,7 @@ export let skills: ProSkill[] = [
     },
     triggers: []
   })
-];
+]);
 export const classes: Writable<ProClass[]> = writable([
   new ProClass({
     name: "Honor Guard",
@@ -91,10 +93,14 @@ export const classes: Writable<ProClass[]> = writable([
     maxLevel: 40,
     permission: false,
     expSources: [],
-    health: 20,
-    healthModifier: 1,
-    mana: 20,
-    manaModifier: 1,
+    health: {
+      base: 20,
+      scale: 1
+    },
+    mana: {
+      base: 20,
+      scale: 1
+    },
     manaRegen: 1,
     attributes: {
       vitality: {
@@ -107,7 +113,7 @@ export const classes: Writable<ProClass[]> = writable([
     icon: {
       material: "Pumpkin",
       customModelData: 0,
-      lore: ["This is a class"]
+      lore: ["This is a class", "Lore line two"]
     },
     unusableItems: []
   }),
@@ -118,10 +124,14 @@ export const classes: Writable<ProClass[]> = writable([
     maxLevel: 40,
     permission: false,
     expSources: [],
-    health: 20,
-    healthModifier: 1,
-    mana: 20,
-    manaModifier: 1,
+    health: {
+      base: 20,
+      scale: 1
+    },
+    mana: {
+      base: 20,
+      scale: 1
+    },
     manaRegen: 1,
     attributes: {
       vitality: {
@@ -130,7 +140,7 @@ export const classes: Writable<ProClass[]> = writable([
       }
     },
     skillTree: "Requirement",
-    skills: [skills[0], skills[1]],
+    skills: [get(skills)[0], get(skills)[1]],
     icon: {
       material: "Pumpkin",
       customModelData: 0,
@@ -145,10 +155,14 @@ export const classes: Writable<ProClass[]> = writable([
     maxLevel: 40,
     permission: false,
     expSources: [],
-    health: 20,
-    healthModifier: 1,
-    mana: 20,
-    manaModifier: 1,
+    health: {
+      base: 20,
+      scale: 1
+    },
+    mana: {
+      base: 20,
+      scale: 1
+    },
     manaRegen: 1,
     attributes: {
       vitality: {
@@ -169,10 +183,20 @@ export const classes: Writable<ProClass[]> = writable([
 export const classFolders: Writable<ProFolder[]> = writable([
   new ProFolder([new ProFolder([get(classes)[0]])])
 ]);
+export const skillFolders: Writable<ProFolder[]> = writable([
+  new ProFolder([new ProFolder([get(skills)[0]])])
+]);
 
 export const setActive = (act: ProClass | ProSkill, type: "class" | "skill") => {
   active.set(act);
   activeType.set(type);
+};
+
+export const updateSidebar = () => {
+  if (!get(showSidebar)) return;
+  if (get(activeType) == "class") classes.set(get(classes));
+  else skills.set(get(skills));
+  updateFolders();
 };
 export const toggleSidebar = () => showSidebar.set(!get(showSidebar));
 export const closeSidebar = () => showSidebar.set(false);
@@ -185,7 +209,43 @@ export const addClass = () => {
   cl.push(new ProClass({ name: "Class " + (cl.length + 1) }));
 
   classes.set(cl);
-  console.log(cl);
+};
+
+export const addSkill = () => {
+  const sk = get(skills);
+  sk.push(new ProSkill({ name: "Skill " + (sk.length + 1) }));
+
+  skills.set(sk);
+};
+
+export const addClassFolder = (folder: ProFolder) => {
+  const folders = get(classFolders);
+  if (folders.includes(folder)) return;
+
+  rename(folder, folders);
+
+  folders.push(folder);
+  folders.sort((a, b) => a.name.localeCompare(b.name));
+  classFolders.set(folders);
+};
+
+export const addSkillFolder = (folder: ProFolder) => {
+  const folders = get(skillFolders);
+  if (folders.includes(folder)) return;
+
+  rename(folder, folders);
+
+  folders.push(folder);
+  folders.sort((a, b) => a.name.localeCompare(b.name));
+  skillFolders.set(folders);
+};
+
+export const rename = (folder: ProFolder, folders: Array<ProFolder | ProClass | ProSkill>) => {
+  const origName = folder.name;
+  let num = 1;
+  while (folders.filter(f => f instanceof ProFolder && f.name == folder.name).length >= 1) {
+    folder.name = origName + " (" + (num++) + ")";
+  }
 };
 
 export const deleteFolder = (folder: ProFolder) => {
@@ -199,5 +259,37 @@ export const deleteFolder = (folder: ProFolder) => {
 };
 
 export const updateFolders = () => {
-  classFolders.set(get(classFolders));
+  if (!get(showSidebar)) return;
+  if (get(activeType) == "class") {
+    classFolders.set(sort<ProFolder>(get(classFolders)));
+    classes.set(sort<ProClass>(get(classes)))
+  } else {
+    skillFolders.set(sort<ProFolder>(get(skillFolders)));
+    skills.set(sort<ProSkill>(get(skills)))
+  }
+};
+
+const sort = <T extends ProFolder | ProClass | ProSkill>(data: T[]): T[] => {
+  return data.sort((a, b) => a.name.localeCompare(b.name));
+};
+
+export const removeFolder = (folder: ProFolder) => {
+  const classF = get(classFolders);
+  const skillF = get(skillFolders);
+  if (classF.includes(folder)) classFolders.set(classF.filter(f => f != folder));
+  if (skillF.includes(folder)) skillFolders.set(skillF.filter(f => f != folder));
+};
+
+export const getFolder = (data: ProFolder | ProClass | ProSkill): (ProFolder | undefined) => {
+  if (data instanceof ProFolder) return data.parent;
+  const folders: ProFolder[] = data instanceof ProClass ? get(classFolders) : get(skillFolders);
+
+  for (const folder of folders) {
+    const containingFolder = folder.getContainingFolder(data);
+    if (!containingFolder) continue;
+
+    return containingFolder;
+  }
+
+  return undefined;
 };

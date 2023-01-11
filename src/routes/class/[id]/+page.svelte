@@ -1,10 +1,15 @@
 <script lang="ts">
-  import SearchableSelect from "../../../components/SearchableSelect.svelte";
-  import { skills } from "../../../data/store.js";
+  import SearchableSelect from "../../../components/input/SearchableSelect.svelte";
+  import { classes, skills, updateSidebar } from "../../../data/store";
   import { ProClass } from "../../../api/proclass";
   import { onMount } from "svelte";
+  import AttributeInput from "../../../components/input/AttributeInput.svelte";
 
   export let data: { class: ProClass };
+
+  $: if (data?.class.name) {
+    updateSidebar();
+  }
 
   onMount(() => {
     console.log(data.class.serializeYaml());
@@ -34,9 +39,12 @@
   <div class="input-wrapper">
     <input id="manaName" bind:value={data.class.manaName} />
   </div>
-  <label for="parent">Parent</label>
+  <label>Parent</label>
   <div class="input-wrapper">
-    <input id="parent" bind:value={data.class.parent} />
+    <SearchableSelect id="parent"
+                      data={$classes}
+                      bind:selected={data.class.parent}
+                      display={(c) => c.name} />
   </div>
   <label for="permission">Permission</label>
   <div class="input-wrapper">
@@ -51,15 +59,13 @@
   <div class="input-wrapper">
     <input id="expSources" bind:value={data.class.expSources} />
   </div>
-  <label for="health">Health</label>
+  <label>Health</label>
   <div class="input-wrapper">
-    <input id="health" bind:value={data.class.health} />
-    <input id="health-modifier" bind:value={data.class.healthModifier} />
+    <AttributeInput bind:value={data.class.health} />
   </div>
-  <label for="mana">Mana</label>
+  <label>Mana</label>
   <div class="input-wrapper">
-    <input id="mana" bind:value={data.class.mana} />
-    <input id="mana-modifier" bind:value={data.class.manaModifier} />
+    <AttributeInput bind:value={data.class.mana} />
   </div>
 
 
@@ -82,7 +88,8 @@
   <label>Skills</label>
   <div class="input-wrapper">
     <SearchableSelect id="skills"
-                      data={skills}
+                      data={$skills}
+                      multiple="true"
                       bind:selected={data.class.skills}
                       display={(skill) => skill.name}
                       placeholder="No Skills" />
@@ -110,7 +117,7 @@
 
     .container {
         display: grid;
-        grid-template-columns: 0.75fr 1fr;
+        grid-template-columns: 0.75fr 90%;
         align-items: center;
         margin-inline: 1rem;
     }
@@ -127,20 +134,13 @@
         border-left: 3px solid #333;
     }
 
-
-    select, input {
-        color: var(--color-fg);
-        background-color: var(--color-select-bg);
-        padding: 0.3rem;
-        font-family: inherit;
-        font-weight: inherit;
-        font-size: 1.2rem;
-        border: none;
+    input {
+        padding-inline: 0.5rem;
     }
 
     .toggle {
         overflow: hidden;
-        display: flex;
+        display: inline-flex;
         text-align: center;
         background-color: var(--color-select-bg);
         border-radius: 0.4rem;
@@ -164,6 +164,7 @@
     .toggle > div {
         flex: 1;
         padding: 0.2rem;
+        padding-inline: 1.5rem;
     }
 
     .toggle > div:hover {

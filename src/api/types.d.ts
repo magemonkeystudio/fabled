@@ -2,8 +2,13 @@ import { ProSkill } from "./proskill";
 import { ProClass } from "./proclass";
 import { YAMLObject } from "./yaml";
 
+export interface Attribute {
+  base: number;
+  scale: number;
+}
+
 export interface ProClassData {
-  name?: string;
+  name: string;
   prefix?: string;
   group?: string;
   manaName?: string;
@@ -11,10 +16,8 @@ export interface ProClassData {
   parent?: ProClass;
   permission?: boolean;
   expSources?: string[];
-  health?: number;
-  healthModifier?: number;
-  mana?: number;
-  manaModifier?: number;
+  health?: Attribute;
+  mana?: Attribute;
   manaRegen?: number;
   attributes?: {
     [key: string]: {
@@ -31,29 +34,29 @@ export interface ProClassData {
 
 export interface ProSkillData {
   name: string;
-  type: string;
-  maxLevel: number;
+  type?: string;
+  maxLevel?: number;
   skillReq?: ProSkill;
   skillReqLevel?: number;
-  permission: boolean;
-  levelReq: number;
-  levelReqModifier: number;
-  cost: number;
-  costModifier: number;
-  cooldown: number;
-  cooldownModifier: number;
-  cooldownMessage: boolean;
-  mana: number;
-  manaModifier: number;
-  minSpent: number;
-  minSpentModifier: number;
-  castMessage: string;
+  permission?: boolean;
+  levelReq?: number;
+  levelReqModifier?: number;
+  cost?: number;
+  costModifier?: number;
+  cooldown?: number;
+  cooldownModifier?: number;
+  cooldownMessage?: boolean;
+  mana?: number;
+  manaModifier?: number;
+  minSpent?: number;
+  minSpentModifier?: number;
+  castMessage?: string;
   combo?: string;
-  indicator: "2D" | "3D" | "None";
-  icon: Icon;
+  indicator?: "2D" | "3D" | "None";
+  icon?: Icon;
   incompatible?: ProSkill[];
 
-  triggers: Trigger[];
+  triggers?: Trigger[];
 }
 
 export interface Icon {

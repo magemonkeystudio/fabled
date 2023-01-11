@@ -5,53 +5,56 @@ export class ProSkill implements Serializable {
   isSkill = true;
   public key = {};
   name: string;
-  type: string;
-  maxLevel: number;
+  type = "Dynamic";
+  maxLevel = 5;
   skillReq?: ProSkill;
   skillReqLevel?: number;
-  permission: boolean;
-  levelReq: number;
-  levelReqModifier: number;
-  cost: number;
-  costModifier: number;
-  cooldown: number;
-  cooldownModifier: number;
-  cooldownMessage: boolean;
-  mana: number;
-  manaModifier: number;
-  minSpent: number;
-  minSpentModifier: number;
-  castMessage: string;
+  permission = false;
+  levelReq = 1;
+  levelReqModifier = 0;
+  cost = 1;
+  costModifier = 0;
+  cooldown = 0;
+  cooldownModifier = 0;
+  cooldownMessage = true;
+  mana = 0;
+  manaModifier = 0;
+  minSpent = 0;
+  minSpentModifier = 0;
+  castMessage = "&6{player} &2has cast &6{skill}";
   combo?: string;
-  indicator: "2D" | "3D" | "None";
-  icon: Icon;
-  incompatible?: ProSkill[];
-  triggers: Trigger[];
+  indicator: "2D" | "3D" | "None" = "2D";
+  icon: Icon = {
+    material: "Pumpkin",
+    customModelData: 0
+  };
+  incompatible: ProSkill[] = [];
+  triggers: Trigger[] = [];
 
-  constructor(data: ProSkillData) {
-    this.name = data.name;
-    this.type = data.type;
-    this.maxLevel = data.maxLevel;
-    this.skillReq = data.skillReq;
-    this.skillReqLevel = data.skillReqLevel;
-    this.permission = data.permission;
-    this.levelReq = data.levelReq;
-    this.levelReqModifier = data.levelReqModifier;
-    this.cost = data.cost;
-    this.costModifier = data.costModifier;
-    this.cooldown = data.cooldown;
-    this.cooldownModifier = data.cooldownModifier;
-    this.cooldownMessage = data.cooldownMessage;
-    this.mana = data.mana;
-    this.manaModifier = data.manaModifier;
-    this.minSpent = data.minSpent;
-    this.minSpentModifier = data.minSpentModifier;
-    this.castMessage = data.castMessage;
-    this.combo = data.combo;
-    this.indicator = data.indicator;
-    this.icon = data.icon;
-    this.incompatible = data.incompatible;
-    this.triggers = data.triggers;
+  constructor(data?: ProSkillData) {
+    this.name = data ? data.name : "Skill";
+    if (data?.type) this.type = data.type;
+    if (data?.maxLevel) this.maxLevel = data.maxLevel;
+    if (data?.skillReq) this.skillReq = data.skillReq;
+    if (data?.skillReqLevel) this.skillReqLevel = data.skillReqLevel;
+    if (data?.permission) this.permission = data.permission;
+    if (data?.levelReq) this.levelReq = data.levelReq;
+    if (data?.levelReqModifier) this.levelReqModifier = data.levelReqModifier;
+    if (data?.cost) this.cost = data.cost;
+    if (data?.costModifier) this.costModifier = data.costModifier;
+    if (data?.cooldown) this.cooldown = data.cooldown;
+    if (data?.cooldownModifier) this.cooldownModifier = data.cooldownModifier;
+    if (data?.cooldownMessage) this.cooldownMessage = data.cooldownMessage;
+    if (data?.mana) this.mana = data.mana;
+    if (data?.manaModifier) this.manaModifier = data.manaModifier;
+    if (data?.minSpent) this.minSpent = data.minSpent;
+    if (data?.minSpentModifier) this.minSpentModifier = data.minSpentModifier;
+    if (data?.castMessage) this.castMessage = data.castMessage;
+    if (data?.combo) this.combo = data.combo;
+    if (data?.indicator) this.indicator = data.indicator;
+    if (data?.icon) this.icon = data.icon;
+    if (data?.incompatible) this.incompatible = data.incompatible;
+    if (data?.triggers) this.triggers = data.triggers;
   }
 
   public serializeYaml = (): YAMLObject => {
