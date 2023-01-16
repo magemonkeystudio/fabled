@@ -58,7 +58,6 @@
     h1, h2 {
         display: inline;
         font-family: Mojave-Web, sans-serif;
-        padding: 0 0 0.5rem;
         margin: 0;
     }
 

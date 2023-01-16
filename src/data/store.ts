@@ -4,7 +4,7 @@ import { ProClass } from "../api/proclass";
 import { ProSkill } from "../api/proskill";
 import { ProFolder } from "../api/profolder";
 import { ProAttribute } from "../api/proattribute";
-import { YAMLObject } from "../api/yaml";
+import { parseYAML, YAMLObject } from "../api/yaml";
 import { browser } from "$app/environment";
 
 export const active: Writable<ProClass | ProSkill> = writable();
@@ -178,18 +178,38 @@ export const showClasses = () => isShowClasses.set(true);
 export const showSkills = () => isShowClasses.set(false);
 export const setImporting = (bool: boolean) => importing.set(bool);
 
-export const addClass = () => {
+export const getClass = (name: string): ProClass | undefined => {
+  for (const c of get(classes)) {
+    if (c.name == name) return c;
+  }
+
+  return undefined;
+};
+export const isClassNameTaken = (name: string): boolean => !!getClass(name);
+export const addClass = (name?: string): ProClass => {
   const cl = get(classes);
-  cl.push(new ProClass({ name: "Class " + (cl.length + 1) }));
+  const clazz = new ProClass({ name: (name || "Class " + (cl.length + 1)) });
+  cl.push(clazz);
 
   classes.set(cl);
+  return clazz;
 };
 
-export const addSkill = () => {
+export const getSkill = (name: string): ProSkill | undefined => {
+  for (const sk of get(skills)) {
+    if (sk.name == name) return sk;
+  }
+
+  return undefined;
+};
+export const isSkillNameTaken = (name: string): boolean => !!getSkill(name);
+export const addSkill = (name?: string): ProSkill => {
   const sk = get(skills);
-  sk.push(new ProSkill({ name: "Skill " + (sk.length + 1) }));
+  const skill = new ProSkill({ name: (name || "Skill " + (sk.length + 1)) });
+  sk.push(skill);
 
   skills.set(sk);
+  return skill;
 };
 
 export const addClassFolder = (folder: ProFolder) => {
@@ -287,4 +307,135 @@ export const getFolder = (data: ProFolder | ProClass | ProSkill): (ProFolder | u
   }
 
   return undefined;
+};
+
+/**
+ * Loads attribute data from a file
+ * e - event details
+ */
+export const loadAttributes = (text: string) => {
+  // const yaml = parseYAML(text);
+  // ATTRIBS = Object.keys(yaml);
+  // if (!skillsActive) {
+  //   activeClass.update();
+  //   activeClass.createFormHTML();
+  // }
+  // localStorage.setItem("attribs", ATTRIBS);
+};
+
+/**
+ * Loads skill data from a string
+ */
+export const loadSkillText = (text: string) => {
+  // // Load new skills
+  // const data = parseYAML(text);
+  // for (let key in data) {
+  //   if (data[key] instanceof YAMLObject && key != "loaded") {
+  //     if (isSkillNameTaken(key)) {
+  //       getSkill(key).load(data[key]);
+  //       if (getSkill(key) == activeSkill) {
+  //         activeSkill.apply();
+  //         showSkillPage("builder");
+  //       }
+  //     } else {
+  //       addSkill(key).load(data[key]);
+  //     }
+  //   }
+  // }
+};
+
+/**
+ *  Loads class data from a string
+ */
+export const loadClassText = (text: string) => {
+  // Load new classes
+  const data: YAMLObject = parseYAML(text);
+  let clazz: ProClass;
+  console.log(data);
+  // If we only have one class, and it is the current YAML,
+  // the structure is a bit different
+  if (data.key && !data.data[data.key]) {
+    const key: string = data.key;
+    console.log(key, isClassNameTaken(key), getClass(key));
+    clazz = (<ProClass>(isClassNameTaken(key)
+      ? getClass(key)
+      : addClass(key)));
+    clazz.load(data);
+    console.log(clazz);
+    return;
+  }
+
+  for (const key in data.data) {
+    if (key != "loaded" && data.data[key] instanceof YAMLObject && !isClassNameTaken(key)) {
+      clazz = (<ProClass>(isClassNameTaken(key)
+        ? getClass(key)
+        : addClass(key)));
+      clazz.load(data.data[key]);
+
+      console.log(clazz);
+    }
+  }
+};
+
+export const loadClasses = (e: ProgressEvent<FileReader>) => {
+  const text: string = <string>e.target?.result;
+  if (!text) return;
+
+  loadClassText(text);
+};
+
+
+export const loadSkills = (e: ProgressEvent<FileReader>) => {
+  const text: string = <string>e.target?.result;
+  if (!text) return;
+
+  loadSkillText(text);
+};
+
+/**
+ * Loads an individual skill or class file
+ * @param e ProgressEvent
+ */
+export const loadIndividual = (e: ProgressEvent<FileReader>) => {
+  const text: string = <string>e.target?.result;
+  if (!text) return;
+
+  if (text.indexOf("global:") >= 0) {
+    loadAttributes(text);
+  } else if (text.indexOf("components:") >= 0 || (text.indexOf("group:") == -1 && text.indexOf("combo:") == -1 && text.indexOf("skills:") == -1)) {
+    loadSkillText(text);
+  } else {
+    loadClassText(text);
+  }
+  (<HTMLElement>document.activeElement).blur();
+};
+
+export const loadRaw = (text: string) => {
+  if (text.indexOf("global:") >= 0) {
+    loadAttributes(text);
+  } else if (text.indexOf("components:") >= 0
+    || (text.indexOf("group:") == -1 && text.indexOf("combo:") == -1 && text.indexOf("skills:") == -1)) {
+    if ((text.match(/components:/g)?.length || 0) > 1)
+      loadSkillText(text.replace("loaded: false\n", ""));
+    else
+      loadSkillText(text);
+  } else {
+    console.log(text.match(/skills:/g));
+    if ((text.match(/skills:/g)?.length || 0) > 1)
+      loadClassText(text.replace("loaded: false\n", ""));
+    else
+      loadClassText(text);
+  }
+};
+
+export const loadFile = (file: File) => {
+  const reader = new FileReader();
+  if (file.name.indexOf("skills") == 0) {
+    reader.onload = loadSkills;
+  } else if (file.name.indexOf("classes") == 0) {
+    reader.onload = loadClasses;
+  } else {
+    reader.onload = loadIndividual;
+  }
+  reader.readAsText(file);
 };

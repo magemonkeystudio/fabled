@@ -30,10 +30,10 @@ export const createPaste = (content: string) => {
     });
 };
 
-export const getHaste = (id: string) => {
-  fetch(`${awsUrl}?id=${id}`)
-    .then((result) => result.text())
-    .then(result => {
-      console.log(result);
-    });
+export const getHaste = async (data: { id?: string, url?: string }) => {
+  if (data.url && data.url.includes("astebin.com") && !data.url.includes("raw"))
+    data.url = data.url.replace("astebin.com", "astebin.com/raw");
+  const req = await fetch(`${awsUrl}?${data.id ? "id=" + data.id : "url=" + data.url}`);
+  const text = await req.text();
+  return text;
 };

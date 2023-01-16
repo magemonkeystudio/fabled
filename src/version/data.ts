@@ -7,6 +7,8 @@ import { DATA_1_17 } from "./1.17";
 import { DATA_1_18 } from "./1.18";
 import { browser } from "$app/environment";
 
+export const expSources = ["Mob", "Block Break", "Block Place", "Craft", "Command", "Special", "Exp Bottle", "Smelt", "Quest"];
+
 type Versions = "19" | "18" | "17" | "16";
 
 const VERSIONS = {

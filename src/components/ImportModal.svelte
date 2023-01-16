@@ -1,15 +1,39 @@
 <script lang="ts">
-  import { setImporting } from "../data/store";
+  import { loadFile, loadRaw, setImporting } from "../data/store";
   import { fade, fly } from "svelte/transition";
+  import { getHaste } from "../api/hastebin";
 
   let importUrl: string | undefined;
-  let fileImport: any;
+  let files: File[] | undefined;
 
   const closeModal = () => {
-    importUrl = fileImport = undefined;
+    importUrl = files = undefined;
     setImporting(false);
   };
   const clickModal = (e: MouseEvent) => e.stopPropagation();
+
+  const importFromUrl = () => {
+    if (!importUrl) return;
+    if (!importUrl.startsWith("http")) importUrl = "https://" + importUrl;
+
+    getHaste({ url: importUrl })
+      .then(text => {
+        console.log(text);
+        closeModal();
+        loadRaw(text);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
+
+  $: if (files && files.length > 0) {
+    for (const file of files) {
+      if (file.name.indexOf(".yml") == -1) continue;
+      loadFile(file);
+      closeModal();
+    }
+  }
 </script>
 
 <div class="backdrop" on:click={closeModal} transition:fade>
@@ -18,13 +42,13 @@
       <div class="option">
         <div>Upload File</div>
         <label for="file-upload" class="button">Select File</label>
-        <input id="file-upload" type="file" bind:value={fileImport} class="hidden" />
+        <input id="file-upload" type="file" bind:files={files} class="hidden" multiple />
       </div>
       <div class="or"><span>OR</span></div>
       <div class="option">
         <div>Import from URL</div>
         <input bind:value={importUrl} />
-        <div class="button">Import</div>
+        <div class="button" on:click={importFromUrl}>Import</div>
       </div>
     </div>
   </div>
@@ -57,6 +81,10 @@
 
     .button {
         display: block;
+        color: white;
+        font-size: 1rem;
+        border: none;
+        font-family: inherit;
         padding: 0.5rem;
         margin: 0.5rem 0;
         border-radius: 0.4rem;

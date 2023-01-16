@@ -2,6 +2,7 @@ import type { Icon, ProClassData, Serializable } from "./types";
 import type { ProSkill } from "./proskill";
 import { YAMLObject } from "./yaml";
 import { ProAttribute } from "./proattribute";
+import { getClass, getSkill } from "../data/store";
 
 export class ProClass implements Serializable {
   isClass = true;
@@ -60,7 +61,7 @@ export class ProClass implements Serializable {
     data.put("permission", this.permission);
     data.put("attributes", [this.health, this.mana, ...this.attributes]);
     data.put("mana-regen", this.manaRegen);
-    data.put("tree", this.skillTree.toUpperCase());
+    data.put("tree", this.skillTree);
     data.put("blacklist", this.unusableItems);
     data.put("skills", this.skills.map(s => s.name));
     data.put("icon", this.icon.material);
@@ -70,5 +71,68 @@ export class ProClass implements Serializable {
 
     yaml.data = data.data;
     return yaml;
+  };
+
+  public load = (yaml: YAMLObject) => {
+    this.name = yaml.get("name", this.name);
+    this.actionBar = yaml.get("action-bar", this.actionBar);
+    this.prefix = yaml.get("prefix", this.prefix);
+    this.group = yaml.get("group", this.group);
+    this.mana = yaml.get("mana", this.mana);
+    this.maxLevel = yaml.get("max-level", this.maxLevel);
+    this.parent = yaml.get<string, ProClass>("parent", this.parent, getClass);
+    this.permission = yaml.get("permission", this.permission);
+    this.attributes = yaml.get<YAMLObject, ProAttribute[]>("attributes", this.attributes,
+      (obj: YAMLObject) => {
+        const attributes: ProAttribute[] = [];
+
+        const healthBase: number = obj.get<number, number>("health-base", 20);
+        const healthMod: number = obj.get<number, number>("health-scale", 1);
+        const manaBase: number = obj.get<number, number>("mana-base", 20);
+        const manaMod: number = obj.get<number, number>("mana-scale", 1);
+        this.health = new ProAttribute("health", healthBase, healthMod);
+        this.mana = new ProAttribute("mana", manaBase, manaMod);
+        obj.remove("health-base");
+        obj.remove("health-scale");
+        obj.remove("mana-base");
+        obj.remove("mana-scale");
+
+        const map: { [key: string]: ProAttribute } = {};
+        Object.keys(obj.data).forEach(key => {
+          const split = key.split("-");
+          const name = ProClass.toProperCase(split[0]);
+          if (!map[name]) map[name] = new ProAttribute(name, 0, 0);
+
+          const attr = map[name];
+          if (split[1] == "base") attr.base = Number.parseFloat(obj.data[key]);
+          if (split[1] == "scale") attr.scale = Number.parseFloat(obj.data[key]);
+        });
+
+        attributes.push(...Object.values(map));
+
+        console.log("att", attributes);
+        return attributes;
+      });
+    this.manaRegen = yaml.get("mana-regen", this.manaRegen);
+    this.skillTree = yaml.get("tree", this.skillTree, ProClass.toProperCase);
+    this.unusableItems = yaml.get("blacklist", this.unusableItems);
+    this.skills = yaml.get<string[], ProSkill[]>("skills", this.skills,
+      (list: string[]) => list.map(s => getSkill(s)).filter(s => !!s));
+    this.icon.material = yaml.get<string, string>("icon", this.icon.material,
+      (str: string) => ProClass.toEditorCase(str));
+    this.icon.customModelData = yaml.get("icon-data", this.icon.customModelData);
+    this.icon.lore = yaml.get("icon-lore", this.icon.lore);
+    this.expSources = yaml.get("exp-source", this.expSources);
+    console.log(this);
+  };
+
+  static toProperCase = (s: string) => {
+    return s.replace("_", " ").toLowerCase()
+      .replace(/^(.)|\s(.)/g, $1 => $1.toUpperCase());
+  };
+
+  static toEditorCase = (s: string) => {
+    s = s.replace("_", " ");
+    return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
   };
 }

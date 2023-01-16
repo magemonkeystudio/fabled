@@ -1,19 +1,10 @@
-<script lang="ts">
-  import { active, activeType } from "../data/store";
-</script>
+<script lang="ts"></script>
 
 <svelte:head>
   <title>ProSkillAPI Dynamic Editor</title>
 </svelte:head>
 
-{#if $active}
-  <div>{$activeType == 'class' ? "Class" : "Skill"}</div>
-  <h1>{$active?.name}</h1>
-  <hr />
-  <p>More stuff to come. WIP</p>
-{:else}
-  <div class="start">Select/Add a class on the left to get started!</div>
-{/if}
+<div class="start">Select/Add a class on the left to get started!</div>
 
 <style>
     .start {
@@ -21,5 +12,15 @@
         height: 100%;
         justify-content: center;
         align-items: center;
+    }
+
+    :global(#svelte-body) {
+        min-height: 100vh;
+    }
+
+    :global(#body-container) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 </style>

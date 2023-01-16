@@ -12,6 +12,6 @@
   {id}
   {placeholder}
   {multiple}
-  {selected}
+  bind:selected={selected}
   data={DATA.MATERIALS}
 />

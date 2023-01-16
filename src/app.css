@@ -25,7 +25,7 @@ html {
     height: 100vh;
 }
 
-body, #svelte-body {
+body {
     min-height: 100%;
 }
 
@@ -107,6 +107,7 @@ hr {
     font-size: 1rem;
     white-space: nowrap;
     box-sizing: border-box;
+    user-select: none;
 }
 
 .clear {

@@ -1,11 +1,13 @@
 <script lang="ts">
   import "../app.css";
   import HeaderBar from "../components/HeaderBar.svelte";
-  import { active, importing, showSidebar } from "../data/store";
+  import { active, importing, loadClasses, loadFile, loadIndividual, loadSkills, showSidebar } from "../data/store";
   import ImportModal from "../components/ImportModal.svelte";
   import Sidebar from "../components/sidebar/Sidebar.svelte";
   import NavBar from "../components/NavBar.svelte";
   import { get } from "svelte/store";
+  import { onDestroy, onMount } from "svelte";
+  import { browser } from "$app/environment";
 
   const backup = () => {
     alert("This feature isn't implemented yet");
@@ -33,8 +35,36 @@
     element.click();
     document.body.removeChild(element);
   };
-</script>
 
+  const dragover = (e: DragEvent) => {
+    e.dataTransfer.dropEffect = "copy";
+    e.stopPropagation();
+    e.preventDefault();
+  };
+
+  const loadFiles = (e: DragEvent) => {
+    for (let i = 0; i < e.dataTransfer.files.length; i++) {
+      const file = e.dataTransfer.files[i];
+      if (file.name.indexOf(".yml") == -1) continue;
+
+      loadFile(file);
+    }
+    e.stopPropagation();
+    e.preventDefault();
+  };
+
+  onMount(() => {
+    if (!browser) return;
+    document.addEventListener("dragover", dragover);
+    document.addEventListener("drop", loadFiles);
+  });
+
+  onDestroy(() => {
+    if (!browser) return;
+    document.removeEventListener("dragover", dragover);
+    document.removeEventListener("drop", loadFiles);
+  });
+</script>
 
 <HeaderBar />
 <NavBar />

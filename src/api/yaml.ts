@@ -74,8 +74,19 @@ export class YAMLObject {
    *
    * @returns {string} the obtained value
    */
-  public get = (key: string, value: any): any => {
-    return this.has(key) ? this.data[key] : value;
+  public get = <T, V>(key: string, value?: V, mapping?: (str: T) => any): V => {
+    if (this.data[key] == "[]" || this.data[key] == " []")
+      this.data[key] = JSON.parse((<string>this.data[key]).trim());
+
+    const val: V = this.has(key)
+      ? (mapping ? <V>mapping(<T>this.data[key]) : <V>this.data[key])
+      : <V>value;
+
+    return <V>val;
+  };
+
+  public remove = (key: string) => {
+    delete this.data[key];
   };
 
   /**
@@ -87,12 +98,15 @@ export class YAMLObject {
    *
    * @returns {Number} the ending index of the parsed data
    */
-  public parse = (lines: any[], index: number, indent: number): number => {
+  public parse = (lines: any[], index: number, indent: number, exKey?: string): number => {
+    if (exKey) this.key = exKey;
     while (index < lines.length && countSpaces(lines[index]) >= indent) {
       while (index < lines.length && (countSpaces(lines[index]) != indent || lines[index].replace(/ /g, "").charAt(0) == "#" || lines[index].indexOf(":") == -1)) index++;
       if (index == lines.length) return index;
 
-      const key = lines[index].substring(indent, lines[index].indexOf(":"));
+      let key = lines[index].substring(indent, lines[index].indexOf(":"));
+      if (key.match(/^["'].*["']$/)) key = key.substring(1, key.length - 1);
+      if (!this.key && !exKey) this.key = key;
 
       // New empty section
       if (lines[index].indexOf(": {}") == lines[index].length - 4 && lines[index].length >= 4) {
@@ -108,7 +122,7 @@ export class YAMLObject {
         while (++index < lines.length && lines[index].charAt(indent) == "-") {
           let str = lines[index].substring(indent + 2);
           if (str.charAt(0) == "'" || str.charAt(0) == "\"")
-            str = str.substring(1, str.length - 1);
+            str = str.substring(1, str.length - 1).replace(/\\(['"])/, ($1: string) => $1.replace("\\", ""));
           stringList.push(str);
         }
         this.data[key] = stringList;
@@ -120,17 +134,24 @@ export class YAMLObject {
         index++;
         const newIndent = countSpaces(lines[index]);
         const newData = new YAMLObject();
-        index = newData.parse(lines, index, newIndent) - 1;
+        index = newData.parse(lines, index, newIndent, key) - 1;
         this.data[key] = newData;
       }
 
       // Regular value
       else {
         let value = lines[index].substring(lines[index].indexOf(":") + 2);
-        if (value.charAt(0) == "'") value = value.substring(1, value.length - 1);
+        if (value.charAt(0) == "'")
+          value = value.substring(1, value.length - 1);
         else if (!isNaN(value)) {
           if (Regex.INT.test(value)) value = parseInt(value);
           else value = parseFloat(value);
+        }
+
+        if (typeof (value) == "string") {
+          if (value == "false") value = false;
+          else if (value == "true") value = true;
+          else value = value.replace(/\\(['"])/, ($1: string) => $1.replace("\\", ""));
         }
         this.data[key] = value;
       }
@@ -139,12 +160,18 @@ export class YAMLObject {
         index++;
       }
       while (index < lines.length && lines[index].replace(/ /g, "").charAt(0) == "#");
+
     }
+
+    if (Object.keys(this.data).length == 1 && this.key && this.data[this.key] instanceof YAMLObject) {
+      this.data = this.data[this.key].data;
+    }
+
     return index;
   };
 
   public toString =
-    () => this.toYaml(this.key || this.data.name ? "\"" + (this.key || this.data.name) + "\"" : undefined, this.data);
+    () => this.toYaml(this.key || this.data.name ? "'" + (this.key || this.data.name) + "'" : undefined, this.data);
 
   /**
    * Creates and returns a save string for the class
@@ -173,7 +200,7 @@ export class YAMLObject {
             str = spaces + e + ":";
             if (object.length > 0 && ["string", "number"].includes(typeof (object[0]))) {
               str += "\n";
-              object.forEach(str => str += spaces + "- " + JSON.stringify(str) + "\n");
+              object.forEach(st => str += spaces + "- " + JSON.stringify(st) + "\n");
             } else if (object.length == 0)
               str += " []\n";
           } else {
