@@ -2,7 +2,7 @@
   export let value: string[] = [];
   export let wrap = false;
 
-  const press = (e: KeyboardEvent) => value = (<HTMLTextAreaElement>e.target).value.split("\r\n");
+  const press = (e: KeyboardEvent) => value = (<HTMLTextAreaElement>e.target).value.split(/\r?\n/g);
 </script>
 
 <textarea rows="5" value={value.join("\r\n")}
