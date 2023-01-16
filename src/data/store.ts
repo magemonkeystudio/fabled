@@ -348,20 +348,25 @@ export const loadSkillText = (text: string) => {
  *  Loads class data from a string
  */
 export const loadClassText = (text: string) => {
+  alert(1);
   // Load new classes
   const data: YAMLObject = parseYAML(text);
   let clazz: ProClass;
-  console.log(data);
+  alert(2);
   // If we only have one class, and it is the current YAML,
   // the structure is a bit different
   if (data.key && !data.data[data.key]) {
+    alert(3);
     const key: string = data.key;
     console.log(key, isClassNameTaken(key), getClass(key));
+    alert(4);
     clazz = (<ProClass>(isClassNameTaken(key)
       ? getClass(key)
       : addClass(key)));
+    alert(5);
     clazz.load(data);
-    console.log(clazz);
+    alert(6);
+    alert(JSON.stringify(clazz));
     return;
   }
 
@@ -415,16 +420,9 @@ export const loadRaw = (text: string) => {
     loadAttributes(text);
   } else if (text.indexOf("components:") >= 0
     || (text.indexOf("group:") == -1 && text.indexOf("combo:") == -1 && text.indexOf("skills:") == -1)) {
-    if ((text.match(/components:/g)?.length || 0) > 1)
-      loadSkillText(text.replace("loaded: false\n", ""));
-    else
-      loadSkillText(text);
+    loadSkillText(text.replace("loaded: false\n", ""));
   } else {
-    console.log(text.match(/skills:/g));
-    if ((text.match(/skills:/g)?.length || 0) > 1)
-      loadClassText(text.replace("loaded: false\n", ""));
-    else
-      loadClassText(text);
+    loadClassText(text.replace("loaded: false\n", ""));
   }
 };
 

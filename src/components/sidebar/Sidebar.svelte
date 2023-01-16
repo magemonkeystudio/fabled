@@ -110,7 +110,7 @@
       <SidebarEntry
         delay={200 + 100*($classes.length+1)}>
         <div class="new">
-          <span on:click={addClass}>New Class</span>
+          <span on:click={() => addClass()}>New Class</span>
           <span class="new-folder"
                 on:click={() => addClassFolder(new ProFolder())}>New Folder</span>
         </div>
@@ -136,7 +136,7 @@
         delay={200 + 100*($skills.length+1)}
         direction="right">
         <div class="new">
-          <span on:click={addSkill}>New Skill</span>
+          <span on:click={() => addSkill()}>New Skill</span>
           <span class="new-folder"
                 on:click={() => addSkillFolder(new ProFolder())}>New Folder</span>
         </div>

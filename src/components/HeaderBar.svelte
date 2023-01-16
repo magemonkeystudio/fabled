@@ -39,13 +39,6 @@
         padding: 0.5rem;
     }
 
-    @media screen and (min-width: 500px) {
-        #header {
-            flex-direction: row;
-            justify-content: space-between;
-        }
-    }
-
     div > * {
         text-align: center;
     }
@@ -59,6 +52,7 @@
         display: inline;
         font-family: Mojave-Web, sans-serif;
         margin: 0;
+        padding: 0 0 0.5rem;
     }
 
     h1 {
@@ -93,5 +87,16 @@
     .social img {
         height: 100%;
         aspect-ratio: 1;
+    }
+
+    @media screen and (min-width: 500px) {
+        #header {
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        h1, h2 {
+            padding: unset;
+        }
     }
 </style>
