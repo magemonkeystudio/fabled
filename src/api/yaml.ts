@@ -209,9 +209,12 @@ export class YAMLObject {
         }
       }
 
-      saveString += str.replaceAll(/(?<!\\)'/g, "\\'")
-        .replaceAll(/(?<!\\)"/g, "'")
-        .replaceAll(/\\"/g, "\"");
+      if (str) {
+        saveString +=
+          str.replaceAll(/(\\)?'/g, "\\'")
+            .replaceAll(/((\\)?")/g, s => s.length == 0 ? "'" : s)
+            .replaceAll(/\\"/g, "\"");
+      }
     }
     return saveString;
   };

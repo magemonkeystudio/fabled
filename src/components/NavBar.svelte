@@ -14,13 +14,10 @@
     let data = act.serializeYaml().toString();
     createPaste(data)
       .then((urlToPaste) => {
-        console.log(urlToPaste);
-        navigator.clipboard.writeText(urlToPaste);
+        navigator?.clipboard?.writeText(urlToPaste);
         window.open(urlToPaste);
       })
-      .catch((requestError) => {
-        console.error(requestError);
-      });
+      .catch((requestError) => console.error(requestError));
   };
 
   const openImport = () => {
@@ -128,7 +125,7 @@
         justify-self: flex-start;
         align-items: center;
         justify-content: center;
-        width: 3rem;
+        width: 3.5rem;
     }
 
     .transfer {

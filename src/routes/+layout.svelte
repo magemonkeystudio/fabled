@@ -1,13 +1,26 @@
 <script lang="ts">
   import "../app.css";
-  import HeaderBar from "../components/HeaderBar.svelte";
   import { active, importing, loadFile, showSidebar } from "../data/store";
-  import ImportModal from "../components/ImportModal.svelte";
-  import Sidebar from "../components/sidebar/Sidebar.svelte";
-  import NavBar from "../components/NavBar.svelte";
   import { get } from "svelte/store";
   import { onDestroy, onMount } from "svelte";
   import { browser } from "$app/environment";
+  import ImportModal from "../components/ImportModal.svelte";
+  import Sidebar from "../components/sidebar/Sidebar.svelte";
+  import NavBar from "../components/NavBar.svelte";
+  import HeaderBar from "../components/HeaderBar.svelte";
+
+
+  onMount(() => {
+    if (!browser) return;
+    document.addEventListener("dragover", dragover);
+    document.addEventListener("drop", loadFiles);
+  });
+
+  onDestroy(() => {
+    if (!browser) return;
+    document.removeEventListener("dragover", dragover);
+    document.removeEventListener("drop", loadFiles);
+  });
 
   const backup = () => {
     alert("This feature isn't implemented yet");
@@ -52,18 +65,6 @@
     e.stopPropagation();
     e.preventDefault();
   };
-
-  onMount(() => {
-    if (!browser) return;
-    document.addEventListener("dragover", dragover);
-    document.addEventListener("drop", loadFiles);
-  });
-
-  onDestroy(() => {
-    if (!browser) return;
-    document.removeEventListener("dragover", dragover);
-    document.removeEventListener("drop", loadFiles);
-  });
 </script>
 
 <HeaderBar />

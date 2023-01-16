@@ -26,8 +26,9 @@
 
     .container {
         display: grid;
-        grid-template-columns: 0.75fr auto;
+        grid-template-columns: auto auto;
         align-items: center;
         margin-inline: 1rem;
+        width: 90%;
     }
 </style>
