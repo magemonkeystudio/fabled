@@ -113,7 +113,15 @@ hr {
     clear: both;
 }
 
-select, input {
+.input-wrapper {
+    align-self: flex-start;
+    padding-left: 1rem;
+    padding-bottom: 0.3rem;
+    border-left: 3px solid #333;
+    width: 20rem;
+}
+
+select, input, textarea {
     color: var(--color-fg);
     background-color: var(--color-select-bg);
     padding: 0.3rem;

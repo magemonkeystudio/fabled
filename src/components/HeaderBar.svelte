@@ -1,6 +1,5 @@
 <script lang="ts">
   import DiscordLogo from "./DiscordLogo.svelte";
-  import type { ProSkill } from "../api/types";
   import { goto } from "$app/navigation";
 </script>
 

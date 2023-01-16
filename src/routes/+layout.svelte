@@ -5,6 +5,34 @@
   import ImportModal from "../components/ImportModal.svelte";
   import Sidebar from "../components/sidebar/Sidebar.svelte";
   import NavBar from "../components/NavBar.svelte";
+  import { get } from "svelte/store";
+
+  const backup = () => {
+    alert("This feature isn't implemented yet");
+  };
+
+  const save = () => {
+    const act = get(active);
+    if (!act) return;
+
+    saveToFile(act.name + ".yml", act.serializeYaml().toString());
+  };
+
+  /**
+   * Saves text data to a file locally
+   */
+  const saveToFile = (file, data) => {
+    const textFileAsBlob = new Blob([data], { type: "text/plain;charset=utf-8" });
+
+    let element = document.createElement("a");
+    element.href = URL.createObjectURL(textFileAsBlob);
+    element.download = file;
+    element.style.display = "none";
+
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
 </script>
 
 
@@ -20,10 +48,10 @@
 </div>
 
 <div id="floating-buttons">
-  <div class="button backup" title="Backup All Data">
+  <div class="button backup" title="Backup All Data" on:click={backup}>
     <span class="material-symbols-rounded">cloud_download</span>
   </div>
-  <div class="button save" title="Save">
+  <div class="button save" title="Save" on:click={save}>
     <span class="material-symbols-rounded">save</span>
   </div>
 </div>

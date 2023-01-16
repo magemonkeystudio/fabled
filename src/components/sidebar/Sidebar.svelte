@@ -84,7 +84,7 @@
      on:outclick={clickOut}
      on:introend={() => sidebarOpen.set(true)}
      on:outroend={() => sidebarOpen.set(false)}
-     style:--height="calc({height}px - 6rem + min(3rem, {scrollY}px))">
+     style:--height="calc({height}px - 6.5rem + min(3.5rem, {scrollY}px))">
   <div class="type-wrap">
     <div id="type-selector" class:c-selected={$isShowClasses}>
       <div class="classes" on:click={showClasses}>Classes</div>

@@ -3,16 +3,15 @@
   import { active, activeType, setImporting, toggleSidebar } from "../data/store";
   import { get } from "svelte/store";
   import { createPaste } from "../api/hastebin";
-  import { showSidebar } from "../data/store.js";
-  import Sidebar from "./sidebar/Sidebar.svelte";
-
-  let serverOptions = ["1.19", "1.18", "1.17", "1.16"];
+  import { serverOptions, version } from "../version/data";
+  import { ProClass } from "../api/proclass";
+  import { ProSkill } from "../api/proskill";
 
   const haste = () => {
-    let act = get(active);
+    let act: ProClass | ProSkill = get(active);
     if (!act) return;
 
-    let data = JSON.stringify(act, null, 2);
+    let data = act.serializeYaml().toString();
     createPaste(data)
       .then((urlToPaste) => {
         console.log(urlToPaste);
@@ -31,7 +30,7 @@
   const toggle = (e: MouseEvent) => {
     e.stopPropagation();
     toggleSidebar();
-  }
+  };
 </script>
 
 <nav>
@@ -40,9 +39,9 @@
   </div>
   <label class="server">
     Server
-    <select>
+    <select bind:value={$version}>
       {#each serverOptions as opt}
-        <option>{opt}</option>
+        <option value={opt.substring(2)}>{opt}</option>
       {/each}
     </select>
   </label>

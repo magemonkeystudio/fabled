@@ -3,6 +3,9 @@ import { get, writable } from "svelte/store";
 import { ProClass } from "../api/proclass";
 import { ProSkill } from "../api/proskill";
 import { ProFolder } from "../api/profolder";
+import { ProAttribute } from "../api/proattribute";
+import { YAMLObject } from "../api/yaml";
+import { browser } from "$app/environment";
 
 export const active: Writable<ProClass | ProSkill> = writable();
 export const activeType: Writable<"class" | "skill"> = writable();
@@ -92,22 +95,12 @@ export const classes: Writable<ProClass[]> = writable([
     manaName: "&2Mana",
     maxLevel: 40,
     permission: false,
-    expSources: [],
-    health: {
-      base: 20,
-      scale: 1
-    },
-    mana: {
-      base: 20,
-      scale: 1
-    },
+    health: new ProAttribute("Health", 20, 1),
+    mana: new ProAttribute("Mana", 20, 1),
     manaRegen: 1,
-    attributes: {
-      vitality: {
-        base: 2,
-        modifier: 1
-      }
-    },
+    attributes: [
+      new ProAttribute("Vitality", 2, 1)
+    ],
     skillTree: "Requirement",
     skills: [],
     icon: {
@@ -123,28 +116,19 @@ export const classes: Writable<ProClass[]> = writable([
     manaName: "&2Mana",
     maxLevel: 40,
     permission: false,
-    expSources: [],
-    health: {
-      base: 20,
-      scale: 1
-    },
-    mana: {
-      base: 20,
-      scale: 1
-    },
+    health: new ProAttribute("Health", 20, 1),
+    mana: new ProAttribute("Mana", 20, 1),
     manaRegen: 1,
-    attributes: {
-      vitality: {
-        base: 2,
-        modifier: 1
-      }
-    },
+    attributes: [
+      new ProAttribute("Vitality", 2, 1),
+      new ProAttribute("Bravery", 2, 1)
+    ],
     skillTree: "Requirement",
     skills: [get(skills)[0], get(skills)[1]],
     icon: {
       material: "Pumpkin",
       customModelData: 0,
-      lore: ["This is a class"]
+      lore: ["This is\" a class"]
     },
     unusableItems: []
   }),
@@ -154,22 +138,12 @@ export const classes: Writable<ProClass[]> = writable([
     manaName: "&2Mana",
     maxLevel: 40,
     permission: false,
-    expSources: [],
-    health: {
-      base: 20,
-      scale: 1
-    },
-    mana: {
-      base: 20,
-      scale: 1
-    },
+    health: new ProAttribute("Health", 20, 1),
+    mana: new ProAttribute("Mana", 20, 1),
     manaRegen: 1,
-    attributes: {
-      vitality: {
-        base: 2,
-        modifier: 1
-      }
-    },
+    attributes: [
+      new ProAttribute("Vitality", 2, 1)
+    ],
     skillTree: "Requirement",
     skills: [],
     icon: {
@@ -270,6 +244,24 @@ export const updateFolders = () => {
     skillFolders.set(sort<ProFolder>(get(skillFolders)));
     skills.set(sort<ProSkill>(get(skills)));
   }
+};
+
+export const saveDataInternal = () => {
+  if (!browser) return;
+  const classList = get(classes);
+  const skillList = get(skills);
+  const classYaml = new YAMLObject();
+  const skillYaml = new YAMLObject();
+  classYaml.put("loaded", false);
+  skillYaml.put("loaded", false);
+
+  classList.forEach(c => classYaml.put(c.name, c.serializeYaml()));
+
+  if (classList.length > 0)
+    localStorage.setItem("classData", classYaml.toString());
+  if (skillList.length > 0)
+    localStorage.setItem("skillData", skillYaml.toString());
+  console.log(skillYaml.toString());
 };
 
 const sort = <T extends ProFolder | ProClass | ProSkill>(data: T[]): T[] => {

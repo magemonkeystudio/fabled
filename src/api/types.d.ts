@@ -1,11 +1,7 @@
 import { ProSkill } from "./proskill";
 import { ProClass } from "./proclass";
 import { YAMLObject } from "./yaml";
-
-export interface Attribute {
-  base: number;
-  scale: number;
-}
+import { ProAttribute } from "./proattribute";
 
 export interface ProClassData {
   name: string;
@@ -15,16 +11,11 @@ export interface ProClassData {
   maxLevel?: number;
   parent?: ProClass;
   permission?: boolean;
-  expSources?: string[];
-  health?: Attribute;
-  mana?: Attribute;
+  expSources?: number;
+  health?: ProAttribute;
+  mana?: ProAttribute;
   manaRegen?: number;
-  attributes?: {
-    [key: string]: {
-      base: number;
-      modifier: number;
-    }
-  };
+  attributes?: ProAttribute[];
   skillTree?: "Requirement" | "Basic Horizontal" | "Basic Vertical" | "Level Horizontal" | "Level Vertical" | "Flood";
   skills?: ProSkill[];
   icon?: Icon;
@@ -73,6 +64,21 @@ export interface Trigger {
 export interface SkillComponent {
   name: string;
   components: SkillComponent[];
+}
+
+export interface VersionData {
+  MATERIALS: string[];
+  DAMAGEABLE_MATERIALS: string[];
+  SOUNDS: string[];
+  ENTITIES: string[];
+  PARTICLES: string[];
+  BIOMES: string[];
+  DAMAGE_TYPES: string[];
+  POTIONS: string[];
+  PROJECTILES: string[];
+  MOB_DISGUISES: string[];
+  MISC_DISGUISES: string[];
+  ANY_POTION?: string[];
 }
 
 export abstract class Serializable {

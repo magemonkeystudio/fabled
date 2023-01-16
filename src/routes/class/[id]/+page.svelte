@@ -1,19 +1,20 @@
 <script lang="ts">
   import SearchableSelect from "../../../components/input/SearchableSelect.svelte";
-  import { classes, skills, updateSidebar } from "../../../data/store";
+  import { classes, saveDataInternal, skills, updateSidebar } from "../../../data/store";
   import { ProClass } from "../../../api/proclass";
-  import { onMount } from "svelte";
   import AttributeInput from "../../../components/input/AttributeInput.svelte";
+  import { numberOnly } from "../../../api/number-only";
+  import ByteSelect from "../../../components/input/ByteSelect.svelte";
+  import IconInput from "../../../components/input/IconInput.svelte";
 
   export let data: { class: ProClass };
 
-  $: if (data?.class.name) {
-    updateSidebar();
-  }
+  const expSources = ["Mob", "Block Break", "Block Place", "Craft", "Command", "Special", "Exp Bottle", "Smelt", "Quest"];
 
-  onMount(() => {
-    console.log(data.class.serializeYaml());
-  });
+  $: {
+    if (data?.class.name) updateSidebar();
+    saveDataInternal();
+  }
 </script>
 
 <svelte:head>
@@ -39,6 +40,13 @@
   <div class="input-wrapper">
     <input id="manaName" bind:value={data.class.manaName} />
   </div>
+  <label>Max Level</label>
+  <div class="input-wrapper">
+    <input type="number"
+           id="maxLevel"
+           use:numberOnly={true}
+           bind:value={data.class.maxLevel} />
+  </div>
   <label>Parent</label>
   <div class="input-wrapper">
     <SearchableSelect id="parent"
@@ -54,10 +62,11 @@
       <div on:click={() => data.class.permission = false}>False</div>
     </div>
   </div>
-  <!-- TODO Exp Sources -->
-  <label for="expSources">Exp Sources</label>
+  <label>Exp Sources</label>
   <div class="input-wrapper">
-    <input id="expSources" bind:value={data.class.expSources} />
+    <ByteSelect
+      data={expSources}
+      bind:value={data.class.expSources} />
   </div>
   <label>Health</label>
   <div class="input-wrapper">
@@ -68,10 +77,18 @@
     <AttributeInput bind:value={data.class.mana} />
   </div>
 
+  {#each data.class.attributes as attr}
+    <label>{attr.name}</label>
+    <div class="input-wrapper">
+      <AttributeInput bind:value={attr} />
+    </div>
+  {/each}
 
   <label for="mana-regen">Mana Regen</label>
   <div class="input-wrapper">
-    <input id="mana-regen" bind:value={data.class.manaRegen} />
+    <input id="mana-regen"
+           use:numberOnly
+           bind:value={data.class.manaRegen} />
   </div>
   <label for="skill-tree">Skill Tree</label>
   <div class="input-wrapper">
@@ -95,18 +112,7 @@
                       placeholder="No Skills" />
   </div>
 
-  <label for="icon">Icon</label>
-  <div class="input-wrapper">
-    <input id="icon" bind:value={data.class.icon.material} />
-  </div>
-  <label for="icon-data">CustomModelData</label>
-  <div class="input-wrapper">
-    <input id="icon-data" bind:value={data.class.icon.customModelData} />
-  </div>
-  <label for="icon-lore">Icon Lore</label>
-  <div class="input-wrapper">
-    <input id="icon-lore" bind:value={data.class.icon.lore} />
-  </div>
+  <IconInput bind:icon={data.class.icon} />
 </div>
 
 
@@ -127,15 +133,9 @@
         padding-right: 1rem;
     }
 
-    .input-wrapper {
-        align-self: flex-start;
-        padding-left: 1rem;
-        padding-bottom: 0.3rem;
-        border-left: 3px solid #333;
-    }
-
     input {
         padding-inline: 0.5rem;
+        width: 100%;
     }
 
     .toggle {

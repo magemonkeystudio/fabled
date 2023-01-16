@@ -1,6 +1,6 @@
 /*
  * This file was pulled from the original SkillAPI editor and updated to use TypeScript
- * and modern JavaScript
+ * and modern JavaScript as well as to add serialization
  */
 
 /**
@@ -53,7 +53,7 @@ export class YAMLObject {
 
   public put = (key: string, value: any) => {
     this.data[key] = value;
-  }
+  };
 
   /**
    * Checks whether the YAML data contains a value under the given key
@@ -107,8 +107,8 @@ export class YAMLObject {
         const stringList = [];
         while (++index < lines.length && lines[index].charAt(indent) == "-") {
           let str = lines[index].substring(indent + 2);
-          if (str.charAt(0) == "'") str = str.substring(1, str.length - 1);
-          else if (str.charAt(0) == "\"") str = str.substring(1, str.length - 1);
+          if (str.charAt(0) == "'" || str.charAt(0) == "\"")
+            str = str.substring(1, str.length - 1);
           stringList.push(str);
         }
         this.data[key] = stringList;
@@ -141,5 +141,51 @@ export class YAMLObject {
       while (index < lines.length && lines[index].replace(/ /g, "").charAt(0) == "#");
     }
     return index;
+  };
+
+  public toString =
+    () => this.toYaml(this.key || this.data.name ? "\"" + (this.key || this.data.name) + "\"" : undefined, this.data);
+
+  /**
+   * Creates and returns a save string for the class
+   */
+  public toYaml = (key: string | undefined, obj: any, spaces = "") => {
+    let saveString = "";
+
+    if (key) {
+      saveString += spaces + key + ":\n";
+      spaces += "  ";
+    }
+    for (const e of Object.keys(obj)) {
+      const object = obj[e];
+      const ostr = JSON.stringify(object);
+      let str = spaces + e + ": " + ostr + "\n";
+      if (object == undefined) continue;
+      if (object instanceof Object) {
+        if (Object.keys(object).includes("toYaml")) {
+          if (object instanceof YAMLObject) {
+            saveString += object.toYaml("'" + e + "'", object.data, spaces);
+            continue;
+          } else
+            str = object.toYaml(spaces);
+        } else if (object instanceof Array) {
+          if (e != "attributes") {
+            str = spaces + e + ":";
+            if (object.length > 0 && ["string", "number"].includes(typeof (object[0]))) {
+              str += "\n";
+              object.forEach(str => str += spaces + "- " + JSON.stringify(str) + "\n");
+            } else if (object.length == 0)
+              str += " []\n";
+          } else {
+            str = this.toYaml(e, object, spaces);
+          }
+        }
+      }
+
+      saveString += str.replaceAll(/(?<!\\)'/g, "\\'")
+        .replaceAll(/(?<!\\)"/g, "'")
+        .replaceAll(/\\"/g, "\"");
+    }
+    return saveString;
   };
 }

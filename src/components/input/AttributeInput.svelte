@@ -1,16 +1,19 @@
 <script lang="ts">
-  import type { Attribute } from "../../api/types";
+  import {numberOnly} from "../../api/number-only";
+  import { ProAttribute } from "../../api/proattribute";
 
-  export let value: Attribute;
+  export let value: ProAttribute;
 </script>
 
 <div class="wrap">
   <input class="base"
          type="number"
+         use:numberOnly={false}
          bind:value={value.base} />
   +(
   <input class="modifier"
          type="number"
+         use:numberOnly={false}
          bind:value={value.scale} />
   )
 </div>

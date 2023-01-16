@@ -15,8 +15,14 @@
   let input: HTMLElement;
   let criteria: string;
 
-  const select = (item: any, event: KeyboardEvent) => {
+  const select = (item: any, event?: KeyboardEvent) => {
     if (event && event?.key != "Enter" && event?.key != " ") return;
+
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+
     if (!multiple) {
       selected = item;
       criteria = "";
@@ -30,7 +36,7 @@
     input.focus();
   };
 
-  const remove = (e: MouseEvent, item: any) => {
+  const remove = (e: MouseEvent | KeyboardEvent, item: any) => {
     e.stopPropagation();
     if (multiple) selected = selected.filter(s => s != item);
     else selected = undefined;
@@ -41,14 +47,26 @@
     criteria = "";
   };
 
+  const checkDelete = (e: KeyboardEvent) => {
+    if (e.key == "Enter") {
+      e.stopPropagation();
+      e.preventDefault();
+      return;
+    }
+    if (e.key != "Backspace" || criteria.length > 0) return;
+
+    remove(e, multiple ? selected[selected.length - 1] : selected);
+  };
+
   $: filtered = data.filter(s => {
     if (!criteria) return false;
     if (display(s).toLowerCase().includes(criteria.toLowerCase()))
-      return (multiple && !selected.includes(s)) || selected != s;
+      return (multiple && !selected.includes(s)) || (!multiple && selected != s);
   });
 </script>
 
 <div id="wrapper"
+     class:multiple
      use:clickOutside
      on:outclick={clickOut}>
   <div {id} class="input"
@@ -63,7 +81,7 @@
              on:click={(e) => remove(e, sel)}>{display(sel)}</div>
       {/each}
     {:else if selected}
-      <div class="chip"
+      <div class="single-chip"
            title="Click to remove"
            transition:fly={{y: -25}}
            on:click={(e) => remove(e, selected)}>{display(selected)}</div>
@@ -71,10 +89,11 @@
     {#if !focused && !criteria && (!selected || selected.length == 0)}
       <span class="placeholder" in:fly={{y: 25, delay: 250}}>{placeholder}</span>
     {/if}
-    <div bind:this={input}
-         bind:textContent={criteria}
-         class="input-box"
+    <div class="input-box"
          contenteditable
+         bind:this={input}
+         bind:textContent={criteria}
+         on:keydown={checkDelete}
          on:focus={() => focused = true}
          on:blur={() => focused = false}>
     </div>
@@ -101,12 +120,12 @@
         padding: 0.2rem 0.5rem;
     }
 
-    .chip {
+    .chip, .single-chip {
         float: left;
         margin-right: 0.4rem;
     }
 
-    .chip:hover {
+    .chip:hover, .single-chip:hover {
         cursor: pointer;
     }
 
@@ -142,5 +161,9 @@
     .select > *:hover {
         background-color: #0083ef;
         cursor: pointer;
+    }
+
+    .input-box {
+        min-width: 5rem;
     }
 </style>

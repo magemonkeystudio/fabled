@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ProSkill } from "../../../api/types";
+  import { ProSkill } from "../../../api/proskill";
 
   export let data: { skill: ProSkill };
 </script>
