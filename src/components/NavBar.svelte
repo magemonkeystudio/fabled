@@ -128,6 +128,7 @@
         justify-self: flex-start;
         align-items: center;
         justify-content: center;
+        width: 3rem;
     }
 
     .transfer {

@@ -348,25 +348,18 @@ export const loadSkillText = (text: string) => {
  *  Loads class data from a string
  */
 export const loadClassText = (text: string) => {
-  alert(1);
   // Load new classes
   const data: YAMLObject = parseYAML(text);
   let clazz: ProClass;
-  alert(2);
   // If we only have one class, and it is the current YAML,
   // the structure is a bit different
   if (data.key && !data.data[data.key]) {
-    alert(3);
     const key: string = data.key;
     console.log(key, isClassNameTaken(key), getClass(key));
-    alert(4);
     clazz = (<ProClass>(isClassNameTaken(key)
       ? getClass(key)
       : addClass(key)));
-    alert(5);
     clazz.load(data);
-    alert(6);
-    alert(JSON.stringify(clazz));
     return;
   }
 

@@ -8,11 +8,8 @@
   import { numberOnly } from "../api/number-only";
   import ByteSelect from "./input/ByteSelect.svelte";
   import { expSources } from "../version/data";
-  import { onMount } from "svelte";
 
   export let data: ProClass;
-
-  onMount(() => alert(JSON.stringify(data)))
 
   $: {
     if (data?.name) updateSidebar();
@@ -137,6 +134,7 @@
         background-color: var(--color-select-bg);
         border-radius: 0.4rem;
         user-select: none;
+        -webkit-user-select: none;
     }
 
     .toggle:before {

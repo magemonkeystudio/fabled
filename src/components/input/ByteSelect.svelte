@@ -23,6 +23,7 @@
     .entry {
         padding: 0.2rem 0.5rem;
         user-select: none;
+        -webkit-user-select: none;
         transition: background-color 0.2s ease-in-out;
     }
 

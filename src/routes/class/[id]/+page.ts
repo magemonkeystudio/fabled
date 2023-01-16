@@ -17,7 +17,6 @@ export async function load({ params }: any) {
     }
   }
 
-  alert(JSON.stringify(clazz));
   if (clazz) {
     setActive(clazz, "class");
     return { class: clazz };

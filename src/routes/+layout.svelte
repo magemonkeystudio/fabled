@@ -1,7 +1,7 @@
 <script lang="ts">
   import "../app.css";
   import HeaderBar from "../components/HeaderBar.svelte";
-  import { active, importing, loadClasses, loadFile, loadIndividual, loadSkills, showSidebar } from "../data/store";
+  import { active, importing, loadFile, showSidebar } from "../data/store";
   import ImportModal from "../components/ImportModal.svelte";
   import Sidebar from "../components/sidebar/Sidebar.svelte";
   import NavBar from "../components/NavBar.svelte";
@@ -76,7 +76,6 @@
     <slot />
   </div>
 </div>
-
 <div id="floating-buttons">
   <div class="button backup" title="Backup All Data" on:click={backup}>
     <span class="material-symbols-rounded">cloud_download</span>

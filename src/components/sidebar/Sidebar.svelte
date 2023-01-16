@@ -26,6 +26,7 @@
   import Folder from "../Folder.svelte";
   import { fly } from "svelte/transition";
   import { clickOutside } from "../../api/clickoutside";
+  import { browser } from "$app/environment";
 
   let folders: ProFolder[] = [];
   let classSub: Unsubscriber;
@@ -38,6 +39,8 @@
   let scrollY: number;
 
   onMount(() => {
+    if (!browser) return;
+
     classSub = classFolders.subscribe(fold => {
       if (!get(isShowClasses)) return;
       classIncluded = [];
@@ -79,11 +82,12 @@
 
 <svelte:window bind:innerWidth={width} bind:innerHeight={height} bind:scrollY={scrollY} />
 
-<div id="sidebar" transition:squish
-     use:clickOutside
-     on:outclick={clickOut}
+<div id="sidebar"
+     transition:squish
      on:introend={() => sidebarOpen.set(true)}
      on:outroend={() => sidebarOpen.set(false)}
+     use:clickOutside
+     on:outclick={clickOut}
      style:--height="calc({height}px - 6rem + min(3.5rem, {scrollY}px))">
   <div class="type-wrap">
     <div id="type-selector" class:c-selected={$isShowClasses}>
@@ -170,6 +174,7 @@
         background-color: #222;
         padding: 0.4rem;
         user-select: none;
+        -webkit-user-select: none;
     }
 
     #type-selector {

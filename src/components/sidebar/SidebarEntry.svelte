@@ -97,6 +97,7 @@
         transition: background-color 0.25s ease-in-out,
         border-left-width 0.25s ease-in-out;
         user-select: none;
+        -webkit-user-select: none;
         margin-inline: 0.4rem;
     }
 

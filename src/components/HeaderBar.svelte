@@ -74,6 +74,7 @@
         justify-content: center;
         align-items: center;
         user-select: none;
+        -webkit-user-select: none;
         color: var(--color-fg);
         background-color: #0083ef;
         border-radius: 50%;
