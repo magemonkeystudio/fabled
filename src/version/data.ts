@@ -1,11 +1,10 @@
 import type { VersionData } from "../api/types";
 import type { Writable } from "svelte/store";
-import { writable } from "svelte/store";
+import { get, writable } from "svelte/store";
 import { DATA_1_19 } from "./1.19";
 import { DATA_1_18 } from "./1.18";
 import { DATA_1_17 } from "./1.17";
 import { DATA_1_16 } from "./1.16";
-import { browser } from "$app/environment";
 import { localStore } from "../api/api";
 
 export const expSources = ["Mob", "Block Break", "Block Place", "Craft", "Command", "Special", "Exp Bottle", "Smelt", "Quest"];
@@ -20,64 +19,64 @@ const VERSIONS = {
 };
 const versionKeys: string[] = Object.keys(VERSIONS).reverse();
 
-export let DATA: VersionData = VERSIONS[<Versions>versionKeys[0]];
+export const versionData: Writable<VersionData> = writable(VERSIONS[<Versions>versionKeys[0]]);
 
 export const serverOptions: string[] = [];
 versionKeys.forEach((v: string) => serverOptions.push("1." + v));
 export const version: Writable<Versions> = localStore<Versions>("server-version", <Versions>versionKeys[0]);
-version.subscribe((ver: Versions) => DATA = VERSIONS[ver]);
+version.subscribe((ver: Versions) => versionData.set(VERSIONS[ver]));
 
 export const getMaterials = () => {
-  return DATA.MATERIALS;
+  return get(versionData).MATERIALS;
 };
 
 export const getDamageableMaterials = () => {
-  return DATA.DAMAGEABLE_MATERIALS;
+  return get(versionData).DAMAGEABLE_MATERIALS;
 };
 
 export const getAnyMaterials = () => {
-  return ["Any", ...DATA.MATERIALS];
+  return ["Any", ...get(versionData).MATERIALS];
 };
 
 export const getSounds = () => {
-  return DATA.SOUNDS;
+  return get(versionData).SOUNDS;
 };
 
 export const getEntities = () => {
-  return DATA.ENTITIES;
+  return get(versionData).ENTITIES;
 };
 
 export const getAnyEntities = () => {
-  return ["Any", ...DATA.ENTITIES];
+  return ["Any", ...get(versionData).ENTITIES];
 };
 
 export const getParticles = () => {
-  return DATA.PARTICLES || [];
+  return get(versionData).PARTICLES || [];
 };
 
 export const getBiomes = () => {
-  return DATA.BIOMES;
+  return get(versionData).BIOMES;
 };
 
 export const getDamageTypes = () => {
-  return DATA.DAMAGE_TYPES;
+  return get(versionData).DAMAGE_TYPES;
 };
 
 export const getPotionTypes = () => {
-  return DATA.POTIONS;
+  return get(versionData).POTIONS;
 };
 
 export const getAnyPotion = () => {
-  return ["Any", ...DATA.POTIONS];
+  return ["Any", ...get(versionData).POTIONS];
 };
 
 export const getGoodPotions = () => {
-  const list = DATA.POTIONS.filter(type => GOOD_POTIONS.includes(type));
+  const list = get(versionData).POTIONS.filter(type => GOOD_POTIONS.includes(type));
   return ["All", ...list];
 };
 
 export const getBadPotions = () => {
-  const list = DATA.POTIONS.filter(type => BAD_POTIONS.includes(type));
+  const list = get(versionData).POTIONS.filter(type => BAD_POTIONS.includes(type));
   return ["All", ...list];
 };
 
@@ -86,19 +85,19 @@ export const getDyes = () => {
 };
 
 export const getProjectiles = () => {
-  return DATA.PROJECTILES;
+  return get(versionData).PROJECTILES;
 };
 
 export const getAnyProjectiles = () => {
-  return ["Any", ...DATA.PROJECTILES];
+  return ["Any", ...get(versionData).PROJECTILES];
 };
 
 export const getMobDisguises = () => {
-  return DATA.MOB_DISGUISES;
+  return get(versionData).MOB_DISGUISES;
 };
 
 export const getMiscDisguises = () => {
-  return DATA.MISC_DISGUISES;
+  return get(versionData).MISC_DISGUISES;
 };
 
 const GOOD_POTIONS: string[] = [
