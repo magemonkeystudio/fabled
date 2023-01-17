@@ -12,6 +12,7 @@
   import { toProperCase } from "../api/api";
   import { onDestroy, onMount } from "svelte";
   import { ProAttribute } from "../api/proattribute";
+  import ProInput from "./input/ProInput.svelte";
 
   export let data: ProClass;
 
@@ -47,78 +48,77 @@
 </script>
 
 {#if data}
-  <label for="name">Name</label>
-  <div class="input-wrapper">
+  <ProInput label="Name"
+            tooltip="The name of the class. This should not contain color codes">
     <input id="name" bind:value={data.name} />
-  </div>
-  <label for="prefix">Prefix</label>
-  <div class="input-wrapper">
+  </ProInput>
+  <ProInput label="Prefix"
+            tooltip="The prefix given to players who profess as the class which can contain color codes">
     <input id="prefix" bind:value={data.prefix} />
-  </div>
-  <label>Action Bar</label>
-  <div class="input-wrapper">
+  </ProInput>
+  <ProInput label="Action Bar"
+            tooltip="The format for the action bar. Leave blank to use the default formatting">
     <input bind:value={data.actionBar} />
-  </div>
-  <label for="group">Group</label>
-  <div class="input-wrapper">
+  </ProInput>
+  <ProInput label="Group"
+            tooltip={`A class group are things such as "race", "class", and "trade". Different groups can be professed through at the same time, one class from each group`}>
     <input id="group" bind:value={data.group} />
-  </div>
-  <label for="manaName">Mana Name</label>
-  <div class="input-wrapper">
+  </ProInput>
+  <ProInput label="Mana Name"
+            tooltip="The name the class uses for mana">
     <input id="manaName" bind:value={data.manaName} />
-  </div>
-  <label>Max Level</label>
-  <div class="input-wrapper">
-    <input type="number"
-           id="maxLevel"
+  </ProInput>
+  <ProInput label="Max Level"
+            tooltip="The maximum level the class can reach. If this class turns into other classes, this will also be the level it can profess into those classes">
+    <input id="maxLevel"
            use:numberOnly={true}
            bind:value={data.maxLevel} />
-  </div>
-  <label>Parent</label>
-  <div class="input-wrapper">
+  </ProInput>
+  <ProInput label="Parent"
+            tooltip="The class that turns into this one. For example, if Fighter turns into Knight, then Knight would have its parent as Fighter">
     <SearchableSelect id="parent"
                       data={$classes}
                       bind:selected={data.parent}
                       display={(c) => c.name} />
-  </div>
-  <label for="permission">Permission</label>
-  <div class="input-wrapper">
+  </ProInput>
+  <ProInput label="Permission"
+            tooltip={`Whether the class requires a permission to be professed as. The permission would be "skillapi.class.${data.name.toLowerCase()}"`}>
     <input type="checkbox" class="hidden" id="permission" bind:checked={data.permission} />
     <div class="toggle" class:selected={data.permission}>
       <div on:click={() => data.permission = true}>True</div>
       <div on:click={() => data.permission = false}>False</div>
     </div>
-  </div>
-  <label>Exp Sources</label>
-  <div class="input-wrapper">
+  </ProInput>
+  <ProInput label="Exp Sources"
+            tooltip={`The experience sources the class goes up from. Most of these only work if "use-exp-orbs" is enabled in the config.yml.`}>
     <ByteSelect
       data={expSources}
       bind:value={data.expSources} />
-  </div>
-  <label>Health</label>
-  <div class="input-wrapper">
+  </ProInput>
+  <ProInput label="Health"
+            tooltip="The amount of health the class has">
     <AttributeInput bind:value={data.health} />
-  </div>
-  <label>Mana</label>
-  <div class="input-wrapper">
+  </ProInput>
+  <ProInput label="Mana"
+            tooltip="The amount of mana the class has">
     <AttributeInput bind:value={data.mana} />
-  </div>
+  </ProInput>
 
   {#each data.attributes as attr (attr.name)}
-    <label>{toProperCase(attr.name)}</label>
-    <div class="input-wrapper">
+    <ProInput label={toProperCase(attr.name)}
+              tooltip="The amount of {attr.name} the class has">
       <AttributeInput bind:value={attr} />
-    </div>
+    </ProInput>
   {/each}
 
-  <label for="mana-regen">Mana Regen</label>
-  <div class="input-wrapper">
+  <ProInput label="Mana Regen"
+            tooltip="The amount of mana the class regenerates at each interval. The interval is in the config.yml and by default is once every second. If you want to regen a decimal amount per second, increase the interval">
     <input id="mana-regen"
            use:numberOnly
            bind:value={data.manaRegen} />
-  </div>
-  <label for="skill-tree">Skill Tree</label>
-  <div class="input-wrapper">
+  </ProInput>
+  <ProInput label="Skill Tree"
+            tooltip="The type of skill tree to use">
     <select id="skill-tree" bind:value={data.skillTree}>
       <option value="Requirement">Requirement</option>
       <option value="Basic Horizontal">Basic Horizontal</option>
@@ -127,24 +127,24 @@
       <option value="Level Vertical">Level Vertical</option>
       <option value="Flood">Flood</option>
     </select>
-  </div>
+  </ProInput>
 
-  <label>Skills</label>
-  <div class="input-wrapper">
+  <ProInput label="Skills"
+            tooltip="The skills the class is able to use">
     <SearchableSelect id="skills"
                       data={$skills}
                       multiple="true"
                       bind:selected={data.skills}
                       display={(skill) => skill.name}
                       placeholder="No Skills" />
-  </div>
+  </ProInput>
 
   <IconInput bind:icon={data.icon} />
 
-  <label>Unusable Items</label>
-  <div class="input-wrapper">
+  <ProInput label="Unusable items"
+            tooltip="The types of items that the class cannot use">
     <MaterialSelect multiple bind:selected={data.unusableItems} />
-  </div>
+  </ProInput>
 {/if}
 
 <style>

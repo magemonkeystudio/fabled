@@ -53,7 +53,6 @@
       skillIncluded = [];
       appendIncluded(folders, skillIncluded);
     }
-    console.log(classIncluded, skillIncluded);
   };
 
   onMount(() => {

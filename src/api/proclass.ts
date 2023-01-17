@@ -33,6 +33,7 @@ export class ProClass implements Serializable {
   constructor(data?: ProClassData) {
     this.name = data ? data.name : "Class";
     if (data?.prefix) this.prefix = data.prefix;
+    else this.prefix = "&6" + this.name;
     if (data?.group) this.group = data.group;
     if (data?.manaName) this.manaName = data.manaName;
     if (data?.maxLevel) this.maxLevel = data.maxLevel;
