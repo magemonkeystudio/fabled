@@ -106,6 +106,7 @@
     <AttributeInput bind:value={data.mana} />
   </ProInput>
 
+  <div class="info">Drag & Drop your attributes file to use your custom attributes</div>
   {#each data.attributes as attr (attr.name)}
     <ProInput label={toProperCase(attr.name)}
               tooltip="The amount of {attr.name} the class has">
@@ -193,5 +194,12 @@
 
     .toggle > div:hover {
         cursor: pointer;
+    }
+
+    .info {
+        grid-column: 1 / span 2;
+        text-align: center;
+        margin-left: 5rem;
+        color: rgba(255, 255, 255, 0.7);
     }
 </style>
