@@ -95,11 +95,11 @@ export const classes: Writable<ProClass[]> = writable([
     manaName: "&2Mana",
     maxLevel: 40,
     permission: false,
-    health: new ProAttribute("Health", 20, 1),
-    mana: new ProAttribute("Mana", 20, 1),
+    health: new ProAttribute("health", 20, 1),
+    mana: new ProAttribute("mana", 20, 1),
     manaRegen: 1,
     attributes: [
-      new ProAttribute("Vitality", 2, 1)
+      new ProAttribute("vitality", 2, 1)
     ],
     skillTree: "Requirement",
     skills: [],
@@ -116,12 +116,12 @@ export const classes: Writable<ProClass[]> = writable([
     manaName: "&2Mana",
     maxLevel: 40,
     permission: false,
-    health: new ProAttribute("Health", 20, 1),
-    mana: new ProAttribute("Mana", 20, 1),
+    health: new ProAttribute("health", 20, 1),
+    mana: new ProAttribute("mana", 20, 1),
     manaRegen: 1,
     attributes: [
-      new ProAttribute("Vitality", 2, 1),
-      new ProAttribute("Bravery", 2, 1)
+      new ProAttribute("vitality", 2, 1),
+      new ProAttribute("bravery", 2, 1)
     ],
     skillTree: "Requirement",
     skills: [get(skills)[0], get(skills)[1]],
@@ -138,11 +138,11 @@ export const classes: Writable<ProClass[]> = writable([
     manaName: "&2Mana",
     maxLevel: 40,
     permission: false,
-    health: new ProAttribute("Health", 20, 1),
-    mana: new ProAttribute("Mana", 20, 1),
+    health: new ProAttribute("health", 20, 1),
+    mana: new ProAttribute("mana", 20, 1),
     manaRegen: 1,
     attributes: [
-      new ProAttribute("Vitality", 2, 1)
+      new ProAttribute("vitality", 2, 1)
     ],
     skillTree: "Requirement",
     skills: [],
@@ -160,6 +160,32 @@ export const classFolders: Writable<ProFolder[]> = writable([
 export const skillFolders: Writable<ProFolder[]> = writable([
   new ProFolder([new ProFolder([get(skills)[0]])])
 ]);
+
+export const attributes: Writable<string[]> = (() => {
+  let saved = ["vitality", "spirit", "intelligence", "dexterity", "strength"];
+  if (browser) {
+    const stored = localStorage.getItem("attribs");
+    if (stored) {
+      saved = stored.split(",");
+      get(classes).forEach(c => c.updateAttributes(saved));
+    }
+  }
+
+  const {
+    subscribe,
+    set,
+    update
+  } = writable<string[]>(saved);
+  return {
+    subscribe,
+    set: (value: string[]) => {
+      if (browser) localStorage.setItem("attribs", value.join(","));
+      get(classes).forEach(c => c.updateAttributes(value));
+      return set(value);
+    },
+    update
+  };
+})();
 
 export const setActive = (act: ProClass | ProSkill, type: "class" | "skill") => {
   active.set(act);
@@ -255,6 +281,15 @@ export const deleteFolder = (folder: ProFolder) => {
   }
 };
 
+export const deleteProData = (data: ProClass | ProSkill | undefined) => {
+  if (!data) return;
+
+  getFolder(data)?.remove(data);
+  classes.set(get(classes).filter(c => c != data));
+  skills.set(get(skills).filter(c => c != data));
+  updateFolders();
+};
+
 export const updateFolders = () => {
   if (!get(showSidebar)) return;
   if (get(isShowClasses)) {
@@ -314,13 +349,9 @@ export const getFolder = (data: ProFolder | ProClass | ProSkill): (ProFolder | u
  * e - event details
  */
 export const loadAttributes = (text: string) => {
-  // const yaml = parseYAML(text);
-  // ATTRIBS = Object.keys(yaml);
-  // if (!skillsActive) {
-  //   activeClass.update();
-  //   activeClass.createFormHTML();
-  // }
-  // localStorage.setItem("attribs", ATTRIBS);
+  const yaml = parseYAML(text);
+  const attr = Object.keys(yaml.data);
+  attributes.set(attr);
 };
 
 /**
@@ -429,4 +460,27 @@ export const loadFile = (file: File) => {
     reader.onload = loadIndividual;
   }
   reader.readAsText(file);
+};
+
+export const saveData = (data?: ProClass | ProSkill) => {
+  const act = data || get(active);
+  if (!act) return;
+
+  saveToFile(act.name + ".yml", act.serializeYaml().toString());
+};
+
+/**
+ * Saves text data to a file locally
+ */
+const saveToFile = (file: string, data: string) => {
+  const textFileAsBlob = new Blob([data], { type: "text/plain;charset=utf-8" });
+
+  const element = document.createElement("a");
+  element.href = URL.createObjectURL(textFileAsBlob);
+  element.download = file;
+  element.style.display = "none";
+
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
 };

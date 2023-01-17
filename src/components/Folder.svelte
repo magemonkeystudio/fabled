@@ -84,7 +84,8 @@
      on:dragover={dragOver}
      on:dragleave={() => over = false}
      on:click={() => folder.open = !folder.open}
-     in:slide={{duration: ($sidebarOpen ? 0 : 400)}}>
+     in:slide={{duration: ($sidebarOpen ? 0 : 400)}}
+     out:slide>
   <span class="material-symbols-rounded folder-icon">
     folder
   </span>

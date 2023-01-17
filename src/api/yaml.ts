@@ -141,7 +141,7 @@ export class YAMLObject {
       // Regular value
       else {
         let value = lines[index].substring(lines[index].indexOf(":") + 2);
-        if (value.charAt(0) == "'")
+        if (value.charAt(0) == "'" || value.charAt(0) == "\"")
           value = value.substring(1, value.length - 1);
         else if (!isNaN(value)) {
           if (Regex.INT.test(value)) value = parseInt(value);
@@ -212,7 +212,7 @@ export class YAMLObject {
       if (str) {
         saveString +=
           str.replaceAll(/(\\)?'/g, "\\'")
-            .replaceAll(/((\\)?")/g, s => s.length == 0 ? "'" : s)
+            .replaceAll(/((\\)?")/g, s => s.length == 1 ? "'" : s)
             .replaceAll(/\\"/g, "\"");
       }
     }

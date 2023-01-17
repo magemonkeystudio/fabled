@@ -1,15 +1,44 @@
 <script lang="ts">
+  import type { Unsubscriber } from "svelte/types/runtime/store";
   import { ProClass } from "../api/proclass";
   import IconInput from "./input/IconInput.svelte";
   import MaterialSelect from "./input/MaterialSelect.svelte";
   import SearchableSelect from "./input/SearchableSelect.svelte";
-  import { classes, saveDataInternal, skills, updateSidebar } from "../data/store";
+  import { attributes, classes, saveDataInternal, skills, updateSidebar } from "../data/store";
   import AttributeInput from "./input/AttributeInput.svelte";
   import { numberOnly } from "../api/number-only";
   import ByteSelect from "./input/ByteSelect.svelte";
   import { expSources } from "../version/data";
+  import { toProperCase } from "../api/api";
+  import { onDestroy, onMount } from "svelte";
+  import { ProAttribute } from "../api/proattribute";
 
   export let data: ProClass;
+
+  let sub: Unsubscriber;
+
+  onMount(() => {
+    sub = attributes.subscribe(attr => {
+      const included: string[] = [];
+      data.attributes = data.attributes.filter(a => {
+        if (attr?.includes(a.name)) {
+          included.push(a.name);
+          return true;
+        }
+        return false;
+      });
+
+      attr = attr.filter(a => !included.includes(a));
+
+      for (const attrib of attr) {
+        data.attributes.push(new ProAttribute(attrib, 0, 0));
+      }
+    });
+  });
+
+  onDestroy(() => {
+    if (sub) sub();
+  });
 
   $: {
     if (data?.name) updateSidebar();
@@ -17,104 +46,106 @@
   }
 </script>
 
-<label for="name">Name</label>
-<div class="input-wrapper">
-  <input id="name" bind:value={data.name} />
-</div>
-<label for="prefix">Prefix</label>
-<div class="input-wrapper">
-  <input id="prefix" bind:value={data.prefix} />
-</div>
-<label>Action Bar</label>
-<div class="input-wrapper">
-  <input bind:value={data.actionBar} />
-</div>
-<label for="group">Group</label>
-<div class="input-wrapper">
-  <input id="group" bind:value={data.group} />
-</div>
-<label for="manaName">Mana Name</label>
-<div class="input-wrapper">
-  <input id="manaName" bind:value={data.manaName} />
-</div>
-<label>Max Level</label>
-<div class="input-wrapper">
-  <input type="number"
-         id="maxLevel"
-         use:numberOnly={true}
-         bind:value={data.maxLevel} />
-</div>
-<label>Parent</label>
-<div class="input-wrapper">
-  <SearchableSelect id="parent"
-                    data={$classes}
-                    bind:selected={data.parent}
-                    display={(c) => c.name} />
-</div>
-<label for="permission">Permission</label>
-<div class="input-wrapper">
-  <input type="checkbox" class="hidden" id="permission" bind:checked={data.permission} />
-  <div class="toggle" class:selected={data.permission}>
-    <div on:click={() => data.permission = true}>True</div>
-    <div on:click={() => data.permission = false}>False</div>
-  </div>
-</div>
-<label>Exp Sources</label>
-<div class="input-wrapper">
-  <ByteSelect
-    data={expSources}
-    bind:value={data.expSources} />
-</div>
-<label>Health</label>
-<div class="input-wrapper">
-  <AttributeInput bind:value={data.health} />
-</div>
-<label>Mana</label>
-<div class="input-wrapper">
-  <AttributeInput bind:value={data.mana} />
-</div>
-
-{#each data.attributes as attr}
-  <label>{attr.name}</label>
+{#if data}
+  <label for="name">Name</label>
   <div class="input-wrapper">
-    <AttributeInput bind:value={attr} />
+    <input id="name" bind:value={data.name} />
   </div>
-{/each}
+  <label for="prefix">Prefix</label>
+  <div class="input-wrapper">
+    <input id="prefix" bind:value={data.prefix} />
+  </div>
+  <label>Action Bar</label>
+  <div class="input-wrapper">
+    <input bind:value={data.actionBar} />
+  </div>
+  <label for="group">Group</label>
+  <div class="input-wrapper">
+    <input id="group" bind:value={data.group} />
+  </div>
+  <label for="manaName">Mana Name</label>
+  <div class="input-wrapper">
+    <input id="manaName" bind:value={data.manaName} />
+  </div>
+  <label>Max Level</label>
+  <div class="input-wrapper">
+    <input type="number"
+           id="maxLevel"
+           use:numberOnly={true}
+           bind:value={data.maxLevel} />
+  </div>
+  <label>Parent</label>
+  <div class="input-wrapper">
+    <SearchableSelect id="parent"
+                      data={$classes}
+                      bind:selected={data.parent}
+                      display={(c) => c.name} />
+  </div>
+  <label for="permission">Permission</label>
+  <div class="input-wrapper">
+    <input type="checkbox" class="hidden" id="permission" bind:checked={data.permission} />
+    <div class="toggle" class:selected={data.permission}>
+      <div on:click={() => data.permission = true}>True</div>
+      <div on:click={() => data.permission = false}>False</div>
+    </div>
+  </div>
+  <label>Exp Sources</label>
+  <div class="input-wrapper">
+    <ByteSelect
+      data={expSources}
+      bind:value={data.expSources} />
+  </div>
+  <label>Health</label>
+  <div class="input-wrapper">
+    <AttributeInput bind:value={data.health} />
+  </div>
+  <label>Mana</label>
+  <div class="input-wrapper">
+    <AttributeInput bind:value={data.mana} />
+  </div>
 
-<label for="mana-regen">Mana Regen</label>
-<div class="input-wrapper">
-  <input id="mana-regen"
-         use:numberOnly
-         bind:value={data.manaRegen} />
-</div>
-<label for="skill-tree">Skill Tree</label>
-<div class="input-wrapper">
-  <select id="skill-tree" bind:value={data.skillTree}>
-    <option value="Requirement">Requirement</option>
-    <option value="Basic Horizontal">Basic Horizontal</option>
-    <option value="Basic Vertical">Basic Vertical</option>
-    <option value="Level Horizontal">Level Horizontal</option>
-    <option value="Level Vertical">Level Vertical</option>
-    <option value="Flood">Flood</option>
-  </select>
-</div>
+  {#each data.attributes as attr (attr.name)}
+    <label>{toProperCase(attr.name)}</label>
+    <div class="input-wrapper">
+      <AttributeInput bind:value={attr} />
+    </div>
+  {/each}
 
-<label>Skills</label>
-<div class="input-wrapper">
-  <SearchableSelect id="skills"
-                    data={$skills}
-                    multiple="true"
-                    bind:selected={data.skills}
-                    display={(skill) => skill.name}
-                    placeholder="No Skills" />
-</div>
+  <label for="mana-regen">Mana Regen</label>
+  <div class="input-wrapper">
+    <input id="mana-regen"
+           use:numberOnly
+           bind:value={data.manaRegen} />
+  </div>
+  <label for="skill-tree">Skill Tree</label>
+  <div class="input-wrapper">
+    <select id="skill-tree" bind:value={data.skillTree}>
+      <option value="Requirement">Requirement</option>
+      <option value="Basic Horizontal">Basic Horizontal</option>
+      <option value="Basic Vertical">Basic Vertical</option>
+      <option value="Level Horizontal">Level Horizontal</option>
+      <option value="Level Vertical">Level Vertical</option>
+      <option value="Flood">Flood</option>
+    </select>
+  </div>
 
-<IconInput bind:icon={data.icon} />
+  <label>Skills</label>
+  <div class="input-wrapper">
+    <SearchableSelect id="skills"
+                      data={$skills}
+                      multiple="true"
+                      bind:selected={data.skills}
+                      display={(skill) => skill.name}
+                      placeholder="No Skills" />
+  </div>
 
-<label>Unusable Items</label>
-<div class="input-wrapper">
-  <MaterialSelect multiple bind:selected={data.unusableItems} />
-</div>
+  <IconInput bind:icon={data.icon} />
+
+  <label>Unusable Items</label>
+  <div class="input-wrapper">
+    <MaterialSelect multiple bind:selected={data.unusableItems} />
+  </div>
+{/if}
 
 <style>
     label {

@@ -3,9 +3,11 @@
     active,
     addClassFolder,
     addSkillFolder,
+    deleteProData,
     dragging,
     getFolder,
     isShowClasses,
+    saveData,
     sidebarOpen,
     updateFolders
   } from "../../data/store";
@@ -13,14 +15,15 @@
   import { ProClass } from "../../api/proclass";
   import { get } from "svelte/store";
   import { ProFolder } from "../../api/profolder";
-  import { fly } from "svelte/transition";
+  import { fly, slide } from "svelte/transition";
+  import Modal from "../Modal.svelte";
 
   export let delay = 0;
   export let direction: "right" | "left" = "left";
   export let data: ProSkill | ProClass | undefined = undefined;
-  export let useSlide = false;
 
   let over = false;
+  let deleting = false;
 
   const startDrag = (e: DragEvent) => {
     if (!data) {
@@ -59,6 +62,18 @@
     e.preventDefault();
     over = true;
   };
+
+  const clickSave = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    saveData(data);
+  };
+
+  const clickDelete = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    deleting = true;
+  };
 </script>
 
 
@@ -72,16 +87,40 @@
      on:dragover={dragOver}
      on:dragleave={() => over = false}
      on:click
-     in:fly={{x: (direction == "left" ? -100 : 100), duration: 500, delay: $sidebarOpen ? 0 : delay}}>
+     in:fly={{x: (direction == "left" ? -100 : 100), duration: 500, delay: $sidebarOpen ? 0 : delay}}
+     out:slide>
   <slot />
   {#if data}
-    <div class="download" title="Save {data.triggers ? 'Skill' : 'Class'}">
+    <div class="buttons">
+      <div
+        on:click={clickSave}
+        class="download"
+        title="Save {data.triggers ? 'Skill' : 'Class'}">
         <span class="material-symbols-rounded">
           save
         </span>
+      </div>
+      <div
+        class="delete"
+        on:click={clickDelete}
+        title="Delete {data.triggers ? 'Skill' : 'Class'}">
+        <span class="material-symbols-rounded">
+          delete
+        </span>
+      </div>
     </div>
   {/if}
 </div>
+
+{#if deleting}
+  <Modal on:close={() => deleting = false}>
+    <h3>Do you really want to delete {data.name}?</h3>
+    <div class="buttons modal-buttons">
+      <div class="button" on:click={() => deleting = false}>Cancel</div>
+      <div class="button modal-delete" on:click={() => deleteProData(data)}>Delete</div>
+    </div>
+  </Modal>
+{/if}
 
 <style>
     .sidebar-entry {
@@ -133,7 +172,11 @@
         border-left-width: 4px;
     }
 
-    .download {
+    .buttons {
+        display: flex;
+    }
+
+    .download, .delete {
         opacity: 0;
         display: flex;
         justify-content: center;
@@ -144,7 +187,7 @@
         opacity 0.25s ease;
     }
 
-    .sidebar-entry:hover .download {
+    .sidebar-entry:hover .download, .sidebar-entry:hover .delete {
         opacity: 1;
     }
 
@@ -152,7 +195,24 @@
         background-color: #1dad36;
     }
 
-    .download .material-symbols-rounded {
+    .delete:hover {
+        background-color: #b60000;
+    }
+
+    .download .material-symbols-rounded, .delete .material-symbols-rounded {
         font-size: 1rem;
+    }
+
+    .modal-buttons {
+        display: flex;
+        justify-content: center;
+    }
+
+    .modal-buttons .button {
+        margin-inline: 1rem;
+    }
+
+    .modal-delete {
+        background-color: #b60000;
     }
 </style>

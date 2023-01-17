@@ -17,7 +17,7 @@
   import SidebarEntry from "./SidebarEntry.svelte";
   import { squish } from "../../data/squish";
   import { goto } from "$app/navigation";
-  import { onDestroy, onMount } from "svelte";
+  import { beforeUpdate, onDestroy, onMount } from "svelte";
   import type { Unsubscriber } from "svelte/store";
   import { get } from "svelte/store";
   import { ProFolder } from "../../api/profolder";
@@ -37,35 +37,33 @@
   let width: number;
   let height: number;
   let scrollY: number;
+  const appendIncluded = (item: Array<ProFolder | ProClass | ProSkill> | ProFolder | ProClass | ProSkill, include: Array<ProClass | ProSkill>) => {
+    if (item instanceof Array) item.forEach(fold => appendIncluded(fold, include));
+    if (item instanceof ProFolder) appendIncluded(item.data, include);
+    else if (item instanceof ProClass || item instanceof ProSkill) include.push(item);
+  };
+
+  const rebuildFolders = (fold?: ProFolder[]) => {
+    if (get(isShowClasses)) {
+      folders = fold || get(classFolders);
+      classIncluded = [];
+      appendIncluded(folders, classIncluded);
+    } else {
+      folders = fold ||  get(skillFolders);
+      skillIncluded = [];
+      appendIncluded(folders, skillIncluded);
+    }
+    console.log(classIncluded, skillIncluded);
+  };
 
   onMount(() => {
     if (!browser) return;
 
-    classSub = classFolders.subscribe(fold => {
-      if (!get(isShowClasses)) return;
-      classIncluded = [];
-      const appendIncluded = (item: Array<ProFolder | ProClass | ProSkill> | ProFolder | ProClass | ProSkill) => {
-        if (item instanceof Array) item.forEach(fold => appendIncluded(fold));
-        if (item instanceof ProFolder) appendIncluded(item.data);
-        else if (item instanceof ProClass) classIncluded.push(item);
-      };
-
-      appendIncluded(fold);
-    });
-
-    skillSub = skillFolders.subscribe(fold => {
-      if (get(isShowClasses)) return;
-      folders = fold;
-      skillIncluded = [];
-      const appendIncluded = (item: Array<ProFolder | ProClass | ProSkill> | ProFolder | ProClass | ProSkill) => {
-        if (item instanceof Array) item.forEach(fold => appendIncluded(fold));
-        if (item instanceof ProFolder) appendIncluded(item.data);
-        else if (item instanceof ProSkill) skillIncluded.push(item);
-      };
-
-      appendIncluded(fold);
-    });
+    classSub = classFolders.subscribe(rebuildFolders);
+    skillSub = skillFolders.subscribe(rebuildFolders);
   });
+
+  beforeUpdate(rebuildFolders);
 
   onDestroy(() => {
     if (classSub) classSub();

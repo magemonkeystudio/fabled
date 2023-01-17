@@ -1,16 +1,15 @@
 <script lang="ts">
+  import Modal from "./Modal.svelte";
   import { loadFile, loadRaw, setImporting } from "../data/store";
-  import { fade, fly } from "svelte/transition";
   import { getHaste } from "../api/hastebin";
 
   let importUrl: string | undefined;
   let files: File[] | undefined;
 
-  const closeModal = () => {
+  const onClose = () => {
     importUrl = files = undefined;
     setImporting(false);
   };
-  const clickModal = (e: MouseEvent) => e.stopPropagation();
 
   const importFromUrl = () => {
     if (!importUrl) return;
@@ -18,8 +17,7 @@
 
     getHaste({ url: importUrl })
       .then(text => {
-        console.log(text);
-        closeModal();
+        onClose();
         loadRaw(text);
       })
       .catch(err => {
@@ -31,67 +29,28 @@
     for (const file of files) {
       if (file.name.indexOf(".yml") == -1) continue;
       loadFile(file);
-      closeModal();
+      onClose();
     }
   }
 </script>
 
-<div class="backdrop" on:click={closeModal} transition:fade>
-  <div class="modal-content" on:click={clickModal} transition:fly={{y: -200}}>
-    <div class="options">
-      <div class="option">
-        <div>Upload File</div>
-        <label for="file-upload" class="button">Select File</label>
-        <input id="file-upload" type="file" bind:files={files} class="hidden" multiple />
-      </div>
-      <div class="or"><span>OR</span></div>
-      <div class="option">
-        <div>Import from URL</div>
-        <input bind:value={importUrl} />
-        <div class="button" on:click={importFromUrl}>Import</div>
-      </div>
+<Modal on:close={onClose}>
+  <div class="options">
+    <div class="option">
+      <div>Upload File</div>
+      <label for="file-upload" class="button">Select File</label>
+      <input id="file-upload" type="file" bind:files={files} class="hidden" multiple />
+    </div>
+    <div class="or"><span>OR</span></div>
+    <div class="option">
+      <div>Import from URL</div>
+      <input bind:value={importUrl} />
+      <div class="button" on:click={importFromUrl}>Import</div>
     </div>
   </div>
-</div>
+</Modal>
 
 <style>
-    .backdrop {
-        position: fixed;
-        inset: 0;
-        z-index: 100;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        background: rgba(0, 0, 0, 0.6);
-    }
-
-    .modal-content {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        background-color: var(--color-bg);
-        padding: 1rem;
-        border: 2px solid #444;
-        border-radius: 0.7rem;
-        box-shadow: 0 0 1rem #222;
-    }
-
-    .button {
-        display: block;
-        color: white;
-        font-size: 1rem;
-        border: none;
-        font-family: inherit;
-        padding: 0.5rem;
-        margin: 0.5rem 0;
-        border-radius: 0.4rem;
-        background-color: #0083ef;
-        font-weight: bold;
-    }
-
     input {
         display: block;
         background-color: var(--color-select-bg);

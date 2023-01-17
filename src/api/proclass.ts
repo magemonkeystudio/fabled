@@ -2,7 +2,9 @@ import type { Icon, ProClassData, Serializable } from "./types";
 import type { ProSkill } from "./proskill";
 import { YAMLObject } from "./yaml";
 import { ProAttribute } from "./proattribute";
-import { getClass, getSkill } from "../data/store";
+import { attributes, getClass, getSkill } from "../data/store";
+import { toEditorCase, toProperCase } from "./api";
+import { get } from "svelte/store";
 
 export class ProClass implements Serializable {
   isClass = true;
@@ -48,6 +50,24 @@ export class ProClass implements Serializable {
     if (data?.actionBar) this.actionBar = data.actionBar;
   }
 
+  public updateAttributes = (attribs?: string[]) => {
+    if (!attribs) attribs = get(attributes) || [];
+    const included: string[] = [];
+    this.attributes = this.attributes.filter(a => {
+      if (attribs?.includes(a.name)) {
+        included.push(a.name);
+        return true;
+      }
+      return false;
+    });
+
+    attribs = attribs.filter(a => !included.includes(a));
+
+    for (const attrib of attribs) {
+      this.attributes.push(new ProAttribute(attrib, 0, 0));
+    }
+  };
+
   public serializeYaml = (): YAMLObject => {
     const yaml = new YAMLObject(this.name);
     const data = new YAMLObject();
@@ -61,7 +81,7 @@ export class ProClass implements Serializable {
     data.put("permission", this.permission);
     data.put("attributes", [this.health, this.mana, ...this.attributes]);
     data.put("mana-regen", this.manaRegen);
-    data.put("tree", this.skillTree);
+    data.put("tree", this.skillTree.toUpperCase().replace(/ /g, "_"));
     data.put("blacklist", this.unusableItems);
     data.put("skills", this.skills.map(s => s.name));
     data.put("icon", this.icon.material);
@@ -74,6 +94,7 @@ export class ProClass implements Serializable {
   };
 
   public load = (yaml: YAMLObject) => {
+    console.log(yaml);
     this.name = yaml.get("name", this.name);
     this.actionBar = yaml.get("action-bar", this.actionBar);
     this.prefix = yaml.get("prefix", this.prefix);
@@ -100,7 +121,7 @@ export class ProClass implements Serializable {
         const map: { [key: string]: ProAttribute } = {};
         Object.keys(obj.data).forEach(key => {
           const split = key.split("-");
-          const name = ProClass.toProperCase(split[0]);
+          const name = toProperCase(split[0]);
           if (!map[name]) map[name] = new ProAttribute(name, 0, 0);
 
           const attr = map[name];
@@ -114,25 +135,14 @@ export class ProClass implements Serializable {
         return attributes;
       });
     this.manaRegen = yaml.get("mana-regen", this.manaRegen);
-    this.skillTree = yaml.get("tree", this.skillTree, ProClass.toProperCase);
+    this.skillTree = yaml.get("tree", this.skillTree, toProperCase);
     this.unusableItems = yaml.get("blacklist", this.unusableItems);
     this.skills = yaml.get<string[], ProSkill[]>("skills", this.skills,
       (list: string[]) => list.map(s => getSkill(s)).filter(s => !!s));
-    this.icon.material = yaml.get<string, string>("icon", this.icon.material,
-      (str: string) => ProClass.toEditorCase(str));
+    this.icon.material = yaml.get<string, string>("icon", this.icon.material, toEditorCase);
     this.icon.customModelData = yaml.get("icon-data", this.icon.customModelData);
     this.icon.lore = yaml.get("icon-lore", this.icon.lore);
     this.expSources = yaml.get("exp-source", this.expSources);
     console.log(this);
-  };
-
-  static toProperCase = (s: string) => {
-    return s.replace("_", " ").toLowerCase()
-      .replace(/^(.)|\s(.)/g, $1 => $1.toUpperCase());
-  };
-
-  static toEditorCase = (s: string) => {
-    s = s.replace("_", " ");
-    return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
   };
 }

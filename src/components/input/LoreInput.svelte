@@ -2,6 +2,8 @@
   export let value: string[] = [];
   export let wrap = false;
 
+  $: if (!value) value = [];
+
   const press = (e: KeyboardEvent) => value = (<HTMLTextAreaElement>e.target).value.split(/\r?\n/g);
 </script>
 

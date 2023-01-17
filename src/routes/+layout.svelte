@@ -1,7 +1,6 @@
 <script lang="ts">
   import "../app.css";
-  import { active, importing, loadFile, showSidebar } from "../data/store";
-  import { get } from "svelte/store";
+  import { active, importing, loadFile, saveData, showSidebar } from "../data/store";
   import { onDestroy, onMount } from "svelte";
   import { browser } from "$app/environment";
   import ImportModal from "../components/ImportModal.svelte";
@@ -9,6 +8,7 @@
   import NavBar from "../components/NavBar.svelte";
   import HeaderBar from "../components/HeaderBar.svelte";
 
+  let dragging = false;
 
   onMount(() => {
     if (!browser) return;
@@ -26,36 +26,23 @@
     alert("This feature isn't implemented yet");
   };
 
-  const save = () => {
-    const act = get(active);
-    if (!act) return;
-
-    saveToFile(act.name + ".yml", act.serializeYaml().toString());
-  };
-
-  /**
-   * Saves text data to a file locally
-   */
-  const saveToFile = (file, data) => {
-    const textFileAsBlob = new Blob([data], { type: "text/plain;charset=utf-8" });
-
-    let element = document.createElement("a");
-    element.href = URL.createObjectURL(textFileAsBlob);
-    element.download = file;
-    element.style.display = "none";
-
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-  };
-
   const dragover = (e: DragEvent) => {
+    if (!(e.dataTransfer?.types?.length > 0 && e.dataTransfer?.types[0] == "Files")) return;
     e.dataTransfer.dropEffect = "copy";
     e.stopPropagation();
     e.preventDefault();
+    dragging = true;
+  };
+
+  const dragleave = (e: MouseEvent) => {
+    setTimeout(() => {
+      dragging = false;
+      console.log("left", e.target);
+    }, 50);
   };
 
   const loadFiles = (e: DragEvent) => {
+    dragging = false;
     for (let i = 0; i < e.dataTransfer.files.length; i++) {
       const file = e.dataTransfer.files[i];
       if (file.name.indexOf(".yml") == -1) continue;
@@ -81,7 +68,7 @@
   <div class="button backup" title="Backup All Data" on:click={backup}>
     <span class="material-symbols-rounded">cloud_download</span>
   </div>
-  <div class="button save" title="Save" on:click={save}>
+  <div class="button save" title="Save" on:click={() => saveData()}>
     <span class="material-symbols-rounded">save</span>
   </div>
 </div>
@@ -90,7 +77,25 @@
   <ImportModal />
 {/if}
 
+{#if dragging}
+  <div class="dragging" on:dragleave={dragleave}>
+    Drop to Import
+  </div>
+{/if}
+
 <style>
+    .dragging {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 50;
+        font-size: 2rem;
+    }
+
     @media screen and (min-width: 500px) {
         #body-container {
             /*max-height: 100%;*/
