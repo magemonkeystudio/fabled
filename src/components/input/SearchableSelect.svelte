@@ -9,7 +9,7 @@
   export let placeholder = "";
   export let multiple = false;
   export let selected: any[] | any = undefined;
-  export let filtered: any[] = [];
+  export let filtered: never[] = [];
 
   let focused = false;
   let input: HTMLElement;
@@ -86,7 +86,7 @@
            transition:fly={{y: -25}}
            on:click={(e) => remove(e, selected)}>{display(selected)}</div>
     {/if}
-    {#if !focused && !criteria && (!selected || selected.length == 0)}
+    {#if !focused && !criteria && (!selected || selected.length === 0)}
       <span class="placeholder" in:fly={{y: 25, delay: 250}}>{placeholder}</span>
     {/if}
     <div class="input-box"

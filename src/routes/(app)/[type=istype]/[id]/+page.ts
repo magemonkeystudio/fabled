@@ -1,13 +1,14 @@
 import type { ProClass } from "../../../../api/proclass";
 import type { ProSkill } from "../../../../api/proskill";
-import { classes, setActive, skills } from "../../../../data/store";
+import { active, skills } from "../../../../data/store";
 import { get } from "svelte/store";
 import { redirect } from "@sveltejs/kit";
+import { classes } from "../../../../data/class-store";
 
+// noinspection JSUnusedGlobalSymbols
 /** @type {import("./$types").PageLoad} */
 export async function load({ params }: any) {
   const name = params.id;
-  console.log(params);
   let data: ProClass | ProSkill | undefined;
   let fallback: ProClass | ProSkill | undefined;
   if (params.type == "class") {
@@ -29,9 +30,9 @@ export async function load({ params }: any) {
       }
     }
   }
-  //
+
   if (data) {
-    setActive(data, params.type);
+    active.set(data);
     return { data };
   } else {
     if (fallback) {

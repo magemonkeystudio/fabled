@@ -53,8 +53,8 @@
     {#if $activeType}
       <div class="chip share"
            on:click={haste}
-           title="Share {$activeType == 'class' ? 'Class' : 'Skill'}">
-        Share {$activeType == 'class' ? 'Class' : 'Skill'}
+           title="Share {$activeType === 'class' ? 'Class' : 'Skill'}">
+        Share {$activeType === 'class' ? 'Class' : 'Skill'}
       </div>
     {/if}
   </div>

@@ -1,7 +1,6 @@
 <script lang="ts">
   import {
     active,
-    addClassFolder,
     addSkillFolder,
     deleteProData,
     dragging,
@@ -17,6 +16,7 @@
   import { ProFolder } from "../../api/profolder";
   import { fly, slide } from "svelte/transition";
   import Modal from "../Modal.svelte";
+  import { addClassFolder } from "../../data/class-store";
 
   export let delay = 0;
   export let direction: "right" | "left" = "left";
@@ -79,7 +79,7 @@
 
 <div class="sidebar-entry"
      class:over
-     class:active={data && $active == data}
+     class:active={data && $active === data}
      class:in-folder={!!getFolder(data)}
      draggable="{!!data}"
      on:dragstart={startDrag}
@@ -87,7 +87,7 @@
      on:dragover={dragOver}
      on:dragleave={() => over = false}
      on:click
-     in:fly={{x: (direction == "left" ? -100 : 100), duration: 500, delay: $sidebarOpen ? 0 : delay}}
+     in:fly={{x: (direction === "left" ? -100 : 100), duration: 500, delay: $sidebarOpen ? 0 : delay}}
      out:slide>
   <slot />
   {#if data}
@@ -132,7 +132,7 @@
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
-        border-left: 0px solid var(--color-accent);
+        border-left: 0 solid var(--color-accent);
         transition: background-color 0.25s ease-in-out,
         border-left-width 0.25s ease-in-out;
         user-select: none;

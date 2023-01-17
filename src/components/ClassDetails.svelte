@@ -4,7 +4,7 @@
   import IconInput from "./input/IconInput.svelte";
   import MaterialSelect from "./input/MaterialSelect.svelte";
   import SearchableSelect from "./input/SearchableSelect.svelte";
-  import { attributes, classes, saveDataInternal, skills, updateSidebar } from "../data/store";
+  import { saveDataInternal, skills, updateSidebar } from "../data/store";
   import AttributeInput from "./input/AttributeInput.svelte";
   import { numberOnly } from "../api/number-only";
   import ByteSelect from "./input/ByteSelect.svelte";
@@ -13,6 +13,8 @@
   import { onDestroy, onMount } from "svelte";
   import { ProAttribute } from "../api/proattribute";
   import ProInput from "./input/ProInput.svelte";
+  import { classes } from "../data/class-store";
+  import { attributes } from "../data/attribute-store";
 
   export let data: ProClass;
 

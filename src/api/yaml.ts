@@ -105,6 +105,10 @@ export class YAMLObject {
       if (index == lines.length) return index;
 
       let key = lines[index].substring(indent, lines[index].indexOf(":"));
+      if (key === "loaded") {
+        index++;
+        continue;
+      }
       if (key.match(/^["'].*["']$/)) key = key.substring(1, key.length - 1);
       if (!this.key && !exKey) this.key = key;
 

@@ -1,4 +1,10 @@
-<script lang="ts"></script>
+<!--suppress CssUnusedSymbol -->
+<script lang="ts">
+  import { onMount } from "svelte";
+  import { active } from "../data/store";
+
+  onMount(() => active.set(undefined));
+</script>
 
 <svelte:head>
   <title>ProSkillAPI Dynamic Editor</title>
@@ -16,11 +22,5 @@
 
     :global(#svelte-body) {
         min-height: 100vh;
-    }
-
-    :global(#body-container) {
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
 </style>

@@ -1,3 +1,4 @@
+/*noinspection CssUnknownTarget*/
 @font-face {
     font-family: 'Mojave-Web';
     src: url('/mojave-webfont.eot');
@@ -7,6 +8,7 @@
     font-style: normal;
 }
 
+/*noinspection CssUnknownTarget*/
 @font-face {
     font-family: 'Sertig-Web';
     src: url('/sertig-webfont.eot');

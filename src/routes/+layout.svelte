@@ -59,7 +59,7 @@
 {#if $showSidebar}
   <Sidebar />
 {/if}
-<div id="body-container">
+<div id="body-container" class:empty={!$active}>
   <div id="body" class:centered={!$active}>
     <slot />
   </div>
@@ -113,6 +113,7 @@
         align-items: center;
         min-height: 100%;
         padding-bottom: 1rem;
+        flex: 1;
     }
 
     #body.centered {
@@ -145,5 +146,11 @@
 
     #floating-buttons .save {
         background-color: #1dad36;
+    }
+
+    #body-container.empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 </style>

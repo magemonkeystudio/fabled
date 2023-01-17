@@ -1,14 +1,27 @@
-import type { Writable } from "svelte/store";
-import { get, writable } from "svelte/store";
+import type { Readable, Writable } from "svelte/store";
+import { derived, get, writable } from "svelte/store";
 import { ProClass } from "../api/proclass";
 import { ProSkill } from "../api/proskill";
 import { ProFolder } from "../api/profolder";
-import { ProAttribute } from "../api/proattribute";
-import { parseYAML, YAMLObject } from "../api/yaml";
+import { YAMLObject } from "../api/yaml";
 import { browser } from "$app/environment";
+import {
+  classFolders,
+  deleteClass,
+  deleteClassFolder,
+  loadClasses,
+  loadClassText,
+  refreshClasses,
+  refreshClassFolders
+} from "./class-store";
+import { sort } from "../api/api";
+import { loadAttributes } from "./attribute-store";
 
-export const active: Writable<ProClass | ProSkill> = writable();
-export const activeType: Writable<"class" | "skill"> = writable();
+export const active: Writable<ProClass | ProSkill | undefined> = writable(undefined);
+export const activeType: Readable<"class" | "skill"> = derived(
+  active,
+  $active => $active instanceof ProClass ? "class" : "skill"
+);
 export const dragging: Writable<ProClass | ProSkill | ProFolder> = writable();
 export const showSidebar: Writable<boolean> = writable(true);
 export const sidebarOpen: Writable<boolean> = writable(true);
@@ -88,113 +101,11 @@ export const skills: Writable<ProSkill[]> = writable([
     triggers: []
   })
 ]);
-export const classes: Writable<ProClass[]> = writable([
-  new ProClass({
-    name: "Honor Guard",
-    group: "class",
-    manaName: "&2Mana",
-    maxLevel: 40,
-    permission: false,
-    health: new ProAttribute("health", 20, 1),
-    mana: new ProAttribute("mana", 20, 1),
-    manaRegen: 1,
-    attributes: [
-      new ProAttribute("vitality", 2, 1)
-    ],
-    skillTree: "Requirement",
-    skills: [],
-    icon: {
-      material: "Pumpkin",
-      customModelData: 0,
-      lore: ["This is a class", "Lore line two"]
-    },
-    unusableItems: []
-  }),
-  new ProClass({
-    name: "Assassin",
-    group: "class",
-    manaName: "&2Mana",
-    maxLevel: 40,
-    permission: false,
-    health: new ProAttribute("health", 20, 1),
-    mana: new ProAttribute("mana", 20, 1),
-    manaRegen: 1,
-    attributes: [
-      new ProAttribute("vitality", 2, 1),
-      new ProAttribute("bravery", 2, 1)
-    ],
-    skillTree: "Requirement",
-    skills: [get(skills)[0], get(skills)[1]],
-    icon: {
-      material: "Pumpkin",
-      customModelData: 0,
-      lore: ["This is\" a class"]
-    },
-    unusableItems: []
-  }),
-  new ProClass({
-    name: "Archer",
-    group: "class",
-    manaName: "&2Mana",
-    maxLevel: 40,
-    permission: false,
-    health: new ProAttribute("health", 20, 1),
-    mana: new ProAttribute("mana", 20, 1),
-    manaRegen: 1,
-    attributes: [
-      new ProAttribute("vitality", 2, 1)
-    ],
-    skillTree: "Requirement",
-    skills: [],
-    icon: {
-      material: "Pumpkin",
-      customModelData: 0,
-      lore: ["This is a class"]
-    },
-    unusableItems: []
-  })
-]);
-export const classFolders: Writable<ProFolder[]> = writable([
-  new ProFolder([new ProFolder([get(classes)[0]])])
-]);
-export const skillFolders: Writable<ProFolder[]> = writable([
-  new ProFolder([new ProFolder([get(skills)[0]])])
-]);
-
-export const attributes: Writable<string[]> = (() => {
-  let saved = ["vitality", "spirit", "intelligence", "dexterity", "strength"];
-  if (browser) {
-    const stored = localStorage.getItem("attribs");
-    if (stored) {
-      saved = stored.split(",");
-      get(classes).forEach(c => c.updateAttributes(saved));
-    }
-  }
-
-  const {
-    subscribe,
-    set,
-    update
-  } = writable<string[]>(saved);
-  return {
-    subscribe,
-    set: (value: string[]) => {
-      if (browser) localStorage.setItem("attribs", value.join(","));
-      get(classes).forEach(c => c.updateAttributes(value));
-      return set(value);
-    },
-    update
-  };
-})();
-
-export const setActive = (act: ProClass | ProSkill, type: "class" | "skill") => {
-  active.set(act);
-  activeType.set(type);
-};
+export const skillFolders: Writable<ProFolder[]> = writable([]);
 
 export const updateSidebar = () => {
   if (!get(showSidebar)) return;
-  if (get(activeType) == "class") classes.set(get(classes));
+  if (get(activeType) == "class") refreshClasses();
   else skills.set(get(skills));
   updateFolders();
 };
@@ -203,23 +114,6 @@ export const closeSidebar = () => showSidebar.set(false);
 export const showClasses = () => isShowClasses.set(true);
 export const showSkills = () => isShowClasses.set(false);
 export const setImporting = (bool: boolean) => importing.set(bool);
-
-export const getClass = (name: string): ProClass | undefined => {
-  for (const c of get(classes)) {
-    if (c.name == name) return c;
-  }
-
-  return undefined;
-};
-export const isClassNameTaken = (name: string): boolean => !!getClass(name);
-export const addClass = (name?: string): ProClass => {
-  const cl = get(classes);
-  const clazz = new ProClass({ name: (name || "Class " + (cl.length + 1)) });
-  cl.push(clazz);
-
-  classes.set(cl);
-  return clazz;
-};
 
 export const getSkill = (name: string): ProSkill | undefined => {
   for (const sk of get(skills)) {
@@ -236,17 +130,6 @@ export const addSkill = (name?: string): ProSkill => {
 
   skills.set(sk);
   return skill;
-};
-
-export const addClassFolder = (folder: ProFolder) => {
-  const folders = get(classFolders);
-  if (folders.includes(folder)) return;
-
-  rename(folder, folders);
-
-  folders.push(folder);
-  folders.sort((a, b) => a.name.localeCompare(b.name));
-  classFolders.set(folders);
 };
 
 export const addSkillFolder = (folder: ProFolder) => {
@@ -272,10 +155,8 @@ export const deleteFolder = (folder: ProFolder) => {
   if (folder.parent) {
     folder.parent.deleteFolder(folder);
     updateFolders();
-  } else if (get(isShowClasses)) {
-    const folders = get(classFolders).filter(f => f != folder);
-    classFolders.set(folders);
-  } else {
+  } else if (get(isShowClasses)) deleteClassFolder(folder);
+  else {
     const folders = get(skillFolders).filter(f => f != folder);
     skillFolders.set(folders);
   }
@@ -285,17 +166,15 @@ export const deleteProData = (data: ProClass | ProSkill | undefined) => {
   if (!data) return;
 
   getFolder(data)?.remove(data);
-  classes.set(get(classes).filter(c => c != data));
+  if (data instanceof ProClass) deleteClass(data);
   skills.set(get(skills).filter(c => c != data));
   updateFolders();
 };
 
 export const updateFolders = () => {
   if (!get(showSidebar)) return;
-  if (get(isShowClasses)) {
-    classFolders.set(sort<ProFolder>(get(classFolders)));
-    classes.set(sort<ProClass>(get(classes)));
-  } else {
+  if (get(isShowClasses)) refreshClassFolders();
+  else {
     skillFolders.set(sort<ProFolder>(get(skillFolders)));
     skills.set(sort<ProSkill>(get(skills)));
   }
@@ -303,24 +182,13 @@ export const updateFolders = () => {
 
 export const saveDataInternal = () => {
   if (!browser) return;
-  const classList = get(classes);
   const skillList = get(skills);
-  const classYaml = new YAMLObject();
   const skillYaml = new YAMLObject();
-  classYaml.put("loaded", false);
   skillYaml.put("loaded", false);
 
-  classList.forEach(c => classYaml.put(c.name, c.serializeYaml()));
-
-  if (classList.length > 0)
-    localStorage.setItem("classData", classYaml.toString());
   if (skillList.length > 0)
     localStorage.setItem("skillData", skillYaml.toString());
-  console.log(skillYaml.toString());
-};
-
-const sort = <T extends ProFolder | ProClass | ProSkill>(data: T[]): T[] => {
-  return data.sort((a, b) => a.name.localeCompare(b.name));
+  // console.log(skillYaml.toString());
 };
 
 export const removeFolder = (folder: ProFolder) => {
@@ -345,16 +213,6 @@ export const getFolder = (data: ProFolder | ProClass | ProSkill): (ProFolder | u
 };
 
 /**
- * Loads attribute data from a file
- * e - event details
- */
-export const loadAttributes = (text: string) => {
-  const yaml = parseYAML(text);
-  const attr = Object.keys(yaml.data);
-  attributes.set(attr);
-};
-
-/**
  * Loads skill data from a string
  */
 export const loadSkillText = (text: string) => {
@@ -373,44 +231,6 @@ export const loadSkillText = (text: string) => {
   //     }
   //   }
   // }
-};
-
-/**
- *  Loads class data from a string
- */
-export const loadClassText = (text: string) => {
-  // Load new classes
-  const data: YAMLObject = parseYAML(text);
-  let clazz: ProClass;
-  // If we only have one class, and it is the current YAML,
-  // the structure is a bit different
-  if (data.key && !data.data[data.key]) {
-    const key: string = data.key;
-    console.log(key, isClassNameTaken(key), getClass(key));
-    clazz = (<ProClass>(isClassNameTaken(key)
-      ? getClass(key)
-      : addClass(key)));
-    clazz.load(data);
-    return;
-  }
-
-  for (const key in data.data) {
-    if (key != "loaded" && data.data[key] instanceof YAMLObject && !isClassNameTaken(key)) {
-      clazz = (<ProClass>(isClassNameTaken(key)
-        ? getClass(key)
-        : addClass(key)));
-      clazz.load(data.data[key]);
-
-      console.log(clazz);
-    }
-  }
-};
-
-export const loadClasses = (e: ProgressEvent<FileReader>) => {
-  const text: string = <string>e.target?.result;
-  if (!text) return;
-
-  loadClassText(text);
 };
 
 
@@ -462,7 +282,7 @@ export const loadFile = (file: File) => {
   reader.readAsText(file);
 };
 
-export const saveData = (data?: ProClass | ProSkill) => {
+export const saveData = (data?: ProSkill | ProClass) => {
   const act = data || get(active);
   if (!act) return;
 

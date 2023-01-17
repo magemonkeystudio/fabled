@@ -2,9 +2,8 @@ import type { Icon, ProClassData, Serializable } from "./types";
 import type { ProSkill } from "./proskill";
 import { YAMLObject } from "./yaml";
 import { ProAttribute } from "./proattribute";
-import { attributes, getClass, getSkill } from "../data/store";
+import { getSkill } from "../data/store";
 import { toEditorCase, toProperCase } from "./api";
-import { get } from "svelte/store";
 
 export class ProClass implements Serializable {
   isClass = true;
@@ -14,6 +13,7 @@ export class ProClass implements Serializable {
   group = "class";
   manaName = "&2Mana";
   maxLevel = 40;
+  parentStr = "";
   parent?: ProClass;
   permission = false;
   expSources = 273;
@@ -51,8 +51,7 @@ export class ProClass implements Serializable {
     if (data?.actionBar) this.actionBar = data.actionBar;
   }
 
-  public updateAttributes = (attribs?: string[]) => {
-    if (!attribs) attribs = get(attributes) || [];
+  public updateAttributes = (attribs: string[]) => {
     const included: string[] = [];
     this.attributes = this.attributes.filter(a => {
       if (attribs?.includes(a.name)) {
@@ -94,15 +93,20 @@ export class ProClass implements Serializable {
     return yaml;
   };
 
+  public updateParent = (classes: ProClass[]) => {
+    if (!this.parentStr) return;
+    this.parent = classes.find(c => c.name === this.parentStr);
+  };
+
   public load = (yaml: YAMLObject) => {
-    console.log(yaml);
     this.name = yaml.get("name", this.name);
     this.actionBar = yaml.get("action-bar", this.actionBar);
     this.prefix = yaml.get("prefix", this.prefix);
     this.group = yaml.get("group", this.group);
     this.mana = yaml.get("mana", this.mana);
     this.maxLevel = yaml.get("max-level", this.maxLevel);
-    this.parent = yaml.get<string, ProClass>("parent", this.parent, getClass);
+    this.parentStr = yaml.get("parent", this.parentStr);
+    // this.parent = yaml.get<string, ProClass>("parent", this.parent, getClass);
     this.permission = yaml.get("permission", this.permission);
     this.attributes = yaml.get<YAMLObject, ProAttribute[]>("attributes", this.attributes,
       (obj: YAMLObject) => {
@@ -132,7 +136,6 @@ export class ProClass implements Serializable {
 
         attributes.push(...Object.values(map));
 
-        console.log("att", attributes);
         return attributes;
       });
     this.manaRegen = yaml.get("mana-regen", this.manaRegen);
@@ -144,6 +147,5 @@ export class ProClass implements Serializable {
     this.icon.customModelData = yaml.get("icon-data", this.icon.customModelData);
     this.icon.lore = yaml.get("icon-lore", this.icon.lore);
     this.expSources = yaml.get("exp-source", this.expSources);
-    console.log(this);
   };
 }

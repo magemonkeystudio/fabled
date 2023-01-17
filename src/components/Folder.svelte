@@ -143,7 +143,7 @@
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
-        border-left: 0px solid var(--color-accent);
+        border-left: 0 solid var(--color-accent);
         transition: background-color 0.25s ease-in-out,
         border-left-width 0.25s ease-in-out;
         user-select: none;

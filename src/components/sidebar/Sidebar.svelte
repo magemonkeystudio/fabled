@@ -1,11 +1,9 @@
+<!--suppress CssUnresolvedCustomProperty -->
 <script lang="ts">
+  import { addClass, addClassFolder, classes, classFolders } from "../../data/class-store";
   import {
-    addClass,
-    addClassFolder,
     addSkill,
     addSkillFolder,
-    classes,
-    classFolders,
     closeSidebar,
     isShowClasses,
     showClasses,
@@ -49,7 +47,7 @@
       classIncluded = [];
       appendIncluded(folders, classIncluded);
     } else {
-      folders = fold ||  get(skillFolders);
+      folders = fold || get(skillFolders);
       skillIncluded = [];
       appendIncluded(folders, skillIncluded);
     }
