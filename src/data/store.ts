@@ -14,7 +14,7 @@ import {
   refreshClasses,
   refreshClassFolders
 } from "./class-store";
-import { sort } from "../api/api";
+import { localStore, sort } from "../api/api";
 import { loadAttributes } from "./attribute-store";
 
 export const active: Writable<ProClass | ProSkill | undefined> = writable(undefined);
@@ -23,7 +23,7 @@ export const activeType: Readable<"class" | "skill"> = derived(
   $active => $active instanceof ProClass ? "class" : "skill"
 );
 export const dragging: Writable<ProClass | ProSkill | ProFolder> = writable();
-export const showSidebar: Writable<boolean> = writable(true);
+export const showSidebar: Writable<boolean> = localStore("sidebarOpen", true);
 export const sidebarOpen: Writable<boolean> = writable(true);
 export const isShowClasses: Writable<boolean> = writable(true);
 export const importing: Writable<boolean> = writable(false);

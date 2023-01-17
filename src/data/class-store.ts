@@ -1,11 +1,12 @@
 import type { Writable } from "svelte/store";
 import { get, writable } from "svelte/store";
-import type { ProFolder } from "../api/profolder";
+import { ProFolder } from "../api/profolder";
 import { rename } from "./store";
 import { sort } from "../api/api";
 import { parseYAML, YAMLObject } from "../api/yaml";
 import { browser } from "$app/environment";
 import { ProClass } from "../api/proclass";
+import { ProSkill } from "../api/proskill";
 
 const loadClassTextToArray = (text: string): ProClass[] => {
   const list: ProClass[] = [];
@@ -33,13 +34,17 @@ const loadClassTextToArray = (text: string): ProClass[] => {
   return list;
 };
 
-const setupClassStore = (): Writable<ProClass[]> => {
-  let saved: ProClass[] = [];
+const setupClassStore = <T>(key: string,
+                            def: T,
+                            mapper: (data: string) => T,
+                            setAction: (data: T) => T,
+                            postLoad?: (saved: T) => void): Writable<T> => {
+  let saved: T = def;
   if (browser) {
-    const stored = localStorage.getItem("classData");
+    const stored = localStorage.getItem(key);
     if (stored) {
-      saved = sort<ProClass>(loadClassTextToArray(stored));
-      saved.forEach(c => c.updateParent(saved));
+      saved = mapper(stored);
+      if (postLoad) postLoad(saved);
     }
   }
 
@@ -47,23 +52,25 @@ const setupClassStore = (): Writable<ProClass[]> => {
     subscribe,
     set,
     update
-  } = writable<ProClass[]>(saved);
+  } = writable<T>(saved);
   return {
     subscribe,
-    set: (value: ProClass[]) => {
-      persistClasses(value);
-      value.forEach(c => c.updateParent(value));
-      return set(sort<ProClass>(value));
+    set: (value: T) => {
+      if (setAction) value = setAction(value);
+      return set(value);
     },
     update
   };
 };
 
-export const classes: Writable<ProClass[]> = setupClassStore();
-export const classFolders: Writable<ProFolder[]> = writable([]);
-
-export const updateAllAttributes = (attributes: string[]) =>
-  get(classes).forEach(c => c.updateAttributes(attributes));
+export const classes: Writable<ProClass[]> = setupClassStore<ProClass[]>("classData", [],
+  (data: string) => sort<ProClass>(loadClassTextToArray(data)),
+  (value: ProClass[]) => {
+    persistClasses(value);
+    value.forEach(c => c.updateParent(value));
+    return sort<ProClass>(value);
+  },
+  (saved: ProClass[]) => saved.forEach(c => c.updateParent(saved)));
 
 export const getClass = (name: string): ProClass | undefined => {
   for (const c of get(classes)) {
@@ -72,6 +79,36 @@ export const getClass = (name: string): ProClass | undefined => {
 
   return undefined;
 };
+
+export const classFolders: Writable<ProFolder[]> = setupClassStore<ProFolder[]>("classFolders", [],
+  (data: string) => {
+    const parsedData = JSON.parse(data, (key: string, value) => {
+      if (/\d+/.test(key)) {
+        if(typeof(value) === 'string') {
+          return getClass(value);
+        }
+
+        const folder = new ProFolder(value.data)
+        folder.name = value.name;
+        return folder;
+      }
+      return value;
+    });
+
+    return parsedData;
+  },
+  (value: ProFolder[]) => {
+    const data = JSON.stringify(value, (key, value: ProFolder | ProClass | ProSkill) => {
+      if (value instanceof ProClass || value instanceof ProSkill) return value.name;
+      else if (key === "parent") return undefined;
+      return value;
+    });
+    localStorage.setItem("classFolders", data);
+    return sort<ProFolder>(value);
+  });
+
+export const updateAllAttributes = (attributes: string[]) =>
+  get(classes).forEach(c => c.updateAttributes(attributes));
 
 export const isClassNameTaken = (name: string): boolean => !!getClass(name);
 

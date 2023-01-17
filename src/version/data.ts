@@ -6,6 +6,7 @@ import { DATA_1_18 } from "./1.18";
 import { DATA_1_17 } from "./1.17";
 import { DATA_1_16 } from "./1.16";
 import { browser } from "$app/environment";
+import { localStore } from "../api/api";
 
 export const expSources = ["Mob", "Block Break", "Block Place", "Craft", "Command", "Special", "Exp Bottle", "Smelt", "Quest"];
 
@@ -23,27 +24,6 @@ export let DATA: VersionData = VERSIONS[<Versions>versionKeys[0]];
 
 export const serverOptions: string[] = [];
 versionKeys.forEach((v: string) => serverOptions.push("1." + v));
-const localStore = <T>(key: string, def: T) => {
-  let saved: T = def;
-  if (browser) {
-    if (localStorage.getItem(key) === null) {
-      localStorage.setItem(key, JSON.stringify(def));
-    }
-
-    saved = JSON.parse(<string>localStorage.getItem(key));
-  }
-
-  const { subscribe, set, update } = writable(saved);
-
-  return {
-    subscribe,
-    set: (value: T) => {
-      if (browser) localStorage.setItem(key, JSON.stringify(value));
-      return set(value);
-    },
-    update
-  };
-};
 export const version: Writable<Versions> = localStore<Versions>("server-version", <Versions>versionKeys[0]);
 version.subscribe((ver: Versions) => DATA = VERSIONS[ver]);
 
