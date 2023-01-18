@@ -15,6 +15,7 @@
   import ProInput from "./input/ProInput.svelte";
   import { classes } from "../data/class-store";
   import { attributes } from "../data/attribute-store";
+  import Toggle from "./input/Toggle.svelte";
 
   export let data: ProClass;
 
@@ -51,45 +52,33 @@
 
 {#if data}
   <ProInput label="Name"
-            tooltip="The name of the class. This should not contain color codes">
-    <input id="name" bind:value={data.name} />
-  </ProInput>
+            tooltip="The name of the class. This should not contain color codes"
+            bind:value={data.name} />
   <ProInput label="Prefix"
-            tooltip="The prefix given to players who profess as the class which can contain color codes">
-    <input id="prefix" bind:value={data.prefix} />
-  </ProInput>
+            tooltip="The prefix given to players who profess as the class which can contain color codes"
+            bind:value={data.prefix} />
   <ProInput label="Action Bar"
-            tooltip="The format for the action bar. Leave blank to use the default formatting">
-    <input bind:value={data.actionBar} />
-  </ProInput>
+            tooltip="The format for the action bar. Leave blank to use the default formatting"
+            bind:value={data.actionBar} />
   <ProInput label="Group"
-            tooltip={`A class group are things such as "race", "class", and "trade". Different groups can be professed through at the same time, one class from each group`}>
-    <input id="group" bind:value={data.group} />
-  </ProInput>
+            tooltip={`A class group are things such as "race", "class", and "trade". Different groups can be professed through at the same time, one class from each group`}
+            bind:value={data.group} />
   <ProInput label="Mana Name"
-            tooltip="The name the class uses for mana">
-    <input id="manaName" bind:value={data.manaName} />
-  </ProInput>
-  <ProInput label="Max Level"
-            tooltip="The maximum level the class can reach. If this class turns into other classes, this will also be the level it can profess into those classes">
-    <input id="maxLevel"
-           use:numberOnly={true}
-           bind:value={data.maxLevel} />
-  </ProInput>
+            tooltip="The name the class uses for mana"
+            bind:value={data.manaName} />
+  <ProInput label="Max Level" type="number" intMode={true}
+            tooltip="The maximum level the class can reach. If this class turns into other classes, this will also be the level it can profess into those classes"
+            bind:value={data.maxLevel} />
   <ProInput label="Parent"
             tooltip="The class that turns into this one. For example, if Fighter turns into Knight, then Knight would have its parent as Fighter">
     <SearchableSelect id="parent"
-                      data={$classes}
+                      data={$classes.filter(c => c !== data)}
                       bind:selected={data.parent}
                       display={(c) => c.name} />
   </ProInput>
   <ProInput label="Permission"
             tooltip={`Whether the class requires a permission to be professed as. The permission would be "skillapi.class.${data.name.toLowerCase()}"`}>
-    <input type="checkbox" class="hidden" id="permission" bind:checked={data.permission} />
-    <div class="toggle" class:selected={data.permission}>
-      <div on:click={() => data.permission = true}>True</div>
-      <div on:click={() => data.permission = false}>False</div>
-    </div>
+    <Toggle bind:data={data.permission} />
   </ProInput>
   <ProInput label="Exp Sources"
             tooltip={`The experience sources the class goes up from. Most of these only work if "use-exp-orbs" is enabled in the config.yml.`}>
@@ -114,12 +103,9 @@
     </ProInput>
   {/each}
 
-  <ProInput label="Mana Regen"
-            tooltip="The amount of mana the class regenerates at each interval. The interval is in the config.yml and by default is once every second. If you want to regen a decimal amount per second, increase the interval">
-    <input id="mana-regen"
-           use:numberOnly
-           bind:value={data.manaRegen} />
-  </ProInput>
+  <ProInput label="Mana Regen" type="number"
+            tooltip="The amount of mana the class regenerates at each interval. The interval is in the config.yml and by default is once every second. If you want to regen a decimal amount per second, increase the interval"
+            bind:value={data.manaRegen} />
   <ProInput label="Skill Tree"
             tooltip="The type of skill tree to use">
     <select id="skill-tree" bind:value={data.skillTree}>
@@ -151,51 +137,6 @@
 {/if}
 
 <style>
-    label {
-        text-align: right;
-        padding-right: 1rem;
-    }
-
-    input {
-        padding-inline: 0.5rem;
-        width: 100%;
-    }
-
-    .toggle {
-        overflow: hidden;
-        display: inline-flex;
-        text-align: center;
-        background-color: var(--color-select-bg);
-        border-radius: 0.4rem;
-        user-select: none;
-        -webkit-user-select: none;
-    }
-
-    .toggle:before {
-        content: '';
-        height: 100%;
-        width: 50%;
-        border-radius: 0.4rem;
-        background-color: #0083ef;
-        position: absolute;
-        left: 0;
-        transition: left 350ms ease-in-out;
-    }
-
-    .toggle:not(.selected):before {
-        left: 50%;
-    }
-
-    .toggle > div {
-        flex: 1;
-        padding: 0.2rem;
-        padding-inline: 1.5rem;
-    }
-
-    .toggle > div:hover {
-        cursor: pointer;
-    }
-
     .info {
         grid-column: 1 / span 2;
         text-align: center;

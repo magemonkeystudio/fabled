@@ -6,8 +6,6 @@
     addSkillFolder,
     closeSidebar,
     isShowClasses,
-    showClasses,
-    showSkills,
     sidebarOpen,
     skillFolders,
     skills
@@ -25,6 +23,7 @@
   import { fly } from "svelte/transition";
   import { clickOutside } from "../../api/clickoutside";
   import { browser } from "$app/environment";
+  import Toggle from "../input/Toggle.svelte";
 
   let folders: ProFolder[] = [];
   let classSub: Unsubscriber;
@@ -85,10 +84,7 @@
      on:outclick={clickOut}
      style:--height="calc({height}px - 6rem + min(3.5rem, {scrollY}px))">
   <div class="type-wrap">
-    <div id="type-selector" class:c-selected={$isShowClasses}>
-      <div class="classes" on:click={showClasses}>Classes</div>
-      <div class="skills" on:click={showSkills}>Skills</div>
-    </div>
+    <Toggle bind:data={$isShowClasses} left="Classes" right="Skills" color="#111" inline={false} />
     <hr />
   </div>
   {#if $isShowClasses}

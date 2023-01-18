@@ -12,10 +12,9 @@
           tooltip="The item that represents the {$activeType} in GUIs">
   <MaterialSelect bind:selected={icon.material} />
 </ProInput>
-<ProInput label="CustomModelData"
-          tooltip="The CustomModelData of the item that represents the {$activeType} in GUIs">
-  <input id="icon-data" bind:value={icon.customModelData} />
-</ProInput>
+<ProInput label="CustomModelData" type="number" intMode={true}
+          tooltip="The CustomModelData of the item that represents the {$activeType} in GUIs"
+          bind:value={icon.customModelData} />
 <ProInput label="Icon Lore"
           tooltip="The item's lore description">
   <LoreInput bind:value={icon.lore} />

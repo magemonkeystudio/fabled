@@ -2,6 +2,7 @@
   import ProClass from "../../../../api/proclass";
   import ProSkill from "../../../../api/proskill";
   import ClassDetails from "../../../../components/ClassDetails.svelte";
+  import SkillDetails from "../../../../components/SkillDetails.svelte";
 
   export let data: { data: ProClass | ProSkill };
 </script>
@@ -15,7 +16,7 @@
   {#if data?.data instanceof ProClass}
     <ClassDetails bind:data={data.data} />
   {:else}
-    Skill Details not implemented yet
+    <SkillDetails bind:data={data.data} />
   {/if}
 </div>
 

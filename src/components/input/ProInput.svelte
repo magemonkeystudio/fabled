@@ -1,8 +1,12 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
+  import { numberOnly } from "../../api/number-only";
 
   export let tooltip: string | undefined = undefined;
   export let label: string;
+  export let type: "string" | "number" = "string";
+  export let intMode = false;
+  export let value: string | number | undefined = undefined;
   let hovered = false;
 </script>
 
@@ -15,13 +19,22 @@
       {tooltip}
     </div>
   {/if}
-  <span>{label}<slot name="label" /></span>
+  <span>{label}
+    <slot name="label" /></span>
 </div>
 <div class="input-wrapper">
+  {#if !!value || value === "" || value === 0}
+    <input bind:value use:numberOnly={{intMode, enabled: type === "number"}} />
+  {/if}
   <slot />
 </div>
 
 <style>
+    input {
+        width: 100%;
+        padding-inline: 0.5rem;
+    }
+
     .label {
         text-align: right;
         padding-right: 1rem;
