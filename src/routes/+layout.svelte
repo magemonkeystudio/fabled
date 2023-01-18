@@ -34,11 +34,8 @@
     dragging = true;
   };
 
-  const dragleave = (e: MouseEvent) => {
-    setTimeout(() => {
-      dragging = false;
-      console.log("left", e.target);
-    }, 50);
+  const dragleave = () => {
+    setTimeout(() => dragging = false, 50);
   };
 
   const loadFiles = (e: DragEvent) => {

@@ -1,6 +1,8 @@
 import type { Icon, ProSkillData, Serializable, Trigger } from "./types";
 import { YAMLObject } from "./yaml";
 import { ProAttribute } from "./proattribute";
+import { toEditorCase } from "./api";
+import { getSkill } from "./skill-store";
 
 export default class ProSkill implements Serializable {
   isSkill = true;
@@ -22,10 +24,23 @@ export default class ProSkill implements Serializable {
   indicator: "2D" | "3D" | "None" = "2D";
   icon: Icon = {
     material: "Pumpkin",
-    customModelData: 0
+    customModelData: 0,
+    lore: [
+      "&d{name} &7({level}/{max})",
+      "&2Type: &6{type}",
+      "",
+      "{req:level}Level: {attr:level}",
+      "{req:cost}Cost: {attr:cost}",
+      "",
+      "&2Mana: {attr:mana}",
+      "&2Cooldown: {attr:cooldown}"
+    ]
   };
   incompatible: ProSkill[] = [];
   triggers: Trigger[] = [];
+
+  private skillReqStr = "";
+  private incompStr: string[] = [];
 
   constructor(data?: ProSkillData) {
     this.name = data ? data.name : "Skill";
@@ -49,9 +64,61 @@ export default class ProSkill implements Serializable {
   }
 
   public serializeYaml = (): YAMLObject => {
-    const yaml = new YAMLObject();
-    yaml.data.name = this.name;
+    const yaml = new YAMLObject(this.name);
+    const data = new YAMLObject();
+    data.put("name", this.name);
+    data.put("type", this.type);
+    data.put("max-level", this.maxLevel);
+    data.put("skill-req", this.skillReq?.name);
+    data.put("skill-req-lvl", this.skillReqLevel);
+    data.put("needs-permission", this.permission);
+    data.put("cooldown-message", this.cooldownMessage);
+    data.put("msg", this.castMessage);
+    data.put("combo", this.combo);
+    data.put("indicator", this.indicator);
+    data.put("icon", this.icon.material);
+    data.put("icon-data", this.icon.customModelData);
+    data.put("icon-lore", this.icon.lore);
+    data.put("attributes", [this.levelReq, this.cost, this.cooldown, this.mana, this.minSpent]);
+    data.put("incompatible", this.incompatible.map(s => s.name));
+    data.put("components", this.triggers);
 
+    yaml.data = data.data;
     return yaml;
   };
+
+  public load = (yaml: YAMLObject) => {
+    this.name = yaml.get("name", this.name);
+    this.type = yaml.get("type", this.type);
+    this.maxLevel = yaml.get("max-level", this.maxLevel);
+    this.skillReqStr = yaml.get("skill-req", this.skillReqStr);
+    this.skillReqLevel = yaml.get("skill-req-level", this.skillReqLevel);
+    this.permission = yaml.get("needs-permission", this.permission);
+    this.cooldownMessage = yaml.get("cooldown-message", this.cooldownMessage);
+    this.castMessage = yaml.get("msg", this.castMessage);
+    this.combo = yaml.get("combo", this.combo);
+    this.indicator = yaml.get("indicator", this.indicator);
+
+    const attributes: YAMLObject = yaml.get("attributes");
+    this.levelReq = new ProAttribute("level", attributes.get("level-base"), attributes.get("level-scale"));
+    this.cost = new ProAttribute("cost", attributes.get("cost-base"), attributes.get("cost-scale"));
+    this.cooldown = new ProAttribute("cooldown", attributes.get("cooldown-base"), attributes.get("cooldown-scale"));
+    this.mana = new ProAttribute("mana", attributes.get("mana-base"), attributes.get("mana-scale"));
+    this.minSpent = new ProAttribute("points-spent-req", attributes.get("points-spent-req-base"), attributes.get("points-spent-req-scale"));
+
+    this.icon.material = yaml.get<string, string>("icon", this.icon.material, toEditorCase);
+    this.icon.customModelData = yaml.get("icon-data", this.icon.customModelData);
+    this.icon.lore = yaml.get("icon-lore", this.icon.lore);
+    this.incompStr = yaml.get("incompatible", this.incompStr);
+    this.triggers = yaml.get<YAMLObject[], Trigger[]>("components", this.triggers,
+      (list: YAMLObject[]) => {
+        // TODO Actually load components... for that, we'll need to be able to serialize/deserialize individual components
+        return [];
+      });
+  };
+
+  public postLoad = () => {
+    this.skillReq = getSkill(this.skillReqStr);
+    this.incompatible = <ProSkill[]>this.incompStr.map(s => getSkill(s)).filter(s => !!s);
+  }
 }

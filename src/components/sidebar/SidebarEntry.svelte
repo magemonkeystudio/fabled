@@ -1,7 +1,6 @@
 <script lang="ts">
   import {
     active,
-    addSkillFolder,
     deleteProData,
     dragging,
     getFolder,
@@ -17,6 +16,7 @@
   import { fly, slide } from "svelte/transition";
   import Modal from "../Modal.svelte";
   import { addClassFolder } from "../../data/class-store";
+  import { addSkillFolder } from "../../api/skill-store";
 
   export let delay = 0;
   export let direction: "right" | "left" = "left";
@@ -40,7 +40,8 @@
       targetFolder = getFolder(data);
     }
 
-    getFolder(dragData)?.remove(dragData);
+    const containing = getFolder(dragData);
+    if (containing) containing.remove(dragData);
     if (targetFolder) {
       targetFolder.add(dragData);
       over = false;
@@ -56,23 +57,10 @@
     over = false;
   };
 
-  const dragOver = (e: DragEvent) => {
+  const dragOver = () => {
     const dragData = get(dragging);
     if (data === dragData) return;
-    e.preventDefault();
     over = true;
-  };
-
-  const clickSave = (e: MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    saveData(data);
-  };
-
-  const clickDelete = (e: MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    deleting = true;
   };
 </script>
 
@@ -83,8 +71,8 @@
      class:in-folder={!!getFolder(data)}
      draggable="{!!data}"
      on:dragstart={startDrag}
-     on:drop={drop}
-     on:dragover={dragOver}
+     on:drop|preventDefault|stopPropagation={drop}
+     on:dragover|preventDefault={dragOver}
      on:dragleave={() => over = false}
      on:click
      in:fly={{x: (direction === "left" ? -100 : 100), duration: 500, delay: $sidebarOpen ? 0 : delay}}
@@ -93,7 +81,7 @@
   {#if data}
     <div class="buttons">
       <div
-        on:click={clickSave}
+        on:click|preventDefault|stopPropagation={() => saveData(data)}
         class="download"
         title="Save {data.triggers ? 'Skill' : 'Class'}">
         <span class="material-symbols-rounded">
@@ -102,7 +90,7 @@
       </div>
       <div
         class="delete"
-        on:click={clickDelete}
+        on:click|preventDefault|stopPropagation={() => deleting = true}
         title="Delete {data.triggers ? 'Skill' : 'Class'}">
         <span class="material-symbols-rounded">
           delete

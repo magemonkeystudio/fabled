@@ -2,7 +2,7 @@ import type { Icon, ProClassData, Serializable } from "./types";
 import type ProSkill from "./proskill";
 import { YAMLObject } from "./yaml";
 import { ProAttribute } from "./proattribute";
-import { getSkill } from "../data/store";
+import { getSkill } from "./skill-store";
 import { toEditorCase, toProperCase } from "./api";
 
 export default class ProClass implements Serializable {
@@ -78,7 +78,7 @@ export default class ProClass implements Serializable {
     data.put("mana", this.manaName);
     data.put("max-level", this.maxLevel);
     data.put("parent", this.parent?.name || "");
-    data.put("permission", this.permission);
+    data.put("needs-permission", this.permission);
     data.put("attributes", [this.health, this.mana, ...this.attributes]);
     data.put("mana-regen", this.manaRegen);
     data.put("tree", this.skillTree.toUpperCase().replace(/ /g, "_"));
@@ -103,11 +103,10 @@ export default class ProClass implements Serializable {
     this.actionBar = yaml.get("action-bar", this.actionBar);
     this.prefix = yaml.get("prefix", this.prefix);
     this.group = yaml.get("group", this.group);
-    this.mana = yaml.get("mana", this.mana);
     this.maxLevel = yaml.get("max-level", this.maxLevel);
     this.parentStr = yaml.get("parent", this.parentStr);
     // this.parent = yaml.get<string, ProClass>("parent", this.parent, getClass);
-    this.permission = yaml.get("permission", this.permission);
+    this.permission = yaml.get("needs-permission", this.permission);
     this.attributes = yaml.get<YAMLObject, ProAttribute[]>("attributes", this.attributes,
       (obj: YAMLObject) => {
         const attributes: ProAttribute[] = [];

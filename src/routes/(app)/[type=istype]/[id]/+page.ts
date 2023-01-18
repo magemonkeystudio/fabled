@@ -1,9 +1,10 @@
 import type ProClass from "../../../../api/proclass";
 import type ProSkill from "../../../../api/proskill";
-import { active, isShowClasses, skills } from "../../../../data/store";
+import { active, isShowClasses } from "../../../../data/store";
 import { get } from "svelte/store";
 import { redirect } from "@sveltejs/kit";
 import { classes } from "../../../../data/class-store";
+import { skills } from "../../../../api/skill-store";
 
 export const ssr = false;
 

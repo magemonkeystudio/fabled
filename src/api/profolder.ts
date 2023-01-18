@@ -77,7 +77,12 @@ export default class ProFolder {
     if (this.data.includes(data)) return this;
 
     for (const folder of <ProFolder[]>this.data.filter(d => d instanceof ProFolder)) {
-      if (folder.contains(data)) return folder;
+      if (folder.data.includes(data)) return folder;
+      else {
+        const subFolder = folder.getContainingFolder(data);
+        if (!subFolder) continue;
+        return subFolder;
+      }
     }
 
     return undefined;

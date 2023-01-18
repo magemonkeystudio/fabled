@@ -4,9 +4,8 @@
   import IconInput from "./input/IconInput.svelte";
   import MaterialSelect from "./input/MaterialSelect.svelte";
   import SearchableSelect from "./input/SearchableSelect.svelte";
-  import { saveDataInternal, skills, updateSidebar } from "../data/store";
+  import { saveDataInternal, updateSidebar } from "../data/store";
   import AttributeInput from "./input/AttributeInput.svelte";
-  import { numberOnly } from "../api/number-only";
   import ByteSelect from "./input/ByteSelect.svelte";
   import { expSources } from "../version/data";
   import { toProperCase } from "../api/api";
@@ -16,6 +15,7 @@
   import { classes } from "../data/class-store";
   import { attributes } from "../data/attribute-store";
   import Toggle from "./input/Toggle.svelte";
+  import { skills } from "../api/skill-store";
 
   export let data: ProClass;
 
@@ -61,7 +61,7 @@
             tooltip="The format for the action bar. Leave blank to use the default formatting"
             bind:value={data.actionBar} />
   <ProInput label="Group"
-            tooltip={`A class group are things such as "race", "class", and "trade". Different groups can be professed through at the same time, one class from each group`}
+            tooltip='A class group are things such as "race", "class", and "trade". Different groups can be professed through at the same time, one class from each group'
             bind:value={data.group} />
   <ProInput label="Mana Name"
             tooltip="The name the class uses for mana"
@@ -77,11 +77,11 @@
                       display={(c) => c.name} />
   </ProInput>
   <ProInput label="Permission"
-            tooltip={`Whether the class requires a permission to be professed as. The permission would be "skillapi.class.${data.name.toLowerCase()}"`}>
+            tooltip='Whether the class requires a permission to be professed as. The permission would be "skillapi.class.${data.name.toLowerCase()}"'>
     <Toggle bind:data={data.permission} />
   </ProInput>
   <ProInput label="Exp Sources"
-            tooltip={`The experience sources the class goes up from. Most of these only work if "use-exp-orbs" is enabled in the config.yml.`}>
+            tooltip='The experience sources the class goes up from. Most of these only work if "use-exp-orbs" is enabled in the config.yml'>
     <ByteSelect
       data={expSources}
       bind:value={data.expSources} />

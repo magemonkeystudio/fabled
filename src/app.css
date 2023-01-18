@@ -146,6 +146,17 @@ select, input, textarea {
     border: none;
 }
 
+::-webkit-scrollbar {
+    position: fixed;
+    background-color: transparent;
+    width: 0.5rem;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #333;
+    border-radius: 100vw;
+}
+
 @media screen and (min-width: 500px) {
     body {
         font-size: 1.2rem;

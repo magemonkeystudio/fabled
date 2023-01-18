@@ -1,4 +1,4 @@
-<!--suppress CssUnusedSymbol -->
+<!-- suppress CssUnusedSymbol -->
 <script lang="ts">
   import { onMount } from "svelte";
   import { active } from "../data/store";

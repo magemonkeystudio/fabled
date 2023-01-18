@@ -1,5 +1,4 @@
 <script lang="ts">
-
   import { active, activeType, setImporting, toggleSidebar } from "../data/store";
   import { get } from "svelte/store";
   import { createPaste } from "../api/hastebin";
@@ -8,7 +7,7 @@
   import ProSkill from "../api/proskill";
 
   const haste = () => {
-    let act: ProClass | ProSkill = get(active);
+    let act: ProClass | ProSkill | undefined = get(active);
     if (!act) return;
 
     let data = act.serializeYaml().toString();

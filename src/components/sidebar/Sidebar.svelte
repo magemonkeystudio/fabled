@@ -2,13 +2,9 @@
 <script lang="ts">
   import { addClass, addClassFolder, classes, classFolders } from "../../data/class-store";
   import {
-    addSkill,
-    addSkillFolder,
     closeSidebar,
     isShowClasses,
     sidebarOpen,
-    skillFolders,
-    skills
   } from "../../data/store";
   import SidebarEntry from "./SidebarEntry.svelte";
   import { squish } from "../../data/squish";
@@ -24,6 +20,7 @@
   import { clickOutside } from "../../api/clickoutside";
   import { browser } from "$app/environment";
   import Toggle from "../input/Toggle.svelte";
+  import { addSkill, addSkillFolder, skillFolders, skills } from "../../api/skill-store";
 
   let folders: ProFolder[] = [];
   let classSub: Unsubscriber;

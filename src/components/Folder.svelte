@@ -50,18 +50,20 @@
 
   let over = false;
 
-  const startDrag = (e: DragEvent) => {
+  const startDrag = () => {
     dragging.set(folder);
   };
 
   const drop = () => {
     over = false;
     const dragData: ProClass | ProSkill | ProFolder = get(dragging);
+    if (!dragData) return;
     if (folder.data.includes(dragData)) return;
 
     const containing = getFolder(dragData);
     if (containing) containing.remove(dragData);
-    else if (dragData instanceof ProFolder) {
+
+    if (dragData instanceof ProFolder) {
       removeFolder(dragData);
       dragData.parent = folder;
     }
@@ -69,9 +71,8 @@
     folder.add(dragData);
   };
 
-  const dragOver = (e: DragEvent) => {
+  const dragOver = () => {
     if (folder === get(dragging)) return;
-    e.preventDefault();
     over = true;
   };
 </script>
@@ -80,8 +81,8 @@
      class:over
      draggable="true"
      on:dragstart={startDrag}
-     on:drop={drop}
-     on:dragover={dragOver}
+     on:drop|preventDefault|stopPropagation={drop}
+     on:dragover|preventDefault={dragOver}
      on:dragleave={() => over = false}
      on:click={() => folder.open = !folder.open}
      in:slide={{duration: ($sidebarOpen ? 0 : 400)}}
