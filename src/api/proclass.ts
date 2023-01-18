@@ -1,5 +1,5 @@
 import type { Icon, ProClassData, Serializable } from "./types";
-import type { ProSkill } from "./proskill";
+import type ProSkill from "./proskill";
 import { YAMLObject } from "./yaml";
 import { ProAttribute } from "./proattribute";
 import { getSkill } from "../data/store";

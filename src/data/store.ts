@@ -2,7 +2,7 @@ import type { Readable, Writable } from "svelte/store";
 import { derived, get, writable } from "svelte/store";
 import ProClass from "../api/proclass";
 import ProSkill from "../api/proskill";
-import { ProFolder } from "../api/profolder";
+import ProFolder from "../api/profolder";
 import { YAMLObject } from "../api/yaml";
 import { browser } from "$app/environment";
 import {

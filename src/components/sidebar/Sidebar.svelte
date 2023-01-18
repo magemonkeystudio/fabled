@@ -18,7 +18,7 @@
   import { beforeUpdate, onDestroy, onMount } from "svelte";
   import type { Unsubscriber } from "svelte/store";
   import { get } from "svelte/store";
-  import { ProFolder } from "../../api/profolder";
+  import ProFolder from "../../api/profolder";
   import ProClass from "../../api/proclass";
   import ProSkill from "../../api/proskill";
   import Folder from "../Folder.svelte";

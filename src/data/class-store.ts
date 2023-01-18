@@ -1,6 +1,6 @@
 import type { Writable } from "svelte/store";
 import { get, writable } from "svelte/store";
-import { ProFolder } from "../api/profolder";
+import ProFolder from "../api/profolder";
 import { rename } from "./store";
 import { sort } from "../api/api";
 import { parseYAML, YAMLObject } from "../api/yaml";

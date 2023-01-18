@@ -1,6 +1,6 @@
-import type { ProFolder } from "./profolder";
-import type { ProClass } from "./proclass";
-import type { ProSkill } from "./proskill";
+import type ProFolder from "./profolder";
+import type ProClass from "./proclass";
+import type ProSkill from "./proskill";
 import { browser } from "$app/environment";
 import { writable } from "svelte/store";
 

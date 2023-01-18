@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ProFolder } from "../api/profolder";
+  import ProFolder from "../api/profolder";
   import SidebarEntry from "./sidebar/SidebarEntry.svelte";
   import { goto } from "$app/navigation";
   import { slide } from "svelte/transition";

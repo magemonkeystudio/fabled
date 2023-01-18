@@ -1,8 +1,8 @@
-import type { ProSkill } from "./proskill";
-import type { ProClass } from "./proclass";
+import type ProSkill from "./proskill";
+import type ProClass from "./proclass";
 import { removeFolder, rename, updateFolders } from "../data/store";
 
-export class ProFolder {
+export default class ProFolder {
   public key = {};
   public isFolder = true;
   public open = false;

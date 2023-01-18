@@ -1,5 +1,5 @@
-import type { ProClass } from "../../../../api/proclass";
-import type { ProSkill } from "../../../../api/proskill";
+import type ProClass from "../../../../api/proclass";
+import type ProSkill from "../../../../api/proskill";
 import { active, isShowClasses, skills } from "../../../../data/store";
 import { get } from "svelte/store";
 import { redirect } from "@sveltejs/kit";
