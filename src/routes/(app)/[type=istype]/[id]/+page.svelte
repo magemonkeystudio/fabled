@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { ProClass } from "../../../../api/proclass";
-  import { ProSkill } from "../../../../api/proskill";
+  import ProClass from "../../../../api/proclass";
+  import ProSkill from "../../../../api/proskill";
   import ClassDetails from "../../../../components/ClassDetails.svelte";
 
   export let data: { data: ProClass | ProSkill };

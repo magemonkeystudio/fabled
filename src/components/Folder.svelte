@@ -4,8 +4,8 @@
   import { goto } from "$app/navigation";
   import { slide } from "svelte/transition";
   import { deleteFolder, dragging, getFolder, removeFolder, sidebarOpen, updateFolders } from "../data/store";
-  import { ProClass } from "../api/proclass";
-  import { ProSkill } from "../api/proskill";
+  import ProClass from "../api/proclass";
+  import ProSkill from "../api/proskill";
   import { get } from "svelte/store";
 
   export let folder: ProFolder;

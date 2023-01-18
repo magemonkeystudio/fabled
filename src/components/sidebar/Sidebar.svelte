@@ -19,8 +19,8 @@
   import type { Unsubscriber } from "svelte/store";
   import { get } from "svelte/store";
   import { ProFolder } from "../../api/profolder";
-  import { ProClass } from "../../api/proclass";
-  import { ProSkill } from "../../api/proskill";
+  import ProClass from "../../api/proclass";
+  import ProSkill from "../../api/proskill";
   import Folder from "../Folder.svelte";
   import { fly } from "svelte/transition";
   import { clickOutside } from "../../api/clickoutside";

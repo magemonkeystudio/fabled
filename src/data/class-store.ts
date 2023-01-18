@@ -5,8 +5,8 @@ import { rename } from "./store";
 import { sort } from "../api/api";
 import { parseYAML, YAMLObject } from "../api/yaml";
 import { browser } from "$app/environment";
-import { ProClass } from "../api/proclass";
-import { ProSkill } from "../api/proskill";
+import ProClass from "../api/proclass";
+import ProSkill from "../api/proskill";
 
 const loadClassTextToArray = (text: string): ProClass[] => {
   const list: ProClass[] = [];

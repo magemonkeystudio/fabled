@@ -1,5 +1,5 @@
-import { ProSkill } from "./proskill";
-import { ProClass } from "./proclass";
+import ProSkill from "./proskill";
+import ProClass from "./proclass";
 import { YAMLObject } from "./yaml";
 import { ProAttribute } from "./proattribute";
 

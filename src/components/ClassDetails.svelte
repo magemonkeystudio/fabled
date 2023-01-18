@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Unsubscriber } from "svelte/types/runtime/store";
-  import { ProClass } from "../api/proclass";
+  import ProClass from "../api/proclass";
   import IconInput from "./input/IconInput.svelte";
   import MaterialSelect from "./input/MaterialSelect.svelte";
   import SearchableSelect from "./input/SearchableSelect.svelte";

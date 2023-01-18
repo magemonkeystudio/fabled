@@ -1,7 +1,7 @@
 import type { Icon, ProSkillData, Serializable, Trigger } from "./types";
 import { YAMLObject } from "./yaml";
 
-export class ProSkill implements Serializable {
+export default class ProSkill implements Serializable {
   isSkill = true;
   public key = {};
   name: string;

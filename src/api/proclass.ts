@@ -5,7 +5,7 @@ import { ProAttribute } from "./proattribute";
 import { getSkill } from "../data/store";
 import { toEditorCase, toProperCase } from "./api";
 
-export class ProClass implements Serializable {
+export default class ProClass implements Serializable {
   isClass = true;
   public key = {};
   name: string;

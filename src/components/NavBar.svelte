@@ -4,8 +4,8 @@
   import { get } from "svelte/store";
   import { createPaste } from "../api/hastebin";
   import { serverOptions, version } from "../version/data";
-  import { ProClass } from "../api/proclass";
-  import { ProSkill } from "../api/proskill";
+  import ProClass from "../api/proclass";
+  import ProSkill from "../api/proskill";
 
   const haste = () => {
     let act: ProClass | ProSkill = get(active);
