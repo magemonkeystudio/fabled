@@ -2,6 +2,7 @@ import ProSkill from "./proskill";
 import ProClass from "./proclass";
 import { YAMLObject } from "./yaml";
 import { ProAttribute } from "./proattribute";
+import ProTrigger from "./triggers";
 
 export interface ProClassData {
   name: string;
@@ -42,7 +43,7 @@ export interface ProSkillData {
   icon?: Icon;
   incompatible?: ProSkill[];
 
-  triggers?: Trigger[];
+  triggers?: ProTrigger[];
 }
 
 export interface Icon {
@@ -51,9 +52,12 @@ export interface Icon {
   lore?: string[];
 }
 
-export interface Trigger {
+export interface TriggerData {
   name: string;
-  components: SkillComponent[];
+  mana?: boolean;
+  cooldown?: boolean;
+  data?: any[];
+  components?: SkillComponent[];
 }
 
 export interface SkillComponent {

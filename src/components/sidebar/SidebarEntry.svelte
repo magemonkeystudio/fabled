@@ -16,7 +16,7 @@
   import { fly, slide } from "svelte/transition";
   import Modal from "../Modal.svelte";
   import { addClassFolder } from "../../data/class-store";
-  import { addSkillFolder } from "../../api/skill-store";
+  import { addSkillFolder } from "../../data/skill-store";
 
   export let delay = 0;
   export let direction: "right" | "left" = "left";

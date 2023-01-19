@@ -25,7 +25,7 @@ import {
   refreshSkillFolders,
   refreshSkills,
   skillFolders
-} from "../api/skill-store";
+} from "./skill-store";
 
 export const active: Writable<ProClass | ProSkill | undefined> = writable(undefined);
 export const activeType: Readable<"class" | "skill"> = derived(

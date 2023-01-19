@@ -10,7 +10,11 @@
 <svelte:head>
   <title>ProSkillAPI Dynamic Editor - {data.data.name}</title>
 </svelte:head>
-<h1>{data?.data?.name}</h1>
+<h1>{data?.data?.name}
+  {#if data?.data instanceof ProSkill}
+    <a href="/skill/{data.data.name}/edit">Edit Skill</a>
+  {/if}
+</h1>
 <hr />
 <div class="container">
   {#if data?.data instanceof ProClass}

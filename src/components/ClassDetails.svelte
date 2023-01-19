@@ -15,7 +15,7 @@
   import { classes } from "../data/class-store";
   import { attributes } from "../data/attribute-store";
   import Toggle from "./input/Toggle.svelte";
-  import { skills } from "../api/skill-store";
+  import { skills } from "../data/skill-store";
 
   export let data: ProClass;
 
@@ -77,7 +77,7 @@
                       display={(c) => c.name} />
   </ProInput>
   <ProInput label="Permission"
-            tooltip='Whether the class requires a permission to be professed as. The permission would be "skillapi.class.${data.name.toLowerCase()}"'>
+            tooltip='Whether the class requires a permission to be professed as. The permission would be "skillapi.class.{data.name.toLowerCase()}"'>
     <Toggle bind:data={data.permission} />
   </ProInput>
   <ProInput label="Exp Sources"

@@ -125,6 +125,7 @@
         align-items: center;
         justify-content: center;
         width: 3.5rem;
+        font-size: 1.5rem;
     }
 
     .transfer {

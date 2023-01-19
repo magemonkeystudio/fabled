@@ -1,10 +1,9 @@
-import type ProClass from "../../../../api/proclass";
-import type ProSkill from "../../../../api/proskill";
-import { active, isShowClasses } from "../../../../data/store";
+import { active, isShowClasses } from "../../../../../data/store";
 import { get } from "svelte/store";
 import { redirect } from "@sveltejs/kit";
-import { classes } from "../../../../data/class-store";
-import { skills } from "../../../../data/skill-store";
+import { skills } from "../../../../../data/skill-store";
+import type ProClass from "../../../../../api/proclass";
+import type ProSkill from "../../../../../api/proskill";
 
 export const ssr = false;
 
@@ -15,14 +14,7 @@ export async function load({ params }: any) {
   let data: ProClass | ProSkill | undefined;
   let fallback: ProClass | ProSkill | undefined;
   if (params.type == "class") {
-    for (const c of get(classes)) {
-      if (!fallback) fallback = c;
-
-      if (c.name == name) {
-        data = c;
-        break;
-      }
-    }
+    throw redirect(302, `/${params.type}/${params.id}`);
   } else if (params.type == "skill") {
     for (const c of get(skills)) {
       if (!fallback) fallback = c;

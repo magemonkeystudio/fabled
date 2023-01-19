@@ -1,8 +1,9 @@
-import type { Icon, ProSkillData, Serializable, Trigger } from "./types";
+import type { Icon, ProSkillData, Serializable } from "./types";
 import { YAMLObject } from "./yaml";
 import { ProAttribute } from "./proattribute";
 import { toEditorCase } from "./api";
-import { getSkill } from "./skill-store";
+import { getSkill } from "../data/skill-store";
+import type ProTrigger from "./triggers";
 
 export default class ProSkill implements Serializable {
   isSkill = true;
@@ -37,7 +38,7 @@ export default class ProSkill implements Serializable {
     ]
   };
   incompatible: ProSkill[] = [];
-  triggers: Trigger[] = [];
+  triggers: ProTrigger[] = [];
 
   private skillReqStr = "";
   private incompStr: string[] = [];
@@ -110,7 +111,7 @@ export default class ProSkill implements Serializable {
     this.icon.customModelData = yaml.get("icon-data", this.icon.customModelData);
     this.icon.lore = yaml.get("icon-lore", this.icon.lore);
     this.incompStr = yaml.get("incompatible", this.incompStr);
-    this.triggers = yaml.get<YAMLObject[], Trigger[]>("components", this.triggers,
+    this.triggers = yaml.get<YAMLObject[], ProTrigger[]>("components", this.triggers,
       (list: YAMLObject[]) => {
         // TODO Actually load components... for that, we'll need to be able to serialize/deserialize individual components
         return [];
@@ -120,5 +121,5 @@ export default class ProSkill implements Serializable {
   public postLoad = () => {
     this.skillReq = getSkill(this.skillReqStr);
     this.incompatible = <ProSkill[]>this.incompStr.map(s => getSkill(s)).filter(s => !!s);
-  }
+  };
 }

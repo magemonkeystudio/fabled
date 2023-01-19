@@ -6,7 +6,7 @@
   import Toggle from "./input/Toggle.svelte";
   import AttributeInput from "./input/AttributeInput.svelte";
   import IconInput from "./input/IconInput.svelte";
-  import { skills } from "../api/skill-store";
+  import { skills } from "../data/skill-store";
 
   export let data: ProSkill;
 
@@ -36,7 +36,7 @@
             tooltip="The level that the required skill needs to reach before this one can be unlocked"
             bind:value={data.skillReqLevel} />
   <ProInput label="Permission"
-            tooltip='Whether this skill requires a permission to unlock. The permission would be "skillapi.skill.${data.name}"'>
+            tooltip='Whether this skill requires a permission to unlock. The permission would be "skillapi.skill.{data.name}"'>
     <Toggle bind:data={data.permission} />
   </ProInput>
   <ProInput label="Level Req"

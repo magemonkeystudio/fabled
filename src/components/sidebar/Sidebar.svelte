@@ -20,7 +20,7 @@
   import { clickOutside } from "../../api/clickoutside";
   import { browser } from "$app/environment";
   import Toggle from "../input/Toggle.svelte";
-  import { addSkill, addSkillFolder, skillFolders, skills } from "../../api/skill-store";
+  import { addSkill, addSkillFolder, skillFolders, skills } from "../../data/skill-store";
 
   let folders: ProFolder[] = [];
   let classSub: Unsubscriber;
