@@ -1,4 +1,4 @@
-import type { VersionData } from "../api/types";
+import type { VersionData } from "$api/types";
 
 export const DATA_1_18: VersionData = {
   MATERIALS: [

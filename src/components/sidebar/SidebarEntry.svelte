@@ -9,10 +9,10 @@
     sidebarOpen,
     updateFolders
   } from "../../data/store";
-  import ProSkill from "../../api/proskill";
-  import ProClass from "../../api/proclass";
+  import ProSkill from "$api/proskill";
+  import ProClass from "$api/proclass";
   import { get } from "svelte/store";
-  import ProFolder from "../../api/profolder";
+  import ProFolder from "$api/profolder";
   import { fly, slide } from "svelte/transition";
   import Modal from "../Modal.svelte";
   import { addClassFolder } from "../../data/class-store";

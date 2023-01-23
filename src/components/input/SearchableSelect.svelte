@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
   import { flip } from "svelte/animate";
-  import { clickOutside } from "../../api/clickoutside";
+  import { clickOutside } from "$api/clickoutside";
 
   export let id: string;
   export let data: any[] = [];

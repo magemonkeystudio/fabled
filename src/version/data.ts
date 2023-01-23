@@ -1,11 +1,11 @@
-import type { VersionData } from "../api/types";
+import type { VersionData } from "$api/types";
 import type { Writable } from "svelte/store";
 import { get, writable } from "svelte/store";
 import { DATA_1_19 } from "./1.19";
 import { DATA_1_18 } from "./1.18";
 import { DATA_1_17 } from "./1.17";
 import { DATA_1_16 } from "./1.16";
-import { localStore } from "../api/api";
+import { localStore } from "$api/api";
 
 export const expSources = ["Mob", "Block Break", "Block Place", "Craft", "Command", "Special", "Exp Bottle", "Smelt", "Quest"];
 

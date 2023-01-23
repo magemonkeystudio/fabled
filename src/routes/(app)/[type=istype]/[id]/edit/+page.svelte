@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ProSkill from "../../../../../api/proskill";
+  import ProSkill from "$api/proskill";
   import ComponentWidget from "../../../../../components/ComponentWidget.svelte";
 
   export let data: { data: ProSkill };
@@ -13,9 +13,11 @@
 <hr />
 <div class="container">
   {#each skill.triggers as comp}
-    <ComponentWidget component={comp} />
+    <div class="widget">
+      <ComponentWidget component={comp} />
+    </div>
   {/each}
-  <div class="add-trigger chip" title="Add Trigger">
+  <div class="add-trigger chip" title="Add Trigger" on:click={() => console.log(skill.triggers[0].data[0].data)}>
     <span class="material-symbols-rounded">
       variables
     </span>
@@ -31,9 +33,14 @@
 
     .container {
         display: flex;
+        align-items: flex-start;
         flex-wrap: nowrap;
         width: 100%;
         padding-inline: 2rem;
+    }
+
+    .widget {
+        margin-right: 1rem;
     }
 
     .add-trigger {

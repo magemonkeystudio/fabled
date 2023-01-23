@@ -1,7 +1,7 @@
 <script lang="ts">
   import { saveDataInternal, updateSidebar } from "../data/store";
   import ProInput from "./input/ProInput.svelte";
-  import ProSkill from "../api/proskill";
+  import ProSkill from "$api/proskill";
   import SearchableSelect from "./input/SearchableSelect.svelte";
   import Toggle from "./input/Toggle.svelte";
   import AttributeInput from "./input/AttributeInput.svelte";

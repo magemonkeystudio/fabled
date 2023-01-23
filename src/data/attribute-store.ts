@@ -2,7 +2,7 @@ import { writable } from "svelte/store";
 import type { Writable } from "svelte/store";
 import { browser } from "$app/environment";
 import { updateAllAttributes } from "./class-store";
-import { parseYAML } from "../api/yaml";
+import { parseYAML } from "$api/yaml";
 
 export const attributes: Writable<string[]> = (() => {
   let saved = ["vitality", "spirit", "intelligence", "dexterity", "strength"];

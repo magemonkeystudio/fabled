@@ -1,6 +1,6 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
-  import { numberOnly } from "../../api/number-only";
+  import { numberOnly } from "$api/number-only";
 
   export let tooltip: string | undefined = undefined;
   export let label: string;
@@ -19,7 +19,7 @@
       {tooltip}
     </div>
   {/if}
-  <span>{label}
+  <span>{label || ''}
     <slot name="label" /></span>
 </div>
 <div class="input-wrapper">

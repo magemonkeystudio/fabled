@@ -12,12 +12,12 @@
   import { beforeUpdate, onDestroy, onMount } from "svelte";
   import type { Unsubscriber } from "svelte/store";
   import { get } from "svelte/store";
-  import ProFolder from "../../api/profolder";
-  import ProClass from "../../api/proclass";
-  import ProSkill from "../../api/proskill";
+  import ProFolder from "$api/profolder";
+  import ProClass from "$api/proclass";
+  import ProSkill from "$api/proskill";
   import Folder from "../Folder.svelte";
   import { fly } from "svelte/transition";
-  import { clickOutside } from "../../api/clickoutside";
+  import { clickOutside } from "$api/clickoutside";
   import { browser } from "$app/environment";
   import Toggle from "../input/Toggle.svelte";
   import { addSkill, addSkillFolder, skillFolders, skills } from "../../data/skill-store";

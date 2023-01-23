@@ -1,8 +1,8 @@
 import type { Readable, Writable } from "svelte/store";
 import { derived, get, writable } from "svelte/store";
-import ProClass from "../api/proclass";
-import ProSkill from "../api/proskill";
-import ProFolder from "../api/profolder";
+import ProClass from "$api/proclass";
+import ProSkill from "$api/proskill";
+import ProFolder from "$api/profolder";
 import { browser } from "$app/environment";
 import {
   classFolders,
@@ -14,7 +14,7 @@ import {
   refreshClasses,
   refreshClassFolders
 } from "./class-store";
-import { localStore } from "../api/api";
+import { localStore } from "$api/api";
 import { loadAttributes } from "./attribute-store";
 import {
   deleteSkill,

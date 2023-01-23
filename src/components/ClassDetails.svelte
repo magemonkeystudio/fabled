@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Unsubscriber } from "svelte/types/runtime/store";
-  import ProClass from "../api/proclass";
+  import ProClass from "$api/proclass";
   import IconInput from "./input/IconInput.svelte";
   import MaterialSelect from "./input/MaterialSelect.svelte";
   import SearchableSelect from "./input/SearchableSelect.svelte";
@@ -8,9 +8,9 @@
   import AttributeInput from "./input/AttributeInput.svelte";
   import ByteSelect from "./input/ByteSelect.svelte";
   import { expSources } from "../version/data";
-  import { toProperCase } from "../api/api";
+  import { toProperCase } from "$api/api";
   import { onDestroy, onMount } from "svelte";
-  import { ProAttribute } from "../api/proattribute";
+  import { ProAttribute } from "$api/proattribute";
   import ProInput from "./input/ProInput.svelte";
   import { classes } from "../data/class-store";
   import { attributes } from "../data/attribute-store";

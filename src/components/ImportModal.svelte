@@ -1,7 +1,7 @@
 <script lang="ts">
   import Modal from "./Modal.svelte";
   import { loadFile, loadRaw, setImporting } from "../data/store";
-  import { getHaste } from "../api/hastebin";
+  import { getHaste } from "$api/hastebin";
 
   let importUrl: string | undefined;
   let files: File[] | undefined;

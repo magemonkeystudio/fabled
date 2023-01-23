@@ -5,6 +5,7 @@
   export let id: string | undefined = undefined;
   export let placeholder = "";
   export let multiple = false;
+  export let any = false;
   export let selected: any[] | any = undefined;
 </script>
 
@@ -13,5 +14,5 @@
   {placeholder}
   {multiple}
   bind:selected={selected}
-  data={$versionData.MATERIALS}
+  data={any ? ["Any", ...$versionData.MATERIALS] : $versionData.MATERIALS}
 />

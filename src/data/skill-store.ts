@@ -1,13 +1,13 @@
 import type { Writable } from "svelte/store";
 import { get, writable } from "svelte/store";
-import ProFolder from "../api/profolder";
-import { sort } from "../api/api";
-import { parseYAML, YAMLObject } from "../api/yaml";
+import ProFolder from "$api/profolder";
+import { sort } from "$api/api";
+import { parseYAML, YAMLObject } from "$api/yaml";
 import { browser } from "$app/environment";
-import ProSkill from "../api/proskill";
+import ProSkill from "$api/proskill";
 import { rename } from "./store";
-import { ProAttribute } from "../api/proattribute";
-import { triggers } from "../api/triggers";
+import { ProAttribute } from "$api/proattribute";
+import { triggers } from "$api/triggers";
 
 const loadSkillTextToArray = (text: string): ProSkill[] => {
   const list: ProSkill[] = [];
@@ -35,18 +35,18 @@ const loadSkillTextToArray = (text: string): ProSkill[] => {
   return list;
 };
 
-const setupSkillStore = <T>(key: string,
+const setupSkillStore = <T extends ProSkill[] | ProFolder[]>(key: string,
                             def: T,
                             mapper: (data: string) => T,
                             setAction: (data: T) => T,
                             postLoad?: (saved: T) => void): Writable<T> => {
   let saved: T = def;
   if (browser) {
-    const stored = localStorage.getItem(key);
-    if (stored) {
-      saved = mapper(stored);
-      if (postLoad) postLoad(saved);
-    }
+    // const stored = localStorage.getItem(key);
+    // if (stored) {
+    //   saved = mapper(stored);
+    //   if (postLoad) postLoad(saved);
+    // }
   }
 
   const {
@@ -64,7 +64,7 @@ const setupSkillStore = <T>(key: string,
   };
 };
 
-export const skills: Writable<ProSkill[]> = setupSkillStore<ProSkill[]>("skillData", [
+export const skills: Writable<ProSkill[]> = setupSkillStore<ProSkill[]>("skillData", sort<ProSkill>([
     new ProSkill({
       name: "Particle Blast",
       type: "Dynamic",
@@ -108,9 +108,9 @@ export const skills: Writable<ProSkill[]> = setupSkillStore<ProSkill[]>("skillDa
       minSpent: new ProAttribute("points-spent-req", 0, 0),
       castMessage: "&6{player} &2has cast &6{skill}",
       indicator: "2D",
-      triggers: [triggers.BLOCK_BREAK]
+      triggers: [new triggers.BLOCK_BREAK(), new triggers.BLOCK_BREAK()]
     })
-  ],
+  ]),
   (data: string) => sort<ProSkill>(loadSkillTextToArray(data)),
   (value: ProSkill[]) => {
     persistSkills(value);

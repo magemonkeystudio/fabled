@@ -1,6 +1,6 @@
 <script lang="ts">
   import MaterialSelect from "./MaterialSelect.svelte";
-  import type { Icon } from "../../api/types";
+  import type { Icon } from "$api/types";
   import LoreInput from "./LoreInput.svelte";
   import ProInput from "./ProInput.svelte";
   import { activeType } from "../../data/store";

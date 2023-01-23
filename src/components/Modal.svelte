@@ -1,8 +1,8 @@
 <script lang="ts">
   import { loadFile, loadRaw, setImporting } from "../data/store";
   import { fade, fly } from "svelte/transition";
-  import { getHaste } from "../api/hastebin";
-  import { clickOutside } from "../api/clickoutside";
+  import { getHaste } from "$api/hastebin";
+  import { clickOutside } from "$api/clickoutside";
   import { createEventDispatcher } from "svelte";
 
   const dispatch = createEventDispatcher();
