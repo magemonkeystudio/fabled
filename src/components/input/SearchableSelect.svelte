@@ -2,6 +2,7 @@
   import { fly } from "svelte/transition";
   import { flip } from "svelte/animate";
   import { clickOutside } from "$api/clickoutside";
+  import { createEventDispatcher } from "svelte";
 
   export let id: string;
   export let data: any[] = [];
@@ -12,8 +13,11 @@
   export let filtered: never[] = [];
 
   let focused = false;
+  let focusedIn = false;
   let input: HTMLElement;
   let criteria: string;
+
+  const dispatch = createEventDispatcher();
 
   const select = (item: any, event?: KeyboardEvent) => {
     if (event && event?.key != "Enter" && event?.key != " ") return;
@@ -26,6 +30,7 @@
     if (!multiple) {
       selected = item;
       criteria = "";
+      dispatch("select", selected);
       return;
     }
 
@@ -34,6 +39,8 @@
     selected = [...selected];
     criteria = "";
     input.focus();
+
+    dispatch("select", selected);
   };
 
   const remove = (e: MouseEvent | KeyboardEvent, item: any) => {
@@ -58,11 +65,13 @@
     remove(e, multiple ? selected[selected.length - 1] : selected);
   };
 
-  $: filtered = data.filter(s => {
-    if (!criteria) return false;
-    if (display(s).toLowerCase().includes(criteria.toLowerCase()))
-      return (multiple && !selected.includes(s)) || (!multiple && selected != s);
-  });
+  $: {
+    filtered = data.filter(s => {
+      if (!criteria) return true;
+      if (display(s).toLowerCase().includes(criteria.toLowerCase()))
+        return (multiple && !selected.includes(s)) || (!multiple && selected != s);
+    }).sort((a, b) => display(a).localeCompare(display(b)));
+  }
 </script>
 
 <div id="wrapper"
@@ -95,16 +104,19 @@
          bind:textContent={criteria}
          on:keydown={checkDelete}
          on:focus={() => focused = true}
-         on:blur={() => focused = false}>
+         on:blur={() => setTimeout(() => focused = document.activeElement.classList.contains('input-box'), 250)}>
     </div>
     <div class="clear" />
   </div>
 
-  {#if filtered.length > 0}
+  {#if filtered.length > 0 && (focused || focusedIn)}
     <div class="select-wrapper">
-      <div class="select">
+      <div class="select" class:focusedIn>
         {#each filtered as datum}
-          <div on:click={() => select(datum)}
+          <div class="select-item"
+               on:click={() => select(datum)}
+               on:focus={() => focusedIn = true}
+               on:blur={() => setTimeout(() => focusedIn = document.activeElement.classList.contains('select-item'), 250)}
                tabindex="0"
                on:keypress={(e) => select(datum, e)}>{display(datum)}</div>
         {/each}
@@ -149,9 +161,15 @@
     .select {
         position: absolute;
         z-index: 5;
-        width: 100%;
-        border: 2px solid var(--color-accent);
+        min-width: 100%;
+        max-height: 15em;
+        overflow: auto;
+        width: max-content;
         background-color: var(--color-select-bg);
+    }
+
+    .select.focusedIn {
+        border: 2px solid var(--color-accent);
     }
 
     .select > * {

@@ -5,8 +5,6 @@
   import ProCondition from "$api/conditions";
 
   export let component: ProComponent;
-  export let color = "#0083ef";
-
   const getName = () => {
     if (component instanceof ProTrigger) {
       return "Trigger";

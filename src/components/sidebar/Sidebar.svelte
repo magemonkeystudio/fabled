@@ -139,15 +139,14 @@
 
 <style>
     #sidebar {
-        position: sticky;
-        top: 3rem;
+        position: absolute;
+        top: 100%;
         z-index: 3;
         background-color: #222;
         padding-bottom: 0.5rem;
         max-height: var(--height);
         height: var(--height);
         overflow-y: auto;
-        margin-bottom: calc(-1 * var(--height));
         width: 75%;
     }
 
@@ -232,7 +231,6 @@
 
     @media screen and (min-width: 500px) {
         #sidebar {
-            float: left;
             width: 15rem;
             min-width: 10rem;
             overflow-x: hidden;

@@ -51,11 +51,8 @@
   };
 </script>
 
-<HeaderBar />
-<NavBar />
-{#if $showSidebar}
-  <Sidebar />
-{/if}
+  <HeaderBar />
+  <NavBar />
 <div id="body-container" class:empty={!$active}>
   <div id="body" class:centered={!$active}>
     <slot />
@@ -101,16 +98,17 @@
     }
 
     #body-container {
-        flex: 1;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
     }
 
     #body {
         display: flex;
         flex-direction: column;
         align-items: center;
-        min-height: 100%;
-        padding-bottom: 1rem;
-        flex: 1;
+        /*padding-bottom: 1rem;*/
+        flex-grow: 1;
     }
 
     #body.centered {

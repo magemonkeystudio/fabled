@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { active, activeType, setImporting, toggleSidebar } from "../data/store";
+  import { active, activeType, setImporting, showSidebar, toggleSidebar } from "../data/store";
   import { get } from "svelte/store";
   import { createPaste } from "$api/hastebin";
   import { serverOptions, version } from "../version/data";
   import ProClass from "$api/proclass";
   import ProSkill from "$api/proskill";
+  import Sidebar from "./sidebar/Sidebar.svelte";
 
   const haste = () => {
     let act: ProClass | ProSkill | undefined = get(active);
@@ -29,6 +30,7 @@
   };
 </script>
 
+<div class="nav-wrap">
 <nav>
   <div class="chip hamburger" on:click={toggle}>
     <span class="material-symbols-rounded">menu</span>
@@ -57,9 +59,18 @@
       </div>
     {/if}
   </div>
+{#if $showSidebar}
+  <Sidebar />
+{/if}
 </nav>
+</div>
 
 <style>
+    .nav-wrap {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+    }
     label {
         display: flex;
         font-size: 1.5rem;
@@ -88,9 +99,6 @@
         align-items: center;
         justify-content: space-between;
         padding: 0.5rem;
-        position: sticky;
-        top: 0;
-        z-index: 5;
     }
 
     nav .chip {

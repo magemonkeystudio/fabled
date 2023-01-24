@@ -30,10 +30,7 @@ html {
 
 body {
     min-height: 100%;
-}
-
-body {
-    overflow: auto;
+    height: 100%;
     margin: 0;
     padding: 0;
     background-color: var(--color-bg);
@@ -46,6 +43,8 @@ body {
 #svelte-body {
     display: flex;
     flex-direction: column;
+    min-height: 100%;
+    height: 100%;
 }
 
 :root {
@@ -148,14 +147,18 @@ select, input, textarea {
 }
 
 ::-webkit-scrollbar {
-    position: fixed;
     background-color: transparent;
     width: 0.5rem;
+    height: 0.5rem;
 }
 
 ::-webkit-scrollbar-thumb {
     background-color: #333;
     border-radius: 100vw;
+}
+
+::-webkit-scrollbar-corner {
+    background: var(--color-bg)
 }
 
 @media screen and (min-width: 500px) {

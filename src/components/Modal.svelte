@@ -1,23 +1,31 @@
 <script lang="ts">
-  import { loadFile, loadRaw, setImporting } from "../data/store";
   import { fade, fly } from "svelte/transition";
-  import { getHaste } from "$api/hastebin";
   import { clickOutside } from "$api/clickoutside";
   import { createEventDispatcher } from "svelte";
 
   const dispatch = createEventDispatcher();
 
   const closeModal = () => {
-    dispatch('close');
+    dispatch("close");
+  };
+
+  const checkClose = (e: KeyboardEvent) => {
+    if (e.key == "Escape") {
+      e.preventDefault();
+      e.stopPropagation();
+      closeModal();
+    }
   };
 </script>
+
+<svelte:window on:keyup={checkClose} />
 
 <div class="backdrop" transition:fade>
   <div class="modal-content"
        use:clickOutside
        on:outclick={closeModal}
        transition:fly={{y: -200}}>
-    <slot/>
+    <slot />
   </div>
 </div>
 
