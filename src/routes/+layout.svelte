@@ -3,10 +3,10 @@
   import { active, importing, loadFile, saveData, showSidebar } from "../data/store";
   import { onDestroy, onMount } from "svelte";
   import { browser } from "$app/environment";
-  import ImportModal from "../components/ImportModal.svelte";
-  import Sidebar from "../components/sidebar/Sidebar.svelte";
-  import NavBar from "../components/NavBar.svelte";
-  import HeaderBar from "../components/HeaderBar.svelte";
+  import ImportModal from "$components/ImportModal.svelte";
+  import Sidebar from "$components/sidebar/Sidebar.svelte";
+  import NavBar from "$components/NavBar.svelte";
+  import HeaderBar from "$components/HeaderBar.svelte";
 
   let dragging = false;
 

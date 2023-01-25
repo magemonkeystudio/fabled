@@ -95,7 +95,7 @@
         <SidebarEntry
           data={cl}
           delay={200 + 100*i}
-          on:click={() => goto(`/class/${cl.name}`)}>
+          on:click={() => goto(`/class/${cl.name}/edit`)}>
           {cl.name}
         </SidebarEntry>
       {/each}

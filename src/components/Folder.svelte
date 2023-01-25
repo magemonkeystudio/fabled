@@ -122,7 +122,7 @@
         <svelte:self folder={data} />
       {:else}
         <SidebarEntry {data}
-                      on:click={() => goto(`/${data.isClass ? 'class' : 'skill'}/${data.name}`)}>
+                      on:click={() => goto(`/${data.isClass ? 'class' : 'skill'}/${data.name}${data.isClass ? '/edit' : ''}`)}>
           {data.name}
         </SidebarEntry>
       {/if}

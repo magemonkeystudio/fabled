@@ -3,7 +3,8 @@ import { YAMLObject } from "./yaml";
 import { ProAttribute } from "./proattribute";
 import { toEditorCase } from "./api";
 import { getSkill } from "../data/skill-store";
-import type ProTrigger from "./triggers";
+import ProTrigger from "./triggers";
+import type ProComponent from "$api/procomponent";
 
 export default class ProSkill implements Serializable {
   isSkill = true;
@@ -62,6 +63,20 @@ export default class ProSkill implements Serializable {
     if (data?.icon) this.icon = data.icon;
     if (data?.incompatible) this.incompatible = data.incompatible;
     if (data?.triggers) this.triggers = data.triggers;
+  }
+
+  public removeComponent = (comp: ProComponent) => {
+    if(comp instanceof ProTrigger && this.triggers.includes(comp)) {
+      this.triggers.splice(this.triggers.indexOf(comp), 1);
+      return;
+    }
+
+    for (const trigger of this.triggers) {
+      if (trigger.contains(comp))
+        trigger.removeComponent(comp);
+    }
+
+    console.log(this.triggers);
   }
 
   public serializeYaml = (): YAMLObject => {

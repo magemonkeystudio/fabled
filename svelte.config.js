@@ -20,7 +20,8 @@ const config = {
     }),
     alias: {
       $api: resolve("./src/api"),
-      $input: resolve("./src/components/input")
+      $input: resolve("./src/components/input"),
+      $components: resolve("./src/components")
     }
   }
 };

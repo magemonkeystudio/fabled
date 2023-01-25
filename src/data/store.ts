@@ -26,6 +26,7 @@ import {
   refreshSkills,
   skillFolders
 } from "./skill-store";
+import type ProComponent from "$api/procomponent";
 
 export const active: Writable<ProClass | ProSkill | undefined> = writable(undefined);
 export const activeType: Readable<"class" | "skill"> = derived(
@@ -33,6 +34,7 @@ export const activeType: Readable<"class" | "skill"> = derived(
   $active => $active instanceof ProClass ? "class" : "skill"
 );
 export const dragging: Writable<ProClass | ProSkill | ProFolder> = writable();
+export const draggingComponent: Writable<ProComponent> = writable();
 export const showSidebar: Writable<boolean> = localStore("sidebarOpen", true);
 export const sidebarOpen: Writable<boolean> = writable(true);
 export const isShowClasses: Writable<boolean> = writable(true);
