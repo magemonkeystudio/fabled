@@ -3,6 +3,7 @@ import ProClass from "./proclass";
 import { YAMLObject } from "./yaml";
 import { ProAttribute } from "./proattribute";
 import ProTrigger from "./triggers";
+import ProComponent from "$api/procomponent";
 
 export interface ProClassData {
   name: string;
@@ -57,12 +58,7 @@ export interface TriggerData {
   mana?: boolean;
   cooldown?: boolean;
   data?: any[];
-  components?: SkillComponent[];
-}
-
-export interface SkillComponent {
-  name: string;
-  components: SkillComponent[];
+  components?: ProComponent[];
 }
 
 export interface VersionData {

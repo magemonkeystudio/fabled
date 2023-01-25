@@ -1,7 +1,7 @@
-export default abstract class ComponentOption implements Cloneable {
-  abstract clone: <T>() => T;
+export default abstract class ComponentOption implements Cloneable<ComponentOption> {
+  abstract clone: () => ComponentOption;
 }
 
-interface Cloneable {
-  clone: <T>() => T;
+interface Cloneable<T> {
+  clone: () => T;
 }

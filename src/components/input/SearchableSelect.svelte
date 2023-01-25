@@ -2,7 +2,8 @@
   import { fly } from "svelte/transition";
   import { flip } from "svelte/animate";
   import { clickOutside } from "$api/clickoutside";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onDestroy, onMount } from "svelte";
+  import { browser } from "$app/environment";
 
   export let id: string;
   export let data: any[] = [];
@@ -16,8 +17,27 @@
   let focusedIn = false;
   let input: HTMLElement;
   let criteria: string;
-
+  let height: number;
+  let y: number;
+  let clientHeight: number;
+  let heightOffset: number;
+  let selectElm: HTMLElement;
   const dispatch = createEventDispatcher();
+
+  const updateY = () => y = selectElm?.getBoundingClientRect().y;
+  $: y = selectElm?.getBoundingClientRect().y;
+
+  onMount(() => {
+    if (!browser) return;
+
+    window.addEventListener("scroll", updateY, true);
+  });
+
+  onDestroy(() => {
+    if (!browser) return;
+
+    window.removeEventListener("scroll", updateY, true);
+  });
 
   const select = (item: any, event?: KeyboardEvent) => {
     if (event && event?.key != "Enter" && event?.key != " ") return;
@@ -74,6 +94,8 @@
   }
 </script>
 
+<svelte:window bind:innerHeight={height} />
+
 <div id="wrapper"
      class:multiple
      use:clickOutside
@@ -103,15 +125,23 @@
          bind:this={input}
          bind:textContent={criteria}
          on:keydown={checkDelete}
-         on:focus={() => focused = true}
+         on:focus={() => {
+           focused = true;
+           updateY();
+         }}
          on:blur={() => setTimeout(() => focused = document.activeElement.classList.contains('input-box'), 250)}>
     </div>
     <div class="clear" />
   </div>
 
   {#if filtered.length > 0 && (focused || focusedIn)}
-    <div class="select-wrapper">
-      <div class="select" class:focusedIn>
+    <div class="select-wrapper"
+         bind:this={selectElm}
+         bind:clientHeight={heightOffset}>
+      <div class="select"
+           class:focusedIn
+           bind:clientHeight={clientHeight}
+           style:top={y+clientHeight > height ? y-clientHeight + "px" : y+heightOffset + "px"}>
         {#each filtered as datum}
           <div class="select-item"
                on:click={() => select(datum)}
@@ -158,11 +188,20 @@
         outline: -webkit-focus-ring-color auto 1px;
     }
 
-    .select {
+    .select-wrapper {
         position: absolute;
+        inset: 0;
+    }
+
+    .select {
+        position: fixed;
         z-index: 5;
-        min-width: 100%;
         max-height: 15em;
+        top: auto;
+        left: auto;
+        right: auto;
+        /*top: var(--top);*/
+        /*bottom: var(--bottom);*/
         overflow: auto;
         width: max-content;
         background-color: var(--color-select-bg);

@@ -1,11 +1,11 @@
-import type { SkillComponent } from "./types";
+import type ComponentOption from "$api/options/options";
 
 export default class ProComponent {
   name: string;
   components: ProComponent[] = [];
-  data: any[] = [];
+  data: ComponentOption[] = [];
 
-  constructor(name: string, components?: ProComponent[], data?: any[]) {
+  constructor(name: string, components?: ProComponent[], data?: ComponentOption[]) {
     this.name = name;
     this.components = components || [];
     this.data = data || [];

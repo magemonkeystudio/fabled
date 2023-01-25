@@ -23,8 +23,11 @@
     hovered = false;
     skill.removeComponent(comp);
     skill.triggers = [...skill.triggers];
-    console.log(comp);
   };
+
+  const update = () => {
+    skill.triggers = [...skill.triggers];
+  }
 </script>
 
 <svelte:head>
@@ -46,7 +49,7 @@
 <div class="container">
   {#each skill.triggers as comp}
     <div class="widget">
-      <ComponentWidget component={comp} />
+      <ComponentWidget {skill} component={comp} on:update={update} />
     </div>
   {/each}
   <div class="add-trigger chip" title="Add Trigger" on:click={() => triggerModal = true}>
@@ -110,7 +113,7 @@
     }
 
     .widget {
-        margin-right: 1rem;
+        margin-right: 0.5rem;
         white-space: nowrap;
     }
 

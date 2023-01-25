@@ -1,8 +1,8 @@
 import ProComponent from "$api/procomponent";
-import type { SkillComponent } from "$api/types";
+import MaterialSelect from "$api/options/materialselect";
 
 export default class ProCondition extends ProComponent {
-  public constructor(name: string, components?: SkillComponent[], data?: any[]) {
+  public constructor(name: string, components?: ProComponent[], data?: any[]) {
     super(name, components, data);
   }
 
@@ -10,7 +10,11 @@ export default class ProCondition extends ProComponent {
 
 class BlockCondition extends ProCondition {
   public constructor() {
-    super("Block");
+    super("Block",
+      [],
+      [
+        new MaterialSelect()
+      ]);
   }
 }
 

@@ -75,8 +75,6 @@ export default class ProSkill implements Serializable {
       if (trigger.contains(comp))
         trigger.removeComponent(comp);
     }
-
-    console.log(this.triggers);
   }
 
   public serializeYaml = (): YAMLObject => {
