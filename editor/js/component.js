@@ -2647,7 +2647,6 @@ function MechanicParticleProjectile() {
     );
 	
     addProjectileOptions(this);
-
     addParticleOptions(this);
 
     this.data.push(new DoubleValue('Frequency', 'frequency', 0.05)
@@ -2741,6 +2740,7 @@ function MechanicProjectile() {
     );
 
     addProjectileOptions(this);
+    addParticleOptions(this);
     addEffectOptions(this, true);
 }
 
