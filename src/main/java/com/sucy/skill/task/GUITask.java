@@ -125,7 +125,7 @@ public class GUITask extends RepeatThreadTask {
                 } else {
                     PlayerClass main = data.getMainClass();
                     player.setLevel(main.getLevel());
-                    player.setExp((float) main.getExp() / main.getRequiredExp());
+                    player.setExp(Math.min(0.999f, (float) main.getExp() / main.getRequiredExp()));
                 }
             }
 
