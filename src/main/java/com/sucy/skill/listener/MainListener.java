@@ -133,6 +133,8 @@ public class MainListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onLogin(AsyncPlayerPreLoginEvent event) {
+        if (event.getLoginResult() != AsyncPlayerPreLoginEvent.Result.ALLOWED) return;
+
         final OfflinePlayer player;
         if (VersionManager.isVersionAtLeast(VersionManager.V1_7_5))
             player = Bukkit.getOfflinePlayer(event.getUniqueId());

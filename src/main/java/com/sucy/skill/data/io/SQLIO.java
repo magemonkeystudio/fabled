@@ -102,6 +102,8 @@ public class SQLIO extends IOManager {
 
     @Override
     public void saveData(PlayerAccounts data) {
+        if (!data.isLoaded()) return;
+
         SQLConnection connection = openConnection();
         saveSingle(connection, data);
         connection.database.closeConnection();
