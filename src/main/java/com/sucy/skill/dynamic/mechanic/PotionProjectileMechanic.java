@@ -29,6 +29,7 @@ package com.sucy.skill.dynamic.mechanic;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.dynamic.TempEntity;
 import mc.promcteam.engine.mccore.util.VersionManager;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -54,6 +55,7 @@ public class PotionProjectileMechanic extends MechanicComponent {
     private static final String POTION = "type";
     private static final String ALLY   = "group";
     private static final String LINGER = "linger";
+    private static final String COLOR  = "color";
 
     @Override
     public String getKey() {
@@ -73,21 +75,26 @@ public class PotionProjectileMechanic extends MechanicComponent {
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         // Get common values
         String     potion = settings.getString(POTION, "slowness").toUpperCase().replace(" ", "_");
+        String     color  = settings.getString(COLOR);
         boolean    linger = settings.getString(LINGER, "false").equalsIgnoreCase("true") && VersionManager.isVersionAtLeast(VersionManager.V1_9_0);
         PotionType type;
         try {
             type = PotionType.valueOf(potion);
         } catch (Exception ex) {
-            return false;
+            type = PotionType.SLOWNESS;
         }
 
         Potion    p = new Potion(type, 1);
         ItemStack item;
+
         try {
             item = new ItemStack(Material.valueOf(linger ? "LINGERING_POTION" : "SPLASH_POTION"));
             Field meta = ItemStack.class.getDeclaredField("meta");
             meta.setAccessible(true);
             PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
+            if (color != null) {
+                potionMeta.setColor(Color.fromRGB(Integer.parseInt(color.substring(1), 16)));
+            }
             potionMeta.setDisplayName("lol");
             meta.set(item, potionMeta);
         } catch (Exception ex) {
