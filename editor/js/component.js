@@ -2711,8 +2711,8 @@ function MechanicPotionProjectile() {
 
     this.description = 'Drops a splash potion from each target that does not apply potion effects by default. This will apply child elements when the potion lands. The targets supplied will be everything hit by the potion. If nothing is hit by the potion, the target will be the location it landed.';
 
-    this.data.push(new ListValue('Type', 'type', getPotionTypes, 'Fire Resistance')
-        .setTooltip('The type of the potion to use for the visuals')
+    this.data.push(new StringValue('Color', 'color', '#ff0000')
+        .setTooltip('The hex color code to use for the potion')
     );
     this.data.push(new ListValue("Group", "group", ["Ally", "Enemy", "Both"], "Enemy")
         .setTooltip('The alignment of entities to hit')
