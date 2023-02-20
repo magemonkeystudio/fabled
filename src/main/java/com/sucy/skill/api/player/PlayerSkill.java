@@ -45,6 +45,7 @@ public final class PlayerSkill {
     private Material    bind;
     private long        cooldown;
     private int         level;
+    private boolean     external;
 
     /**
      * Constructs a new PlayerSkill. You should not need to use
@@ -59,6 +60,24 @@ public final class PlayerSkill {
         this.player = player;
         this.skill = skill;
         this.parent = parent;
+        this.external = false;
+    }
+
+    /**
+     * Constructs a new PlayerSkill. You should not need to use
+     * this constructor as it is provided by the API. Get instances
+     * through the PlayerData object.
+     *
+     * @param player owning player data
+     * @param skill  skill template
+     * @param parent owning player class
+     * @param external whether the skill was added by an external plugin
+     */
+    public PlayerSkill(PlayerData player, Skill skill, PlayerClass parent, boolean external) {
+        this.player = player;
+        this.skill = skill;
+        this.parent = parent;
+        this.external = external;
     }
 
     /**
@@ -116,6 +135,13 @@ public final class PlayerSkill {
     public int getLevel() {
         return level;
     }
+
+    /**
+     * Retrieves whether the skill was added by an external plugin
+     *
+     * @return whether the skill was added by an external plugin
+     */
+    public boolean isExternal() { return external; }
 
     /**
      * Retrieves the cost to upgrade the skill to the next level

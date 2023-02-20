@@ -28,6 +28,7 @@ package com.sucy.skill.cmd;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerData;
+import com.sucy.skill.api.player.PlayerSkill;
 import mc.promcteam.engine.mccore.commands.CommandManager;
 import mc.promcteam.engine.mccore.commands.ConfigurableCommand;
 import mc.promcteam.engine.mccore.commands.IFunction;
@@ -85,9 +86,13 @@ public class CmdCast implements IFunction {
             else if (!player.hasSkill(skill) || player.getSkillLevel(skill) == 0)
                 command.sendMessage(sender, NOT_UNLOCKED, ChatColor.RED + "You must level up the skill first");
 
+            else {
+                PlayerSkill playerSkill = player.getSkill(skill);
+                if (playerSkill.isExternal()) { return; }
+
                 // Cast the skill
-            else
                 player.cast(skill);
+            }
         }
 
         // Invalid arguments

@@ -26,6 +26,7 @@
  */
 package com.sucy.skill.api.player;
 
+import com.google.common.base.Preconditions;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.enums.*;
@@ -61,6 +62,7 @@ import mc.promcteam.engine.mccore.util.VersionManager;
 import mc.promcteam.engine.utils.EntityUT;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -88,6 +90,7 @@ public class PlayerData {
     public final  HashMap<String, Integer>                       attributes          = new HashMap<>();
     private final HashMap<String, PlayerClass>                   classes             = new HashMap<>();
     private final HashMap<String, PlayerSkill>                   skills              = new HashMap<>();
+    private final HashSet<ExternallyAddedSkill>                  extSkills           = new HashSet<>();
     private final HashMap<Material, PlayerSkill>                 binds               = new HashMap<>();
     private final HashMap<String, List<PlayerAttributeModifier>> attributesModifiers = new HashMap<>();
     private final HashMap<String, List<PlayerStatModifier>>      statModifiers       = new HashMap<>();
@@ -767,10 +770,52 @@ public class PlayerData {
 
     public void addSkill(Skill skill, PlayerClass parent) {
         String key = skill.getKey();
-        if (!skills.containsKey(key)) {
+        PlayerSkill existing = skills.get(key);
+        if (existing == null || !existing.isExternal()) {
             PlayerSkill data = new PlayerSkill(this, skill, parent);
             skills.put(key, data);
             combos.addSkill(skill);
+        }
+    }
+
+    public void addSkillExternally(Skill skill, PlayerClass parent, NamespacedKey namespacedKey, int level) {
+        String key = skill.getKey();
+        extSkills.removeIf(extSkill -> extSkill.getId().equals(key) && extSkill.getKey().equals(namespacedKey));
+        extSkills.add(new ExternallyAddedSkill(key, namespacedKey, level));
+
+        PlayerSkill existing = skills.get(key);
+        if (existing == null || existing.getLevel() == 0) {
+            PlayerSkill data = new PlayerSkill(this, skill, parent, true);
+            skills.put(key, data);
+            combos.addSkill(skill);
+            forceUpSkill(data, level);
+        } else if (existing.isExternal() && level > existing.getLevel()) {
+            forceUpSkill(existing, level-existing.getLevel());
+        }
+    }
+
+    public void removeSkillExternally(Skill skill, NamespacedKey namespacedKey) {
+        String key = skill.getKey();
+        extSkills.removeIf(extSkill -> extSkill.getId().equals(key) && extSkill.getKey().equals(namespacedKey));
+        PlayerSkill existing = skills.get(key);
+        if (existing != null && existing.isExternal()) {
+            ExternallyAddedSkill max = null;
+            int maxLevel = Integer.MIN_VALUE;
+            for (ExternallyAddedSkill extSkill : extSkills) {
+                if (!extSkill.getId().equals(key)) { continue; }
+                int level = extSkill.getLevel();
+                if (level > maxLevel) {
+                    maxLevel = level;
+                    max = extSkill;
+                }
+            }
+            if (max == null) {
+                skills.remove(key);
+                combos.removeSkill(existing.getData());
+                forceDownSkill(existing, existing.getLevel());
+            } else {
+                forceDownSkill(existing, existing.getLevel()-maxLevel);
+            }
         }
     }
 
@@ -864,16 +909,23 @@ public class PlayerData {
      * @param skill skill to forcefully upgrade
      */
     public void forceUpSkill(PlayerSkill skill) {
-        skill.addLevels(1);
+        forceUpSkill(skill, 1);
+    }
+
+    public void forceUpSkill(PlayerSkill skill, int amount) {
+        Preconditions.checkArgument(amount >= 0);
+        if (amount == 0) { return; }
+        int oldLevel = skill.getLevel();
+        skill.addLevels(amount);
 
         // Passive calls
         if (passive) {
             Player player = getPlayer();
             if (player != null && skill.getData() instanceof PassiveSkill) {
-                if (skill.getLevel() == 1) {
+                if (oldLevel == 0) {
                     ((PassiveSkill) skill.getData()).initialize(player, skill.getLevel());
                 } else {
-                    ((PassiveSkill) skill.getData()).update(player, skill.getLevel() - 1, skill.getLevel());
+                    ((PassiveSkill) skill.getData()).update(player, oldLevel, skill.getLevel());
                 }
             }
 
@@ -943,7 +995,13 @@ public class PlayerData {
      * @param skill skill to forcefully downgrade
      */
     public void forceDownSkill(PlayerSkill skill) {
-        skill.addLevels(-1);
+        forceDownSkill(skill, 1);
+    }
+
+    public void forceDownSkill(PlayerSkill skill, int amount) {
+        Preconditions.checkArgument(amount >= 0);
+        if (amount == 0) { return; }
+        skill.addLevels(-amount);
 
         // Passive calls
         Player player = getPlayer();
@@ -951,7 +1009,7 @@ public class PlayerData {
             if (skill.getLevel() == 0) {
                 ((PassiveSkill) skill.getData()).stopEffects(player, 1);
             } else {
-                ((PassiveSkill) skill.getData()).update(player, skill.getLevel() + 1, skill.getLevel());
+                ((PassiveSkill) skill.getData()).update(player, skill.getLevel() + amount, skill.getLevel());
             }
         }
 
@@ -2247,5 +2305,23 @@ public class PlayerData {
 
         this.autoLevel();
         this.updateScoreboard();
+    }
+
+    private static class ExternallyAddedSkill {
+        private final String        id;
+        private final NamespacedKey key;
+        private final int           level;
+
+        public ExternallyAddedSkill(String id, NamespacedKey key, int level) {
+            this.id = id;
+            this.key = key;
+            this.level = level;
+        }
+
+        public String getId() { return id; }
+
+        public NamespacedKey getKey() { return key; }
+
+        public int getLevel() { return level; }
     }
 }
