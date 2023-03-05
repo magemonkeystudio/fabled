@@ -277,6 +277,12 @@ public class TempEntity implements LivingEntity {
         return false;
     }
 
+    @Override
+    public void setVisibleByDefault(boolean b) { }
+
+    @Override
+    public boolean isVisibleByDefault() { return true; }
+
     public void setCustomNameVisible(boolean b) {
 
     }
