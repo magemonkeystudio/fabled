@@ -29,12 +29,13 @@ package com.sucy.skill.api.util;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The manager for temporary entity flag data
  */
 public class FlagManager {
-    private static final HashMap<Integer, FlagData> data = new HashMap<Integer, FlagData>();
+    private static final Map<Integer, FlagData> data = new HashMap<>();
 
     /**
      * Retrieves the flag data for an entity. This creates new data if
