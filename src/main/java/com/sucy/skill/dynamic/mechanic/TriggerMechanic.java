@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * SkillAPI © 2017
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.mechanic.TriggerMechanic
  */
 public class TriggerMechanic extends MechanicComponent {

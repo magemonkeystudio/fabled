@@ -5,7 +5,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.api.event.KeyPressEvent
  */
 public class KeyPressEvent extends Event {

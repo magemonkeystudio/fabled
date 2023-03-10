@@ -7,7 +7,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import java.util.Map;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.trigger.BlockBreakTrigger
  */
 public class CrouchTrigger implements Trigger<PlayerToggleSneakEvent> {

@@ -5,7 +5,7 @@ import com.sucy.skill.dynamic.ComponentType;
 import java.util.List;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.custom.CustomComponent
  */
 public interface CustomComponent {

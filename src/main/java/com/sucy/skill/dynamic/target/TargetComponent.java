@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.target.TargetComponent
  */
 public abstract class TargetComponent extends EffectComponent {

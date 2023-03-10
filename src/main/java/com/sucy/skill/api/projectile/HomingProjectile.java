@@ -7,7 +7,7 @@ import org.bukkit.event.Event;
 import org.bukkit.util.Vector;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.api.projectile.HomingProjectile
  */
 public class HomingProjectile extends CustomProjectile {

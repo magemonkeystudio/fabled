@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
- * SkillAPI © 2017
+ * ProSkillAPI © 2023
  * com.sucy.skill.listener.ExperienceListener
  */
 public class ExperienceListener extends SkillAPIListener {

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.trigger.BlockBreakTrigger
  */
 public class BlockPlaceTrigger implements Trigger<BlockPlaceEvent> {

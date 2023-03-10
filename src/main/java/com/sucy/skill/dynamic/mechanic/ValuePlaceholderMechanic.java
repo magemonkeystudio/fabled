@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.mechanic.ValuePlaceholderMechanic
  */
 public class ValuePlaceholderMechanic extends MechanicComponent {

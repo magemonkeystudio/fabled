@@ -8,7 +8,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.api.event.PlayerPreClassChangeEvent
  */
 public class PlayerPreClassChangeEvent extends Event implements Cancellable {

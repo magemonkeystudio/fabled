@@ -8,7 +8,7 @@ import org.bukkit.entity.LivingEntity;
 import java.util.List;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.trigger.TriggerComponent
  */
 public class TriggerComponent extends EffectComponent {

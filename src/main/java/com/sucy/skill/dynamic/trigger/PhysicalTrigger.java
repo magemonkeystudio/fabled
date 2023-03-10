@@ -5,7 +5,7 @@ import com.sucy.skill.api.event.PhysicalDamageEvent;
 import com.sucy.skill.dynamic.DynamicSkill;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.trigger.BlockBreakTrigger
  */
 public abstract class PhysicalTrigger implements Trigger<PhysicalDamageEvent> {

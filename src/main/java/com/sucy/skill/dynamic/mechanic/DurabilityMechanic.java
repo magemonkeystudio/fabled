@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 /**
- * SkillAPI © 2017
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.mechanic.DurabilityMechanic
  */
 public class DurabilityMechanic extends MechanicComponent {

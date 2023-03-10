@@ -19,7 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.hook.PlaceholderAPIHook
  */
 public class PlaceholderAPIHook extends PlaceholderExpansion {

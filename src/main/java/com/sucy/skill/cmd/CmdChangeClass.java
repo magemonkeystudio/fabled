@@ -21,7 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.cmd.CmdChangeClass
  */
 public class CmdChangeClass implements IFunction {

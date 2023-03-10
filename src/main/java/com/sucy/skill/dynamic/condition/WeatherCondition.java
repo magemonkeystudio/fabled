@@ -5,7 +5,7 @@ import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.condition.Weather
  */
 public class WeatherCondition extends ConditionComponent {

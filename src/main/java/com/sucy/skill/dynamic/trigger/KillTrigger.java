@@ -7,7 +7,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import java.util.Map;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.trigger.BlockBreakTrigger
  */
 public class KillTrigger implements Trigger<EntityDeathEvent> {

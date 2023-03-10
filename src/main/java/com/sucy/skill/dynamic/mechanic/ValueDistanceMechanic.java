@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * SkillAPI © 2017
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.mechanic.ValueDistanceMechanic
  */
 public class ValueDistanceMechanic extends MechanicComponent {

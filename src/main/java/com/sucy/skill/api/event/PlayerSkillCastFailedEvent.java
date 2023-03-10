@@ -7,7 +7,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.api.event.PlayerSkillCastFailedEvent
  */
 public class PlayerSkillCastFailedEvent extends Event {

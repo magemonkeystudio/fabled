@@ -11,7 +11,7 @@ import org.bukkit.event.EventPriority;
 import static com.sucy.skill.listener.attribute.AttributeListener.PHYSICAL;
 
 /**
- * SkillAPI © 2017
+ * ProSkillAPI © 2023
  * com.sucy.skill.listener.BuffListener
  */
 public class BuffListener extends SkillAPIListener {

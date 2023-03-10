@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 /**
- * SkillAPI © 2017
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.mechanic.FoodMechanic
  */
 public class FoodMechanic extends MechanicComponent {

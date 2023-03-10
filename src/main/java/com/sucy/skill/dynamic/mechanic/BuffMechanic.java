@@ -8,7 +8,7 @@ import org.bukkit.entity.LivingEntity;
 import java.util.List;
 
 /**
- * SkillAPI © 2017
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.mechanic.BuffMechanic
  */
 public class BuffMechanic extends MechanicComponent {

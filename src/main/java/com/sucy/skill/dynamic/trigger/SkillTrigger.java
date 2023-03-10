@@ -7,7 +7,7 @@ import com.sucy.skill.dynamic.DynamicSkill;
 import java.util.List;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.trigger.BlockBreakTrigger
  */
 public abstract class SkillTrigger implements Trigger<SkillDamageEvent> {

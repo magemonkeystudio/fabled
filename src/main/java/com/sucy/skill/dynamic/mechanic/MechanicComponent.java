@@ -4,7 +4,7 @@ import com.sucy.skill.dynamic.ComponentType;
 import com.sucy.skill.dynamic.EffectComponent;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.mechanic.MechanicComponent
  */
 public abstract class MechanicComponent extends EffectComponent {

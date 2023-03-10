@@ -9,7 +9,7 @@ import org.bukkit.entity.Tameable;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.api.AllyChecker
  */
 public interface CombatProtection {

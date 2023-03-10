@@ -9,7 +9,7 @@ import org.bukkit.event.entity.LingeringPotionSplashEvent;
 import static com.sucy.skill.listener.MechanicListener.*;
 
 /**
- * SkillAPI © 2017
+ * ProSkillAPI © 2023
  * com.sucy.skill.listener.LingeringPotionListener
  */
 public class LingeringPotionListener extends SkillAPIListener {

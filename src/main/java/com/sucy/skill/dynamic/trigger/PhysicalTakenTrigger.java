@@ -7,7 +7,7 @@ import org.bukkit.entity.LivingEntity;
 import java.util.Map;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.trigger.BlockBreakTrigger
  */
 public class PhysicalTakenTrigger extends PhysicalTrigger {

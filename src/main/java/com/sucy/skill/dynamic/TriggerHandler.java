@@ -19,7 +19,7 @@ import java.util.Objects;
 import static com.sucy.skill.dynamic.ComponentRegistry.getExecutor;
 
 /**
- * SkillAPI © 2017
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.TriggerHandler
  */
 public class TriggerHandler implements Listener {

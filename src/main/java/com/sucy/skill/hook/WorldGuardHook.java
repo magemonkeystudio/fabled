@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.hook.WorldGuardHook
  */
 public class WorldGuardHook {

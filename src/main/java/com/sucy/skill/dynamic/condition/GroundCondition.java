@@ -3,7 +3,7 @@ package com.sucy.skill.dynamic.condition;
 import org.bukkit.entity.LivingEntity;
 
 /**
- * SkillAPI © 2018
+ * ProSkillAPI © 2023
  * com.sucy.skill.dynamic.condition.Ground
  */
 public class GroundCondition extends ConditionComponent {
