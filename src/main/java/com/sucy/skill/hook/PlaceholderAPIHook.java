@@ -12,11 +12,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * ProSkillAPI © 2023
@@ -39,6 +43,19 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         return PlaceholderAPI.setPlaceholders(player, message);
     }
 
+    public static ItemStack processPlaceholders(ItemStack item, Player player) {
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(format(meta.getDisplayName(), player));
+
+        List<String> lore = meta.getLore()
+                .stream().map(line -> format(line, player))
+                .collect(Collectors.toList());
+        meta.setLore(lore);
+
+        item.setItemMeta(meta);
+        return item;
+    }
+
     @Override
     public boolean canRegister() {
         return true;
@@ -56,7 +73,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
     @Override
     public String getVersion() {
-        return "1.0.0";
+        return "1.0.1";
     }
 
     @Override

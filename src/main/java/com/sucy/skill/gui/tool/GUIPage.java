@@ -29,6 +29,8 @@ package com.sucy.skill.gui.tool;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.skills.Skill;
+import com.sucy.skill.hook.PlaceholderAPIHook;
+import com.sucy.skill.hook.PluginChecker;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -133,10 +135,14 @@ public class GUIPage {
         Player bukkitPlayer = player.getPlayer();
         for (Map.Entry<Integer, String> entry : lookup.entrySet()) {
             IconHolder holder = data.get(entry.getValue());
-            if (holder != null && holder.isAllowed(bukkitPlayer))
-                contents[entry.getKey()] = holder.getIcon(player);
-            else
-                contents[entry.getKey()] = GUITool.getIcon(entry.getValue());
+            ItemStack item = holder != null && holder.isAllowed(bukkitPlayer)
+                    ? holder.getIcon(player)
+                    : GUITool.getIcon(entry.getValue());
+
+            if (PluginChecker.isPlaceholderAPIActive()) {
+                PlaceholderAPIHook.processPlaceholders(item, bukkitPlayer);
+            }
+            contents[entry.getKey()] = item;
         }
 
         return contents;
