@@ -84,8 +84,12 @@ public class ClassBoardManager {
             // Apply new data
             if (SkillAPI.getSettings().isShowScoreboard()) {
                 for (PlayerClass c : player.getClasses()) {
-                    if (c.getData().getGroupSettings().isShowScoreboard()) {
-                        StatBoard board = new StatBoard(c.getData().getPrefix(), "SkillAPI");
+                    RPGClass clazz = c.getData();
+                    if (clazz.getGroupSettings().isShowScoreboard()) {
+                        String title = clazz.getPrefix();
+                        if (title == null || ChatColor.stripColor(title).isBlank()) title = clazz.getName();
+
+                        StatBoard board = new StatBoard(title, "SkillAPI");
                         board.addStats(new PlayerStats(c));
                         BoardManager.getPlayerBoards(player.getPlayerName()).addBoard(board);
                     }
