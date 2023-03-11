@@ -147,7 +147,7 @@ public class MainListener extends SkillAPIListener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onReadyLogin(PlayerLoginEvent event) {
-        if (event.getResult() != PlayerLoginEvent.Result.ALLOWED) return;
+        if (event.getResult() == PlayerLoginEvent.Result.ALLOWED) return;
 
         SkillAPI.unloadPlayerData(event.getPlayer(), true);
     }

@@ -131,6 +131,7 @@ public abstract class IOManager {
         DataSection    accounts = file.getSection(ACCOUNTS);
         if (accounts == null) {
             data.getActiveData().endInit();
+            data.isLoaded(true);
             return data;
         }
         for (String accountKey : accounts.keys()) {
