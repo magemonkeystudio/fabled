@@ -477,7 +477,7 @@ public class PlayerData {
         if (this.attributesModifiers.containsKey(key)) {
             return this.attributesModifiers.get(key);
         } else {
-            return new ArrayList<PlayerAttributeModifier>();
+            return new ArrayList<>();
         }
     }
 
@@ -671,7 +671,15 @@ public class PlayerData {
     public boolean openAttributeMenu() {
         Player player = getPlayer();
         if (SkillAPI.getSettings().isAttributesEnabled() && player != null) {
-            GUITool.getAttributesMenu().show(new AttributeHandler(), this, SkillAPI.getLanguage().getMessage(GUINodes.ATTRIB_TITLE, true, FilterType.COLOR, RPGFilter.POINTS.setReplacement(attribPoints + ""), Filter.PLAYER.setReplacement(player.getName())).get(0), SkillAPI.getAttributeManager().getAttributes());
+            GUITool.getAttributesMenu()
+                    .show(new AttributeHandler(),
+                            this,
+                            SkillAPI.getLanguage().getMessage(GUINodes.ATTRIB_TITLE,
+                                    true,
+                                    FilterType.COLOR, RPGFilter.POINTS.setReplacement(attribPoints + ""),
+                                    Filter.PLAYER.setReplacement(player.getName())
+                            ).get(0), SkillAPI.getAttributeManager().getAttributes()
+                    );
             return true;
         }
         return false;

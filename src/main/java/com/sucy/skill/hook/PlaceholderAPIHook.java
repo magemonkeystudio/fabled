@@ -45,12 +45,16 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
     public static ItemStack processPlaceholders(ItemStack item, Player player) {
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(format(meta.getDisplayName(), player));
+        if (meta.hasDisplayName()) {
+            meta.setDisplayName(format(meta.getDisplayName(), player));
+        }
 
-        List<String> lore = meta.getLore()
-                .stream().map(line -> format(line, player))
-                .collect(Collectors.toList());
-        meta.setLore(lore);
+        if (meta.hasLore()) {
+            List<String> lore = meta.getLore()
+                    .stream().map(line -> format(line, player))
+                    .collect(Collectors.toList());
+            meta.setLore(lore);
+        }
 
         item.setItemMeta(meta);
         return item;

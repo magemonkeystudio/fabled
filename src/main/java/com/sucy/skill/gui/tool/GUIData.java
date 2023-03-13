@@ -88,8 +88,8 @@ public class GUIData {
     public void show(GUIHolder handler, PlayerData player, String title, HashMap<String, ? extends IconHolder> data) {
         Inventory   inv      = Bukkit.getServer().createInventory(handler, rows * 9, title);
         ItemStack[] contents = pageMap.get(0).instance(player, data);
-        if (pages > 1)
-            GUITool.addPageButtons(contents);
+        if (pages > 1) GUITool.addPageButtons(contents);
+
         inv.setContents(contents);
         handler.set(this, player, inv, data);
         player.getPlayer().openInventory(inv);
