@@ -27,7 +27,7 @@
 
   const update = () => {
     skill.triggers = [...skill.triggers];
-  }
+  };
 </script>
 
 <svelte:head>
@@ -35,15 +35,6 @@
 </svelte:head>
 <div class="header">
   <h2>{skill.name}</h2>
-  <div class="delete-zone"
-       on:dragover|preventDefault={() => hovered = true}
-       on:dragleave={() => hovered = false}
-       on:drop|preventDefault|stopPropagation={drop}
-       class:hovered
-  >
-    <span class="material-symbols-rounded">delete</span>
-    Drag components here to delete
-  </div>
 </div>
 <hr />
 <div class="container">
@@ -67,6 +58,7 @@
       on:select={onSelectTrigger}
       data={Object.values(triggers).map(trigger => new trigger())}
       display={(trigger) => trigger.name} />
+    <div class="chip cancel" on:click={() => triggerModal = false}>Cancel</div>
   </Modal>
 {/if}
 
@@ -83,22 +75,14 @@
         margin: 0 3rem;
     }
 
-    .delete-zone {
-        display: flex;
-        align-items: center;
-        color: white;
-        background-color: #b60000;
-        padding: 0.5rem;
-        padding-inline: 5%;
-        border-radius: 0.25rem;
+    .cancel {
+        background: #333;
+        font-size: 1.2rem;
+        margin-top: 0.5rem;
     }
 
-    .delete-zone .material-symbols-rounded {
-        margin-right: 1rem;
-    }
-
-    .delete-zone.hovered {
-        outline: 0.2rem dashed white;
+    .cancel:hover {
+        cursor: pointer;
     }
 
     .container {
