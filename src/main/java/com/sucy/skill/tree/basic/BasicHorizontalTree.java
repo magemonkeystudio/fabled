@@ -30,8 +30,8 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.exception.SkillTreeException;
 import com.sucy.skill.api.skills.Skill;
+import com.sucy.skill.gui.tool.GUIType;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -53,20 +53,20 @@ public class BasicHorizontalTree extends InventoryTree {
      */
     @Override
     public void arrange(List<Skill> skills) throws SkillTreeException {
+        skillSlots.clear();
 
         // Arrange the skill tree
-        Collections.sort(skills, comparator);
+        skills.sort(comparator);
         height = 0;
-        int   i = 0;
-        Skill skill;
 
         // Cycle through all skills that do not have children, put them
         // at the far left, and branch their children to the right
-        while (i < skills.size() && (skill = skills.get(i++)).getSkillReq() == null) {
+        for (Skill skill : skills) {
+            if (skill.getSkillReq() != null) { continue; }
             skillSlots.put(9 * height, skill);
             height += placeChildren(skills, skill, height * 9 + 1, 0);
         }
-        height = Math.max(height, 1);
+        height = Math.max(1, Math.min(SkillAPI.getConfig("gui").getConfig().getInt(GUIType.SKILL_TREE.getPrefix()+tree.getName()+".rows", height), 6));
     }
 
     /**
@@ -79,14 +79,8 @@ public class BasicHorizontalTree extends InventoryTree {
      *
      * @return rows needed to fit the skill and all of its children
      *
-     * @throws SkillTreeException
      */
-    private int placeChildren(List<Skill> skills, Skill skill, int slot, int depth) throws SkillTreeException {
-
-        // Prevent going outside the bounds of the inventory
-        if (depth == 9) {
-            throw new SkillTreeException("Error generating the skill tree: " + tree.getName() + " - too large of a tree!");
-        }
+    private int placeChildren(List<Skill> skills, Skill skill, int slot, int depth) {
 
         // Add in all children
         int width = 0;
@@ -95,6 +89,10 @@ public class BasicHorizontalTree extends InventoryTree {
                 continue;
             }
             if (s.getSkillReq().equalsIgnoreCase(skill.getName())) {
+                if (slot%9 == 8) {
+                    SkillAPI.inst().getLogger().warning(this.getClass().getSimpleName()+" for "+this.tree.getName()+" would be too big and could not be completed. Try changing the tree type of the class.");
+                    break;
+                }
                 skillSlots.put(slot + width * 9, s);
                 int w = placeChildren(skills, s, slot + width * 9 + 1, depth + 1);
                 width += w;

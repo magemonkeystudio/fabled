@@ -29,6 +29,8 @@ package com.sucy.skill.gui.tool;
 import com.google.common.base.Preconditions;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerData;
+import com.sucy.skill.api.skills.Skill;
+import com.sucy.skill.tree.basic.CustomTree;
 import com.sucy.skill.tree.basic.InventoryTree;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.Bukkit;
@@ -37,14 +39,17 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class GUIData {
-    private static final String
+    public static final String
             ROWS  = "rows",
             PAGES = "pages",
             SLOTS = "slots";
 
     private final ArrayList<GUIPage> pageMap = new ArrayList<GUIPage>();
+    private boolean editable = true;
 
     private int rows  = 3;
     private int pages = 1;
@@ -55,6 +60,7 @@ public class GUIData {
     }
 
     GUIData(InventoryTree skillTree) {
+        if (!(skillTree instanceof CustomTree)) { editable = false; }
         rows = skillTree.getHeight();
         try {
             Preconditions.checkArgument(rows > 0 && rows <= 6);
@@ -62,7 +68,23 @@ public class GUIData {
             SkillAPI.inst().getLogger().warning("Error loading GUI: Rows should be > 0 and <= 6. Rows: " + rows);
             throw e;
         }
-        this.pageMap.add(new GUIPage(this, skillTree.getSkillSlots()));
+        TreeMap<Integer, Skill> skillSlots = skillTree.getSkillSlots();
+        int slotsPerPage = rows*9;
+        int i = slotsPerPage;
+        Map<Integer,Skill> map = new HashMap<>();
+        for (Map.Entry<Integer, Skill> entry : skillSlots.entrySet()) {
+            int slot = entry.getKey();
+            if (slot >= i) {
+                this.pageMap.add(new GUIPage(this, map));
+                map.clear();
+                i += slotsPerPage;
+            }
+            map.put(slot-i+slotsPerPage, entry.getValue());
+        }
+        if (!map.isEmpty() || this.pageMap.isEmpty()) {
+            this.pageMap.add(new GUIPage(this, map));
+        }
+        pages = pageMap.size();
     }
 
     GUIData(DataSection data) {
@@ -94,6 +116,8 @@ public class GUIData {
         handler.set(this, player, inv, data);
         player.getPlayer().openInventory(inv);
     }
+
+    public boolean isEditable() { return editable; }
 
     public GUIPage getPage(int page) {
         return pageMap.get(page % pages);

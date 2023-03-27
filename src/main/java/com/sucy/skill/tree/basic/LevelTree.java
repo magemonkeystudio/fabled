@@ -30,8 +30,12 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.exception.SkillTreeException;
 import com.sucy.skill.api.skills.Skill;
+import com.sucy.skill.gui.tool.GUIType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * <p>Root class for tree implementations based on levels</p>
@@ -57,6 +61,7 @@ public abstract class LevelTree extends InventoryTree {
      */
     @Override
     protected void arrange(List<Skill> skills) throws SkillTreeException {
+        skillSlots.clear();
 
         // Get the max level
         int maxLevel = 1;
@@ -67,8 +72,8 @@ public abstract class LevelTree extends InventoryTree {
         }
 
         // Break it up into tiers
-        int scale = (maxLevel + getTierLimit() - 1) / getTierLimit();
-        Collections.sort(skills, levelComparator);
+        int scale = getTierLimit() > 0 ? (maxLevel + getTierLimit() - 1) / getTierLimit() : 1;
+        skills.sort(levelComparator);
         HashMap<Integer, List<Skill>> tiers = new HashMap<Integer, List<Skill>>();
         int                           tier  = 0;
         while (skills.size() > 0) {
@@ -77,7 +82,7 @@ public abstract class LevelTree extends InventoryTree {
             int max   = tier * scale;
             int count = 0;
 
-            while (skills.size() > 0 && count++ < getPerTierLimit() && skills.get(0).getLevelReq(0) <= max) {
+            while (skills.size() > 0 && (getPerTierLimit() < 0 || count++ < getPerTierLimit()) && skills.get(0).getLevelReq(0) <= max) {
                 list.add(skills.remove(0));
             }
         }
@@ -87,12 +92,9 @@ public abstract class LevelTree extends InventoryTree {
             List<Skill> list     = tiers.get(i);
             int         maxIndex = 0;
 
-            for (int j = 0; j < getPerTierLimit(); j++) {
-                for (int k = 0; k < i; k++) {
-                    List<Skill> prevList = tiers.get(k);
-                    if (prevList.size() <= j) {
-                        continue;
-                    }
+            for (int k = 0; k < i; k++) {
+                List<Skill> prevList = tiers.get(k);
+                for (int j = 0; j < prevList.size(); j++) {
                     Skill prevSkill = prevList.get(j);
                     for (int l = 0; l < list.size(); l++) {
                         Skill nextSkill = list.get(l);
@@ -108,7 +110,7 @@ public abstract class LevelTree extends InventoryTree {
             }
             for (int j = 0; j < list.size(); j++) {
                 int index;
-                if (getPerTierLimit() == 9) {
+                if (getPerTierLimit() == 8) { // Vertical tree
                     index = j + i * 9;
                 } else {
                     index = j * 9 + i;
@@ -119,7 +121,7 @@ public abstract class LevelTree extends InventoryTree {
                 }
             }
         }
-        height = Math.max(height, 1);
+        height = Math.max(1, Math.min(SkillAPI.getConfig("gui").getConfig().getInt(GUIType.SKILL_TREE.getPrefix()+tree.getName()+".rows", height), 6));
     }
 
     /**
@@ -132,9 +134,7 @@ public abstract class LevelTree extends InventoryTree {
     /**
      * @return maximum number of tiers allowed
      */
-    protected int getTierLimit() {
-        return 15 - getPerTierLimit();
-    }
+    protected abstract int getTierLimit();
 
     /**
      * Comparator for skills for level trees

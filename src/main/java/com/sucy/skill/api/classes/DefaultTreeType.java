@@ -38,7 +38,9 @@ public enum DefaultTreeType implements TreeType {
     LEVEL_HORIZONTAL,
     LEVEL_VERTICAL,
     FLOOD,
-    REQUIREMENT;
+    REQUIREMENT,
+    CUSTOM,
+    ;
 
     /**
      * Retrieves the skill tree depending on the enum value
@@ -59,6 +61,8 @@ public enum DefaultTreeType implements TreeType {
                 return new FloodTree(api, parent);
             case REQUIREMENT:
                 return new RequirementTree(api, parent);
+            case CUSTOM:
+                return new CustomTree(api, parent);
             default:
                 return null;
         }

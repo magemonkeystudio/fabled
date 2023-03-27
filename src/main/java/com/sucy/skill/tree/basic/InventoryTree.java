@@ -44,8 +44,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * A skill tree manager for classes
@@ -79,7 +79,7 @@ public abstract class InventoryTree extends SkillTree {
         }
     };
     private static final   String                  INVENTORY_KEY = "SAPI_ST";
-    protected final        HashMap<Integer, Skill> skillSlots    = new HashMap<Integer, Skill>();
+    protected final        TreeMap<Integer, Skill> skillSlots    = new TreeMap<>();
     protected              int                     height;
 
     /**
@@ -168,7 +168,7 @@ public abstract class InventoryTree extends SkillTree {
      *
      * @return map of occupied skill slots
      */
-    public HashMap<Integer, Skill> getSkillSlots() {
+    public TreeMap<Integer, Skill> getSkillSlots() {
         return skillSlots;
     }
 

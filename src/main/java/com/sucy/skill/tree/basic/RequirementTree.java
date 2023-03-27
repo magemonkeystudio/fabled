@@ -30,8 +30,12 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.exception.SkillTreeException;
 import com.sucy.skill.api.skills.Skill;
+import com.sucy.skill.gui.tool.GUIType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Tree implementation based on requirement chains
@@ -54,6 +58,7 @@ public class RequirementTree extends InventoryTree {
      */
     @Override
     public void arrange(List<Skill> skills) throws SkillTreeException {
+        skillSlots.clear();
 
         // Organize skills into chained and unchained
         List<Skill> chained   = new ArrayList<Skill>();
@@ -68,7 +73,7 @@ public class RequirementTree extends InventoryTree {
 
         // Determine the widths for each group
         int unchainedWidth = (unchained.size() + 5) / 6;
-        int chainedWidth   = 8 - unchainedWidth;
+        int chainedWidth   = 7 - unchainedWidth;
         if (unchainedWidth == 0) {
             chainedWidth = 8;
         }
@@ -78,7 +83,7 @@ public class RequirementTree extends InventoryTree {
 
         // Fill in the unchained group
         int index = 0;
-        Collections.sort(unchained, comparator);
+        unchained.sort(comparator);
         for (Skill skill : unchained) {
             int x = index % unchainedWidth;
             int y = index / unchainedWidth;
@@ -131,7 +136,8 @@ public class RequirementTree extends InventoryTree {
         if (row + 1 > height) {
             height = row + 1;
         }
-        height = Math.max(height, 1);
+
+        height = Math.max(1, Math.min(SkillAPI.getConfig("gui").getConfig().getInt(GUIType.SKILL_TREE.getPrefix()+tree.getName()+".rows", height), 6));
     }
 
     /**
