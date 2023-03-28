@@ -5,10 +5,12 @@
   import { createEventDispatcher } from "svelte";
 
   export let width = "auto";
+  export let open = false;
 
   const dispatch = createEventDispatcher();
 
   const closeModal = (e?: CustomEvent) => {
+    open = false;
     dispatch("close");
     e?.detail?.stopPropagation();
   };
@@ -23,17 +25,18 @@
 </script>
 
 <svelte:window on:keyup={checkClose} />
-
-<div class="backdrop" transition:fade>
-  <div class="modal-content"
-       use:clickOutside
-       on:outclick={closeModal}
-       on:click|stopPropagation
-       transition:fly={{y: -200}}
-       style:--width={width}>
-    <slot />
+{#if open}
+  <div class="backdrop" transition:fade draggable="false">
+    <div class="modal-content"
+         use:clickOutside
+         on:outclick={closeModal}
+         on:click|stopPropagation
+         transition:fly={{y: -200}}
+         style:--width={width}>
+      <slot />
+    </div>
   </div>
-</div>
+{/if}
 
 <style>
     .backdrop {
@@ -65,7 +68,6 @@
 
     @media screen and (min-width: 500px) {
         .modal-content {
-            width: auto;
             min-width: var(--width);
         }
     }

@@ -78,7 +78,7 @@ body {
     color: var(--color-accent);
 }
 
-h1, h2 {
+h1, h2, h3 {
     font-family: Mojave-Web, sans-serif;
     margin: 0.75rem;
 }
@@ -133,6 +133,7 @@ hr {
     padding-bottom: 0.3rem;
     width: min(100%, 20rem);
 }
+
 .input-wrapper.labeled {
     padding-left: 1rem;
     border-left: 3px solid #333;
@@ -161,6 +162,54 @@ select, input, textarea {
 
 ::-webkit-scrollbar-corner {
     background: var(--color-bg)
+}
+
+/* Modal Select stuff */
+.modal-header-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    width: 100%;
+    text-align: center;
+}
+
+.modal-header {
+    text-align: center;
+}
+
+.triggers {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.comp-select, .cancel {
+    display: inline-block;
+    padding: 0.5rem;
+    background-color: #333;
+    border: 1px solid #222;
+    margin: 0.1rem;
+    transition: background-color 250ms ease;
+}
+
+.comp-select:hover {
+    cursor: pointer;
+    background-color: var(--color-accent);
+}
+
+.cancel:hover {
+    cursor: pointer;
+    background-color: var(--color-select-bg);
+}
+
+.cancel {
+    background: #333;
+    font-size: 1.2rem;
+    margin-top: 0.5rem;
+}
+
+.cancel:hover {
+    cursor: pointer;
 }
 
 @media screen and (min-width: 500px) {

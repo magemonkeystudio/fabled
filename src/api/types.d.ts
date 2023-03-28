@@ -2,8 +2,8 @@ import ProSkill from "./proskill";
 import ProClass from "./proclass";
 import { YAMLObject } from "./yaml";
 import { ProAttribute } from "./proattribute";
-import ProTrigger from "./triggers";
-import ProComponent from "$api/procomponent";
+import ProTrigger from "./components/triggers";
+import ProComponent from "$api/components/procomponent";
 
 export interface ProClassData {
   name: string;

@@ -1,4 +1,4 @@
-import ProComponent from "$api/procomponent";
+import ProComponent from "./procomponent";
 import MaterialSelect from "$api/options/materialselect";
 
 export default class ProCondition extends ProComponent {

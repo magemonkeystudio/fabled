@@ -1,8 +1,10 @@
 <!--suppress CssUnresolvedCustomProperty -->
 <script lang="ts">
-  import ProComponent from "$api/procomponent";
-  import ProTrigger from "$api/triggers";
-  import ProCondition from "$api/conditions";
+  import ProComponent from "$api/components/procomponent";
+  import ProTrigger from "$api/components/triggers";
+  import ProCondition, { conditions } from "$api/components/conditions";
+  import ProTarget, { targets } from "$api/components/targets";
+  import ProMechanic, { mechanics } from "$api/components/mechanics";
   import { slide } from "svelte/transition";
   import { backOut } from "svelte/easing";
   import { squish } from "../data/squish";
@@ -19,15 +21,49 @@
   const dispatch = createEventDispatcher();
 
   let modalOpen = false;
+  let componentModal = false;
   let collapsed = false;
+
+  let searchParams = "";
+
+  let sortedTargets: Array<ProTarget>;
+  let sortedConditions: Array<ProCondition>;
+  let sortedMechanics: Array<ProMechanic>;
+
+  $: {
+    sortedTargets = Object.values(targets)
+      .map(target => new target())
+      .filter(target => target.name.toLowerCase().includes(searchParams.toLowerCase()))
+      .sort(target => target.name);
+
+    sortedConditions = Object.values(conditions)
+      .map(condition => new condition())
+      .filter(condition => condition.name.toLowerCase().includes(searchParams.toLowerCase()))
+      .sort(condition => condition.name);
+
+    sortedMechanics = Object.values(mechanics)
+      .map(mechanic => new mechanic())
+      .filter(mechanic => mechanic.name.toLowerCase().includes(searchParams.toLowerCase()))
+      .sort(mechanic => mechanic.name);
+  }
+
   const getName = () => {
     if (component instanceof ProTrigger) {
       return "Trigger";
     } else if (component instanceof ProCondition) {
       return "Condition";
+    } else if (component instanceof ProTarget) {
+      return "Target";
+    } else if (component instanceof ProMechanic) {
+      return "Mechanic";
     }
 
     return "???";
+  };
+
+  const addComponent = (comp: ProComponent) => {
+    component.components = [...component.components, comp];
+    componentModal = false;
   };
 
   const getColor = () => {
@@ -35,6 +71,10 @@
       return "#0083ef";
     } else if (component instanceof ProCondition) {
       return "#feac00";
+    } else if (component instanceof ProTarget) {
+      return "#04af38";
+    } else if (component instanceof ProMechanic) {
+      return "#ff3a3a";
     }
 
     return "orange";
@@ -75,7 +115,7 @@
           <svelte:self {skill} bind:component={child} on:update />
         </span>
         {/each}
-        <div class="chip">
+        <div class="chip" on:click|stopPropagation={() => componentModal = true}>
           + Add Component
         </div>
       </div>
@@ -102,25 +142,68 @@
   {/if}
 </div>
 
-{#if modalOpen}
-  <Modal on:close={() => modalOpen = false} width="70%">
-    <h2>{component.name}</h2>
+<Modal bind:open={modalOpen} width="70%">
+  <h2>{component.name}</h2>
+  <hr />
+  <div class="component-entry">
+    {#if component instanceof ProTrigger}
+      <ProInput label="Mana">
+        <Toggle bind:data={component.mana} />
+      </ProInput>
+      <ProInput label="Cooldown">
+        <Toggle bind:data={component.cooldown} />
+      </ProInput>
+    {/if}
+    {#each component.data as datum}
+      <svelte:component this={datum.component} bind:data={datum.data} color />
+    {/each}
+  </div>
+</Modal>
+
+<Modal bind:open={componentModal} width="70%">
+  <div class="modal-header-wrapper">
+    <div />
+    <h2>Add a Component</h2>
+    <div class="search-bar">
+      <ProInput bind:value={searchParams} placeholder="Search..." />
+    </div>
+  </div>
+  {#if sortedConditions.length > 0}
     <hr />
-    <div class="component-entry">
-      {#if component instanceof ProTrigger}
-        <ProInput label="Mana">
-          <Toggle bind:data={component.mana} />
-        </ProInput>
-        <ProInput label="Cooldown">
-          <Toggle bind:data={component.cooldown} />
-        </ProInput>
-      {/if}
-      {#each component.data as datum}
-        <svelte:component this={datum.component} bind:data={datum.data} color />
+    <div class="comp-modal-header">
+      <h3>Conditions</h3>
+    </div>
+    <div class="triggers">
+      {#each sortedConditions as condition}
+        <div class="comp-select" on:click={() => addComponent(condition)}>{condition.name}</div>
       {/each}
     </div>
-  </Modal>
-{/if}
+  {/if}
+  {#if sortedTargets.length > 0}
+    <hr />
+    <div class="comp-modal-header">
+      <h3>Targets</h3>
+    </div>
+    <div class="triggers">
+      {#each sortedTargets as target}
+        <div class="comp-select" on:click={() => addComponent(target)}>{target.name}</div>
+      {/each}
+    </div>
+  {/if}
+  {#if sortedMechanics.length > 0}
+    <hr />
+    <div class="comp-modal-header">
+      <h3>Mechanics</h3>
+    </div>
+    <div class="triggers">
+      {#each sortedMechanics as mechanic}
+        <div class="comp-select" on:click={() => addComponent(mechanic)}>{mechanic.name}</div>
+      {/each}
+    </div>
+  {/if}
+  <hr />
+  <div class="cancel" on:click={() => componentModal = false}>Cancel</div>
+</Modal>
 
 <style>
     span.material-symbols-rounded {
@@ -239,5 +322,15 @@
 
     .side-button:hover {
         cursor: pointer;
+    }
+
+    .comp-modal-header {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    h3 {
+        text-decoration: underline;
     }
 </style>

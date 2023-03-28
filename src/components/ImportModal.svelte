@@ -34,7 +34,7 @@
   }
 </script>
 
-<Modal on:close={onClose}>
+<Modal open={true} on:close={onClose}>
   <div class="options">
     <div class="option">
       <div>Upload File</div>

@@ -26,7 +26,7 @@ import {
   refreshSkills,
   skillFolders
 } from "./skill-store";
-import type ProComponent from "$api/procomponent";
+import type ProComponent from "$api/components/procomponent";
 
 export const active: Writable<ProClass | ProSkill | undefined> = writable(undefined);
 export const activeType: Readable<"class" | "skill"> = derived(

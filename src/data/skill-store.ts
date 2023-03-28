@@ -7,7 +7,7 @@ import { browser } from "$app/environment";
 import ProSkill from "$api/proskill";
 import { rename } from "./store";
 import { ProAttribute } from "$api/proattribute";
-import { triggers } from "$api/triggers";
+import { triggers } from "$api/components/triggers";
 
 const loadSkillTextToArray = (text: string): ProSkill[] => {
   const list: ProSkill[] = [];

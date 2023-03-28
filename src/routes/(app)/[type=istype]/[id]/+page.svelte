@@ -2,7 +2,7 @@
   import ProSkill from "$api/proskill";
   import ComponentWidget from "$components/ComponentWidget.svelte";
   import Modal from "$components/Modal.svelte";
-  import { triggers } from "$api/triggers";
+  import { triggers } from "$api/components/triggers";
   import { draggingComponent } from "../../../../data/store";
   import { get } from "svelte/store";
   import ProInput from "$input/ProInput.svelte";
@@ -59,27 +59,25 @@
   </div>
 </div>
 
-{#if triggerModal}
-  <Modal on:close={() => triggerModal = false}>
-    <div class="modal-header-wrapper">
-      <div />
-      <h2 class="modal-header">Select New Trigger</h2>
-      <div class="search-bar">
-        <ProInput bind:value={searchParams} placeholder="Search..." />
+<Modal bind:open={triggerModal}>
+  <div class="modal-header-wrapper">
+    <div />
+    <h2 class="modal-header">Select New Trigger</h2>
+    <div class="search-bar">
+      <ProInput bind:value={searchParams} placeholder="Search..." />
+    </div>
+  </div>
+  <hr />
+  <div class="triggers">
+    {#each sortedTriggers as trigger}
+      <div class="comp-select" on:click={() => onSelectTrigger({detail: trigger.clone()})}>
+        { trigger.name }
       </div>
-    </div>
-    <hr />
-    <div class="triggers">
-      {#each sortedTriggers as trigger}
-        <div class="comp-select" on:click={() => onSelectTrigger({detail: trigger.clone()})}>
-          { trigger.name }
-        </div>
-      {/each}
-    </div>
-    <hr />
-    <div class="cancel" on:click={() => triggerModal = false}>Cancel</div>
-  </Modal>
-{/if}
+    {/each}
+  </div>
+  <hr />
+  <div class="cancel" on:click={() => triggerModal = false}>Cancel</div>
+</Modal>
 
 <style>
     .header {
@@ -92,16 +90,6 @@
 
     h2 {
         margin: 0 3rem;
-    }
-
-    .cancel {
-        background: #333;
-        font-size: 1.2rem;
-        margin-top: 0.5rem;
-    }
-
-    .cancel:hover {
-        cursor: pointer;
     }
 
     .container {
@@ -130,42 +118,5 @@
 
     .add-trigger .material-symbols-rounded {
         margin-bottom: -20%;
-    }
-
-    .modal-header-wrapper {
-        display: grid;
-        grid-template-columns: 1fr 2fr 1fr;
-        width: 100%;
-        text-align: center;
-    }
-
-    h2.modal-header {
-        text-align: center;
-    }
-
-    .triggers {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .comp-select, .cancel {
-        display: inline-block;
-        padding: 0.5rem;
-        background-color: #333;
-        border: 1px solid #222;
-        margin: 0.1rem;
-        transition: background-color 250ms ease;
-    }
-
-    .comp-select:hover {
-        cursor: pointer;
-        background-color: var(--color-accent);
-    }
-
-    .cancel:hover {
-        cursor: pointer;
-        background-color: var(--color-select-bg);
     }
 </style>

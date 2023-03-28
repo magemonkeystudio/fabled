@@ -1,7 +1,7 @@
-import type { TriggerData } from "./types";
+import type { TriggerData } from "../types";
 import ProComponent from "./procomponent";
 import BlockSelect from "$api/options/blockselect";
-import { conditions } from "$api/conditions";
+import { conditions } from "./conditions";
 
 export default class ProTrigger extends ProComponent {
   mana = false;

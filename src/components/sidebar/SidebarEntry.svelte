@@ -100,15 +100,13 @@
   {/if}
 </div>
 
-{#if deleting}
-  <Modal on:close={() => deleting = false}>
-    <h3>Do you really want to delete {data.name}?</h3>
-    <div class="buttons modal-buttons">
-      <div class="button" on:click={() => deleting = false}>Cancel</div>
-      <div class="button modal-delete" on:click={() => deleteProData(data)}>Delete</div>
-    </div>
-  </Modal>
-{/if}
+<Modal bind:open={deleting}>
+  <h3>Do you really want to delete {data.name}?</h3>
+  <div class="buttons modal-buttons">
+    <div class="button" on:click={() => deleting = false}>Cancel</div>
+    <div class="button modal-delete" on:click={() => deleteProData(data)}>Delete</div>
+  </div>
+</Modal>
 
 <style>
     .sidebar-entry {

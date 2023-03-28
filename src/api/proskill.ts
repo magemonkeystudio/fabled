@@ -3,8 +3,8 @@ import { YAMLObject } from "./yaml";
 import { ProAttribute } from "./proattribute";
 import { toEditorCase } from "./api";
 import { getSkill } from "../data/skill-store";
-import ProTrigger from "./triggers";
-import type ProComponent from "$api/procomponent";
+import ProTrigger from "./components/triggers";
+import type ProComponent from "$api/components/procomponent";
 
 export default class ProSkill implements Serializable {
   isSkill = true;
