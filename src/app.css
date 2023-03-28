@@ -130,10 +130,12 @@ hr {
 
 .input-wrapper {
     align-self: flex-start;
-    padding-left: 1rem;
     padding-bottom: 0.3rem;
-    border-left: 3px solid #333;
     width: min(100%, 20rem);
+}
+.input-wrapper.labeled {
+    padding-left: 1rem;
+    border-left: 3px solid #333;
 }
 
 select, input, textarea {

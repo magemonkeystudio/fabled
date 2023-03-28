@@ -7,6 +7,7 @@
   export let type: "string" | "number" = "string";
   export let intMode = false;
   export let value: string | number | undefined = undefined;
+  export let placeholder: string | undefined;
   let hovered = false;
 </script>
 
@@ -22,9 +23,10 @@
   <span>{label || ''}
     <slot name="label" /></span>
 </div>
-<div class="input-wrapper">
+<div class="input-wrapper" class:labeled={!!label}>
   {#if !!value || value === "" || value === 0}
-    <input bind:value use:numberOnly={{intMode, enabled: type === "number"}} />
+    <input bind:value use:numberOnly={{intMode, enabled: type === "number"}}
+           {placeholder}/>
   {/if}
   <slot />
 </div>

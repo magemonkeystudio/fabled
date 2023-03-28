@@ -2,15 +2,24 @@
   import ProSkill from "$api/proskill";
   import ComponentWidget from "$components/ComponentWidget.svelte";
   import Modal from "$components/Modal.svelte";
-  import SearchableSelect from "$input/SearchableSelect.svelte";
   import { triggers } from "$api/triggers";
   import { draggingComponent } from "../../../../data/store";
   import { get } from "svelte/store";
+  import ProInput from "$input/ProInput.svelte";
 
   export let data: { data: ProSkill };
   let skill: ProSkill = data.data;
   let triggerModal = false;
   let hovered = false;
+  let searchParams = "";
+  let sortedTriggers;
+
+  $: {
+    sortedTriggers = Object.values(triggers)
+      .map(trigger => new trigger())
+      .filter(trigger => trigger.name.toLowerCase().includes(searchParams.toLowerCase()))
+      .sort(trigger => trigger.name);
+  }
 
   const onSelectTrigger = data => {
     skill.triggers.push(data.detail);
@@ -52,13 +61,23 @@
 
 {#if triggerModal}
   <Modal on:close={() => triggerModal = false}>
-    <h2 class="modal-header">Select New Trigger</h2>
+    <div class="modal-header-wrapper">
+      <div />
+      <h2 class="modal-header">Select New Trigger</h2>
+      <div class="search-bar">
+        <ProInput bind:value={searchParams} placeholder="Search..." />
+      </div>
+    </div>
     <hr />
-    <SearchableSelect
-      on:select={onSelectTrigger}
-      data={Object.values(triggers).map(trigger => new trigger())}
-      display={(trigger) => trigger.name} />
-    <div class="chip cancel" on:click={() => triggerModal = false}>Cancel</div>
+    <div class="triggers">
+      {#each sortedTriggers as trigger}
+        <div class="comp-select" on:click={() => onSelectTrigger({detail: trigger.clone()})}>
+          { trigger.name }
+        </div>
+      {/each}
+    </div>
+    <hr />
+    <div class="cancel" on:click={() => triggerModal = false}>Cancel</div>
   </Modal>
 {/if}
 
@@ -113,7 +132,40 @@
         margin-bottom: -20%;
     }
 
+    .modal-header-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr;
+        width: 100%;
+        text-align: center;
+    }
+
     h2.modal-header {
         text-align: center;
+    }
+
+    .triggers {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .comp-select, .cancel {
+        display: inline-block;
+        padding: 0.5rem;
+        background-color: #333;
+        border: 1px solid #222;
+        margin: 0.1rem;
+        transition: background-color 250ms ease;
+    }
+
+    .comp-select:hover {
+        cursor: pointer;
+        background-color: var(--color-accent);
+    }
+
+    .cancel:hover {
+        cursor: pointer;
+        background-color: var(--color-select-bg);
     }
 </style>

@@ -58,7 +58,8 @@
         border-radius: 0.7rem;
         box-shadow: 0 0 1rem #222;
         max-height: 95vh;
-        width: 95%;
+        width: 90%;
+        max-width: 90%;
         overflow-y: auto;
     }
 
