@@ -4,7 +4,7 @@ import { ProAttribute } from "./proattribute";
 import { toEditorCase } from "./api";
 import { getSkill } from "../data/skill-store";
 import ProTrigger from "./components/triggers";
-import type ProComponent from "$api/components/procomponent";
+import ProComponent from "$api/components/procomponent";
 
 export default class ProSkill implements Serializable {
   isSkill = true;
@@ -66,7 +66,7 @@ export default class ProSkill implements Serializable {
   }
 
   public removeComponent = (comp: ProComponent) => {
-    if(comp instanceof ProTrigger && this.triggers.includes(comp)) {
+    if (comp instanceof ProTrigger && this.triggers.includes(comp)) {
       this.triggers.splice(this.triggers.indexOf(comp), 1);
       return;
     }
@@ -75,7 +75,7 @@ export default class ProSkill implements Serializable {
       if (trigger.contains(comp))
         trigger.removeComponent(comp);
     }
-  }
+  };
 
   public serializeYaml = (): YAMLObject => {
     const yaml = new YAMLObject(this.name);
@@ -124,11 +124,7 @@ export default class ProSkill implements Serializable {
     this.icon.customModelData = yaml.get("icon-data", this.icon.customModelData);
     this.icon.lore = yaml.get("icon-lore", this.icon.lore);
     this.incompStr = yaml.get("incompatible", this.incompStr);
-    this.triggers = yaml.get<YAMLObject[], ProTrigger[]>("components", this.triggers,
-      (list: YAMLObject[]) => {
-        // TODO Actually load components... for that, we'll need to be able to serialize/deserialize individual components
-        return [];
-      });
+    this.triggers = yaml.get<YAMLObject, ProTrigger[]>("components", this.triggers, (list: YAMLObject) => ProComponent.deserialize(list));
   };
 
   public postLoad = () => {

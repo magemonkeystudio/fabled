@@ -47,6 +47,8 @@ export default class ProTrigger extends ProComponent {
 
     return data;
   }
+
+  public static new = (): ProTrigger => new ProTrigger({ name: "null" });
 }
 
 class BlockBreakTrigger extends ProTrigger {
@@ -61,6 +63,8 @@ class BlockBreakTrigger extends ProTrigger {
       ]
     });
   }
+
+  public static override new = () => new this();
 }
 
 class BlockPlaceTrigger extends ProTrigger {
@@ -72,18 +76,24 @@ class BlockPlaceTrigger extends ProTrigger {
       ]
     });
   }
+
+  public static override new = () => new this();
 }
 
 class CastTrigger extends ProTrigger {
   public constructor() {
     super({ name: "Cast" });
   }
+
+  public static override new = () => new this();
 }
 
 class CleanupTrigger extends ProTrigger {
   public constructor() {
     super({ name: "Cleanup" });
   }
+
+  public static override new = () => new this();
 }
 
 class CrouchTrigger extends ProTrigger {
@@ -95,6 +105,8 @@ class CrouchTrigger extends ProTrigger {
       ]
     });
   }
+
+  public static override new = () => new this();
 }
 
 class DeathTrigger extends ProTrigger {
@@ -104,6 +116,8 @@ class DeathTrigger extends ProTrigger {
       data: []
     });
   }
+
+  public static override new = () => new this();
 }
 
 class DropItemTrigger extends ProTrigger {
@@ -113,6 +127,8 @@ class DropItemTrigger extends ProTrigger {
       data: []
     });
   }
+
+  public static override new = () => new this();
 }
 
 class EnvironmentDamageTrigger extends ProTrigger {
@@ -122,6 +138,8 @@ class EnvironmentDamageTrigger extends ProTrigger {
       data: []
     });
   }
+
+  public static override new = () => new this();
 }
 
 class FishingTrigger extends ProTrigger {
@@ -131,6 +149,8 @@ class FishingTrigger extends ProTrigger {
       data: []
     });
   }
+
+  public static override new = () => new this();
 }
 
 class FishingBiteTrigger extends ProTrigger {
@@ -140,6 +160,8 @@ class FishingBiteTrigger extends ProTrigger {
       data: []
     });
   }
+
+  public static override new = () => new this();
 }
 
 class FishingFailTrigger extends ProTrigger {
@@ -149,6 +171,8 @@ class FishingFailTrigger extends ProTrigger {
       data: []
     });
   }
+
+  public static override new = () => new this();
 }
 
 class FishingGrabTrigger extends ProTrigger {
@@ -158,6 +182,8 @@ class FishingGrabTrigger extends ProTrigger {
       data: []
     });
   }
+
+  public static override new = () => new this();
 }
 
 class FishingGroundTrigger extends ProTrigger {
@@ -167,6 +193,8 @@ class FishingGroundTrigger extends ProTrigger {
       data: []
     });
   }
+
+  public static override new = () => new this();
 }
 
 class FishingReelTrigger extends ProTrigger {
@@ -176,6 +204,8 @@ class FishingReelTrigger extends ProTrigger {
       data: []
     });
   }
+
+  public static override new = () => new this();
 }
 
 class InitializeTrigger extends ProTrigger {
@@ -185,6 +215,8 @@ class InitializeTrigger extends ProTrigger {
       data: []
     });
   }
+
+  public static override new = () => new this();
 }
 
 class ItemSwapTrigger extends ProTrigger {
@@ -194,6 +226,8 @@ class ItemSwapTrigger extends ProTrigger {
       data: []
     });
   }
+
+  public static override new = () => new this();
 }
 
 class KillTrigger extends ProTrigger {
@@ -203,6 +237,8 @@ class KillTrigger extends ProTrigger {
       data: []
     });
   }
+
+  public static override new = () => new this();
 }
 
 class LandTrigger extends ProTrigger {
@@ -212,6 +248,8 @@ class LandTrigger extends ProTrigger {
       data: []
     });
   }
+
+  public static override new = () => new this();
 }
 
 class LaunchTrigger extends ProTrigger {
@@ -221,6 +259,8 @@ class LaunchTrigger extends ProTrigger {
       data: []
     });
   }
+
+  public static override new = () => new this();
 }
 
 class LeftClickTrigger extends ProTrigger {
@@ -230,6 +270,8 @@ class LeftClickTrigger extends ProTrigger {
       data: []
     });
   }
+
+  public static override new = () => new this();
 }
 
 class MoveTrigger extends ProTrigger {
@@ -239,6 +281,8 @@ class MoveTrigger extends ProTrigger {
       data: []
     });
   }
+
+  public static override new = () => new this();
 }
 
 class PhysicalDamageTrigger extends ProTrigger {
@@ -248,6 +292,8 @@ class PhysicalDamageTrigger extends ProTrigger {
       data: []
     });
   }
+
+  public static override new = () => new this();
 }
 
 class RightClickTrigger extends ProTrigger {
@@ -257,6 +303,8 @@ class RightClickTrigger extends ProTrigger {
       data: []
     });
   }
+
+  public static override new = () => new this();
 }
 
 class SkillCastTrigger extends ProTrigger {
@@ -266,6 +314,8 @@ class SkillCastTrigger extends ProTrigger {
       data: []
     });
   }
+
+  public static override new = () => new this();
 }
 
 class SkillDamageTrigger extends ProTrigger {
@@ -275,6 +325,8 @@ class SkillDamageTrigger extends ProTrigger {
       data: []
     });
   }
+
+  public static override new = () => new this();
 }
 
 class TookPhysicalTrigger extends ProTrigger {
@@ -284,6 +336,8 @@ class TookPhysicalTrigger extends ProTrigger {
       data: []
     });
   }
+
+  public static override new = () => new this();
 }
 
 class TookSkillTrigger extends ProTrigger {
@@ -293,9 +347,11 @@ class TookSkillTrigger extends ProTrigger {
       data: []
     });
   }
+
+  public static override new = () => new this();
 }
 
-export const triggers = {
+export const triggers: { [key: string]: typeof ProTrigger } = {
   BLOCK_BREAK: BlockBreakTrigger,
   BLOCK_PLACE: BlockPlaceTrigger,
   CAST: CastTrigger,
@@ -324,3 +380,16 @@ export const triggers = {
   TOOK_PHYS: TookPhysicalTrigger,
   TOOK_SKILL: TookSkillTrigger
 };
+
+export class Triggers {
+  public static byName = (name: string): ProTrigger | undefined => {
+    for (const triggersKey in triggers) {
+      const trigger = triggers[triggersKey].new();
+      if (trigger.name === name) {
+        return trigger;
+      }
+    }
+
+    return undefined;
+  };
+}

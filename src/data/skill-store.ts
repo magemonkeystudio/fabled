@@ -36,17 +36,17 @@ const loadSkillTextToArray = (text: string): ProSkill[] => {
 };
 
 const setupSkillStore = <T extends ProSkill[] | ProFolder[]>(key: string,
-                            def: T,
-                            mapper: (data: string) => T,
-                            setAction: (data: T) => T,
-                            postLoad?: (saved: T) => void): Writable<T> => {
+                                                             def: T,
+                                                             mapper: (data: string) => T,
+                                                             setAction: (data: T) => T,
+                                                             postLoad?: (saved: T) => void): Writable<T> => {
   let saved: T = def;
   if (browser) {
-    // const stored = localStorage.getItem(key);
-    // if (stored) {
-    //   saved = mapper(stored);
-    //   if (postLoad) postLoad(saved);
-    // }
+    const stored = localStorage.getItem(key);
+    if (stored) {
+      saved = mapper(stored);
+      if (postLoad) postLoad(saved);
+    }
   }
 
   const {
@@ -108,7 +108,7 @@ export const skills: Writable<ProSkill[]> = setupSkillStore<ProSkill[]>("skillDa
       minSpent: new ProAttribute("points-spent-req", 0, 0),
       castMessage: "&6{player} &2has cast &6{skill}",
       indicator: "2D",
-      triggers: [new triggers.BLOCK_BREAK()]
+      triggers: [triggers.BLOCK_BREAK.new(), triggers.BLOCK_BREAK.new()]
     })
   ]),
   (data: string) => sort<ProSkill>(loadSkillTextToArray(data)),

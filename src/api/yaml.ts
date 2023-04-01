@@ -211,7 +211,7 @@ export class YAMLObject {
           } else
             str = object.toYaml(spaces);
         } else if (object instanceof Array) {
-          str += this.convertArray(e, spaces, object);
+          str = this.convertArray(e, spaces, object);
         }
       }
 
