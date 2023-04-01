@@ -205,6 +205,8 @@
         overflow: auto;
         width: max-content;
         background-color: var(--color-select-bg);
+        border: 1px solid #666;
+        border-radius: 0 0 0.25rem 0.25rem;
     }
 
     .select.focusedIn {
@@ -213,6 +215,10 @@
 
     .select > * {
         padding: 0.25rem 0.5rem;
+    }
+
+    .select > *:not(:first-child) {
+        border-top: 1px solid #333;
     }
 
     .select > *:hover {

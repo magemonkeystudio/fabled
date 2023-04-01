@@ -1,11 +1,17 @@
 import type ComponentOption from "$api/options/options";
+import { YAMLObject } from "../yaml";
 
-export default class ProComponent {
+export default abstract class ProComponent {
+  type: "trigger" | "condition" | "mechanic" | "target";
   name: string;
   components: ProComponent[] = [];
   data: ComponentOption[] = [];
 
-  constructor(name: string, components?: ProComponent[], data?: ComponentOption[]) {
+  protected constructor(type: "trigger" | "condition" | "mechanic" | "target",
+                        name: string,
+                        components?: ProComponent[],
+                        data?: ComponentOption[]) {
+    this.type = type;
     this.name = name;
     this.components = components || [];
     this.data = data || [];
@@ -19,10 +25,10 @@ export default class ProComponent {
     }
 
     return false;
-  }
+  };
 
   public removeComponent = (comp: ProComponent) => {
-    if(this.components.includes(comp)) {
+    if (this.components.includes(comp)) {
       this.components.splice(this.components.indexOf(comp), 1);
       return;
     }
@@ -31,5 +37,14 @@ export default class ProComponent {
       if (component.contains(comp))
         component.removeComponent(comp);
     }
-  }
+  };
+
+  public toYamlObj(): YAMLObject {
+    const data = new YAMLObject(this.name);
+    data.put("type", this.type);
+
+    return data;
+  };
+
+  public abstract getData(): YAMLObject;
 }

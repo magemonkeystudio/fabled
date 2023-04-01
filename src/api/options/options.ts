@@ -1,5 +1,5 @@
-export default abstract class ComponentOption implements Cloneable<ComponentOption> {
-  abstract clone: () => ComponentOption;
+export default interface ComponentOption extends Cloneable<ComponentOption> {
+  getData: () => { [key: string]: any };
 }
 
 interface Cloneable<T> {

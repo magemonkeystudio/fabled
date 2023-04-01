@@ -3,6 +3,9 @@
  * and modern JavaScript as well as to add serialization
  */
 
+import type ProComponent from "./components/procomponent";
+import { v4 as uuid } from "uuid";
+
 /**
  * RegEx patterns used by the YAML parser
  */
@@ -175,12 +178,16 @@ export class YAMLObject {
   };
 
   public toString =
-    () => this.toYaml(this.key || this.data.name ? "'" + (this.key || this.data.name) + "'" : undefined, this.data);
+    (): string => this.toYaml(this.key || this.data.name ? "'" + (this.key || this.data.name) + "'" : undefined, this.data);
 
   /**
    * Creates and returns a save string for the class
    */
-  public toYaml = (key: string | undefined, obj: any, spaces = "") => {
+  public toYaml = (key: string | undefined, obj: any, spaces = ""): string => {
+    if (obj instanceof YAMLObject) {
+      return obj.toYaml("'" + (key ?? obj.key) + "'", obj.data, spaces);
+    }
+
     let saveString = "";
 
     if (key) {
@@ -202,11 +209,27 @@ export class YAMLObject {
         } else if (object instanceof Array) {
           if (e != "attributes") {
             str = spaces + e + ":";
-            if (object.length > 0 && ["string", "number"].includes(typeof (object[0]))) {
-              str += "\n";
-              object.forEach(st => str += spaces + "- " + JSON.stringify(st) + "\n");
-            } else if (object.length == 0)
+            // If we have primitive types, we can pretty accurately parse them.
+            if (["string", "number"].includes(typeof (object[0]))) {
+              if (object.length > 0) {
+                str += "\n";
+                object.forEach(st => str += spaces + "- " + JSON.stringify(st) + "\n");
+              } else {
+                str += " []\n";
+              }
+              // Components should be able to be done with a toYaml call
+            } else if (e === "components" || e === 'children') {
+              if (object.length == 0) {
+                str += " {}\n";
+              } else {
+                str += "\n";
+                object.forEach((obj: ProComponent) => str += this.toYaml(obj.name + "-" + uuid(), obj.toYamlObj(), spaces + "  "));
+                str = str.replaceAll(/'/g, "\"");
+              }
+              // Everything else, we'll just ignore for now.
+            } else {
               str += " []\n";
+            }
           } else {
             str = this.toYaml(e, object, spaces);
           }

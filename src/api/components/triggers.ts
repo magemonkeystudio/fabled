@@ -1,14 +1,17 @@
 import type { TriggerData } from "../types";
 import ProComponent from "./procomponent";
 import BlockSelect from "$api/options/blockselect";
+import DropdownSelect from "../options/dropdownselect";
+import { YAMLObject } from "../yaml";
+import type ComponentOption from "../options/options";
 import { conditions } from "./conditions";
 
 export default class ProTrigger extends ProComponent {
   mana = false;
   cooldown = false;
 
-  public constructor(data: TriggerData) {
-    super(data.name, data.components, data.data);
+  protected constructor(data: TriggerData) {
+    super("trigger", data.name, data.components, data.data);
     this.mana = data.mana || false;
     this.cooldown = data.cooldown || false;
   }
@@ -22,15 +25,39 @@ export default class ProTrigger extends ProComponent {
       data: [...this.data]
     });
   };
+
+  public override toYamlObj(): YAMLObject {
+    const parent: YAMLObject = super.toYamlObj();
+    parent.put("data", this.getData());
+    if (this.components.length > 0)
+      parent.put("children", this.components);
+
+    return parent;
+  };
+
+  public override getData(): YAMLObject {
+    const data = new YAMLObject("data");
+    data.put("mana", this.mana);
+    data.put("cooldown", this.cooldown);
+
+    this.data.forEach((opt: ComponentOption) => {
+      const optData: { [key: string]: string } = opt.getData();
+      Object.keys(optData).forEach(key => data.put(key, optData[key]));
+    });
+
+    return data;
+  }
 }
 
 class BlockBreakTrigger extends ProTrigger {
   public constructor() {
     super({
       name: "Block Break",
-      components: [new conditions.BLOCK()],
       data: [
         new BlockSelect()
+      ],
+      components: [
+        new conditions.BLOCK()
       ]
     });
   }
@@ -49,19 +76,13 @@ class BlockPlaceTrigger extends ProTrigger {
 
 class CastTrigger extends ProTrigger {
   public constructor() {
-    super({
-      name: "Cast",
-      data: []
-    });
+    super({ name: "Cast" });
   }
 }
 
 class CleanupTrigger extends ProTrigger {
   public constructor() {
-    super({
-      name: "Cleanup",
-      data: []
-    });
+    super({ name: "Cleanup" });
   }
 }
 
@@ -69,7 +90,9 @@ class CrouchTrigger extends ProTrigger {
   public constructor() {
     super({
       name: "Crouch",
-      data: []
+      data: [
+        new DropdownSelect("crouching", ["Start Crouching", "Stop Crouching", "Both"])
+      ]
     });
   }
 }
