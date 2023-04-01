@@ -88,6 +88,10 @@ export class YAMLObject {
     return <V>val;
   };
 
+  public getKeys = (): string[] => {
+      return Object.keys(this.data);
+  };
+
   public remove = (key: string) => {
     delete this.data[key];
   };
@@ -196,8 +200,8 @@ export class YAMLObject {
     }
     for (const e of Object.keys(obj)) {
       const object = obj[e];
-      const ostr = JSON.stringify(object);
-      let str = spaces + e + ": " + ostr + "\n";
+      const ostr: string = JSON.stringify(object);
+      let str: string = spaces + e + ": " + ostr + "\n";
       if (object == undefined) continue;
       if (object instanceof Object) {
         if (Object.keys(object).includes("toYaml")) {
@@ -207,32 +211,7 @@ export class YAMLObject {
           } else
             str = object.toYaml(spaces);
         } else if (object instanceof Array) {
-          if (e != "attributes") {
-            str = spaces + e + ":";
-            // If we have primitive types, we can pretty accurately parse them.
-            if (["string", "number"].includes(typeof (object[0]))) {
-              if (object.length > 0) {
-                str += "\n";
-                object.forEach(st => str += spaces + "- " + JSON.stringify(st) + "\n");
-              } else {
-                str += " []\n";
-              }
-              // Components should be able to be done with a toYaml call
-            } else if (e === "components" || e === 'children') {
-              if (object.length == 0) {
-                str += " {}\n";
-              } else {
-                str += "\n";
-                object.forEach((obj: ProComponent) => str += this.toYaml(obj.name + "-" + uuid(), obj.toYamlObj(), spaces + "  "));
-                str = str.replaceAll(/'/g, "\"");
-              }
-              // Everything else, we'll just ignore for now.
-            } else {
-              str += " []\n";
-            }
-          } else {
-            str = this.toYaml(e, object, spaces);
-          }
+          str += this.convertArray(e, spaces, object);
         }
       }
 
@@ -245,4 +224,35 @@ export class YAMLObject {
     }
     return saveString;
   };
+
+  private convertArray(e: string, spaces: string, object: any[]): string {
+    if (e != "attributes") {
+      let str: string = spaces + e + ":";
+      // If we have primitive types, we can pretty accurately parse them.
+      if (["string", "number"].includes(typeof (object[0]))) {
+        if (object.length > 0) {
+          str += "\n";
+          object.forEach(st => str += spaces + "- " + JSON.stringify(st) + "\n");
+        } else {
+          str += " []\n";
+        }
+        // Components should be able to be done with a toYaml call
+      } else if (e === "components" || e === "children") {
+        if (object.length == 0) {
+          str += " {}\n";
+        } else {
+          str += "\n";
+          object.forEach((obj: ProComponent) => str += this.toYaml(obj.name + "-" + uuid(), obj.toYamlObj(), spaces + "  "));
+          return str.replaceAll(/'/g, "\"");
+        }
+        // Everything else, we'll just ignore for now.
+      } else {
+        str += " []\n";
+      }
+
+      return str;
+    } else {
+      return this.toYaml(e, object, spaces);
+    }
+  }
 }

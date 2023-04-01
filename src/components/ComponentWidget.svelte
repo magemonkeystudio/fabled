@@ -7,7 +7,6 @@
   import ProMechanic, { mechanics } from "$api/components/mechanics";
   import { slide } from "svelte/transition";
   import { backOut } from "svelte/easing";
-  import { squish } from "../data/squish";
   import { draggingComponent } from "../data/store";
   import Modal from "$components/Modal.svelte";
   import ProInput from "$input/ProInput.svelte";
@@ -34,17 +33,17 @@
     sortedTargets = Object.values(targets)
       .map(target => new target())
       .filter(target => target.name.toLowerCase().includes(searchParams.toLowerCase()))
-      .sort(target => target.name);
+      .sort((target, target2) => target.name - target2.name);
 
     sortedConditions = Object.values(conditions)
       .map(condition => new condition())
       .filter(condition => condition.name.toLowerCase().includes(searchParams.toLowerCase()))
-      .sort(condition => condition.name);
+      .sort((condition, condition2) => condition.name - condition2.name);
 
     sortedMechanics = Object.values(mechanics)
       .map(mechanic => new mechanic())
       .filter(mechanic => mechanic.name.toLowerCase().includes(searchParams.toLowerCase()))
-      .sort(mechanic => mechanic.name);
+      .sort((mechanic, mechanic2) => mechanic.name - mechanic2.name);
   }
 
   const getName = () => {
@@ -109,37 +108,37 @@
     <div class="name"><span>{getName()}</span>: {component.name}</div>
 
     {#if !collapsed}
+      <div class="controls">
+        <div class="material-symbols-rounded control copy"
+             title="Copy"
+             transition:slide
+             on:click|stopPropagation={() => console.log('clicked copy')}
+        >content_copy
+        </div>
+        <div class="material-symbols-rounded control delete"
+             title="Delete"
+             transition:slide
+             on:click|stopPropagation={() => {
+               skill.removeComponent(component);
+               dispatch("update");
+             }}
+        >delete
+        </div>
+      </div>
       <div class="children" transition:slide|local>
         {#each component.components as child}
         <span transition:slide|local>
           <svelte:self {skill} bind:component={child} on:update />
         </span>
         {/each}
-        <div class="chip" on:click|stopPropagation={() => componentModal = true}>
-          + Add Component
-        </div>
+        {#if component.isParent}
+          <div class="chip" on:click|stopPropagation={() => componentModal = true}>
+            + Add Component
+          </div>
+        {/if}
       </div>
     {/if}
   </div>
-  {#if !collapsed}
-    <div class="side-buttons" transition:squish={{duration: 300}}>
-      <div class="side-button copy material-symbols-rounded"
-           title="Copy"
-           on:click|stopPropagation={() => console.log('clicked copy')}
-           transition:slide>
-        content_copy
-      </div>
-      <div class="side-button delete material-symbols-rounded"
-           title="Delete"
-           on:click|stopPropagation={() => {
-             skill.removeComponent(component);
-             dispatch("update");
-           }}
-           transition:slide>
-        delete
-      </div>
-    </div>
-  {/if}
 </div>
 
 <Modal bind:open={modalOpen} width="70%">
@@ -252,7 +251,7 @@
     }
 
     .name {
-        margin: 0.5rem 1rem 0.5rem 0.25rem;
+        margin: 0.5rem 1rem 0 0.25rem;
     }
 
     .name span {
@@ -288,40 +287,40 @@
         display: flex;
     }
 
-    .side-buttons {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        overflow: hidden;
-        margin-top: 0.2rem;
-        margin-right: 0.25rem;
+    .control {
         user-select: none;
-    }
-
-    .side-button {
+        flex: 1;
+        text-align: center;
         background: red;
-        padding: 0.2rem;
-        border-top-right-radius: 0.4rem;
-        border-bottom-right-radius: 0.4rem;
-        margin-top: 0.25rem;
-        border-top: 2px solid rgba(0, 0, 0, 0.4);
-        border-right: 2px solid rgba(0, 0, 0, 0.4);
-        border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+        padding: 0.25rem;
+        border-radius: 0.4rem;
+        margin: 0.15rem;
+        border: 2px solid rgba(0, 0, 0, 0.4);
         color: rgba(0, 0, 0, 0.4);
-        transition: color 0.1s ease;
-    }
-
-    .side-button:active {
-        color: rgba(255, 255, 255, 0.5);
-        box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.4);
+        transition: color 0.3s ease, background 0.3s ease;
     }
 
     .copy {
-        background-color: #0083ef;
+        background: #0083ef;
     }
 
-    .side-button:hover {
+    .control:hover {
         cursor: pointer;
+        background: #ff5656;
+    }
+
+    .control.copy:hover {
+        background: #00a5ff;
+    }
+
+    .control:active {
+        color: rgba(255, 255, 255, 0.5);
+        box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.4);
+        background: #b40000;
+    }
+
+    .control.copy:active {
+        background: #006bc2;
     }
 
     .comp-modal-header {
@@ -332,5 +331,11 @@
 
     h3 {
         text-decoration: underline;
+    }
+
+    .controls {
+        display: flex;
+        justify-content: stretch;
+        align-items: center;
     }
 </style>

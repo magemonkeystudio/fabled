@@ -9,7 +9,27 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "types": ["node", "svelte"]
+    "types": ["node", "svelte"],
+    "paths": {
+      "$api": [
+        "src/api"
+      ],
+      "$api/*": [
+        "src/api/*"
+      ],
+      "$input": [
+        "src/components/input"
+      ],
+      "$input/*": [
+        "src/components/input/*"
+      ],
+      "$components": [
+        "src/components"
+      ],
+      "$components/*": [
+        "src/components/*"
+      ]
+    }
   }
   // Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
   //

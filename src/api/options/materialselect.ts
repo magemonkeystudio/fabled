@@ -4,7 +4,7 @@ import MaterialSelectOption from "$components/options/MaterialSelectOption.svelt
 
 export default class MaterialSelect implements ComponentOption {
   component: typeof SvelteComponent = MaterialSelectOption;
-  data = {material: "Dirt", any: false};
+  data = { material: "Dirt", any: false };
 
   constructor(any = true) {
     this.data.any = any;

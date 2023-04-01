@@ -26,7 +26,7 @@
 
 <svelte:window on:keyup={checkClose} />
 {#if open}
-  <div class="backdrop" transition:fade draggable="false">
+  <div class="backdrop" transition:fade draggable="true" on:dragstart|stopPropagation|preventDefault={false}>
     <div class="modal-content"
          use:clickOutside
          on:outclick={closeModal}

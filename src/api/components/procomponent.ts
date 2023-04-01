@@ -6,6 +6,7 @@ export default abstract class ProComponent {
   name: string;
   components: ProComponent[] = [];
   data: ComponentOption[] = [];
+  isParent = true;
 
   protected constructor(type: "trigger" | "condition" | "mechanic" | "target",
                         name: string,

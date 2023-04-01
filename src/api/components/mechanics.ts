@@ -5,6 +5,7 @@ import type ComponentOption from "../options/options";
 export default class ProMechanic extends ProComponent {
   public constructor(name: string, components?: ProComponent[], data?: any[]) {
     super("mechanic", name, components, data);
+    super.isParent = false; // This should be false unless for specific mechanics like projectiles
   }
 
   public override toYamlObj(): YAMLObject {
