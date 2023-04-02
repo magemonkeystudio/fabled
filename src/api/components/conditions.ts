@@ -1,8 +1,6 @@
 import ProComponent from "./procomponent";
-import MaterialSelect from "$api/options/materialselect";
 import { YAMLObject } from "../yaml";
 import type ComponentOption from "../options/options";
-import DropdownSelect from "../options/dropdownselect";
 
 export default class ProCondition extends ProComponent {
   public constructor(name: string, components?: ProComponent[], data?: any[]) {
@@ -28,19 +26,13 @@ export default class ProCondition extends ProComponent {
 
     return data;
   }
-}
 
-class BlockCondition extends ProCondition {
-  public constructor() {
-    super("Block",
-      [],
-      [
-        new DropdownSelect("standing", ["On Block", "Not On Block", "In Block", "Not In Block"]),
-        new MaterialSelect()
-      ]);
+  public override deserialize(yaml: YAMLObject): void {
+    const data = yaml.get<YAMLObject, YAMLObject>("data");
+
+    this.data.forEach((opt: ComponentOption) => opt.deserialize(data));
+    this.components = yaml.get<YAMLObject, ProComponent[]>("children", [], (obj) => YAMLObject.deserializeComponent(obj));
   }
-}
 
-export const conditions = {
-  BLOCK: BlockCondition
-};
+  public static override new = (): ProCondition => new ProCondition("null");
+}

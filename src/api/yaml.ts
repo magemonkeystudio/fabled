@@ -5,6 +5,10 @@
 
 import type ProComponent from "./components/procomponent";
 import { v4 as uuid } from "uuid";
+import { Conditions, Mechanics, Targets, Triggers } from "$api/components/components";
+import type ProMechanic from "$api/components/mechanics";
+import type ProTrigger from "$api/components/triggers";
+import type ProTarget from "$api/components/targets";
 
 /**
  * RegEx patterns used by the YAML parser
@@ -255,4 +259,45 @@ export class YAMLObject {
       return this.toYaml(e, object, spaces);
     }
   }
+
+  public static deserializeComponent = (yaml: YAMLObject): ProComponent[] => {
+    if (!yaml || !(yaml instanceof YAMLObject)) return [];
+    const comps: ProComponent[] = [];
+
+    const keys: string[] = yaml.getKeys();
+    for (const key of keys) {
+      let comp: ProComponent | undefined = undefined;
+      const data = yaml.get<YAMLObject, YAMLObject>(key);
+      const type = data.get("type");
+
+      if (type === "trigger") {
+        const trigger: ProComponent | undefined = Triggers.byName(key.split("-")[0]);
+        if (trigger) {
+          comp = trigger;
+        }
+        } else if (type === "condition") {
+          const condition: ProComponent | undefined = Conditions.byName(key.split("-")[0]);
+          if (condition) {
+            comp = condition;
+          }
+      } else if (type === "mechanic") {
+        const mechanic: ProComponent | undefined = Mechanics.byName(key.split("-")[0]);
+        if (mechanic) {
+          comp = mechanic;
+        }
+        } else if (type === "target") {
+          const target: ProComponent | undefined = Targets.byName(key.split("-")[0]);
+          if (target) {
+            comp = target;
+          }
+      }
+
+      if (comp) {
+        comp.deserialize(data);
+        comps.push(comp);
+      }
+    }
+
+    return comps;
+  };
 }

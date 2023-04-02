@@ -7,7 +7,7 @@ import { browser } from "$app/environment";
 import ProSkill from "$api/proskill";
 import { rename } from "./store";
 import { ProAttribute } from "$api/proattribute";
-import { triggers } from "$api/components/triggers";
+import { Triggers } from "$api/components/components";
 
 const loadSkillTextToArray = (text: string): ProSkill[] => {
   const list: ProSkill[] = [];
@@ -108,7 +108,7 @@ export const skills: Writable<ProSkill[]> = setupSkillStore<ProSkill[]>("skillDa
       minSpent: new ProAttribute("points-spent-req", 0, 0),
       castMessage: "&6{player} &2has cast &6{skill}",
       indicator: "2D",
-      triggers: [triggers.BLOCK_BREAK.new(), triggers.BLOCK_BREAK.new()]
+      triggers: [new Triggers.BLOCK_BREAK(), new Triggers.BLOCK_BREAK()]
     })
   ]),
   (data: string) => sort<ProSkill>(loadSkillTextToArray(data)),

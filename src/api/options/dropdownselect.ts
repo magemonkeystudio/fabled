@@ -1,6 +1,7 @@
 import type { SvelteComponent } from "svelte";
 import type ComponentOption from "$api/options/options";
 import DropdownOption from "$components/options/DropdownOption.svelte";
+import type { YAMLObject } from "$api/yaml";
 
 export default class DropdownSelect implements ComponentOption {
   component: typeof SvelteComponent = DropdownOption;
@@ -29,5 +30,9 @@ export default class DropdownSelect implements ComponentOption {
     data[this.name] = this.data.selected;
 
     return data;
+  };
+
+  deserialize = (yaml: YAMLObject) => {
+    this.data.selected = yaml.get<string, string>(this.name);
   };
 }

@@ -2,10 +2,10 @@
   import ProSkill from "$api/proskill";
   import ComponentWidget from "$components/ComponentWidget.svelte";
   import Modal from "$components/Modal.svelte";
-  import { triggers } from "$api/components/triggers";
   import { draggingComponent } from "../../../../data/store";
   import { get } from "svelte/store";
   import ProInput from "$input/ProInput.svelte";
+  import { Triggers } from "$api/components/components";
 
   export let data: { data: ProSkill };
   let skill: ProSkill = data.data;
@@ -15,10 +15,9 @@
   let sortedTriggers;
 
   $: {
-    sortedTriggers = Object.values(triggers)
-      .map(trigger => new trigger())
-      .filter(trigger => trigger.name.toLowerCase().includes(searchParams.toLowerCase()))
-      .sort(trigger => trigger.name);
+    sortedTriggers = Object.keys(Triggers.MAP)
+      .filter(trigger => trigger.toLowerCase().includes(searchParams.toLowerCase()))
+      .sort();
   }
 
   const onSelectTrigger = data => {

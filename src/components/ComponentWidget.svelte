@@ -2,9 +2,9 @@
 <script lang="ts">
   import ProComponent from "$api/components/procomponent";
   import ProTrigger from "$api/components/triggers";
-  import ProCondition, { conditions } from "$api/components/conditions";
-  import ProTarget, { targets } from "$api/components/targets";
-  import ProMechanic, { mechanics } from "$api/components/mechanics";
+  import ProCondition from "$api/components/conditions";
+  import ProTarget from "$api/components/targets";
+  import ProMechanic from "$api/components/mechanics";
   import { slide } from "svelte/transition";
   import { backOut } from "svelte/easing";
   import { draggingComponent } from "../data/store";
@@ -13,6 +13,7 @@
   import Toggle from "$input/Toggle.svelte";
   import ProSkill from "$api/proskill";
   import { createEventDispatcher } from "svelte";
+  import { Conditions, Mechanics, Targets } from "$api/components/components";
 
   export let skill: ProSkill;
   export let component: ProComponent;
@@ -30,20 +31,20 @@
   let sortedMechanics: Array<ProMechanic>;
 
   $: {
-    sortedTargets = Object.values(targets)
-      .map(target => new target())
-      .filter(target => target.name.toLowerCase().includes(searchParams.toLowerCase()))
-      .sort((target, target2) => target.name - target2.name);
+    sortedTargets = Object.keys(Targets.MAP)
+      .filter(target => target.toLowerCase().includes(searchParams.toLowerCase()))
+      .sort()
+      .map(str => Targets.MAP[str].new());
 
-    sortedConditions = Object.values(conditions)
-      .map(condition => new condition())
-      .filter(condition => condition.name.toLowerCase().includes(searchParams.toLowerCase()))
-      .sort((condition, condition2) => condition.name - condition2.name);
+    sortedConditions = Object.keys(Conditions.MAP)
+      .filter(condition => condition.toLowerCase().includes(searchParams.toLowerCase()))
+      .sort()
+      .map(str => Conditions.MAP[str].new());
 
-    sortedMechanics = Object.values(mechanics)
-      .map(mechanic => new mechanic())
-      .filter(mechanic => mechanic.name.toLowerCase().includes(searchParams.toLowerCase()))
-      .sort((mechanic, mechanic2) => mechanic.name - mechanic2.name);
+    sortedMechanics = Object.keys(Mechanics.MAP)
+      .filter(mechanic => mechanic.toLowerCase().includes(searchParams.toLowerCase()))
+      .sort()
+      .map(str => Mechanics.MAP[str].new());
   }
 
   const getName = () => {

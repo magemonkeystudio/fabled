@@ -1,6 +1,7 @@
 import type { SvelteComponent } from "svelte";
 import type ComponentOption from "$api/options/options";
 import MaterialSelectOption from "$components/options/MaterialSelectOption.svelte";
+import type { YAMLObject } from "$api/yaml";
 
 export default class MaterialSelect implements ComponentOption {
   component: typeof SvelteComponent = MaterialSelectOption;
@@ -23,4 +24,6 @@ export default class MaterialSelect implements ComponentOption {
 
     return data;
   };
+
+  deserialize = (yaml: YAMLObject) => this.data.material = yaml.get<string, string>("material", "Dirt");
 }

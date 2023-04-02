@@ -1,6 +1,7 @@
 import type { SvelteComponent } from "svelte";
 import BlockSelectOption from "$components/options/BlockSelectOption.svelte";
 import type ComponentOption from "$api/options/options";
+import type { YAMLObject } from "$api/yaml";
 
 export default class BlockSelect implements ComponentOption {
   component: typeof SvelteComponent = BlockSelectOption;
@@ -21,5 +22,10 @@ export default class BlockSelect implements ComponentOption {
     data.data = this.data.data;
 
     return data;
+  };
+
+  deserialize = (yaml: YAMLObject) => {
+    this.data.material = yaml.get<string[], string[]>("material", ["Any"]);
+    this.data.data = yaml.get<number, number>("data", -1);
   };
 }

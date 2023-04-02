@@ -26,16 +26,13 @@ export default class ProTarget extends ProComponent {
 
     return data;
   }
-}
 
-class LinearTarget extends ProTarget {
-  public constructor() {
-    super("Linear",
-      [],
-      []);
+  public override deserialize(yaml: YAMLObject): void {
+    const data = yaml.get<YAMLObject, YAMLObject>("data");
+
+    this.data.forEach((opt: ComponentOption) => opt.deserialize(data));
+    this.components = yaml.get<YAMLObject, ProComponent[]>("children", [], (obj) => YAMLObject.deserializeComponent(obj));
   }
-}
 
-export const targets = {
-  LINEAR: LinearTarget
-};
+  public static override new = (): ProTarget => new ProTarget("null");
+}

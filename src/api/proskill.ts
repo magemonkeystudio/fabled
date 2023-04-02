@@ -124,7 +124,7 @@ export default class ProSkill implements Serializable {
     this.icon.customModelData = yaml.get("icon-data", this.icon.customModelData);
     this.icon.lore = yaml.get("icon-lore", this.icon.lore);
     this.incompStr = yaml.get("incompatible", this.incompStr);
-    this.triggers = yaml.get<YAMLObject, ProTrigger[]>("components", this.triggers, (list: YAMLObject) => ProComponent.deserialize(list));
+    this.triggers = yaml.get<YAMLObject, ProTrigger[]>("components", this.triggers, (list: YAMLObject) => YAMLObject.deserializeComponent(list));
   };
 
   public postLoad = () => {

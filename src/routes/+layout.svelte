@@ -1,10 +1,9 @@
 <script lang="ts">
   import "../app.css";
-  import { active, importing, loadFile, saveData, showSidebar } from "../data/store";
+  import { active, importing, loadFile, saveData } from "../data/store";
   import { onDestroy, onMount } from "svelte";
   import { browser } from "$app/environment";
   import ImportModal from "$components/ImportModal.svelte";
-  import Sidebar from "$components/sidebar/Sidebar.svelte";
   import NavBar from "$components/NavBar.svelte";
   import HeaderBar from "$components/HeaderBar.svelte";
 
@@ -51,8 +50,8 @@
   };
 </script>
 
-  <HeaderBar />
-  <NavBar />
+<HeaderBar />
+<NavBar />
 <div id="body-container" class:empty={!$active}>
   <div id="body" class:centered={!$active}>
     <slot />

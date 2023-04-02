@@ -27,16 +27,11 @@ export default class ProMechanic extends ProComponent {
 
     return data;
   }
-}
 
-class LaunchTarget extends ProMechanic {
-  public constructor() {
-    super("Launch",
-      [],
-      []);
+  deserialize(yaml: YAMLObject): void {
+    const data = yaml.get<YAMLObject, YAMLObject>("data");
+
+    this.data.forEach((opt: ComponentOption) => opt.deserialize(data));
+    this.components = yaml.get<YAMLObject, ProComponent[]>("children", [], (obj) => YAMLObject.deserializeComponent(obj));
   }
 }
-
-export const mechanics = {
-  LAUNCH: LaunchTarget
-};
