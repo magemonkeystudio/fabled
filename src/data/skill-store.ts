@@ -64,7 +64,7 @@ const setupSkillStore = <T extends ProSkill[] | ProFolder[]>(key: string,
   };
 };
 
-export const skills: Writable<ProSkill[]> = setupSkillStore<ProSkill[]>("skillData", sort<ProSkill>([
+export const skills: Writable<ProSkill[]> = setupSkillStore<ProSkill[]>("skillData", sort<ProSkill>([/*
     new ProSkill({
       name: "Particle Blast",
       type: "Dynamic",
@@ -110,7 +110,7 @@ export const skills: Writable<ProSkill[]> = setupSkillStore<ProSkill[]>("skillDa
       indicator: "2D",
       triggers: [new Triggers.BLOCK_BREAK(), new Triggers.BLOCK_BREAK()]
     })
-  ]),
+  */]),
   (data: string) => sort<ProSkill>(loadSkillTextToArray(data)),
   (value: ProSkill[]) => {
     persistSkills(value);
