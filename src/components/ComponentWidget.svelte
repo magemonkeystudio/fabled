@@ -64,6 +64,8 @@
   const addComponent = (comp: ProComponent) => {
     component.components = [...component.components, comp];
     componentModal = false;
+    searchParams = "";
+    dispatch("save");
   };
 
   const getColor = () => {
@@ -80,7 +82,7 @@
     return "orange";
   };
 
-  function spin(node, { duration }) {
+  const spin = (node, { duration }) => {
     return {
       duration,
       css: t => {
@@ -89,7 +91,7 @@
         return `transform: rotate(${180 - (eased * 180)}deg);`;
       }
     };
-  }
+  };
 </script>
 
 <div class="wrapper">
@@ -129,7 +131,7 @@
       <div class="children" transition:slide|local>
         {#each component.components as child}
         <span transition:slide|local>
-          <svelte:self {skill} bind:component={child} on:update />
+          <svelte:self {skill} bind:component={child} on:update on:save />
         </span>
         {/each}
         {#if component.isParent}
@@ -155,7 +157,7 @@
       </ProInput>
     {/if}
     {#each component.data as datum}
-      <svelte:component this={datum.component} bind:data={datum.data} color />
+      <svelte:component this={datum.component} bind:data={datum.data} color on:save />
     {/each}
   </div>
 </Modal>

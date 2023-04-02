@@ -24,9 +24,13 @@
     <slot name="label" /></span>
 </div>
 <div class="input-wrapper" class:labeled={!!label}>
-  {#if !!value || value === "" || value === 0}
-    <input bind:value use:numberOnly={{intMode, enabled: type === "number"}}
-           {placeholder}/>
+  {#if type === "number"}
+    <input type="number" bind:value use:numberOnly={{intMode, enabled: type === "number"}}
+           {placeholder} />
+  {:else}
+    {#if !!value || value === "" || value === 0}
+      <input bind:value {placeholder} />
+    {/if}
   {/if}
   <slot />
 </div>
@@ -38,8 +42,10 @@
     }
 
     .label {
-        text-align: right;
         padding-right: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
     }
 
     .tooltip {

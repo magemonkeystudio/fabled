@@ -6,6 +6,7 @@
   import { get } from "svelte/store";
   import ProInput from "$input/ProInput.svelte";
   import { Triggers } from "$api/components/components";
+  import { skills } from "../../../../data/skill-store";
 
   export let data: { data: ProSkill };
   let skill: ProSkill = data.data;
@@ -35,7 +36,10 @@
 
   const update = () => {
     skill.triggers = [...skill.triggers];
+    save();
   };
+
+  const save = () => skills.set([...get(skills)]);
 </script>
 
 <svelte:head>
@@ -48,7 +52,7 @@
 <div class="container">
   {#each skill.triggers as comp}
     <div class="widget">
-      <ComponentWidget {skill} component={comp} on:update={update} />
+      <ComponentWidget {skill} component={comp} on:update={update} on:save={save} />
     </div>
   {/each}
   <div class="add-trigger chip" title="Add Trigger" on:click={() => triggerModal = true}>

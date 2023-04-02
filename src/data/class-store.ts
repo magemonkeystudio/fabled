@@ -83,12 +83,13 @@ export const getClass = (name: string): ProClass | undefined => {
 export const classFolders: Writable<ProFolder[]> = setupClassStore<ProFolder[]>("classFolders", [],
   (data: string) => {
     const parsedData = JSON.parse(data, (key: string, value) => {
+      if (!value) return;
       if (/\d+/.test(key)) {
-        if(typeof(value) === 'string') {
+        if (typeof (value) === "string") {
           return getClass(value);
         }
 
-        const folder = new ProFolder(value.data)
+        const folder = new ProFolder(value.data);
         folder.name = value.name;
         return folder;
       }

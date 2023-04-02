@@ -9,7 +9,8 @@ export default class ProTarget extends ProComponent {
 
   public override toYamlObj(): YAMLObject {
     const parent: YAMLObject = super.toYamlObj();
-    parent.put("data", this.getData());
+    const data = this.getData();
+if (data.getKeys().length > 0) parent.put("data", data);
     if (this.components.length > 0)
       parent.put("children", this.components);
 

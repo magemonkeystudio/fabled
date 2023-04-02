@@ -1,6 +1,7 @@
 <script lang="ts">
   import { numberOnly } from "$api/number-only";
   import { ProAttribute } from "$api/proattribute";
+  import ProInput from "$input/ProInput.svelte";
 
   export let value: ProAttribute;
 </script>
@@ -8,12 +9,12 @@
 <div class="wrap">
   <input class="base"
          type="number"
-         use:numberOnly={false}
+         use:numberOnly={{intMode: false, enabled: true}}
          bind:value={value.base} />
   +(
   <input class="modifier"
          type="number"
-         use:numberOnly={false}
+         use:numberOnly={{intMode: false, enabled: true}}
          bind:value={value.scale} />
   )
 </div>

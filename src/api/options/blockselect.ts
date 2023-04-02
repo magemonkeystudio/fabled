@@ -19,7 +19,7 @@ export default class BlockSelect implements ComponentOption {
   getData = (): { [key: string]: any } => {
     const data: { [key: string]: any } = {};
     data.material = this.data.material;
-    data.data = this.data.data;
+    data.data = this.data.data ?? -1;
 
     return data;
   };
