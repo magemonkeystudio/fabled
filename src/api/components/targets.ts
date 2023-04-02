@@ -31,7 +31,8 @@ if (data.getKeys().length > 0) parent.put("data", data);
   public override deserialize(yaml: YAMLObject): void {
     const data = yaml.get<YAMLObject, YAMLObject>("data");
 
-    this.data.forEach((opt: ComponentOption) => opt.deserialize(data));
+    if (data) this.data.forEach((opt: ComponentOption) => opt.deserialize(data));
+
     this.components = yaml.get<YAMLObject, ProComponent[]>("children", [], (obj) => YAMLObject.deserializeComponent(obj));
   }
 

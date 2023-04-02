@@ -1,11 +1,7 @@
 <!--suppress CssUnresolvedCustomProperty -->
 <script lang="ts">
   import { addClass, addClassFolder, classes, classFolders } from "../../data/class-store";
-  import {
-    closeSidebar,
-    isShowClasses,
-    sidebarOpen,
-  } from "../../data/store";
+  import { closeSidebar, isShowClasses, showSidebar, sidebarOpen } from "../../data/store";
   import SidebarEntry from "./SidebarEntry.svelte";
   import { squish } from "../../data/squish";
   import { goto } from "$app/navigation";
@@ -95,7 +91,10 @@
         <SidebarEntry
           data={cl}
           delay={200 + 100*i}
-          on:click={() => goto(`/class/${cl.name}/edit`)}>
+          on:click={() => {
+            showSidebar.set(false);
+            goto(`/class/${cl.name}/edit`);
+          }}>
           {cl.name}
         </SidebarEntry>
       {/each}
@@ -120,7 +119,10 @@
           data={sk}
           direction="right"
           delay={200 + 100*i}
-          on:click={() => goto(`/skill/${sk.name}`)}>
+          on:click={() => {
+            showSidebar.set(false);
+            goto(`/skill/${sk.name}`);
+          }}>
           {sk.name}
         </SidebarEntry>
       {/each}

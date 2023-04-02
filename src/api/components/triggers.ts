@@ -26,7 +26,7 @@ export default class ProTrigger extends ProComponent {
   public override toYamlObj(): YAMLObject {
     const parent: YAMLObject = super.toYamlObj();
     const data = this.getData();
-if (data.getKeys().length > 0) parent.put("data", data);
+    if (data.getKeys().length > 0) parent.put("data", data);
     if (this.components.length > 0)
       parent.put("children", this.components);
 
@@ -48,10 +48,13 @@ if (data.getKeys().length > 0) parent.put("data", data);
 
   public override deserialize(yaml: YAMLObject) {
     const data = yaml.get<YAMLObject, YAMLObject>("data");
-    this.mana = yaml.get<boolean, boolean>("mana");
-    this.cooldown = yaml.get<boolean, boolean>("cooldown");
+    if (data) {
+      this.mana = data.get("mana", false);
+      this.cooldown = data.get("cooldown", false);
 
-    this.data.forEach((opt: ComponentOption) => opt.deserialize(data));
+      this.data.forEach((opt: ComponentOption) => opt.deserialize(data));
+    }
+
     this.components = yaml.get<YAMLObject, ProComponent[]>("children", [], (obj) => YAMLObject.deserializeComponent(obj));
   }
 

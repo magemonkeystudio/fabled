@@ -47,6 +47,8 @@
       .map(str => Mechanics.MAP[str].new());
   }
 
+  $: if (component) dispatch("save");
+
   const getName = () => {
     if (component instanceof ProTrigger) {
       return "Trigger";

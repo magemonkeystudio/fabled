@@ -64,53 +64,7 @@ const setupSkillStore = <T extends ProSkill[] | ProFolder[]>(key: string,
   };
 };
 
-export const skills: Writable<ProSkill[]> = setupSkillStore<ProSkill[]>("skillData", sort<ProSkill>([/*
-    new ProSkill({
-      name: "Particle Blast",
-      type: "Dynamic",
-      maxLevel: 40,
-      permission: false,
-      levelReq: new ProAttribute("level", 1, 0),
-      cost: new ProAttribute("cost", 1, 0),
-      cooldown: new ProAttribute("cooldown", 0, 0),
-      cooldownMessage: false,
-      mana: new ProAttribute("mana", 0, 0),
-      minSpent: new ProAttribute("points-spent-req", 0, 0),
-      castMessage: "&6{player} &2has cast &6{skill}",
-      indicator: "2D",
-      triggers: []
-    }),
-    new ProSkill({
-      name: "Poison Dart",
-      type: "Dynamic",
-      maxLevel: 40,
-      permission: false,
-      levelReq: new ProAttribute("level", 1, 0),
-      cost: new ProAttribute("cost", 1, 0),
-      cooldown: new ProAttribute("cooldown", 1, 0),
-      cooldownMessage: false,
-      mana: new ProAttribute("mana", 0, 0),
-      minSpent: new ProAttribute("points-spent-req", 0, 0),
-      castMessage: "&6{player} &2has cast &6{skill}",
-      indicator: "2D",
-      triggers: []
-    }),
-    new ProSkill({
-      name: "Storm",
-      type: "Dynamic",
-      maxLevel: 40,
-      permission: false,
-      levelReq: new ProAttribute("level", 1, 0),
-      cost: new ProAttribute("cost", 1, 0),
-      cooldown: new ProAttribute("cooldown", 1, 0),
-      cooldownMessage: false,
-      mana: new ProAttribute("mana", 0, 0),
-      minSpent: new ProAttribute("points-spent-req", 0, 0),
-      castMessage: "&6{player} &2has cast &6{skill}",
-      indicator: "2D",
-      triggers: [new Triggers.BLOCK_BREAK(), new Triggers.BLOCK_BREAK()]
-    })
-  */]),
+export const skills: Writable<ProSkill[]> = setupSkillStore<ProSkill[]>("skillData", [],
   (data: string) => sort<ProSkill>(loadSkillTextToArray(data)),
   (value: ProSkill[]) => {
     persistSkills(value);
@@ -230,8 +184,7 @@ export const persistSkills = (list?: ProSkill[]) => {
 
   skillList.forEach(sk => skillYaml.put(sk.name, sk.serializeYaml()));
 
-  if (skillList.length > 0)
-    localStorage.setItem("skillData", skillYaml.toString());
+  if (skillList.length > 0) localStorage.setItem("skillData", skillYaml.toString());
 };
 
 get(skills).forEach(sk => sk.postLoad());

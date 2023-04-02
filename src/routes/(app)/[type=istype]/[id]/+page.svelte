@@ -9,7 +9,8 @@
   import { skills } from "../../../../data/skill-store";
 
   export let data: { data: ProSkill };
-  let skill: ProSkill = data.data;
+  let skill: ProSkill;
+  $: if (data) skill = data.data;
   let triggerModal = false;
   let hovered = false;
   let searchParams = "";
@@ -18,12 +19,13 @@
   $: {
     sortedTriggers = Object.keys(Triggers.MAP)
       .filter(trigger => trigger.toLowerCase().includes(searchParams.toLowerCase()))
-      .sort();
+      .sort()
+      .map(key => new Triggers.MAP[key]());
   }
 
   const onSelectTrigger = data => {
     skill.triggers.push(data.detail);
-    skill.triggers = [...skill.triggers];
+    update();
     setTimeout(() => triggerModal = false);
   };
 
