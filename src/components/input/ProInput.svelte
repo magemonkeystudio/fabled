@@ -7,7 +7,7 @@
   export let type: "string" | "number" = "string";
   export let intMode = false;
   export let value: string | number | undefined = undefined;
-  export let placeholder: string | undefined;
+  export let placeholder: string | undefined = undefined;
   let hovered = false;
 </script>
 

@@ -7,6 +7,7 @@
   import ProInput from "$input/ProInput.svelte";
   import { Triggers } from "$api/components/components";
   import { skills } from "../../../../data/skill-store";
+  import { goto } from "$app/navigation";
 
   export let data: { data: ProSkill };
   let skill: ProSkill;
@@ -48,7 +49,11 @@
   <title>ProSkillAPI Dynamic Editor - {skill.name}</title>
 </svelte:head>
 <div class="header">
-  <h2>{skill.name}</h2>
+  <h2>
+    {skill.name}
+    <a class="material-symbols-rounded edit-skill chip" title="Edit"
+          href="/skill/{skill.name}/edit">edit</a>
+  </h2>
 </div>
 <hr />
 <div class="container">
@@ -123,5 +128,29 @@
 
     .add-trigger .material-symbols-rounded {
         margin-bottom: -20%;
+    }
+
+    .edit-skill {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0.4rem;
+        margin-left: 1rem;
+        height: 100%;
+        width: 6rem;
+        font-size: inherit;
+        color: white;
+        text-decoration: none;
+        background-color: #1dad36;
+        transition: background-color 0.25s ease;
+    }
+
+    .edit-skill:hover {
+        background-color: #2fd950;
+    }
+
+    .edit-skill:active {
+        background-color: #157e2b;
+        box-shadow: inset 0 0 5px #333;
     }
 </style>

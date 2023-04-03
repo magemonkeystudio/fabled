@@ -80,6 +80,15 @@
   <slot />
   {#if data}
     <div class="buttons">
+      {#if data instanceof ProSkill}
+        <a href="/skill/{data.name}/edit"
+           class="edit"
+           title="Edit Skill">
+          <span class="material-symbols-rounded">
+            edit
+          </span>
+        </a>
+      {/if}
       <div
         on:click|preventDefault|stopPropagation={() => saveData(data)}
         class="download"
@@ -162,7 +171,7 @@
         display: flex;
     }
 
-    .download, .delete {
+    .download, .delete, .edit {
         opacity: 0;
         display: flex;
         justify-content: center;
@@ -171,9 +180,11 @@
         border-radius: 50%;
         transition: background-color 0.25s ease,
         opacity 0.25s ease;
+        text-decoration: none;
+        color: white;
     }
 
-    .sidebar-entry:hover .download, .sidebar-entry:hover .delete {
+    .sidebar-entry:hover .download, .sidebar-entry:hover .delete, .sidebar-entry:hover .edit {
         opacity: 1;
     }
 
@@ -183,6 +194,10 @@
 
     .delete:hover {
         background-color: #b60000;
+    }
+
+    .edit:hover {
+        background-color: #0083ef;
     }
 
     .download .material-symbols-rounded, .delete .material-symbols-rounded {
