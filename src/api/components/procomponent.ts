@@ -8,6 +8,7 @@ export default abstract class ProComponent extends Constructable {
   components: ProComponent[] = [];
   data: ComponentOption[] = [];
   isParent = true;
+  id = {};
 
   protected constructor(type: "trigger" | "condition" | "mechanic" | "target",
                         name: string,

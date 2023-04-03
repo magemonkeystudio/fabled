@@ -131,7 +131,7 @@
         </div>
       </div>
       <div class="children" transition:slide|local>
-        {#each component.components as child}
+        {#each component.components as child (child.id)}
         <span transition:slide|local>
           <svelte:self {skill} bind:component={child} on:update on:save />
         </span>

@@ -7,7 +7,6 @@
   import ProInput from "$input/ProInput.svelte";
   import { Triggers } from "$api/components/components";
   import { skills } from "../../../../data/skill-store";
-  import { goto } from "$app/navigation";
 
   export let data: { data: ProSkill };
   let skill: ProSkill;
@@ -52,7 +51,12 @@
   <h2>
     {skill.name}
     <a class="material-symbols-rounded edit-skill chip" title="Edit"
-          href="/skill/{skill.name}/edit">edit</a>
+       href="/skill/{skill.name}/edit">edit</a>
+    <div class="add-trigger chip" title="Add Trigger" on:click={() => triggerModal = true}>
+    <span class="material-symbols-rounded">
+      new_label
+    </span>
+    </div>
   </h2>
 </div>
 <hr />
@@ -62,11 +66,9 @@
       <ComponentWidget {skill} component={comp} on:update={update} on:save={save} />
     </div>
   {/each}
-  <div class="add-trigger chip" title="Add Trigger" on:click={() => triggerModal = true}>
-    <span class="material-symbols-rounded">
-      variables
-    </span>
-  </div>
+  {#if skill.triggers.length == 0}
+    <div>No triggers added yet.</div>
+  {/if}
 </div>
 
 <Modal bind:open={triggerModal}>
@@ -118,31 +120,26 @@
         white-space: nowrap;
     }
 
-    .add-trigger {
-        font-size: 3rem;
-    }
-
     .add-trigger:hover {
         cursor: pointer;
     }
 
-    .add-trigger .material-symbols-rounded {
-        margin-bottom: -20%;
-    }
-
-    .edit-skill {
+    .add-trigger, .edit-skill {
         display: inline-flex;
         justify-content: center;
         align-items: center;
-        padding: 0.4rem;
-        margin-left: 1rem;
         height: 100%;
         width: 6rem;
+        overflow: hidden;
         font-size: inherit;
         color: white;
         text-decoration: none;
-        background-color: #1dad36;
         transition: background-color 0.25s ease;
+    }
+
+    .edit-skill {
+        margin-left: 1rem;
+        background-color: #1dad36;
     }
 
     .edit-skill:hover {
