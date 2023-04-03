@@ -4,7 +4,7 @@ import { ProAttribute } from "./proattribute";
 import { toEditorCase } from "./api";
 import { getSkill } from "../data/skill-store";
 import ProTrigger from "./components/triggers";
-import ProComponent from "$api/components/procomponent";
+import type ProComponent from "$api/components/procomponent";
 
 export default class ProSkill implements Serializable {
   isSkill = true;
@@ -106,7 +106,7 @@ export default class ProSkill implements Serializable {
     this.type = yaml.get("type", this.type);
     this.maxLevel = yaml.get("max-level", this.maxLevel);
     this.skillReqStr = yaml.get("skill-req", this.skillReqStr);
-    this.skillReqLevel = yaml.get("skill-req-level", this.skillReqLevel);
+    this.skillReqLevel = yaml.get("skill-req-lvl", this.skillReqLevel);
     this.permission = yaml.get("needs-permission", this.permission);
     this.cooldownMessage = yaml.get("cooldown-message", this.cooldownMessage);
     this.castMessage = yaml.get("msg", this.castMessage);
