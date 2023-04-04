@@ -5,11 +5,12 @@
 
   export let data: { material: string, any?: boolean };
   export let any: boolean;
+  export let tooltip: string | undefined = undefined;
 
   const dispatch = createEventDispatcher();
   $: if (data) dispatch("save");
 </script>
 
-<ProInput label="Material">
+<ProInput label="Material" {tooltip}>
   <MaterialSelect bind:selected={data.material} bind:any={data.any} />
 </ProInput>

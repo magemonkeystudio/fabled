@@ -54,12 +54,16 @@ export interface Icon {
   lore?: string[];
 }
 
-export interface TriggerData {
+export interface ComponentData {
   name: string;
-  mana?: boolean;
-  cooldown?: boolean;
   data?: ComponentOption[];
   components?: ProComponent[];
+  description?: string;
+}
+
+export interface TriggerData extends ComponentData {
+  mana?: boolean;
+  cooldown?: boolean;
 }
 
 export interface VersionData {

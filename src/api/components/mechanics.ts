@@ -1,16 +1,17 @@
-import ProComponent from "./procomponent";
-import { YAMLObject } from "../yaml";
-import type ComponentOption from "../options/options";
+import ProComponent           from "./procomponent";
+import { YAMLObject }         from "../yaml";
+import type ComponentOption   from "../options/options";
+import type { ComponentData } from "$api/types";
 
 export default class ProMechanic extends ProComponent {
-  public constructor(name: string, components?: ProComponent[], data?: any[]) {
-    super("mechanic", name, components, data);
+  public constructor(data: ComponentData) {
+    super("mechanic", data);
     super.isParent = false; // This should be false unless for specific mechanics like projectiles
   }
 
   public override toYamlObj(): YAMLObject {
     const parent: YAMLObject = super.toYamlObj();
-    const data = this.getData();
+    const data               = this.getData();
     if (data.getKeys().length > 0) parent.put("data", data);
     if (this.components.length > 0)
       parent.put("children", this.components);

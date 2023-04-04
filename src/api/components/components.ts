@@ -1,18 +1,24 @@
-import ProMechanic from "$api/components/mechanics";
-import BlockSelect from "$api/options/blockselect";
-import ProCondition from "$api/components/conditions";
-import DropdownSelect from "$api/options/dropdownselect";
-import ProTrigger from "$api/components/triggers";
-import ProTarget from "$api/components/targets";
-import MaterialSelect from "$api/options/materialselect";
+import ProMechanic        from "$api/components/mechanics";
+import BlockSelect        from "$api/options/blockselect";
+import ProCondition       from "$api/components/conditions";
+import DropdownSelect     from "$api/options/dropdownselect";
+import ProTrigger         from "$api/components/triggers";
+import ProTarget          from "$api/components/targets";
+import MaterialSelect     from "$api/options/materialselect";
+import { getDamageTypes } from "../../version/data";
+import BooleanSelect      from "$api/options/booleanselect";
 
 // TRIGGERS
 
 class BlockBreakTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Block Break",
-      data: [new BlockSelect()]
+      name:        "Block Break",
+      description: "Applies skill effects when a player breaks a block matching the given details",
+      data:        [new BlockSelect(
+        "The type of block expected to be broken",
+        "The expected data value of the block (-1 for any data value)"
+      )]
     });
   }
 
@@ -22,8 +28,12 @@ class BlockBreakTrigger extends ProTrigger {
 class BlockPlaceTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Block Place",
-      data: [new BlockSelect()]
+      name:        "Block Place",
+      description: "Applies skill effects when a player places a block matching the given details",
+      data:        [new BlockSelect(
+        "The type of block expected to be placed",
+        "The expected data value of the block (-1 for any data value)"
+      )]
     });
   }
 
@@ -32,7 +42,10 @@ class BlockPlaceTrigger extends ProTrigger {
 
 class CastTrigger extends ProTrigger {
   public constructor() {
-    super({ name: "Cast" });
+    super({
+      name:        "Cast",
+      description: "Applies skill effects when a player casts the skill using either the cast command, the skill bar, or click combos"
+    });
   }
 
   public static override new = () => new this();
@@ -40,7 +53,10 @@ class CastTrigger extends ProTrigger {
 
 class CleanupTrigger extends ProTrigger {
   public constructor() {
-    super({ name: "Cleanup" });
+    super({
+      name:        "Cleanup",
+      description: "Applies skill effects when the player disconnects or unlearns the skill. This is always applied with a skill level of 1 just for the sake of math"
+    });
   }
 
   public static override new = () => new this();
@@ -49,9 +65,10 @@ class CleanupTrigger extends ProTrigger {
 class CrouchTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Crouch",
-      data: [
-        new DropdownSelect("crouching", ["Start Crouching", "Stop Crouching", "Both"])
+      name:        "Crouch",
+      description: "Applies skill effects when a player starts or stops crouching using the shift key",
+      data:        [
+        new DropdownSelect("Crouching", "type", ["Start Crouching", "Stop Crouching", "Both"])
       ]
     });
   }
@@ -62,8 +79,9 @@ class CrouchTrigger extends ProTrigger {
 class DeathTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Death",
-      data: []
+      name:        "Death",
+      description: "Applies skill effects when a player dies",
+      data:        []
     });
   }
 
@@ -73,8 +91,12 @@ class DeathTrigger extends ProTrigger {
 class DropItemTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Drop Item",
-      data: []
+      name:        "Drop Item",
+      description: "Applies skill effects upon dropping an item",
+      data:        [
+        new DropdownSelect("Drop multiple", "drop multiple", ["True", "False", "Ignore"], "Ignore")
+          .setTooltip("Whether the player has to drop multiple items or a single item")
+      ]
     });
   }
 
@@ -84,8 +106,12 @@ class DropItemTrigger extends ProTrigger {
 class EnvironmentDamageTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Environment Damage",
-      data: []
+      name:        "Environment Damage",
+      description: "Applies skill effects when a player takes environmental damage",
+      data:        [
+        new DropdownSelect("Type", "type", getDamageTypes, "Fall")
+          .setTooltip("The source of damage to apply for")
+      ]
     });
   }
 
@@ -95,8 +121,8 @@ class EnvironmentDamageTrigger extends ProTrigger {
 class FishingTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Fishing",
-      data: []
+      name:        "Fishing",
+      description: "Applies skill effects upon right-clicking with a fishing rod"
     });
   }
 
@@ -106,8 +132,8 @@ class FishingTrigger extends ProTrigger {
 class FishingBiteTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Fishing Bite",
-      data: []
+      name:        "Fishing Bite",
+      description: "Applies skill effects when a fish bites the fishing rod of a player"
     });
   }
 
@@ -117,8 +143,8 @@ class FishingBiteTrigger extends ProTrigger {
 class FishingFailTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Fishing Fail",
-      data: []
+      name:        "Fishing Fail",
+      description: "Applies skill effects when a player fails to catch a fish due to poor timing"
     });
   }
 
@@ -128,8 +154,8 @@ class FishingFailTrigger extends ProTrigger {
 class FishingGrabTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Fishing Grab",
-      data: []
+      name:        "Fishing Grab",
+      description: "Applies skill effects when a player catches a fish"
     });
   }
 
@@ -139,8 +165,8 @@ class FishingGrabTrigger extends ProTrigger {
 class FishingGroundTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Fishing Ground",
-      data: []
+      name:        "Fishing Ground",
+      description: "Applies skill effects when the bobber of a fishing rod hits the ground"
     });
   }
 
@@ -150,8 +176,8 @@ class FishingGroundTrigger extends ProTrigger {
 class FishingReelTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Fishing Reel",
-      data: []
+      name:        "Fishing Reel",
+      description: "Applies skill effects when a player reels in a fishing rod out of water or air with no fish on the rod"
     });
   }
 
@@ -161,8 +187,8 @@ class FishingReelTrigger extends ProTrigger {
 class InitializeTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Initialize",
-      data: []
+      name:        "Initialize",
+      description: "Applies skill effects immediately. This can be used for passive abilities"
     });
   }
 
@@ -172,8 +198,12 @@ class InitializeTrigger extends ProTrigger {
 class ItemSwapTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Item Swap",
-      data: []
+      name:        "Item Swap",
+      description: "Applies skill effects upon pressing the swap-key on your keyboard",
+      data:        [
+        new BooleanSelect("Cancel Swap", "cancel", true)
+          .setTooltip("True cancels the item swap. False allows the item swap")
+      ]
     });
   }
 
@@ -184,7 +214,7 @@ class KillTrigger extends ProTrigger {
   public constructor() {
     super({
       name: "Kill",
-      data: []
+      description: "Applies skill effects upon killing something"
     });
   }
 
@@ -195,7 +225,8 @@ class LandTrigger extends ProTrigger {
   public constructor() {
     super({
       name: "Land",
-      data: []
+      description: "Applies skill effects when a player lands on the ground",
+      data: [] // TODO DoubleSelect
     });
   }
 
@@ -301,86 +332,54 @@ class TookSkillTrigger extends ProTrigger {
   public static override new = () => new this();
 }
 
-export class Triggers {
-  public static BLOCK_BREAK = BlockBreakTrigger;
-  public static BLOCK_PLACE = BlockPlaceTrigger;
-  public static CAST = CastTrigger;
-  public static CLEANUP = CleanupTrigger;
-  public static CROUCH = CrouchTrigger;
-  public static DEATH = DeathTrigger;
-  public static DROP_ITEM = DropItemTrigger;
-  public static ENV_DAMAGE = EnvironmentDamageTrigger;
-  public static FISHING = FishingTrigger;
-  public static FISHING_BITE = FishingBiteTrigger;
-  public static FISHING_FAIL = FishingFailTrigger;
-  public static FISHING_GRAB = FishingGrabTrigger;
-  public static FISHING_GROUND = FishingGroundTrigger;
-  public static FISHING_REEL = FishingReelTrigger;
-  public static INIT = InitializeTrigger;
-  public static ITEM_SWAP = ItemSwapTrigger;
-  public static KILL = KillTrigger;
-  public static LAND = LandTrigger;
-  public static LAUNCH = LaunchTrigger;
-  public static LEFT_CLICK = LeftClickTrigger;
-  public static RIGHT_CLICK = RightClickTrigger;
-  public static MOVE = MoveTrigger;
-  public static PHYS_DAMAGE = PhysicalDamageTrigger;
-  public static SKILL_DAMAGE = SkillDamageTrigger;
-  public static SKILL_CAST = SkillCastTrigger;
-  public static TOOK_PHYS = TookPhysicalTrigger;
-  public static TOOK_SKILL = TookSkillTrigger;
-  public static MAP: { [key: string]: typeof ProTrigger } = {
-    "Block Break": BlockBreakTrigger,
-    "Block Place": BlockPlaceTrigger,
-    "Cast": CastTrigger,
-    "Cleanup": CleanupTrigger,
-    "Crouch": CrouchTrigger,
-    "Death": DeathTrigger,
-    "Drop Item": DropItemTrigger,
-    "Environment Damage": EnvironmentDamageTrigger,
-    "Fishing": FishingTrigger,
-    "Fishing Bite": FishingBiteTrigger,
-    "Fishing Fail": FishingFailTrigger,
-    "Fishing Grab": FishingGrabTrigger,
-    "Fishing Ground": FishingGroundTrigger,
-    "Fishing Reel": FishingReelTrigger,
-    "Initialize": InitializeTrigger,
-    "Item Swap": ItemSwapTrigger,
-    "Kill": KillTrigger,
-    "Land": LandTrigger,
-    "Launch": LaunchTrigger,
-    "Left Click": LeftClickTrigger,
-    "Right Click": RightClickTrigger,
-    "Move": MoveTrigger,
-    "Physical Damage": PhysicalDamageTrigger,
-    "Skill Damage": SkillDamageTrigger,
-    "Skill Cast": SkillCastTrigger,
-    "Took Physical Damage": TookPhysicalTrigger,
-    "Took Skill Damage": TookSkillTrigger
-  };
+export const Triggers: { [key: string]: { name: string, component: typeof ProTrigger } } = {
+  BLOCK_BREAK:    { name: "Block Break", component: BlockBreakTrigger },
+  BLOCK_PLACE:    { name: "Block Place", component: BlockPlaceTrigger },
+  CAST:           { name: "Cast", component: CastTrigger },
+  CLEANUP:        { name: "Cleanup", component: CleanupTrigger },
+  CROUCH:         { name: "Crouch", component: CrouchTrigger },
+  DEATH:          { name: "Death", component: DeathTrigger },
+  DROP_ITEM:      { name: "Drop Item", component: DropItemTrigger },
+  ENV_DAMAGE:     { name: "Environment Damage", component: EnvironmentDamageTrigger },
+  FISHING:        { name: "Fishing", component: FishingTrigger },
+  FISHING_BITE:   { name: "Fishing Bite", component: FishingBiteTrigger },
+  FISHING_FAIL:   { name: "Fishing Fail", component: FishingFailTrigger },
+  FISHING_GRAB:   { name: "Fishing Grab", component: FishingGrabTrigger },
+  FISHING_GROUND: { name: "Fishing Ground", component: FishingGroundTrigger },
+  FISHING_REEL:   { name: "Fishing Reel", component: FishingReelTrigger },
+  INIT:           { name: "Initialize", component: InitializeTrigger },
+  ITEM_SWAP:      { name: "Item Swap", component: ItemSwapTrigger },
+  KILL:           { name: "Kill", component: KillTrigger },
+  LAND:           { name: "Land", component: LandTrigger },
+  LAUNCH:         { name: "Launch", component: LaunchTrigger },
+  LEFT_CLICK:     { name: "Left Click", component: LeftClickTrigger },
+  RIGHT_CLICK:    { name: "Right Click", component: RightClickTrigger },
+  MOVE:           { name: "Move", component: MoveTrigger },
+  PHYS_DAMAGE:    { name: "Physical Damage", component: PhysicalDamageTrigger },
+  SKILL_DAMAGE:   { name: "Skill Damage", component: SkillDamageTrigger },
+  SKILL_CAST:     { name: "Skill Cast", component: SkillCastTrigger },
+  TOOK_PHYS:      { name: "Took Physical Damage", component: TookPhysicalTrigger },
+  TOOK_SKILL:     { name: "Took Skill Damage", component: TookSkillTrigger }
+};
 
-  public static byName = (name: string): ProTrigger | undefined => {
-    const triggers = Object.keys(this.MAP);
-    if (!triggers.includes(name)) return undefined;
 
-    return Triggers.MAP[name].new();
-  };
-}
+export const getTriggerByName = (name: string): typeof ProTrigger | undefined => {
+  return Object.values(Triggers)
+    .find(trig => trig.name.toLowerCase() === name.toLowerCase())?.component;
+};
 
 // TARGETS
 
 class LinearTarget extends ProTarget {
   public constructor() {
-    super("Linear",
-      [],
-      []);
+    super({ name: "Linear" });
   }
 
   public static override new = () => new this();
 }
 
 export class Targets {
-  public static LINEAR = LinearTarget;
+  public static LINEAR                                     = LinearTarget;
   public static MAP: { [key: string]: typeof ProMechanic } = {
     "Linear": LinearTarget
   };
@@ -397,19 +396,20 @@ export class Targets {
 
 class BlockCondition extends ProCondition {
   public constructor() {
-    super("Block",
-      [],
-      [
-        new DropdownSelect("standing", ["On Block", "Not On Block", "In Block", "Not In Block"]),
+    super({
+      name: "Block",
+      data: [
+        new DropdownSelect("Standing", "standing", ["On Block", "Not On Block", "In Block", "Not In Block"]),
         new MaterialSelect()
-      ]);
+      ]
+    });
   }
 
   public static override new = () => new this();
 }
 
 export class Conditions {
-  public static BLOCK = BlockCondition;
+  public static BLOCK                                       = BlockCondition;
   public static MAP: { [key: string]: typeof ProCondition } = {
     "Block": BlockCondition
   };
@@ -425,16 +425,14 @@ export class Conditions {
 // MECHANICS
 class LaunchMechanic extends ProMechanic {
   public constructor() {
-    super("Launch",
-      [],
-      []);
+    super({ name: "Launch" });
   }
 
   public static override new = () => new this();
 }
 
 export class Mechanics {
-  public static LAUNCH = LaunchMechanic;
+  public static LAUNCH                                     = LaunchMechanic;
   public static MAP: { [key: string]: typeof ProMechanic } = {
     "Launch": LaunchMechanic
   };

@@ -4,11 +4,12 @@
   import { createEventDispatcher } from "svelte";
 
   export let data: { selected: string, value: string[] };
+  export let name: string | undefined = "";
+  export let tooltip: string | undefined = undefined;
 
   const dispatch = createEventDispatcher();
   $: if (data) dispatch("save");
 </script>
-
-<ProInput label="Type">
+<ProInput label={name} {tooltip}>
   <SearchableSelect bind:selected={data.selected} bind:data={data.value} />
 </ProInput>

@@ -4,9 +4,9 @@
  */
 
 import type ProComponent from "./components/procomponent";
-import { v4 as uuid } from "uuid";
-import { Conditions, Mechanics, Targets, Triggers } from "$api/components/components";
-import type ProMechanic from "$api/components/mechanics";
+import { v4 as uuid }                                                 from "uuid";
+import { Conditions, getTriggerByName, Mechanics, Targets, Triggers } from "$api/components/components";
+import type ProMechanic                                               from "$api/components/mechanics";
 import type ProTrigger from "$api/components/triggers";
 import type ProTarget from "$api/components/targets";
 
@@ -271,9 +271,9 @@ export class YAMLObject {
       const type = data.get("type");
 
       if (type === "trigger") {
-        const trigger: ProComponent | undefined = Triggers.byName(key.split("-")[0]);
+        const trigger: typeof ProTrigger | undefined = getTriggerByName(key.split("-")[0]);
         if (trigger) {
-          comp = trigger;
+          comp = trigger.new();
         }
         } else if (type === "condition") {
           const condition: ProComponent | undefined = Conditions.byName(key.split("-")[0]);

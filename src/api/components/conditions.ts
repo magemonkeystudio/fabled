@@ -1,15 +1,16 @@
-import ProComponent from "./procomponent";
-import { YAMLObject } from "../yaml";
-import type ComponentOption from "../options/options";
+import ProComponent           from "./procomponent";
+import { YAMLObject }         from "../yaml";
+import type ComponentOption   from "../options/options";
+import type { ComponentData } from "$api/types";
 
 export default class ProCondition extends ProComponent {
-  public constructor(name: string, components?: ProComponent[], data?: any[]) {
-    super("condition", name, components, data);
+  public constructor(data: ComponentData) {
+    super("condition", data);
   }
 
   public override toYamlObj(): YAMLObject {
     const parent: YAMLObject = super.toYamlObj();
-    const data = this.getData();
+    const data               = this.getData();
     if (data.getKeys().length > 0) parent.put("data", data);
     if (this.components.length > 0)
       parent.put("children", this.components);
@@ -36,5 +37,5 @@ export default class ProCondition extends ProComponent {
     this.components = yaml.get<YAMLObject, ProComponent[]>("children", [], (obj) => YAMLObject.deserializeComponent(obj));
   }
 
-  public static override new = (): ProCondition => new ProCondition("null");
+  public static override new = (): ProCondition => new ProCondition({ name: "null" });
 }

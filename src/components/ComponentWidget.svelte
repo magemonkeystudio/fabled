@@ -1,28 +1,29 @@
 <!--suppress CssUnresolvedCustomProperty -->
 <script lang="ts">
-  import ProComponent from "$api/components/procomponent";
-  import ProTrigger from "$api/components/triggers";
-  import ProCondition from "$api/components/conditions";
-  import ProTarget from "$api/components/targets";
-  import ProMechanic from "$api/components/mechanics";
-  import { slide } from "svelte/transition";
-  import { backOut } from "svelte/easing";
-  import { draggingComponent } from "../data/store";
-  import Modal from "$components/Modal.svelte";
-  import ProInput from "$input/ProInput.svelte";
-  import Toggle from "$input/Toggle.svelte";
-  import ProSkill from "$api/proskill";
-  import { createEventDispatcher } from "svelte";
+  import ProComponent                       from "$api/components/procomponent";
+  import ProTrigger                         from "$api/components/triggers";
+  import ProCondition                       from "$api/components/conditions";
+  import ProTarget                          from "$api/components/targets";
+  import ProMechanic                        from "$api/components/mechanics";
+  import { slide }                          from "svelte/transition";
+  import { backOut }                        from "svelte/easing";
+  import { draggingComponent }              from "../data/store";
+  import Modal                              from "$components/Modal.svelte";
+  import ProInput                           from "$input/ProInput.svelte";
+  import Toggle                             from "$input/Toggle.svelte";
+  import ProSkill                           from "$api/proskill";
+  import { createEventDispatcher }          from "svelte";
   import { Conditions, Mechanics, Targets } from "$api/components/components";
+  import DropdownSelect                     from "$api/options/dropdownselect";
 
   export let skill: ProSkill;
   export let component: ProComponent;
 
   const dispatch = createEventDispatcher();
 
-  let modalOpen = false;
+  let modalOpen      = false;
   let componentModal = false;
-  let collapsed = false;
+  let collapsed      = false;
 
   let searchParams = "";
 
@@ -48,6 +49,7 @@
   }
 
   $: if (component) dispatch("save");
+  $: if (modalOpen && component) component.data.filter(dat => (dat["dataSource"])).forEach((dat: DropdownSelect) => dat.init());
 
   const getName = () => {
     if (component instanceof ProTrigger) {
@@ -65,8 +67,8 @@
 
   const addComponent = (comp: ProComponent) => {
     component.components = [...component.components, comp];
-    componentModal = false;
-    searchParams = "";
+    componentModal       = false;
+    searchParams         = "";
     dispatch("save");
   };
 
@@ -148,6 +150,9 @@
 
 <Modal bind:open={modalOpen} width="70%">
   <h2>{component.name}</h2>
+  {#if component.description}
+    <div>{component.description}</div>
+  {/if}
   <hr />
   <div class="component-entry">
     {#if component instanceof ProTrigger}
@@ -159,7 +164,11 @@
       </ProInput>
     {/if}
     {#each component.data as datum}
-      <svelte:component this={datum.component} bind:data={datum.data} color on:save />
+      <svelte:component this={datum.component}
+                        bind:data={datum.data}
+                        name={datum.name}
+                        tooltip={datum.tooltip}
+                        on:save />
     {/each}
   </div>
 </Modal>

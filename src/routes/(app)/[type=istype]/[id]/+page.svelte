@@ -17,10 +17,10 @@
   let sortedTriggers;
 
   $: {
-    sortedTriggers = Object.keys(Triggers.MAP)
+    sortedTriggers = Object.keys(Triggers)
       .filter(trigger => trigger.toLowerCase().includes(searchParams.toLowerCase()))
       .sort()
-      .map(key => new Triggers.MAP[key]());
+      .map(key => Triggers[key].component.new());
   }
 
   const onSelectTrigger = data => {

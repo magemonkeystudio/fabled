@@ -6,9 +6,15 @@ import type { YAMLObject } from "$api/yaml";
 export default class MaterialSelect implements ComponentOption {
   component: typeof SvelteComponent = MaterialSelectOption;
   data = { material: "Dirt", any: false };
+  tooltip: string | undefined  = undefined;
 
   constructor(any = true) {
     this.data.any = any;
+  }
+
+  setTooltip = (tooltip: string): MaterialSelect => {
+    this.tooltip = tooltip;
+    return this;
   }
 
   clone = (): ComponentOption => {

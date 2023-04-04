@@ -14,7 +14,7 @@
 <div class="label"
      on:mouseenter={() => hovered = true}
      on:mouseleave={() => hovered = false}>
-  {#if tooltip && hovered}
+  {#if tooltip && tooltip.length > 0 && hovered}
     <div class="tooltip"
          transition:fly={{y: 20}}>
       {tooltip}
@@ -50,7 +50,7 @@
 
     .tooltip {
         z-index: 30;
-        text-align: left;
+        text-align: center;
         background-color: #0a0a0a;
         padding: 0.75rem;
         position: absolute;
@@ -59,6 +59,7 @@
         right: 0;
         border-radius: 0.3rem;
         border: 1px solid #777;
+        white-space: break-spaces;
     }
 
     .tooltip:before {

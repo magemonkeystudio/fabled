@@ -1,31 +1,31 @@
 import type { TriggerData } from "../types";
-import ProComponent from "./procomponent";
-import { YAMLObject } from "../yaml";
+import ProComponent         from "./procomponent";
+import { YAMLObject }       from "../yaml";
 import type ComponentOption from "../options/options";
 
 export default class ProTrigger extends ProComponent {
-  mana = false;
+  mana     = false;
   cooldown = false;
 
   protected constructor(data: TriggerData) {
-    super("trigger", data.name, data.components, data.data);
-    this.mana = data.mana || false;
+    super("trigger", data);
+    this.mana     = data.mana || false;
     this.cooldown = data.cooldown || false;
   }
 
   public clone = (): ProTrigger => {
     return new ProTrigger({
-      name: this.name,
+      name:       this.name,
       components: [...this.components],
-      mana: this.mana,
-      cooldown: this.cooldown,
-      data: [...this.data]
+      mana:       this.mana,
+      cooldown:   this.cooldown,
+      data:       [...this.data]
     });
   };
 
   public override toYamlObj(): YAMLObject {
     const parent: YAMLObject = super.toYamlObj();
-    const data = this.getData();
+    const data               = this.getData();
     if (data.getKeys().length > 0) parent.put("data", data);
     if (this.components.length > 0)
       parent.put("children", this.components);
@@ -49,7 +49,7 @@ export default class ProTrigger extends ProComponent {
   public override deserialize(yaml: YAMLObject) {
     const data = yaml.get<YAMLObject, YAMLObject>("data");
     if (data) {
-      this.mana = data.get("mana", false);
+      this.mana     = data.get("mana", false);
       this.cooldown = data.get("cooldown", false);
 
       this.data.forEach((opt: ComponentOption) => opt.deserialize(data));

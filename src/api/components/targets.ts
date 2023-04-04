@@ -1,16 +1,17 @@
-import ProComponent from "./procomponent";
-import { YAMLObject } from "../yaml";
-import type ComponentOption from "../options/options";
+import ProComponent           from "./procomponent";
+import { YAMLObject }         from "../yaml";
+import type ComponentOption   from "../options/options";
+import type { ComponentData } from "$api/types";
 
 export default class ProTarget extends ProComponent {
-  public constructor(name: string, components?: ProComponent[], data?: any[]) {
-    super("target", name, components, data);
+  public constructor(data: ComponentData) {
+    super("target", data);
   }
 
   public override toYamlObj(): YAMLObject {
     const parent: YAMLObject = super.toYamlObj();
-    const data = this.getData();
-if (data.getKeys().length > 0) parent.put("data", data);
+    const data               = this.getData();
+    if (data.getKeys().length > 0) parent.put("data", data);
     if (this.components.length > 0)
       parent.put("children", this.components);
 
@@ -36,5 +37,5 @@ if (data.getKeys().length > 0) parent.put("data", data);
     this.components = yaml.get<YAMLObject, ProComponent[]>("children", [], (obj) => YAMLObject.deserializeComponent(obj));
   }
 
-  public static override new = (): ProTarget => new ProTarget("null");
+  public static override new = (): ProTarget => new ProTarget({ name: "null" });
 }

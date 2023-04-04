@@ -6,8 +6,6 @@ import { parseYAML, YAMLObject } from "$api/yaml";
 import { browser } from "$app/environment";
 import ProSkill from "$api/proskill";
 import { rename } from "./store";
-import { ProAttribute } from "$api/proattribute";
-import { Triggers } from "$api/components/components";
 
 const loadSkillTextToArray = (text: string): ProSkill[] => {
   const list: ProSkill[] = [];

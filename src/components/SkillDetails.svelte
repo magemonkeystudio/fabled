@@ -86,7 +86,3 @@
                       bind:selected={data.incompatible} />
   </ProInput>
 {/if}
-
-<style>
-
-</style>
