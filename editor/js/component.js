@@ -591,7 +591,7 @@ extend('TriggerBlockBreak', 'Component');
 
 function TriggerBlockBreak() {
     this.super('Block Break', Type.TRIGGER, true);
-    this.description = 'Applies skill effects when a player breaks a block matching  the given details';
+    this.description = 'Applies skill effects when a player breaks a block matching the given details';
 
     this.data.push(new MultiListValue('Material', 'material', getAnyMaterials, ['Any'])
         .setTooltip('The type of block expected to be broken')
@@ -605,7 +605,7 @@ extend('TriggerBlockPlace', 'Component');
 
 function TriggerBlockPlace() {
     this.super('Block Place', Type.TRIGGER, true);
-    this.description = 'Applies skill effects when a player places a block matching  the given details';
+    this.description = 'Applies skill effects when a player places a block matching the given details';
 
     this.data.push(new MultiListValue('Material', 'material', getAnyMaterials, ['Any'])
         .setTooltip('The type of block expected to be placed')
@@ -688,7 +688,7 @@ extend('TriggerFishingBite', 'Component');
 function TriggerFishingBite() {
     this.super('Fishing Bite', Type.TRIGGER, true);
 
-    this.description = 'Applies skill efects when a fish bites the fishing rod of a player';
+    this.description = 'Applies skill effects when a fish bites the fishing rod of a player';
 }
 
 extend('TriggerFishingFail', 'Component');
