@@ -396,6 +396,9 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         if (identifier.equals("mainclass")) {
             return String.valueOf(playerClass.getPlayerData().getMainClass().getData().getName());
         }
+        if (identifier.equals("class")) {
+            return String.valueOf(playerClass.getData().getName());
+        }
 
         if (identifier.equals("currentexp")) {
             return String.valueOf(playerClass.getExp());
