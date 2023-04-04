@@ -9,10 +9,7 @@
 
 <input type="checkbox" class="hidden" id="permission" bind:checked={data} />
 <div class="toggle" class:selected={data} style:--color={color} class:inline>
-  <div on:click={() => {
-    console.log("Clicked left");
-    data = true
-  }}>{left}</div>
+  <div on:click={() => data = true}>{left}</div>
   <div on:click={() => data = false}>{right}</div>
 </div>
 
