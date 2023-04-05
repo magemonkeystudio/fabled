@@ -1,26 +1,46 @@
 <script lang="ts">
-  import ProSkill from "$api/proskill";
-  import ComponentWidget from "$components/ComponentWidget.svelte";
-  import Modal from "$components/Modal.svelte";
-  import { draggingComponent } from "../../../../data/store";
-  import { get } from "svelte/store";
-  import ProInput from "$input/ProInput.svelte";
-  import { Triggers } from "$api/components/components";
-  import { skills } from "../../../../data/skill-store";
+  import ProSkill               from "$api/proskill";
+  import ComponentWidget        from "$components/ComponentWidget.svelte";
+  import Modal                  from "$components/Modal.svelte";
+  import { draggingComponent }  from "../../../../data/store";
+  import { get }                from "svelte/store";
+  import ProInput               from "$input/ProInput.svelte";
+  import { skills }             from "../../../../data/skill-store";
+  import Registry               from "$api/components/registry";
+  import { onDestroy, onMount } from "svelte";
+  import type { Unsubscriber }  from "svelte/types/runtime/store";
 
   export let data: { data: ProSkill };
   let skill: ProSkill;
   $: if (data) skill = data.data;
   let triggerModal = false;
-  let hovered = false;
+  let hovered      = false;
   let searchParams = "";
   let sortedTriggers;
+  let unsub: Unsubscriber;
+  let triggers     = {};
+
+  onMount(() => {
+    unsub                                 = Registry.triggers.subscribe(tri => triggers = tri);
+    // This is by far my least favorite implementation... But with enough things going on,
+    // there are circular dependencies, and this sort of resolves it.
+    let initSub: Unsubscriber | undefined = undefined;
+    initSub                               = Registry.initialized.subscribe(init => {
+      if (!init) return;
+      if (initSub) initSub();
+      update();
+    });
+  });
+
+  onDestroy(() => {
+    if (unsub) unsub();
+  });
 
   $: {
-    sortedTriggers = Object.keys(Triggers)
+    sortedTriggers = Object.keys(triggers)
       .filter(trigger => trigger.toLowerCase().includes(searchParams.toLowerCase()))
       .sort()
-      .map(key => Triggers[key].component.new());
+      .map(key => triggers[key].component.new());
   }
 
   const onSelectTrigger = data => {
@@ -31,7 +51,7 @@
 
   const drop = () => {
     const comp = get(draggingComponent);
-    hovered = false;
+    hovered    = false;
     skill.removeComponent(comp);
     skill.triggers = [...skill.triggers];
   };

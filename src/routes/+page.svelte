@@ -1,7 +1,7 @@
 <!-- suppress CssUnusedSymbol -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { active } from "../data/store";
+  import { active }  from "../data/store";
 
   onMount(() => active.set(undefined));
 </script>

@@ -1,7 +1,7 @@
-import type ComponentOption   from "$api/options/options";
-import { YAMLObject }         from "../yaml";
-import { Constructable }      from "$api/components/constructable";
-import type { ComponentData } from "$api/types";
+import type ComponentOption                                 from "$api/options/options";
+import { YAMLObject }                                       from "../yaml";
+import { Constructable }                                    from "$api/components/constructable";
+import type { ComponentData }                               from "$api/types";
 
 export default abstract class ProComponent extends Constructable {
   type: "trigger" | "condition" | "mechanic" | "target";

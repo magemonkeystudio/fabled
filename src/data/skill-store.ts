@@ -1,11 +1,13 @@
-import type { Writable } from "svelte/store";
-import { get, writable } from "svelte/store";
-import ProFolder from "$api/profolder";
-import { sort } from "$api/api";
 import { parseYAML, YAMLObject } from "$api/yaml";
-import { browser } from "$app/environment";
-import ProSkill from "$api/proskill";
-import { rename } from "./store";
+import type { Writable }         from "svelte/store";
+import { get, writable }         from "svelte/store";
+import ProFolder                 from "$api/profolder";
+import { sort }                  from "$api/api";
+import { browser }               from "$app/environment";
+import ProSkill                  from "$api/proskill";
+import { rename }                from "./store";
+import Registry                  from "$api/components/registry";
+import type { Unsubscriber }     from "svelte/types/runtime/store";
 
 const loadSkillTextToArray = (text: string): ProSkill[] => {
   const list: ProSkill[] = [];
@@ -48,10 +50,10 @@ const setupSkillStore = <T extends ProSkill[] | ProFolder[]>(key: string,
   }
 
   const {
-    subscribe,
-    set,
-    update
-  } = writable<T>(saved);
+          subscribe,
+          set,
+          update
+        } = writable<T>(saved);
   return {
     subscribe,
     set: (value: T) => {
@@ -86,7 +88,7 @@ export const skillFolders: Writable<ProFolder[]> = setupSkillStore<ProFolder[]>(
         }
 
         const folder = new ProFolder(value.data);
-        folder.name = value.name;
+        folder.name  = value.name;
         return folder;
       }
       return value;
@@ -107,7 +109,7 @@ export const skillFolders: Writable<ProFolder[]> = setupSkillStore<ProFolder[]>(
 export const isSkillNameTaken = (name: string): boolean => !!getSkill(name);
 
 export const addSkill = (name?: string): ProSkill => {
-  const cl = get(skills);
+  const cl    = get(skills);
   const clazz = new ProSkill({ name: (name || "Skill " + (cl.length + 1)) });
   cl.push(clazz);
 
@@ -133,7 +135,7 @@ export const deleteSkillFolder = (folder: ProFolder) => {
 
 export const deleteSkill = (data: ProSkill) => skills.set(get(skills).filter(c => c != data));
 
-export const refreshSkills = () => skills.set(sort<ProSkill>(get(skills)));
+export const refreshSkills       = () => skills.set(sort<ProSkill>(get(skills)));
 export const refreshSkillFolders = () => {
   skillFolders.set(sort<ProFolder>(get(skillFolders)));
   refreshSkills();
@@ -151,7 +153,7 @@ export const loadSkillText = (text: string) => {
   // the structure is a bit different
   if (data.key && !data.data[data.key]) {
     const key: string = data.key;
-    skill = (<ProSkill>(isSkillNameTaken(key)
+    skill             = (<ProSkill>(isSkillNameTaken(key)
       ? getSkill(key)
       : addSkill(key)));
     skill.load(data);

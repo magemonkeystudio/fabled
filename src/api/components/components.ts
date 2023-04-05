@@ -1,12 +1,16 @@
-import ProMechanic        from "$api/components/mechanics";
-import BlockSelect        from "$api/options/blockselect";
-import ProCondition       from "$api/components/conditions";
-import DropdownSelect     from "$api/options/dropdownselect";
-import ProTrigger         from "$api/components/triggers";
-import ProTarget          from "$api/components/targets";
-import MaterialSelect     from "$api/options/materialselect";
-import { getDamageTypes } from "../../version/data";
-import BooleanSelect      from "$api/options/booleanselect";
+import ProMechanic                           from "$api/components/mechanics";
+import BlockSelect                           from "$api/options/blockselect";
+import ProCondition                          from "$api/components/conditions";
+import DropdownSelect                        from "$api/options/dropdownselect";
+import ProTrigger                            from "$api/components/triggers";
+import ProTarget                             from "$api/components/targets";
+import MaterialSelect                        from "$api/options/materialselect";
+import { getAnyProjectiles, getDamageTypes } from "../../version/data";
+import BooleanSelect                         from "$api/options/booleanselect";
+import DoubleSelect                          from "$api/options/doubleselect";
+import SkillSelect                           from "$api/options/skillselect";
+import ClassSelect                           from "$api/options/classselect";
+import Registry                              from "$api/components/registry";
 
 // TRIGGERS
 
@@ -213,7 +217,7 @@ class ItemSwapTrigger extends ProTrigger {
 class KillTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Kill",
+      name:        "Kill",
       description: "Applies skill effects upon killing something"
     });
   }
@@ -224,9 +228,10 @@ class KillTrigger extends ProTrigger {
 class LandTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Land",
+      name:        "Land",
       description: "Applies skill effects when a player lands on the ground",
-      data: [] // TODO DoubleSelect
+      data:        [new DoubleSelect("Min Distance", "min-distance")
+        .setTooltip("The minimum distance the player should fall before effects activate")]
     });
   }
 
@@ -236,8 +241,10 @@ class LandTrigger extends ProTrigger {
 class LaunchTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Launch",
-      data: []
+      name:        "Launch",
+      description: "Applies skill effects when a player launches a projectile",
+      data:        [new DropdownSelect("Type", "type", getAnyProjectiles, "Any")
+        .setTooltip("The type of projectile that should be launched")]
     });
   }
 
@@ -247,8 +254,10 @@ class LaunchTrigger extends ProTrigger {
 class LeftClickTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Left Click",
-      data: []
+      name:        "Left Click",
+      description: "Applies skill effects upon performing a left-click",
+      data:        [new DropdownSelect("Crouch", "crouch", ["Crouch", "Dont crouch", "Both"], "Crouch")
+        .setTooltip("If the player has to be crouching in order for this trigger to function")]
     });
   }
 
@@ -258,8 +267,8 @@ class LeftClickTrigger extends ProTrigger {
 class MoveTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Move",
-      data: []
+      name:        "Move",
+      description: "Applies skill effects when a player moves around. This triggers every tick the player is moving, so use this sparingly. Use the 'api-moved' value to check/use the distance traveled"
     });
   }
 
@@ -291,8 +300,13 @@ class RightClickTrigger extends ProTrigger {
 class SkillCastTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Skill Cast",
-      data: []
+      name:        "Skill Cast",
+      description: "Applies skill effects when a player casts a skill",
+      data:        [
+        new BooleanSelect("Cancel Cast", "cancel", false),
+        new ClassSelect("Classes", "allowed-classes"),
+        new SkillSelect("Skills", "allowed-skills")
+      ]
     });
   }
 
@@ -332,42 +346,6 @@ class TookSkillTrigger extends ProTrigger {
   public static override new = () => new this();
 }
 
-export const Triggers: { [key: string]: { name: string, component: typeof ProTrigger } } = {
-  BLOCK_BREAK:    { name: "Block Break", component: BlockBreakTrigger },
-  BLOCK_PLACE:    { name: "Block Place", component: BlockPlaceTrigger },
-  CAST:           { name: "Cast", component: CastTrigger },
-  CLEANUP:        { name: "Cleanup", component: CleanupTrigger },
-  CROUCH:         { name: "Crouch", component: CrouchTrigger },
-  DEATH:          { name: "Death", component: DeathTrigger },
-  DROP_ITEM:      { name: "Drop Item", component: DropItemTrigger },
-  ENV_DAMAGE:     { name: "Environment Damage", component: EnvironmentDamageTrigger },
-  FISHING:        { name: "Fishing", component: FishingTrigger },
-  FISHING_BITE:   { name: "Fishing Bite", component: FishingBiteTrigger },
-  FISHING_FAIL:   { name: "Fishing Fail", component: FishingFailTrigger },
-  FISHING_GRAB:   { name: "Fishing Grab", component: FishingGrabTrigger },
-  FISHING_GROUND: { name: "Fishing Ground", component: FishingGroundTrigger },
-  FISHING_REEL:   { name: "Fishing Reel", component: FishingReelTrigger },
-  INIT:           { name: "Initialize", component: InitializeTrigger },
-  ITEM_SWAP:      { name: "Item Swap", component: ItemSwapTrigger },
-  KILL:           { name: "Kill", component: KillTrigger },
-  LAND:           { name: "Land", component: LandTrigger },
-  LAUNCH:         { name: "Launch", component: LaunchTrigger },
-  LEFT_CLICK:     { name: "Left Click", component: LeftClickTrigger },
-  RIGHT_CLICK:    { name: "Right Click", component: RightClickTrigger },
-  MOVE:           { name: "Move", component: MoveTrigger },
-  PHYS_DAMAGE:    { name: "Physical Damage", component: PhysicalDamageTrigger },
-  SKILL_DAMAGE:   { name: "Skill Damage", component: SkillDamageTrigger },
-  SKILL_CAST:     { name: "Skill Cast", component: SkillCastTrigger },
-  TOOK_PHYS:      { name: "Took Physical Damage", component: TookPhysicalTrigger },
-  TOOK_SKILL:     { name: "Took Skill Damage", component: TookSkillTrigger }
-};
-
-
-export const getTriggerByName = (name: string): typeof ProTrigger | undefined => {
-  return Object.values(Triggers)
-    .find(trig => trig.name.toLowerCase() === name.toLowerCase())?.component;
-};
-
 // TARGETS
 
 class LinearTarget extends ProTarget {
@@ -376,20 +354,6 @@ class LinearTarget extends ProTarget {
   }
 
   public static override new = () => new this();
-}
-
-export class Targets {
-  public static LINEAR                                     = LinearTarget;
-  public static MAP: { [key: string]: typeof ProMechanic } = {
-    "Linear": LinearTarget
-  };
-
-  public static byName = (name: string): ProMechanic | undefined => {
-    const conditions = Object.keys(this.MAP);
-    if (!conditions.includes(name)) return undefined;
-
-    return this.MAP[name].new();
-  };
 }
 
 // CONDITIONS
@@ -408,20 +372,6 @@ class BlockCondition extends ProCondition {
   public static override new = () => new this();
 }
 
-export class Conditions {
-  public static BLOCK                                       = BlockCondition;
-  public static MAP: { [key: string]: typeof ProCondition } = {
-    "Block": BlockCondition
-  };
-
-  public static byName = (name: string): ProCondition | undefined => {
-    const conditions = Object.keys(this.MAP);
-    if (!conditions.includes(name)) return undefined;
-
-    return Conditions.MAP[name].new();
-  };
-}
-
 // MECHANICS
 class LaunchMechanic extends ProMechanic {
   public constructor() {
@@ -431,16 +381,44 @@ class LaunchMechanic extends ProMechanic {
   public static override new = () => new this();
 }
 
-export class Mechanics {
-  public static LAUNCH                                     = LaunchMechanic;
-  public static MAP: { [key: string]: typeof ProMechanic } = {
-    "Launch": LaunchMechanic
-  };
-
-  public static byName = (name: string): ProMechanic | undefined => {
-    const conditions = Object.keys(this.MAP);
-    if (!conditions.includes(name)) return undefined;
-
-    return this.MAP[name].new();
-  };
-}
+export const initComponents = () => {
+  Registry.triggers.set({
+    BLOCK_BREAK:    { name: "Block Break", component: BlockBreakTrigger },
+    BLOCK_PLACE:    { name: "Block Place", component: BlockPlaceTrigger },
+    CAST:           { name: "Cast", component: CastTrigger },
+    CLEANUP:        { name: "Cleanup", component: CleanupTrigger },
+    CROUCH:         { name: "Crouch", component: CrouchTrigger },
+    DEATH:          { name: "Death", component: DeathTrigger },
+    DROP_ITEM:      { name: "Drop Item", component: DropItemTrigger },
+    ENV_DAMAGE:     { name: "Environment Damage", component: EnvironmentDamageTrigger },
+    FISHING:        { name: "Fishing", component: FishingTrigger },
+    FISHING_BITE:   { name: "Fishing Bite", component: FishingBiteTrigger },
+    FISHING_FAIL:   { name: "Fishing Fail", component: FishingFailTrigger },
+    FISHING_GRAB:   { name: "Fishing Grab", component: FishingGrabTrigger },
+    FISHING_GROUND: { name: "Fishing Ground", component: FishingGroundTrigger },
+    FISHING_REEL:   { name: "Fishing Reel", component: FishingReelTrigger },
+    INIT:           { name: "Initialize", component: InitializeTrigger },
+    ITEM_SWAP:      { name: "Item Swap", component: ItemSwapTrigger },
+    KILL:           { name: "Kill", component: KillTrigger },
+    LAND:           { name: "Land", component: LandTrigger },
+    LAUNCH:         { name: "Launch", component: LaunchTrigger },
+    LEFT_CLICK:     { name: "Left Click", component: LeftClickTrigger },
+    RIGHT_CLICK:    { name: "Right Click", component: RightClickTrigger },
+    MOVE:           { name: "Move", component: MoveTrigger },
+    PHYS_DAMAGE:    { name: "Physical Damage", component: PhysicalDamageTrigger },
+    SKILL_DAMAGE:   { name: "Skill Damage", component: SkillDamageTrigger },
+    SKILL_CAST:     { name: "Skill Cast", component: SkillCastTrigger },
+    TOOK_PHYS:      { name: "Took Physical Damage", component: TookPhysicalTrigger },
+    TOOK_SKILL:     { name: "Took Skill Damage", component: TookSkillTrigger }
+  });
+  Registry.targets.set({
+    LINEAR: { name: "Linear", component: LinearTarget }
+  });
+  Registry.conditions.set({
+    BLOCK: { name: "Block", component: BlockCondition }
+  });
+  Registry.mechanics.set({
+    LAUNCH: { name: "Launch", component: LaunchMechanic }
+  });
+  Registry.initialized.set(true);
+};

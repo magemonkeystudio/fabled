@@ -1,7 +1,8 @@
-import type { TriggerData } from "../types";
-import ProComponent         from "./procomponent";
-import { YAMLObject }       from "../yaml";
+import type { TriggerData }      from "../types";
+import ProComponent              from "./procomponent";
+import { YAMLObject }            from "../yaml";
 import type ComponentOption from "../options/options";
+import Registry             from "$api/components/registry";
 
 export default class ProTrigger extends ProComponent {
   mana     = false;
@@ -55,7 +56,7 @@ export default class ProTrigger extends ProComponent {
       this.data.forEach((opt: ComponentOption) => opt.deserialize(data));
     }
 
-    this.components = yaml.get<YAMLObject, ProComponent[]>("children", [], (obj) => YAMLObject.deserializeComponent(obj));
+    this.components = yaml.get<YAMLObject, ProComponent[]>("children", [], (obj) => Registry.deserializeComponents(obj));
   }
 
   public static new = (): ProTrigger => new ProTrigger({ name: "null" });

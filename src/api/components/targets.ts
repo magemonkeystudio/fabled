@@ -1,7 +1,8 @@
-import ProComponent           from "./procomponent";
-import { YAMLObject }         from "../yaml";
-import type ComponentOption   from "../options/options";
+import ProComponent              from "./procomponent";
+import { YAMLObject }            from "../yaml";
+import type ComponentOption      from "../options/options";
 import type { ComponentData } from "$api/types";
+import Registry               from "$api/components/registry";
 
 export default class ProTarget extends ProComponent {
   public constructor(data: ComponentData) {
@@ -34,7 +35,7 @@ export default class ProTarget extends ProComponent {
 
     if (data) this.data.forEach((opt: ComponentOption) => opt.deserialize(data));
 
-    this.components = yaml.get<YAMLObject, ProComponent[]>("children", [], (obj) => YAMLObject.deserializeComponent(obj));
+    this.components = yaml.get<YAMLObject, ProComponent[]>("children", [], (obj) => Registry.deserializeComponents(obj));
   }
 
   public static override new = (): ProTarget => new ProTarget({ name: "null" });

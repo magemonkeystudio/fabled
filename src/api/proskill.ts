@@ -1,33 +1,35 @@
 import type { Icon, ProSkillData, Serializable } from "./types";
-import { YAMLObject } from "./yaml";
-import { ProAttribute } from "./proattribute";
-import { toEditorCase } from "./api";
-import { getSkill } from "../data/skill-store";
-import ProTrigger from "./components/triggers";
-import type ProComponent from "$api/components/procomponent";
+import { YAMLObject }                            from "./yaml";
+import { ProAttribute }                          from "./proattribute";
+import { toEditorCase }                          from "./api";
+import { getSkill }                              from "../data/skill-store";
+import ProTrigger                                from "./components/triggers";
+import type ProComponent                         from "$api/components/procomponent";
+import Registry                                  from "$api/components/registry";
+import type { Unsubscriber }                     from "svelte/types/runtime/store";
 
 export default class ProSkill implements Serializable {
-  isSkill = true;
-  public key = {};
+  isSkill                         = true;
+  public key                      = {};
   name: string;
-  type = "Dynamic";
-  maxLevel = 5;
+  type                            = "Dynamic";
+  maxLevel                        = 5;
   skillReq?: ProSkill;
-  skillReqLevel = 0;
-  permission = false;
-  levelReq: ProAttribute = new ProAttribute("level", 1, 0);
-  cost: ProAttribute = new ProAttribute("cost", 1, 0);
-  cooldown: ProAttribute = new ProAttribute("cooldown", 0, 0);
-  cooldownMessage = true;
-  mana: ProAttribute = new ProAttribute("mana", 0, 0);
-  minSpent: ProAttribute = new ProAttribute("points-spent-req", 0, 0);
-  castMessage = "&6{player} &2has cast &6{skill}";
-  combo = "";
+  skillReqLevel                   = 0;
+  permission                      = false;
+  levelReq: ProAttribute          = new ProAttribute("level", 1, 0);
+  cost: ProAttribute              = new ProAttribute("cost", 1, 0);
+  cooldown: ProAttribute          = new ProAttribute("cooldown", 0, 0);
+  cooldownMessage                 = true;
+  mana: ProAttribute              = new ProAttribute("mana", 0, 0);
+  minSpent: ProAttribute          = new ProAttribute("points-spent-req", 0, 0);
+  castMessage                     = "&6{player} &2has cast &6{skill}";
+  combo                           = "";
   indicator: "2D" | "3D" | "None" = "2D";
-  icon: Icon = {
-    material: "Pumpkin",
+  icon: Icon                      = {
+    material:        "Pumpkin",
     customModelData: 0,
-    lore: [
+    lore:            [
       "&d{name} &7({level}/{max})",
       "&2Type: &6{type}",
       "",
@@ -38,10 +40,10 @@ export default class ProSkill implements Serializable {
       "&2Cooldown: {attr:cooldown}"
     ]
   };
-  incompatible: ProSkill[] = [];
-  triggers: ProTrigger[] = [];
+  incompatible: ProSkill[]        = [];
+  triggers: ProTrigger[]          = [];
 
-  private skillReqStr = "";
+  private skillReqStr         = "";
   private incompStr: string[] = [];
 
   constructor(data?: ProSkillData) {
@@ -102,33 +104,42 @@ export default class ProSkill implements Serializable {
   };
 
   public load = (yaml: YAMLObject) => {
-    this.name = yaml.get("name", this.name);
-    this.type = yaml.get("type", this.type);
-    this.maxLevel = yaml.get("max-level", this.maxLevel);
-    this.skillReqStr = yaml.get("skill-req", this.skillReqStr);
-    this.skillReqLevel = yaml.get("skill-req-lvl", this.skillReqLevel);
-    this.permission = yaml.get("needs-permission", this.permission);
+    this.name            = yaml.get("name", this.name);
+    this.type            = yaml.get("type", this.type);
+    this.maxLevel        = yaml.get("max-level", this.maxLevel);
+    this.skillReqStr     = yaml.get("skill-req", this.skillReqStr);
+    this.skillReqLevel   = yaml.get("skill-req-lvl", this.skillReqLevel);
+    this.permission      = yaml.get("needs-permission", this.permission);
     this.cooldownMessage = yaml.get("cooldown-message", this.cooldownMessage);
-    this.castMessage = yaml.get("msg", this.castMessage);
-    this.combo = yaml.get("combo", this.combo);
-    this.indicator = yaml.get("indicator", this.indicator);
+    this.castMessage     = yaml.get("msg", this.castMessage);
+    this.combo           = yaml.get("combo", this.combo);
+    this.indicator       = yaml.get("indicator", this.indicator);
 
     const attributes: YAMLObject = yaml.get("attributes");
-    this.levelReq = new ProAttribute("level", attributes.get("level-base"), attributes.get("level-scale"));
-    this.cost = new ProAttribute("cost", attributes.get("cost-base"), attributes.get("cost-scale"));
-    this.cooldown = new ProAttribute("cooldown", attributes.get("cooldown-base"), attributes.get("cooldown-scale"));
-    this.mana = new ProAttribute("mana", attributes.get("mana-base"), attributes.get("mana-scale"));
-    this.minSpent = new ProAttribute("points-spent-req", attributes.get("points-spent-req-base"), attributes.get("points-spent-req-scale"));
+    this.levelReq                = new ProAttribute("level", attributes.get("level-base"), attributes.get("level-scale"));
+    this.cost                    = new ProAttribute("cost", attributes.get("cost-base"), attributes.get("cost-scale"));
+    this.cooldown                = new ProAttribute("cooldown", attributes.get("cooldown-base"), attributes.get("cooldown-scale"));
+    this.mana                    = new ProAttribute("mana", attributes.get("mana-base"), attributes.get("mana-scale"));
+    this.minSpent                = new ProAttribute("points-spent-req", attributes.get("points-spent-req-base"), attributes.get("points-spent-req-scale"));
 
-    this.icon.material = yaml.get<string, string>("icon", this.icon.material, toEditorCase);
+    this.icon.material        = yaml.get<string, string>("icon", this.icon.material, toEditorCase);
     this.icon.customModelData = yaml.get("icon-data", this.icon.customModelData);
-    this.icon.lore = yaml.get("icon-lore", this.icon.lore);
-    this.incompStr = yaml.get("incompatible", this.incompStr);
-    this.triggers = yaml.get<YAMLObject, ProTrigger[]>("components", this.triggers, (list: YAMLObject) => YAMLObject.deserializeComponent(list));
+    this.icon.lore            = yaml.get("icon-lore", this.icon.lore);
+    this.incompStr            = yaml.get("incompatible", this.incompStr);
+
+    let unsub: Unsubscriber | undefined = undefined;
+    unsub                               = Registry.initialized.subscribe(init => {
+      if (!init) return;
+      this.triggers = yaml.get<YAMLObject, ProTrigger[]>("components", this.triggers, (list: YAMLObject) => Registry.deserializeComponents(list));
+
+      if (unsub) {
+        unsub();
+      }
+    });
   };
 
   public postLoad = () => {
-    this.skillReq = getSkill(this.skillReqStr);
+    this.skillReq     = getSkill(this.skillReqStr);
     this.incompatible = <ProSkill[]>this.incompStr.map(s => getSkill(s)).filter(s => !!s);
   };
 }

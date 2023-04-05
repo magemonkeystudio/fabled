@@ -12,9 +12,10 @@
   import ProInput                           from "$input/ProInput.svelte";
   import Toggle                             from "$input/Toggle.svelte";
   import ProSkill                           from "$api/proskill";
-  import { createEventDispatcher }          from "svelte";
-  import { Conditions, Mechanics, Targets } from "$api/components/components";
+  import { createEventDispatcher, onMount } from "svelte";
   import DropdownSelect                     from "$api/options/dropdownselect";
+  import Registry                           from "$api/components/registry";
+  import type { Unsubscriber }              from "svelte/types/runtime/store";
 
   export let skill: ProSkill;
   export let component: ProComponent;
@@ -27,29 +28,43 @@
 
   let searchParams = "";
 
+  let targetSub: Unsubscriber;
+  let conditionSub: Unsubscriber;
+  let mechanicSub: Unsubscriber;
+
+  let targets    = {};
+  let conditions = {};
+  let mechanics  = {};
+
   let sortedTargets: Array<ProTarget>;
   let sortedConditions: Array<ProCondition>;
   let sortedMechanics: Array<ProMechanic>;
 
   $: {
-    sortedTargets = Object.keys(Targets.MAP)
+    sortedTargets = Object.keys(targets)
       .filter(target => target.toLowerCase().includes(searchParams.toLowerCase()))
       .sort()
-      .map(str => Targets.MAP[str].new());
+      .map(key => targets[key].component.new());
 
-    sortedConditions = Object.keys(Conditions.MAP)
+    sortedConditions = Object.keys(conditions)
       .filter(condition => condition.toLowerCase().includes(searchParams.toLowerCase()))
       .sort()
-      .map(str => Conditions.MAP[str].new());
+      .map(key => conditions[key].component.new());
 
-    sortedMechanics = Object.keys(Mechanics.MAP)
+    sortedMechanics = Object.keys(mechanics)
       .filter(mechanic => mechanic.toLowerCase().includes(searchParams.toLowerCase()))
       .sort()
-      .map(str => Mechanics.MAP[str].new());
+      .map(key => mechanics[key].component.new());
   }
 
   $: if (component) dispatch("save");
   $: if (modalOpen && component) component.data.filter(dat => (dat["dataSource"])).forEach((dat: DropdownSelect) => dat.init());
+
+  onMount(() => {
+    targetSub    = Registry.targets.subscribe(tar => targets = tar);
+    conditionSub = Registry.conditions.subscribe(con => conditions = con);
+    mechanicSub  = Registry.mechanics.subscribe(mech => mechanics = mech);
+  });
 
   const getName = () => {
     if (component instanceof ProTrigger) {

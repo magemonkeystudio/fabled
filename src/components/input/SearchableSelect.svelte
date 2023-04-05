@@ -1,20 +1,20 @@
 <script lang="ts">
-  import { fly } from "svelte/transition";
-  import { flip } from "svelte/animate";
-  import { clickOutside } from "$api/clickoutside";
+  import { fly }                                       from "svelte/transition";
+  import { flip }                                      from "svelte/animate";
+  import { clickOutside }                              from "$api/clickoutside";
   import { createEventDispatcher, onDestroy, onMount } from "svelte";
-  import { browser } from "$app/environment";
+  import { browser }                                   from "$app/environment";
 
   export let id: string;
-  export let data: any[] = [];
+  export let data: any[]                     = [];
   export let display: (input: any) => string = (input: any) => input.toString();
-  export let placeholder = "";
-  export let multiple = false;
-  export let selected: any[] | any = undefined;
-  export let filtered: never[] = [];
+  export let placeholder                     = "";
+  export let multiple                        = false;
+  export let selected: any[] | any           = undefined;
+  export let filtered: never[]               = [];
 
-  let focused = false;
-  let focusedIn = false;
+  let focused    = false;
+  let focusedIn  = false;
   let input: HTMLElement;
   let criteria: string;
   let height: number;
@@ -70,7 +70,7 @@
   };
 
   const clickOut = () => {
-    focused = false;
+    focused  = false;
     criteria = "";
   };
 
@@ -87,8 +87,7 @@
 
   $: {
     filtered = data.filter(s => {
-      if (!criteria) return true;
-      if (display(s).toLowerCase().includes(criteria.toLowerCase()))
+      if (!criteria || display(s).toLowerCase().includes(criteria.toLowerCase()))
         return (multiple && !selected.includes(s)) || (!multiple && selected != s);
     }).sort((a, b) => display(a).localeCompare(display(b)));
   }

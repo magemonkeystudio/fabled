@@ -4,17 +4,13 @@
  */
 
 import type ProComponent from "./components/procomponent";
-import { v4 as uuid }                                                 from "uuid";
-import { Conditions, getTriggerByName, Mechanics, Targets, Triggers } from "$api/components/components";
-import type ProMechanic                                               from "$api/components/mechanics";
-import type ProTrigger from "$api/components/triggers";
-import type ProTarget from "$api/components/targets";
+import { v4 as uuid }    from "uuid";
 
 /**
  * RegEx patterns used by the YAML parser
  */
 const Regex = {
-  INT: /^-?[0-9]+$/,
+  INT:   /^-?[0-9]+$/,
   FLOAT: /^-?[0-9]+\.[0-9]+$/,
   SPACE: /^( +)/
 };
@@ -27,8 +23,8 @@ const Regex = {
  * @returns {YAMLObject} the parsed data
  */
 export const parseYAML = (text: string): YAMLObject => {
-  text = text.replace(/\r\n/g, "\n").replace(/\n *\n/g, "\n").replace(/ +\n/g, "\n");
-  const data = new YAMLObject();
+  text        = text.replace(/\r\n/g, "\n").replace(/\n *\n/g, "\n").replace(/ +\n/g, "\n");
+  const data  = new YAMLObject();
   const index = 0;
   const lines = text.split("\n");
   data.parse(lines, index, 0);
@@ -93,7 +89,7 @@ export class YAMLObject {
   };
 
   public getKeys = (): string[] => {
-      return Object.keys(this.data);
+    return Object.keys(this.data);
   };
 
   public remove = (key: string) => {
@@ -148,9 +144,9 @@ export class YAMLObject {
       else if (index < lines.length - 1 && countSpaces(lines[index + 1]) > indent) {
         index++;
         const newIndent = countSpaces(lines[index]);
-        const newData = new YAMLObject();
-        index = newData.parse(lines, index, newIndent, key) - 1;
-        this.data[key] = newData;
+        const newData   = new YAMLObject();
+        index           = newData.parse(lines, index, newIndent, key) - 1;
+        this.data[key]  = newData;
       }
 
       // Regular value
@@ -186,7 +182,7 @@ export class YAMLObject {
   };
 
   public toString =
-    (): string => this.toYaml(this.key || this.data.name ? "'" + (this.key || this.data.name) + "'" : undefined, this.data);
+           (): string => this.toYaml(this.key || this.data.name ? "'" + (this.key || this.data.name) + "'" : undefined, this.data);
 
   /**
    * Creates and returns a save string for the class
@@ -204,8 +200,7 @@ export class YAMLObject {
     }
     for (const e of Object.keys(obj)) {
       const object = obj[e];
-      const ostr: string = JSON.stringify(object);
-      let str: string = spaces + e + ": " + ostr + "\n";
+      let str      = "";
       if (object == undefined) continue;
       if (object instanceof Object) {
         if (Object.keys(object).includes("toYaml")) {
@@ -217,6 +212,9 @@ export class YAMLObject {
         } else if (object instanceof Array) {
           str = this.convertArray(e, spaces, object);
         }
+      } else {
+        const ostr: string = JSON.stringify(object);
+        str                = spaces + e + ": " + ostr + "\n";
       }
 
       if (str) {
@@ -259,45 +257,4 @@ export class YAMLObject {
       return this.toYaml(e, object, spaces);
     }
   }
-
-  public static deserializeComponent = (yaml: YAMLObject): ProComponent[] => {
-    if (!yaml || !(yaml instanceof YAMLObject)) return [];
-    const comps: ProComponent[] = [];
-
-    const keys: string[] = yaml.getKeys();
-    for (const key of keys) {
-      let comp: ProComponent | undefined = undefined;
-      const data = yaml.get<YAMLObject, YAMLObject>(key);
-      const type = data.get("type");
-
-      if (type === "trigger") {
-        const trigger: typeof ProTrigger | undefined = getTriggerByName(key.split("-")[0]);
-        if (trigger) {
-          comp = trigger.new();
-        }
-        } else if (type === "condition") {
-          const condition: ProComponent | undefined = Conditions.byName(key.split("-")[0]);
-          if (condition) {
-            comp = condition;
-          }
-      } else if (type === "mechanic") {
-        const mechanic: ProComponent | undefined = Mechanics.byName(key.split("-")[0]);
-        if (mechanic) {
-          comp = mechanic;
-        }
-        } else if (type === "target") {
-          const target: ProComponent | undefined = Targets.byName(key.split("-")[0]);
-          if (target) {
-            comp = target;
-          }
-      }
-
-      if (comp) {
-        comp.deserialize(data);
-        comps.push(comp);
-      }
-    }
-
-    return comps;
-  };
 }

@@ -1,11 +1,12 @@
 <script lang="ts">
   import "../app.css";
   import { active, importing, loadFile, saveData } from "../data/store";
-  import { onDestroy, onMount } from "svelte";
-  import { browser } from "$app/environment";
-  import ImportModal from "$components/ImportModal.svelte";
-  import NavBar from "$components/NavBar.svelte";
-  import HeaderBar from "$components/HeaderBar.svelte";
+  import { onDestroy, onMount }                    from "svelte";
+  import { browser }                               from "$app/environment";
+  import ImportModal                               from "$components/ImportModal.svelte";
+  import NavBar                                    from "$components/NavBar.svelte";
+  import HeaderBar                                 from "$components/HeaderBar.svelte";
+  import { initComponents }                        from "$api/components/components";
 
   let dragging = false;
 
@@ -13,6 +14,8 @@
     if (!browser) return;
     document.addEventListener("dragover", dragover);
     document.addEventListener("drop", loadFiles);
+
+    initComponents();
   });
 
   onDestroy(() => {
