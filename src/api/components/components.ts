@@ -8,9 +8,8 @@ import MaterialSelect                        from "$api/options/materialselect";
 import { getAnyProjectiles, getDamageTypes } from "../../version/data";
 import BooleanSelect                         from "$api/options/booleanselect";
 import DoubleSelect                          from "$api/options/doubleselect";
-import SkillSelect                           from "$api/options/skillselect";
-import ClassSelect                           from "$api/options/classselect";
 import Registry                              from "$api/components/registry";
+import StringListSelect                      from "$api/options/stringlistselect";
 
 // TRIGGERS
 
@@ -84,8 +83,7 @@ class DeathTrigger extends ProTrigger {
   public constructor() {
     super({
       name:        "Death",
-      description: "Applies skill effects when a player dies",
-      data:        []
+      description: "Applies skill effects when a player dies"
     });
   }
 
@@ -278,8 +276,16 @@ class MoveTrigger extends ProTrigger {
 class PhysicalDamageTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Physical Damage",
-      data: []
+      name:        "Physical Damage",
+      description: "Applies skill effects when a player deals physical (or non-skill) damage. This includes melee attacks and firing a bow",
+      data:        [
+        new BooleanSelect("Target Caster", "target", true)
+          .setTooltip("True makes the children target the caster. False makes children target the damaged entity"),
+        new DropdownSelect("Type", "type", ["Both", "Melee", "Projectile"], "Both")
+          .setTooltip("The type of damage dealt"),
+        new DoubleSelect("Min Damage", "dmg-min", 0)
+          .setTooltip("The minimum damage that needs to be dealt")
+      ]
     });
   }
 
@@ -289,8 +295,12 @@ class PhysicalDamageTrigger extends ProTrigger {
 class RightClickTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Right Click",
-      data: []
+      name:        "Right Click",
+      description: "Applies skill effects upon performing a right-click (NOTE: When clicking in air, you have to have an item in your hand)",
+      data:        [
+        new DropdownSelect("Crouch", "crouch", ["Crouch", "Dont crouch", "Both"], "Crouch")
+          .setTooltip("If the player has to be crouching in order for this trigger to function")
+      ]
     });
   }
 
@@ -303,9 +313,12 @@ class SkillCastTrigger extends ProTrigger {
       name:        "Skill Cast",
       description: "Applies skill effects when a player casts a skill",
       data:        [
-        new BooleanSelect("Cancel Cast", "cancel", false),
-        new ClassSelect("Classes", "allowed-classes"),
-        new SkillSelect("Skills", "allowed-skills")
+        new BooleanSelect("Cancel Cast", "cancel", false)
+          .setTooltip("True cancels the skill cast. False allows the skill cast"),
+        new StringListSelect("Classes", "allowed-classes")
+          .setTooltip("The list of classes which will trigger this effect. Leave blank to allow all to trigger. Use '!xxx' to exclude"),
+        new StringListSelect("Skills", "allowed-skills")
+          .setTooltip("The list of skills which will trigger this effect. Leave blank to allow all to trigger. Use '!xxx' to exclude")
       ]
     });
   }
@@ -316,8 +329,18 @@ class SkillCastTrigger extends ProTrigger {
 class SkillDamageTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Skill Damage",
-      data: []
+      name:        "Skill Damage",
+      description: "Applies skill effects when a player deals damage with a skill",
+      data:        [
+        new BooleanSelect("Target Caster", "target", true)
+          .setTooltip("True makes children target the caster. False makes children target the damaged entity"),
+        new DoubleSelect("Min Damage", "dmg-min", 0)
+          .setTooltip("The minimum damage that needs to be dealt"),
+        new DoubleSelect("Max Damage", "dmg-max", 999)
+          .setTooltip("The maximum damage that needs to be dealt"),
+        new StringListSelect("Category", "category", ["default"])
+          .setTooltip("The type of skill damage to apply for. Leave this empty to apply to all skill damage.")
+      ]
     });
   }
 
@@ -327,8 +350,18 @@ class SkillDamageTrigger extends ProTrigger {
 class TookPhysicalTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Took Physical Damage",
-      data: []
+      name:        "Took Physical Damage",
+      description: "Applies skill effects when a player takes physical (or non-skill) damage. This includes melee attacks and projectiles not fired by a skill",
+      data:        [
+        new BooleanSelect("Target Caster", "target", true)
+          .setTooltip("True makes children target the caster. False makes children target the attacking entity"),
+        new DropdownSelect("Type", "type", ["Both", "Melee", "Projectile"], "Both")
+          .setTooltip("The type of damage dealt"),
+        new DoubleSelect("Min Damage", "dmg-min", 0)
+          .setTooltip("The minimum damage that needs to be dealt"),
+        new DoubleSelect("Max Damage", "dmg-max", 999)
+          .setTooltip("The maximum damage that needs to be dealt")
+      ]
     });
   }
 
@@ -338,8 +371,18 @@ class TookPhysicalTrigger extends ProTrigger {
 class TookSkillTrigger extends ProTrigger {
   public constructor() {
     super({
-      name: "Took Skill Damage",
-      data: []
+      name:        "Took Skill Damage",
+      description: "Applies skill effects when a player takes damage from a skill other than their own",
+      data:        [
+        new BooleanSelect("Target Caster", "target", true)
+          .setTooltip("True makes children target the caster. False makes children target the attacking entity"),
+        new DoubleSelect("Min Damage", "dmg-min", 0)
+          .setTooltip("The minimum damage that needs to be dealt"),
+        new DoubleSelect("Max Damage", "dmg-max", 999)
+          .setTooltip("The maximum damage that needs to be dealt"),
+        new StringListSelect("Category", "category", ["default"])
+          .setTooltip("The type of skill damage to apply for. Leave this empty to apply to all skill damage.")
+      ]
     });
   }
 

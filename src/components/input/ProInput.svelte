@@ -46,6 +46,8 @@
         display: flex;
         align-items: center;
         justify-content: flex-end;
+        height: fit-content;
+        align-self: center;
     }
 
     .tooltip {
