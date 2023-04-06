@@ -10,8 +10,10 @@ import {
   getAnyPotion,
   getAnyProjectiles,
   getBiomes,
+  getDamageableMaterials,
   getDamageTypes,
-  getEntities
+  getEntities,
+  getPotionTypes
 }                           from "../../version/data";
 import BooleanSelect        from "$api/options/booleanselect";
 import DoubleSelect         from "$api/options/doubleselect";
@@ -24,6 +26,7 @@ import StringSelect         from "$api/options/stringselect";
 import ClassSelect          from "$api/options/classselect";
 import SkillSelect          from "$api/options/skillselect";
 import IntSelect            from "$api/options/intselect";
+import ColorSelect          from "$api/options/colorselect";
 
 // TRIGGERS
 
@@ -1329,6 +1332,76 @@ class WorldCondition extends ProCondition {
 }
 
 // MECHANICS
+
+/**
+ * Adds the options for item related effects to the component
+ *
+ * @param {Component} component - the component to add to
+ */
+const itemOptions = (): ComponentOption[] => {
+  const data: ComponentOption[] = [
+    new SectionMarker("Item Options"),
+    new MaterialSelect(true, "Arrow")
+      .setTooltip("The type of item to give to the player"),
+    new IntSelect("Amount", "amount", 1)
+      .setTooltip("The quantity of the item to give to the player"),
+    new IntSelect("Durability", "data")
+      .requireValue("material", getDamageableMaterials())
+      .setTooltip("The durability to reduce from the item"),
+    new BooleanSelect("Unbreakable", "unbreakable", false)
+      .requireValue("material", getDamageableMaterials())
+      .setTooltip("Whether to make the item unbreakable"),
+    new IntSelect("CustomModelData", "byte", 0)
+      .setTooltip("The CustomModelData of the item"),
+    new DropdownSelect("Hide Flags", "hide-flags", ["Enchants", "Attributes", "Unbreakable", "Destroys", "Placed on", "Potion effects", "Dye"], [], true)
+      .setTooltip("Flags to hide from the item"),
+    new BooleanSelect("Custom Name/Lore", "custom", false)
+      .setTooltip("Whether to apply a custom name/lore to the item"),
+
+    new StringSelect("Name", "name", "Name")
+      .requireValue("custom", [true])
+      .setTooltip("The name of the item"),
+    new StringListSelect("Lore", "lore")
+      .requireValue("custom", [true])
+      .setTooltip("The lore text for the item (the text below the name)"),
+    new ColorSelect("Potion Color", "potion_color", "#385dc6")
+      .requireValue("material", ["Potion", "Splash potion", "Lingering potion"])
+      .setTooltip("The potion color in hex RGB"),
+    new DropdownSelect("Potion Type", "potion_type", getPotionTypes, "Speed")
+      .requireValue("material", ["Potion", "Splash potion", "Lingering potion"])
+      .setTooltip("The type of potion"),
+    new IntSelect("Potion Level", "potion_level")
+      .requireValue("material", ["Potion", "Splash potion", "Lingering potion"])
+      .setTooltip("The potion level"),
+    new IntSelect("Potion Duration", "potion_duration", 30)
+      .requireValue("material", ["Potion", "Splash potion", "Lingering potion"])
+      .setTooltip("The potion duration (seconds)"),
+    new ColorSelect("Armor Color", "armor_color", "#a06540")
+      .requireValue("material", ["Leather helmet", "Leather chestplate", "Leather leggings", "Leather boots"])
+      .setTooltip("The armor color in hex RGB")
+  ];
+
+  return data;
+};
+
+class ArmorMechanic extends ProMechanic {
+  public constructor() {
+    super({
+      name:        "Armor",
+      description: "Sets the specified armor slot of the target to the item defined by the settings",
+      data:        [
+        new DropdownSelect("Slot", "slot", ["Hand", "Off Hand", "Feet", "Legs", "Chest", "Head"])
+          .setTooltip("The slot number to set the item to"),
+        new BooleanSelect("Overwrite", "overwrite", false)
+          .setTooltip("USE WITH CAUTION. Whether to overwrite an existing item in the slot. If true, will permanently delete the existing iem"),
+        ...itemOptions()
+      ]
+    });
+  }
+
+  public static override new = () => new this();
+}
+
 class LaunchMechanic extends ProMechanic {
   public constructor() {
     super({ name: "Launch" });
@@ -1423,7 +1496,85 @@ export const initComponents = () => {
     WORLD:          { name: "World", component: WorldCondition }
   });
   Registry.mechanics.set({
-    LAUNCH: { name: "Launch", component: LaunchMechanic }
+    ARMOR:               { name: "Armor", component: ArmorMechanic },
+    // ARMOR_STAND:         { name: "Armor Stand", component: ArmorStandMechanic },
+    // ARMOR_STAND_POSE:    { name: "Armor Stand Pose", component: ArmorStandPoseMechanic },
+    // ATTRIBUTE:           { name: "Attribute", component: AttributeMechanic },
+    // BLOCK:               { name: "Block", component: BlockMechanic },
+    // BUFF:                { name: "Buff", component: BuffMechanic },
+    // CANCEL:              { name: "Cancel", component: CancelMechanic },
+    // CHANNEL:             { name: "Channel", component: ChannelMechanic },
+    // CLEANSE:             { name: "Cleanse", component: CleanseMechanic },
+    // COMMAND:             { name: "Command", component: CommandMechanic },
+    // COOLDOWN:            { name: "Cooldown", component: CooldownMechanic },
+    // DAMAGE:              { name: "Damage", component: DamageMechanic },
+    // DAMAGE_BUFF:         { name: "Damage Buff", component: DamageBuffMechanic },
+    // DAMAGE_LORE:         { name: "Damage Lore", component: DamageLoreMechanic },
+    // DEFENSE_BUFF:        { name: "Defense Buff", component: DefenseBuffMechanic },
+    // DELAY:               { name: "Delay", component: DelayMechanic },
+    // DISGUISE:            { name: "Disguise", component: DisguiseMechanic },
+    // DURABILITY:          { name: "Durability", component: DurabilityMechanic },
+    // EXPLOSION:           { name: "Explosion", component: ExplosionMechanic },
+    // FIRE:                { name: "Fire", component: FireMechanic },
+    // FLAG:                { name: "Flag", component: FlagMechanic },
+    // FLAG_CLEAR:          { name: "Flag Clear", component: FlagClearMechanic },
+    // FLAG_TOGGLE:         { name: "Flag Toggle", component: FlagToggleMechanic },
+    // FOOD:                { name: "Food", component: FoodMechanic },
+    // FORGET_TARGETS:      { name: "Forget Targets", component: ForgetTargetsMechanic },
+    // HEAL:                { name: "Heal", component: HealMechanic },
+    // HEALTH_SET:          { name: "Health Set", component: HealthSetMechanic },
+    // HELD_ITEM:           { name: "Held Item", component: HeldItemMechanic },
+    // IMMUNITY:            { name: "Immunity", component: ImmunityMechanic },
+    // INTERRUPT:           { name: "Interrupt", component: InterruptMechanic },
+    // ITEM:                { name: "Item", component: ItemMechanic },
+    // ITEM_DROP:           { name: "Item Drop", component: ItemDropMechanic },
+    // ITEM_PROJECTILE:     { name: "Item Projectile", component: ItemProjectileMechanic },
+    // ITEM_REMOVE:         { name: "Item Remove", component: ItemRemoveMechanic },
+    LAUNCH:              { name: "Launch", component: LaunchMechanic },
+    // LIGHTNING:           { name: "Lightning", component: LightningMechanic },
+    // MANA:                { name: "Mana", component: ManaMechanic },
+    // MESSAGE:             { name: "Message", component: MessageMechanic },
+    // MINE:                { name: "Mine", component: MineMechanic },
+    // MONEY:               { name: "Money", component: MoneyMechanic },
+    // PARTICLE:            { name: "Particle", component: ParticleMechanic },
+    // PARTICLE_ANIMATION:  { name: "Particle Animation", component: ParticleAnimationMechanic },
+    // PARTICLE_EFFECT:     { name: "Particle Effect", component: ParticleEffectMechanic },
+    // CANCEL_EFFECT:       { name: "Cancel Effect", component: CancelEffectMechanic },
+    // PARTICLE_PROJECTILE: { name: "Particle Projectile", component: ParticleProjectileMechanic },
+    // PASSIVE:             { name: "Passive", component: PassiveMechanic },
+    // PERMISSION:          { name: "Permission", component: PermissionMechanic },
+    // POTION:              { name: "Potion", component: PotionMechanic },
+    // POTION_PROJECTILE:   { name: "Potion Projectile", component: PotionProjectileMechanic },
+    // PROJECTILE:          { name: "Projectile", component: ProjectileMechanic },
+    // PURGE:               { name: "Purge", component: PurgeMechanic },
+    // PUSH:                { name: "Push", component: PushMechanic },
+    // REMEMBER_TARGETS:    { name: "Remember Targets", component: RememberTargetsMechanic },
+    // REPEAT:              { name: "Repeat", component: RepeatMechanic },
+    // SOUND:               { name: "Sound", component: SoundMechanic },
+    // Stat:                { name: "Stat", component: StatMechanic },
+    // STATUS:              { name: "Status", component: StatusMechanic },
+    // TAUNT:               { name: "Taunt", component: TauntMechanic },
+    // TRIGGER:             { name: "Trigger", component: TriggerMechanic },
+    // VALUE_ADD:           { name: "Value Add", component: ValueAddMechanic },
+    // VALUE_ATTRIBUTE:     { name: "Value Attribute", component: ValueAttributeMechanic },
+    // VALUE_COPY:          { name: "Value Copy", component: ValueCopyMechanic },
+    // VALUE_DISTANCE:      { name: "Value Distance", component: ValueDistanceMechanic },
+    // VALUE_HEALTH:        { name: "Value Health", component: ValueHealthMechanic },
+    // VALUE_LOCATION:      { name: "Value Location", component: ValueLocationMechanic },
+    // VALUE_LORE:          { name: "Value Lore", component: ValueLoreMechanic },
+    // VALUE_LORE_SLOT:     { name: "Value Lore Slot", component: ValueLoreSlotMechanic },
+    // VALUE_MANA:          { name: "Value Mana", component: ValueManaMechanic },
+    // VALUE_MULTIPLY:      { name: "Value Multiply", component: ValueMultiplyMechanic },
+    // VALUE_PLACEHOLDER:   { name: "Value Placeholder", component: ValuePlaceholderMechanic },
+    // VALUE_RANDOM:        { name: "Value Random", component: ValueRandomMechanic },
+    // VALUE_SET:           { name: "Value Set", component: ValueSetMechanic },
+    // WARP:                { name: "Warp", component: WarpMechanic },
+    // WARP_LOC:            { name: "Warp Location", component: WarpLocMechanic },
+    // WARP_RANDOM:         { name: "Warp Random", component: WarpRandomMechanic },
+    // WARP_SWAP:           { name: "Warp Swap", component: WarpSwapMechanic },
+    // WARP_TARGET:         { name: "Warp Target", component: WarpTargetMechanic },
+    // WARP_VALUE:          { name: "Warp Value", component: WarpValueMechanic },
+    // WOLF:                { name: "Wolf", component: WolfMechanic }
   });
   Registry.initialized.set(true);
 };

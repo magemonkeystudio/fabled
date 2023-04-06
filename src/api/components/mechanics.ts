@@ -5,9 +5,9 @@ import type { ComponentData } from "$api/types";
 import Registry               from "$api/components/registry";
 
 export default class ProMechanic extends ProComponent {
-  public constructor(data: ComponentData) {
+  public constructor(data: ComponentData, isParent = false) {
     super("mechanic", data);
-    super.isParent = false; // This should be false unless for specific mechanics like projectiles
+    super.isParent = isParent; // This should be false unless for specific mechanics like projectiles
   }
 
   public override toYamlObj(): YAMLObject {
