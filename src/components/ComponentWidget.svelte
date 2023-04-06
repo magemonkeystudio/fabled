@@ -177,16 +177,20 @@
       <ProInput label="Cooldown" tooltip="Whether this trigger requires to be off cooldown to activate">
         <Toggle bind:data={component.cooldown} />
       </ProInput>
-    {:else if component instanceof ProTarget}
+    {:else if component instanceof ProTarget || component instanceof ProCondition}
       <ProInput label="Icon Key" bind:value={component.iconKey}
                 tooltip={'The key used by the component in the Icon Lore. If this is set to "example" and has a value name of "value", it can be referenced using the string "{attr:example.value}"'} />
     {/if}
     {#each component.data as datum}
-      <svelte:component this={datum.component}
-                        bind:data={datum.data}
-                        name={datum.name}
-                        tooltip={datum.tooltip}
-                        on:save />
+      {#if datum.meetsRequirements(component)}
+          <svelte:component
+            this={datum.component}
+            bind:data={datum.data}
+            name={datum.name}
+            tooltip={datum.tooltip}
+            multiple={datum.multiple}
+            on:save />
+      {/if}
     {/each}
   </div>
 </Modal>

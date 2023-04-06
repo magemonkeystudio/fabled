@@ -1,9 +1,10 @@
 import type { SvelteComponent } from "svelte";
 import type ComponentOption     from "$api/options/options";
+import { Requirements }         from "$api/options/options";
 import type { YAMLObject }      from "$api/yaml";
 import BooleanSelectOption      from "$components/options/BooleanSelectOption.svelte";
 
-export default class BooleanSelect implements ComponentOption {
+export default class BooleanSelect extends Requirements implements ComponentOption {
   component: typeof SvelteComponent = BooleanSelectOption;
   name: string;
   key: string;
@@ -11,6 +12,7 @@ export default class BooleanSelect implements ComponentOption {
   tooltip: string | undefined       = undefined;
 
   constructor(name: string, key: string, def = false) {
+    super();
     this.name = name;
     this.key  = key;
     this.data = def;

@@ -1,17 +1,18 @@
 <script lang="ts">
-  import { fly } from "svelte/transition";
+  import { fly, slide } from "svelte/transition";
   import { numberOnly } from "$api/number-only";
 
-  export let tooltip: string | undefined = undefined;
+  export let tooltip: string | undefined        = undefined;
   export let label: string;
-  export let type: "string" | "number" = "string";
-  export let intMode = false;
+  export let type: "string" | "number"          = "string";
+  export let intMode                            = false;
   export let value: string | number | undefined = undefined;
-  export let placeholder: string | undefined = undefined;
-  let hovered = false;
+  export let placeholder: string | undefined    = undefined;
+  let hovered                                   = false;
 </script>
 
 <div class="label"
+     transition:slide
      on:mouseenter={() => hovered = true}
      on:mouseleave={() => hovered = false}>
   {#if tooltip && tooltip.length > 0 && hovered}
@@ -23,7 +24,7 @@
   <span>{label || ''}
     <slot name="label" /></span>
 </div>
-<div class="input-wrapper" class:labeled={!!label}>
+<div transition:slide class="input-wrapper" class:labeled={!!label}>
   {#if type === "number"}
     <input type="number" bind:value use:numberOnly={{intMode, enabled: type === "number"}}
            {placeholder} />

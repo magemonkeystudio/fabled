@@ -2,8 +2,9 @@ import type { SvelteComponent } from "svelte";
 import BlockSelectOption        from "$components/options/BlockSelectOption.svelte";
 import type ComponentOption     from "$api/options/options";
 import type { YAMLObject }      from "$api/yaml";
+import { Requirements }         from "$api/options/options";
 
-export default class BlockSelect implements ComponentOption {
+export default class BlockSelect extends Requirements implements ComponentOption {
   component: typeof SvelteComponent                                                        = BlockSelectOption;
   data: { material: string[], data: number, materialTooltip: string, dataTooltip: string } = {
     material:        ["Any"],
@@ -13,6 +14,7 @@ export default class BlockSelect implements ComponentOption {
   };
 
   public constructor(materialTooltip?: string, dataTooltip?: string) {
+    super();
     this.data.materialTooltip = materialTooltip || "";
     this.data.dataTooltip     = dataTooltip || "";
   }

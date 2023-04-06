@@ -36,6 +36,8 @@ export default class ProTarget extends ProComponent {
   public override deserialize(yaml: YAMLObject): void {
     const data = yaml.get<YAMLObject, YAMLObject>("data");
 
+    this.iconKey = data.get("icon-key");
+
     if (data) this.data.forEach((opt: ComponentOption) => opt.deserialize(data));
 
     this.components = yaml.get<YAMLObject, ProComponent[]>("children", [], (obj) => Registry.deserializeComponents(obj));

@@ -2,36 +2,41 @@ import type { SvelteComponent } from "svelte";
 import type ComponentOption     from "$api/options/options";
 import DropdownOption           from "$components/options/DropdownOption.svelte";
 import type { YAMLObject }      from "$api/yaml";
+import { Requirements }         from "$api/options/options";
 
-export default class DropdownSelect implements ComponentOption {
+export default class DropdownSelect extends Requirements implements ComponentOption {
   component: typeof SvelteComponent = DropdownOption;
   dataSource: (() => string[]) | undefined;
   data: {
-    selected: string,
-    value: string[]
+    selected: string | string[],
+    value: string[],
+    multiple: boolean
   }                                 = {
     selected: "",
-    value:    []
+    value:    [],
+    multiple: false
   };
   name                              = "";
   key                               = "";
   tooltip: string | undefined       = undefined;
 
-  constructor(name: string, key: string, items: string[] | (() => string[]), def?: string) {
+  constructor(name: string, key: string, items: string[] | (() => string[]), def?: string | string[], multiple = false) {
+    super();
     this.name = name;
     this.key  = key;
 
     if (typeof items === "function") this.dataSource = items;
     else this.data.value = items;
+    if (multiple) this.data.selected = [];
     if (def) this.data.selected = def;
+
+    this.data.multiple = multiple;
   }
 
   init = () => {
-    if (this.dataSource) {
-      this.data.value = this.dataSource();
-    }
+    if (this.dataSource) this.data.value = this.dataSource();
 
-    if (!this.data.selected && this.data.value.length > 0)
+    if (!this.data.selected && this.data.value.length > 0 && !this.data.multiple)
       this.data.selected = this.data.value[0];
   };
 
@@ -40,9 +45,7 @@ export default class DropdownSelect implements ComponentOption {
     return this;
   };
 
-  clone = (): ComponentOption => {
-    return new DropdownSelect(this.name, this.key, [...this.data.value], this.data.selected);
-  };
+  clone = (): ComponentOption => new DropdownSelect(this.name, this.key, [...this.data.value], this.data.selected);
 
   getData = (): { [key: string]: any } => {
     const data: { [key: string]: any } = {};
@@ -51,7 +54,5 @@ export default class DropdownSelect implements ComponentOption {
     return data;
   };
 
-  deserialize = (yaml: YAMLObject) => {
-    this.data.selected = yaml.get<string, string>(this.key);
-  };
+  deserialize = (yaml: YAMLObject) => this.data.selected = yaml.get(this.key);
 }

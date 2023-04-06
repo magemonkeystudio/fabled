@@ -3,8 +3,9 @@ import type ComponentOption     from "$api/options/options";
 import type { YAMLObject }      from "$api/yaml";
 import AttributeSelectOption    from "$components/options/AttributeSelectOption.svelte";
 import { ProAttribute }    from "$api/proattribute";
+import { Requirements }         from "$api/options/options";
 
-export default class AttributeSelect implements ComponentOption {
+export default class AttributeSelect extends Requirements implements ComponentOption {
   component: typeof SvelteComponent     = AttributeSelectOption;
   name: string;
   key: string;
@@ -12,6 +13,7 @@ export default class AttributeSelect implements ComponentOption {
   tooltip: string | undefined           = undefined;
 
   constructor(name: string, key: string, base = 0, scale = 0) {
+    super();
     this.name       = name;
     this.key        = key;
     this.data = new ProAttribute(name, base, scale);

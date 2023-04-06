@@ -58,7 +58,7 @@
         background-color: var(--color-bg);
         padding: 1rem;
         border: 2px solid #444;
-        border-radius: 0.7rem;
+        border-radius: 0 1.5rem 0 1.5rem;
         box-shadow: 0 0 1rem #222;
         max-height: 95vh;
         width: 90%;

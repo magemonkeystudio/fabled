@@ -2,8 +2,9 @@ import type { SvelteComponent } from "svelte";
 import type ComponentOption     from "$api/options/options";
 import type { YAMLObject }      from "$api/yaml";
 import DoubleSelectOption from "$components/options/DoubleSelectOption.svelte";
+import { Requirements }         from "$api/options/options";
 
-export default class DoubleSelect implements ComponentOption {
+export default class DoubleSelect extends Requirements implements ComponentOption {
   component: typeof SvelteComponent = DoubleSelectOption;
   name: string;
   key: string;
@@ -11,6 +12,7 @@ export default class DoubleSelect implements ComponentOption {
   tooltip: string | undefined       = undefined;
 
   constructor(name: string, key: string, def = 0) {
+    super();
     this.name = name;
     this.key  = key;
     this.data = def;

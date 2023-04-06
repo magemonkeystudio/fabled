@@ -2,8 +2,9 @@ import type { SvelteComponent } from "svelte";
 import type ComponentOption     from "$api/options/options";
 import type { YAMLObject }      from "$api/yaml";
 import StringListOption         from "$components/options/StringListOption.svelte";
+import { Requirements }         from "$api/options/options";
 
-export default class StringListSelect implements ComponentOption {
+export default class StringListSelect extends Requirements implements ComponentOption {
   component: typeof SvelteComponent = StringListOption;
   data: { value: string[] }         = { value: [] };
   name                              = "";
@@ -11,6 +12,7 @@ export default class StringListSelect implements ComponentOption {
   tooltip: string | undefined       = undefined;
 
   constructor(name: string, key: string, def?: string[]) {
+    super();
     this.name = name;
     this.key  = key;
 

@@ -5,6 +5,7 @@ import type { ComponentData } from "$api/types";
 import Registry               from "$api/components/registry";
 
 export default class ProCondition extends ProComponent {
+  iconKey = "";
   public constructor(data: ComponentData) {
     super("condition", data);
   }
@@ -22,6 +23,8 @@ export default class ProCondition extends ProComponent {
   public override getData(): YAMLObject {
     const data = new YAMLObject("data");
 
+    data.put("icon-key", this.iconKey);
+
     this.data.forEach((opt: ComponentOption) => {
       const optData: { [key: string]: string } = opt.getData();
       Object.keys(optData).forEach(key => data.put(key, optData[key]));
@@ -32,6 +35,8 @@ export default class ProCondition extends ProComponent {
 
   public override deserialize(yaml: YAMLObject): void {
     const data = yaml.get<YAMLObject, YAMLObject>("data");
+
+    this.iconKey = data.get("icon-key");
 
     if (data) this.data.forEach((opt: ComponentOption) => opt.deserialize(data));
 
