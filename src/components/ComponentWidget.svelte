@@ -166,17 +166,20 @@
 <Modal bind:open={modalOpen} width="70%">
   <h2>{component.name}</h2>
   {#if component.description}
-    <div>{component.description}</div>
+    <div class="modal-desc">{component.description}</div>
   {/if}
   <hr />
   <div class="component-entry">
-    {#if component instanceof ProTrigger}
-      <ProInput label="Mana">
+    {#if component instanceof ProTrigger && component.name != 'Cast' && component.name != 'Initialize' && component.name != 'Cleanup'}
+      <ProInput label="Mana" tooltip="Whether this trigger requires the mana cost to activate">
         <Toggle bind:data={component.mana} />
       </ProInput>
-      <ProInput label="Cooldown">
+      <ProInput label="Cooldown" tooltip="Whether this trigger requires to be off cooldown to activate">
         <Toggle bind:data={component.cooldown} />
       </ProInput>
+    {:else if component instanceof ProTarget}
+      <ProInput label="Icon Key" bind:value={component.iconKey}
+                tooltip={'The key used by the component in the Icon Lore. If this is set to "example" and has a value name of "value", it can be referenced using the string "{attr:example.value}"'} />
     {/if}
     {#each component.data as datum}
       <svelte:component this={datum.component}
@@ -366,5 +369,11 @@
         display: flex;
         justify-content: stretch;
         align-items: center;
+    }
+
+    .modal-desc {
+        max-width: 100%;
+        white-space: break-spaces;
+        text-align: center;
     }
 </style>

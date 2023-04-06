@@ -14,7 +14,7 @@ export async function load({ params }: any) {
   let data: ProClass | ProSkill | undefined;
   let fallback: ProClass | ProSkill | undefined;
   if (params.type == "class") {
-    throw redirect(302, `/${params.type}/${params.id}`);
+    throw redirect(302, `/${params.type}/${params.id}/edit`);
   } else if (params.type == "skill") {
     for (const c of get(skills)) {
       if (!fallback) fallback = c;

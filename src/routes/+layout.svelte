@@ -69,6 +69,8 @@
   </div>
 </div>
 
+<footer>&copy; ProMCTeam {new Date().getFullYear()}</footer>
+
 {#if $importing}
   <ImportModal />
 {/if}
@@ -103,6 +105,7 @@
         flex-grow: 1;
         display: flex;
         flex-direction: column;
+        padding-bottom: 2rem
     }
 
     #body {
@@ -149,5 +152,15 @@
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    footer {
+        background: #333;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        font-size: 0.8rem;
+        padding: 0.5rem 0.5rem 0.25rem;
+        border-top-right-radius: 0.5rem;
     }
 </style>

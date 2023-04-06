@@ -36,8 +36,10 @@ export default class ProTrigger extends ProComponent {
 
   public override getData(): YAMLObject {
     const data = new YAMLObject("data");
-    data.put("mana", this.mana);
-    data.put("cooldown", this.cooldown);
+    if(this.name != 'Cast' && this.name != 'Initialize' && this.name != 'Cleanup') {
+      data.put("mana", this.mana);
+      data.put("cooldown", this.cooldown);
+    }
 
     this.data.forEach((opt: ComponentOption) => {
       const optData: { [key: string]: string } = opt.getData();

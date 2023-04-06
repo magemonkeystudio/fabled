@@ -5,6 +5,7 @@ import type { ComponentData } from "$api/types";
 import Registry               from "$api/components/registry";
 
 export default class ProTarget extends ProComponent {
+  iconKey = "";
   public constructor(data: ComponentData) {
     super("target", data);
   }
@@ -21,6 +22,8 @@ export default class ProTarget extends ProComponent {
 
   public override getData(): YAMLObject {
     const data = new YAMLObject("data");
+
+    data.put("icon-key", this.iconKey);
 
     this.data.forEach((opt: ComponentOption) => {
       const optData: { [key: string]: string } = opt.getData();

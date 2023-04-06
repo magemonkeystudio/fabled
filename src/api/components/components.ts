@@ -10,6 +10,10 @@ import BooleanSelect                         from "$api/options/booleanselect";
 import DoubleSelect                          from "$api/options/doubleselect";
 import Registry                              from "$api/components/registry";
 import StringListSelect                      from "$api/options/stringlistselect";
+import type ComponentOption                  from "$api/options/options";
+import AttributeSelect                       from "$api/options/attributeselect";
+import SectionMarker                         from "$api/options/sectionmarker";
+import StringSelect                          from "$api/options/stringselect";
 
 // TRIGGERS
 
@@ -391,9 +395,179 @@ class TookSkillTrigger extends ProTrigger {
 
 // TARGETS
 
+const targetOptions = (): ComponentOption[] => {
+  const data: ComponentOption[] = [];
+  data.push(new DropdownSelect("Group", "group", ["Ally", "Enemy", "Both"], "Enemy")
+    .setTooltip("The alignment of targets to get")
+  );
+  data.push(new BooleanSelect("Through Wall", "wall", false)
+    .setTooltip("Whether to allow targets to be on the other side of a wall")
+  );
+  data.push(new DropdownSelect("Include Caster", "caster", ["True", "False", "In area"], "False")
+    .setTooltip("Whether to include the caster in the target list. \"True\" will always include them, \"False\" will never, and \"In area\" will only if they are within the targeted area")
+  );
+  data.push(new AttributeSelect("Max Targets", "max", 99, 0)
+    .setTooltip("The max amount of targets to apply children to")
+  );
+
+  return data;
+};
+
+class AreaTarget extends ProTarget {
+  public constructor() {
+    super({
+      name:        "Area",
+      description: "Targets all units in a radius from the current target (the casting player is the default target)",
+      data:        [
+        new AttributeSelect("Radius", "radius", 3)
+          .setTooltip("The radius of the area to target in blocks"),
+        ...targetOptions(),
+        new BooleanSelect("Random", "random", false)
+          .setTooltip("Whether to randomize the targets selected")
+      ]
+    });
+  }
+
+  public static override new = () => new this();
+}
+
+class ConeTarget extends ProTarget {
+  public constructor() {
+    super({
+      name:        "Cone",
+      description: "Targets all units in a line in front of the current target (the casting player is the default target). If you include the caster, that counts towards the max amount",
+      data:        [
+        new AttributeSelect("Range", "range", 5)
+          .setTooltip("The max distance away any target can be in blocks"),
+        new AttributeSelect("Angle", "angle", 90)
+          .setTooltip("The angle of the cone arc in degrees"),
+        ...targetOptions()
+      ]
+    });
+  }
+
+  public static override new = () => new this();
+}
+
 class LinearTarget extends ProTarget {
   public constructor() {
-    super({ name: "Linear" });
+    super({
+      name:        "Linear",
+      description: "Targets all units in a line in front of the current target (the casting player is the default target)",
+      data:        [
+        new AttributeSelect("Range", "range", 5)
+          .setTooltip("The max distance away any target can be in blocks"),
+        new AttributeSelect("Tolerance", "tolerance")
+          .setTooltip("How much to expand the potential entity's hit-box in all directions, in blocks. This makes it easier to aim"),
+        ...targetOptions()
+      ]
+    });
+  }
+
+  public static override new = () => new this();
+}
+
+class LocationTarget extends ProTarget {
+  public constructor() {
+    super({
+      name:        "Location",
+      description: "Targets the location the target or caster is looking at. Combine this with another targeting type for ranged area effects",
+      data:        [
+        new AttributeSelect("Range", "range", 5)
+          .setTooltip("The max distance the location can be from the target's eyes"),
+        new BooleanSelect("Entities", "entities", true)
+          .setTooltip("True to account for entities, or false to pass through them"),
+        new BooleanSelect("Fluids", "fluids", false)
+          .setTooltip("True to account for fluids (water and lava), or false to pass through them"),
+        new BooleanSelect("Passable blocks", "passable", true)
+          .setTooltip("True to account for passable or non-collidable blocks (grass, saplings, etc), or false to pass through them"),
+        new BooleanSelect("Center", "center", false)
+          .setTooltip("Whether to move the hit location to the center of the block")
+      ]
+    });
+  }
+
+  public static override new = () => new this();
+}
+
+class NearestTarget extends ProTarget {
+  public constructor() {
+    super({
+      name:        "Nearest",
+      description: "Targets the closest unit(s) in a radius from the current target (the casting player is the default target). If you include the caster, that counts towards the max number",
+      data:        [
+        new AttributeSelect("Range", "range", 3)
+          .setTooltip("The radius of the area to target in blocks"),
+        ...targetOptions()
+      ]
+    });
+  }
+
+  public static override new = () => new this();
+}
+
+class OffsetTarget extends ProTarget {
+  public constructor() {
+    super({
+      name:        "Offset",
+      description: "Targets a location that is the given offset away from each target",
+      data:        [
+        new SectionMarker("Offset"),
+        new AttributeSelect("Forward", "forward")
+          .setTooltip("The offset from the target in the direction they are facing. Negative numbers go backwards."),
+        new AttributeSelect("Upward", "upward", 2, 0.5)
+          .setTooltip("The offset from the target upwards. Negative numbers go below them."),
+        new AttributeSelect("Right", "right")
+          .setTooltip("The offset from the target to their right. Negative numbers go to the left.")
+      ]
+    });
+  }
+
+  public static override new = () => new this();
+}
+
+class RememberTarget extends ProTarget {
+  public constructor() {
+    super({
+      name:        "Remember",
+      description: "Targets entities stored using the \"Remember Targets\" mechanic for the matching key. If it was never set, this will fail",
+      data:        [
+        new StringSelect("Key", "key", "target")
+          .setTooltip("The unique key for the target group that should match that used by the \"Remember Targets\" skill")
+      ]
+    });
+  }
+
+  public static override new = () => new this();
+}
+
+class SelfTarget extends ProTarget {
+  public constructor() {
+    super({
+      name:        "Self",
+      description: "Returns the current target back to the caster"
+    });
+  }
+
+  public static override new = () => new this();
+}
+
+class SingleTarget extends ProTarget {
+  public constructor() {
+    super({
+      name:        "Single",
+      description: "Targets a single unit in front of the current target (the casting player is the default target)",
+      data:        [
+        new AttributeSelect("Range", "range", 5)
+          .setTooltip("The max distance away any target can be in blocks"),
+        new AttributeSelect("Tolerance", "tolerance")
+          .setTooltip("How much to expand the potential entity's hitbox in all directions, in blocks. This makes it easier to aim"),
+        new DropdownSelect("Group", "group", ["Ally", "Enemy", "Both"], "Enemy")
+          .setTooltip("The alignment of targets to get"),
+        new BooleanSelect("Through Wall", "wall", false)
+          .setTooltip("Whether to allow targets to be on the other side of a wall")
+      ]
+    });
   }
 
   public static override new = () => new this();
@@ -455,7 +629,15 @@ export const initComponents = () => {
     TOOK_SKILL:     { name: "Took Skill Damage", component: TookSkillTrigger }
   });
   Registry.targets.set({
-    LINEAR: { name: "Linear", component: LinearTarget }
+    AREA:     { name: "Area", component: AreaTarget },
+    CONE:     { name: "Cone", component: ConeTarget },
+    LINEAR:   { name: "Linear", component: LinearTarget },
+    LOCATION: { name: "Location", component: LocationTarget },
+    NEAREST:  { name: "Nearest", component: NearestTarget },
+    OFFSET:   { name: "Offset", component: OffsetTarget },
+    REMEMBER: { name: "Remember", component: RememberTarget },
+    SELF:     { name: "Self", component: SelfTarget },
+    SINGLE:   { name: "Single", component: SingleTarget }
   });
   Registry.conditions.set({
     BLOCK: { name: "Block", component: BlockCondition }
