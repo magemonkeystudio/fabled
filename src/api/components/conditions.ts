@@ -1,11 +1,12 @@
-import ProComponent              from "./procomponent";
-import { YAMLObject }            from "../yaml";
-import type ComponentOption      from "../options/options";
+import ProComponent           from "./procomponent";
+import { YAMLObject }         from "../yaml";
+import type ComponentOption   from "../options/options";
 import type { ComponentData } from "$api/types";
 import Registry               from "$api/components/registry";
 
 export default class ProCondition extends ProComponent {
   iconKey = "";
+
   public constructor(data: ComponentData) {
     super("condition", data);
   }
@@ -25,10 +26,26 @@ export default class ProCondition extends ProComponent {
 
     data.put("icon-key", this.iconKey);
 
-    this.data.forEach((opt: ComponentOption) => {
-      const optData: { [key: string]: string } = opt.getData();
-      Object.keys(optData).forEach(key => data.put(key, optData[key]));
-    });
+    this.data
+      .filter(opt => opt.meetsRequirements(this))
+      .forEach((opt: ComponentOption) => {
+        const optData: { [key: string]: string } = opt.getData();
+        Object.keys(optData).forEach(key => data.put(key, optData[key]));
+      });
+
+    return data;
+  }
+
+  public override getRawData(): YAMLObject {
+    const data = new YAMLObject("data");
+
+    data.put("icon-key", this.iconKey);
+
+    this.data
+      .forEach((opt: ComponentOption) => {
+        const optData: { [key: string]: string } = opt.getData();
+        Object.keys(optData).forEach(key => data.put(key, optData[key]));
+      });
 
     return data;
   }

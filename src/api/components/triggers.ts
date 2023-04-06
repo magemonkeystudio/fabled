@@ -1,6 +1,6 @@
-import type { TriggerData }      from "../types";
-import ProComponent              from "./procomponent";
-import { YAMLObject }            from "../yaml";
+import type { TriggerData } from "../types";
+import ProComponent         from "./procomponent";
+import { YAMLObject }       from "../yaml";
 import type ComponentOption from "../options/options";
 import Registry             from "$api/components/registry";
 
@@ -36,15 +36,33 @@ export default class ProTrigger extends ProComponent {
 
   public override getData(): YAMLObject {
     const data = new YAMLObject("data");
-    if(this.name != 'Cast' && this.name != 'Initialize' && this.name != 'Cleanup') {
+    if (this.name != "Cast" && this.name != "Initialize" && this.name != "Cleanup") {
       data.put("mana", this.mana);
       data.put("cooldown", this.cooldown);
     }
 
-    this.data.forEach((opt: ComponentOption) => {
-      const optData: { [key: string]: string } = opt.getData();
-      Object.keys(optData).forEach(key => data.put(key, optData[key]));
-    });
+    this.data
+      .filter(opt => opt.meetsRequirements(this))
+      .forEach((opt: ComponentOption) => {
+        const optData: { [key: string]: string } = opt.getData();
+        Object.keys(optData).forEach(key => data.put(key, optData[key]));
+      });
+
+    return data;
+  }
+
+  public override getRawData(): YAMLObject {
+    const data = new YAMLObject("data");
+    if (this.name != "Cast" && this.name != "Initialize" && this.name != "Cleanup") {
+      data.put("mana", this.mana);
+      data.put("cooldown", this.cooldown);
+    }
+
+    this.data
+      .forEach((opt: ComponentOption) => {
+        const optData: { [key: string]: string } = opt.getData();
+        Object.keys(optData).forEach(key => data.put(key, optData[key]));
+      });
 
     return data;
   }

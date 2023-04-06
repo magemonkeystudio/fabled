@@ -1,6 +1,6 @@
-import ProComponent              from "./procomponent";
-import { YAMLObject }            from "../yaml";
-import type ComponentOption      from "../options/options";
+import ProComponent           from "./procomponent";
+import { YAMLObject }         from "../yaml";
+import type ComponentOption   from "../options/options";
 import type { ComponentData } from "$api/types";
 import Registry               from "$api/components/registry";
 
@@ -23,10 +23,24 @@ export default class ProMechanic extends ProComponent {
   public override getData(): YAMLObject {
     const data = new YAMLObject("data");
 
-    this.data.forEach((opt: ComponentOption) => {
-      const optData: { [key: string]: string } = opt.getData();
-      Object.keys(optData).forEach(key => data.put(key, optData[key]));
-    });
+    this.data
+      .filter(opt => opt.meetsRequirements(this))
+      .forEach((opt: ComponentOption) => {
+        const optData: { [key: string]: string } = opt.getData();
+        Object.keys(optData).forEach(key => data.put(key, optData[key]));
+      });
+
+    return data;
+  }
+
+  public override getRawData(): YAMLObject {
+    const data = new YAMLObject("data");
+
+    this.data
+      .forEach((opt: ComponentOption) => {
+        const optData: { [key: string]: string } = opt.getData();
+        Object.keys(optData).forEach(key => data.put(key, optData[key]));
+      });
 
     return data;
   }

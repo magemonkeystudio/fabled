@@ -51,6 +51,7 @@ export default abstract class ProComponent extends Constructable {
   };
 
   public abstract getData(): YAMLObject;
+  public abstract getRawData(): YAMLObject;
 
   public abstract deserialize(yaml: YAMLObject): void;
 }

@@ -5,6 +5,7 @@ export default interface ComponentOption extends Cloneable<ComponentOption> {
   getData: () => { [key: string]: any };
   deserialize: (yaml: YAMLObject) => void;
   setTooltip: (tooltip: string) => ComponentOption;
+  meetsRequirements: (comp: ProComponent) => boolean;
 }
 
 interface Cloneable<T> {
@@ -23,6 +24,6 @@ export abstract class Requirements {
   meetsRequirements = (comp: ProComponent): boolean => {
     if (!this.targetKey) return true;
 
-    return this.targetValue.includes(comp.getData().get(this.targetKey));
+    return this.targetValue.includes(comp.getRawData().get(this.targetKey));
   };
 }
