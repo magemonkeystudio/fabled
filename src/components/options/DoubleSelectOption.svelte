@@ -10,4 +10,4 @@
   $: if (data || !data) dispatch("save");
 </script>
 
-<ProInput label={name} {tooltip} bind:value={data} type="number" />
+<ProInput label={name} {tooltip} bind:value={data} type="number" placeholder="0" />
