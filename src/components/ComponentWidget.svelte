@@ -20,6 +20,8 @@
   export let skill: ProSkill;
   export let component: ProComponent;
 
+  const useSymbols = true;
+
   const dispatch = createEventDispatcher();
 
   let modalOpen      = false;
@@ -67,6 +69,18 @@
   });
 
   const getName = () => {
+    if (useSymbols) {
+      if (component instanceof ProTrigger) {
+        return "🚩";
+      } else if (component instanceof ProCondition) {
+        return "⚠";
+      } else if (component instanceof ProTarget) {
+        return "🎯";
+      } else if (component instanceof ProMechanic) {
+        return "🔧";
+      }
+    }
+
     if (component instanceof ProTrigger) {
       return "Trigger";
     } else if (component instanceof ProCondition) {
@@ -127,7 +141,7 @@
       <span class="material-symbols-rounded" in:spin|local={{duration: 400}}>expand_less</span>
     {/if}
     <div class="corner" on:click|stopPropagation={() => collapsed = !collapsed} />
-    <div class="name"><span>{getName()}</span>: {component.name}</div>
+    <div class="name"><span>{getName()}</span>{(useSymbols ? ' ' : ': ') + component.name}</div>
 
     {#if !collapsed}
       <div class="controls">

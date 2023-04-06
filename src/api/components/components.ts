@@ -1402,6 +1402,29 @@ class ArmorMechanic extends ProMechanic {
   public static override new = () => new this();
 }
 
+class AttributeMechanic extends ProMechanic {
+  public constructor() {
+    super({
+      name:        "Attribute",
+      description: "Gives a player bonus attributes temporarily",
+      data:        [
+        new StringSelect("Attribute", "key", "Intelligence")
+          .setTooltip("The name of the attribute to add to"),
+        new DropdownSelect("Operation", "operation", ["ADD_NUMBER", "MULTIPLY_PERCENTAGE"], "ADD_NUMBER")
+          .setTooltip("The operation on the original value by amount, ADD_NUMBER: Scalar adding, MULTIPLY_PERCENTAGE: Multiply the value by amount"),
+        new AttributeSelect("Amount", "amount", 5, 2)
+          .setTooltip("The amount to use with the operation"),
+        new AttributeSelect("Seconds", "seconds", 3)
+          .setTooltip("How long in seconds to give the attributes to the player"),
+        new BooleanSelect("Stackable", "stackable", false)
+          .setTooltip("Whether applying multiple times stacks the effects")
+      ]
+    });
+  }
+
+  public static override new = () => new this();
+}
+
 class LaunchMechanic extends ProMechanic {
   public constructor() {
     super({ name: "Launch" });
@@ -1496,10 +1519,10 @@ export const initComponents = () => {
     WORLD:          { name: "World", component: WorldCondition }
   });
   Registry.mechanics.set({
-    ARMOR:               { name: "Armor", component: ArmorMechanic },
+    ARMOR: { name: "Armor", component: ArmorMechanic },
     // ARMOR_STAND:         { name: "Armor Stand", component: ArmorStandMechanic },
     // ARMOR_STAND_POSE:    { name: "Armor Stand Pose", component: ArmorStandPoseMechanic },
-    // ATTRIBUTE:           { name: "Attribute", component: AttributeMechanic },
+    ATTRIBUTE:           { name: "Attribute", component: AttributeMechanic },
     // BLOCK:               { name: "Block", component: BlockMechanic },
     // BUFF:                { name: "Buff", component: BuffMechanic },
     // CANCEL:              { name: "Cancel", component: CancelMechanic },
@@ -1530,7 +1553,7 @@ export const initComponents = () => {
     // ITEM_DROP:           { name: "Item Drop", component: ItemDropMechanic },
     // ITEM_PROJECTILE:     { name: "Item Projectile", component: ItemProjectileMechanic },
     // ITEM_REMOVE:         { name: "Item Remove", component: ItemRemoveMechanic },
-    LAUNCH:              { name: "Launch", component: LaunchMechanic },
+    LAUNCH: { name: "Launch", component: LaunchMechanic }
     // LIGHTNING:           { name: "Lightning", component: LightningMechanic },
     // MANA:                { name: "Mana", component: ManaMechanic },
     // MESSAGE:             { name: "Message", component: MessageMechanic },
