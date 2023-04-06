@@ -1,12 +1,13 @@
 import type { Writable }         from "svelte/store";
 import { get, writable }         from "svelte/store";
 import ProFolder                 from "$api/profolder";
-import { rename }                from "./store";
+import { active, rename }        from "./store";
 import { sort }                  from "$api/api";
 import { parseYAML, YAMLObject } from "$api/yaml";
 import { browser }               from "$app/environment";
 import ProClass                  from "$api/proclass";
 import ProSkill                  from "$api/proskill";
+import { goto }                  from "$app/navigation";
 
 const loadClassTextToArray = (text: string): ProClass[] => {
   const list: ProClass[] = [];
@@ -138,7 +139,16 @@ export const deleteClassFolder = (folder: ProFolder) => {
   classFolders.set(folders);
 };
 
-export const deleteClass = (data: ProClass) => classes.set(get(classes).filter(c => c != data));
+export const deleteClass = (data: ProClass) => {
+  const filtered = get(classes).filter(c => c != data);
+  const act      = get(active);
+  classes.set(filtered);
+
+  if (!(act instanceof ProClass)) return;
+
+  if (filtered.length === 0) goto("/");
+  else if (!filtered.find(cl => cl === get(active))) goto(`/class/${filtered[0].name}/edit`);
+};
 
 export const refreshClasses      = () => classes.set(sort<ProClass>(get(classes)));
 export const refreshClassFolders = () => {

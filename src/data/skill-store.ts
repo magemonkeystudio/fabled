@@ -5,9 +5,8 @@ import ProFolder                 from "$api/profolder";
 import { sort }                  from "$api/api";
 import { browser }               from "$app/environment";
 import ProSkill                  from "$api/proskill";
-import { rename }                from "./store";
-import Registry                  from "$api/components/registry";
-import type { Unsubscriber }     from "svelte/types/runtime/store";
+import { active, rename }        from "./store";
+import { goto }                  from "$app/navigation";
 
 const loadSkillTextToArray = (text: string): ProSkill[] => {
   const list: ProSkill[] = [];
@@ -133,7 +132,16 @@ export const deleteSkillFolder = (folder: ProFolder) => {
   skillFolders.set(folders);
 };
 
-export const deleteSkill = (data: ProSkill) => skills.set(get(skills).filter(c => c != data));
+export const deleteSkill = (data: ProSkill) => {
+  const filtered = get(skills).filter(c => c != data);
+  const act      = get(active);
+  skills.set(filtered);
+
+  if (!(act instanceof ProSkill)) return;
+
+  if (filtered.length === 0) goto("/");
+  else if (!filtered.find(sk => sk === get(active))) goto(`/skill/${filtered[0].name}`);
+};
 
 export const refreshSkills       = () => skills.set(sort<ProSkill>(get(skills)));
 export const refreshSkillFolders = () => {
