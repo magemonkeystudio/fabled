@@ -587,8 +587,6 @@ class SingleTarget extends ProTarget {
 
 /**
  * Adds the options for item-check related effects to the component
- *
- * @param {Component} component - the component to add to
  */
 const itemConditionOptions = (): ComponentOption[] => {
   const data: ComponentOption[] = [
@@ -995,7 +993,6 @@ class InventoryCondition extends ProCondition {
   public static override new = () => new this();
 }
 
-
 class LightCondition extends ProCondition {
   public constructor() {
     super({
@@ -1012,7 +1009,6 @@ class LightCondition extends ProCondition {
 
   public static override new = () => new this();
 }
-
 
 class ManaCondition extends ProCondition {
   public constructor() {
@@ -1032,7 +1028,6 @@ class ManaCondition extends ProCondition {
 
   public static override new = () => new this();
 }
-
 
 class MoneyCondition extends ProCondition {
   public constructor() {
@@ -1055,7 +1050,6 @@ class MoneyCondition extends ProCondition {
   public static override new = () => new this();
 }
 
-
 class MountedCondition extends ProCondition {
   public constructor() {
     super({
@@ -1070,7 +1064,6 @@ class MountedCondition extends ProCondition {
 
   public static override new = () => new this();
 }
-
 
 class MountingCondition extends ProCondition {
   public constructor() {
@@ -1087,7 +1080,6 @@ class MountingCondition extends ProCondition {
   public static override new = () => new this();
 }
 
-
 class MythicMobTypeCondition extends ProCondition {
   public constructor() {
     super({
@@ -1102,7 +1094,6 @@ class MythicMobTypeCondition extends ProCondition {
 
   public static override new = () => new this();
 }
-
 
 class NameCondition extends ProCondition {
   public constructor() {
@@ -1123,7 +1114,6 @@ class NameCondition extends ProCondition {
   public static override new = () => new this();
 }
 
-
 class OffhandCondition extends ProCondition {
   public constructor() {
     super({
@@ -1135,7 +1125,6 @@ class OffhandCondition extends ProCondition {
 
   public static override new = () => new this();
 }
-
 
 class PermissionCondition extends ProCondition {
   public constructor() {
@@ -1151,7 +1140,6 @@ class PermissionCondition extends ProCondition {
 
   public static override new = () => new this();
 }
-
 
 class PotionCondition extends ProCondition {
   public constructor() {
@@ -1193,7 +1181,6 @@ class SkillLevelCondition extends ProCondition {
   public static override new = () => new this();
 }
 
-
 class SlotCondition extends ProCondition {
   public constructor() {
     super({
@@ -1209,7 +1196,6 @@ class SlotCondition extends ProCondition {
 
   public static override new = () => new this();
 }
-
 
 class StatusCondition extends ProCondition {
   public constructor() {
@@ -1238,7 +1224,6 @@ class StatusCondition extends ProCondition {
   public static override new = () => new this();
 }
 
-
 class TimeCondition extends ProCondition {
   public constructor() {
     super({
@@ -1253,7 +1238,6 @@ class TimeCondition extends ProCondition {
 
   public static override new = () => new this();
 }
-
 
 class ToolCondition extends ProCondition {
   public constructor() {
@@ -1278,7 +1262,6 @@ class ToolCondition extends ProCondition {
   public static override new = () => new this();
 }
 
-
 class ValueCondition extends ProCondition {
   public constructor() {
     super({
@@ -1298,7 +1281,6 @@ class ValueCondition extends ProCondition {
   public static override new = () => new this();
 }
 
-
 class WaterCondition extends ProCondition {
   public constructor() {
     super({
@@ -1314,7 +1296,6 @@ class WaterCondition extends ProCondition {
   public static override new = () => new this();
 }
 
-
 class WeatherCondition extends ProCondition {
   public constructor() {
     super({
@@ -1329,7 +1310,6 @@ class WeatherCondition extends ProCondition {
 
   public static override new = () => new this();
 }
-
 
 class WorldCondition extends ProCondition {
   public constructor() {
