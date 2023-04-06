@@ -157,6 +157,7 @@ export const loadSkillText = (text: string) => {
       ? getSkill(key)
       : addSkill(key)));
     skill.load(data);
+    refreshSkills();
     return;
   }
 
@@ -168,6 +169,7 @@ export const loadSkillText = (text: string) => {
       skill.load(data.data[key]);
     }
   }
+  refreshSkills();
 };
 
 export const loadSkills = (e: ProgressEvent<FileReader>) => {
@@ -184,7 +186,7 @@ export const persistSkills = (list?: ProSkill[]) => {
 
   skillList.forEach(sk => skillYaml.put(sk.name, sk.serializeYaml()));
 
-  if (skillList.length > 0) localStorage.setItem("skillData", skillYaml.toString());
+  localStorage.setItem("skillData", skillYaml.toString());
 };
 
 get(skills).forEach(sk => sk.postLoad());

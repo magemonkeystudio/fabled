@@ -1,12 +1,12 @@
-import type { Writable } from "svelte/store";
-import { get, writable } from "svelte/store";
-import ProFolder from "$api/profolder";
-import { rename } from "./store";
-import { sort } from "$api/api";
+import type { Writable }         from "svelte/store";
+import { get, writable }         from "svelte/store";
+import ProFolder                 from "$api/profolder";
+import { rename }                from "./store";
+import { sort }                  from "$api/api";
 import { parseYAML, YAMLObject } from "$api/yaml";
-import { browser } from "$app/environment";
-import ProClass from "$api/proclass";
-import ProSkill from "$api/proskill";
+import { browser }               from "$app/environment";
+import ProClass                  from "$api/proclass";
+import ProSkill                  from "$api/proskill";
 
 const loadClassTextToArray = (text: string): ProClass[] => {
   const list: ProClass[] = [];
@@ -49,10 +49,10 @@ const setupClassStore = <T>(key: string,
   }
 
   const {
-    subscribe,
-    set,
-    update
-  } = writable<T>(saved);
+          subscribe,
+          set,
+          update
+        } = writable<T>(saved);
   return {
     subscribe,
     set: (value: T) => {
@@ -90,7 +90,7 @@ export const classFolders: Writable<ProFolder[]> = setupClassStore<ProFolder[]>(
         }
 
         const folder = new ProFolder(value.data);
-        folder.name = value.name;
+        folder.name  = value.name;
         return folder;
       }
       return value;
@@ -114,7 +114,7 @@ export const updateAllAttributes = (attributes: string[]) =>
 export const isClassNameTaken = (name: string): boolean => !!getClass(name);
 
 export const addClass = (name?: string): ProClass => {
-  const cl = get(classes);
+  const cl    = get(classes);
   const clazz = new ProClass({ name: (name || "Class " + (cl.length + 1)) });
   cl.push(clazz);
 
@@ -140,7 +140,7 @@ export const deleteClassFolder = (folder: ProFolder) => {
 
 export const deleteClass = (data: ProClass) => classes.set(get(classes).filter(c => c != data));
 
-export const refreshClasses = () => classes.set(sort<ProClass>(get(classes)));
+export const refreshClasses      = () => classes.set(sort<ProClass>(get(classes)));
 export const refreshClassFolders = () => {
   classFolders.set(sort<ProFolder>(get(classFolders)));
   refreshClasses();
@@ -158,10 +158,11 @@ export const loadClassText = (text: string) => {
   // the structure is a bit different
   if (data.key && !data.data[data.key]) {
     const key: string = data.key;
-    clazz = (<ProClass>(isClassNameTaken(key)
+    clazz             = (<ProClass>(isClassNameTaken(key)
       ? getClass(key)
       : addClass(key)));
     clazz.load(data);
+    refreshClasses();
     return;
   }
 
@@ -173,6 +174,7 @@ export const loadClassText = (text: string) => {
       clazz.load(data.data[key]);
     }
   }
+  refreshClasses();
 };
 
 export const loadClasses = (e: ProgressEvent<FileReader>) => {
@@ -189,6 +191,5 @@ export const persistClasses = (list?: ProClass[]) => {
 
   classList.forEach(c => classYaml.put(c.name, c.serializeYaml()));
 
-  if (classList.length > 0)
-    localStorage.setItem("classData", classYaml.toString());
+  localStorage.setItem("classData", classYaml.toString());
 };

@@ -128,7 +128,8 @@ export default class ProSkill implements Serializable {
     this.incompStr            = yaml.get("incompatible", this.incompStr);
 
     let unsub: Unsubscriber | undefined = undefined;
-    unsub                               = Registry.initialized.subscribe(init => {
+
+    unsub = Registry.initialized.subscribe(init => {
       if (!init) return;
       this.triggers = yaml.get<YAMLObject, ProTrigger[]>("components", this.triggers, (list: YAMLObject) => Registry.deserializeComponents(list));
 
