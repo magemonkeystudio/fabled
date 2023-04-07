@@ -7,8 +7,13 @@
   import NavBar                                    from "$components/NavBar.svelte";
   import HeaderBar                                 from "$components/HeaderBar.svelte";
   import { initComponents }                        from "$api/components/components";
+  import Modal                                     from "$components/Modal.svelte";
+  import Toggle                                    from "$input/Toggle.svelte";
+  import ProInput                                  from "$input/ProInput.svelte";
+  import { useSymbols }                            from "../data/settings";
 
   let dragging = false;
+  let settings = false;
 
   onMount(() => {
     if (!browser) return;
@@ -64,6 +69,9 @@
   <div class="button backup" title="Backup All Data" on:click={backup}>
     <span class="material-symbols-rounded">cloud_download</span>
   </div>
+  <div class="button settings" title="Change Settings" on:click={() => settings = true}>
+    <span class="material-symbols-rounded">settings</span>
+  </div>
   <div class="button save" title="Save" on:click={() => saveData()}>
     <span class="material-symbols-rounded">save</span>
   </div>
@@ -74,6 +82,16 @@
 {#if $importing}
   <ImportModal />
 {/if}
+
+<Modal bind:open={settings}>
+  <h1>Settings</h1>
+  <hr />
+  <div class="settings-container">
+    <ProInput label="Use Symbols">
+      <Toggle left="Symbols" right="Text" bind:data={$useSymbols} />
+    </ProInput>
+  </div>
+</Modal>
 
 {#if dragging}
   <div class="dragging" on:dragleave={dragleave}>
@@ -136,7 +154,7 @@
         justify-content: center;
         border-radius: 50%;
         padding: 0.7rem;
-        box-shadow: 5px 5px 5px #444;
+        box-shadow: inset 0 0 10px #222;
         margin: 0.5rem;
     }
 
@@ -146,6 +164,25 @@
 
     #floating-buttons .save {
         background-color: #1dad36;
+    }
+
+    #floating-buttons .settings {
+        background-color: #777;
+        position: absolute;
+        top: 2.45rem;
+        left: -2rem;
+    }
+
+    #floating-buttons .settings .material-symbols-rounded {
+        font-size: 1rem;
+    }
+
+    .settings-container {
+        display: grid;
+        grid-template-columns: 40% 60%;
+        width: 100%;
+        padding-inline: 0.5rem;
+        padding-top: 0.25rem;
     }
 
     #body-container.empty {

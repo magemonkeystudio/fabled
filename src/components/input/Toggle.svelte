@@ -1,9 +1,9 @@
 <!--suppress CssUnresolvedCustomProperty -->
 <script lang="ts">
   export let data: boolean;
-  export let left = "True";
-  export let right = "False";
-  export let color = "#222";
+  export let left   = "True";
+  export let right  = "False";
+  export let color  = "#222";
   export let inline = true;
 </script>
 
@@ -47,8 +47,12 @@
     .toggle > div {
         position: relative;
         flex: 1;
+        width: 5%;
         padding: 0.2rem;
         padding-inline: 1.5rem;
+
+        display: flex;
+        justify-content: center;
     }
 
     .toggle > div:hover {

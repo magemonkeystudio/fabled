@@ -1402,6 +1402,48 @@ class ArmorMechanic extends ProMechanic {
   public static override new = () => new this();
 }
 
+class ArmorStandMechanic extends ProMechanic {
+  public constructor() {
+    super({
+      name:        "Armor Stand",
+      description: "Summons an armor stand that can be used as a marker or for item display (check Armor Mechanic for latter). Applies child components on the armor stand",
+      data:        [
+        new StringSelect("Armor Stand Key", "key", "default")
+          .setTooltip("The key to refer to the armor stand by. Only one armor stand of each key can be active per target at a time"),
+        new AttributeSelect("Duration", "duration", 5)
+          .setTooltip("How long the armor stand lasts before being deleted"),
+        new StringSelect("Name", "name", "Armor Stand")
+          .setTooltip("The name the armor stand displays"),
+        new BooleanSelect("Name visible", "name-visible", false)
+          .setTooltip("Whether the armor stand's name should be visible from afar"),
+        new BooleanSelect("Follow target", "follow", false)
+          .setTooltip("Whether the armor stand should follow the target"),
+        new BooleanSelect("Apply gravity", "gravity", true)
+          .setTooltip("Whether the armor stand should be affected by gravity"),
+        new BooleanSelect("Small", "tiny", false)
+          .setTooltip("Whether the armor stand should be small"),
+        new BooleanSelect("Show arms", "arms", false)
+          .setTooltip("Whether the armor stand should display its arms"),
+        new BooleanSelect("Show base plate", "base", false)
+          .setTooltip("Whether the armor stand should display its base plate"),
+        new BooleanSelect("Visible", "visible", true)
+          .setTooltip("Whether the armor stand should be visible"),
+        new BooleanSelect("Marker", "marker", true)
+          .setTooltip("Setting this to true will remove the armor stand's hitbox"),
+        new SectionMarker("Offset"),
+        new AttributeSelect("Forward Offset", "forward")
+          .setTooltip("How far forward in front of the target the armor stand should be in blocks. A negative value will put it behind"),
+        new AttributeSelect("Upward Offset", "upward")
+          .setTooltip("How far above the target the armor stand should be in blocks. A negative value will put it below"),
+        new AttributeSelect("Right Offset", "right")
+          .setTooltip("How far to the right the armor stand should be of the target. A negative value will put it to the left")
+      ]
+    }, true);
+  }
+
+  public static override new = () => new this();
+}
+
 class AttributeMechanic extends ProMechanic {
   public constructor() {
     super({
@@ -1520,9 +1562,9 @@ export const initComponents = () => {
   });
   Registry.mechanics.set({
     ARMOR: { name: "Armor", component: ArmorMechanic },
-    // ARMOR_STAND:         { name: "Armor Stand", component: ArmorStandMechanic },
+    ARMOR_STAND:         { name: "Armor Stand", component: ArmorStandMechanic },
     // ARMOR_STAND_POSE:    { name: "Armor Stand Pose", component: ArmorStandPoseMechanic },
-    ATTRIBUTE:           { name: "Attribute", component: AttributeMechanic },
+    ATTRIBUTE: { name: "Attribute", component: AttributeMechanic },
     // BLOCK:               { name: "Block", component: BlockMechanic },
     // BUFF:                { name: "Buff", component: BuffMechanic },
     // CANCEL:              { name: "Cancel", component: CancelMechanic },

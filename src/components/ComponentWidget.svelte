@@ -16,11 +16,10 @@
   import DropdownSelect                     from "$api/options/dropdownselect";
   import Registry                           from "$api/components/registry";
   import type { Unsubscriber }              from "svelte/types/runtime/store";
+  import { useSymbols }                     from "../data/settings";
 
   export let skill: ProSkill;
   export let component: ProComponent;
-
-  const useSymbols = true;
 
   const dispatch = createEventDispatcher();
 
@@ -68,8 +67,8 @@
     mechanicSub  = Registry.mechanics.subscribe(mech => mechanics = mech);
   });
 
-  const getName = () => {
-    if (useSymbols) {
+  const getName = (symbols = false) => {
+    if (symbols) {
       if (component instanceof ProTrigger) {
         return "🚩";
       } else if (component instanceof ProCondition) {
@@ -141,7 +140,7 @@
       <span class="material-symbols-rounded" in:spin|local={{duration: 400}}>expand_less</span>
     {/if}
     <div class="corner" on:click|stopPropagation={() => collapsed = !collapsed} />
-    <div class="name"><span>{getName()}</span>{(useSymbols ? ' ' : ': ') + component.name}</div>
+    <div class="name"><span>{getName($useSymbols)}</span>{($useSymbols ? ' ' : ': ') + component.name}</div>
 
     {#if !collapsed}
       <div class="controls">

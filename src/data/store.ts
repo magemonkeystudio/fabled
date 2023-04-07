@@ -1,9 +1,9 @@
 import type { Readable, Writable } from "svelte/store";
-import { derived, get, writable } from "svelte/store";
-import ProClass from "$api/proclass";
-import ProSkill from "$api/proskill";
-import ProFolder from "$api/profolder";
-import { browser } from "$app/environment";
+import { derived, get, writable }  from "svelte/store";
+import ProClass                    from "$api/proclass";
+import ProSkill                    from "$api/proskill";
+import ProFolder                   from "$api/profolder";
+import { browser }                 from "$app/environment";
 import {
   classFolders,
   deleteClass,
@@ -13,9 +13,9 @@ import {
   persistClasses,
   refreshClasses,
   refreshClassFolders
-} from "./class-store";
-import { localStore } from "$api/api";
-import { loadAttributes } from "./attribute-store";
+}                                  from "./class-store";
+import { localStore }              from "$api/api";
+import { loadAttributes }          from "./attribute-store";
 import {
   deleteSkill,
   deleteSkillFolder,
@@ -25,20 +25,20 @@ import {
   refreshSkillFolders,
   refreshSkills,
   skillFolders
-} from "./skill-store";
-import type ProComponent from "$api/components/procomponent";
+}                                  from "./skill-store";
+import type ProComponent           from "$api/components/procomponent";
 
-export const active: Writable<ProClass | ProSkill | undefined> = writable(undefined);
-export const activeType: Readable<"class" | "skill"> = derived(
+export const active: Writable<ProClass | ProSkill | undefined>   = writable(undefined);
+export const activeType: Readable<"class" | "skill">             = derived(
   active,
   $active => $active instanceof ProClass ? "class" : "skill"
 );
 export const dragging: Writable<ProClass | ProSkill | ProFolder> = writable();
-export const draggingComponent: Writable<ProComponent> = writable();
-export const showSidebar: Writable<boolean> = localStore("sidebarOpen", true);
-export const sidebarOpen: Writable<boolean> = writable(true);
-export const isShowClasses: Writable<boolean> = writable(true);
-export const importing: Writable<boolean> = writable(false);
+export const draggingComponent: Writable<ProComponent>           = writable();
+export const showSidebar: Writable<boolean>                      = localStore("sidebarOpen", true);
+export const sidebarOpen: Writable<boolean>                      = writable(true);
+export const isShowClasses: Writable<boolean>                    = writable(true);
+export const importing: Writable<boolean>                        = writable(false);
 
 export const updateSidebar = () => {
   if (!get(showSidebar)) return;
@@ -47,12 +47,12 @@ export const updateSidebar = () => {
   updateFolders();
 };
 export const toggleSidebar = () => showSidebar.set(!get(showSidebar));
-export const closeSidebar = () => showSidebar.set(false);
-export const setImporting = (bool: boolean) => importing.set(bool);
+export const closeSidebar  = () => showSidebar.set(false);
+export const setImporting  = (bool: boolean) => importing.set(bool);
 
 export const rename = (folder: ProFolder, folders: Array<ProFolder | ProClass | ProSkill>) => {
   const origName = folder.name;
-  let num = 1;
+  let num        = 1;
   while (folders.filter(f => f instanceof ProFolder && f.name == folder.name).length >= 1) {
     folder.name = origName + " (" + (num++) + ")";
   }
@@ -162,9 +162,9 @@ export const saveData = (data?: ProSkill | ProClass) => {
 const saveToFile = (file: string, data: string) => {
   const textFileAsBlob = new Blob([data], { type: "text/plain;charset=utf-8" });
 
-  const element = document.createElement("a");
-  element.href = URL.createObjectURL(textFileAsBlob);
-  element.download = file;
+  const element         = document.createElement("a");
+  element.href          = URL.createObjectURL(textFileAsBlob);
+  element.download      = file;
   element.style.display = "none";
 
   document.body.appendChild(element);

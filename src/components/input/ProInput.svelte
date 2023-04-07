@@ -21,8 +21,10 @@
       {tooltip}
     </div>
   {/if}
-  <span>{label || ''}
-    <slot name="label" /></span>
+  <span>
+    {label || ''}
+    <slot name="label" />
+  </span>
 </div>
 <div transition:slide class="input-wrapper" class:labeled={!!label}>
   {#if type === "number"}
