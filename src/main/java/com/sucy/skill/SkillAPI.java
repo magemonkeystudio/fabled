@@ -38,6 +38,7 @@ import com.sucy.skill.data.io.IOManager;
 import com.sucy.skill.data.io.SQLIO;
 import com.sucy.skill.dynamic.DynamicClass;
 import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.exception.SkillAPINotEnabledException;
 import com.sucy.skill.gui.tool.GUITool;
 import com.sucy.skill.hook.PlaceholderAPIHook;
 import com.sucy.skill.hook.PluginChecker;
@@ -123,11 +124,11 @@ public class SkillAPI extends JavaPlugin {
 
     /**
      * @return SkillAPI singleton if available
-     * @throws IllegalStateException if SkillAPI isn't enabled
+     * @throws SkillAPINotEnabledException if SkillAPI isn't enabled
      */
     public static SkillAPI inst() {
         if (singleton == null) {
-            throw new IllegalStateException("Cannot use SkillAPI methods before it is enabled - add it to your plugin.yml as a dependency");
+            throw new SkillAPINotEnabledException("Cannot use SkillAPI methods before it is enabled - add it to your plugin.yml as a dependency");
         }
         return singleton;
     }
