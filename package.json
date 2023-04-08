@@ -30,8 +30,5 @@
     "typescript": "^5.0.3",
     "vite": "^4.2.1"
   },
-  "type": "module",
-  "dependencies": {
-    "uuid": "^9.0.0"
-  }
+  "type": "module"
 }

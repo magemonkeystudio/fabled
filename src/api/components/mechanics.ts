@@ -5,6 +5,9 @@ import type { ComponentData } from "$api/types";
 import Registry               from "$api/components/registry";
 
 export default class ProMechanic extends ProComponent {
+  iconKey = "";
+  countsAsCast = true;
+
   public constructor(data: ComponentData, isParent = false) {
     super("mechanic", data);
     super.isParent = isParent; // This should be false unless for specific mechanics like projectiles
@@ -22,6 +25,9 @@ export default class ProMechanic extends ProComponent {
 
   public override getData(): YAMLObject {
     const data = new YAMLObject("data");
+
+    data.put("icon-key", this.iconKey);
+    data.put("counts", this.countsAsCast);
 
     this.data
       .filter(opt => opt.meetsRequirements(this))

@@ -11,6 +11,7 @@
   import Toggle                                    from "$input/Toggle.svelte";
   import ProInput                                  from "$input/ProInput.svelte";
   import { useSymbols }                            from "../data/settings";
+  import { serverOptions, version }                from "../version/data";
 
   let dragging = false;
   let settings = false;
@@ -87,7 +88,14 @@
   <h1>Settings</h1>
   <hr />
   <div class="settings-container">
-    <ProInput label="Use Symbols">
+    <ProInput label="Server" tooltip="This should match your target Spigot server version">
+      <select bind:value={$version}>
+        {#each serverOptions as opt}
+          <option value={opt.substring(2)}>{opt}</option>
+        {/each}
+      </select>
+    </ProInput>
+    <ProInput label="Use Symbols" tooltip="If skill components should use symbols instead of text">
       <Toggle left="Symbols" right="Text" bind:data={$useSymbols} />
     </ProInput>
   </div>

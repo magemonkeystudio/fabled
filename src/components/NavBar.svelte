@@ -1,11 +1,10 @@
 <script lang="ts">
   import { active, activeType, setImporting, showSidebar, toggleSidebar } from "../data/store";
-  import { get } from "svelte/store";
-  import { createPaste } from "$api/hastebin";
-  import { serverOptions, version } from "../version/data";
-  import ProClass from "$api/proclass";
-  import ProSkill from "$api/proskill";
-  import Sidebar from "./sidebar/Sidebar.svelte";
+  import { get }                                                          from "svelte/store";
+  import { createPaste }                                                  from "$api/hastebin";
+  import ProClass                                                         from "$api/proclass";
+  import ProSkill                                                         from "$api/proskill";
+  import Sidebar                                                          from "./sidebar/Sidebar.svelte";
 
   const haste = () => {
     let act: ProClass | ProSkill | undefined = get(active);
@@ -31,38 +30,32 @@
 </script>
 
 <div class="nav-wrap">
-<nav>
-  <div class="chip hamburger" on:click={toggle}>
-    <span class="material-symbols-rounded">menu</span>
-  </div>
-  <label class="server">
-    Server
-    <select bind:value={$version}>
-      {#each serverOptions as opt}
-        <option value={opt.substring(2)}>{opt}</option>
-      {/each}
-    </select>
-  </label>
-
-  <div class="transfer">
-    <div class="chip import"
-         on:click={openImport}
-         title="Import Data">
-      Import
+  <nav>
+    <div class="chip hamburger" on:click={toggle}>
+      <span class="material-symbols-rounded">menu</span>
     </div>
 
-    {#if $activeType}
-      <div class="chip share"
-           on:click={haste}
-           title="Share {$activeType === 'class' ? 'Class' : 'Skill'}">
-        Share {$activeType === 'class' ? 'Class' : 'Skill'}
+    <div />
+
+    <div class="transfer">
+      <div class="chip import"
+           on:click={openImport}
+           title="Import Data">
+        Import
       </div>
+
+      {#if $activeType}
+        <div class="chip share"
+             on:click={haste}
+             title="Share {$activeType === 'class' ? 'Class' : 'Skill'}">
+          Share {$activeType === 'class' ? 'Class' : 'Skill'}
+        </div>
+      {/if}
+    </div>
+    {#if $showSidebar}
+      <Sidebar />
     {/if}
-  </div>
-{#if $showSidebar}
-  <Sidebar />
-{/if}
-</nav>
+  </nav>
 </div>
 
 <style>
@@ -71,6 +64,7 @@
         top: 0;
         z-index: 5;
     }
+
     label {
         display: flex;
         font-size: 1.5rem;

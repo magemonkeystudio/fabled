@@ -13,6 +13,8 @@ import {
   getDamageableMaterials,
   getDamageTypes,
   getEntities,
+  getMaterials,
+  getParticles,
   getPotionTypes
 }                           from "../../version/data";
 import BooleanSelect        from "$api/options/booleanselect";
@@ -614,7 +616,7 @@ const itemConditionOptions = (): ComponentOption[] => {
       .requireValue("check-name", [true])
       .setTooltip("The text the item requires in its display name"),
     new BooleanSelect("Regex", "regex", false)
-      .setTooltip("Whether the name and lore checks are regex strings. If you do not know what regex is, leave this option alone.")
+      .setTooltip("Whether the name and lore checks are regex strings. If you do not know what regex is, leave this option alone")
   ];
 
   return data;
@@ -1335,8 +1337,6 @@ class WorldCondition extends ProCondition {
 
 /**
  * Adds the options for item related effects to the component
- *
- * @param {Component} component - the component to add to
  */
 const itemOptions = (): ComponentOption[] => {
   const data: ComponentOption[] = [
@@ -1382,6 +1382,75 @@ const itemOptions = (): ComponentOption[] => {
   ];
 
   return data;
+};
+
+/**
+ * Adds the options for particle effects to the components
+ */
+const particleOptions = (): ComponentOption[] => {
+  return [
+    new SectionMarker("Particle Options"),
+    new DropdownSelect("Particle", "particle", getParticles, "Villager happy")
+      .setTooltip("The type of particle to display"),
+
+    new MaterialSelect(false)
+      .requireValue("particle", ["Item crack",
+        "Block crack",
+        "Block dust",
+        "Falling dust",
+        "Block marker"])
+      .setTooltip("The material to use for the particles"),
+    new IntSelect("Durability", "durability", 0)
+      .requireValue("particle", ["Item crack"])
+      .setTooltip("The durability to be reduced from the item used to make the particles"),
+    new IntSelect("CustomModelData", "type", 0)
+      .requireValue("particle", ["Item crack"])
+      .setTooltip("The CustomModelData of the item used to make the particles"),
+    new ColorSelect("Dust Color", "dust-color", "#FF0000")
+      .requireValue("particle", ["Redstone", "Dust color transition"])
+      .setTooltip("The color of the dust particles in hex RGB"),
+    new ColorSelect("Final Dust Color", "final-dust-color", "#FF0000")
+      .requireValue("particle", ["Dust color transition"])
+      .setTooltip("The color to transition to, in hex RGB"),
+    new DoubleSelect("Dust Size", "dust-size", 1)
+      .requireValue("particle", ["Redstone", "Dust color transition"])
+      .setTooltip("The size of the dust particles"),
+
+    new DropdownSelect("Arrangement", "arrangement", ["Sphere", "Circle", "Hemisphere"], "Sphere")
+      .setTooltip("The arrangement to use for the particles. Circle is a 2D circle, Hemisphere is half a 3D sphere, and Sphere is a 3D sphere"),
+    // Circle arrangement direction
+    new DropdownSelect("Circle Direction", "direction", ["XY", "XZ", "YZ"], "XZ")
+      .requireValue("arrangement", ["Circle"])
+      .setTooltip("The orientation of the circle. XY and YZ are vertical circles while XZ is a horizontal circle"),
+    new AttributeSelect("Radius", "radius", 1)
+      .setTooltip("The radius of the arrangement in blocks"),
+    new AttributeSelect("Points", "particles", 20)
+      .setTooltip("The amount of points that conform the chosen arrangement"),
+
+    // Bukkit particle data value
+    new IntSelect("Effect Data", "data")
+      .requireValue("particle",
+        [
+          "Smoke",
+          "Ender Signal",
+          "Mobspawner Flames",
+          "Potion Break",
+          "Sculk charge"
+        ])
+      .setTooltip("The data value to use for the particle. The effect changes between particles such as the orientation for smoke particles or the color for potion break"),
+    new IntSelect("Visible Radius", "visible-radius", 25)
+      .setTooltip("How far away players can see the particles from in blocks"),
+    new DoubleSelect("DX", "dx")
+      .setTooltip("Offset in the X direction, used as the Red value for some particles"),
+    new DoubleSelect("DY", "dy")
+      .setTooltip("Offset in the Y direction, used as the Green value for some particles"),
+    new DoubleSelect("DZ", "dz")
+      .setTooltip("Offset in the Z direction, used as the Blue value for some particles"),
+    new DoubleSelect("Amount", "amount", 1)
+      .setTooltip("Number of particles to play per point. For \"Spell mob\" and \"Spell mob ambient\" particles, set to 0 to control the particle color"),
+    new DoubleSelect("Speed", "speed", 0.1)
+      .setTooltip("Speed of the particle. For some particles controls other parameters, such as size")
+  ];
 };
 
 class ArmorMechanic extends ProMechanic {
@@ -1467,9 +1536,194 @@ class AttributeMechanic extends ProMechanic {
   public static override new = () => new this();
 }
 
+class BlockMechanic extends ProMechanic {
+  public constructor() {
+    super({
+      name:        "Block",
+      description: "Changes blocks to the given type of block for a limited duration",
+      data:        [
+        new DropdownSelect("Shape", "shape", ["Sphere", "Cuboid"], "Sphere")
+          .setTooltip("The shape of the region to change the blocks for"),
+        new DropdownSelect("Type", "type", (() => ["Air", "Any", "Solid", ...getMaterials()]), "Solid")
+          .setTooltip("The type of blocks to replace. Air or any would be for making obstacles while solid would change the environment"),
+        new DropdownSelect("Block", "block", getMaterials, "Ice")
+          .setTooltip("The type of block to turn the region into"),
+        new IntSelect("Block Data", "data")
+          .setTooltip("The block data to apply, mostly applicable for things like signs, woods, steps, or the similar"),
+        new BooleanSelect("Reset Yaw", "reset-yaw", false)
+          .setTooltip("Whether the target's yaw should be reset, effectively making the offsets cardinally aligned"),
+        new AttributeSelect("Seconds", "seconds", 5)
+          .setTooltip("How long the blocks should be replaced for"),
+
+        // Sphere options
+        new AttributeSelect("Radius", "radius", 3)
+          .requireValue("shape", ["Sphere"])
+          .setTooltip("The radius of the sphere region in blocks"),
+
+        // Cuboid options
+        new AttributeSelect("Width (X)", "width", 5)
+          .requireValue("shape", ["Cuboid"])
+          .setTooltip("The width of the cuboid in blocks"),
+        new AttributeSelect("Height (Y)", "height", 5)
+          .requireValue("shape", ["Cuboid"])
+          .setTooltip("The height of the cuboid in blocks"),
+        new AttributeSelect("Depth (Z)", "depth", 5)
+          .requireValue("shape", ["Cuboid"])
+          .setTooltip("The depth of the cuboid in blocks"),
+
+        new SectionMarker("Offset"),
+        new AttributeSelect("Forward Offset", "forward")
+          .setTooltip("How far forward in front of the target the region should be in blocks. A negative value will put it behind"),
+        new AttributeSelect("Upward Offset", "upward")
+          .setTooltip("How far above the target the region should be in blocks. A negative value will put it below"),
+        new AttributeSelect("Right Offset", "right")
+          .setTooltip("How far to the right the region should be of the target. A negative value will put it to the left")
+      ]
+    });
+  }
+
+  public static override new = () => new this();
+}
+
+class BuffMechanic extends ProMechanic {
+  public constructor() {
+    super({
+      name:        "Buff",
+      description: "Buffs combat stats of the target",
+      data:        [
+        new BooleanSelect("Immediate", "immediate", false)
+          .setTooltip("Whether to apply the buff to the current damage trigger"),
+        new DropdownSelect("Type", "type", ["DAMAGE",
+          "DEFENSE",
+          "SKILL_DAMAGE",
+          "SKILL_DEFENSE",
+          "HEALING"], "DAMAGE")
+          .requireValue("immediate", [false])
+          .setTooltip("What type of buff to apply. DAMAGE/DEFENSE is for regular attacks, SKILL_DAMAGE/SKILL_DEFENSE are for damage from abilities, and HEALING is for healing from abilities"),
+        new DropdownSelect("Modifier", "modifier", ["Flat", "Multiplier"], "Flat")
+          .setTooltip("The sort of scaling for the buff. Flat will increase/reduce incoming damage by a fixed amount where Multiplier does it by a percentage of the damage. Multipliers above 1 will increase damage taken while multipliers below 1 reduce damage taken"),
+        new StringSelect("Category", "category", "")
+          .requireValue("type", ["SKILL_DAMAGE", "SKILL_DEFENSE"])
+          .setTooltip("What kind of skill damage to affect. If left empty, this will affect all skill damage"),
+        new AttributeSelect("Value", "value", 1)
+          .setTooltip("The amount to increase/decrease incoming damage by"),
+        new AttributeSelect("Seconds", "seconds", 3)
+          .requireValue("immediate", [false])
+          .setTooltip("The duration of the buff in seconds")
+      ]
+    });
+  }
+
+  public static override new = () => new this();
+}
+
+class FlagMechanic extends ProMechanic {
+  public constructor() {
+    super({
+      name:        "Flag",
+      description: "Marks the target with a flag for a duration. Flags can be checked by other triggers, spells or the related for interesting synergies and effects",
+      data:        [
+        new StringSelect("Key", "key", "key")
+          .setTooltip("The unique string for the flag. Use the same key when checking it in a Flag Condition"),
+        new AttributeSelect("Seconds", "seconds", 3, 1)
+          .setTooltip("The duration the flag should be set for. To set one indefinitely, use Flag Toggle")
+      ]
+    });
+  }
+
+  public static override new = () => new this();
+}
+
+class FlagClearMechanic extends ProMechanic {
+  public constructor() {
+    super({
+      name:        "Flag Clear",
+      description: "Clears a flag from the target",
+      data:        [
+        new StringSelect("Key", "key", "key")
+          .setTooltip("The unique string for the flag. This should match that of the mechanic that set the flag to begin with")
+      ]
+    });
+  }
+
+  public static override new = () => new this();
+}
+
+class FlagToggleMechanic extends ProMechanic {
+  public constructor() {
+    super({
+      name:        "Flag Toggle",
+      description: "Toggles a flag on or off for the target. This can be used to make toggle effects",
+      data:        [
+        new StringSelect("Key", "key", "key")
+          .setTooltip("The unique string for the flag. Use the same key when checking it in a Flag Condition")
+      ]
+    });
+  }
+
+  public static override new = () => new this();
+}
+
 class LaunchMechanic extends ProMechanic {
   public constructor() {
     super({ name: "Launch" });
+  }
+
+  public static override new = () => new this();
+}
+
+class ParticleMechanic extends ProMechanic {
+  public constructor() {
+    super({
+      name:        "Particle",
+      description: "Plays a particle effect about the target",
+      data:        [
+        ...particleOptions(),
+        new SectionMarker("Offset"),
+        new DoubleSelect("Forward Offset", "forward")
+          .setTooltip("How far forward in front of the target in blocks to play the particles. A negative value will go behind"),
+        new DoubleSelect("Upward Offset", "upward")
+          .setTooltip("How far above the target in blocks to play the particles. A negative value will go below"),
+        new DoubleSelect("Right Offset", "right")
+          .setTooltip("How far to the right of the target to play the particles. A negative value will go to the left")
+      ]
+    });
+  }
+
+  public static override new = () => new this();
+}
+
+class PassiveMechanic extends ProMechanic {
+  public constructor() {
+    super({
+      name:        "Passive",
+      description: "Applies child components continuously every period. The seconds value below is the period or how often it applies",
+      data:        [
+        new AttributeSelect("Seconds", "seconds", 1)
+          .setTooltip("The delay in seconds between each application")
+      ]
+    }, true);
+  }
+
+  public static override new = () => new this();
+}
+
+class RepeatMechanic extends ProMechanic {
+  public constructor() {
+    super({
+      name:        "Repeat",
+      description: "Applies child components multiple times. When it applies them is determined by the delay (seconds before the first application) and period (seconds between successive applications)",
+      data:        [
+        new AttributeSelect("Repetitions", "repetitions", 3)
+          .setTooltip("How many times to activate child components"),
+        new DoubleSelect("Period", "period", 1)
+          .setTooltip("The time in seconds between each time applying child components"),
+        new DoubleSelect("Delay", "delay")
+          .setTooltip("The initial delay before starting to apply child components"),
+        new BooleanSelect("Stop on Fail", "stop-on-fail", false)
+          .setTooltip("Whether to stop the repeat task early if the effects fail")
+      ]
+    }, true);
   }
 
   public static override new = () => new this();
@@ -1561,12 +1815,12 @@ export const initComponents = () => {
     WORLD:          { name: "World", component: WorldCondition }
   });
   Registry.mechanics.set({
-    ARMOR: { name: "Armor", component: ArmorMechanic },
-    ARMOR_STAND:         { name: "Armor Stand", component: ArmorStandMechanic },
+    ARMOR:       { name: "Armor", component: ArmorMechanic },
+    ARMOR_STAND: { name: "Armor Stand", component: ArmorStandMechanic },
     // ARMOR_STAND_POSE:    { name: "Armor Stand Pose", component: ArmorStandPoseMechanic },
     ATTRIBUTE: { name: "Attribute", component: AttributeMechanic },
-    // BLOCK:               { name: "Block", component: BlockMechanic },
-    // BUFF:                { name: "Buff", component: BuffMechanic },
+    BLOCK:     { name: "Block", component: BlockMechanic },
+    BUFF:      { name: "Buff", component: BuffMechanic },
     // CANCEL:              { name: "Cancel", component: CancelMechanic },
     // CHANNEL:             { name: "Channel", component: ChannelMechanic },
     // CLEANSE:             { name: "Cleanse", component: CleanseMechanic },
@@ -1581,9 +1835,9 @@ export const initComponents = () => {
     // DURABILITY:          { name: "Durability", component: DurabilityMechanic },
     // EXPLOSION:           { name: "Explosion", component: ExplosionMechanic },
     // FIRE:                { name: "Fire", component: FireMechanic },
-    // FLAG:                { name: "Flag", component: FlagMechanic },
-    // FLAG_CLEAR:          { name: "Flag Clear", component: FlagClearMechanic },
-    // FLAG_TOGGLE:         { name: "Flag Toggle", component: FlagToggleMechanic },
+    FLAG:        { name: "Flag", component: FlagMechanic },
+    FLAG_CLEAR:  { name: "Flag Clear", component: FlagClearMechanic },
+    FLAG_TOGGLE: { name: "Flag Toggle", component: FlagToggleMechanic },
     // FOOD:                { name: "Food", component: FoodMechanic },
     // FORGET_TARGETS:      { name: "Forget Targets", component: ForgetTargetsMechanic },
     // HEAL:                { name: "Heal", component: HealMechanic },
@@ -1595,18 +1849,18 @@ export const initComponents = () => {
     // ITEM_DROP:           { name: "Item Drop", component: ItemDropMechanic },
     // ITEM_PROJECTILE:     { name: "Item Projectile", component: ItemProjectileMechanic },
     // ITEM_REMOVE:         { name: "Item Remove", component: ItemRemoveMechanic },
-    LAUNCH: { name: "Launch", component: LaunchMechanic }
+    LAUNCH: { name: "Launch", component: LaunchMechanic },
     // LIGHTNING:           { name: "Lightning", component: LightningMechanic },
     // MANA:                { name: "Mana", component: ManaMechanic },
     // MESSAGE:             { name: "Message", component: MessageMechanic },
     // MINE:                { name: "Mine", component: MineMechanic },
     // MONEY:               { name: "Money", component: MoneyMechanic },
-    // PARTICLE:            { name: "Particle", component: ParticleMechanic },
+    PARTICLE: { name: "Particle", component: ParticleMechanic },
     // PARTICLE_ANIMATION:  { name: "Particle Animation", component: ParticleAnimationMechanic },
     // PARTICLE_EFFECT:     { name: "Particle Effect", component: ParticleEffectMechanic },
     // CANCEL_EFFECT:       { name: "Cancel Effect", component: CancelEffectMechanic },
     // PARTICLE_PROJECTILE: { name: "Particle Projectile", component: ParticleProjectileMechanic },
-    // PASSIVE:             { name: "Passive", component: PassiveMechanic },
+    PASSIVE: { name: "Passive", component: PassiveMechanic },
     // PERMISSION:          { name: "Permission", component: PermissionMechanic },
     // POTION:              { name: "Potion", component: PotionMechanic },
     // POTION_PROJECTILE:   { name: "Potion Projectile", component: PotionProjectileMechanic },
@@ -1614,7 +1868,7 @@ export const initComponents = () => {
     // PURGE:               { name: "Purge", component: PurgeMechanic },
     // PUSH:                { name: "Push", component: PushMechanic },
     // REMEMBER_TARGETS:    { name: "Remember Targets", component: RememberTargetsMechanic },
-    // REPEAT:              { name: "Repeat", component: RepeatMechanic },
+    REPEAT: { name: "Repeat", component: RepeatMechanic }
     // SOUND:               { name: "Sound", component: SoundMechanic },
     // Stat:                { name: "Stat", component: StatMechanic },
     // STATUS:              { name: "Status", component: StatusMechanic },

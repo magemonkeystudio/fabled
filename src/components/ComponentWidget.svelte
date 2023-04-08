@@ -33,29 +33,29 @@
   let conditionSub: Unsubscriber;
   let mechanicSub: Unsubscriber;
 
-  let targets    = {};
-  let conditions = {};
-  let mechanics  = {};
+  let targets    : { [key: string]: {name: string, component: typeof ProComponent}}= {};
+  let conditions : { [key: string]: {name: string, component: typeof ProComponent}}= {};
+  let mechanics  : { [key: string]: {name: string, component: typeof ProComponent}}= {};
 
-  let sortedTargets: Array<ProTarget>;
-  let sortedConditions: Array<ProCondition>;
-  let sortedMechanics: Array<ProMechanic>;
+  let sortedTargets: Array<{ name: string, component: typeof ProComponent }>;
+  let sortedConditions: Array<{ name: string, component: typeof ProComponent }>;
+  let sortedMechanics: Array<{ name: string, component: typeof ProComponent }>;
 
   $: {
     sortedTargets = Object.keys(targets)
-      .filter(target => target.toLowerCase().includes(searchParams.toLowerCase()))
+      .filter(key => targets[key].name.toLowerCase().includes(searchParams.toLowerCase()))
       .sort()
-      .map(key => targets[key].component.new());
+      .map(key => targets[key]);
 
     sortedConditions = Object.keys(conditions)
-      .filter(condition => condition.toLowerCase().includes(searchParams.toLowerCase()))
+      .filter(key => conditions[key].name.toLowerCase().includes(searchParams.toLowerCase()))
       .sort()
-      .map(key => conditions[key].component.new());
+      .map(key => conditions[key]);
 
     sortedMechanics = Object.keys(mechanics)
-      .filter(mechanic => mechanic.toLowerCase().includes(searchParams.toLowerCase()))
+      .filter(key => mechanics[key].name.toLowerCase().includes(searchParams.toLowerCase()))
       .sort()
-      .map(key => mechanics[key].component.new());
+      .map(key => mechanics[key]);
   }
 
   $: if (component) dispatch("save");
@@ -93,8 +93,8 @@
     return "???";
   };
 
-  const addComponent = (comp: ProComponent) => {
-    component.components = [...component.components, comp];
+  const addComponent = (comp: typeof ProComponent) => {
+    component.components = [...component.components, comp.new()];
     componentModal       = false;
     searchParams         = "";
     dispatch("save");
@@ -190,10 +190,17 @@
       <ProInput label="Cooldown" tooltip="Whether this trigger requires to be off cooldown to activate">
         <Toggle bind:data={component.cooldown} />
       </ProInput>
-    {:else if component instanceof ProTarget || component instanceof ProCondition}
+    {:else if component instanceof ProTarget || component instanceof ProCondition || component instanceof ProMechanic}
       <ProInput label="Icon Key" bind:value={component.iconKey}
                 tooltip={'The key used by the component in the Icon Lore. If this is set to "example" and has a value name of "value", it can be referenced using the string "{attr:example.value}"'} />
     {/if}
+    {#if component instanceof ProMechanic}
+      <ProInput label="Counts as Cast"
+                tooltip={'Whether this mechanic running treats the skill as "casted" and will consume mana and start the cooldown. Set to false if it is a mechanic applled when the skill fails such as cleanup or an error message"'} >
+        <Toggle bind:data={component.countsAsCast}/>
+      </ProInput>
+      {/if}
+
     {#each component.data as datum}
       {#if datum.meetsRequirements(component)}
           <svelte:component
@@ -223,7 +230,7 @@
     </div>
     <div class="triggers">
       {#each sortedConditions as condition}
-        <div class="comp-select" on:click={() => addComponent(condition)}>{condition.name}</div>
+        <div class="comp-select" on:click={() => addComponent(condition.component)}>{condition.name}</div>
       {/each}
     </div>
   {/if}
@@ -234,7 +241,7 @@
     </div>
     <div class="triggers">
       {#each sortedTargets as target}
-        <div class="comp-select" on:click={() => addComponent(target)}>{target.name}</div>
+        <div class="comp-select" on:click={() => addComponent(target.component)}>{target.name}</div>
       {/each}
     </div>
   {/if}
@@ -245,7 +252,7 @@
     </div>
     <div class="triggers">
       {#each sortedMechanics as mechanic}
-        <div class="comp-select" on:click={() => addComponent(mechanic)}>{mechanic.name}</div>
+        <div class="comp-select" on:click={() => addComponent(mechanic.component)}>{mechanic.name}</div>
       {/each}
     </div>
   {/if}

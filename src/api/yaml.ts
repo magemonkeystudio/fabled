@@ -4,7 +4,6 @@
  */
 
 import type ProComponent from "./components/procomponent";
-import { v4 as uuid }    from "uuid";
 
 /**
  * RegEx patterns used by the YAML parser
@@ -42,6 +41,16 @@ export const countSpaces = (string: string): number => {
   const m = string.match(Regex.SPACE);
   return !m ? 0 : m[1].length;
 };
+
+class MutableString {
+  data: string;
+  constructor(data: string) {
+    this.data = data;
+  }
+
+  set = (data: string) => this.data = data;
+  get =() => this.data;
+}
 
 /**
  * Represents a collection of YAML data (ConfigurationSection in Bukkit)
@@ -187,9 +196,9 @@ export class YAMLObject {
   /**
    * Creates and returns a save string for the class
    */
-  public toYaml = (key: string | undefined, obj: any, spaces = ""): string => {
+  public toYaml = (key: string | undefined, obj: any, id:MutableString = new MutableString("a"), spaces = ""): string => {
     if (obj instanceof YAMLObject) {
-      return obj.toYaml("'" + (key ?? obj.key) + "'", obj.data, spaces);
+      return obj.toYaml("'" + (key ?? obj.key) + "'", obj.data, id, spaces);
     }
 
     let saveString = "";
@@ -205,12 +214,12 @@ export class YAMLObject {
       if (object instanceof Object) {
         if (Object.keys(object).includes("toYaml")) {
           if (object instanceof YAMLObject) {
-            saveString += object.toYaml("'" + e + "'", object.data, spaces);
+            saveString += object.toYaml("'" + e + "'", object.data, id, spaces);
             continue;
           } else
             str = object.toYaml(spaces);
         } else if (object instanceof Array) {
-          str = this.convertArray(e, spaces, object);
+          str = this.convertArray(e, id, spaces, object);
         }
       } else {
         const ostr: string = JSON.stringify(object);
@@ -227,7 +236,14 @@ export class YAMLObject {
     return saveString;
   };
 
-  private convertArray(e: string, spaces: string, object: any[]): string {
+  private nextChar = (c: string) => {
+    if (/z+/.test(c)) {
+      return c.replaceAll(/z/g, "a") + "a";
+    }
+    return c.substring(0, c.length - 1) + String.fromCharCode(c.charCodeAt(c.length - 1) + 1);
+  };
+
+  private convertArray(e: string, id: MutableString, spaces: string, object: any[]): string {
     if (e != "attributes") {
       let str: string = spaces + e + ":";
       // If we have primitive types, we can pretty accurately parse them.
@@ -244,7 +260,11 @@ export class YAMLObject {
           str += " {}\n";
         } else {
           str += "\n";
-          object.forEach((obj: ProComponent) => str += this.toYaml(obj.name + "-" + uuid(), obj.toYamlObj(), spaces + "  "));
+          object.forEach((obj: ProComponent) => {
+            const current = id.get()
+            id.set(this.nextChar(id.get()));
+            str += this.toYaml(obj.name + "-" + current, obj.toYamlObj(), id, spaces + "  ");
+          });
           return str.replaceAll(/'/g, "\"");
         }
         // Everything else, we'll just ignore for now.
@@ -254,7 +274,7 @@ export class YAMLObject {
 
       return str;
     } else {
-      return this.toYaml(e, object, spaces);
+      return this.toYaml(e, object, id, spaces);
     }
   }
 }
