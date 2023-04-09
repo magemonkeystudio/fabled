@@ -1,6 +1,6 @@
 import type { SvelteComponent } from "svelte";
 import BlockSelectOption        from "$components/options/BlockSelectOption.svelte";
-import type ComponentOption     from "$api/options/options";
+import type { ComponentOption }     from "$api/options/options";
 import type { YAMLObject }      from "$api/yaml";
 import { Requirements }         from "$api/options/options";
 

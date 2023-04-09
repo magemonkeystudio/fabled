@@ -1,5 +1,5 @@
 import type { SvelteComponent } from "svelte";
-import type ComponentOption     from "$api/options/options";
+import type { ComponentOption }     from "$api/options/options";
 import DropdownOption           from "$components/options/DropdownOption.svelte";
 import type { YAMLObject }      from "$api/yaml";
 import { Requirements }         from "$api/options/options";

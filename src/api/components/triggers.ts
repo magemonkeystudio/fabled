@@ -1,7 +1,7 @@
 import type { TriggerData } from "../types";
 import ProComponent         from "./procomponent";
 import { YAMLObject }       from "../yaml";
-import type ComponentOption from "../options/options";
+import type { ComponentOption } from "../options/options";
 import Registry             from "$api/components/registry";
 
 export default class ProTrigger extends ProComponent {

@@ -1,4 +1,4 @@
-import type ComponentOption                                 from "$api/options/options";
+import type { ComponentOption }                                 from "$api/options/options";
 import { YAMLObject }                                       from "../yaml";
 import { Constructable }                                    from "$api/components/constructable";
 import type { ComponentData }                               from "$api/types";

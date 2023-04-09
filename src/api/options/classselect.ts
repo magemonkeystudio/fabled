@@ -1,5 +1,5 @@
 import type { SvelteComponent } from "svelte";
-import type ComponentOption     from "$api/options/options";
+import type { ComponentOption }     from "$api/options/options";
 import type { YAMLObject }      from "$api/yaml";
 import ClassSelectOption        from "$components/options/ClassSelectOption.svelte";
 import ProClass                 from "$api/proclass";
