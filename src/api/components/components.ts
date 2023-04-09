@@ -2553,6 +2553,7 @@ class ParticleProjectileMechanic extends ProMechanic {
 		}, true);
 	}
 
+	public static override new = () => new this();
 }
 
 class PassiveMechanic extends ProMechanic {
