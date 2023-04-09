@@ -9,9 +9,9 @@
   import { initComponents }                        from "$api/components/components";
   import Modal                                     from "$components/Modal.svelte";
   import Toggle                                    from "$input/Toggle.svelte";
-  import ProInput                                  from "$input/ProInput.svelte";
-  import { useSymbols }                            from "../data/settings";
-  import { serverOptions, version }                from "../version/data";
+  import ProInput                         from "$input/ProInput.svelte";
+  import { animationEnabled, useSymbols } from '../data/settings';
+  import { serverOptions, version }       from "../version/data";
 
   let dragging = false;
   let settings = false;
@@ -97,6 +97,9 @@
     </ProInput>
     <ProInput label="Use Symbols" tooltip="If skill components should use symbols instead of text">
       <Toggle left="Symbols" right="Text" bind:data={$useSymbols} />
+    </ProInput>
+    <ProInput label="Waterfall Animation" tooltip="If the waterfall animation should play in the sidebar">
+      <Toggle bind:data={$animationEnabled} />
     </ProInput>
   </div>
 </Modal>

@@ -143,7 +143,7 @@
     #sidebar {
         position: absolute;
         top: 100%;
-        z-index: 3;
+        z-index: 30;
         background-color: #222;
         padding-bottom: 0.5rem;
         max-height: var(--height);

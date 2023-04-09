@@ -62,7 +62,7 @@
     .nav-wrap {
         position: sticky;
         top: 0;
-        z-index: 5;
+        z-index: 25;
     }
 
     label {

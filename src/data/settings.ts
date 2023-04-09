@@ -23,3 +23,25 @@ export const useSymbols: Writable<boolean> = ((): Writable<boolean> => {
     update
   };
 })();
+
+export const animationEnabled: Writable<boolean> = ((): Writable<boolean> => {
+  let saved = false;
+  if (browser) {
+    const stored = localStorage.getItem("animation-enabled");
+    saved        = stored === "true";
+  }
+
+  const {
+          subscribe,
+          set,
+          update
+        } = writable<boolean>(saved);
+  return {
+    subscribe,
+    set: (value: boolean) => {
+      localStorage.setItem("animation-enabled", String(value));
+      return set(value);
+    },
+    update
+  };
+})();
