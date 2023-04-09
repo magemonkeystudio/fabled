@@ -73,11 +73,6 @@
         justify-content: center;
     }
 
-    .server {
-        display: flex;
-        align-items: center;
-    }
-
     select {
         margin-left: 1rem;
         font-family: inherit;

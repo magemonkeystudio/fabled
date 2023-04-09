@@ -1,7 +1,7 @@
 import type { YAMLObject } from "$api/yaml";
 import type ProComponent   from "$api/components/procomponent";
 
-export default interface ComponentOption extends Cloneable<ComponentOption> {
+export interface ComponentOption extends Cloneable<ComponentOption> {
   getData: () => { [key: string]: any };
   deserialize: (yaml: YAMLObject) => void;
   setTooltip: (tooltip: string) => ComponentOption;
