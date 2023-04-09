@@ -273,6 +273,7 @@
 
     .comp-body {
         display: flex;
+        flex: 1;
         flex-direction: column;
         align-items: stretch;
         justify-items: center;
