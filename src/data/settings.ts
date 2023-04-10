@@ -25,7 +25,7 @@ export const useSymbols: Writable<boolean> = ((): Writable<boolean> => {
 })();
 
 export const animationEnabled: Writable<boolean> = ((): Writable<boolean> => {
-  let saved = false;
+  let saved = true;
   if (browser) {
     const stored = localStorage.getItem("animation-enabled");
     saved        = stored === "true";

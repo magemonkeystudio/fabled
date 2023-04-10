@@ -12,16 +12,16 @@
 </script>
 
 <div class="label"
-     transition:slide
-     on:mouseenter={() => hovered = true}
-     on:mouseleave={() => hovered = false}>
+     transition:slide>
   {#if tooltip && tooltip.length > 0 && hovered}
     <div class="tooltip"
-         transition:fly={{y: 20}}>
+         transition:fly={{x: -20, duration: 100}}>
       {tooltip}
     </div>
   {/if}
-  <span>
+  <span class='display'
+        on:mouseenter={() => hovered = true}
+        on:mouseleave={() => hovered = false}>
     {label || ''}
     <slot name="label" />
   </span>
