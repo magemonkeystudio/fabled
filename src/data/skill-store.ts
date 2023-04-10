@@ -187,14 +187,26 @@ export const loadSkills = (e: ProgressEvent<FileReader>) => {
   loadSkillText(text);
 };
 
+export const isSaving: Writable<boolean> = writable(false);
+
+let saveTask: NodeJS.Timeout;
 export const persistSkills = (list?: ProSkill[]) => {
-  const skillList = list || get(skills);
-  const skillYaml = new YAMLObject();
-  skillYaml.put("loaded", false);
+  if (get(isSaving) && saveTask) {
+    clearTimeout(saveTask);
+  }
 
-  skillList.forEach(sk => skillYaml.put(sk.name, sk.serializeYaml()));
+  isSaving.set(true);
 
-  localStorage.setItem("skillData", skillYaml.toString());
+  saveTask = setTimeout(() => {
+    const skillList = list || get(skills);
+    const skillYaml = new YAMLObject();
+    skillYaml.put("loaded", false);
+
+    skillList.forEach(sk => skillYaml.put(sk.name, sk.serializeYaml()));
+
+    localStorage.setItem("skillData", skillYaml.toString());
+    isSaving.set(false);
+  }, 2000);
 };
 
 get(skills).forEach(sk => sk.postLoad());
