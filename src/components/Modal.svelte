@@ -27,7 +27,7 @@
 <svelte:window on:keyup={checkClose} />
 {#if open}
   <div class="backdrop" transition:fade draggable="false"
-  on:touchstart|stopPropagation={() => console.log("Trying to drag")}>
+  on:touchstart|stopPropagation={() => true}>
     <div class="modal-content"
          use:clickOutside
          on:outclick={closeModal}

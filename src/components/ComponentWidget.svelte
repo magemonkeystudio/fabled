@@ -1,41 +1,52 @@
 <!--suppress CssUnresolvedCustomProperty -->
 <script lang="ts">
-  import ProComponent                       from "$api/components/procomponent";
-  import ProTrigger                         from "$api/components/triggers";
-  import ProCondition                       from "$api/components/conditions";
-  import ProTarget                          from "$api/components/targets";
-  import ProMechanic                        from "$api/components/mechanics";
-  import { slide }                          from "svelte/transition";
-  import { backOut }                        from "svelte/easing";
-  import { draggingComponent }              from "../data/store";
-  import Modal                              from "$components/Modal.svelte";
-  import ProInput                           from "$input/ProInput.svelte";
-  import Toggle                             from "$input/Toggle.svelte";
-  import ProSkill                           from "$api/proskill";
-  import { createEventDispatcher, onMount } from "svelte";
-  import DropdownSelect                     from "$api/options/dropdownselect";
-  import Registry                           from "$api/components/registry";
-  import type { Unsubscriber }              from "svelte/types/runtime/store";
-  import { useSymbols }                     from "../data/settings";
+  import ProComponent                                  from "$api/components/procomponent";
+  import ProTrigger                                    from "$api/components/triggers";
+  import ProCondition                                  from "$api/components/conditions";
+  import ProTarget                                     from "$api/components/targets";
+  import ProMechanic                                   from "$api/components/mechanics";
+  import { slide }                                     from "svelte/transition";
+  import { backOut }                                   from "svelte/easing";
+  import { draggingComponent }                         from "../data/store";
+  import Modal                                         from "$components/Modal.svelte";
+  import ProInput                                      from "$input/ProInput.svelte";
+  import Toggle                                        from "$input/Toggle.svelte";
+  import ProSkill                                      from "$api/proskill";
+  import { createEventDispatcher, onDestroy, onMount } from "svelte";
+  import DropdownSelect                                from "$api/options/dropdownselect";
+  import Registry                                      from "$api/components/registry";
+  import type { Unsubscriber }                         from "svelte/types/runtime/store";
+  import { useSymbols }                                from "../data/settings";
+  import type { ComponentOption }                      from "$api/options/options";
+  import { get }                                       from "svelte/store";
 
   export let skill: ProSkill;
   export let component: ProComponent;
+  let wrapper: HTMLElement;
+  let children: HTMLElement;
+  let draggedover: ComponentOption;
+  let childrenList: ProComponent[] = [];
 
   const dispatch = createEventDispatcher();
 
   let modalOpen      = false;
   let componentModal = false;
   let collapsed      = false;
+  let over           = false;
+  let overChildren   = false;
+  let top            = false;
+  let bottom         = false;
 
   let searchParams = "";
 
   let targetSub: Unsubscriber;
   let conditionSub: Unsubscriber;
   let mechanicSub: Unsubscriber;
+  let childCompsSub: Unsubscriber;
 
-  let targets    : { [key: string]: {name: string, component: typeof ProComponent}}= {};
-  let conditions : { [key: string]: {name: string, component: typeof ProComponent}}= {};
-  let mechanics  : { [key: string]: {name: string, component: typeof ProComponent}}= {};
+  let targets: { [key: string]: { name: string, component: typeof ProComponent } }    = {};
+  let conditions: { [key: string]: { name: string, component: typeof ProComponent } } = {};
+  let mechanics: { [key: string]: { name: string, component: typeof ProComponent } }  = {};
 
   let sortedTargets: Array<{ name: string, component: typeof ProComponent }>;
   let sortedConditions: Array<{ name: string, component: typeof ProComponent }>;
@@ -62,9 +73,18 @@
   $: if (modalOpen && component) component.data.filter(dat => (dat["dataSource"])).forEach((dat: DropdownSelect) => dat.init());
 
   onMount(() => {
+    childCompsSub = component.components.subscribe(comps => childrenList = comps);
+
     targetSub    = Registry.targets.subscribe(tar => targets = tar);
     conditionSub = Registry.conditions.subscribe(con => conditions = con);
     mechanicSub  = Registry.mechanics.subscribe(mech => mechanics = mech);
+  });
+
+  onDestroy(() => {
+    if (childCompsSub) childCompsSub();
+    if (targetSub) targetSub();
+    if (conditionSub) conditionSub();
+    if (mechanicSub) mechanicSub();
   });
 
   const getName = (symbols = false) => {
@@ -94,7 +114,7 @@
   };
 
   const addComponent = (comp: typeof ProComponent) => {
-    component.components = [...component.components, comp.new()];
+    component.addComponent(comp.new());
     componentModal       = false;
     searchParams         = "";
     dispatch("save");
@@ -124,15 +144,64 @@
       }
     };
   };
+
+  const move = (e) => {
+    if (component == get(draggingComponent)) return;
+    over = true;
+    if (component instanceof ProTrigger) return;
+    const rect = wrapper.getBoundingClientRect();
+
+    console.log('Height:', rect.height, 'Top:', rect.top, 'Pos:', e.clientY);
+    top    = e.clientY < (rect.height / 2) + rect.top;
+    bottom = e.clientY >= (rect.height / 2) + rect.top;
+  };
+
+  const clearStatus = () => {
+    over   = false;
+    top    = false;
+    bottom = false;
+  };
+
+  const leave = (e) => {
+    if (!e.relatedTarget || !wrapper?.contains(e.relatedTarget) || children?.contains(e.relatedTarget)) {
+      clearStatus();
+    }
+  };
+
+  const drop = () => {
+    let comp = get(draggingComponent);
+
+    dispatch("addskill", { comp, relativeTo: component, above: top });
+    clearStatus();
+  };
+
+  const addSkill = (e) => {
+    let comp       = e.detail.comp;
+    let relativeTo = e.detail.relativeTo;
+    let above      = e.detail.above;
+    let index      = childrenList.indexOf(relativeTo);
+
+    skill.removeComponent(comp);
+    component.addComponent(comp, index + (!above ? 1 : 0));
+    dispatch("save");
+  };
 </script>
 
 <div class="wrapper">
   <div out:slide
+       bind:this={wrapper}
        draggable="true"
        on:dragstart|stopPropagation={() => draggingComponent.set(component)}
        on:dragend={() => draggingComponent.set(undefined)}
+       on:drop|stopPropagation={drop}
        on:click|stopPropagation={() => modalOpen = true}
+       on:dragover|preventDefault|stopPropagation={move}
+       on:dragleave|stopPropagation={leave}
        class="comp-body"
+       class:over
+       class:top
+       class:bottom
+       class:dragging={$draggingComponent === component}
        style:--comp-color={getColor()}>
     {#if collapsed}
       <span class="material-symbols-rounded" in:spin|local={{duration: 400}}>expand_more</span>
@@ -161,11 +230,39 @@
         </div>
       </div>
       <div class="children" transition:slide|local>
-        {#each component.components as child (child.id)}
-        <span transition:slide|local>
-          <svelte:self {skill} bind:component={child} on:update on:save />
-        </span>
-        {/each}
+        {#if childrenList.length == 0}
+          {#if component.isParent && (over || overChildren)}
+            <div class="filler"
+                 transition:slide
+                 class:overChildren
+                 on:dragenter|stopPropagation={() => {
+                   overChildren = true;
+                   over = false;
+                 }}
+                 on:dragover|preventDefault|stopPropagation={() => {
+
+                 }}
+                 on:dragleave={(e) => {
+                   overChildren = false;
+                   if (wrapper?.contains(e.relatedTarget) && !children?.contains(e.relatedTarget)) over = true;
+                 }}
+                 on:drop|preventDefault|stopPropagation={() => {
+                   overChildren = false;
+
+                   let comp = get(draggingComponent);
+                   skill.removeComponent(comp);
+                   component.addComponent(comp);
+                 }} />
+          {/if}
+        {:else}
+          <div class="child-wrapper" bind:this={children}>
+            {#each childrenList as child (child.id)}
+            <span transition:slide|local>
+              <svelte:self {skill} bind:component={child} on:update on:save on:addskill={addSkill} />
+            </span>
+            {/each}
+          </div>
+        {/if}
         {#if component.isParent}
           <div class="chip" on:click|stopPropagation={() => componentModal = true}>
             + Add Component
@@ -196,13 +293,14 @@
     {/if}
     {#if component instanceof ProMechanic}
       <ProInput label="Counts as Cast"
-                tooltip={'Whether this mechanic running treats the skill as "casted" and will consume mana and start the cooldown. Set to false if it is a mechanic applled when the skill fails such as cleanup or an error message"'} >
-        <Toggle bind:data={component.countsAsCast}/>
+                tooltip={'Whether this mechanic running treats the skill as "casted" and will consume mana and start the cooldown. Set to false if it is a mechanic applled when the skill fails such as cleanup or an error message"'}>
+        <Toggle bind:data={component.countsAsCast} />
       </ProInput>
-      {/if}
+    {/if}
 
     {#each component.data as datum}
       {#if datum.meetsRequirements(component)}
+        <div class="comp">
           <svelte:component
             this={datum.component}
             bind:data={datum.data}
@@ -210,6 +308,10 @@
             tooltip={datum.tooltip}
             multiple={datum.multiple}
             on:save />
+          {#if draggedover == datum}
+            Hello
+          {/if}
+        </div>
       {/if}
     {/each}
   </div>
@@ -285,6 +387,7 @@
         border-radius: 0 0.4rem 0.4rem 0;
         overflow: hidden;
         user-select: none;
+        transition: border 0.2s ease;
     }
 
     .corner {
@@ -400,5 +503,27 @@
         max-width: 100%;
         white-space: break-spaces;
         text-align: center;
+    }
+
+    .over:not(.dragging).bottom {
+        border-bottom: 1rem solid #0083ef;
+    }
+
+    .over:not(.dragging).top {
+        border-top: 1rem solid #0083ef;
+    }
+
+    .dragging {
+        opacity: 0.2;
+    }
+
+    .filler {
+        height: 3rem;
+        border: 5px dashed #666;
+        border-radius: 0.5rem;
+    }
+
+    .overChildren {
+        border: 5px solid #0083ef;
     }
 </style>

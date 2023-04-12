@@ -1,8 +1,9 @@
-import type { TriggerData } from "../types";
-import ProComponent         from "./procomponent";
-import { YAMLObject }       from "../yaml";
+import type { TriggerData }     from "../types";
+import ProComponent             from "./procomponent";
+import { YAMLObject }           from "../yaml";
 import type { ComponentOption } from "../options/options";
-import Registry             from "$api/components/registry";
+import Registry                 from "$api/components/registry";
+import { get }                  from "svelte/store";
 
 export default class ProTrigger extends ProComponent {
   mana     = false;
@@ -17,7 +18,7 @@ export default class ProTrigger extends ProComponent {
   public clone = (): ProTrigger => {
     return new ProTrigger({
       name:       this.name,
-      components: [...this.components],
+      components: [...get(this.components)],
       mana:       this.mana,
       cooldown:   this.cooldown,
       data:       [...this.data]
@@ -28,8 +29,9 @@ export default class ProTrigger extends ProComponent {
     const parent: YAMLObject = super.toYamlObj();
     const data               = this.getData();
     if (data.getKeys().length > 0) parent.put("data", data);
-    if (this.components.length > 0)
-      parent.put("children", this.components);
+    const comps = get(this.components);
+    if (comps.length > 0)
+      parent.put("children", comps);
 
     return parent;
   };
@@ -76,7 +78,7 @@ export default class ProTrigger extends ProComponent {
       this.data.forEach((opt: ComponentOption) => opt.deserialize(data));
     }
 
-    this.components = yaml.get<YAMLObject, ProComponent[]>("children", [], (obj) => Registry.deserializeComponents(obj));
+    this.setComponents(yaml.get<YAMLObject, ProComponent[]>("children", [], (obj) => Registry.deserializeComponents(obj)));
   }
 
   public static new = (): ProTrigger => new ProTrigger({ name: "null" });

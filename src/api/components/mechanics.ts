@@ -3,6 +3,7 @@ import { YAMLObject }         from "../yaml";
 import type { ComponentOption }   from "../options/options";
 import type { ComponentData } from "$api/types";
 import Registry               from "$api/components/registry";
+import { get } from "svelte/store";
 
 export default class ProMechanic extends ProComponent {
   iconKey = "";
@@ -17,8 +18,9 @@ export default class ProMechanic extends ProComponent {
     const parent: YAMLObject = super.toYamlObj();
     const data               = this.getData();
     if (data.getKeys().length > 0) parent.put("data", data);
-    if (this.components.length > 0)
-      parent.put("children", this.components);
+    const comps = get(this.components);
+    if (comps.length > 0)
+      parent.put("children", comps);
 
     return parent;
   };
@@ -56,6 +58,6 @@ export default class ProMechanic extends ProComponent {
 
     if (data) this.data.forEach((opt: ComponentOption) => opt.deserialize(data));
 
-    this.components = yaml.get<YAMLObject, ProComponent[]>("children", [], (obj) => Registry.deserializeComponents(obj));
+    this.setComponents(yaml.get<YAMLObject, ProComponent[]>("children", [], (obj) => Registry.deserializeComponents(obj)));
   }
 }

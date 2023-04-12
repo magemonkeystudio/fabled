@@ -99,7 +99,7 @@
 	</div>
 </div>
 
-<footer>&copy; ProMCTeam {new Date().getFullYear()} {displaySave}</footer>
+<footer>&copy; ProMCTeam {new Date().getFullYear()}</footer>
 
 {#if $importing}
 	<ImportModal />
