@@ -12,22 +12,22 @@
     "types": ["node", "svelte"],
     "paths": {
       "$api": [
-        "src/api"
+        "./src/api"
       ],
       "$api/*": [
-        "src/api/*"
+        "./src/api/*"
       ],
       "$input": [
-        "src/components/input"
+        "./src/components/input"
       ],
       "$input/*": [
-        "src/components/input/*"
+        "./src/components/input/*"
       ],
       "$components": [
-        "src/components"
+        "./src/components"
       ],
       "$components/*": [
-        "src/components/*"
+        "./src/components/*"
       ]
     }
   }

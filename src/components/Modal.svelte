@@ -1,11 +1,11 @@
 <!--suppress CssUnresolvedCustomProperty -->
 <script lang="ts">
-  import { fade, fly } from "svelte/transition";
-  import { clickOutside } from "$api/clickoutside";
+  import { fade, fly }             from "svelte/transition";
+  import { clickOutside }          from "$api/clickoutside";
   import { createEventDispatcher } from "svelte";
 
   export let width = "auto";
-  export let open = false;
+  export let open  = false;
 
   const dispatch = createEventDispatcher();
 
@@ -26,14 +26,17 @@
 
 <svelte:window on:keyup={checkClose} />
 {#if open}
-  <div class="backdrop" transition:fade draggable="true" on:dragstart|stopPropagation|preventDefault={false}>
+  <div class="backdrop" transition:fade draggable="false"
+  on:touchstart|stopPropagation={() => console.log("Trying to drag")}>
     <div class="modal-content"
          use:clickOutside
          on:outclick={closeModal}
          on:click|stopPropagation
          transition:fly={{y: -200}}
          style:--width={width}>
-      <slot />
+      <div class="wrapper">
+        <slot />
+      </div>
     </div>
   </div>
 {/if}
@@ -53,16 +56,22 @@
 
     .modal-content {
         display: flex;
-        flex-direction: column;
-        align-items: center;
         background-color: var(--color-bg);
         padding: 1rem;
         border: 2px solid #444;
         border-radius: 0 1.5rem 0 1.5rem;
         box-shadow: 0 0 1rem #222;
-        max-height: 95vh;
         width: 90%;
+        max-height: 85vh;
         max-width: 90%;
+        margin: 2rem;
+        box-sizing: border-box;
+    }
+
+    .wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         overflow-y: auto;
     }
 
