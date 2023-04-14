@@ -115,8 +115,8 @@
 
   const addComponent = (comp: typeof ProComponent) => {
     component.addComponent(comp.new());
-    componentModal       = false;
-    searchParams         = "";
+    componentModal = false;
+    searchParams   = "";
     dispatch("save");
   };
 
@@ -151,7 +151,6 @@
     if (component instanceof ProTrigger) return;
     const rect = wrapper.getBoundingClientRect();
 
-    console.log('Height:', rect.height, 'Top:', rect.top, 'Pos:', e.clientY);
     top    = e.clientY < (rect.height / 2) + rect.top;
     bottom = e.clientY >= (rect.height / 2) + rect.top;
   };
@@ -300,18 +299,13 @@
 
     {#each component.data as datum}
       {#if datum.meetsRequirements(component)}
-        <div class="comp">
-          <svelte:component
-            this={datum.component}
-            bind:data={datum.data}
-            name={datum.name}
-            tooltip={datum.tooltip}
-            multiple={datum.multiple}
-            on:save />
-          {#if draggedover == datum}
-            Hello
-          {/if}
-        </div>
+        <svelte:component
+          this={datum.component}
+          bind:data={datum.data}
+          name={datum.name}
+          tooltip={datum.tooltip}
+          multiple={datum.multiple}
+          on:save />
       {/if}
     {/each}
   </div>
@@ -437,7 +431,7 @@
 
     .component-entry {
         display: grid;
-        grid-template-columns: 40% 60%;
+        grid-template-columns: calc(50% - 3rem) calc(50% + 3rem);
         width: 100%;
         padding-inline: 0.5rem;
         padding-top: 0.25rem;

@@ -26,8 +26,9 @@
 
 <svelte:window on:keyup={checkClose} />
 {#if open}
-  <div class="backdrop" transition:fade draggable="false"
-  on:touchstart|stopPropagation={() => true}>
+  <div class="backdrop" transition:fade draggable="true"
+       on:dragstart|stopImmediatePropagation|stopPropagation|preventDefault={() => true}
+       on:touchstart|stopPropagation={() => true}>
     <div class="modal-content"
          use:clickOutside
          on:outclick={closeModal}
@@ -56,12 +57,13 @@
 
     .modal-content {
         display: flex;
+        justify-content: center;
         background-color: var(--color-bg);
         padding: 1rem;
         border: 2px solid #444;
         border-radius: 0 1.5rem 0 1.5rem;
         box-shadow: 0 0 1rem #222;
-        width: 90%;
+        width: var(--width);
         max-height: 85vh;
         max-width: 90%;
         margin: 2rem;
