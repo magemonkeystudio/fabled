@@ -87,9 +87,6 @@ public class CmdCast implements IFunction {
                 command.sendMessage(sender, NOT_UNLOCKED, ChatColor.RED + "You must level up the skill first");
 
             else {
-                PlayerSkill playerSkill = player.getSkill(skill);
-                if (playerSkill.isExternal()) { return; }
-
                 // Cast the skill
                 player.cast(skill);
             }

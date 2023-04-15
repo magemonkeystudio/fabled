@@ -740,6 +740,10 @@ public class PlayerData {
         return skills.values();
     }
 
+    public Set<ExternallyAddedSkill> getExternallyAddedSkills() {
+        return Collections.unmodifiableSet(extSkills);
+    }
+
     /**
      * Retrieves the level of a skill for the owner. This is not case-sensitive.
      *
@@ -2315,7 +2319,7 @@ public class PlayerData {
         this.updateScoreboard();
     }
 
-    private static class ExternallyAddedSkill {
+    public static class ExternallyAddedSkill {
         private final String        id;
         private final NamespacedKey key;
         private final int           level;
