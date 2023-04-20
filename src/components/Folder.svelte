@@ -1,12 +1,13 @@
 <script lang="ts">
-  import ProFolder from "$api/profolder";
-  import SidebarEntry from "./sidebar/SidebarEntry.svelte";
-  import { goto } from "$app/navigation";
-  import { slide } from "svelte/transition";
+  import ProFolder                                                                       from "$api/profolder";
+  import SidebarEntry
+                                                                                         from "./sidebar/SidebarEntry.svelte";
+  import { goto }                                                                        from "$app/navigation";
+  import { slide }                                                                       from "svelte/transition";
   import { deleteFolder, dragging, getFolder, removeFolder, sidebarOpen, updateFolders } from "../data/store";
-  import ProClass from "$api/proclass";
-  import ProSkill from "$api/proskill";
-  import { get } from "svelte/store";
+  import ProClass                                                                        from "$api/proclass";
+  import ProSkill                                                                        from "$api/proskill";
+  import { get }                                                                         from "svelte/store";
 
   export let folder: ProFolder;
   let elm: HTMLElement;
@@ -55,7 +56,7 @@
   };
 
   const drop = () => {
-    over = false;
+    over                                            = false;
     const dragData: ProClass | ProSkill | ProFolder = get(dragging);
     if (!dragData) return;
     if (folder.data.includes(dragData)) return;
@@ -95,23 +96,25 @@
         on:blur={elm.contentEditable = "false"}
         bind:textContent={folder.name}
         on:keydown={keydown} />
-  <div class="icon add" title="Add Folder"
-       on:click={addFolder}>
+  <div class="buttons">
+    <div class="icon add" title="Add Folder"
+         on:click={addFolder}>
       <span class="material-symbols-rounded">
         add
       </span>
-  </div>
-  <div class="icon" title="Rename"
-       on:click={focus}>
+    </div>
+    <div class="icon" title="Rename"
+         on:click={focus}>
       <span class="material-symbols-rounded">
         edit
       </span>
-  </div>
-  <div class="icon delete" title="Delete Folder"
-       on:click={deleteF}>
+    </div>
+    <div class="icon delete" title="Delete Folder"
+         on:click={deleteF}>
       <span class="material-symbols-rounded">
         delete
       </span>
+    </div>
   </div>
 </div>
 
@@ -143,7 +146,7 @@
         padding: 0.3rem 0.5rem;
         text-overflow: ellipsis;
         overflow: hidden;
-        white-space: nowrap;
+        white-space: break-spaces;
         border-left: 0 solid var(--color-accent);
         transition: background-color 0.25s ease-in-out,
         border-left-width 0.25s ease-in-out;
@@ -161,7 +164,20 @@
         cursor: pointer;
     }
 
-    .folder:hover .icon {
+    .buttons {
+        display: flex;
+        opacity: 0;
+        position: absolute;
+        right: 0.25rem;
+        font-size: 1.3rem;
+        justify-content: center;
+        align-items: stretch;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 100vw;
+        transition: opacity 0.25s ease;
+    }
+
+    .folder:hover .buttons {
         opacity: 1;
     }
 
@@ -171,14 +187,12 @@
     }
 
     .icon {
-        opacity: 0;
         display: flex;
         justify-content: center;
         align-items: center;
         padding: 0.3rem;
         border-radius: 50%;
-        transition: background-color 0.25s ease,
-        opacity 0.25s ease;
+        transition: background-color 0.25s ease;
     }
 
     .icon:hover {
@@ -191,10 +205,6 @@
 
     .icon.delete:hover {
         background-color: #b60000;
-    }
-
-    .material-symbols-rounded {
-        font-size: 1rem;
     }
 
     .folder-content {

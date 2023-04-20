@@ -1,129 +1,129 @@
-<script lang='ts'>
-	import {
-		active,
-		deleteProData,
-		dragging,
-		getFolder,
-		isShowClasses,
-		saveData,
-		sidebarOpen,
-		updateFolders
-	}                         from '../../data/store';
-	import ProSkill           from '$api/proskill';
-	import ProClass           from '$api/proclass';
-	import { get }            from 'svelte/store';
-	import ProFolder          from '$api/profolder';
-	import { fly }            from 'svelte/transition';
-	import Modal              from '../Modal.svelte';
-	import { addClassFolder } from '../../data/class-store';
-	import { addSkillFolder } from '../../data/skill-store';
-	import { animationEnabled } from '../../data/settings';
+<script lang="ts">
+  import {
+    active,
+    deleteProData,
+    dragging,
+    getFolder,
+    isShowClasses,
+    saveData,
+    sidebarOpen,
+    updateFolders
+  }                           from "../../data/store";
+  import ProSkill             from "$api/proskill";
+  import ProClass             from "$api/proclass";
+  import { get }              from "svelte/store";
+  import ProFolder            from "$api/profolder";
+  import { fly }              from "svelte/transition";
+  import Modal                from "../Modal.svelte";
+  import { addClassFolder }   from "../../data/class-store";
+  import { addSkillFolder }   from "../../data/skill-store";
+  import { animationEnabled } from "../../data/settings";
 
-	export let delay                                 = 0;
-	export let direction: 'right' | 'left'           = 'left';
-	export let data: ProSkill | ProClass | undefined = undefined;
+  export let delay                                 = 0;
+  export let direction: "right" | "left"           = "left";
+  export let data: ProSkill | ProClass | undefined = undefined;
 
-	let over     = false;
-	let deleting = false;
+  let over     = false;
+  let deleting = false;
 
-	const startDrag = (e: DragEvent) => {
-		if (!data) {
-			e.preventDefault();
-			return;
-		}
-		dragging.set(data);
-	};
+  const startDrag = (e: DragEvent) => {
+    if (!data) {
+      e.preventDefault();
+      return;
+    }
+    dragging.set(data);
+  };
 
-	const drop = () => {
-		const dragData: ProClass | ProSkill | ProFolder = get(dragging);
-		let targetFolder;
-		if (data) {
-			targetFolder = getFolder(data);
-		}
+  const drop = () => {
+    const dragData: ProClass | ProSkill | ProFolder = get(dragging);
+    let targetFolder;
+    if (data) {
+      targetFolder = getFolder(data);
+    }
 
-		const containing = getFolder(dragData);
-		if (containing) containing.remove(dragData);
-		if (targetFolder) {
-			targetFolder.add(dragData);
-			over = false;
-			updateFolders();
-			return;
-		}
-		if (dragData instanceof ProFolder) {
-			if (get(isShowClasses)) addClassFolder(dragData);
-			else addSkillFolder(dragData);
-			dragData.parent = undefined;
-		}
+    const containing = getFolder(dragData);
+    if (containing) containing.remove(dragData);
+    if (targetFolder) {
+      targetFolder.add(dragData);
+      over = false;
+      updateFolders();
+      return;
+    }
+    if (dragData instanceof ProFolder) {
+      if (get(isShowClasses)) addClassFolder(dragData);
+      else addSkillFolder(dragData);
+      dragData.parent = undefined;
+    }
 
-		over = false;
-	};
+    over = false;
+  };
 
-	const dragOver = () => {
-		const dragData = get(dragging);
-		if (data === dragData) return;
-		over = true;
-	};
+  const dragOver = () => {
+    const dragData = get(dragging);
+    if (data === dragData) return;
+    over = true;
+  };
 
 
-	const maybe = (node, options) => {
-		if (!get(animationEnabled)) {
-			options.delay = 0;
-		}
-		return options.fn(node, options);
-	}
+  const maybe = (node, options) => {
+    if (!get(animationEnabled)) {
+      options.delay = 0;
+    }
+    return options.fn(node, options);
+  };
 </script>
 
 
-<div class='sidebar-entry'
-		 class:over
-		 class:active={data && $active === data}
-		 class:in-folder={!!getFolder(data)}
-		 draggable='{!!data}'
-		 on:dragstart={startDrag}
-		 on:drop|preventDefault|stopPropagation={drop}
-		 on:dragover|preventDefault={dragOver}
-		 on:dragleave={() => over = false}
-		 on:click
-		 in:maybe={{fn: fly, x: (direction === "left" ? -100 : 100), duration: 500, delay: $sidebarOpen ? 0 : delay}}
-		 out:fly={{x: (direction === "left" ? -100 : 100), duration: 500}}>
-	<slot />
-	{#if data}
-		<div class='buttons'>
-			{#if data instanceof ProSkill}
-				<a href='/skill/{data.name}/edit'
-					 class='edit'
-					 title='Edit Skill'>
-          <span class='material-symbols-rounded'>
+<div class="sidebar-entry"
+     class:over
+     class:active={data && $active === data}
+     class:in-folder={!!getFolder(data)}
+     draggable="{!!data}"
+     on:dragstart={startDrag}
+     on:drop|preventDefault|stopPropagation={drop}
+     on:dragover|preventDefault={dragOver}
+     on:dragleave={() => over = false}
+     on:click
+     in:maybe={{fn: fly, x: (direction === "left" ? -100 : 100), duration: 500, delay: $sidebarOpen ? 0 : delay}}
+     out:fly={{x: (direction === "left" ? -100 : 100), duration: 500}}>
+  <slot />
+  {#if data}
+    <div class="buttons">
+      {#if data instanceof ProSkill}
+        <a href="/skill/{data.name}/edit"
+           class="edit"
+           title="Edit Skill">
+          <span class="material-symbols-rounded">
             edit
           </span>
-				</a>
-			{/if}
-			<div
-				on:click|preventDefault|stopPropagation={() => saveData(data)}
-				class='download'
-				title="Save {data.triggers ? 'Skill' : 'Class'}">
-        <span class='material-symbols-rounded'>
+        </a>
+      {/if}
+      <div
+        on:click|preventDefault|stopPropagation={() => saveData(data)}
+        class="download"
+        title="Save {data.triggers ? 'Skill' : 'Class'}">
+        <span class="material-symbols-rounded">
           save
         </span>
-			</div>
-			<div
-				class='delete'
-				on:click|preventDefault|stopPropagation={() => deleting = true}
-				title="Delete {data.triggers ? 'Skill' : 'Class'}">
-        <span class='material-symbols-rounded'>
+      </div>
+      <div
+        class="delete"
+        on:click|preventDefault|stopPropagation={() => deleting = true}
+        title="Delete {data.triggers ? 'Skill' : 'Class'}">
+        <span class="material-symbols-rounded">
           delete
         </span>
-			</div>
-		</div>
-	{/if}
+      </div>
+    </div>
+  {/if}
 </div>
 
 <Modal bind:open={deleting}>
-	<h3>Do you really want to delete {data.name}?</h3>
-	<div class='buttons modal-buttons'>
-		<div class='button' on:click={() => deleting = false}>Cancel</div>
-		<div class='button modal-delete' on:click={() => deleteProData(data)}>Delete</div>
-	</div>
+  <h3>Do you really want to delete {data.name}?</h3>
+  <div class="buttons modal-buttons">
+    <div class="button" on:click={() => deleting = false}>Cancel</div>
+    <div class="button modal-delete" on:click={() => deleteProData(data)}>Delete</div>
+  </div>
 </Modal>
 
 <style>
@@ -135,7 +135,7 @@
         padding: 0.3rem 0.5rem;
         text-overflow: ellipsis;
         overflow: hidden;
-        white-space: nowrap;
+        white-space: break-spaces;
         border-left: 0 solid var(--color-accent);
         transition: background-color 0.25s ease-in-out,
         border-left-width 0.25s ease-in-out;
@@ -178,22 +178,29 @@
 
     .buttons {
         display: flex;
+        opacity: 0;
+        position: absolute;
+        right: 0.25rem;
+        font-size: 1.3rem;
+        justify-content: center;
+        align-items: stretch;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 100vw;
+        transition: opacity 0.25s ease;
     }
 
     .download, .delete, .edit {
-        opacity: 0;
         display: flex;
         justify-content: center;
         align-items: center;
         padding: 0.3rem;
         border-radius: 50%;
-        transition: background-color 0.25s ease,
-        opacity 0.25s ease;
+        transition: background-color 0.25s ease;
         text-decoration: none;
         color: white;
     }
 
-    .sidebar-entry:hover .download, .sidebar-entry:hover .delete, .sidebar-entry:hover .edit {
+    .sidebar-entry:hover .buttons {
         opacity: 1;
     }
 
@@ -207,10 +214,6 @@
 
     .edit:hover {
         background-color: #0083ef;
-    }
-
-    .download .material-symbols-rounded, .delete .material-symbols-rounded {
-        font-size: 1rem;
     }
 
     .modal-buttons {
