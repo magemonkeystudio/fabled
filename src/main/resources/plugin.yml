@@ -14,7 +14,8 @@ softdepend:
   - WorldEdit
   - Mimic
   - ProRPGItems
-loadbefore: [ Quests, TAB ]
+loadbefore: [ ProRPGItems, Quests, TAB ]
+provides: [ SkillAPI ]
 api-version: 1.14
 
 permissions:
