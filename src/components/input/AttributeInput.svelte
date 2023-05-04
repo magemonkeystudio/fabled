@@ -7,16 +7,14 @@
 
 <div class="wrap">
   <input class="base"
-         type="number"
-         use:numberOnly={{intMode: false, enabled: true}}
          bind:value={value.base}
          placeholder="0" />
   +(
   <input class="modifier"
-         type="number"
-         use:numberOnly={{intMode: false, enabled: true}}
          bind:value={value.scale}
          placeholder="0" />
+<!--         type="number"-->
+<!--         use:numberOnly={{intMode: false, enabled: true}}-->
   )
 </div>
 

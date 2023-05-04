@@ -1,6 +1,5 @@
 <script lang="ts">
   import { fly, slide } from "svelte/transition";
-  import { numberOnly } from "$api/number-only";
 
   export let tooltip: string | undefined        = undefined;
   export let label: string;
@@ -23,19 +22,19 @@
         on:mouseenter={() => hovered = true}
         on:mouseleave={() => hovered = false}>
     {label || ''}
-    <slot name="label" />
+    <slot name="label"/>
   </span>
 </div>
 <div transition:slide class="input-wrapper" class:labeled={!!label}>
-  {#if type === "number"}
-    <input type="number" bind:value use:numberOnly={{intMode, enabled: type === "number"}}
-           {placeholder} />
-  {:else}
-    {#if !!value || value === "" || value === 0}
-      <input bind:value {placeholder} />
-    {/if}
+  <!--{#if type === "number"}-->
+  <!--    <input type="number" bind:value use:numberOnly={{intMode, enabled: type === "number"}}-->
+  <!--           {placeholder} />-->
+  <!--  {:else}-->
+  {#if !!value || value === "" || value === 0}
+    <input bind:value {placeholder}/>
   {/if}
-  <slot />
+  <!--{/if}-->
+  <slot/>
 </div>
 
 <style>
