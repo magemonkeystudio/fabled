@@ -102,7 +102,11 @@ public class GUITool implements ToolMenu {
         PREV = make(Material.BOOK, ChatColor.GOLD + "Previous Menu");
         SHRINK = make(Material.MELON_SEEDS, ChatColor.GOLD + "Shrink", "", "Removes a row from the GUI");
         GROW = make(Material.MELON, ChatColor.GOLD + "Grow", "", "Adds a row to the GUI");
-        ADD_PAGE = make(Material.PAPER, ChatColor.GOLD + "Add Page", "", "Adds another page to the GUI", "right after the current one");
+        ADD_PAGE = make(Material.PAPER,
+                ChatColor.GOLD + "Add Page",
+                "",
+                "Adds another page to the GUI",
+                "right after the current one");
         DEL_PAGE = make(Material.PAPER, ChatColor.GOLD + "Delete Page", "", "Deletes the currently", "viewed page");
         NEXT_CLASS = make(Material.DIAMOND_SWORD, ChatColor.GOLD + "Next Class");
         PREV_CLASS = make(Material.IRON_SWORD, ChatColor.GOLD + "Previous Class");
@@ -130,7 +134,9 @@ public class GUITool implements ToolMenu {
         config = SkillAPI.getConfig("gui");
         DataSection data = config.getConfig();
         for (String key : data.keys()) {
-            if (key.startsWith(GUIType.SKILL_TREE.getPrefix())) { continue; }
+            if (key.startsWith(GUIType.SKILL_TREE.getPrefix())) {
+                continue;
+            }
             try {
                 GUIData loaded = new GUIData(data.getSection(key));
                 if (loaded.isValid())
@@ -307,7 +313,7 @@ public class GUITool implements ToolMenu {
         guiData.load(inventoryContents);
         if (type == GUIType.SKILL_TREE) {
             RPGClass rpgClass = availableClasses[classId];
-            String name = GUIType.SKILL_TREE.getPrefix()+rpgClass.getName();
+            String   name     = GUIType.SKILL_TREE.getPrefix() + rpgClass.getName();
             guiData.save(config.getConfig().createSection(name));
             config.save();
             rpgClass.reloadSkillTree();
@@ -403,7 +409,12 @@ public class GUITool implements ToolMenu {
         i = 9;
         GUIPage page = guiData.getPage();
         for (String group : availableGroups) {
-            ItemStack item  = make(Material.DRAGON_EGG, group, "", "Spot for the player's current", "class in the group should", "be placed in the GUI");
+            ItemStack item  = make(Material.DRAGON_EGG,
+                    group,
+                    "",
+                    "Spot for the player's current",
+                    "class in the group should",
+                    "be placed in the GUI");
             int       index = page.getIndex(group);
             if (index != -1)
                 inventoryContents[index] = item;
@@ -421,16 +432,19 @@ public class GUITool implements ToolMenu {
         RPGClass current = availableClasses[classId];
         GUIPage  page    = guiData.getPage();
         i = 9;
+        Set<Skill> skills = new HashSet<>();
         while (current != null) {
-            for (Skill skill : current.getSkills()) {
-                int index = page.getIndex(skill.getName());
-                if (index != -1 && index < inventoryContents.length)
-                    inventoryContents[index] = skill.getToolIndicator();
-                else if (!guiData.has(skill.getName()) && i < playerContents.length) {
-                    playerContents[i++] = skill.getToolIndicator();
-                }
-            }
+            skills.addAll(current.getSkills());
             current = current.getParent();
+        }
+
+        for (Skill skill : skills) {
+            int index = page.getIndex(skill.getName());
+            if (index != -1 && index < inventoryContents.length)
+                inventoryContents[index] = skill.getToolIndicator();
+            else if (!guiData.has(skill.getName()) && i < playerContents.length) {
+                playerContents[i++] = skill.getToolIndicator();
+            }
         }
 
         return limit(availableClasses[classId].getName() + " / Skill Tree");
@@ -491,7 +505,9 @@ public class GUITool implements ToolMenu {
                     }
                 }
             }
-            if (!this.guiData.isEditable()) { event.setCancelled(true); }
+            if (!this.guiData.isEditable()) {
+                event.setCancelled(true);
+            }
         } else { // Clicked lower inventory
             if (event.getSlot() < 9) {
                 update();
