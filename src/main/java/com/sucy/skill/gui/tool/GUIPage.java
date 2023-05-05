@@ -40,8 +40,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GUIPage {
-    private final HashMap<String, Integer> slots  = new HashMap<String, Integer>();
-    private final HashMap<Integer, String> lookup = new HashMap<Integer, String>();
+    private final HashMap<String, Integer> slots  = new HashMap<>();
+    private final HashMap<Integer, String> lookup = new HashMap<>();
 
     private final GUIData parent;
 
@@ -138,6 +138,14 @@ public class GUIPage {
             ItemStack item = holder != null && holder.isAllowed(bukkitPlayer)
                     ? holder.getIcon(player)
                     : GUITool.getIcon(entry.getValue());
+
+            if (item == null) {
+                SkillAPI.inst()
+                        .getLogger()
+                        .warning("Could not find GUI item for " + entry.getValue()
+                                + ". Please either remove it from the GUI or add it to the config.");
+                continue;
+            }
 
             if (PluginChecker.isPlaceholderAPIActive()) {
                 PlaceholderAPIHook.processPlaceholders(item, bukkitPlayer);
