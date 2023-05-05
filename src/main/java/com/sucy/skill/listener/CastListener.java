@@ -65,8 +65,7 @@ public class CastListener extends SkillAPIListener {
     public void init() {
         MainListener.registerJoin(this::init);
         MainListener.registerClear(this::handleClear);
-        for (Player player : Bukkit.getOnlinePlayers())
-            init(player);
+        Bukkit.getOnlinePlayers().forEach(this::init);
     }
 
     /**
@@ -77,8 +76,7 @@ public class CastListener extends SkillAPIListener {
         if (slot == -1)
             return;
 
-        for (Player player : Bukkit.getOnlinePlayers())
-            cleanup(player);
+        Bukkit.getOnlinePlayers().forEach(CastListener::cleanup);
         slot = -1;
     }
 
@@ -96,13 +94,19 @@ public class CastListener extends SkillAPIListener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onWorldChange(PlayerChangedWorldEvent event) {
+    public void onChangedWorldPre(PlayerChangedWorldEvent event) {
         boolean from = SkillAPI.getSettings().isWorldEnabled(event.getFrom());
         boolean to   = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
         if (from && !to)
             forceCleanup(event.getPlayer());
-        else
-            init(event.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onChangeWorld(PlayerChangedWorldEvent event) {
+        boolean from = SkillAPI.getSettings().isWorldEnabled(event.getFrom());
+        boolean to   = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
+
+        if (to && !from) init(event.getPlayer());
     }
 
     @EventHandler
@@ -114,15 +118,15 @@ public class CastListener extends SkillAPIListener {
     }
 
     private void init(Player player) {
-        if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
-            PlayerInventory inv  = player.getInventory();
-            int             slot = SkillAPI.getSettings().getCastSlot();
-            ItemStack       item = inv.getItem(slot);
-            inv.setItem(slot, SkillAPI.getSettings().getCastItem());
-            if (item != null && item.getType() != Material.AIR)
-                inv.addItem(item);
-            inv.getItem(slot).setAmount(1);
-        }
+        if (!SkillAPI.getSettings().isWorldEnabled(player.getWorld())) return;
+
+        PlayerInventory inv  = player.getInventory();
+        int             slot = SkillAPI.getSettings().getCastSlot();
+        ItemStack       item = inv.getItem(slot);
+        inv.setItem(slot, SkillAPI.getSettings().getCastItem());
+        if (item != null && item.getType() != Material.AIR)
+            inv.addItem(item);
+        inv.getItem(slot).setAmount(1);
     }
 
     @EventHandler
@@ -157,7 +161,8 @@ public class CastListener extends SkillAPIListener {
         if (SkillAPI.getSettings().isWorldEnabled(event.getWhoClicked().getWorld())) {
             if (event.getSlot() == slot && event.getSlotType() == InventoryType.SlotType.QUICKBAR)
                 event.setCancelled(true);
-            else if ((event.getAction() == InventoryAction.HOTBAR_SWAP || event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD)
+            else if ((event.getAction() == InventoryAction.HOTBAR_SWAP
+                    || event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD)
                     && event.getHotbarButton() == slot)
                 event.setCancelled(true);
         }

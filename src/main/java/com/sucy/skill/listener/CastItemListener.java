@@ -102,13 +102,19 @@ public class CastItemListener extends SkillAPIListener {
      * @param event event details
      */
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onWorldChange(PlayerChangedWorldEvent event) {
+    public void onWorldChangePre(PlayerChangedWorldEvent event) {
         boolean from = SkillAPI.getSettings().isWorldEnabled(event.getFrom());
         boolean to   = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
         if (from && !to)
             event.getPlayer().getInventory().setItem(SkillAPI.getSettings().getCastSlot(), null);
-        else
-            init(event.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onWorldChange(PlayerChangedWorldEvent event) {
+        boolean from = SkillAPI.getSettings().isWorldEnabled(event.getFrom());
+        boolean to   = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
+
+        if (to && !from) init(event.getPlayer());
     }
 
     private PlayerSkillSlot get(Player player) {
@@ -125,18 +131,18 @@ public class CastItemListener extends SkillAPIListener {
      * @param player player to give to
      */
     private void init(Player player) {
-        if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
-            PlayerSkillSlot slotData = new PlayerSkillSlot();
-            data.put(player.getUniqueId(), slotData);
-            slotData.init(SkillAPI.getPlayerData(player));
+        if (!SkillAPI.getSettings().isWorldEnabled(player.getWorld())) return;
 
-            PlayerInventory inv  = player.getInventory();
-            int             slot = SkillAPI.getSettings().getCastSlot();
-            ItemStack       item = inv.getItem(slot);
-            slotData.updateItem(player);
-            if (item != null && item.getType() != Material.AIR)
-                inv.addItem(item);
-        }
+        PlayerSkillSlot slotData = new PlayerSkillSlot();
+        data.put(player.getUniqueId(), slotData);
+        slotData.init(SkillAPI.getPlayerData(player));
+
+        PlayerInventory inv  = player.getInventory();
+        int             slot = SkillAPI.getSettings().getCastSlot();
+        ItemStack       item = inv.getItem(slot);
+        slotData.updateItem(player);
+        if (item != null && item.getType() != Material.AIR)
+            inv.addItem(item);
     }
 
     /**

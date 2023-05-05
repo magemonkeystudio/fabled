@@ -242,7 +242,8 @@ public class MainListener extends SkillAPIListener {
             return;
 
         Player player = event.getPlayer();
-        if (SkillAPI.getSettings().isUseOrbs() && player != null && SkillAPI.getSettings().isWorldEnabled(player.getWorld()))
+        if (SkillAPI.getSettings().isUseOrbs() && player != null && SkillAPI.getSettings()
+                .isWorldEnabled(player.getWorld()))
             SkillAPI.getPlayerData(player).giveExp(event.getExpToDrop(), ExpSource.BLOCK_BREAK);
     }
 
@@ -254,7 +255,8 @@ public class MainListener extends SkillAPIListener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onSmelt(FurnaceExtractEvent event) {
         Player player = event.getPlayer();
-        if (SkillAPI.getSettings().isUseOrbs() && player != null && SkillAPI.getSettings().isWorldEnabled(player.getWorld()))
+        if (SkillAPI.getSettings().isUseOrbs() && player != null && SkillAPI.getSettings()
+                .isWorldEnabled(player.getWorld()))
             SkillAPI.getPlayerData(player).giveExp(event.getExpToDrop(), ExpSource.SMELT);
     }
 
@@ -265,7 +267,8 @@ public class MainListener extends SkillAPIListener {
      */
     @EventHandler
     public void onExpBottleBreak(ExpBottleEvent event) {
-        if (!(event.getEntity().getShooter() instanceof Player) || !SkillAPI.getSettings().isWorldEnabled(((Player) event.getEntity().getShooter()).getWorld()))
+        if (!(event.getEntity().getShooter() instanceof Player) || !SkillAPI.getSettings()
+                .isWorldEnabled(((Player) event.getEntity().getShooter()).getWorld()))
             return;
 
         Player player = (Player) event.getEntity().getShooter();
@@ -328,7 +331,8 @@ public class MainListener extends SkillAPIListener {
      */
     @EventHandler(ignoreCancelled = true)
     public void onDamage(EntityDamageEvent event) {
-        if (event.getEntity() instanceof LivingEntity && FlagManager.hasFlag((LivingEntity) event.getEntity(), "immune:" + event.getCause().name())) {
+        if (event.getEntity() instanceof LivingEntity && FlagManager.hasFlag((LivingEntity) event.getEntity(),
+                "immune:" + event.getCause().name())) {
             double multiplier = SkillAPI.getMetaDouble(event.getEntity(), ImmunityMechanic.META_KEY);
             if (multiplier <= 0)
                 event.setCancelled(true);
@@ -379,7 +383,10 @@ public class MainListener extends SkillAPIListener {
             return;
         }
 
-        PhysicalDamageEvent e = new PhysicalDamageEvent(ListenerUtil.getDamager(event), (LivingEntity) event.getEntity(), event.getDamage(), event.getDamager() instanceof Projectile);
+        PhysicalDamageEvent e = new PhysicalDamageEvent(ListenerUtil.getDamager(event),
+                (LivingEntity) event.getEntity(),
+                event.getDamage(),
+                event.getDamager() instanceof Projectile);
         Bukkit.getPluginManager().callEvent(e);
         event.setDamage(e.getDamage());
         event.setCancelled(e.isCancelled());
@@ -411,32 +418,40 @@ public class MainListener extends SkillAPIListener {
      * @param event event details
      */
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onWorldChange(PlayerChangedWorldEvent event) {
-        if (event.getPlayer().hasMetadata("NPC"))
-            return;
+    public void onWorldChangePre(PlayerChangedWorldEvent event) {
+        if (event.getPlayer().hasMetadata("NPC")) return;
 
         boolean oldEnabled = SkillAPI.getSettings().isWorldEnabled(event.getFrom());
         boolean newEnabled = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
-        if (oldEnabled && !newEnabled) {
-            PlayerData data = SkillAPI.getPlayerData(event.getPlayer());
-            data.clearAllModifiers();
-            data.stopPassives(event.getPlayer());
-            ClassBoardManager.clear(event.getPlayer());
-            if (SkillAPI.getSettings().isModifyHealth()) {
-                event.getPlayer().setMaxHealth(SkillAPI.getSettings().getDefaultHealth());
-                event.getPlayer().setHealth(SkillAPI.getSettings().getDefaultHealth());
-            }
+        if (!oldEnabled || newEnabled) return;
 
-            if (!SkillAPI.getSettings().getLevelBar().equalsIgnoreCase("none")) {
-                event.getPlayer().setLevel(0);
-                event.getPlayer().setExp(0);
-            }
-            if (!SkillAPI.getSettings().getFoodBar().equalsIgnoreCase("none")) {
-                event.getPlayer().setFoodLevel(20);
-            }
-        } else if (!oldEnabled && newEnabled) {
-            init(event.getPlayer());
+        PlayerData data = SkillAPI.getPlayerData(event.getPlayer());
+        data.clearAllModifiers();
+        data.stopPassives(event.getPlayer());
+        ClassBoardManager.clear(event.getPlayer());
+        if (SkillAPI.getSettings().isModifyHealth()) {
+            event.getPlayer().setMaxHealth(SkillAPI.getSettings().getDefaultHealth());
+            event.getPlayer().setHealth(SkillAPI.getSettings().getDefaultHealth());
         }
+
+        if (!SkillAPI.getSettings().getLevelBar().equalsIgnoreCase("none")) {
+            event.getPlayer().setLevel(0);
+            event.getPlayer().setExp(0);
+        }
+
+        if (!SkillAPI.getSettings().getFoodBar().equalsIgnoreCase("none")) {
+            event.getPlayer().setFoodLevel(20);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onWorldChange(PlayerChangedWorldEvent event) {
+        if (event.getPlayer().hasMetadata("NPC")) return;
+
+        boolean oldEnabled = SkillAPI.getSettings().isWorldEnabled(event.getFrom());
+        boolean newEnabled = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
+
+        if (!oldEnabled && newEnabled) init(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true)

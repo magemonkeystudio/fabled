@@ -218,7 +218,8 @@ public class BarListener extends SkillAPIListener {
      */
     @EventHandler
     public void onAssign(final InventoryClickEvent event) {
-        if (event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD && event.getInventory().getHolder() instanceof SkillHandler) {
+        if (event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD && event.getInventory()
+                .getHolder() instanceof SkillHandler) {
             final PlayerData data = SkillAPI.getPlayerData((Player) event.getWhoClicked());
             if (data.getSkillBar().isSetup() && !data.getSkillBar().isWeaponSlot(event.getHotbarButton())) {
                 final SkillHandler handler = (SkillHandler) event.getInventory().getHolder();
@@ -243,7 +244,8 @@ public class BarListener extends SkillAPIListener {
         if (!skillBar.isSetup())
             return;
 
-        if ((event.getAction() == InventoryAction.HOTBAR_SWAP || event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD)
+        if ((event.getAction() == InventoryAction.HOTBAR_SWAP
+                || event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD)
                 && (!skillBar.isWeaponSlot(event.getHotbarButton()) || !skillBar.isWeaponSlot(event.getSlot()))) {
             event.setCancelled(true);
             return;
@@ -255,7 +257,8 @@ public class BarListener extends SkillAPIListener {
             if (event.getClick() == ClickType.LEFT || event.getClick() == ClickType.SHIFT_LEFT)
                 event.setCancelled(!skillBar.isWeaponSlot(slot));
             else if ((event.getClick() == ClickType.RIGHT || event.getClick() == ClickType.SHIFT_RIGHT)
-                    && (!skillBar.isWeaponSlot(slot) || (skillBar.isWeaponSlot(slot) && (event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR)))) {
+                    && (!skillBar.isWeaponSlot(slot) || (skillBar.isWeaponSlot(slot) && (event.getCurrentItem() == null
+                    || event.getCurrentItem().getType() == Material.AIR)))) {
                 event.setCancelled(true);
                 skillBar.toggleSlot(slot);
             } else if (event.getAction().name().startsWith("DROP"))
@@ -269,15 +272,19 @@ public class BarListener extends SkillAPIListener {
      * @param event event details
      */
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onChangeWorld(PlayerChangedWorldEvent event) {
+    public void onChangeWorldPre(PlayerChangedWorldEvent event) {
         PlayerData data    = SkillAPI.getPlayerData(event.getPlayer());
         boolean    enabled = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
         if (data.hasClass() && data.getSkillBar().isSetup() && enabled)
             ignored.add(event.getPlayer().getUniqueId());
-        if (enabled)
-            data.getSkillBar().setup(event.getPlayer());
-        else
-            data.getSkillBar().clear(event.getPlayer());
+        if (!enabled) data.getSkillBar().clear(event.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onChangeWorld(PlayerChangedWorldEvent event) {
+        PlayerData data    = SkillAPI.getPlayerData(event.getPlayer());
+        boolean    enabled = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
+        if (enabled) data.getSkillBar().setup(event.getPlayer());
     }
 
     /**
