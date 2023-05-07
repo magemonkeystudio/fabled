@@ -30,6 +30,8 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.hook.PlaceholderAPIHook;
+import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.log.LogType;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.thread.RepeatThreadTask;
@@ -174,6 +176,11 @@ public class GUITask extends RepeatThreadTask {
                     Object value = DynamicSkill.getCastData(player).get(key);
                     filtered = filtered.replace("{value:" + key + "}", (value == null ? "None" : value.toString()));
                 }
+
+                if (PluginChecker.isPlaceholderAPIActive()) {
+                    filtered = PlaceholderAPIHook.format(filtered, player);
+                }
+
                 if (VersionManager.isVersionAtLeast(11000)) {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(filtered));
                 } else {
