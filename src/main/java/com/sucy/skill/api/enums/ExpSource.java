@@ -75,7 +75,12 @@ public enum ExpSource {
     /**
      * Experience from a quest
      */
-    QUEST(0x100);
+    QUEST(0x100),
+
+    /**
+     * Experience given through a plugin. This exp is not shared
+     */
+    PLUGIN(0x200);
 
     /**
      * The ID of the experience source which should be a unique power of 2 (or bit value)
