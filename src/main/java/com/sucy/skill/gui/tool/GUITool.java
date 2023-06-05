@@ -33,6 +33,7 @@ import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.api.util.DamageLoreRemover;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.manager.AttributeManager;
+import com.sucy.skill.tree.basic.CustomTree;
 import mc.promcteam.engine.mccore.config.CommentedConfig;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.util.TextFormatter;
@@ -117,26 +118,10 @@ public class GUITool implements ToolMenu {
         Set<RPGClass> professes = new HashSet<>();
         Set<String>   groups    = new HashSet<>();
         professes.add(null);
-        for (RPGClass c : availableClasses) {
-            try {
-                setups.put(GUIType.SKILL_TREE.getPrefix() + c.getName(), new GUIData(c.getSkillTree()));
-            } catch (IllegalArgumentException e) {
-                SkillAPI.inst().getLogger().warning("Failed to load skill tree for " + c.getName());
-                e.printStackTrace();
-            }
-            if (c.hasParent())
-                professes.add(c.getParent());
-            groups.add(c.getGroup());
-        }
-        availableGroups = groups.toArray(new String[groups.size()]);
-        availableProfesses = professes.toArray(new RPGClass[professes.size()]);
 
         config = SkillAPI.getConfig("gui");
         DataSection data = config.getConfig();
         for (String key : data.keys()) {
-            if (key.startsWith(GUIType.SKILL_TREE.getPrefix())) {
-                continue;
-            }
             try {
                 GUIData loaded = new GUIData(data.getSection(key));
                 if (loaded.isValid())
@@ -146,6 +131,22 @@ public class GUITool implements ToolMenu {
                 e.printStackTrace();
             }
         }
+
+        for (RPGClass c : availableClasses) {
+            if (!(c.getSkillTree() instanceof CustomTree)) {
+                try {
+                    setups.put(GUIType.SKILL_TREE.getPrefix() + c.getName(), new GUIData(c.getSkillTree()));
+                } catch (IllegalArgumentException e) {
+                    SkillAPI.inst().getLogger().warning("Failed to load skill tree for " + c.getName());
+                    e.printStackTrace();
+                }
+            }
+            if (c.hasParent())
+                professes.add(c.getParent());
+            groups.add(c.getGroup());
+        }
+        availableGroups = groups.toArray(new String[groups.size()]);
+        availableProfesses = professes.toArray(new RPGClass[professes.size()]);
 
         CommentedConfig itemFile = SkillAPI.getConfig("tool");
         itemFile.checkDefaults();
@@ -316,8 +317,10 @@ public class GUITool implements ToolMenu {
             String   name     = GUIType.SKILL_TREE.getPrefix() + rpgClass.getName();
             guiData.save(config.getConfig().createSection(name));
             config.save();
-            rpgClass.reloadSkillTree();
-            guiData = new GUIData(rpgClass.getSkillTree());
+            if (!(rpgClass.getSkillTree() instanceof CustomTree)) {
+                rpgClass.reloadSkillTree();
+                guiData = new GUIData(rpgClass.getSkillTree());
+            }
             setups.put(name, guiData);
         }
     }
