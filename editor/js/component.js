@@ -2671,7 +2671,7 @@ function MechanicPassive() {
 extend('MechanicPermission', 'Component');
 
 function MechanicPermission() {
-    this.super('Permission', Type.MECHANIC, true);
+    this.super('Permission', Type.MECHANIC, false);
 
     this.description = 'Grants each player target a permission for a limited duration. This mechanic requires Vault with an accompanying permissions plugin in order to work.';
 
