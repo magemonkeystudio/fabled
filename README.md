@@ -31,6 +31,6 @@ or snapshots through Sonatype.
 <dependency>
     <groupId>com.promcteam</groupId>
     <artifactId>proskillapi</artifactId>
-    <version>1.1.8-R0.31-SNAPSHOT</version>
+    <version>1.1.8-R0.32-SNAPSHOT</version>
 </dependency>
 ```
