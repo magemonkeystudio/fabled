@@ -617,9 +617,7 @@ public class SkillAPI extends JavaPlugin {
         }
 
         String  coreVersion       = NexEngine.getEngine().getDescription().getVersion();
-        boolean minCoreVersionMet = coreVersion.compareTo(DependencyRequirement.MIN_CORE_VERSION) >= 0;
-
-        if (!minCoreVersionMet) {
+        if (!DependencyRequirement.meetsVersion(DependencyRequirement.MIN_CORE_VERSION, coreVersion)) {
             getLogger().warning("Missing required ProMCCore version. " + coreVersion + " installed. "
                     + DependencyRequirement.MIN_CORE_VERSION + " required. Disabling.");
             Bukkit.getPluginManager().disablePlugin(this);
