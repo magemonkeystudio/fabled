@@ -209,6 +209,15 @@ public class TempEntity implements LivingEntity {
     public void setNoDamageTicks(int i) {
     }
 
+    @Override
+    public int getNoActionTicks() {
+        return 0;
+    }
+
+    @Override
+    public void setNoActionTicks(int i) {
+    }
+
     public Player getKiller() {
         return null;
     }
@@ -278,10 +287,10 @@ public class TempEntity implements LivingEntity {
     }
 
     @Override
-    public void setVisibleByDefault(boolean b) { }
+    public void setVisibleByDefault(boolean b) {}
 
     @Override
-    public boolean isVisibleByDefault() { return true; }
+    public boolean isVisibleByDefault() {return true;}
 
     public void setCustomNameVisible(boolean b) {
 
