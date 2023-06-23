@@ -61,8 +61,8 @@ public class RequirementTree extends InventoryTree {
         skillSlots.clear();
 
         // Organize skills into chained and unchained
-        List<Skill> chained   = new ArrayList<Skill>();
-        List<Skill> unchained = new ArrayList<Skill>();
+        List<Skill> chained   = new ArrayList<>();
+        List<Skill> unchained = new ArrayList<>();
         for (Skill skill : skills) {
             if (isChained(skills, skill)) {
                 chained.add(skill);
@@ -92,8 +92,8 @@ public class RequirementTree extends InventoryTree {
         }
 
         // Fill in the chained group
-        HashMap<Skill, Integer> tier     = new HashMap<Skill, Integer>();
-        HashMap<Skill, Integer> prevTier = new HashMap<Skill, Integer>();
+        HashMap<Skill, Integer> tier     = new HashMap<>();
+        HashMap<Skill, Integer> prevTier = new HashMap<>();
         int                     row      = 0;
         index = 0;
 

@@ -1,0 +1,116 @@
+name: ${project.name}
+version: ${project.version}
+main: com.sucy.skill.SkillAPI
+provides:
+  - SkillAPI
+api-version: '1.19'
+authors:
+  - Travja
+  - goflish
+  - Eniripsa96
+  - Sentropic
+has-open-classloader: true
+
+dependencies:
+  - name: ProMCCore
+    required: true
+    bootstrap: true
+  - name: Vault
+    required: false
+    bootstrap: true
+  - name: Citizens
+    required: false
+    bootstrap: true
+  - name: LibsDisguises
+    required: false
+    bootstrap: true
+  - name: PlaceholderAPI
+    required: false
+    bootstrap: true
+  - name: NoCheatPlus
+    required: false
+    bootstrap: true
+  - name: MythicMobs
+    required: false
+    bootstrap: true
+  - name: WorldGuard
+    required: false
+    bootstrap: true
+  - name: WorldEdit
+    required: false
+    bootstrap: true
+  - name: Mimic
+    required: false
+    bootstrap: true
+  - name: ProRPGItems
+    required: false
+    bootstrap: true
+load-before:
+  - name: ProRPGItems
+    boostrap: false
+  - name: QuantumRPG
+    boostrap: false
+  - name: Quests
+    boostrap: false
+  - name: TAB
+    boostrap: false
+load-after:
+    - name: ProMCCore
+      boostrap: false
+
+permissions:
+  skillapi.basic:
+    description: access to skill trees and using skills
+    default: true
+  skillapi.reset:
+    description: access to resetting your class
+    default: true
+  skillapi.exp:
+    description: access to gaining exp
+    default: true
+  skillapi.level:
+    description: access to using the level and exp commands
+    default: op
+  skillapi.mana:
+    description: access to using the mana command
+    default: op
+  skillapi.points:
+    description: access to using the points command
+    default: op
+  skillapi.reload:
+    description: access to using the reload command
+    default: op
+  skillapi.class:
+    description: access to all classes
+    default: op
+  skillapi.skill:
+    description: access to all skills
+    default: op
+  skillapi.lore:
+    description: access to all lore commands
+    default: op
+  skillapi.force:
+    description: access to force commands
+    default: op
+  skillapi.attrib:
+    description: access to giving attribute points
+    default: op
+  skillapi.gui:
+    description: access to GUI editor menu
+    default: op
+
+  skillapi.*:
+    description: access to all commands and features
+    default: op
+    children:
+      skillapi.basic: true
+      skillapi.reset: true
+      skillapi.exp: true
+      skillapi.level: true
+      skillapi.mana: true
+      skillapi.points: true
+      skillapi.reload: true
+      skillapi.class: true
+      skillapi.skill: true
+      skillapi.lore: true
+      skillapi.gui: true

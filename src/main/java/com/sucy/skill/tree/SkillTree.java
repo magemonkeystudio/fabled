@@ -75,7 +75,7 @@ public abstract class SkillTree {
     public void arrange() throws SkillTreeException {
 
         // Get included skills
-        ArrayList<Skill> skills = new ArrayList<Skill>();
+        ArrayList<Skill> skills = new ArrayList<>();
         for (Skill skill : tree.getSkills()) {
             if (!SkillAPI.isSkillRegistered(skill)) {
                 Logger.invalid("Failed to add skill to tree - " + skill + ": Skill does not exist");

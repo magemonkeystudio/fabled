@@ -74,10 +74,10 @@ public abstract class LevelTree extends InventoryTree {
         // Break it up into tiers
         int scale = getTierLimit() > 0 ? (maxLevel + getTierLimit() - 1) / getTierLimit() : 1;
         skills.sort(levelComparator);
-        HashMap<Integer, List<Skill>> tiers = new HashMap<Integer, List<Skill>>();
+        HashMap<Integer, List<Skill>> tiers = new HashMap<>();
         int                           tier  = 0;
         while (skills.size() > 0) {
-            List<Skill> list = new ArrayList<Skill>();
+            List<Skill> list = new ArrayList<>();
             tiers.put(tier++, list);
             int max   = tier * scale;
             int count = 0;
