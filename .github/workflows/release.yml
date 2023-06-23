@@ -50,6 +50,7 @@ jobs:
           git reset settings.xml log.txt
           git commit -m "Update release version"
           git push
+          git fetch --all
           git checkout dev
           git merge -X theirs --no-edit main
           git push
