@@ -1,5 +1,7 @@
 package com.sucy.skill.api;
 
+import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.hook.NoCheatHook;
 import com.sucy.skill.hook.PluginChecker;
 import lombok.Getter;
@@ -44,6 +46,16 @@ public class DefaultCombatProtection implements CombatProtection {
 
     @Override
     public boolean canAttack(final LivingEntity attacker, final LivingEntity defender, EntityDamageEvent.DamageCause cause) {
+        if (attacker instanceof Player && defender instanceof Player) {
+            PlayerClass attackerClass = SkillAPI.getPlayerData(((Player) attacker)).getMainClass();
+            PlayerClass defenderClass = SkillAPI.getPlayerData(((Player) defender)).getMainClass();
+            int attackerLevel = attackerClass == null ? 0 : attackerClass.getLevel();
+            int defenderLevel = defenderClass == null ? 0 : defenderClass.getLevel();
+            int minLevel = SkillAPI.getSettings().getPvpMinLevel();
+            if (attackerLevel < minLevel || defenderLevel < minLevel) {return false;}
+            int levelRange = SkillAPI.getSettings().getPvpLevelRange();
+            if (levelRange > -1 && Math.abs(attackerLevel-defenderLevel) > levelRange) {return false;}
+        }
         boolean canAttack;
         if (PluginChecker.isNoCheatActive() && attacker instanceof Player) {
             Player player = (Player) attacker;

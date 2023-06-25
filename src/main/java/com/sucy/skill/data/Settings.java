@@ -131,6 +131,9 @@ public class Settings {
             ITEM_ATTR              = ITEM_BASE + "lore-attribute-text",
             ITEM_STATS             = ITEM_BASE + "attribute-text",
             ITEM_SLOTS             = ITEM_BASE + "slots",
+            PVP_BASE               = "PVP.",
+            PVP_MIN_LEVEL          = PVP_BASE + "min-level",
+            PVP_LEVEL_RANGE        = PVP_BASE + "level-range",
             CAST_BASE              = "Casting.",
             CAST_ENABLED           = CAST_BASE + "enabled",
             CAST_BARS              = CAST_BASE + "bars",
@@ -458,6 +461,16 @@ public class Settings {
     @Getter
     private int           titleFadeOut;
     /**
+     * @return the maximum level difference two players must have to be able to PVP, or -1 if disabled
+     */
+    @Getter
+    private int pvpLevelRange;
+    /**
+     * @return the minimum level the player must be to be able to PVP with other players, or -1 if disabled
+     */
+    @Getter
+    private int pvpMinLevel;
+    /**
      * @return true if default casting is enabled
      */
     @Getter
@@ -651,6 +664,7 @@ public class Settings {
         loadSkillSettings();
         loadItemSettings();
         loadGUISettings();
+        loadPVPSettings();
         loadCastSettings();
         loadComboSettings();
         loadExpSettings();
@@ -1182,6 +1196,11 @@ public class Settings {
 
     public boolean isUsingCombat() {
         return castEnabled && combatEnabled;
+    }
+
+    private void loadPVPSettings() {
+        pvpMinLevel = config.getInt(PVP_MIN_LEVEL, -1);
+        pvpLevelRange = config.getInt(PVP_LEVEL_RANGE, -1);
     }
 
     private void loadCastSettings() {
