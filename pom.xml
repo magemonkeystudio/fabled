@@ -12,7 +12,7 @@
 
     <groupId>com.promcteam</groupId>
     <artifactId>proskillapi</artifactId>
-    <version>1.1.9-R0.2-SNAPSHOT</version>
+    <version>1.1.9-R0.3-SNAPSHOT</version>
 
     <name>ProSkillAPI</name>
     <description>A Minecraft Bukkit plugin aiming to provide an easy code API and skill editor for all server owners to
