@@ -73,6 +73,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -731,10 +732,18 @@ public class SkillAPI extends JavaPlugin {
         loaded = true;
     }
 
-    private void listen(SkillAPIListener listener, boolean enabled) {
+    public void listen(SkillAPIListener listener, boolean enabled) {
         if (enabled) {
+            // Prevent double listener registering
+            for (Iterator<SkillAPIListener> iterator = this.listeners.iterator(); iterator.hasNext();) {
+                SkillAPIListener listener1 = iterator.next();
+                if (listener.getClass().equals(listener1.getClass())) {
+                    HandlerList.unregisterAll(listener1);
+                    iterator.remove();
+                }
+            }
             Bukkit.getPluginManager().registerEvents(listener, this);
-            listeners.add(listener);
+            this.listeners.add(listener);
         }
     }
 
