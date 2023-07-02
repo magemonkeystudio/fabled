@@ -5,7 +5,9 @@ import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.testutil.MockedTest;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.OfflinePlayer;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,7 +15,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mockStatic;
 
-@Disabled
 public class PlaceholderAPIHookTest extends MockedTest {
 
     private PlayerMock                   player;

@@ -5,7 +5,6 @@ import com.sucy.skill.testutil.MockedTest;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
@@ -16,7 +15,6 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.spy;
 
-@Disabled
 public class DeathListenerTest extends MockedTest {
 
     private PlayerMock                 player;

@@ -560,6 +560,8 @@ public class SkillAPI extends JavaPlugin {
      */
     @Override
     public void onDisable() {
+        if (!this.isEnabled()) return;
+
         // Validate instance
         if (singleton != this) {
             throw new IllegalStateException("This is not a valid, enabled SkillAPI copy!");
