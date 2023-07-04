@@ -2582,7 +2582,7 @@ class PermissionMechanic extends ProMechanic {
 				new AttributeSelect('Seconds', 'seconds', 3)
 					.setTooltip('How long in seconds to give the permission to the player')
 			]
-		}, true);
+		});
 	}
 
 	public static override new = () => new this();
