@@ -1,6 +1,6 @@
 let DATA = {};
 
-const version = (localStorage.getItem('server-version') || '1.19').substr(2);
+const version = (localStorage.getItem('server-version') || '1.20').substr(2);
 
 depend('data/1.8', function() { if (version === '8') DATA = DATA_1_8 });
 depend('data/1.9', function() { if (version === '9') DATA = DATA_1_9 });
@@ -14,6 +14,7 @@ depend('data/1.16', function() { if (version === '16') DATA = DATA_1_16 });
 depend('data/1.17', function() { if (version === '17') DATA = DATA_1_17 });
 depend('data/1.18', function() { if (version === '18') DATA = DATA_1_18 });
 depend('data/1.19', function() { if (version === '19') DATA = DATA_1_19 });
+depend('data/1.20', function() { if (version === '20') DATA = DATA_1_20 });
 
 function getMaterials() {
     return DATA.MATERIALS;
