@@ -107,7 +107,7 @@
   <ImportModal/>
 {/if}
 
-<Modal bind:open={settings}>
+<Modal bind:open={settings} width="50rem">
   <h1>Settings</h1>
   <hr/>
   <div class='settings-container'>

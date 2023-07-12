@@ -7,6 +7,7 @@
   export let intMode                            = false;
   export let value: string | number | undefined = undefined;
   export let placeholder: string | undefined    = undefined;
+  export let nowrap = false;
   let hovered                                   = false;
   let ypos = 0;
 </script>
@@ -20,6 +21,7 @@
     </div>
   {/if}
   <span class='display'
+        class:nowrap
         on:mouseenter={(e) => {
           ypos = e.target.getBoundingClientRect().top;
           hovered = true;
@@ -90,5 +92,9 @@
         top: unset;
         border-top-color: transparent;
         border-bottom-color: #777;
+    }
+
+    .nowrap {
+        white-space: nowrap;
     }
 </style>

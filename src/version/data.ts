@@ -1,6 +1,7 @@
 import type { VersionData } from "$api/types";
 import type { Writable } from "svelte/store";
 import { get, writable } from "svelte/store";
+import { DATA_1_20 } from "./1.20";
 import { DATA_1_19 } from "./1.19";
 import { DATA_1_18 } from "./1.18";
 import { DATA_1_17 } from "./1.17";
@@ -9,9 +10,10 @@ import { localStore } from "$api/api";
 
 export const expSources = ["Mob", "Block Break", "Block Place", "Craft", "Command", "Special", "Exp Bottle", "Smelt", "Quest"];
 
-type Versions = "19" | "18" | "17" | "16";
+type Versions = "20" | "19" | "18" | "17" | "16";
 
 const VERSIONS = {
+  "20": DATA_1_20,
   "19": DATA_1_19,
   "18": DATA_1_18,
   "17": DATA_1_17,
