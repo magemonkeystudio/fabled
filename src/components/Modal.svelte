@@ -63,18 +63,20 @@
         border: 2px solid #444;
         border-radius: 0 1.5rem 0 1.5rem;
         box-shadow: 0 0 1rem #222;
+        margin: 2rem;
+        box-sizing: border-box;
+
         width: var(--width);
         max-height: 85vh;
         max-width: 90%;
-        margin: 2rem;
-        box-sizing: border-box;
+        overflow-y: auto;
     }
 
     .wrapper {
         display: flex;
         flex-direction: column;
         align-items: center;
-        overflow-y: auto;
+        width: 100%;
     }
 
     @media screen and (min-width: 500px) {

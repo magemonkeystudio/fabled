@@ -8,18 +8,22 @@
   export let value: string | number | undefined = undefined;
   export let placeholder: string | undefined    = undefined;
   let hovered                                   = false;
+  let ypos = 0;
 </script>
 
 <div class="label"
      transition:slide>
   {#if tooltip && tooltip.length > 0 && hovered}
-    <div class="tooltip"
+    <div class="tooltip" class:top={ypos < window.innerHeight / 2.5}
          transition:fly={{x: -20, duration: 100}}>
       {tooltip}
     </div>
   {/if}
   <span class='display'
-        on:mouseenter={() => hovered = true}
+        on:mouseenter={(e) => {
+          ypos = e.target.getBoundingClientRect().top;
+          hovered = true;
+        }}
         on:mouseleave={() => hovered = false}>
     {label || ''}
     <slot name="label"/>
@@ -66,6 +70,11 @@
         white-space: break-spaces;
     }
 
+    .tooltip.top {
+        top: 125%;
+        bottom: unset;
+    }
+
     .tooltip:before {
         position: absolute;
         top: 100%;
@@ -74,5 +83,12 @@
         background: transparent;
         content: "";
         border-top-color: #777;
+    }
+
+    .tooltip.top:before {
+        bottom: 100%;
+        top: unset;
+        border-top-color: transparent;
+        border-bottom-color: #777;
     }
 </style>
