@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { active, activeType, setImporting, showSidebar, toggleSidebar } from "../data/store";
-  import { get }                                                          from "svelte/store";
-  import { createPaste }                                                  from "$api/hastebin";
-  import ProClass                                                         from "$api/proclass";
-  import ProSkill                                                         from "$api/proskill";
-  import Sidebar                                                          from "./sidebar/Sidebar.svelte";
+  import { active, activeType, setImporting, toggleSidebar } from "../data/store";
+  import { get }                                             from "svelte/store";
+  import { createPaste }                                     from "$api/hastebin";
+  import ProClass                                            from "$api/proclass";
+  import ProSkill                                            from "$api/proskill";
 
   const haste = () => {
     let act: ProClass | ProSkill | undefined = get(active);
@@ -35,7 +34,7 @@
       <span class="material-symbols-rounded">menu</span>
     </div>
 
-    <div />
+    <div/>
 
     <div class="transfer">
       <div class="chip import"
@@ -52,9 +51,6 @@
         </div>
       {/if}
     </div>
-    {#if $showSidebar}
-      <Sidebar />
-    {/if}
   </nav>
 </div>
 

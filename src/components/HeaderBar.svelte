@@ -7,6 +7,7 @@
   <div class="home" on:click={() => goto("/")}>
     <h1 class="accent">ProSkillAPI</h1>
     <h2>Dynamic Editor</h2>
+    <div class="copy">&copy; ProMCTeam {new Date().getFullYear()}</div>
   </div>
 
   <div class="socials">
@@ -88,6 +89,12 @@
     .social img {
         height: 100%;
         aspect-ratio: 1;
+    }
+
+    .copy {
+        align-self: flex-end;
+        font-size: 0.7rem;
+        padding-left: 0.5rem;
     }
 
     @media screen and (min-width: 500px) {

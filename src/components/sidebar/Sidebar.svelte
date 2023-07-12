@@ -75,7 +75,7 @@
      on:outroend={() => sidebarOpen.set(false)}
      use:clickOutside
      on:outclick={clickOut}
-     style:--height="calc({height}px - 6rem + min(3.5rem, {scrollY}px))">
+     style:--height="calc({height}px - 6rem + min(3rem, {scrollY}px))">
   <div class="type-wrap">
     <Toggle bind:data={$isShowClasses} left="Classes" right="Skills" color="#111" inline={false} />
     <hr />
@@ -91,10 +91,7 @@
         <SidebarEntry
           data={cl}
           delay={200 + 100*i}
-          on:click={() => {
-            showSidebar.set(false);
-            goto(`/class/${cl.name}/edit`);
-          }}>
+          on:click={() => goto(`/class/${cl.name}/edit`)}>
           {cl.name}
         </SidebarEntry>
       {/each}
@@ -119,10 +116,7 @@
           data={sk}
           direction="right"
           delay={200 + 100*i}
-          on:click={() => {
-            showSidebar.set(false);
-            goto(`/skill/${sk.name}`);
-          }}>
+          on:click={() => goto(`/skill/${sk.name}`)}>
           {sk.name}
         </SidebarEntry>
       {/each}
@@ -141,11 +135,12 @@
 
 <style>
     #sidebar {
-        position: absolute;
-        top: 100%;
+        /*position: absolute;*/
+        /*top: 100%;*/
+        position: sticky;
+        top: 3rem;
         z-index: 30;
         background-color: #222;
-        padding-bottom: 0.5rem;
         max-height: var(--height);
         height: var(--height);
         overflow-y: auto;
