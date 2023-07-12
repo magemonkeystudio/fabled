@@ -81,7 +81,7 @@
 	<hr />
 </div>
 <div class='container'>
-	{#each skill.triggers as comp}
+	{#each skill.triggers as comp (comp.id)}
 		<div class='widget'>
 			<ComponentWidget {skill} component={comp} on:update={update} on:save={save} />
 		</div>

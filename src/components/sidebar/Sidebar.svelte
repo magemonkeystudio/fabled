@@ -211,7 +211,8 @@
     }
 
     .new span {
-        display: block;
+        display: grid;
+        place-items: center;
         flex: 1;
         border-radius: 100vw;
         text-align: center;
