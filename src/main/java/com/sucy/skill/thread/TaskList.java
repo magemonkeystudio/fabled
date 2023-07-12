@@ -27,7 +27,7 @@
 package com.sucy.skill.thread;
 
 import java.util.Iterator;
-import java.util.LinkedList;
+
 
 public class TaskList implements Iterable<IThreadTask>, Iterator<IThreadTask> {
     private Entry iteratee;

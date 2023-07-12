@@ -1,11 +1,8 @@
 package com.sucy.skill.api.event;
 
-import com.sucy.skill.api.skills.Skill;
 import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.entity.EntityEvent;
 

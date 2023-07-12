@@ -1,7 +1,6 @@
 package com.sucy.skill.listener;
 
 import com.sucy.skill.api.event.ProjectileTickEvent;
-import com.sucy.skill.log.Logger;
 import com.sucy.skill.task.ProjectileTickTask;
 import com.sucy.skill.thread.MainThread;
 import org.bukkit.entity.LivingEntity;

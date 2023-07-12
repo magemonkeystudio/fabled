@@ -3,9 +3,6 @@ package com.sucy.skill.task;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.event.ProjectileTickEvent;
 import com.sucy.skill.listener.ProjectileListener;
-import com.sucy.skill.log.Logger;
-import com.sucy.skill.thread.IThreadTask;
-import com.sucy.skill.thread.MainThread;
 import com.sucy.skill.thread.RepeatThreadTask;
 import org.bukkit.Bukkit;
 
