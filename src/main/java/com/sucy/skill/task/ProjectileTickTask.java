@@ -9,6 +9,9 @@ import com.sucy.skill.thread.MainThread;
 import com.sucy.skill.thread.RepeatThreadTask;
 import org.bukkit.Bukkit;
 
+/**
+ * Task used to implement {@link ProjectileTickEvent}
+ */
 public class ProjectileTickTask extends RepeatThreadTask {
 
     private final ProjectileTickEvent event;
@@ -19,24 +22,15 @@ public class ProjectileTickTask extends RepeatThreadTask {
         this.event = event;
     }
 
+    /**
+     * Checks if projectile still did not hit the entity/ground
+     * and then throws @{@link ProjectileTickEvent}
+     */
     @Override
     public void run() {
         expired = !ProjectileListener.isFlying(event.getProjectile());
-        Logger.log("Run "+event.getProjectile().getUniqueId()+": "+expired);
         if (!expired) {
             Bukkit.getScheduler().runTask(SkillAPI.inst(),()->Bukkit.getPluginManager().callEvent(event));
-            //            MainThread.register(new IThreadTask() {
-//                @Override
-//                public boolean tick() {
-//                    return false;
-//                }
-//
-//                @Override
-//                public void run() {
-//                    Bukkit.getPluginManager().callEvent(event);
-//                }
-//            });
-            //Bukkit.getPluginManager().callEvent(event);
         }
     }
 }

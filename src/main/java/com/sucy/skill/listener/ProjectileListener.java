@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Listener to throw custom {@link ProjectileTickEvent}
+ */
 public class ProjectileListener extends SkillAPIListener{
     private static final List<UUID> flyingProjectiles = new ArrayList<>();
 
@@ -21,24 +24,28 @@ public class ProjectileListener extends SkillAPIListener{
     public void cleanup() {
         ProjectileListener.flyingProjectiles.clear();
     }
+
+    /**
+     * Marks projectiles as "flying"
+     */
     @EventHandler
     public void onLaunch(ProjectileLaunchEvent event){
         var shooter = event.getEntity().getShooter();
         if (!(shooter instanceof LivingEntity)) return;
         var tickEvent = new ProjectileTickEvent((LivingEntity) shooter,event.getEntity());
         flyingProjectiles.add(event.getEntity().getUniqueId());
-        Logger.log("Launch "+event.getEntity().getUniqueId());
-        Logger.log("flyingProjectiles length "+flyingProjectiles.size());
         MainThread.register(new ProjectileTickTask(tickEvent));
     }
+
+    /**
+     * Removes mark from projectile
+     */
     @EventHandler
     public void onHit(ProjectileHitEvent event){
         var shooter = event.getEntity().getShooter();
         if(!(shooter instanceof LivingEntity)) return;
         if(isFlying(event.getEntity())){
-            Logger.log("flyingProjectiles before remove "+flyingProjectiles);
             flyingProjectiles.remove(event.getEntity().getUniqueId());
-            Logger.log("flyingProjectiles after remove "+flyingProjectiles);
         }
 
     }
@@ -48,7 +55,6 @@ public class ProjectileListener extends SkillAPIListener{
      */
     public static boolean isFlying(Projectile projectile){
         var res = flyingProjectiles.contains(projectile.getUniqueId());
-        Logger.log("isFlying "+projectile.getUniqueId()+":"+res);
         return res;
     }
 }
