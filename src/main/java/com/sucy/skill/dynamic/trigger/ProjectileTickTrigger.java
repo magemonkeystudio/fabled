@@ -2,8 +2,8 @@ package com.sucy.skill.dynamic.trigger;
 
 import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.event.ProjectileTickEvent;
+import com.sucy.skill.api.particle.target.EntityTarget;
 import com.sucy.skill.dynamic.TempEntity;
-import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.Map;
 
 /**
  * ProSkillAPI © 2023
- * com.sucy.skill.dynamic.trigger.ProjectileLandTrigger
+ * com.sucy.skill.dynamic.trigger.ProjectileTickTrigger
  */
 public class ProjectileTickTrigger implements Trigger<ProjectileTickEvent> {
     /**
@@ -56,10 +56,7 @@ public class ProjectileTickTrigger implements Trigger<ProjectileTickEvent> {
      */
     @Override
     public LivingEntity getTarget(ProjectileTickEvent event, Settings settings) {
-        Location loc = event.getProjectile().getLocation();
-        var shooter = event.getEntity().getLocation();
-        loc.setYaw(shooter.getYaw());
-        loc.setPitch(shooter.getPitch());
-        return new TempEntity(loc);
+        boolean targetCaster = settings.getBool("target",false);
+        return targetCaster? (LivingEntity) event.getEntity() : new TempEntity(new EntityTarget(event.getProjectile()));
     }
 }

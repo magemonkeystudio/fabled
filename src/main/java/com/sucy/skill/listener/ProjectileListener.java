@@ -53,7 +53,11 @@ public class ProjectileListener extends SkillAPIListener{
      * is still in air
      */
     public static boolean isFlying(Projectile projectile){
-        var res = flyingProjectiles.contains(projectile.getUniqueId());
-        return res;
+        var isValid = projectile.isValid();
+        if (!isValid){
+            flyingProjectiles.remove(projectile.getUniqueId());
+            return false;
+        }
+        return flyingProjectiles.contains(projectile.getUniqueId());
     }
 }
