@@ -37,7 +37,6 @@ public class ProjectileHitTrigger implements Trigger<ProjectileHitEvent> {
      */
     @Override
     public boolean shouldTrigger(ProjectileHitEvent event, int level, Settings settings) {
-        if (!(event.getEntity().getShooter() instanceof LivingEntity)) return false;
         List<String> projectiles = settings.getStringList("projectile");
         String type = settings.getString("type","both");
         boolean hit = !Objects.isNull(event.getHitEntity());
