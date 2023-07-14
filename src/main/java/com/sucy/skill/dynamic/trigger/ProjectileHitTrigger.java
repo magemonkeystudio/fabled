@@ -45,9 +45,8 @@ public class ProjectileHitTrigger implements Trigger<ProjectileHitEvent> {
             type = "both";
         }
         boolean hitEntity = !Objects.isNull(event.getHitEntity());
-        boolean hitBlock = !Objects.isNull(event.getHitBlock());
         boolean isCorrectProjectile = projectiles.isEmpty() || projectiles.contains("Any") || projectiles.stream().anyMatch(projectile->event.getEntityType().name().equalsIgnoreCase(projectile));
-        boolean isCorrectType = type.equalsIgnoreCase("both") || (type.equalsIgnoreCase("entity") == hitEntity && type.equalsIgnoreCase("block") == hitBlock);
+        boolean isCorrectType = type.equalsIgnoreCase("both") || type.equalsIgnoreCase("entity") == hitEntity;
         return  isCorrectProjectile && isCorrectType;
     }
 
