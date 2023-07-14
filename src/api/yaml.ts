@@ -169,8 +169,8 @@ export class YAMLObject {
         }
 
         if (typeof (value) == "string") {
-          if (value == "false") value = false;
-          else if (value == "true") value = true;
+          if (value.toLowerCase() == "false") value = false;
+          else if (value.toLowerCase() == "true") value = true;
           else value = value.replace(/\\(['"])/, ($1: string) => $1.replace("\\", ""));
         }
         this.data[key] = value;
