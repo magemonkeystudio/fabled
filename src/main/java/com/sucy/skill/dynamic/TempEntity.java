@@ -79,6 +79,11 @@ public class TempEntity implements LivingEntity {
         this.target = target;
     }
 
+    @Override
+    public void playHurtAnimation(float f) {
+        
+    }
+
     public double getEyeHeight() {
         return 0.2;
     }
