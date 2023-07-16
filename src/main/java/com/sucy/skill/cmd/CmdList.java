@@ -30,13 +30,20 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerAccounts;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.player.PlayerData;
+
 import mc.promcteam.engine.mccore.commands.ConfigurableCommand;
 import mc.promcteam.engine.mccore.commands.IFunction;
 import mc.promcteam.engine.mccore.config.Filter;
+
+import java.io.File;
+import java.util.Iterator;
+import java.util.Set;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -45,11 +52,11 @@ import org.bukkit.plugin.Plugin;
  */
 public class CmdList implements IFunction {
     private static final String NEEDS_ARGS = "needs-player";
-    private static final String TITLE      = "title";
-    private static final String LINE       = "line";
-    private static final String END        = "end";
+    private static final String TITLE = "title";
+    private static final String LINE = "line";
+    private static final String END = "end";
     private static final String NOT_PLAYER = "not-player";
-    private static final String DISABLED   = "world-disabled";
+    private static final String DISABLED = "world-disabled";
 
     /**
      * Runs the command
@@ -62,8 +69,53 @@ public class CmdList implements IFunction {
     @Override
     public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
         // Disabled world
-        if (sender instanceof Player && !SkillAPI.getSettings().isWorldEnabled(((Player) sender).getWorld()) && args.length == 0) {
+        if (sender instanceof Player && !SkillAPI.getSettings().isWorldEnabled(((Player) sender).getWorld())
+                && args.length == 0) {
             cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+        }
+
+        // List loaded skills
+        else if (args.length >= 1) {
+            String listType = args[0];
+            // Check Args
+            switch (listType) {
+                case "skills":
+                    File file = new File(plugin.getDataFolder() + "/dynamic", "skills.yml");
+                    YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+                    Set<String> loadedSkills = config.getKeys(false);
+                    String loadedSkillsString = ChatColor.GOLD + "Loaded Skills: \n";
+                    Iterator<String> itr = loadedSkills.iterator();
+                    // Skip "loaded" key
+                    if (itr.hasNext()) itr.next();
+                    else {
+                        sender.sendMessage(loadedSkillsString + ChatColor.RED + "No skills loaded");
+                        return;
+                    }
+                    while (itr.hasNext()) {
+                        loadedSkillsString += ChatColor.GREEN + itr.next() + "\n";
+                    }
+                    sender.sendMessage(loadedSkillsString);
+                    return;
+                case "groups": 
+                    File groupFile = new File(plugin.getDataFolder() + "/dynamic", "groups.yml");
+                    YamlConfiguration groupConfig = YamlConfiguration.loadConfiguration(groupFile);
+                    Set<String> loadedGroups = groupConfig.getKeys(false);
+                    String loadedGroupsString = ChatColor.GOLD + "Loaded Groups: \n";
+                    Iterator<String> itr2 = loadedGroups.iterator();
+                    // Skip "loaded" key
+                    if (itr2.hasNext()) itr2.next();
+                    else {
+                        sender.sendMessage(loadedGroupsString + ChatColor.RED + "No groups loaded");
+                        return;
+                    }
+                    while (itr2.hasNext()) {
+                        loadedGroupsString += ChatColor.GREEN + itr2.next() + "\n";
+                    }
+                    sender.sendMessage(loadedGroupsString);
+                    return;
+                default:
+                    break;
+            }
         }
 
         // Only can show info of a player so console needs to provide a name
@@ -75,20 +127,21 @@ public class CmdList implements IFunction {
             }
 
             PlayerAccounts accounts = SkillAPI.getPlayerAccountData(target);
-            cmd.sendMessage(sender, TITLE, ChatColor.DARK_GRAY + "--" + ChatColor.DARK_GREEN + " {player} " + ChatColor.DARK_GRAY + "-----------", Filter.PLAYER.setReplacement(target.getName()));
-            String line = cmd.getMessage(LINE, ChatColor.GRAY + "[" + ChatColor.GOLD + "{id}" + ChatColor.GRAY + "] " + ChatColor.DARK_GREEN + "Lv" + ChatColor.GOLD + "{level} {class}");
+            cmd.sendMessage(sender, TITLE, ChatColor.DARK_GRAY + "--" + ChatColor.DARK_GREEN + " {player} "
+                    + ChatColor.DARK_GRAY + "-----------", Filter.PLAYER.setReplacement(target.getName()));
+            String line = cmd.getMessage(LINE, ChatColor.GRAY + "[" + ChatColor.GOLD + "{id}" + ChatColor.GRAY + "] "
+                    + ChatColor.DARK_GREEN + "Lv" + ChatColor.GOLD + "{level} {class}");
             if (accounts != null) {
                 for (int i = 1; i <= accounts.getAccountLimit(); i++) {
-                    PlayerData  data  = accounts.getData(i);
+                    PlayerData data = accounts.getData(i);
                     PlayerClass cData = data == null ? null : data.getMainClass();
-                    String      name  = cData == null ? ChatColor.GRAY + "Not Professed" : cData.getData().getPrefix();
-                    String      level = cData == null ? "0" : cData.getLevel() + "";
+                    String name = cData == null ? ChatColor.GRAY + "Not Professed" : cData.getData().getPrefix();
+                    String level = cData == null ? "0" : cData.getLevel() + "";
                     sender.sendMessage(
                             line
                                     .replace("{id}", i + "")
                                     .replace("{level}", level)
-                                    .replace("{class}", name)
-                    );
+                                    .replace("{class}", name));
                 }
             }
             cmd.sendMessage(sender, END, ChatColor.DARK_GRAY + "----------------------------");
