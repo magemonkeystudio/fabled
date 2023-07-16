@@ -71,10 +71,11 @@ public class CmdList implements IFunction {
         // Disabled world
         if (sender instanceof Player && !SkillAPI.getSettings().isWorldEnabled(((Player) sender).getWorld()) && args.length == 0) {
             cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+            return;
         }
 
         // List loaded skills
-        else if (args.length >= 1) {
+        if (args.length >= 1) {
             String listType = args[0];
             // Check Args
             switch (listType) {
@@ -118,7 +119,7 @@ public class CmdList implements IFunction {
         }
 
         // Only can show info of a player so console needs to provide a name
-        else if (sender instanceof Player || args.length >= 1) {
+        if (sender instanceof Player || args.length >= 1) {
             OfflinePlayer target = args.length == 0 ? (OfflinePlayer) sender : Bukkit.getOfflinePlayer(args[0]);
             if (target == null) {
                 cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name");
