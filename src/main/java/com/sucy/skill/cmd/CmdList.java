@@ -30,6 +30,7 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerAccounts;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.player.PlayerData;
+import com.sucy.skill.data.Permissions;
 
 import mc.promcteam.engine.mccore.commands.ConfigurableCommand;
 import mc.promcteam.engine.mccore.commands.IFunction;
@@ -80,6 +81,10 @@ public class CmdList implements IFunction {
             // Check Args
             switch (listType) {
                 case "skills":
+                    if (!sender.hasPermission(Permissions.LIST_SKILLS)) {
+                        cmd.sendMessage(sender, NEEDS_ARGS, ChatColor.RED + "You do not have permission to list skills");
+                        return;
+                    }
                     File file = new File(plugin.getDataFolder() + "/dynamic", "skills.yml");
                     YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
                     Set<String> loadedSkills = config.getKeys(false);
@@ -97,6 +102,10 @@ public class CmdList implements IFunction {
                     sender.sendMessage(loadedSkillsString);
                     return;
                 case "groups": 
+                    if (!sender.hasPermission(Permissions.LIST_GROUPS)) {
+                        cmd.sendMessage(sender, NEEDS_ARGS, ChatColor.RED + "You do not have permission to list groups");
+                        return;
+                    }
                     File groupFile = new File(plugin.getDataFolder() + "/dynamic", "groups.yml");
                     YamlConfiguration groupConfig = YamlConfiguration.loadConfiguration(groupFile);
                     Set<String> loadedGroups = groupConfig.getKeys(false);
