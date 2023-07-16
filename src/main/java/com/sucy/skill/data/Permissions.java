@@ -26,6 +26,8 @@
  */
 package com.sucy.skill.data;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Permission nodes used by the plugin
  */
@@ -49,4 +51,6 @@ public class Permissions {
     public static final String RESET        = ROOT + "reset";
     public static final String REFUND       = ROOT + "refund";
     public static final String MAX_ACCOUNTS = ROOT + "max_accounts";
+    public static final String LIST_SKILLS  = ROOT + "list_skills";
+    public static final String LIST_GROUPS =  ROOT + "list_groups";
 }
