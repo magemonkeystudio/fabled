@@ -26,8 +26,6 @@
  */
 package com.sucy.skill.data;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * Permission nodes used by the plugin
  */
