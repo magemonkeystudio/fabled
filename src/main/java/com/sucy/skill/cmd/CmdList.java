@@ -52,11 +52,11 @@ import org.bukkit.plugin.Plugin;
  */
 public class CmdList implements IFunction {
     private static final String NEEDS_ARGS = "needs-player";
-    private static final String TITLE = "title";
-    private static final String LINE = "line";
-    private static final String END = "end";
+    private static final String TITLE      = "title";
+    private static final String LINE       = "line";
+    private static final String END        = "end";
     private static final String NOT_PLAYER = "not-player";
-    private static final String DISABLED = "world-disabled";
+    private static final String DISABLED   = "world-disabled";
 
     /**
      * Runs the command
@@ -69,8 +69,7 @@ public class CmdList implements IFunction {
     @Override
     public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
         // Disabled world
-        if (sender instanceof Player && !SkillAPI.getSettings().isWorldEnabled(((Player) sender).getWorld())
-                && args.length == 0) {
+        if (sender instanceof Player && !SkillAPI.getSettings().isWorldEnabled(((Player) sender).getWorld()) && args.length == 0) {
             cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
         }
 
@@ -141,7 +140,8 @@ public class CmdList implements IFunction {
                             line
                                     .replace("{id}", i + "")
                                     .replace("{level}", level)
-                                    .replace("{class}", name));
+                                    .replace("{class}", name)
+                                    );
                 }
             }
             cmd.sendMessage(sender, END, ChatColor.DARK_GRAY + "----------------------------");
