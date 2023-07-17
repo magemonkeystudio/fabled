@@ -42,10 +42,7 @@ public class ProjectileListener extends SkillAPIListener{
     public void onHit(ProjectileHitEvent event){
         var shooter = event.getEntity().getShooter();
         if(!(shooter instanceof LivingEntity)) return;
-        if(isFlying(event.getEntity())){
-            flyingProjectiles.remove(event.getEntity().getUniqueId());
-        }
-
+        flyingProjectiles.remove(event.getEntity().getUniqueId());
     }
     /**
      * Checks if specified projectile
