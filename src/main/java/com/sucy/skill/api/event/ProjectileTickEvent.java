@@ -17,16 +17,23 @@ public class ProjectileTickEvent extends EntityEvent {
      */
     @Getter
     private final Projectile projectile;
+    /**
+     * Retrieves the time of projectile flying
+     */
+    @Getter
+    private final int tick;
 
     /**
      * Initializes a new event
      *
      * @param shooter        entity dealing the damage
      * @param projectile     projectile entity
+     * @param tick           current tick
      */
-    public ProjectileTickEvent (LivingEntity shooter, Projectile projectile) {
+    public ProjectileTickEvent (LivingEntity shooter, Projectile projectile, int tick) {
         super(shooter);
         this.projectile = projectile;
+        this.tick = tick;
     }
 
     /**

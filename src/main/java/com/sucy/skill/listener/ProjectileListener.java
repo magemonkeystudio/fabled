@@ -31,9 +31,8 @@ public class ProjectileListener extends SkillAPIListener{
     public void onLaunch(ProjectileLaunchEvent event){
         var shooter = event.getEntity().getShooter();
         if (!(shooter instanceof LivingEntity)) return;
-        var tickEvent = new ProjectileTickEvent((LivingEntity) shooter,event.getEntity());
         flyingProjectiles.add(event.getEntity().getUniqueId());
-        MainThread.register(new ProjectileTickTask(tickEvent));
+        MainThread.register(new ProjectileTickTask((LivingEntity) event.getEntity().getShooter(),event.getEntity()));
     }
 
     /**
