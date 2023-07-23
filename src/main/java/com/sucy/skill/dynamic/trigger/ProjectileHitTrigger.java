@@ -5,12 +5,13 @@ import com.sucy.skill.api.particle.target.EntityTarget;
 import com.sucy.skill.dynamic.TempEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 /**
  * ProSkillAPI © 2023
@@ -38,16 +39,26 @@ public class ProjectileHitTrigger implements Trigger<ProjectileHitEvent> {
      */
     @Override
     public boolean shouldTrigger(ProjectileHitEvent event, int level, Settings settings) {
+        Projectile   proj        = event.getEntity();
         List<String> projectiles = settings.getStringList("projectile");
-        String typeBase = settings.getString("type","both");
-        String type = typeBase;
-        if (Stream.of("both","entity","block").noneMatch(c-> typeBase.equalsIgnoreCase(c))){
-            type = "both";
-        }
-        boolean hitEntity = !Objects.isNull(event.getHitEntity());
-        boolean isCorrectProjectile = projectiles.isEmpty() || projectiles.contains("Any") || projectiles.stream().anyMatch(projectile->event.getEntityType().name().equalsIgnoreCase(projectile));
-        boolean isCorrectType = type.equalsIgnoreCase("both") || type.equalsIgnoreCase("entity") == hitEntity;
-        return  isCorrectProjectile && isCorrectType;
+        String       type        = translateType(settings.getString("type", "both"));
+
+        boolean hitEntity = Objects.nonNull(event.getHitEntity());
+
+        boolean correctProjectile = projectiles.isEmpty()
+                || projectiles.contains("Any")
+                || projectiles.stream().anyMatch(projectile -> proj.getType().name().equalsIgnoreCase(projectile));
+        boolean correctType = type.equalsIgnoreCase("both") || type.equalsIgnoreCase("entity") == hitEntity;
+
+        return correctProjectile && correctType;
+    }
+
+    private String translateType(String typeInput) {
+        return switch (typeInput.toLowerCase()) {
+            case "both" -> "both";
+            case "entity" -> "entity";
+            default -> "both";
+        };
     }
 
     /**
@@ -55,22 +66,31 @@ public class ProjectileHitTrigger implements Trigger<ProjectileHitEvent> {
      */
     @Override
     public void setValues(ProjectileHitEvent event, Map<String, Object> data) {}
+
     /**
      * {@inheritDoc}
      */
     @Override
     public LivingEntity getCaster(ProjectileHitEvent event) {
-        var shooter = event.getEntity().getShooter();
-        return shooter instanceof LivingEntity? (LivingEntity) shooter : null;
+        ProjectileSource shooter = event.getEntity().getShooter();
+        return shooter instanceof LivingEntity ? (LivingEntity) shooter : null;
     }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public LivingEntity getTarget(ProjectileHitEvent event, Settings settings) {
-        TempEntity projectile = new TempEntity(new EntityTarget(event.getEntity()));
-        boolean targetCaster = settings.getBool("target",false);
-        Entity hit = event.getHitEntity();
-        return targetCaster? (LivingEntity) event.getEntity().getShooter() : (Objects.isNull(hit)? projectile: (hit instanceof LivingEntity? (LivingEntity) hit :new TempEntity(hit.getLocation())));
+        TempEntity projectile   = new TempEntity(new EntityTarget(event.getEntity()));
+        boolean    targetCaster = settings.getBool("target", false);
+        Entity     hit          = event.getHitEntity();
+
+        if (targetCaster) {
+            return (LivingEntity) event.getEntity().getShooter();
+        } else if (Objects.nonNull(hit)) {
+            return hit instanceof LivingEntity ? (LivingEntity) hit : new TempEntity(hit.getLocation());
+        }
+
+        return projectile;
     }
 }

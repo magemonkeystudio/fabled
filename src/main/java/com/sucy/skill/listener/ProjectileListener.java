@@ -8,6 +8,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.UUID;
 /**
  * Listener to throw custom {@link ProjectileTickEvent}
  */
-public class ProjectileListener extends SkillAPIListener{
+public class ProjectileListener extends SkillAPIListener {
     private static final List<UUID> flyingProjectiles = new ArrayList<>();
 
     @Override
@@ -28,32 +29,34 @@ public class ProjectileListener extends SkillAPIListener{
      * Marks projectiles as "flying"
      */
     @EventHandler
-    public void onLaunch(ProjectileLaunchEvent event){
-        var shooter = event.getEntity().getShooter();
+    public void onLaunch(ProjectileLaunchEvent event) {
+        ProjectileSource shooter = event.getEntity().getShooter();
         if (!(shooter instanceof LivingEntity)) return;
+
         flyingProjectiles.add(event.getEntity().getUniqueId());
-        MainThread.register(new ProjectileTickTask((LivingEntity) event.getEntity().getShooter(),event.getEntity()));
+        MainThread.register(new ProjectileTickTask((LivingEntity) event.getEntity().getShooter(), event.getEntity()));
     }
 
     /**
      * Removes mark from projectile
      */
     @EventHandler
-    public void onHit(ProjectileHitEvent event){
-        var shooter = event.getEntity().getShooter();
-        if(!(shooter instanceof LivingEntity)) return;
+    public void onHit(ProjectileHitEvent event) {
+        ProjectileSource shooter = event.getEntity().getShooter();
+        if (!(shooter instanceof LivingEntity)) return;
+
         flyingProjectiles.remove(event.getEntity().getUniqueId());
     }
+
     /**
      * Checks if specified projectile
      * is still in air
      */
-    public static boolean isFlying(Projectile projectile){
-        var isValid = projectile.isValid();
-        if (!isValid){
+    public static boolean isFlying(Projectile projectile) {
+        boolean isValid = projectile.isValid();
+        if (!isValid)
             flyingProjectiles.remove(projectile.getUniqueId());
-            return false;
-        }
+
         return flyingProjectiles.contains(projectile.getUniqueId());
     }
 }

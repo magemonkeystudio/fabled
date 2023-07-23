@@ -11,26 +11,26 @@ import org.bukkit.event.entity.EntityEvent;
  * did not hit neither entity nor block
  */
 public class ProjectileTickEvent extends EntityEvent {
-    private static final HandlerList  handlers  = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
     /**
      * Retrieves the projectile entity
      */
     @Getter
-    private final Projectile projectile;
+    private final        Projectile  projectile;
     /**
      * Retrieves the time of projectile flying
      */
     @Getter
-    private final int tick;
+    private final        int         tick;
 
     /**
      * Initializes a new event
      *
-     * @param shooter        entity dealing the damage
-     * @param projectile     projectile entity
-     * @param tick           current tick
+     * @param shooter    entity dealing the damage
+     * @param projectile projectile entity
+     * @param tick       current tick
      */
-    public ProjectileTickEvent (LivingEntity shooter, Projectile projectile, int tick) {
+    public ProjectileTickEvent(LivingEntity shooter, Projectile projectile, int tick) {
         super(shooter);
         this.projectile = projectile;
         this.tick = tick;

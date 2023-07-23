@@ -16,15 +16,17 @@ import org.bukkit.entity.Projectile;
 public class ProjectileTickTask extends RepeatThreadTask {
 
     private final LivingEntity shooter;
-    private final Projectile projectile;
-    private int tick;
+    private final Projectile   projectile;
+    private       int          tick;
 
     public ProjectileTickTask(LivingEntity shooter, Projectile projectile) {
         super(0, 1);
-        expired = false;
-        tick = 1;
+
         this.shooter = shooter;
         this.projectile = projectile;
+
+        expired = false;
+        tick = 1;
     }
 
     /**
@@ -35,11 +37,11 @@ public class ProjectileTickTask extends RepeatThreadTask {
     public void run() {
         expired = !ProjectileListener.isFlying(projectile);
         if (!expired) {
-            ProjectileTickEvent event = new ProjectileTickEvent(shooter,projectile,tick);
-            Bukkit.getScheduler().runTask(SkillAPI.inst(),()->Bukkit.getPluginManager().callEvent(event));
+            ProjectileTickEvent event = new ProjectileTickEvent(shooter, projectile, tick);
+            Bukkit.getScheduler().runTask(SkillAPI.inst(), () -> Bukkit.getPluginManager().callEvent(event));
             tick++;
-        }else{
-            ((ProjectileTickTrigger)ComponentRegistry.getTrigger("PROJECTILE_TICK")).removeProjectile(projectile.getUniqueId());
+        } else {
+            ((ProjectileTickTrigger) ComponentRegistry.getTrigger("PROJECTILE_TICK")).removeProjectile(projectile.getUniqueId());
         }
     }
 }
