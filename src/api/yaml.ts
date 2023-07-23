@@ -230,7 +230,8 @@ export class YAMLObject {
         saveString +=
           str.replaceAll(/(\\)?'/g, "\\'")
             .replaceAll(/((\\)?")/g, s => s.length == 1 ? "'" : s)
-            .replaceAll(/\\"/g, "\"");
+            .replaceAll(/\\"/g, "\"")
+            .replace(/\\\\/g, "\\");
       }
     }
     return saveString;
