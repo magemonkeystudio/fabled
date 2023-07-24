@@ -430,6 +430,11 @@ public class TempEntity implements LivingEntity {
 
     }
 
+    @Override
+    public void playHurtAnimation(float v) {
+
+    }
+
     public boolean isCollidable() {
         return false;
     }
