@@ -8,16 +8,16 @@
     saveData,
     sidebarOpen,
     updateFolders
-  }                           from "../../data/store";
-  import ProSkill             from "$api/proskill";
-  import ProClass             from "$api/proclass";
-  import { get }              from "svelte/store";
-  import ProFolder            from "$api/profolder";
-  import { fly }              from "svelte/transition";
-  import Modal                from "../Modal.svelte";
-  import { addClassFolder }   from "../../data/class-store";
-  import { addSkillFolder }   from "../../data/skill-store";
-  import { animationEnabled } from "../../data/settings";
+  }                                     from "../../data/store";
+  import ProSkill                       from "$api/proskill";
+  import ProClass                       from "$api/proclass";
+  import { get }                        from "svelte/store";
+  import ProFolder                      from "$api/profolder";
+  import { fly }                        from "svelte/transition";
+  import Modal                          from "../Modal.svelte";
+  import { addClassFolder, cloneClass } from "../../data/class-store";
+  import { addSkillFolder, cloneSkill } from "../../data/skill-store";
+  import { animationEnabled }           from "../../data/settings";
 
   export let delay                                 = 0;
   export let direction: "right" | "left"           = "left";
@@ -65,11 +65,19 @@
   };
 
 
-  const maybe = (node, options) => {
+  const maybe = (node: Element, options: any) => {
     if (!get(animationEnabled)) {
       options.delay = 0;
     }
     return options.fn(node, options);
+  };
+
+  const cloneData = (data: ProClass | ProSkill) => {
+    if (data instanceof ProClass) {
+      cloneClass(data);
+    } else {
+      cloneSkill(data);
+    }
   };
 </script>
 
@@ -86,7 +94,7 @@
      on:click
      in:maybe={{fn: fly, x: (direction === "left" ? -100 : 100), duration: 500, delay: $sidebarOpen ? 0 : delay}}
      out:fly={{x: (direction === "left" ? -100 : 100), duration: 500}}>
-  <slot />
+  <slot/>
   {#if data}
     <div class="buttons">
       {#if data instanceof ProSkill}
@@ -98,18 +106,23 @@
           </span>
         </a>
       {/if}
-      <div
-        on:click|preventDefault|stopPropagation={() => saveData(data)}
-        class="download"
-        title="Save {data.triggers ? 'Skill' : 'Class'}">
+      <div on:click|preventDefault|stopPropagation={() => saveData(data)}
+           class="download"
+           title="Save {data.triggers ? 'Skill' : 'Class'}">
         <span class="material-symbols-rounded">
           save
         </span>
       </div>
-      <div
-        class="delete"
-        on:click|preventDefault|stopPropagation={() => deleting = true}
-        title="Delete {data.triggers ? 'Skill' : 'Class'}">
+      <div on:click|preventDefault|stopPropagation={() => cloneData(data)}
+           class="clone"
+           title="Clone {data.triggers ? 'Skill' : 'Class'}">
+        <span class="material-symbols-rounded">
+          file_copy
+        </span>
+      </div>
+      <div on:click|preventDefault|stopPropagation={() => deleting = true}
+           class="delete"
+           title="Delete {data.triggers ? 'Skill' : 'Class'}">
         <span class="material-symbols-rounded">
           delete
         </span>
@@ -189,7 +202,7 @@
         transition: opacity 0.25s ease;
     }
 
-    .download, .delete, .edit {
+    .download, .delete, .edit, .clone {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -214,6 +227,11 @@
 
     .edit:hover {
         background-color: #0083ef;
+    }
+
+    .clone:hover {
+        background-color: #00568c;
+
     }
 
     .modal-buttons {

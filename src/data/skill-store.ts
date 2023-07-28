@@ -116,6 +116,21 @@ export const addSkill = (name?: string): ProSkill => {
   return clazz;
 };
 
+export const cloneSkill = (data: ProSkill): ProSkill => {
+  const sk: ProSkill[] = get(skills);
+  let name             = data.name + " (Copy)";
+  let i                = 1;
+  while (isSkillNameTaken(name)) {
+    name = data.name + " (Copy " + i + ")";
+    i++;
+  }
+  const skill = new ProSkill({ name });
+  sk.push(skill);
+
+  skills.set(sk);
+  return skill;
+};
+
 export const addSkillFolder = (folder: ProFolder) => {
   const folders = get(skillFolders);
   if (folders.includes(folder)) return;

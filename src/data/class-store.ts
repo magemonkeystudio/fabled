@@ -123,6 +123,21 @@ export const addClass = (name?: string): ProClass => {
   return clazz;
 };
 
+export const cloneClass = (data: ProClass): ProClass => {
+  const cl: ProClass[] = get(classes);
+  let name             = data.name + " (Copy)";
+  let i                = 1;
+  while (isClassNameTaken(name)) {
+    name = data.name + " (Copy " + i + ")";
+    i++;
+  }
+  const clazz = new ProClass({ name });
+  cl.push(clazz);
+
+  classes.set(cl);
+  return clazz;
+};
+
 export const addClassFolder = (folder: ProFolder) => {
   const folders = get(classFolders);
   if (folders.includes(folder)) return;
