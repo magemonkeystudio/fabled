@@ -34,6 +34,7 @@ public class ComponentRegistry {
     static {
 
         // Triggers
+        register(new ArmorEquipTrigger());
         register(new BlockBreakTrigger());
         register(new BlockPlaceTrigger());
         register(new ClickLeftTrigger());
