@@ -40,6 +40,19 @@ import ColorSelect                            from '$api/options/colorselect';
 
 // TRIGGERS
 
+class ArmorEquipTrigger extends ProTrigger {
+	public constructor() {
+		super({
+			name:        'Armor Equip',
+			description: 'Applies skill effects when a player equips a new item in an armor or hand slot',
+			data:        [new DropdownSelect('Slots', 'slots', ['Any', 'Helmet', 'Chestplate', 'Leggings', 'Boots'], ['Any'], true)
+			.setTooltip('The armor slots to check for')]
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class BlockBreakTrigger extends ProTrigger {
 	public constructor() {
 		super({
@@ -3309,6 +3322,7 @@ class WolfMechanic extends ProMechanic {
 
 export const initComponents = () => {
 	Registry.triggers.set({
+		ARMOR_EQUIP:    { name: 'Armor Equip', component: ArmorEquipTrigger },
 		BLOCK_BREAK:    { name: 'Block Break', component: BlockBreakTrigger },
 		BLOCK_PLACE:    { name: 'Block Place', component: BlockPlaceTrigger },
 		CAST:           { name: 'Cast', component: CastTrigger },
