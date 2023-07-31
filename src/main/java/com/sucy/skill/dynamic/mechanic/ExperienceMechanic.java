@@ -53,7 +53,7 @@ public class ExperienceMechanic extends MechanicComponent {
             amount = allNextLevelExp*expValue/100;
         switch (mode){
             case "give":
-                playerClass.giveExp(amount, ExpSource.SPECIAL);
+                playerClass.giveExp(amount, ExpSource.PLUGIN);
                 break;
             case "take":
                 if(!levelDown && amount>playerClass.getExp()) return false;
