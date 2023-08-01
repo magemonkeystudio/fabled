@@ -59,6 +59,7 @@ public class ComponentRegistry {
         register(new SkillDealtTrigger());
         register(new SkillTakenTrigger());
         register(new SkillCastTrigger());
+        register(new ConsumeTrigger());
 
         // Targets
         register(new AreaTarget());
