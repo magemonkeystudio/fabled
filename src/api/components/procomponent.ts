@@ -13,6 +13,7 @@ export default abstract class ProComponent extends Constructable {
   data: ComponentOption[]              = [];
   isParent                             = true;
   id                                   = {};
+  _defaultOpen                         = false;
 
   protected constructor(type: "trigger" | "condition" | "mechanic" | "target", data: ComponentData) {
     super();
@@ -60,8 +61,12 @@ export default abstract class ProComponent extends Constructable {
       if (component.contains(comp))
         component.removeComponent(comp);
     }
-
   };
+
+  public defaultOpen = () => {
+    this._defaultOpen = true;
+    return this;
+  }
 
   public toYamlObj(): YAMLObject {
     const data = new YAMLObject(this.name);

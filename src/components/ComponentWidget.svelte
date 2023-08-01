@@ -78,6 +78,8 @@
     targetSub    = Registry.targets.subscribe(tar => targets = tar);
     conditionSub = Registry.conditions.subscribe(con => conditions = con);
     mechanicSub  = Registry.mechanics.subscribe(mech => mechanics = mech);
+
+    modalOpen = component._defaultOpen;
   });
 
   onDestroy(() => {
@@ -114,7 +116,7 @@
   };
 
   const addComponent = (comp: typeof ProComponent) => {
-    component.addComponent(comp.new());
+    component.addComponent(comp.new().defaultOpen());
     componentModal = false;
     searchParams   = "";
     dispatch("save");
@@ -207,7 +209,7 @@
     {:else}
       <span class="material-symbols-rounded" in:spin|local={{duration: 400}}>expand_less</span>
     {/if}
-    <div class="corner" on:click|stopPropagation={() => collapsed = !collapsed} />
+    <div class="corner" on:click|stopPropagation={() => collapsed = !collapsed}/>
     <div class="name"><span>{getName($useSymbols)}</span>{($useSymbols ? ' ' : ': ') + component.name}</div>
 
     {#if !collapsed}
@@ -251,13 +253,13 @@
                    let comp = get(draggingComponent);
                    skill.removeComponent(comp);
                    component.addComponent(comp);
-                 }} />
+                 }}/>
           {/if}
         {:else}
           <div class="child-wrapper" bind:this={children}>
             {#each childrenList as child (child.id)}
             <span transition:slide|local>
-              <svelte:self {skill} bind:component={child} on:update on:save on:addskill={addSkill} />
+              <svelte:self {skill} bind:component={child} on:update on:save on:addskill={addSkill}/>
             </span>
             {/each}
           </div>
@@ -277,35 +279,35 @@
   {#if component.description}
     <div class="modal-desc">{component.description}</div>
   {/if}
-  <hr />
+  <hr/>
   <div class="component-entry">
     {#if component instanceof ProTrigger && component.name != 'Cast' && component.name != 'Initialize' && component.name != 'Cleanup'}
       <ProInput label="Mana" tooltip="Whether this trigger requires the mana cost to activate">
-        <Toggle bind:data={component.mana} />
+        <Toggle bind:data={component.mana}/>
       </ProInput>
       <ProInput label="Cooldown" tooltip="Whether this trigger requires to be off cooldown to activate">
-        <Toggle bind:data={component.cooldown} />
+        <Toggle bind:data={component.cooldown}/>
       </ProInput>
     {:else if component instanceof ProTarget || component instanceof ProCondition || component instanceof ProMechanic}
       <ProInput label="Icon Key" bind:value={component.iconKey}
-                tooltip={'The key used by the component in the Icon Lore. If this is set to "example" and has a value name of "value", it can be referenced using the string "{attr:example.value}"'} />
+                tooltip={'The key used by the component in the Icon Lore. If this is set to "example" and has a value name of "value", it can be referenced using the string "{attr:example.value}"'}/>
     {/if}
     {#if component instanceof ProMechanic}
       <ProInput label="Counts as Cast"
                 tooltip={'Whether this mechanic running treats the skill as "casted" and will consume mana and start the cooldown. Set to false if it is a mechanic applled when the skill fails such as cleanup or an error message"'}>
-        <Toggle bind:data={component.countsAsCast} />
+        <Toggle bind:data={component.countsAsCast}/>
       </ProInput>
     {/if}
 
     {#each component.data as datum}
       {#if datum.meetsRequirements(component)}
         <svelte:component
-          this={datum.component}
-          bind:data={datum.data}
-          name={datum.name}
-          tooltip={datum.tooltip}
-          multiple={datum.multiple}
-          on:save />
+                this={datum.component}
+                bind:data={datum.data}
+                name={datum.name}
+                tooltip={datum.tooltip}
+                multiple={datum.multiple}
+                on:save/>
       {/if}
     {/each}
   </div>
@@ -313,14 +315,14 @@
 
 <Modal bind:open={componentModal} width="70%">
   <div class="modal-header-wrapper">
-    <div />
+    <div/>
     <h2>Add a Component</h2>
     <div class="search-bar">
-      <ProInput bind:value={searchParams} placeholder="Search..." />
+      <ProInput bind:value={searchParams} placeholder="Search..."/>
     </div>
   </div>
   {#if sortedTargets.length > 0}
-    <hr />
+    <hr/>
     <div class="comp-modal-header">
       <h3>Targets</h3>
     </div>
@@ -331,7 +333,7 @@
     </div>
   {/if}
   {#if sortedConditions.length > 0}
-    <hr />
+    <hr/>
     <div class="comp-modal-header">
       <h3>Conditions</h3>
     </div>
@@ -342,7 +344,7 @@
     </div>
   {/if}
   {#if sortedMechanics.length > 0}
-    <hr />
+    <hr/>
     <div class="comp-modal-header">
       <h3>Mechanics</h3>
     </div>
@@ -352,7 +354,7 @@
       {/each}
     </div>
   {/if}
-  <hr />
+  <hr/>
   <div class="cancel" on:click={() => componentModal = false}>Cancel</div>
 </Modal>
 
