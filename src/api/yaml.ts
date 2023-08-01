@@ -129,8 +129,8 @@ export class YAMLObject {
       if (!this.key && !exKey) this.key = key;
 
       // New empty section
-      if (lines[index].indexOf(": {}") == lines[index].length - 4 && lines[index].length >= 4) {
-        this.data[key] = {};
+      if (lines[index].search(/: +\{\}/) != -1 && lines[index].length >= 4) {
+        this.data[key] = new YAMLObject(key);
       }
 
       // String list
