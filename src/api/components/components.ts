@@ -342,7 +342,7 @@ class ProjectileHitTrigger extends ProTrigger {
 					.setTooltip('True makes the children target the caster. False makes children target the damaged entity'),
 				new DropdownSelect('Type', 'type', ['Both', 'Entity', 'Block'], 'Both')
 					.setTooltip('The type of what projectile hits'),
-				new DropdownSelect('Projectile', 'projectile', getAnyProjectiles, 'Any', true)
+				new DropdownSelect('Projectile', 'projectile', getAnyProjectiles, ['Any'], true)
 					.setTooltip('The type of projectile shot')
 			]
 		});
@@ -363,7 +363,7 @@ class ProjectileTickTrigger extends ProTrigger {
 					.setTooltip('Interval between trigger executions'),
 				new IntSelect('Delay', 'delay', 0)
 					.setTooltip('Delay before executing trigger for the first time'),
-				new DropdownSelect('Projectile', 'projectile', getAnyProjectiles, 'Any', true)
+				new DropdownSelect('Projectile', 'projectile', getAnyProjectiles, ['Any'], true)
 					.setTooltip('The type of projectile shot')
 			]
 		});
