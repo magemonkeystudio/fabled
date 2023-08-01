@@ -124,7 +124,9 @@ export const cloneSkill = (data: ProSkill): ProSkill => {
     name = data.name + " (Copy " + i + ")";
     i++;
   }
-  const skill = new ProSkill({ name });
+  const skill = new ProSkill();
+  skill.load(parseYAML(data.serializeYaml().toString()).get(data.name));
+  skill.name = name;
   sk.push(skill);
 
   skills.set(sk);

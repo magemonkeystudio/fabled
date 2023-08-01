@@ -97,7 +97,13 @@ export default class ProSkill implements Serializable {
     data.put("icon", this.icon.material);
     data.put("icon-data", this.icon.customModelData);
     data.put("icon-lore", this.icon.lore);
-    data.put("attributes", [this.levelReq, this.cost, this.cooldown, this.mana, this.minSpent]);
+    const attributes = new YAMLObject("attributes");
+    attributes.put("level", this.levelReq);
+    attributes.put("cost", this.cost);
+    attributes.put("cooldown", this.cooldown);
+    attributes.put("mana", this.mana);
+    attributes.put("points-spent-req", this.minSpent);
+    data.put("attributes", attributes);
     data.put("incompatible", this.incompatible.map(s => s.name));
     data.put("components", this.triggers);
 
@@ -133,6 +139,7 @@ export default class ProSkill implements Serializable {
 
     unsub = Registry.initialized.subscribe(init => {
       if (!init) return;
+      console.log(yaml.get("components", []))
       this.triggers = yaml.get<YAMLObject, ProTrigger[]>("components", this.triggers, (list: YAMLObject) => Registry.deserializeComponents(list));
 
       if (unsub) {

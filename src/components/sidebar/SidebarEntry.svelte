@@ -117,7 +117,7 @@
            class="clone"
            title="Clone {data.triggers ? 'Skill' : 'Class'}">
         <span class="material-symbols-rounded">
-          file_copy
+          content_copy
         </span>
       </div>
       <div on:click|preventDefault|stopPropagation={() => deleting = true}

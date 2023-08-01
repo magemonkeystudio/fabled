@@ -131,7 +131,9 @@ export const cloneClass = (data: ProClass): ProClass => {
     name = data.name + " (Copy " + i + ")";
     i++;
   }
-  const clazz = new ProClass({ name });
+  const clazz = new ProClass();
+  clazz.load(parseYAML(data.serializeYaml().toString()).get(data.name));
+  clazz.name = name;
   cl.push(clazz);
 
   classes.set(cl);
