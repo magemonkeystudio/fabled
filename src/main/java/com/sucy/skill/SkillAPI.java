@@ -669,6 +669,7 @@ public class SkillAPI extends JavaPlugin {
         listen(new BuffListener(), true);
         listen(new MainListener(), true);
         listen(new MechanicListener(), true);
+        listen(new ProjectileListener(),true);
         listen(new StatusListener(), true);
         listen(new ToolListener(), true);
         listen(new KillListener(), true);
