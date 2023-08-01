@@ -46,7 +46,7 @@ class ArmorEquipTrigger extends ProTrigger {
 			name:        'Armor Equip',
 			description: 'Applies skill effects when a player equips a new item in an armor or hand slot',
 			data:        [new DropdownSelect('Slots', 'slots', ['Any', 'Helmet', 'Chestplate', 'Leggings', 'Boots'], ['Any'], true)
-			.setTooltip('The armor slots to check for')]
+				.setTooltip('The armor slots to check for')]
 		});
 	}
 
@@ -332,6 +332,46 @@ class PhysicalDamageTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
+class ProjectileHitTrigger extends ProTrigger {
+	public constructor() {
+		super({
+			name:        'Projectile Hit',
+			description: 'Applies skill effects when a projectile hits a block/entity',
+			data:        [
+				new BooleanSelect('Target Caster', 'target', true)
+					.setTooltip('True makes the children target the caster. False makes children target the damaged entity'),
+				new DropdownSelect('Type', 'type', ['Both', 'Entity', 'Block'], 'Both')
+					.setTooltip('The type of what projectile hits'),
+				new DropdownSelect('Projectile', 'projectile', getAnyProjectiles, 'Any', true)
+					.setTooltip('The type of projectile shot')
+			]
+		});
+	}
+
+	public static override new = () => new this();
+}
+
+class ProjectileTickTrigger extends ProTrigger {
+	public constructor() {
+		super({
+			name:        'Projectile Tick',
+			description: 'Applies skill effects every interval while a projectile is in the air',
+			data:        [
+				new BooleanSelect('Target Caster', 'target', true)
+					.setTooltip('True makes the children target the caster. False makes children target the damaged entity'),
+				new IntSelect('Interval', 'interval', 1)
+					.setTooltip('Interval between trigger executions'),
+				new IntSelect('Delay', 'delay', 0)
+					.setTooltip('Delay before executing trigger for the first time'),
+				new DropdownSelect('Projectile', 'projectile', getAnyProjectiles, 'Any', true)
+					.setTooltip('The type of projectile shot')
+			]
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class RightClickTrigger extends ProTrigger {
 	public constructor() {
 		super({
@@ -428,6 +468,7 @@ class TookSkillTrigger extends ProTrigger {
 
 	public static override new = () => new this();
 }
+
 class ConsumeTrigger extends ProTrigger {
 	public constructor() {
 		super({
@@ -3361,6 +3402,8 @@ export const initComponents = () => {
 		RIGHT_CLICK:    { name: 'Right Click', component: RightClickTrigger },
 		MOVE:           { name: 'Move', component: MoveTrigger },
 		PHYS_DAMAGE:    { name: 'Physical Damage', component: PhysicalDamageTrigger },
+		PROJ_HIT:       { name: 'Projectile Hit', component: ProjectileHitTrigger },
+		PROJ_TICK:      { name: 'Projectile Launch', component: ProjectileTickTrigger },
 		SKILL_DAMAGE:   { name: 'Skill Damage', component: SkillDamageTrigger },
 		SKILL_CAST:     { name: 'Skill Cast', component: SkillCastTrigger },
 		TOOK_PHYS:      { name: 'Took Physical Damage', component: TookPhysicalTrigger },
