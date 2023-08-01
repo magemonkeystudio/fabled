@@ -319,17 +319,6 @@
       <ProInput bind:value={searchParams} placeholder="Search..." />
     </div>
   </div>
-  {#if sortedConditions.length > 0}
-    <hr />
-    <div class="comp-modal-header">
-      <h3>Conditions</h3>
-    </div>
-    <div class="triggers">
-      {#each sortedConditions as condition}
-        <div class="comp-select" on:click={() => addComponent(condition.component)}>{condition.name}</div>
-      {/each}
-    </div>
-  {/if}
   {#if sortedTargets.length > 0}
     <hr />
     <div class="comp-modal-header">
@@ -338,6 +327,17 @@
     <div class="triggers">
       {#each sortedTargets as target}
         <div class="comp-select" on:click={() => addComponent(target.component)}>{target.name}</div>
+      {/each}
+    </div>
+  {/if}
+  {#if sortedConditions.length > 0}
+    <hr />
+    <div class="comp-modal-header">
+      <h3>Conditions</h3>
+    </div>
+    <div class="triggers">
+      {#each sortedConditions as condition}
+        <div class="comp-select" on:click={() => addComponent(condition.component)}>{condition.name}</div>
       {/each}
     </div>
   {/if}

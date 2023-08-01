@@ -139,7 +139,6 @@ export default class ProSkill implements Serializable {
 
     unsub = Registry.initialized.subscribe(init => {
       if (!init) return;
-      console.log(yaml.get("components", []))
       this.triggers = yaml.get<YAMLObject, ProTrigger[]>("components", this.triggers, (list: YAMLObject) => Registry.deserializeComponents(list));
 
       if (unsub) {
