@@ -33,7 +33,8 @@ public class ConsumeTrigger implements Trigger<PlayerItemConsumeEvent>{
         if (item_name.equalsIgnoreCase("potion") && req.equalsIgnoreCase(item_name)){
             PotionMeta potion = (PotionMeta) event.getItem().getItemMeta();
             String type = potion.getBasePotionData().getType().getEffectType().getName();
-            if (!settings.getString("potion", "Any").replace(" ","_").equalsIgnoreCase(type)) return false;
+            String setting_type = settings.getString("potion", "Any").replace(" ","_").toUpperCase();
+            if (!setting_type.equals(type) && !setting_type.equals("ANY")) return false;
         }
         return req.equalsIgnoreCase(item_name) || req.equalsIgnoreCase("Any");
     }
