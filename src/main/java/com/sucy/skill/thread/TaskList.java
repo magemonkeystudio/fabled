@@ -28,6 +28,7 @@ package com.sucy.skill.thread;
 
 import java.util.Iterator;
 
+
 public class TaskList implements Iterable<IThreadTask>, Iterator<IThreadTask> {
     private Entry iteratee;
     private Entry head;
@@ -77,12 +78,26 @@ public class TaskList implements Iterable<IThreadTask>, Iterator<IThreadTask> {
 
     @Override
     public void remove() {
-        if (iteratee != null && iteratee.prev != null) {
-            if (iteratee == tail)
-                tail = iteratee.prev;
-            iteratee.prev.next = iteratee.next;
-            size--;
+        final Entry next = iteratee.next;
+        final Entry prev = iteratee.prev;
+
+        if (prev == null) {
+            head = next;
+        } else {
+            prev.next = next;
+            iteratee.prev = null;
         }
+
+        if (next == null) {
+            tail = prev;
+        } else {
+            next.prev = prev;
+            iteratee.next = null;
+        }
+
+        iteratee.task = null;
+        size--;
+
     }
 
     private static class Entry {
