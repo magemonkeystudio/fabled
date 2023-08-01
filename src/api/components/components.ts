@@ -428,6 +428,20 @@ class TookSkillTrigger extends ProTrigger {
 
 	public static override new = () => new this();
 }
+class ConsumeTrigger extends ProTrigger {
+	public constructor() {
+		super({
+			name:        'Consume',
+			description: 'Applies skill effects when a player consumes an item',
+			data:        [
+				new MaterialSelect()
+					.setTooltip('The type of item that the player has consumed.')
+			]
+		});
+	}
+
+	public static override new = () => new this();
+}
 
 // TARGETS
 
@@ -3326,6 +3340,7 @@ export const initComponents = () => {
 		BLOCK_BREAK:    { name: 'Block Break', component: BlockBreakTrigger },
 		BLOCK_PLACE:    { name: 'Block Place', component: BlockPlaceTrigger },
 		CAST:           { name: 'Cast', component: CastTrigger },
+		CONSUME:        { name: 'Consume', component: ConsumeTrigger },
 		CLEANUP:        { name: 'Cleanup', component: CleanupTrigger },
 		CROUCH:         { name: 'Crouch', component: CrouchTrigger },
 		DEATH:          { name: 'Death', component: DeathTrigger },
