@@ -3137,7 +3137,7 @@ class ValuePlaceholderMechanic extends ProMechanic {
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
 				new DropdownSelect('Type', 'type', ['Number', 'String'], 'Number')
 					.setTooltip('The type of value to store. Number values require numeric placeholders. String values can be used in messages or commands'),
-				new StringSelect('Placeholder', 'placeholder', '%player_food_level%')
+				new StringSelect('Placeholder', 'placeholder', '{value}')
 					.setTooltip('The placeholder string to use. Can contain multiple placeholders if using the String type')
 			]
 		}, false);
