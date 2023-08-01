@@ -432,10 +432,10 @@ class ConsumeTrigger extends ProTrigger {
 	public constructor() {
 		super({
 			name:        'Consume',
-			description: 'Applies skill effects when a player consume an item',
+			description: 'Applies skill effects when a player consumes an item',
 			data:        [
 				new MaterialSelect()
-					.setTooltip('The type of the item that player consume.')
+					.setTooltip('The type of item that the player has consumed.')
 			]
 		});
 	}
