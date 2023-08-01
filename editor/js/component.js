@@ -47,6 +47,8 @@ var Trigger = {
     LEFT_CLICK           : { name: 'Left Click',           container: true, construct: TriggerLeftClick          },
     MOVE                 : { name: 'Move',                 container: true, construct: TriggerMove               },
     SKILL_CAST           : { name: 'Skill Cast',           container: true, construct: TriggerSkillCast          },
+    PROJECTILE_HIT       : { name: 'Projectile Hit',       container: true, construct: TriggerProjectileHit      },
+    PROJECTILE_TICK      : { name: 'Projectile Tick',      container: true, construct: TriggerProjectileTick      },
     PHYSICAL_DAMAGE      : { name: 'Physical Damage',      container: true, construct: TriggerPhysicalDamage     },
     RIGHT_CLICK          : { name: 'Right Click',          container: true, construct: TriggerRightClick         },
     SKILL_DAMAGE         : { name: 'Skill Damage',         container: true, construct: TriggerSkillDamage        },
@@ -809,6 +811,46 @@ function TriggerSkillCast() {
     );
     this.data.push(new StringListValue('Skills', 'allowed-skills', [])
         .setTooltip('The list of skills which will trigger this effect. Leave blank to allow all to trigger. Use \'!xxx\' to exclude.')
+    );
+}
+
+extend('TriggerProjectileHit', 'Component');
+
+function TriggerProjectileHit() {
+    this.super('Projectile Hit', Type.TRIGGER, true);
+
+    this.description = 'Applies skill effects when a projectile hits a block/entity.';
+
+    this.data.push(new ListValue('Target Caster', 'target', ['True', 'False'], 'True')
+        .setTooltip('True makes children target the caster. False makes children target the damaged entity')
+    );
+    this.data.push(new ListValue('Type', 'type', ['Both', 'Entity', 'Block'], 'Both')
+        .setTooltip('The type of what projectile hits')
+    );
+
+    this.data.push(new MultiListValue('Projectile', 'projectile', getAnyProjectiles(), ['Any'])
+        .setTooltip('The type of projectile shot')
+    );
+}
+
+extend('TriggerProjectileTick', 'Component');
+
+function TriggerProjectileTick() {
+    this.super('Projectile Tick', Type.TRIGGER, true);
+
+    this.description = 'Applies skill effects every interval while a projectile is in the air.';
+
+    this.data.push(new ListValue('Target Caster', 'target', ['True', 'False'], 'True')
+        .setTooltip('True makes children target the caster. False makes children target the damaged entity')
+    );
+    this.data.push(new IntValue('Interval', 'interval', 1)
+        .setTooltip('Interval between trigger executions')
+    );
+    this.data.push(new IntValue('Delay', 'delay', 0)
+        .setTooltip('Delay before executing trigger for the first time')
+    );
+    this.data.push(new MultiListValue('Projectile', 'projectile', getAnyProjectiles(), ['Any'])
+        .setTooltip('The type of projectile shot')
     );
 }
 
