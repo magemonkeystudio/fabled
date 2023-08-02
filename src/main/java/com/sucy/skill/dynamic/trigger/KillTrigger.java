@@ -55,6 +55,10 @@ public class KillTrigger implements Trigger<EntityDeathEvent> {
      */
     @Override
     public LivingEntity getTarget(final EntityDeathEvent event, final Settings settings) {
-        return event.getEntity().getKiller();
+        return isTargetingKiller(settings) ? event.getEntity().getKiller() : event.getEntity();
+    }
+
+    private boolean isTargetingKiller(final Settings settings) {
+        return settings.getString("killer", "false").equalsIgnoreCase("true");
     }
 }
