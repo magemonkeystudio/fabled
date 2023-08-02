@@ -494,10 +494,10 @@ class HealTrigger extends ProTrigger {
 			name:        'Heal',
 			description: 'Applies skill effects when the player receives heal from any source. Use {api-heal} to get heal value.',
 			data:        [
-				new DoubleSelect('Min Damage', 'heal-min', 0)
-					.setTooltip('The minimum damage that needs to be dealt'),
-				new DoubleSelect('Max Damage', 'heal-max', 999)
-					.setTooltip('The maximum damage that needs to be dealt')
+				new DoubleSelect('Min Heal', 'heal-min', 0)
+					.setTooltip('The minimum heal that needs to be receive'),
+				new DoubleSelect('Max Heal', 'heal-max', 999)
+					.setTooltip('The maximum heal that needs to be receive')
 			]
 		});
 	}
