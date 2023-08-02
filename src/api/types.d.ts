@@ -79,6 +79,7 @@ export interface VersionData {
   MOB_DISGUISES: string[];
   MISC_DISGUISES: string[];
   ANY_POTION?: string[];
+  CONSUMABLE: string[];
 }
 
 export abstract class Serializable {

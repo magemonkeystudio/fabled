@@ -3455,6 +3455,50 @@ export const DATA_1_20: VersionData = {
         "Text display",
         "Fishing hook",
         "Lightning",
+    ],
+    CONSUMABLE: [
+        "Apple",
+        "Mushroom stew",
+        "Bread",
+        "Porkchop",
+        "Cooked porkchop",
+        "Golden apple",
+        "Enchanted golden apple",
+        "Cod",
+        "Salmon",
+        "Tropical fish",
+        "Pufferfish",
+        "Cooked cod",
+        "Cooked salmon",
+        "Cookie",
+        "Melon slice",
+        "Dried kelp",
+        "Beef",
+        "Cooked beef",
+        "Chicken",
+        "Cooked chicken",
+        "Rotten flesh",
+        "Spider eye",
+        "Carrot",
+        "Potato",
+        "Baked potato",
+        "Poisonous potato",
+        "Golden carrot",
+        "Pumpkin pie",
+        "Rabbit",
+        "Cooked rabbit",
+        "Rabbit stew",
+        "Mutton",
+        "Cooked mutton",
+        "Chorus fruit",
+        "Beetroot",
+        "Beetroot soup",
+        "Suspicious stew",
+        "Sweet berries",
+        "Glow berries",
+        "Honey bottle",
+        "Milk bucket",
+        "Potion",
     ]
 };
 
@@ -3469,4 +3513,5 @@ DATA_1_20.DAMAGE_TYPES.sort();
 DATA_1_20.PROJECTILES.sort();
 DATA_1_20.MOB_DISGUISES.sort();
 DATA_1_20.MISC_DISGUISES.sort();
+DATA_1_20.CONSUMABLE.sort();
 DATA_1_20.ANY_POTION = DATA_1_20.POTIONS.slice().splice(0, 0, "Any");

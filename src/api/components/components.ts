@@ -9,6 +9,7 @@ import {
 	getAnyEntities,
 	getAnyMaterials,
 	getAnyPotion,
+	getAnyConsumable,
 	getAnyProjectiles,
 	getBadPotions,
 	getBiomes,
@@ -475,15 +476,9 @@ class ConsumeTrigger extends ProTrigger {
 			name:        'Consume',
 			description: 'Applies skill effects when a player consumes an item',
 			data:        [
-				new DropdownSelect("Material", 'material', 
-				['Any','Apple','Baked Potato','Beetroot','Beetroot Soup','Bread','Carrot','Chorus Fruit','Cooked Chicken',
-				'Cooked Cod','Cooked Mutton','Cooked Porkchop','Cooked Rabbit','Cooked Salmon','Cookie','Dried Kelp',
-				'Enchanted Golden Apple','Golden Apple','Glow Berries','Golden Carrot','Honey Bottle','Melon Slice',
-				'Milk bucket','Mushroom Stew','Poisonous Potato','Potato','Potion','Pumpkin Pie','Rabbit Stew','Beef',
-				'Chicken','Cod','Mutton','Porkchop','Rabbit','Salmon','Rotten Flesh','Spider Eye','Steak','Suspicious Stew',
-				'Sweet Berries','Tropical Fish'], 'Any')
+				new DropdownSelect("Material", 'material', getAnyConsumable , 'Any')
 					.setTooltip('The type of item that the player has consumed.'),
-					new DropdownSelect('Potion', 'potion', getAnyPotion, 'Any')
+				new DropdownSelect('Potion', 'potion', getAnyPotion, 'Any')
 					.requireValue('material', ['Potion'])
 					.setTooltip('The type of potion effect to apply'),
 			]
@@ -3403,6 +3398,7 @@ export const initComponents = () => {
 		FISHING_GRAB:   { name: 'Fishing Grab', component: FishingGrabTrigger },
 		FISHING_GROUND: { name: 'Fishing Ground', component: FishingGroundTrigger },
 		FISHING_REEL:   { name: 'Fishing Reel', component: FishingReelTrigger },
+		HEAL:   		{ name: 'Heal', component: HealTrigger },
 		INIT:           { name: 'Initialize', component: InitializeTrigger },
 		ITEM_SWAP:      { name: 'Item Swap', component: ItemSwapTrigger },
 		KILL:           { name: 'Kill', component: KillTrigger },
