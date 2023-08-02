@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.function.Predicate;
 
 public class DataGenerator {
     public static void main(String[] args) {
@@ -29,7 +31,7 @@ public class DataGenerator {
             version = splitVersion[0]+(splitVersion.length >= 2 ? '_'+splitVersion[1] : "");
         }
 
-        boolean useTypescript = args.length > 1 && args[1].equals("ts");
+        boolean useTypescript = Arrays.stream(args).noneMatch(Predicate.isEqual("js"));
         File    file          = new File("output/" + version.replace("_", ".") + "." + (useTypescript ? "ts" : "js"));
         file.delete();
         file.getParentFile().mkdirs();
