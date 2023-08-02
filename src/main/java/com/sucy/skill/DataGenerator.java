@@ -22,9 +22,15 @@ public class DataGenerator {
         if (args.length != 1 && args.length != 2) {
             throw new IllegalArgumentException();
         }
-        String  version       = args[0].replace('.', '_');
+
+        String version;
+        {
+            String[]  splitVersion       = args[0].split("\\.");
+            version = splitVersion[0]+(splitVersion.length >= 2 ? '_'+splitVersion[1] : "");
+        }
+
         boolean useTypescript = args.length > 1 && args[1].equals("ts");
-        File    file          = new File("output/" + args[0] + "." + (useTypescript ? "ts" : "js"));
+        File    file          = new File("output/" + version.replace("_", ".") + "." + (useTypescript ? "ts" : "js"));
         file.delete();
         file.getParentFile().mkdirs();
 
