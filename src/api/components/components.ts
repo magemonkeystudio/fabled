@@ -442,10 +442,7 @@ class ConsumeTrigger extends ProTrigger {
 				'Chicken','Cod','Mutton','Porkchop','Rabbit','Salmon','Rotten Flesh','Spider Eye','Steak','Suspicious Stew',
 				'Sweet Berries','Tropical Fish'], 'Any')
 					.setTooltip('The type of item that the player has consumed.'),
-					new DropdownSelect('Potion', 'potion', ()=>{
-						let potions = getPotionTypes().slice()
-						potions.push('Any'); return potions
-					}, 'Any')
+					new DropdownSelect('Potion', 'potion', getAnyPotion, 'Any')
 					.requireValue('material', ['Potion'])
 					.setTooltip('The type of potion effect to apply'),
 			]
