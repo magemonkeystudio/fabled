@@ -131,7 +131,7 @@
   <IconInput bind:icon={data.icon} />
 
   <ProInput label="Unusable items"
-            tooltip="The types of items that the class cannot use">
+            tooltip="[blacklist] The types of items that the class cannot use">
     <MaterialSelect multiple bind:selected={data.unusableItems} />
   </ProInput>
 {/if}
