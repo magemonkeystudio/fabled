@@ -488,6 +488,22 @@ class ConsumeTrigger extends ProTrigger {
 
 	public static override new = () => new this();
 }
+class HealTrigger extends ProTrigger {
+	public constructor() {
+		super({
+			name:        'Heal',
+			description: 'Applies skill effects when the player receives heal from any source. Use {api-heal} to get heal value.',
+			data:        [
+				new DoubleSelect('Min Damage', 'heal-min', 0)
+					.setTooltip('The minimum damage that needs to be dealt'),
+				new DoubleSelect('Max Damage', 'heal-max', 999)
+					.setTooltip('The maximum damage that needs to be dealt')
+			]
+		});
+	}
+
+	public static override new = () => new this();
+}
 
 // TARGETS
 
