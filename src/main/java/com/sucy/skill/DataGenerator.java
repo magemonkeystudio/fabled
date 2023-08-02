@@ -95,6 +95,15 @@ public class DataGenerator {
                     writeEnumConstant(out, entityType);
                 }
             }
+            out.write(("    ],\n    CONSUMABLE: [\n").getBytes());
+            for (Material material : Material.values()) {
+                if (material.isEdible()) {
+                    writeEnumConstant(out, material);
+                }
+            }
+            writeEnumConstant(out, Material.MILK_BUCKET);
+            writeEnumConstant(out, Material.POTION);
+
             out.write(("    ]\n};\n\n").getBytes());
             if (useTypescript) {
                 out.write((dataVersion + ".MATERIALS.sort();\n"
@@ -108,6 +117,7 @@ public class DataGenerator {
                         + dataVersion + ".PROJECTILES.sort();\n"
                         + dataVersion + ".MOB_DISGUISES.sort();\n"
                         + dataVersion + ".MISC_DISGUISES.sort();\n"
+                        + dataVersion + ".CONSUMABLE.sort();\n"
                         + dataVersion + ".ANY_POTION = " + dataVersion
                         + ".POTIONS.slice().splice(0, 0, \"Any\");").getBytes());
             } else {
