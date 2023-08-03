@@ -1,5 +1,5 @@
 <script lang='ts'>
-	import MaterialSelect            from '$input/MaterialSelect.svelte';
+	import BlockSelect            from '$input/BlockSelect.svelte';
 	import ProInput                  from '$input/ProInput.svelte';
 	import { createEventDispatcher } from 'svelte';
 
@@ -10,7 +10,7 @@
 </script>
 
 <ProInput label='Material' tooltip='[material] {data.materialTooltip}'>
-	<MaterialSelect any bind:selected={data.material} multiple />
+	<BlockSelect any bind:selected={data.material} multiple />
 </ProInput>
 <ProInput type='number' intMode
 					label='Data'

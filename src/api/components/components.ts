@@ -13,6 +13,7 @@ import {
 	getAnyProjectiles,
 	getBadPotions,
 	getBiomes,
+	getBlocks,
 	getDamageableMaterials,
 	getDamageTypes,
 	getDyes,
@@ -689,7 +690,7 @@ const itemConditionOptions = (): ComponentOption[] => {
 	const data: ComponentOption[] = [
 		new BooleanSelect('Check Material', 'check-mat', true)
 			.setTooltip('Whether the item needs to be a certain type'),
-		new MaterialSelect(true, 'Arrow')
+		new MaterialSelect(false, 'Arrow')
 			.requireValue('check-mat', [true])
 			.setTooltip('The type the item needs to be'),
 		new BooleanSelect('Check Data', 'check-data', false)
@@ -1433,7 +1434,7 @@ class WorldCondition extends ProCondition {
 const itemOptions = (): ComponentOption[] => {
 	const data: ComponentOption[] = [
 		new SectionMarker('Item Options'),
-		new MaterialSelect(true, 'Arrow')
+		new MaterialSelect(false, 'Arrow')
 			.setTooltip('The type of item to give to the player'),
 		new IntSelect('Amount', 'amount', 1)
 			.setTooltip('The quantity of the item to give to the player'),
@@ -1485,13 +1486,16 @@ const particleOptions = (): ComponentOption[] => {
 		new DropdownSelect('Particle', 'particle', getParticles, 'Villager happy')
 			.setTooltip('The type of particle to display'),
 
-		new MaterialSelect(false)
-			.requireValue('particle', ['Item crack',
+		new DropdownSelect('Material', 'material', (() => [...getMaterials()]), 'Arrow')
+			.requireValue('particle', ['Item crack'])
+			.setTooltip('The material to use for the particles'),
+		new DropdownSelect('Material', 'material', (() => [...getBlocks()]), 'Dirt')
+			.requireValue('particle', [
 				'Block crack',
 				'Block dust',
 				'Falling dust',
 				'Block marker'])
-			.setTooltip('The material to use for the particles'),
+			.setTooltip('The block to use for the particles'),
 		new IntSelect('Durability', 'durability', 0)
 			.requireValue('particle', ['Item crack'])
 			.setTooltip('The durability to be reduced from the item used to make the particles'),
@@ -1627,8 +1631,11 @@ const effectOptions = (optional: boolean): ComponentOption[] => {
 		opt(new DropdownSelect('Particle', '-particle-type', getParticles, 'Villager happy')
 			.setTooltip('The type of particle to use.')),
 		opt(new DropdownSelect('Material', '-particle-material', getMaterials, 'Dirt')
-			.requireValue('-particle-type', ['Item crack', 'Block crack', 'Block dust', 'Falling dust', 'Block marker'])
-			.setTooltip('The material to use for the particle.')),
+				.requireValue('-particle-type', ['Item crack'])
+				.setTooltip('The material to use for the particle.')),
+		opt(new DropdownSelect('Material', '-particle-material', getBlocks, 'Dirt')
+			.requireValue('-particle-type', ['Block crack', 'Block dust', 'Falling dust', 'Block marker'])
+			.setTooltip('The block to use for the particle.')),
 		opt(new IntSelect('Durability', '-particle-durability')
 			.requireValue('particle', ['Item crack'])
 			.setTooltip('The durability to be reduced from the item used to make the particles')),
@@ -1768,9 +1775,9 @@ class BlockMechanic extends ProMechanic {
 			data:        [
 				new DropdownSelect('Shape', 'shape', ['Sphere', 'Cuboid'], 'Sphere')
 					.setTooltip('The shape of the region to change the blocks for'),
-				new DropdownSelect('Type', 'type', (() => ['Air', 'Any', 'Solid', ...getMaterials()]), 'Solid')
+				new DropdownSelect('Type', 'type', (() => ['Air', 'Any', 'Solid', ...getBlocks()]), 'Solid')
 					.setTooltip('The type of blocks to replace. Air or any would be for making obstacles while solid would change the environment'),
-				new DropdownSelect('Block', 'block', getMaterials, 'Ice')
+				new DropdownSelect('Block', 'block', getBlocks, 'Ice')
 					.setTooltip('The type of block to turn the region into'),
 				new IntSelect('Block Data', 'data')
 					.setTooltip('The block data to apply, mostly applicable for things like signs, woods, steps, or the similar'),
@@ -2107,10 +2114,12 @@ class DisguiseMechanic extends ProMechanic {
 						'Wither skull'])
 					.setTooltip('Data value to use for the disguise type. What it does depends on the disguise'),
 
-				new MaterialSelect(false, 'Anvil')
-					// .requireValue('type', [ 'Misc' ])
-					.requireValue('misc', ['Dropped Item', 'Falling Block'])
-					.setTooltip('Material to use for the disguise type. Note that items used for falling block will not function')
+				new DropdownSelect('Material', 'mat', (() => [...getMaterials()]), 'Arrow')
+				    .requireValue('misc', ['Dropped item'])
+					.setTooltip('Material to use for the disguise type.'),
+				new DropdownSelect('Material', 'mat', (() => [...getBlocks()]), 'Anvil')
+				    .requireValue('misc', ['Falling block'])
+					.setTooltip('Block to use for the disguise type.'),
 			]
 		}, false);
 	}
@@ -2486,7 +2495,7 @@ class MineMechanic extends ProMechanic {
 			name:        'Mine',
 			description: 'Destroys a selection of blocks at the location of the target',
 			data:        [
-				new DropdownSelect('Material', 'materials', (() => ['Origin', ...getAnyMaterials()]), ['Origin'], true)
+				new DropdownSelect('Material', 'materials', (() => ['Origin', 'Any', ...getBlocks()]), ['Origin'], true)
 					.setTooltip('The types of blocks allowed to be broken. \'Origin\' refers to the material at the targeted location'),
 				new BooleanSelect('Drop', 'drop', true)
 					.setTooltip('Whether to create drops for the destroyed blocks'),
