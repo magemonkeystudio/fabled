@@ -3,6 +3,8 @@ package com.sucy.skill.cmd;
 import com.sucy.skill.SkillAPI;
 import mc.promcteam.engine.mccore.commands.ConfigurableCommand;
 import mc.promcteam.engine.mccore.commands.IFunction;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
@@ -37,11 +39,11 @@ public class CmdLoaded implements IFunction {
             return;
         }
         switch (args[0]) {
-            case "group": sendList(cmd, sender, GROUP_HEAD,"-------Loaded group(s)-------", SkillAPI.getGroups()); break;
-            case "class": sendList(cmd, sender, CLASS_HEAD,"-------Loaded class(es)-------", SkillAPI.getClasses().keySet()); break;
-            case "skill": sendList(cmd, sender, SKILL_HEAD,"-------Loaded skill(s)-------", SkillAPI.getSkills().keySet()); break;
+            case "group": sendList(cmd, sender, GROUP_HEAD,"&8------- &2Loaded group(s)&8 -------", SkillAPI.getGroups()); break;
+            case "class": sendList(cmd, sender, CLASS_HEAD,"&8------- &2Loaded class(es)&8 -------", SkillAPI.getClasses().keySet()); break;
+            case "skill": sendList(cmd, sender, SKILL_HEAD,"&8------- &2Loaded skill(s)&8 -------", SkillAPI.getSkills().keySet()); break;
             case "attr":
-            case "attribute": sendList(cmd, sender, ATTR_HEAD,"-------Loaded attribute(s)-------", SkillAPI.getAttributeManager().getKeys()); break;
+            case "attribute": sendList(cmd, sender, ATTR_HEAD,"&8------- &2Loaded attribute(s)&8 -------", SkillAPI.getAttributeManager().getKeys()); break;
             default:
                 cmd.sendMessage(sender, INVALID_ARGUMENT, "&4Invalid argument! <group|class|skill|attr>");
         }
@@ -49,7 +51,7 @@ public class CmdLoaded implements IFunction {
     private static void sendList(ConfigurableCommand cmd, CommandSender sender,String key, String head, Collection<?> list){
         AtomicInteger count = new AtomicInteger(1);
         cmd.sendMessage(sender, key, head);
-        list.forEach(entry -> sender.sendMessage(String.format("%d: %s", count.getAndIncrement(), entry)));
-        cmd.sendMessage(sender, END, "-------------------------------");
+        list.forEach(entry -> sender.sendMessage(ChatColor.translateAlternateColorCodes('&',String.format("&a%d&8: &6%s", count.getAndIncrement(), entry))));
+        cmd.sendMessage(sender, END, "&8-------------------------------");
     }
 }
