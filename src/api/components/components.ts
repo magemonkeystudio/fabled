@@ -38,6 +38,7 @@ import ClassSelect                            from '$api/options/classselect';
 import SkillSelect                            from '$api/options/skillselect';
 import IntSelect                              from '$api/options/intselect';
 import ColorSelect                            from '$api/options/colorselect';
+import { get }                                from 'svelte/store';
 
 // TRIGGERS
 
@@ -2749,7 +2750,7 @@ class PurgeMechanic extends ProMechanic {
 			data:        [
 				new DropdownSelect('Potion', 'potion', getGoodPotions, undefined, true)
 					.setTooltip('The potion effect to remove from the target, if any'),
-				new DropdownSelect('Status', 'status', ['All', 'Absorb', 'Invincible'], 'All', true)
+				new DropdownSelect('Status', 'status', ['All', 'Absorb', 'Invincible'], ['All'], true)
 					.setTooltip('The status to remove from the target, if any')
 			]
 		}, false);
@@ -2925,29 +2926,10 @@ class TriggerMechanic extends ProMechanic {
 			name:        'Trigger',
 			description: 'Listens for a trigger on the current targets for a duration',
 			data:        [
-				new DropdownSelect('Trigger', 'trigger', ['Block Break',
-					'Block Place',
-					'Crouch',
-					'Death',
-					'Drop Item',
-					'Environment Damage',
-					'Fishing',
-					'Fishing Bite',
-					'Fishing Fail',
-					'Fishing Grab',
-					'Fishing Ground',
-					'Fishing Reel',
-					'Item Swap',
-					'Kill',
-					'Land',
-					'Launch',
-					'Left Click',
-					'Move',
-					'Physical Damage',
-					'Right Click',
-					'Skill Damage',
-					'Took Physical Damage',
-					'Took Skill Damage'], 'Death')
+				new DropdownSelect('Trigger', 'trigger', () => Object.values(get(Registry.triggers)).map((trigger: {
+					name: string,
+					component: typeof ProTrigger
+				}) => trigger.name), 'Death')
 					.setTooltip('The trigger to listen for'),
 				new AttributeSelect('Duration', 'duration', 5)
 					.setTooltip('How long to listen to the trigger for'),

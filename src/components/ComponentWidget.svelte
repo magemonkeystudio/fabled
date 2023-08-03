@@ -282,19 +282,19 @@
   <hr/>
   <div class="component-entry">
     {#if component instanceof ProTrigger && component.name != 'Cast' && component.name != 'Initialize' && component.name != 'Cleanup'}
-      <ProInput label="Mana" tooltip="Whether this trigger requires the mana cost to activate">
+      <ProInput label="Mana" tooltip="[mana] Whether this trigger requires the mana cost to activate">
         <Toggle bind:data={component.mana}/>
       </ProInput>
-      <ProInput label="Cooldown" tooltip="Whether this trigger requires to be off cooldown to activate">
+      <ProInput label="Cooldown" tooltip="[cooldown] Whether this trigger requires to be off cooldown to activate">
         <Toggle bind:data={component.cooldown}/>
       </ProInput>
     {:else if component instanceof ProTarget || component instanceof ProCondition || component instanceof ProMechanic}
       <ProInput label="Icon Key" bind:value={component.iconKey}
-                tooltip={'The key used by the component in the Icon Lore. If this is set to "example" and has a value name of "value", it can be referenced using the string "{attr:example.value}"'}/>
+                tooltip={'[icon-key] The key used by the component in the Icon Lore. If this is set to "example" and has a value name of "value", it can be referenced using the string "{attr:example.value}"'}/>
     {/if}
     {#if component instanceof ProMechanic}
       <ProInput label="Counts as Cast"
-                tooltip={'Whether this mechanic running treats the skill as "casted" and will consume mana and start the cooldown. Set to false if it is a mechanic applled when the skill fails such as cleanup or an error message"'}>
+                tooltip={'[counts] Whether this mechanic running treats the skill as "casted" and will consume mana and start the cooldown. Set to false if it is a mechanic applled when the skill fails such as cleanup or an error message"'}>
         <Toggle bind:data={component.countsAsCast}/>
       </ProInput>
     {/if}
@@ -305,7 +305,7 @@
                 this={datum.component}
                 bind:data={datum.data}
                 name={datum.name}
-                tooltip={datum.tooltip}
+                tooltip="{datum.key ? '[' + datum.key + '] ' : ''}{datum.tooltip}"
                 multiple={datum.multiple}
                 on:save/>
       {/if}

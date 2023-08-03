@@ -9,13 +9,13 @@
 </script>
 
 <ProInput label="Icon"
-          tooltip="The item that represents the {$activeType} in GUIs">
+          tooltip="[icon] The item that represents the {$activeType} in GUIs">
   <MaterialSelect bind:selected={icon.material} />
 </ProInput>
 <ProInput label="CustomModelData" type="number" intMode={true}
-          tooltip="The CustomModelData of the item that represents the {$activeType} in GUIs"
+          tooltip="[icon-data] The CustomModelData of the item that represents the {$activeType} in GUIs"
           bind:value={icon.customModelData} />
 <ProInput label="Icon Lore"
-          tooltip={$activeType === 'class' ? "The item's lore description" : 'The description shown for the item in skill trees. Include values of mechanics such as damage dealt using their "Icon Key" values'}>
+          tooltip={'[icon-lore]' + $activeType === 'class' ? "The item's lore description" : 'The description shown for the item in skill trees. Include values of mechanics such as damage dealt using their "Icon Key" values'}>
   <LoreInput bind:value={icon.lore} />
 </ProInput>
