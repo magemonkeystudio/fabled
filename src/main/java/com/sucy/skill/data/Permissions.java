@@ -49,4 +49,5 @@ public class Permissions {
     public static final String RESET        = ROOT + "reset";
     public static final String REFUND       = ROOT + "refund";
     public static final String MAX_ACCOUNTS = ROOT + "max_accounts";
+    public static final String LOADED       = ROOT + "loaded";
 }

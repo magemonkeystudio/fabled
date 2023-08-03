@@ -58,6 +58,9 @@ permissions:
   skillapi.gui:
     description: access to GUI editor menu
     default: op
+  skillapi.loaded:
+    description: access to loaded content
+    default: op
 
   skillapi.*:
     description: access to all commands and features
