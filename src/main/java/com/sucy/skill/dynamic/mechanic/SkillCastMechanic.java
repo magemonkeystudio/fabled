@@ -8,6 +8,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SkillCastMechanic extends MechanicComponent {
     @Override
@@ -39,27 +40,27 @@ public class SkillCastMechanic extends MechanicComponent {
             PlayerData data = SkillAPI.getPlayerData(player);
 
             //  Split skills input into skill name and level
-            HashMap<String, Integer> handle = new HashMap<>();
-            skills.parallelStream().forEach(s->{
+            List<Map.Entry<String, Integer>> handle = new ArrayList<>();
+            skills.forEach(s->{
                 String[] split = s.split(":", 2);
-                handle.put(split[0], parseInt(split.length>1?split[1]:null));
+                handle.add(new AbstractMap.SimpleEntry<>(split[0], parseInt(split.length>1?split[1]:null)));
             });
 
             //  Filter out skills that can't be cast
-            String[] filtered = (String[]) handle.keySet().parallelStream().filter(s
-                    -> SkillAPI.getSkill(s)!=null
-                    && SkillAPI.getSkill(s) instanceof SkillShot
-                    && (force_cast || (data.hasSkill(s) && data.getSkill(s).getLevel()>0))
-            ).toArray();
-            if (filtered.length==0) return;
+            List<Map.Entry<String, Integer>> filtered = handle.stream().filter(e
+                    -> SkillAPI.getSkill(e.getKey())!=null
+                    && SkillAPI.getSkill(e.getKey()) instanceof SkillShot
+                    && (force_cast || (data.hasSkill(e.getKey()) && data.getSkill(e.getKey()).getLevel()>0))
+            ).collect(Collectors.toList());
+            if (filtered.isEmpty()) return;
 
             //  Cast
             switch (mode) {
-                case "first" -> cast(player, filtered[0], handle.get(filtered[0]), force_cast);
-                case "all" -> handle.forEach((sk, lv) -> cast(player, sk, lv, force_cast));
+                case "first" -> cast(player, filtered.get(0).getKey(), filtered.get(0).getValue(), force_cast);
+                case "all" -> handle.forEach(entry -> cast(player, entry.getKey(), entry.getValue(), force_cast));
                 case "random" -> {
-                    int i = new Random().nextInt(filtered.length);
-                    cast(player, filtered[i], handle.get(filtered[i]), force_cast);
+                    int i = new Random().nextInt(filtered.size());
+                    cast(player, filtered.get(i).getKey(), filtered.get(i).getValue(), force_cast);
                 }
             }
         });
