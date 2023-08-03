@@ -2728,7 +2728,7 @@ class PurgeMechanic extends ProMechanic {
 			data:        [
 				new DropdownSelect('Potion', 'potion', getGoodPotions, undefined, true)
 					.setTooltip('The potion effect to remove from the target, if any'),
-				new DropdownSelect('Status', 'status', ['All', 'Absorb', 'Invincible'], 'All', true)
+				new DropdownSelect('Status', 'status', ['All', 'Absorb', 'Invincible'], ['All'], true)
 					.setTooltip('The status to remove from the target, if any')
 			]
 		}, false);
