@@ -7,7 +7,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 
 import java.util.Map;
 
-public class HealTrigger implements Trigger<EntityRegainHealthEvent>{
+public class HealTrigger implements Trigger<EntityRegainHealthEvent> {
     /**
      * {@inheritDoc}
      */
@@ -27,8 +27,8 @@ public class HealTrigger implements Trigger<EntityRegainHealthEvent>{
      */
     @Override
     public boolean shouldTrigger(EntityRegainHealthEvent event, int level, Settings settings) {
-        final double  min        = settings.getDouble("heal-min");
-        final double  max        = settings.getDouble("heal-max");
+        final double min = settings.getDouble("heal-min");
+        final double max = settings.getDouble("heal-max");
         return event.getAmount() >= min && event.getAmount() <= max;
     }
 
@@ -39,6 +39,7 @@ public class HealTrigger implements Trigger<EntityRegainHealthEvent>{
     public void setValues(EntityRegainHealthEvent event, Map<String, Object> data) {
         data.put("api-heal", event.getAmount());
     }
+
     /**
      * {@inheritDoc}
      */
