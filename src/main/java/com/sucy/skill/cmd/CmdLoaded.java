@@ -6,6 +6,7 @@ import mc.promcteam.engine.mccore.commands.IFunction;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Collection;
@@ -23,6 +24,7 @@ public class CmdLoaded implements IFunction {
     private static final String END        = "end";
     public static final String NO_ARGUMENT = "no-argument";
     public static final String INVALID_ARGUMENT = "invalid-argument";
+    private static final String DISABLED   = "world-disabled";
 
     /**
      * Runs the command
@@ -34,6 +36,11 @@ public class CmdLoaded implements IFunction {
      */
     @Override
     public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
+        // Disabled world
+        if (sender instanceof Player && !SkillAPI.getSettings().isWorldEnabled(((Player) sender).getWorld()) && args.length == 0) {
+            cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+        }
+
         if (args.length<1) {
             cmd.sendMessage(sender, NO_ARGUMENT, "&4Missing argument! <group|class|skill|attr>");
             return;
