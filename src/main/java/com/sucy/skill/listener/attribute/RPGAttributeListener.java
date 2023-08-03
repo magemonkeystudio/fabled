@@ -16,55 +16,55 @@ public class RPGAttributeListener extends SkillAPIListener {
     @EventHandler
     public void rpgDamage(RPGDamageEvent event) {
         if (!(event instanceof RPGDamageEvent.Start)) return;
-        // Physical Damage
-        event.getDamageMap().entrySet().forEach(e -> {
-            DamageAttribute attr = e.getKey();
-            if (attr == null) return;
-            final double originalDamage = e.getValue();
-            double       damage         = e.getValue();
+
+        // Scale damages
+        event.getDamageMap().entrySet().forEach(damageEntry -> {
+            DamageAttribute damageAttribute = damageEntry.getKey();
+            if (damageAttribute == null) {return;}
+            double damage = damageEntry.getValue();
             if (event.getDamager() instanceof Player) {
                 Player player = (Player) event.getDamager();
-                if (CitizensHook.isNPC(player))
-                    return;
+                if (CitizensHook.isNPC(player)) {return;}
 
                 PlayerData data = SkillAPI.getPlayerData(player);
 
-                if (attr.getName().equals("physical")) {
+                if (damageAttribute.getName().equals("physical")) {
                     damage = data.scaleStat(AttributeManager.PHYSICAL_DAMAGE, damage);
                 } else {
-                    damage = data.scaleStat("rpgdamage-" + attr.getId(), damage);
+                    damage = data.scaleStat("rpgdamage-" + damageAttribute.getId(), damage);
                 }
                 if (event.isProjectile()) {
                     damage = data.scaleStat(AttributeManager.PROJECTILE_DAMAGE, damage);
                 } else {
                     damage = data.scaleStat(AttributeManager.MELEE_DAMAGE, damage);
                 }
-                event.getDamageMap().put(attr, damage);
+                event.getDamageMap().put(damageAttribute, damage);
             }
+        });
 
-            // Physical Defense
-            DefenseAttribute def = attr.getAttachedDefense();
-            if (def == null) return;
+        // Scale defenses
+        event.getDefenseMap().entrySet().forEach(defenseEntry -> {
+            DefenseAttribute defenseAttribute = defenseEntry.getKey();
+            if (defenseAttribute == null) {return;}
+            double defense = defenseEntry.getValue();
             if (event.getVictim() instanceof Player) {
                 Player player = (Player) event.getVictim();
-                if (CitizensHook.isNPC(player))
-                    return;
+                if (CitizensHook.isNPC(player)) {return;}
 
                 PlayerData data = SkillAPI.getPlayerData(player);
 
-                if (def.getName().equals("physical")) {
-                    damage = data.scaleStat(AttributeManager.PHYSICAL_DEFENSE, damage);
+                if (defenseAttribute.getName().equals("physical")) {
+                    defense = data.scaleStat(AttributeManager.PHYSICAL_DEFENSE, defense);
                 } else {
-                    damage = data.scaleStat("rpgdefense-" + def.getId(), damage);
+                    defense = data.scaleStat("rpgdefense-" + defenseAttribute.getId(), defense);
                 }
                 if (event.isProjectile()) {
-                    damage = data.scaleStat(AttributeManager.PROJECTILE_DEFENSE, damage);
+                    defense = data.scaleStat(AttributeManager.PROJECTILE_DEFENSE, defense);
                 } else {
-                    damage = data.scaleStat(AttributeManager.MELEE_DEFENSE, damage);
+                    defense = data.scaleStat(AttributeManager.MELEE_DEFENSE, defense);
                 }
-                event.getDefenseMap().put(def, originalDamage - damage);
+                event.getDefenseMap().put(defenseAttribute, defense);
             }
         });
     }
-
 }

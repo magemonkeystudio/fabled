@@ -12,7 +12,7 @@
 
     <groupId>com.promcteam</groupId>
     <artifactId>proskillapi</artifactId>
-    <version>1.1.9-R0.0-SNAPSHOT</version>
+    <version>1.1.9-R0.7-SNAPSHOT</version>
 
     <name>ProSkillAPI</name>
     <description>A Minecraft Bukkit plugin aiming to provide an easy code API and skill editor for all server owners to
@@ -32,7 +32,7 @@
     <dependencies>
         <dependency>
             <groupId>com.github.seeseemelk</groupId>
-            <artifactId>MockBukkit-v1.19</artifactId>
+            <artifactId>MockBukkit-v1.20</artifactId>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>

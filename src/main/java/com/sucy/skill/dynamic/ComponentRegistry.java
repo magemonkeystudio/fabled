@@ -34,6 +34,7 @@ public class ComponentRegistry {
     static {
 
         // Triggers
+        register(new ArmorEquipTrigger());
         register(new BlockBreakTrigger());
         register(new BlockPlaceTrigger());
         register(new ClickLeftTrigger());
@@ -55,9 +56,12 @@ public class ComponentRegistry {
         register(new MoveTrigger());
         register(new PhysicalDealtTrigger());
         register(new PhysicalTakenTrigger());
+        register(new ProjectileHitTrigger());
+        register(new ProjectileTickTrigger());
         register(new SkillDealtTrigger());
         register(new SkillTakenTrigger());
         register(new SkillCastTrigger());
+        register(new ConsumeTrigger());
 
         // Targets
         register(new AreaTarget());

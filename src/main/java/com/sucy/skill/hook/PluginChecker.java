@@ -162,6 +162,7 @@ public class PluginChecker extends SkillAPIListener {
                 break;
             case "ProRPGItems":
                 rpgItems = isEnabled;
+                SkillAPI.inst().listen(new RPGAttributeListener(), isEnabled); // In case ProRPGItems enables after ProSkillAPI
                 break;
         }
     }

@@ -27,6 +27,7 @@
 package com.sucy.skill.listener;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.DefaultCombatProtection;
 import com.sucy.skill.api.enums.ExpSource;
 import com.sucy.skill.api.event.PhysicalDamageEvent;
 import com.sucy.skill.api.event.PlayerLevelUpEvent;
@@ -376,6 +377,12 @@ public class MainListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPhysicalDamage(EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Player && event.getEntity() instanceof Player &&
+                !(event instanceof DefaultCombatProtection.FakeEntityDamageByEntityEvent) &&
+                !SkillAPI.getSettings().canAttack((Player) event.getDamager(), (Player) event.getEntity(),
+                event.getCause())) {
+            event.setCancelled(true);
+        }
         if (Skill.isSkillDamage()
                 || event.getCause() == EntityDamageEvent.DamageCause.CUSTOM
                 || !(event.getEntity() instanceof LivingEntity)
@@ -389,7 +396,7 @@ public class MainListener extends SkillAPIListener {
                 event.getDamager() instanceof Projectile);
         Bukkit.getPluginManager().callEvent(e);
         event.setDamage(e.getDamage());
-        event.setCancelled(e.isCancelled());
+        if (e.isCancelled()) {event.setCancelled(true);}
     }
 
     /**

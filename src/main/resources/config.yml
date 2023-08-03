@@ -305,6 +305,14 @@ GUI:
   # Text to show for bound materials
   show-bind-text: 'Bound to {material}'
 #
+PVP:
+  #
+  #The minimum level the player must be to be able to PVP with other players. -1 disables this option.
+  min-level: -1
+  #
+  #The maximum level difference two players must have to be able to PVP. -1 disables this option.
+  level-range: -1
+#
 Casting:
   #
   # Whether the main casting option is enabled
