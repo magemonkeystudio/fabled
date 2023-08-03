@@ -6,10 +6,10 @@ import ProTrigger                             from '$api/components/triggers';
 import ProTarget                              from '$api/components/targets';
 import MaterialSelect                         from '$api/options/materialselect';
 import {
+	getAnyConsumable,
 	getAnyEntities,
 	getAnyMaterials,
 	getAnyPotion,
-	getAnyConsumable,
 	getAnyProjectiles,
 	getBadPotions,
 	getBiomes,
@@ -476,11 +476,11 @@ class ConsumeTrigger extends ProTrigger {
 			name:        'Consume',
 			description: 'Applies skill effects when a player consumes an item',
 			data:        [
-				new DropdownSelect("Material", 'material', getAnyConsumable , 'Any')
+				new DropdownSelect('Material', 'material', getAnyConsumable, 'Any')
 					.setTooltip('The type of item that the player has consumed.'),
 				new DropdownSelect('Potion', 'potion', getAnyPotion, 'Any')
 					.requireValue('material', ['Potion'])
-					.setTooltip('The type of potion effect to apply'),
+					.setTooltip('The type of potion effect to apply')
 			]
 
 		});
@@ -488,16 +488,17 @@ class ConsumeTrigger extends ProTrigger {
 
 	public static override new = () => new this();
 }
+
 class HealTrigger extends ProTrigger {
 	public constructor() {
 		super({
 			name:        'Heal',
-			description: 'Applies skill effects when the player receives heal from any source. Use {api-heal} to get heal value.',
+			description: 'Applies skill effects when the player receives heal from any source. Use {api-heal} to get heal value',
 			data:        [
 				new DoubleSelect('Min Heal', 'heal-min', 0)
-					.setTooltip('The minimum heal that needs to be receive'),
+					.setTooltip('The minimum health that needs to be received'),
 				new DoubleSelect('Max Heal', 'heal-max', 999)
-					.setTooltip('The maximum heal that needs to be receive')
+					.setTooltip('The maximum health that needs to be received')
 			]
 		});
 	}
@@ -3414,7 +3415,7 @@ export const initComponents = () => {
 		FISHING_GRAB:   { name: 'Fishing Grab', component: FishingGrabTrigger },
 		FISHING_GROUND: { name: 'Fishing Ground', component: FishingGroundTrigger },
 		FISHING_REEL:   { name: 'Fishing Reel', component: FishingReelTrigger },
-		HEAL:   		{ name: 'Heal', component: HealTrigger },
+		HEAL:           { name: 'Heal', component: HealTrigger },
 		INIT:           { name: 'Initialize', component: InitializeTrigger },
 		ITEM_SWAP:      { name: 'Item Swap', component: ItemSwapTrigger },
 		KILL:           { name: 'Kill', component: KillTrigger },
