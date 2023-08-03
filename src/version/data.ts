@@ -76,6 +76,10 @@ export const getAnyPotion = () => {
   return ["Any", ...get(versionData).POTIONS];
 };
 
+export const getAnyConsumable = () => {
+  return ["Any", ...get(versionData).CONSUMABLE];
+};
+
 export const getGoodPotions = () => {
   const list = get(versionData).POTIONS.filter(type => GOOD_POTIONS.includes(type));
   return ["All", ...list];
