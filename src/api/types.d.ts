@@ -68,6 +68,7 @@ export interface TriggerData extends ComponentData {
 
 export interface VersionData {
   MATERIALS: string[];
+  BLOCKS: string[];
   DAMAGEABLE_MATERIALS: string[];
   SOUNDS: string[];
   ENTITIES: string[];

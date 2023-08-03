@@ -32,6 +32,10 @@ export const getMaterials = () => {
   return get(versionData).MATERIALS;
 };
 
+export const getBlocks = () => {
+  return get(versionData).BLOCKS;
+};
+
 export const getDamageableMaterials = () => {
   return get(versionData).DAMAGEABLE_MATERIALS;
 };
