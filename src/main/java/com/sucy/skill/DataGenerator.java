@@ -46,10 +46,19 @@ public class DataGenerator {
             }
             out.write((
                     (useTypescript ? "export const " : "var ") + dataVersion
-                            + (useTypescript ? ": VersionData" : "") + " = {\n    MATERIALS: [\n"
+                            + (useTypescript ? ": VersionData" : "") + " = {"
             ).getBytes());
+            out.write(("\n    MATERIALS: [\n").getBytes());
             for (Material material : Material.values()) {
-                writeEnumConstant(out, material);
+                if (material.isItem()) {
+                    writeEnumConstant(out, material);
+                }
+            }
+            out.write(("    ],\n    BLOCKS: [\n").getBytes());
+            for (Material material : Material.values()) {
+                if (material.isBlock()) {
+                    writeEnumConstant(out, material);
+                }
             }
             out.write(("    ],\n    DAMAGEABLE_MATERIALS: [\n").getBytes());
             for (Material material : Material.values()) {
