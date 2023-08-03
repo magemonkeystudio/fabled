@@ -9,10 +9,11 @@ export default class ProTrigger extends ProComponent {
   mana     = false;
   cooldown = false;
 
-  protected constructor(data: TriggerData) {
+  protected constructor(data: TriggerData, isDeprecated = false) {
     super("trigger", data);
     this.mana     = data.mana || false;
     this.cooldown = data.cooldown || false;
+    super.isDeprecated = isDeprecated;
   }
 
   public clone = (): ProTrigger => {

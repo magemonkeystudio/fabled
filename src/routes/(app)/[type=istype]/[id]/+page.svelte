@@ -39,7 +39,7 @@
   $: {
     sortedTriggers = Object.keys(triggers)
       .filter(trigger => trigger.toLowerCase().includes(searchParams.toLowerCase()))
-      .sort()
+      .sort((a, b) => (triggers[a].component.new().isDeprecated ? 0 : -1) - (triggers[b].component.new().isDeprecated ? 0 : -1))
       .map(key => triggers[key].component.new());
   }
 
@@ -103,7 +103,7 @@
   <div class='triggers'>
     {#each sortedTriggers as trigger}
       <div class='comp-select' on:click={() => onSelectTrigger({detail: trigger.clone()})}>
-        { trigger.name }
+        {#if trigger.isDeprecated}<s>{trigger.name}</s>{:else}{trigger.name}{/if}
       </div>
     {/each}
   </div>
