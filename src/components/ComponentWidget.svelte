@@ -449,38 +449,21 @@
     }
 
     .copy {
-        background: #0083ef;
+        background: white;
     }
 
     .add {
-        background: #00e61f;
+        background: var(--comp-color);
     }
 
-    .control:hover {
+		.control:hover {
         cursor: pointer;
-        background: #ff5656;
-    }
-
-    .control.copy:hover {
-        background: #00a5ff;
-    }
-
-    .control.add:hover {
-        background: #00e171;
+				box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.4);
     }
 
     .control:active {
         color: rgba(255, 255, 255, 0.5);
         box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.4);
-        background: #b40000;
-    }
-
-    .control.copy:active {
-        background: #006bc2;
-    }
-
-    .control.add:active {
-        background: #24b000;
     }
 
     .comp-modal-header {
