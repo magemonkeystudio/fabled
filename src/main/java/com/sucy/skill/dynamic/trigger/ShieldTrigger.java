@@ -55,6 +55,6 @@ public class ShieldTrigger implements Trigger<PlayerBlockDamageEvent> {
      */
     @Override
     public LivingEntity getTarget(PlayerBlockDamageEvent event, Settings settings) {
-        return settings.getBool("target",false)? (LivingEntity) event.getSource() :event.getPlayer();
+        return settings.getBool("target",false)? event.getPlayer():(LivingEntity) event.getSource() ;
     }
 }
