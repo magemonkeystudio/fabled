@@ -347,7 +347,7 @@ public abstract class RPGClass implements IconHolder {
      * @return true if receives experience from the source, false otherwise
      */
     public boolean receivesExp(ExpSource source) {
-        return source == ExpSource.PLUGIN || (expSources & source.getId()) != 0;
+        return (expSources & source.getId()) != 0;
     }
 
     /**

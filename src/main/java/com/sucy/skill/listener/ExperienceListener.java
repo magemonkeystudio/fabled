@@ -2,6 +2,7 @@ package com.sucy.skill.listener;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.enums.ExpSource;
+import com.sucy.skill.api.event.PlayerExperienceGainEvent;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.player.PlayerData;
 import mc.promcteam.engine.mccore.config.CommentedConfig;
@@ -14,8 +15,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * ProSkillAPI © 2023
@@ -23,10 +23,11 @@ import java.util.HashSet;
  */
 public class ExperienceListener extends SkillAPIListener {
 
-    private static final String CONFIG_KEY = "unnatural";
+    private static final String            CONFIG_KEY = "unnatural";
+    private static       Map<UUID, Double> exempt     = new HashMap<>();
 
     boolean         track;
-    HashSet<String> unnatural = new HashSet<String>();
+    HashSet<String> unnatural = new HashSet<>();
 
     public ExperienceListener() {
         track = SkillAPI.getSettings().isTrackBreak();
@@ -36,11 +37,15 @@ public class ExperienceListener extends SkillAPIListener {
         }
     }
 
+    public static void addExemptExperience(Player player, double amount) {
+        exempt.put(player.getUniqueId(), amount);
+    }
+
     @Override
     public void cleanup() {
         if (track) {
             CommentedConfig config = SkillAPI.getConfig("data/placed");
-            config.getConfig().set(CONFIG_KEY, new ArrayList<String>(unnatural));
+            config.getConfig().set(CONFIG_KEY, new ArrayList<>(unnatural));
             config.save();
         }
     }
@@ -83,6 +88,17 @@ public class ExperienceListener extends SkillAPIListener {
             if (yield > 0) {
                 playerClass.giveExp(yield, ExpSource.CRAFT);
             }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onExperienceGain(PlayerExperienceGainEvent event) {
+        Player player = event.getPlayerData().getPlayer();
+        if (event.isCancelled()
+                && event.getSource() == ExpSource.PLUGIN
+                && exempt.containsKey(player.getUniqueId())
+                && exempt.get(player.getUniqueId()) == event.getExp()) {
+            event.setCancelled(false);
         }
     }
 
