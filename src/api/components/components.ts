@@ -2144,6 +2144,28 @@ class DurabilityMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
+class ExperienceMechanic extends ProMechanic {
+	public constructor() {
+		super({
+			name:        'Experience',
+			description: 'Modifies target\'s specified class experience',
+			data:        [
+				new IntSelect('Value', 'value', 1),
+				new DropdownSelect('Mode', 'mode', ['give', 'take', 'set'], 'give', false)
+					.setTooltip('To give, take or set specified valued'),
+				new DropdownSelect('Type', 'type', ['flat', 'percent'], 'flat', false)
+					.setTooltip('Flat value or percent from next level experience'),
+				new StringSelect('Group', 'group', 'class')
+					.setTooltip('Group name to modify experience'),
+				new BooleanSelect('Level Down', 'level-down', false)
+					.setTooltip('Whether to use skill and level down player class if current exp is insufficient')
+			]
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
 class ExplosionMechanic extends ProMechanic {
 	public constructor() {
 		super({
@@ -3497,6 +3519,7 @@ export const initComponents = () => {
 		DELAY:               { name: 'Delay', component: DelayMechanic },
 		DISGUISE:            { name: 'Disguise', component: DisguiseMechanic },
 		DURABILITY:          { name: 'Durability', component: DurabilityMechanic },
+		EXPERIENCE:          { name: 'Experience', component: ExperienceMechanic },
 		EXPLOSION:           { name: 'Explosion', component: ExplosionMechanic },
 		FIRE:                { name: 'Fire', component: FireMechanic },
 		FLAG:                { name: 'Flag', component: FlagMechanic },
