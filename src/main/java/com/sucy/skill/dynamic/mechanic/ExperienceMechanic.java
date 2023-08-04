@@ -3,7 +3,7 @@ package com.sucy.skill.dynamic.mechanic;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.enums.ExpSource;
 import com.sucy.skill.api.player.PlayerClass;
-import com.sucy.skill.listener.ExperienceListener;
+import com.sucy.skill.listener.MechanicListener;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -55,7 +55,7 @@ public class ExperienceMechanic extends MechanicComponent {
             amount = allNextLevelExp * expValue / 100;
         switch (mode) {
             case "give":
-                ExperienceListener.addExemptExperience(player, amount);
+                MechanicListener.addExemptExperience(player, amount);
                 playerClass.giveExp(amount, ExpSource.PLUGIN);
                 break;
             case "take":
