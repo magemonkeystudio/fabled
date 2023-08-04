@@ -20,7 +20,7 @@ public class PlayerBlockDamageEvent extends PlayerEvent {
     private static final HandlerList handlers = new HandlerList();
     @Getter private Entity source;
     @Getter private double damage;
-    @Getter private boolean isProjectile = false;
+    @Getter private String type = "melee";
 
 
     public PlayerBlockDamageEvent(
@@ -30,7 +30,7 @@ public class PlayerBlockDamageEvent extends PlayerEvent {
         super(statEvent.getPlayer());
         source = damageEvent.getDamager();
         if (source instanceof Projectile){
-            isProjectile = true;
+            type = "projectile";
             ProjectileSource ps = ((Projectile) source).getShooter();
             if (ps instanceof BlockProjectileSource) {
                 Location locTarget = ((BlockProjectileSource) ps).getBlock().getLocation();
