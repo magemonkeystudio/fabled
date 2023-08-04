@@ -513,6 +513,10 @@ class ShieldTrigger extends ProTrigger {
 			name:        'Shield',
 			description: 'Applies skill effects when the player blocks damage with their shield. Use {api-blocked} to get amount of blocked damage.',
 			data:        [
+				new BooleanSelect('Target Caster', 'target', true)
+					.setTooltip('True makes children target the caster. False makes children target the attacking entity'),
+				new DropdownSelect('Type', 'type', ['Both', 'Melee', 'Projectile'], 'Both')
+					.setTooltip('The type of damage dealt'),
 				new DoubleSelect('Damage Heal', 'dmg-min', 0)
 					.setTooltip('The minimum damage that needs to be blocked'),
 				new DoubleSelect('Damage Heal', 'dmg-max', 999)
@@ -3440,6 +3444,7 @@ export const initComponents = () => {
 		FISHING_GRAB:   { name: 'Fishing Grab', component: FishingGrabTrigger },
 		FISHING_GROUND: { name: 'Fishing Ground', component: FishingGroundTrigger },
 		FISHING_REEL:   { name: 'Fishing Reel', component: FishingReelTrigger },
+		HEAL:   		{ name: 'Heal', component: HealTrigger },
 		INIT:           { name: 'Initialize', component: InitializeTrigger },
 		ITEM_SWAP:      { name: 'Item Swap', component: ItemSwapTrigger },
 		KILL:           { name: 'Kill', component: KillTrigger },
@@ -3451,6 +3456,7 @@ export const initComponents = () => {
 		PHYS_DAMAGE:    { name: 'Physical Damage', component: PhysicalDamageTrigger },
 		PROJ_HIT:       { name: 'Projectile Hit', component: ProjectileHitTrigger },
 		PROJ_TICK:      { name: 'Projectile Launch', component: ProjectileTickTrigger },
+		SHIELD:   		{ name: 'Shield', component: ShieldTrigger },
 		SKILL_DAMAGE:   { name: 'Skill Damage', component: SkillDamageTrigger },
 		SKILL_CAST:     { name: 'Skill Cast', component: SkillCastTrigger },
 		TOOK_PHYS:      { name: 'Took Physical Damage', component: TookPhysicalTrigger },
