@@ -48,7 +48,7 @@ class ArmorEquipTrigger extends ProTrigger {
 		super({
 			name:        'Armor Equip',
 			description: 'Applies skill effects when a player equips a new item in an armor or hand slot',
-			data:        [new DropdownSelect('Slots', 'slots', ['Any', 'Helmet', 'Chestplate', 'Leggings', 'Boots'], ['Any'], true)
+			data:        [new DropdownSelect('Slots', 'slots', ['Any', 'Helmet', 'Chestplate', 'Leggings', 'Boots', 'Main hand', 'Offhand'], ['Any'], true)
 				.setTooltip('The armor slots to check for')]
 		});
 	}
