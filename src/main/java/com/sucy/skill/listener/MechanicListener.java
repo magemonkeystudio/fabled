@@ -27,8 +27,10 @@
 package com.sucy.skill.listener;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.enums.ExpSource;
 import com.sucy.skill.api.event.FlagApplyEvent;
 import com.sucy.skill.api.event.FlagExpireEvent;
+import com.sucy.skill.api.event.PlayerExperienceGainEvent;
 import com.sucy.skill.api.event.PlayerLandEvent;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.projectile.ItemProjectile;
@@ -75,6 +77,7 @@ public class MechanicListener extends SkillAPIListener {
     public static final String DAMAGE_CAUSE      = "damageCause";
 
     private static final HashMap<UUID, Double> flying = new HashMap<UUID, Double>();
+    private static       Map<UUID, Double>     exempt     = new HashMap<>();
 
     /**
      * Cleans up listener data on shutdown
@@ -256,6 +259,24 @@ public class MechanicListener extends SkillAPIListener {
         }
     }
 
+    /**
+     * Used for experience mechanic
+     *
+     * @param event event details
+     */
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onExperienceGain(PlayerExperienceGainEvent event) {
+        Player player = event.getPlayerData().getPlayer();
+        if (event.isCancelled()
+                && event.getSource() == ExpSource.PLUGIN
+                && exempt.containsKey(player.getUniqueId())
+                && exempt.get(player.getUniqueId()) == event.getExp()) {
+            event.setCancelled(false);
+        }
+    }
+    public static void addExemptExperience(Player player, double amount) {
+        exempt.put(player.getUniqueId(), amount);
+    }
     /**
      * Stop explosions of projectiles fired from skills
      *

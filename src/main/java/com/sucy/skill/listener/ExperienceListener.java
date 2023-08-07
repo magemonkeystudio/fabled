@@ -23,10 +23,10 @@ import java.util.HashSet;
  */
 public class ExperienceListener extends SkillAPIListener {
 
-    private static final String CONFIG_KEY = "unnatural";
+    private static final String            CONFIG_KEY = "unnatural";
 
     boolean         track;
-    HashSet<String> unnatural = new HashSet<String>();
+    HashSet<String> unnatural = new HashSet<>();
 
     public ExperienceListener() {
         track = SkillAPI.getSettings().isTrackBreak();
@@ -40,7 +40,7 @@ public class ExperienceListener extends SkillAPIListener {
     public void cleanup() {
         if (track) {
             CommentedConfig config = SkillAPI.getConfig("data/placed");
-            config.getConfig().set(CONFIG_KEY, new ArrayList<String>(unnatural));
+            config.getConfig().set(CONFIG_KEY, new ArrayList<>(unnatural));
             config.save();
         }
     }
