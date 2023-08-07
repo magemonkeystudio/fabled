@@ -178,6 +178,7 @@ public class ComponentRegistry {
         register(new StatusMechanic());
         register(new TauntMechanic());
         register(new TriggerMechanic());
+        register(new TrueInvisibilityMechanic());
         register(new ValueAddMechanic());
         register(new ValueAttributeMechanic());
         register(new ValueCopyMechanic());
