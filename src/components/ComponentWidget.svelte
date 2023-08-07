@@ -55,17 +55,17 @@
 	$: {
 		sortedTargets = Object.keys(targets)
 			.filter(key => targets[key].name.toLowerCase().includes(searchParams.toLowerCase()))
-			.sort()
+			.sort((a, b) => (targets[a].component.new().isDeprecated ? 0 : -1) - (targets[b].component.new().isDeprecated ? 0 : -1))
 			.map(key => targets[key]);
 
 		sortedConditions = Object.keys(conditions)
 			.filter(key => conditions[key].name.toLowerCase().includes(searchParams.toLowerCase()))
-			.sort()
+			.sort((a, b) => (conditions[a].component.new().isDeprecated ? 0 : -1) - (conditions[b].component.new().isDeprecated ? 0 : -1))
 			.map(key => conditions[key]);
 
 		sortedMechanics = Object.keys(mechanics)
 			.filter(key => mechanics[key].name.toLowerCase().includes(searchParams.toLowerCase()))
-			.sort()
+			.sort((a, b) => (mechanics[a].component.new().isDeprecated ? 0 : -1) - (mechanics[b].component.new().isDeprecated ? 0 : -1))
 			.map(key => mechanics[key]);
 	}
 
@@ -210,7 +210,14 @@
 			<span class='material-symbols-rounded' in:spin|local={{duration: 400}}>expand_less</span>
 		{/if}
 		<div class='corner' on:click|stopPropagation={() => collapsed = !collapsed} />
-		<div class='name'><span>{getName($useSymbols)}</span>{($useSymbols ? ' ' : ': ') + component.name}</div>
+    <div class="name">
+      <span>{getName($useSymbols)}</span>{($useSymbols ? ' ' : ': ')}
+      {#if component.isDeprecated}
+        <s>{component.name}</s>
+      {:else}
+        {component.name}
+      {/if}
+    </div>
 
 		{#if !collapsed}
 			<div class='controls'>
@@ -277,7 +284,7 @@
 </div>
 
 <Modal bind:open={modalOpen} width='70%'>
-	<h2>{component.name}</h2>
+  {#if component.isDeprecated}<h2><s>{component.name}</s> <small>deprecated</small></h2>{:else}<h2>{component.name}</h2>{/if}
 	{#if component.description}
 		<div class='modal-desc'>{component.description}</div>
 	{/if}
@@ -330,7 +337,7 @@
 		</div>
 		<div class='triggers'>
 			{#each sortedTargets as target}
-				<div class='comp-select' on:click={() => addComponent(target.component)}>{target.name}</div>
+        <div class="comp-select" on:click={() => addComponent(target.component)}>{#if target.component.new().isDeprecated}<s>{target.name}</s>{:else}{target.name}{/if}</div>
 			{/each}
 		</div>
 	{/if}
@@ -341,7 +348,7 @@
 		</div>
 		<div class='triggers'>
 			{#each sortedConditions as condition}
-				<div class='comp-select' on:click={() => addComponent(condition.component)}>{condition.name}</div>
+        <div class="comp-select" on:click={() => addComponent(condition.component)}>{#if condition.component.new().isDeprecated}<s>{condition.name}</s>{:else}{condition.name}{/if}</div>
 			{/each}
 		</div>
 	{/if}
@@ -352,7 +359,7 @@
 		</div>
 		<div class='triggers'>
 			{#each sortedMechanics as mechanic}
-				<div class='comp-select' on:click={() => addComponent(mechanic.component)}>{mechanic.name}</div>
+        <div class="comp-select" on:click={() => addComponent(mechanic.component)}>{#if mechanic.component.new().isDeprecated}<s>{mechanic.name}</s>{:else}{mechanic.name}{/if}</div>
 			{/each}
 		</div>
 	{/if}
