@@ -646,6 +646,7 @@ public class SkillAPI extends JavaPlugin {
             new PlaceholderAPIHook(this).register();
             getLogger().info("ProSkillAPI hook into PlaceholderAPI: " + ChatColor.GREEN + "success.");
         }
+        boolean protocolLib = Bukkit.getPluginManager().getPlugin("ProtocolLib") != null;
 
         // Set up managers
         comboManager = new ComboManager();
@@ -669,6 +670,7 @@ public class SkillAPI extends JavaPlugin {
         listen(new BuffListener(), true);
         listen(new MainListener(), true);
         listen(new MechanicListener(), true);
+        if(protocolLib) listen(new PacketListener(), true);
         listen(new ProjectileListener(),true);
         listen(new StatusListener(), true);
         listen(new ToolListener(), true);

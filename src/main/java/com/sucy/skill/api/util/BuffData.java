@@ -27,8 +27,10 @@
 package com.sucy.skill.api.util;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.event.BuffExpiredEvent;
 import com.sucy.skill.log.LogType;
 import com.sucy.skill.log.Logger;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -142,7 +144,10 @@ public class BuffData {
     public double apply(final BuffType type, final double value) {
         return doApply(value, type.name());
     }
-
+    public boolean isActive(final BuffType type){
+        final Map<String, Buff> typeBuffs = buffs.get(type.name());
+        return typeBuffs != null;
+    }
     /**
      * Applies all buffs of the given type to the specified value
      *
@@ -279,7 +284,6 @@ public class BuffData {
 
             final Map<String, Buff> typeBuffs = buffs.get(type);
             typeBuffs.remove(key);
-
             // Clean up buff data if the entity doesn't hold onto any buffs
             if (typeBuffs.size() == 0) {
                 buffs.remove(type);
@@ -287,6 +291,8 @@ public class BuffData {
                     BuffManager.clearData(entity);
                 }
             }
+            BuffExpiredEvent event = new BuffExpiredEvent(entity,typeBuffs.get(type),BuffType.valueOf(this.type));
+            Bukkit.getPluginManager().callEvent(event);
         }
     }
 }
