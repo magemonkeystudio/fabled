@@ -26,6 +26,7 @@ public class ShieldBlockListener extends SkillAPIListener {
     public void onDamage(EntityDamageByEntityEvent event){
         if (!(event.getEntity() instanceof Player)) return;
         Player player = (Player) event.getEntity();
+        if (!player.isBlocking()) return;
         volatileMap.put(player, event);
         new Timer().schedule(new TimerTask() {@Override public void run() {volatileMap.remove(player);}},100);
     }
