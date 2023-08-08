@@ -327,6 +327,8 @@ class PhysicalDamageTrigger extends ProTrigger {
 				new DropdownSelect('Type', 'type', ['Both', 'Melee', 'Projectile'], 'Both')
 					.setTooltip('The type of damage dealt'),
 				new DoubleSelect('Min Damage', 'dmg-min', 0)
+					.setTooltip('The minimum damage that needs to be dealt'),
+				new DoubleSelect('Max Damage', 'dmg-max', 999)
 					.setTooltip('The minimum damage that needs to be dealt')
 			]
 		});
