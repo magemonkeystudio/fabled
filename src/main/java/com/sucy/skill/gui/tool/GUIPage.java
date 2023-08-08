@@ -35,6 +35,7 @@ import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -120,7 +121,11 @@ public class GUIPage {
             if (item == null)
                 continue;
 
-            String key = ChatColor.stripColor(data[i].getItemMeta().getDisplayName()).toLowerCase();
+            ItemMeta meta = data[i].getItemMeta();
+            if (meta == null) {
+                continue;
+            }
+            String key = ChatColor.stripColor(meta.getDisplayName()).toLowerCase();
             if (key.equals("next page") || key.equals("prev page"))
                 continue;
 

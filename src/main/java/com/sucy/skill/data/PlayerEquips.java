@@ -270,6 +270,9 @@ public class PlayerEquips {
                 return;
 
             ItemMeta itemMeta = item.getItemMeta();
+            if (itemMeta == null) {
+                return;
+            }
 
             if (!itemMeta.hasLore()) {
                 return;

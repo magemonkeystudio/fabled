@@ -1332,43 +1332,44 @@ public class Settings {
         unassigned = new ItemStack(mat);
 
         ItemMeta meta = unassigned.getItemMeta();
-
-        final int data = icon.getInt("data", 0);
-        if (data != 0) {
-            meta.setCustomModelData(data);
-        }
-
-        if (icon.isList("text")) {
-            List<String> format = TextFormatter.colorStringList(icon.getList("text"));
-            meta.setDisplayName(format.remove(0));
-            meta.setLore(format);
-        } else {
-            meta.setDisplayName(TextFormatter.colorString(icon.getString("text", "&7Unassigned")));
-        }
-
-        if (meta instanceof Damageable) {
-            ((Damageable) meta).setDamage(icon.getInt("durability", 0));
-        }
-        unassigned.setItemMeta(meta);
-
-        DataSection layout     = bar.getSection("layout");
-        int         skillCount = 0;
-        for (int i = 0; i < 9; i++) {
-            DataSection slot = layout.getSection((i + 1) + "");
-            defaultBarLayout[i] = slot.getBoolean("skill", i <= 5);
-            lockedSlots[i] = slot.getBoolean("locked", false);
-            if (isUsingCombat() && i == castSlot) {
-                lockedSlots[i] = true;
-                defaultBarLayout[i] = false;
+        if (meta != null) {
+            final int data = icon.getInt("data", 0);
+            if (data != 0) {
+                meta.setCustomModelData(data);
             }
-            if (defaultBarLayout[i]) {
-                skillCount++;
+
+            if (icon.isList("text")) {
+                List<String> format = TextFormatter.colorStringList(icon.getList("text"));
+                meta.setDisplayName(format.remove(0));
+                meta.setLore(format);
+            } else {
+                meta.setDisplayName(TextFormatter.colorString(icon.getString("text", "&7Unassigned")));
             }
-        }
-        if (skillCount == 9) {
-            Logger.invalid("Invalid Skill Bar Setup - Cannot have all 9 skill slots!");
-            Logger.invalid("  -> Setting last slot to be a weapon slot");
-            defaultBarLayout[8] = false;
+
+            if (meta instanceof Damageable) {
+                ((Damageable) meta).setDamage(icon.getInt("durability", 0));
+            }
+            unassigned.setItemMeta(meta);
+
+            DataSection layout     = bar.getSection("layout");
+            int         skillCount = 0;
+            for (int i = 0; i < 9; i++) {
+                DataSection slot = layout.getSection((i + 1) + "");
+                defaultBarLayout[i] = slot.getBoolean("skill", i <= 5);
+                lockedSlots[i] = slot.getBoolean("locked", false);
+                if (isUsingCombat() && i == castSlot) {
+                    lockedSlots[i] = true;
+                    defaultBarLayout[i] = false;
+                }
+                if (defaultBarLayout[i]) {
+                    skillCount++;
+                }
+            }
+            if (skillCount == 9) {
+                Logger.invalid("Invalid Skill Bar Setup - Cannot have all 9 skill slots!");
+                Logger.invalid("  -> Setting last slot to be a weapon slot");
+                defaultBarLayout[8] = false;
+            }
         }
     }
 

@@ -444,14 +444,16 @@ public abstract class Skill implements IconHolder {
     public ItemStack getToolIndicator() {
         ItemStack    item = new ItemStack(indicator.getType());
         ItemMeta     meta = item.getItemMeta();
-        List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
-        if (meta.hasDisplayName())
-            lore.add(0, meta.getDisplayName());
-        lore.add("Level: " + getLevelReq(0));
-        lore.add("Cost: " + getCost(0));
-        meta.setLore(lore);
-        meta.setDisplayName(name);
-        item.setItemMeta(meta);
+        if (meta != null) {
+            List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
+            if (meta.hasDisplayName())
+                lore.add(0, meta.getDisplayName());
+            lore.add("Level: " + getLevelReq(0));
+            lore.add("Cost: " + getCost(0));
+            meta.setLore(lore);
+            meta.setDisplayName(name);
+            item.setItemMeta(meta);
+        }
 
         return item;
     }

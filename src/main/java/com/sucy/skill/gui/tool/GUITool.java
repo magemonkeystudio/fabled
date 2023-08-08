@@ -166,15 +166,17 @@ public class GUITool implements ToolMenu {
         Material  material = Material.valueOf(data.getString("type").toUpperCase().replace(" ", "_"));
         ItemStack item     = new ItemStack(material);
         ItemMeta  meta     = item.getItemMeta();
-        meta.setCustomModelData(data.getInt("data"));
-        if (meta instanceof Damageable) {
-            ((Damageable) meta).setDamage(data.getInt("durability"));
+        if (meta != null) {
+            meta.setCustomModelData(data.getInt("data"));
+            if (meta instanceof Damageable) {
+                ((Damageable) meta).setDamage(data.getInt("durability"));
+            }
+
+            meta.setDisplayName(TextFormatter.colorString(data.getString("name")));
+            meta.setLore(TextFormatter.colorStringList(data.getList("lore")));
+
+            item.setItemMeta(meta);
         }
-
-        meta.setDisplayName(TextFormatter.colorString(data.getString("name")));
-        meta.setLore(TextFormatter.colorStringList(data.getList("lore")));
-
-        item.setItemMeta(meta);
 
         return DamageLoreRemover.removeAttackDmg(item);
     }
@@ -267,9 +269,11 @@ public class GUITool implements ToolMenu {
     private static ItemStack make(Material mat, String name, String... lore) {
         ItemStack item = new ItemStack(mat);
         ItemMeta  meta = item.getItemMeta();
-        meta.setDisplayName(name);
-        meta.setLore(Arrays.asList(lore));
-        item.setItemMeta(meta);
+        if (meta != null) {
+            meta.setDisplayName(name);
+            meta.setLore(Arrays.asList(lore));
+            item.setItemMeta(meta);
+        }
         return item;
     }
 
@@ -374,9 +378,11 @@ public class GUITool implements ToolMenu {
     private ItemStack toPlaceholder(String key, ItemStack custom) {
         ItemStack copy = custom.clone();
         ItemMeta  meta = copy.getItemMeta();
-        meta.setDisplayName(key);
-        meta.setLore(new ArrayList<>());
-        copy.setItemMeta(meta);
+        if (meta != null) {
+            meta.setDisplayName(key);
+            meta.setLore(new ArrayList<>());
+            copy.setItemMeta(meta);
+        }
         return copy;
     }
 

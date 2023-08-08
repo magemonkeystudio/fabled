@@ -314,13 +314,15 @@ public abstract class RPGClass implements IconHolder {
     public ItemStack getToolIcon() {
         ItemStack    item     = new ItemStack(icon.getType());
         ItemMeta     iconMeta = icon.getItemMeta();
-        ItemMeta     meta     = item.getItemMeta();
-        List<String> lore     = iconMeta.hasLore() ? iconMeta.getLore() : new ArrayList<>();
-        if (iconMeta.hasDisplayName()) lore.add(0, iconMeta.getDisplayName());
+        if (iconMeta != null) {
+            ItemMeta     meta     = item.getItemMeta();
+            List<String> lore     = iconMeta.hasLore() ? iconMeta.getLore() : new ArrayList<>();
+            if (iconMeta.hasDisplayName()) lore.add(0, iconMeta.getDisplayName());
 
-        meta.setDisplayName(name);
-        meta.setLore(lore);
-        item.setItemMeta(meta);
+            meta.setDisplayName(name);
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+        }
         return item;
     }
 

@@ -45,6 +45,9 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
     public static ItemStack processPlaceholders(ItemStack item, Player player) {
         ItemMeta meta = item.getItemMeta();
+        if (meta == null) {
+            return item;
+        }
         if (meta.hasDisplayName()) {
             meta.setDisplayName(format(meta.getDisplayName(), player));
         }

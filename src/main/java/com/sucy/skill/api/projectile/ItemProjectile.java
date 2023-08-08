@@ -74,8 +74,10 @@ public class ItemProjectile extends CustomProjectile {
         super(thrower);
 
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(NAME + NEXT++);
-        item.setItemMeta(meta);
+        if (meta != null) {
+            meta.setDisplayName(NAME + NEXT++);
+            item.setItemMeta(meta);
+        }
         DamageLoreRemover.removeAttackDmg(item);
 
         this.item = thrower.getWorld().dropItem(loc.add(0, 1, 0), item);
