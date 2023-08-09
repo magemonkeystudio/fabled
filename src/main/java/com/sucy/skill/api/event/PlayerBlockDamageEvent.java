@@ -24,11 +24,11 @@ public class PlayerBlockDamageEvent extends PlayerEvent {
 
 
     public PlayerBlockDamageEvent(
-            EntityDamageByEntityEvent damageEvent,
+            Entity damager,
             PlayerStatisticIncrementEvent statEvent)
     {
         super(statEvent.getPlayer());
-        source = damageEvent.getDamager();
+        source = damager;
         if (source instanceof Projectile){
             type = "projectile";
             ProjectileSource ps = ((Projectile) source).getShooter();
