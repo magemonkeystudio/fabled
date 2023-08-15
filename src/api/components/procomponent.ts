@@ -12,6 +12,7 @@ export default abstract class ProComponent extends Constructable {
   components: Writable<ProComponent[]> = writable([]);
   data: ComponentOption[]              = [];
   isParent                             = true;
+  isDeprecated                         = false;
   id                                   = {};
   _defaultOpen                         = false;
 

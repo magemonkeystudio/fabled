@@ -48,7 +48,7 @@ class ArmorEquipTrigger extends ProTrigger {
 		super({
 			name:        'Armor Equip',
 			description: 'Applies skill effects when a player equips a new item in an armor or hand slot',
-			data:        [new DropdownSelect('Slots', 'slots', ['Any', 'Helmet', 'Chestplate', 'Leggings', 'Boots'], ['Any'], true)
+			data:        [new DropdownSelect('Slots', 'slots', ['Any', 'Helmet', 'Chestplate', 'Leggings', 'Boots', 'Main hand', 'Offhand'], ['Any'], true)
 				.setTooltip('The armor slots to check for')]
 		});
 	}
@@ -327,6 +327,8 @@ class PhysicalDamageTrigger extends ProTrigger {
 				new DropdownSelect('Type', 'type', ['Both', 'Melee', 'Projectile'], 'Both')
 					.setTooltip('The type of damage dealt'),
 				new DoubleSelect('Min Damage', 'dmg-min', 0)
+					.setTooltip('The minimum damage that needs to be dealt'),
+				new DoubleSelect('Max Damage', 'dmg-max', 999)
 					.setTooltip('The minimum damage that needs to be dealt')
 			]
 		});
@@ -2164,6 +2166,28 @@ class DurabilityMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
+class ExperienceMechanic extends ProMechanic {
+	public constructor() {
+		super({
+			name:        'Experience',
+			description: 'Modifies target\'s specified class experience',
+			data:        [
+				new IntSelect('Value', 'value', 1),
+				new DropdownSelect('Mode', 'mode', ['give', 'take', 'set'], 'give', false)
+					.setTooltip('To give, take or set specified valued'),
+				new DropdownSelect('Type', 'type', ['flat', 'percent'], 'flat', false)
+					.setTooltip('Flat value or percent from next level experience'),
+				new StringSelect('Group', 'group', 'class')
+					.setTooltip('Group name to modify experience'),
+				new BooleanSelect('Level Down', 'level-down', false)
+					.setTooltip('Whether to use skill and level down player class if current exp is insufficient')
+			]
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
 class ExplosionMechanic extends ProMechanic {
 	public constructor() {
 		super({
@@ -3536,6 +3560,7 @@ export const initComponents = () => {
 		DELAY:               { name: 'Delay', component: DelayMechanic },
 		DISGUISE:            { name: 'Disguise', component: DisguiseMechanic },
 		DURABILITY:          { name: 'Durability', component: DurabilityMechanic },
+		EXPERIENCE:          { name: 'Experience', component: ExperienceMechanic },
 		EXPLOSION:           { name: 'Explosion', component: ExplosionMechanic },
 		FIRE:                { name: 'Fire', component: FireMechanic },
 		FLAG:                { name: 'Flag', component: FlagMechanic },

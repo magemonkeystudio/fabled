@@ -8,8 +8,9 @@ import { get } from "svelte/store";
 export default class ProCondition extends ProComponent {
   iconKey = "";
 
-  public constructor(data: ComponentData) {
+  public constructor(data: ComponentData, isDeprecated = false) {
     super("condition", data);
+    super.isDeprecated = isDeprecated;
   }
 
   public override toYamlObj(): YAMLObject {

@@ -1,361 +1,370 @@
 <!--suppress CssUnresolvedCustomProperty -->
-<script lang="ts">
-  import ProComponent                                  from "$api/components/procomponent";
-  import ProTrigger                                    from "$api/components/triggers";
-  import ProCondition                                  from "$api/components/conditions";
-  import ProTarget                                     from "$api/components/targets";
-  import ProMechanic                                   from "$api/components/mechanics";
-  import { slide }                                     from "svelte/transition";
-  import { backOut }                                   from "svelte/easing";
-  import { draggingComponent }                         from "../data/store";
-  import Modal                                         from "$components/Modal.svelte";
-  import ProInput                                      from "$input/ProInput.svelte";
-  import Toggle                                        from "$input/Toggle.svelte";
-  import ProSkill                                      from "$api/proskill";
-  import { createEventDispatcher, onDestroy, onMount } from "svelte";
-  import DropdownSelect                                from "$api/options/dropdownselect";
-  import Registry                                      from "$api/components/registry";
-  import type { Unsubscriber }                         from "svelte/types/runtime/store";
-  import { useSymbols }                                from "../data/settings";
-  import type { ComponentOption }                      from "$api/options/options";
-  import { get }                                       from "svelte/store";
+<script lang='ts'>
+	import ProComponent                                  from '$api/components/procomponent';
+	import ProTrigger                                    from '$api/components/triggers';
+	import ProCondition                                  from '$api/components/conditions';
+	import ProTarget                                     from '$api/components/targets';
+	import ProMechanic                                   from '$api/components/mechanics';
+	import { slide }                                     from 'svelte/transition';
+	import { backOut }                                   from 'svelte/easing';
+	import { draggingComponent }                         from '../data/store';
+	import Modal                                         from '$components/Modal.svelte';
+	import ProInput                                      from '$input/ProInput.svelte';
+	import Toggle                                        from '$input/Toggle.svelte';
+	import ProSkill                                      from '$api/proskill';
+	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
+	import DropdownSelect                                from '$api/options/dropdownselect';
+	import Registry                                      from '$api/components/registry';
+	import type { Unsubscriber }                         from 'svelte/types/runtime/store';
+	import { useSymbols }                                from '../data/settings';
+	import type { ComponentOption }                      from '$api/options/options';
+	import { get }                                       from 'svelte/store';
 
-  export let skill: ProSkill;
-  export let component: ProComponent;
-  let wrapper: HTMLElement;
-  let children: HTMLElement;
-  let draggedover: ComponentOption;
-  let childrenList: ProComponent[] = [];
+	export let skill: ProSkill;
+	export let component: ProComponent;
+	let wrapper: HTMLElement;
+	let children: HTMLElement;
+	let draggedover: ComponentOption;
+	let childrenList: ProComponent[] = [];
 
-  const dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher();
 
-  let modalOpen      = false;
-  let componentModal = false;
-  let collapsed      = false;
-  let over           = false;
-  let overChildren   = false;
-  let top            = false;
-  let bottom         = false;
+	let modalOpen      = false;
+	let componentModal = false;
+	let collapsed      = false;
+	let over           = false;
+	let overChildren   = false;
+	let top            = false;
+	let bottom         = false;
 
-  let searchParams = "";
+	let searchParams = '';
 
-  let targetSub: Unsubscriber;
-  let conditionSub: Unsubscriber;
-  let mechanicSub: Unsubscriber;
-  let childCompsSub: Unsubscriber;
+	let targetSub: Unsubscriber;
+	let conditionSub: Unsubscriber;
+	let mechanicSub: Unsubscriber;
+	let childCompsSub: Unsubscriber;
 
-  let targets: { [key: string]: { name: string, component: typeof ProComponent } }    = {};
-  let conditions: { [key: string]: { name: string, component: typeof ProComponent } } = {};
-  let mechanics: { [key: string]: { name: string, component: typeof ProComponent } }  = {};
+	let targets: { [key: string]: { name: string, component: typeof ProComponent } }    = {};
+	let conditions: { [key: string]: { name: string, component: typeof ProComponent } } = {};
+	let mechanics: { [key: string]: { name: string, component: typeof ProComponent } }  = {};
 
-  let sortedTargets: Array<{ name: string, component: typeof ProComponent }>;
-  let sortedConditions: Array<{ name: string, component: typeof ProComponent }>;
-  let sortedMechanics: Array<{ name: string, component: typeof ProComponent }>;
+	let sortedTargets: Array<{ name: string, component: typeof ProComponent }>;
+	let sortedConditions: Array<{ name: string, component: typeof ProComponent }>;
+	let sortedMechanics: Array<{ name: string, component: typeof ProComponent }>;
 
-  $: {
-    sortedTargets = Object.keys(targets)
-      .filter(key => targets[key].name.toLowerCase().includes(searchParams.toLowerCase()))
-      .sort()
-      .map(key => targets[key]);
+	$: {
+		sortedTargets = Object.keys(targets)
+			.filter(key => targets[key].name.toLowerCase().includes(searchParams.toLowerCase()))
+			.sort((a, b) => (targets[a].component.new().isDeprecated ? 0 : -1) - (targets[b].component.new().isDeprecated ? 0 : -1))
+			.map(key => targets[key]);
 
-    sortedConditions = Object.keys(conditions)
-      .filter(key => conditions[key].name.toLowerCase().includes(searchParams.toLowerCase()))
-      .sort()
-      .map(key => conditions[key]);
+		sortedConditions = Object.keys(conditions)
+			.filter(key => conditions[key].name.toLowerCase().includes(searchParams.toLowerCase()))
+			.sort((a, b) => (conditions[a].component.new().isDeprecated ? 0 : -1) - (conditions[b].component.new().isDeprecated ? 0 : -1))
+			.map(key => conditions[key]);
 
-    sortedMechanics = Object.keys(mechanics)
-      .filter(key => mechanics[key].name.toLowerCase().includes(searchParams.toLowerCase()))
-      .sort()
-      .map(key => mechanics[key]);
-  }
+		sortedMechanics = Object.keys(mechanics)
+			.filter(key => mechanics[key].name.toLowerCase().includes(searchParams.toLowerCase()))
+			.sort((a, b) => (mechanics[a].component.new().isDeprecated ? 0 : -1) - (mechanics[b].component.new().isDeprecated ? 0 : -1))
+			.map(key => mechanics[key]);
+	}
 
-  $: if (component) dispatch("save");
-  $: if (modalOpen && component) component.data.filter(dat => (dat["dataSource"])).forEach((dat: DropdownSelect) => dat.init());
+	$: if (component) dispatch('save');
+	$: if (modalOpen && component) component.data.filter(dat => (dat['dataSource'])).forEach((dat: DropdownSelect) => dat.init());
 
-  onMount(() => {
-    childCompsSub = component.components.subscribe(comps => childrenList = comps);
+	onMount(() => {
+		childCompsSub = component.components.subscribe(comps => childrenList = comps);
 
-    targetSub    = Registry.targets.subscribe(tar => targets = tar);
-    conditionSub = Registry.conditions.subscribe(con => conditions = con);
-    mechanicSub  = Registry.mechanics.subscribe(mech => mechanics = mech);
+		targetSub    = Registry.targets.subscribe(tar => targets = tar);
+		conditionSub = Registry.conditions.subscribe(con => conditions = con);
+		mechanicSub  = Registry.mechanics.subscribe(mech => mechanics = mech);
 
-    modalOpen = component._defaultOpen;
-  });
+		modalOpen = component._defaultOpen;
+	});
 
-  onDestroy(() => {
-    if (childCompsSub) childCompsSub();
-    if (targetSub) targetSub();
-    if (conditionSub) conditionSub();
-    if (mechanicSub) mechanicSub();
-  });
+	onDestroy(() => {
+		if (childCompsSub) childCompsSub();
+		if (targetSub) targetSub();
+		if (conditionSub) conditionSub();
+		if (mechanicSub) mechanicSub();
+	});
 
-  const getName = (symbols = false) => {
-    if (symbols) {
-      if (component instanceof ProTrigger) {
-        return "🚩";
-      } else if (component instanceof ProCondition) {
-        return "⚠";
-      } else if (component instanceof ProTarget) {
-        return "🎯";
-      } else if (component instanceof ProMechanic) {
-        return "🔧";
-      }
-    }
+	const getName = (symbols = false) => {
+		if (symbols) {
+			if (component instanceof ProTrigger) {
+				return '🚩';
+			} else if (component instanceof ProCondition) {
+				return '⚠';
+			} else if (component instanceof ProTarget) {
+				return '🎯';
+			} else if (component instanceof ProMechanic) {
+				return '🔧';
+			}
+		}
 
-    if (component instanceof ProTrigger) {
-      return "Trigger";
-    } else if (component instanceof ProCondition) {
-      return "Condition";
-    } else if (component instanceof ProTarget) {
-      return "Target";
-    } else if (component instanceof ProMechanic) {
-      return "Mechanic";
-    }
+		if (component instanceof ProTrigger) {
+			return 'Trigger';
+		} else if (component instanceof ProCondition) {
+			return 'Condition';
+		} else if (component instanceof ProTarget) {
+			return 'Target';
+		} else if (component instanceof ProMechanic) {
+			return 'Mechanic';
+		}
 
-    return "???";
-  };
+		return '???';
+	};
 
-  const addComponent = (comp: typeof ProComponent) => {
-    component.addComponent(comp.new().defaultOpen());
-    componentModal = false;
-    searchParams   = "";
-    dispatch("save");
-  };
+	const addComponent = (comp: typeof ProComponent) => {
+		component.addComponent(comp.new().defaultOpen());
+		componentModal = false;
+		searchParams   = '';
+		dispatch('save');
+	};
 
-  const getColor = () => {
-    if (component instanceof ProTrigger) {
-      return "#0083ef";
-    } else if (component instanceof ProCondition) {
-      return "#feac00";
-    } else if (component instanceof ProTarget) {
-      return "#04af38";
-    } else if (component instanceof ProMechanic) {
-      return "#ff3a3a";
-    }
+	const getColor = () => {
+		if (component instanceof ProTrigger) {
+			return '#0083ef';
+		} else if (component instanceof ProCondition) {
+			return '#feac00';
+		} else if (component instanceof ProTarget) {
+			return '#04af38';
+		} else if (component instanceof ProMechanic) {
+			return '#ff3a3a';
+		}
 
-    return "orange";
-  };
+		return 'orange';
+	};
 
-  const spin = (node, { duration }) => {
-    return {
-      duration,
-      css: t => {
-        const eased = backOut(t);
+	const spin = (node, { duration }) => {
+		return {
+			duration,
+			css: t => {
+				const eased = backOut(t);
 
-        return `transform: rotate(${180 - (eased * 180)}deg);`;
-      }
-    };
-  };
+				return `transform: rotate(${180 - (eased * 180)}deg);`;
+			}
+		};
+	};
 
-  const move = (e) => {
-    if (component == get(draggingComponent)) return;
-    over = true;
-    if (component instanceof ProTrigger) return;
-    const rect = wrapper.getBoundingClientRect();
+	const move = (e) => {
+		if (component == get(draggingComponent)) return;
+		over = true;
+		if (component instanceof ProTrigger) return;
+		const rect = wrapper.getBoundingClientRect();
 
-    top    = e.clientY < (rect.height / 2) + rect.top;
-    bottom = e.clientY >= (rect.height / 2) + rect.top;
-  };
+		top    = e.clientY < (rect.height / 2) + rect.top;
+		bottom = e.clientY >= (rect.height / 2) + rect.top;
+	};
 
-  const clearStatus = () => {
-    over   = false;
-    top    = false;
-    bottom = false;
-  };
+	const clearStatus = () => {
+		over   = false;
+		top    = false;
+		bottom = false;
+	};
 
-  const leave = (e) => {
-    if (!e.relatedTarget || !wrapper?.contains(e.relatedTarget) || children?.contains(e.relatedTarget)) {
-      clearStatus();
-    }
-  };
+	const leave = (e) => {
+		if (!e.relatedTarget || !wrapper?.contains(e.relatedTarget) || children?.contains(e.relatedTarget)) {
+			clearStatus();
+		}
+	};
 
-  const drop = () => {
-    let comp = get(draggingComponent);
+	const drop = () => {
+		let comp = get(draggingComponent);
 
-    dispatch("addskill", { comp, relativeTo: component, above: top });
-    clearStatus();
-  };
+		dispatch('addskill', { comp, relativeTo: component, above: top });
+		clearStatus();
+	};
 
-  const addSkill = (e) => {
-    let comp       = e.detail.comp;
-    let relativeTo = e.detail.relativeTo;
-    let above      = e.detail.above;
-    let index      = childrenList.indexOf(relativeTo);
+	const addSkill = (e) => {
+		let comp       = e.detail.comp;
+		let relativeTo = e.detail.relativeTo;
+		let above      = e.detail.above;
+		let index      = childrenList.indexOf(relativeTo);
 
-    skill.removeComponent(comp);
-    component.addComponent(comp, index + (!above ? 1 : 0));
-    dispatch("save");
-  };
+		skill.removeComponent(comp);
+		component.addComponent(comp, index + (!above ? 1 : 0));
+		dispatch('save');
+	};
 </script>
 
-<div class="wrapper">
-  <div out:slide
-       bind:this={wrapper}
-       draggable="true"
-       on:dragstart|stopPropagation={() => draggingComponent.set(component)}
-       on:dragend={() => draggingComponent.set(undefined)}
-       on:drop|stopPropagation={drop}
-       on:click|stopPropagation={() => modalOpen = true}
-       on:dragover|preventDefault|stopPropagation={move}
-       on:dragleave|stopPropagation={leave}
-       class="comp-body"
-       class:over
-       class:top
-       class:bottom
-       class:dragging={$draggingComponent === component}
-       style:--comp-color={getColor()}>
-    {#if collapsed}
-      <span class="material-symbols-rounded" in:spin|local={{duration: 400}}>expand_more</span>
-    {:else}
-      <span class="material-symbols-rounded" in:spin|local={{duration: 400}}>expand_less</span>
-    {/if}
-    <div class="corner" on:click|stopPropagation={() => collapsed = !collapsed}/>
-    <div class="name"><span>{getName($useSymbols)}</span>{($useSymbols ? ' ' : ': ') + component.name}</div>
+<div class='wrapper'>
+	<div out:slide
+			 bind:this={wrapper}
+			 draggable='true'
+			 on:dragstart|stopPropagation={() => draggingComponent.set(component)}
+			 on:dragend={() => draggingComponent.set(undefined)}
+			 on:drop|stopPropagation={drop}
+			 on:click|stopPropagation={() => modalOpen = true}
+			 on:dragover|preventDefault|stopPropagation={move}
+			 on:dragleave|stopPropagation={leave}
+			 class='comp-body'
+			 class:over
+			 class:top
+			 class:bottom
+			 class:dragging={$draggingComponent === component}
+			 style:--comp-color={getColor()}>
+		{#if collapsed}
+			<span class='material-symbols-rounded' in:spin|local={{duration: 400}}>expand_more</span>
+		{:else}
+			<span class='material-symbols-rounded' in:spin|local={{duration: 400}}>expand_less</span>
+		{/if}
+		<div class='corner' on:click|stopPropagation={() => collapsed = !collapsed} />
+    <div class="name">
+      <span>{getName($useSymbols)}</span>{($useSymbols ? ' ' : ': ')}
+      {#if component.isDeprecated}
+        <s>{component.name}</s>
+      {:else}
+        {component.name}
+      {/if}
+    </div>
 
-    {#if !collapsed}
-      <div class="controls">
-        <div class="material-symbols-rounded control copy"
-             title="Copy"
-             transition:slide
-             on:click|stopPropagation={() => console.log('clicked copy')}
-        >content_copy
-        </div>
-        <div class="material-symbols-rounded control delete"
-             title="Delete"
-             transition:slide
-             on:click|stopPropagation={() => {
+		{#if !collapsed}
+			<div class='controls'>
+				{#if component.isParent}
+					<div class='material-symbols-rounded control add'
+							 title='Add Component'
+							 on:click|stopPropagation={() => componentModal = true}>
+						add
+					</div>
+				{/if}
+				<div class='material-symbols-rounded control copy'
+						 title='Copy'
+						 transition:slide
+						 on:click|stopPropagation={() => console.log('clicked copy')}
+				>content_copy
+				</div>
+				<div class='material-symbols-rounded control delete'
+						 title='Delete'
+						 transition:slide
+						 on:click|stopPropagation={() => {
                skill.removeComponent(component);
                dispatch("update");
              }}
-        >delete
-        </div>
-      </div>
-      <div class="children" transition:slide|local>
-        {#if childrenList.length == 0}
-          {#if component.isParent && (over || overChildren)}
-            <div class="filler"
-                 transition:slide
-                 class:overChildren
-                 on:dragenter|stopPropagation={() => {
+				>delete
+				</div>
+			</div>
+			<div class='children' transition:slide|local>
+				{#if childrenList.length == 0}
+					{#if component.isParent && (over || overChildren)}
+						<div class='filler'
+								 transition:slide
+								 class:overChildren
+								 on:dragenter|stopPropagation={() => {
                    overChildren = true;
                    over = false;
                  }}
-                 on:dragover|preventDefault|stopPropagation={() => {
+								 on:dragover|preventDefault|stopPropagation={() => {
 
                  }}
-                 on:dragleave={(e) => {
+								 on:dragleave={(e) => {
                    overChildren = false;
                    if (wrapper?.contains(e.relatedTarget) && !children?.contains(e.relatedTarget)) over = true;
                  }}
-                 on:drop|preventDefault|stopPropagation={() => {
+								 on:drop|preventDefault|stopPropagation={() => {
                    overChildren = false;
 
                    let comp = get(draggingComponent);
                    skill.removeComponent(comp);
                    component.addComponent(comp);
-                 }}/>
-          {/if}
-        {:else}
-          <div class="child-wrapper" bind:this={children}>
-            {#each childrenList as child (child.id)}
+                 }} />
+					{/if}
+				{:else}
+					<div class='child-wrapper' bind:this={children}>
+						{#each childrenList as child (child.id)}
             <span transition:slide|local>
-              <svelte:self {skill} bind:component={child} on:update on:save on:addskill={addSkill}/>
+              <svelte:self {skill} bind:component={child} on:update on:save on:addskill={addSkill} />
             </span>
-            {/each}
-          </div>
-        {/if}
-        {#if component.isParent}
-          <div class="chip" on:click|stopPropagation={() => componentModal = true}>
-            + Add Component
-          </div>
-        {/if}
-      </div>
-    {/if}
-  </div>
+						{/each}
+					</div>
+				{/if}
+			</div>
+		{/if}
+	</div>
 </div>
 
-<Modal bind:open={modalOpen} width="70%">
-  <h2>{component.name}</h2>
-  {#if component.description}
-    <div class="modal-desc">{component.description}</div>
-  {/if}
-  <hr/>
-  <div class="component-entry">
-    {#if component instanceof ProTrigger && component.name != 'Cast' && component.name != 'Initialize' && component.name != 'Cleanup'}
-      <ProInput label="Mana" tooltip="[mana] Whether this trigger requires the mana cost to activate">
-        <Toggle bind:data={component.mana}/>
-      </ProInput>
-      <ProInput label="Cooldown" tooltip="[cooldown] Whether this trigger requires to be off cooldown to activate">
-        <Toggle bind:data={component.cooldown}/>
-      </ProInput>
-    {:else if component instanceof ProTarget || component instanceof ProCondition || component instanceof ProMechanic}
-      <ProInput label="Icon Key" bind:value={component.iconKey}
-                tooltip={'[icon-key] The key used by the component in the Icon Lore. If this is set to "example" and has a value name of "value", it can be referenced using the string "{attr:example.value}"'}/>
-    {/if}
-    {#if component instanceof ProMechanic}
-      <ProInput label="Counts as Cast"
-                tooltip={'[counts] Whether this mechanic running treats the skill as "casted" and will consume mana and start the cooldown. Set to false if it is a mechanic applled when the skill fails such as cleanup or an error message"'}>
-        <Toggle bind:data={component.countsAsCast}/>
-      </ProInput>
-    {/if}
+<Modal bind:open={modalOpen} width='70%'>
+  {#if component.isDeprecated}<h2><s>{component.name}</s> <small>deprecated</small></h2>{:else}<h2>{component.name}</h2>{/if}
+	{#if component.description}
+		<div class='modal-desc'>{component.description}</div>
+	{/if}
+	<hr />
+	<div class='component-entry'>
+		{#if component instanceof ProTrigger && component.name != 'Cast' && component.name != 'Initialize' && component.name != 'Cleanup'}
+			<ProInput label='Mana' tooltip='[mana] Whether this trigger requires the mana cost to activate'>
+				<Toggle bind:data={component.mana} />
+			</ProInput>
+			<ProInput label='Cooldown' tooltip='[cooldown] Whether this trigger requires to be off cooldown to activate'>
+				<Toggle bind:data={component.cooldown} />
+			</ProInput>
+		{:else if component instanceof ProTarget || component instanceof ProCondition || component instanceof ProMechanic}
+			<ProInput label='Icon Key' bind:value={component.iconKey}
+								tooltip={'[icon-key] The key used by the component in the Icon Lore. If this is set to "example" and has a value name of "value", it can be referenced using the string "{attr:example.value}"'} />
+		{/if}
+		{#if component instanceof ProMechanic}
+			<ProInput label='Counts as Cast'
+								tooltip={'[counts] Whether this mechanic running treats the skill as "casted" and will consume mana and start the cooldown. Set to false if it is a mechanic applled when the skill fails such as cleanup or an error message"'}>
+				<Toggle bind:data={component.countsAsCast} />
+			</ProInput>
+		{/if}
 
-    {#each component.data as datum}
-      {#if datum.meetsRequirements(component)}
-        <svelte:component
-                this={datum.component}
-                bind:data={datum.data}
-                name={datum.name}
-                tooltip="{datum.key ? '[' + datum.key + '] ' : ''}{datum.tooltip}"
-                multiple={datum.multiple}
-                on:save/>
-      {/if}
-    {/each}
-  </div>
+		{#each component.data as datum}
+			{#if datum.meetsRequirements(component)}
+				<svelte:component
+					this={datum.component}
+					bind:data={datum.data}
+					name={datum.name}
+					tooltip="{datum.key ? '[' + datum.key + '] ' : ''}{datum.tooltip}"
+					multiple={datum.multiple}
+					on:save />
+			{/if}
+		{/each}
+	</div>
 </Modal>
 
-<Modal bind:open={componentModal} width="70%">
-  <div class="modal-header-wrapper">
-    <div/>
-    <h2>Add a Component</h2>
-    <div class="search-bar">
-      <ProInput bind:value={searchParams} placeholder="Search..."/>
-    </div>
-  </div>
-  {#if sortedTargets.length > 0}
-    <hr/>
-    <div class="comp-modal-header">
-      <h3>Targets</h3>
-    </div>
-    <div class="triggers">
-      {#each sortedTargets as target}
-        <div class="comp-select" on:click={() => addComponent(target.component)}>{target.name}</div>
-      {/each}
-    </div>
-  {/if}
-  {#if sortedConditions.length > 0}
-    <hr/>
-    <div class="comp-modal-header">
-      <h3>Conditions</h3>
-    </div>
-    <div class="triggers">
-      {#each sortedConditions as condition}
-        <div class="comp-select" on:click={() => addComponent(condition.component)}>{condition.name}</div>
-      {/each}
-    </div>
-  {/if}
-  {#if sortedMechanics.length > 0}
-    <hr/>
-    <div class="comp-modal-header">
-      <h3>Mechanics</h3>
-    </div>
-    <div class="triggers">
-      {#each sortedMechanics as mechanic}
-        <div class="comp-select" on:click={() => addComponent(mechanic.component)}>{mechanic.name}</div>
-      {/each}
-    </div>
-  {/if}
-  <hr/>
-  <div class="cancel" on:click={() => componentModal = false}>Cancel</div>
+<Modal bind:open={componentModal} width='70%'>
+	<div class='modal-header-wrapper'>
+		<div />
+		<h2>Add a Component</h2>
+		<div class='search-bar'>
+			<ProInput bind:value={searchParams} placeholder='Search...' />
+		</div>
+	</div>
+	{#if sortedTargets.length > 0}
+		<hr />
+		<div class='comp-modal-header'>
+			<h3>Targets</h3>
+		</div>
+		<div class='triggers'>
+			{#each sortedTargets as target}
+        <div class="comp-select" on:click={() => addComponent(target.component)}>{#if target.component.new().isDeprecated}<s>{target.name}</s>{:else}{target.name}{/if}</div>
+			{/each}
+		</div>
+	{/if}
+	{#if sortedConditions.length > 0}
+		<hr />
+		<div class='comp-modal-header'>
+			<h3>Conditions</h3>
+		</div>
+		<div class='triggers'>
+			{#each sortedConditions as condition}
+        <div class="comp-select" on:click={() => addComponent(condition.component)}>{#if condition.component.new().isDeprecated}<s>{condition.name}</s>{:else}{condition.name}{/if}</div>
+			{/each}
+		</div>
+	{/if}
+	{#if sortedMechanics.length > 0}
+		<hr />
+		<div class='comp-modal-header'>
+			<h3>Mechanics</h3>
+		</div>
+		<div class='triggers'>
+			{#each sortedMechanics as mechanic}
+        <div class="comp-select" on:click={() => addComponent(mechanic.component)}>{#if mechanic.component.new().isDeprecated}<s>{mechanic.name}</s>{:else}{mechanic.name}{/if}</div>
+			{/each}
+		</div>
+	{/if}
+	<hr />
+	<div class='cancel' on:click={() => componentModal = false}>Cancel</div>
 </Modal>
 
 <style>
@@ -421,16 +430,6 @@
         align-items: stretch;
     }
 
-    .chip {
-        background-color: #1a1a1a;
-        margin: 0.5rem 0.25rem 0.25rem;
-    }
-
-    .chip:hover {
-        background-color: #0083ef;
-        cursor: pointer;
-    }
-
     .component-entry {
         display: grid;
         grid-template-columns: calc(50% - 3rem) calc(50% + 3rem);
@@ -457,26 +456,21 @@
     }
 
     .copy {
-        background: #0083ef;
+        background: white;
     }
 
-    .control:hover {
+    .add {
+        background: var(--comp-color);
+    }
+
+		.control:hover {
         cursor: pointer;
-        background: #ff5656;
-    }
-
-    .control.copy:hover {
-        background: #00a5ff;
+				box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.4);
     }
 
     .control:active {
         color: rgba(255, 255, 255, 0.5);
         box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.4);
-        background: #b40000;
-    }
-
-    .control.copy:active {
-        background: #006bc2;
     }
 
     .comp-modal-header {
@@ -493,6 +487,7 @@
         display: flex;
         justify-content: stretch;
         align-items: center;
+        margin-bottom: 0.1rem;
     }
 
     .modal-desc {
