@@ -30,27 +30,27 @@ public class SkillCastMechanic extends MechanicComponent {
         if (targets.isEmpty()) return false;
 
         //  First (cast first available)/ All (cast all available)/ Random (cast random available)
-        final String mode = settings.getString("mode", "First").toLowerCase();
-        final boolean force_cast = settings.getBool("force", false);
-        final List<String> skills = settings.getStringList("skills");
+        final String       mode       = settings.getString("mode", "first").toLowerCase();
+        final boolean      force_cast = settings.getBool("force", false);
+        final List<String> skills     = settings.getStringList("skills");
 
         targets.forEach(target -> {
             if (!(target instanceof Player)) return;
-            Player player = (Player) target;
-            PlayerData data = SkillAPI.getPlayerData(player);
+            Player     player = (Player) target;
+            PlayerData data   = SkillAPI.getPlayerData(player);
 
             //  Split skills input into skill name and level
             List<Map.Entry<String, Integer>> handle = new ArrayList<>();
-            skills.forEach(s->{
+            skills.forEach(s -> {
                 String[] split = s.split(":", 2);
-                handle.add(new AbstractMap.SimpleEntry<>(split[0], parseInt(split.length>1?split[1]:null)));
+                handle.add(new AbstractMap.SimpleEntry<>(split[0], parseInt(split.length > 1 ? split[1] : null)));
             });
 
             //  Filter out skills that can't be cast
             List<Map.Entry<String, Integer>> filtered = handle.stream().filter(e
-                    -> SkillAPI.getSkill(e.getKey())!=null
+                    -> SkillAPI.getSkill(e.getKey()) != null
                     && SkillAPI.getSkill(e.getKey()) instanceof SkillShot
-                    && (force_cast || (data.hasSkill(e.getKey()) && data.getSkill(e.getKey()).getLevel()>0))
+                    && (force_cast || (data.hasSkill(e.getKey()) && data.getSkill(e.getKey()).getLevel() > 0))
             ).collect(Collectors.toList());
             if (filtered.isEmpty()) return;
 
@@ -67,15 +67,17 @@ public class SkillCastMechanic extends MechanicComponent {
         return true;
     }
 
-    private static int parseInt(String input){
-        try {return Integer.parseInt(input);}
-        catch (NumberFormatException | NullPointerException e){
+    private static int parseInt(String input) {
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException | NullPointerException e) {
             return -1;
         }
     }
-    private static void cast(Player player, String sk, int lv, boolean force){
+
+    private static void cast(Player player, String sk, int lv, boolean force) {
         PlayerData data = SkillAPI.getPlayerData(player);
-        if (lv<=0) lv = (data.hasSkill(sk) && data.getSkill(sk).getLevel()>0) ? data.getSkill(sk).getLevel():1;
+        if (lv <= 0) lv = (data.hasSkill(sk) && data.getSkill(sk).getLevel() > 0) ? data.getSkill(sk).getLevel() : 1;
         Skill skill = SkillAPI.getSkill(sk);
         ((SkillShot) skill).cast(player, lv, force);
     }
