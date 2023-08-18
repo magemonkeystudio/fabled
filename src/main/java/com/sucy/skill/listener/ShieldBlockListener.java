@@ -25,20 +25,25 @@ public class ShieldBlockListener extends SkillAPIListener {
      * Remember EntityDamageByEntityEvent in a moment
      */
     @EventHandler
-    public void onDamage(EntityDamageByEntityEvent event){
+    public void onDamage(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof Player)) return;
         Player player = (Player) event.getEntity();
         if (!player.isBlocking()) return;
         UUID player_uuid = player.getUniqueId();
         volatileMap.put(player_uuid, event.getDamager());
-        new Timer().schedule(new TimerTask() {@Override public void run() {volatileMap.remove(player_uuid);}},100);
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                volatileMap.remove(player_uuid);
+            }
+        }, 100);
     }
 
     /**
      * Trigger for {@link PlayerBlockDamageEvent}
      */
     @EventHandler
-    public void onStat(PlayerStatisticIncrementEvent event){
+    public void onStat(PlayerStatisticIncrementEvent event) {
         if (!event.getStatistic().equals(Statistic.DAMAGE_BLOCKED_BY_SHIELD)) return;
         Player player = event.getPlayer();
         if (!volatileMap.containsKey(player.getUniqueId())) return;

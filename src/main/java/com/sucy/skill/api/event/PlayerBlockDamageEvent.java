@@ -6,7 +6,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 import org.bukkit.projectiles.BlockProjectileSource;
@@ -18,27 +17,28 @@ import org.jetbrains.annotations.NotNull;
  */
 public class PlayerBlockDamageEvent extends PlayerEvent {
     private static final HandlerList handlers = new HandlerList();
-    @Getter private Entity source;
-    @Getter private double damage;
-    @Getter private String type = "melee";
+    @Getter
+    private              Entity      source;
+    @Getter
+    private              double      damage;
+    @Getter
+    private              String      type     = "melee";
 
 
     public PlayerBlockDamageEvent(
             Entity damager,
-            PlayerStatisticIncrementEvent statEvent)
-    {
+            PlayerStatisticIncrementEvent statEvent) {
         super(statEvent.getPlayer());
         source = damager;
-        if (source instanceof Projectile){
+        if (source instanceof Projectile) {
             type = "projectile";
             ProjectileSource ps = ((Projectile) source).getShooter();
             if (ps instanceof BlockProjectileSource) {
                 Location locTarget = ((BlockProjectileSource) ps).getBlock().getLocation();
                 source = new TempEntity(locTarget);
-            }
-            else source = (Entity) ps;
+            } else source = (Entity) ps;
         }
-        damage = (statEvent.getNewValue()-statEvent.getPreviousValue())/10D;
+        damage = (statEvent.getNewValue() - statEvent.getPreviousValue()) / 10D;
     }
 
     /**
