@@ -509,6 +509,26 @@ class HealTrigger extends ProTrigger {
 
 	public static override new = () => new this();
 }
+class ShieldTrigger extends ProTrigger {
+	public constructor() {
+		super({
+			name:        'Shield',
+			description: 'Applies skill effects when the player blocks damage with their shield. Use {api-blocked} to get amount of blocked damage.',
+			data:        [
+				new BooleanSelect('Target Caster', 'target', true)
+					.setTooltip('True makes children target the caster. False makes children target the attacking entity'),
+				new DropdownSelect('Type', 'type', ['Both', 'Melee', 'Projectile'], 'Both')
+					.setTooltip('The type of damage dealt'),
+				new DoubleSelect('Damage Heal', 'dmg-min', 0)
+					.setTooltip('The minimum damage that needs to be blocked'),
+				new DoubleSelect('Damage Heal', 'dmg-max', 999)
+					.setTooltip('The maximum damage that needs to be blocked')
+			]
+		});
+	}
+
+	public static override new = () => new this();
+}
 
 // TARGETS
 
@@ -2846,6 +2866,24 @@ class RepeatMechanic extends ProMechanic {
 
 	public static override new = () => new this();
 }
+class SkillCastMechanic extends ProMechanic {
+	public constructor() {
+		super({
+			name:        'Skill cast',
+			description: 'Make target cast other skill. Applicable to players only!',
+			data:        [
+				new DropdownSelect('Cast mode', 'mode', ['All', 'First', 'Random'], 'All')
+				.setTooltip('Choose which skills to cast (excluding unavailable skills).'),
+				new BooleanSelect('Force cast', 'force', false)
+				.setTooltip('True if player will cast regardless of whether they have that skill or not'),
+				new StringListSelect('Skills', 'skills')
+					.setTooltip('The list of skills.Each skill can come with the level like "example skill:3". If player has skill, level will is available level. Else, level is 1.')
+			]
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
 
 class SoundMechanic extends ProMechanic {
 	public constructor() {
@@ -3430,7 +3468,7 @@ export const initComponents = () => {
 		FISHING_GRAB:   { name: 'Fishing Grab', component: FishingGrabTrigger },
 		FISHING_GROUND: { name: 'Fishing Ground', component: FishingGroundTrigger },
 		FISHING_REEL:   { name: 'Fishing Reel', component: FishingReelTrigger },
-		HEAL:           { name: 'Heal', component: HealTrigger },
+		HEAL:   		{ name: 'Heal', component: HealTrigger },
 		INIT:           { name: 'Initialize', component: InitializeTrigger },
 		ITEM_SWAP:      { name: 'Item Swap', component: ItemSwapTrigger },
 		KILL:           { name: 'Kill', component: KillTrigger },
@@ -3442,6 +3480,7 @@ export const initComponents = () => {
 		PHYS_DAMAGE:    { name: 'Physical Damage', component: PhysicalDamageTrigger },
 		PROJ_HIT:       { name: 'Projectile Hit', component: ProjectileHitTrigger },
 		PROJ_TICK:      { name: 'Projectile Launch', component: ProjectileTickTrigger },
+		SHIELD:   		{ name: 'Shield', component: ShieldTrigger },
 		SKILL_DAMAGE:   { name: 'Skill Damage', component: SkillDamageTrigger },
 		SKILL_CAST:     { name: 'Skill Cast', component: SkillCastTrigger },
 		TOOK_PHYS:      { name: 'Took Physical Damage', component: TookPhysicalTrigger },
@@ -3558,6 +3597,7 @@ export const initComponents = () => {
 		PUSH:                { name: 'Push', component: PushMechanic },
 		REMEMBER_TARGETS:    { name: 'Remember Targets', component: RememberTargetsMechanic },
 		REPEAT:              { name: 'Repeat', component: RepeatMechanic },
+		SKILL_CAST: 		 { name: 'Skill Cast', component: SkillCastMechanic },
 		SOUND:               { name: 'Sound', component: SoundMechanic },
 		STAT:                { name: 'Stat', component: StatMechanic },
 		STATUS:              { name: 'Status', component: StatusMechanic },
