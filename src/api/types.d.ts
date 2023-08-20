@@ -19,7 +19,7 @@ export interface ProClassData {
   mana?: ProAttribute;
   manaRegen?: number;
   attributes?: ProAttribute[];
-  skillTree?: "Requirement" | "Basic Horizontal" | "Basic Vertical" | "Level Horizontal" | "Level Vertical" | "Flood";
+  skillTree?: "Custom" | "Requirement" | "Basic Horizontal" | "Basic Vertical" | "Level Horizontal" | "Level Vertical" | "Flood";
   skills?: ProSkill[];
   icon?: Icon;
   unusableItems?: string[];

@@ -21,7 +21,7 @@ export default class ProClass implements Serializable {
   health: ProAttribute = new ProAttribute("health", 20, 1);
   mana: ProAttribute = new ProAttribute("mana", 20, 1);
   attributes: ProAttribute[] = [];
-  skillTree: "Requirement" | "Basic Horizontal" | "Basic Vertical" | "Level Horizontal" | "Level Vertical" | "Flood" = "Requirement";
+  skillTree: "Custom" | "Requirement" | "Basic Horizontal" | "Basic Vertical" | "Level Horizontal" | "Level Vertical" | "Flood" = "Requirement";
   skills: ProSkill[] = [];
   icon: Icon = {
     material: "Pumpkin",

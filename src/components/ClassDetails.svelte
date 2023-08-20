@@ -109,6 +109,7 @@
   <ProInput label="Skill Tree"
             tooltip="The type of skill tree to use">
     <select id="skill-tree" bind:value={data.skillTree}>
+      <option value="Custom">Custom</option>
       <option value="Requirement">Requirement</option>
       <option value="Basic Horizontal">Basic Horizontal</option>
       <option value="Basic Vertical">Basic Vertical</option>
