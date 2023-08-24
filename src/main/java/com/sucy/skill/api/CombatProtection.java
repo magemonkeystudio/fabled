@@ -54,15 +54,9 @@ public interface CombatProtection {
         }
     }
 
-    boolean canAttack(final Player attacker, final Player defender);
-
-    boolean canAttack(final Player attacker, final LivingEntity defender);
-
-    boolean canAttack(final LivingEntity attacker, final LivingEntity defender);
-
-    boolean canAttack(final Player attacker, final Player defender, EntityDamageEvent.DamageCause cause);
-
-    boolean canAttack(final Player attacker, final LivingEntity defender, EntityDamageEvent.DamageCause cause);
+    static boolean canAttack(final LivingEntity attacker, final LivingEntity defender) {
+        return canAttack(attacker, defender, false);
+    }
 
     boolean canAttack(final LivingEntity attacker, final LivingEntity defender, EntityDamageEvent.DamageCause cause);
 
