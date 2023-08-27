@@ -64,15 +64,23 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
 
     static {
         try {
-            Class<?> aabbClass = ReflectionManager.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.phys.AxisAlignedBB")
-                    : Reflex.getNMSClass("AxisAlignedBB");
-            Class<?> entityClass = ReflectionManager.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.entity.Entity")
-                    : Reflex.getNMSClass("Entity");
-            aabbConstructor = aabbClass.getConstructor(double.class, double.class, double.class, double.class, double.class, double.class);
+            Class<?> aabbClass =
+                    ReflectionManager.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.phys.AxisAlignedBB")
+                            : Reflex.getNMSClass("AxisAlignedBB");
+            Class<?> entityClass =
+                    ReflectionManager.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.entity.Entity")
+                            : Reflex.getNMSClass("Entity");
+            aabbConstructor = aabbClass.getConstructor(double.class,
+                    double.class,
+                    double.class,
+                    double.class,
+                    double.class,
+                    double.class);
             getBukkitEntity = entityClass.getDeclaredMethod("getBukkitEntity");
             getHandle = Reflex.getCraftClass("CraftWorld").getDeclaredMethod("getHandle");
-            Class<?> worldClass = ReflectionManager.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.level.World")
-                    : Reflex.getNMSClass("World");
+            Class<?> worldClass =
+                    ReflectionManager.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.level.World")
+                            : Reflex.getNMSClass("World");
             try {
                 getEntities = worldClass.getDeclaredMethod(ReflectionManager.MINOR_VERSION >= 18 ? "a" : "getEntities",
                         entityClass, aabbClass, Predicate.class);

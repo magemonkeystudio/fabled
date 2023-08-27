@@ -19,16 +19,22 @@ import org.jetbrains.annotations.NotNull;
  */
 public class DefaultCombatProtection implements CombatProtection {
     @Override
-    public boolean canAttack(final LivingEntity attacker, final LivingEntity defender, EntityDamageEvent.DamageCause cause) {
+    public boolean canAttack(final LivingEntity attacker,
+                             final LivingEntity defender,
+                             EntityDamageEvent.DamageCause cause) {
         if (attacker instanceof Player && defender instanceof Player) {
             PlayerClass attackerClass = SkillAPI.getPlayerData(((Player) attacker)).getMainClass();
             PlayerClass defenderClass = SkillAPI.getPlayerData(((Player) defender)).getMainClass();
-            int attackerLevel = attackerClass == null ? 0 : attackerClass.getLevel();
-            int defenderLevel = defenderClass == null ? 0 : defenderClass.getLevel();
-            int minLevel = SkillAPI.getSettings().getPvpMinLevel();
-            if (attackerLevel < minLevel || defenderLevel < minLevel) {return false;}
+            int         attackerLevel = attackerClass == null ? 0 : attackerClass.getLevel();
+            int         defenderLevel = defenderClass == null ? 0 : defenderClass.getLevel();
+            int         minLevel      = SkillAPI.getSettings().getPvpMinLevel();
+            if (attackerLevel < minLevel || defenderLevel < minLevel) {
+                return false;
+            }
             int levelRange = SkillAPI.getSettings().getPvpLevelRange();
-            if (levelRange > -1 && Math.abs(attackerLevel-defenderLevel) > levelRange) {return false;}
+            if (levelRange > -1 && Math.abs(attackerLevel - defenderLevel) > levelRange) {
+                return false;
+            }
         }
         boolean canAttack;
         if (PluginChecker.isNoCheatActive() && attacker instanceof Player) {
@@ -48,7 +54,10 @@ public class DefaultCombatProtection implements CombatProtection {
         @Setter
         public boolean externallyCancelled = false;
 
-        public FakeEntityDamageByEntityEvent(@NotNull Entity damager, @NotNull Entity damagee, @NotNull DamageCause cause, double damage) {
+        public FakeEntityDamageByEntityEvent(@NotNull Entity damager,
+                                             @NotNull Entity damagee,
+                                             @NotNull DamageCause cause,
+                                             double damage) {
             super(damager, damagee, cause, damage);
         }
     }

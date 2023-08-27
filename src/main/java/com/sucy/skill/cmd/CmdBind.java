@@ -90,7 +90,11 @@ public class CmdBind implements IFunction {
                 command.sendMessage(sender, NOT_UNLOCKED, "&4You have not unlocked that skill");
             } else {
                 player.bind(item.getType(), skill);
-                command.sendMessage(sender, SKILL_BOUND, "&6{skill} &2has been bound to &6{item}", RPGFilter.SKILL.setReplacement(skill.getData().getName()), RPGFilter.ITEM.setReplacement(TextFormatter.format(item.getType().name())));
+                command.sendMessage(sender,
+                        SKILL_BOUND,
+                        "&6{skill} &2has been bound to &6{item}",
+                        RPGFilter.SKILL.setReplacement(skill.getData().getName()),
+                        RPGFilter.ITEM.setReplacement(TextFormatter.format(item.getType().name())));
             }
         } else {
             CommandManager.displayUsage(command, sender);

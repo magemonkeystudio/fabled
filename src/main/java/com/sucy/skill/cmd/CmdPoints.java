@@ -63,7 +63,8 @@ public class CmdPoints implements IFunction {
     @Override
     public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
         // Disabled world
-        if (sender instanceof Player && !SkillAPI.getSettings().isWorldEnabled(((Player) sender).getWorld()) && args.length == 1) {
+        if (sender instanceof Player && !SkillAPI.getSettings().isWorldEnabled(((Player) sender).getWorld())
+                && args.length == 1) {
             cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
         }
 
@@ -87,7 +88,9 @@ public class CmdPoints implements IFunction {
 
             // Invalid amount of skill points
             if (amount <= 0) {
-                cmd.sendMessage(sender, NOT_POSITIVE, ChatColor.RED + "You must give a positive amount of skill points");
+                cmd.sendMessage(sender,
+                        NOT_POSITIVE,
+                        ChatColor.RED + "You must give a positive amount of skill points");
                 return;
             }
 
@@ -97,10 +100,19 @@ public class CmdPoints implements IFunction {
 
             // Messages
             if (target != sender) {
-                cmd.sendMessage(sender, GAVE_SP, ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD + "{player} {points} skill points", Filter.PLAYER.setReplacement(target.getName()), RPGFilter.POINTS.setReplacement("" + amount));
+                cmd.sendMessage(sender,
+                        GAVE_SP,
+                        ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD + "{player} {points} skill points",
+                        Filter.PLAYER.setReplacement(target.getName()),
+                        RPGFilter.POINTS.setReplacement("" + amount));
             }
             if (target.isOnline()) {
-                cmd.sendMessage(target.getPlayer(), RECEIVED_SP, ChatColor.DARK_GREEN + "You have received " + ChatColor.GOLD + "{points} skill points " + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}", Filter.PLAYER.setReplacement(sender.getName()), RPGFilter.POINTS.setReplacement("" + amount));
+                cmd.sendMessage(target.getPlayer(),
+                        RECEIVED_SP,
+                        ChatColor.DARK_GREEN + "You have received " + ChatColor.GOLD + "{points} skill points "
+                                + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}",
+                        Filter.PLAYER.setReplacement(sender.getName()),
+                        RPGFilter.POINTS.setReplacement("" + amount));
             }
         }
 

@@ -67,7 +67,8 @@ public class CmdInfo implements IFunction {
     @Override
     public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
         // Disabled world
-        if (sender instanceof Player && !SkillAPI.getSettings().isWorldEnabled(((Player) sender).getWorld()) && args.length == 0) {
+        if (sender instanceof Player && !SkillAPI.getSettings().isWorldEnabled(((Player) sender).getWorld())
+                && args.length == 0) {
             cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
         }
 
@@ -80,7 +81,11 @@ public class CmdInfo implements IFunction {
             }
 
             PlayerData data = SkillAPI.getPlayerData(target);
-            cmd.sendMessage(sender, TITLE, ChatColor.DARK_GRAY + "--" + ChatColor.DARK_GREEN + " {player} " + ChatColor.DARK_GRAY + "-----------", Filter.PLAYER.setReplacement(target.getName()));
+            cmd.sendMessage(sender,
+                    TITLE,
+                    ChatColor.DARK_GRAY + "--" + ChatColor.DARK_GREEN + " {player} " + ChatColor.DARK_GRAY
+                            + "-----------",
+                    Filter.PLAYER.setReplacement(target.getName()));
             String  separator = cmd.getMessage(SEPARATOR, ChatColor.DARK_GRAY + "----------------------------");
             boolean first     = true;
             if (data != null) {
@@ -95,13 +100,24 @@ public class CmdInfo implements IFunction {
                     }
 
                     // Compose the message
-                    cmd.sendMessage(sender, CATEGORY, ChatColor.GOLD + "{group}" + ChatColor.GRAY + ": ", RPGFilter.GROUP.setReplacement(TextFormatter.format(group)));
+                    cmd.sendMessage(sender,
+                            CATEGORY,
+                            ChatColor.GOLD + "{group}" + ChatColor.GRAY + ": ",
+                            RPGFilter.GROUP.setReplacement(TextFormatter.format(group)));
                     PlayerClass profession = data.getClass(group);
                     if (profession == null) {
                         cmd.sendMessage(sender, NO_CLASS, ChatColor.GRAY + "Not Professed");
                     } else {
-                        cmd.sendMessage(sender, PROFESSION, ChatColor.AQUA + "Lv{level} " + ChatColor.DARK_GREEN + "{profession}", RPGFilter.LEVEL.setReplacement(profession.getLevel() + ""), RPGFilter.PROFESSION.setReplacement(profession.getData().getName()));
-                        cmd.sendMessage(sender, EXP, ChatColor.AQUA + "Exp " + ChatColor.DARK_GREEN + "{exp}", RPGFilter.EXP.setReplacement((int) profession.getExp() + "/" + profession.getRequiredExp()));
+                        cmd.sendMessage(sender,
+                                PROFESSION,
+                                ChatColor.AQUA + "Lv{level} " + ChatColor.DARK_GREEN + "{profession}",
+                                RPGFilter.LEVEL.setReplacement(profession.getLevel() + ""),
+                                RPGFilter.PROFESSION.setReplacement(profession.getData().getName()));
+                        cmd.sendMessage(sender,
+                                EXP,
+                                ChatColor.AQUA + "Exp " + ChatColor.DARK_GREEN + "{exp}",
+                                RPGFilter.EXP.setReplacement(
+                                        (int) profession.getExp() + "/" + profession.getRequiredExp()));
                     }
                 }
             }

@@ -36,7 +36,8 @@ public class BlockBreakTrigger implements Trigger<BlockBreakEvent> {
     public boolean shouldTrigger(final BlockBreakEvent event, final int level, final Settings settings) {
         final List<String> types = settings.getStringList("material");
         return types.isEmpty() || types.contains("Any")
-                || types.stream().anyMatch(mat -> event.getBlock().getType().name().equalsIgnoreCase(mat.replace(' ', '_')));
+                || types.stream()
+                .anyMatch(mat -> event.getBlock().getType().name().equalsIgnoreCase(mat.replace(' ', '_')));
     }
 
     /**

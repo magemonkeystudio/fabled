@@ -46,7 +46,6 @@ public class HeldItemMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -61,7 +60,9 @@ public class HeldItemMechanic extends MechanicComponent {
 
             worked = true;
             Player player = (Player) target;
-            if (SkillAPI.getSettings().isSkillBarEnabled() && SkillAPI.getPlayerData(player).getSkillBar().isWeaponSlot(slot))
+            if (SkillAPI.getSettings().isSkillBarEnabled() && SkillAPI.getPlayerData(player)
+                    .getSkillBar()
+                    .isWeaponSlot(slot))
                 player.getInventory().setHeldItemSlot(slot);
         }
 

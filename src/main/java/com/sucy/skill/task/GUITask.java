@@ -81,7 +81,10 @@ public class GUITask extends RepeatThreadTask {
         useAction = SkillAPI.getSettings().isUseActionBar();
         actionText = TextFormatter.colorString(SkillAPI.getSettings().getActionText());
 
-        Logger.log(LogType.GUI, 1, "GUI Settings: " + levelMana + "/" + levelLevel + "/" + foodMana + "/" + foodExp + "/" + useAction + "/" + actionText);
+        Logger.log(LogType.GUI,
+                1,
+                "GUI Settings: " + levelMana + "/" + levelLevel + "/" + foodMana + "/" + foodExp + "/" + useAction + "/"
+                        + actionText);
 
         if (useAction || levelMana || levelLevel || foodMana || foodExp || forceScaling)
             return;

@@ -41,7 +41,10 @@ public class CmdWorld implements IFunction {
     private static final String PLAYER_ONLY = "must-be-player";
 
     @Override
-    public void execute(final ConfigurableCommand cmd, final Plugin plugin, final CommandSender sender, final String[] args) {
+    public void execute(final ConfigurableCommand cmd,
+                        final Plugin plugin,
+                        final CommandSender sender,
+                        final String[] args) {
         if (!(sender instanceof Player)) {
             cmd.sendMessage(sender, PLAYER_ONLY, ChatColor.DARK_RED + "Only players can use this command");
             return;

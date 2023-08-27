@@ -9,6 +9,7 @@ public class CombatProtectionListener extends SkillAPIListener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void checkDamage(DefaultCombatProtection.FakeEntityDamageByEntityEvent event) {
         event.setExternallyCancelled(event.isCancelled());
+        event.setDamage(0);
         event.setCancelled(true);
     }
 

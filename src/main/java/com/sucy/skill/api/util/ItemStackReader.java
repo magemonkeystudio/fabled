@@ -116,7 +116,8 @@ public final class ItemStackReader {
             } catch (Exception ignored) {
             }
             try {
-                pm.setColor(Color.fromRGB(Integer.parseInt(settings.getString(POTION_COLOR, "#385dc6").substring(1), 16)));
+                pm.setColor(Color.fromRGB(Integer.parseInt(settings.getString(POTION_COLOR, "#385dc6").substring(1),
+                        16)));
             } catch (Exception ignored) {
             }
         }
@@ -124,7 +125,8 @@ public final class ItemStackReader {
         if (meta instanceof LeatherArmorMeta) {
             LeatherArmorMeta leatherMeta = (LeatherArmorMeta) meta;
             try {
-                leatherMeta.setColor(Color.fromRGB(Integer.parseInt(settings.getString(ARMOR_COLOR, "#a06540").substring(1), 16)));
+                leatherMeta.setColor(Color.fromRGB(Integer.parseInt(settings.getString(ARMOR_COLOR, "#a06540")
+                        .substring(1), 16)));
             } catch (Exception ignored) {
             }
         }

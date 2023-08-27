@@ -124,7 +124,8 @@ public abstract class InventoryTree extends SkillTree {
 
         for (Map.Entry<Integer, Skill> entry : skillSlots.entrySet()) {
             if (canShow(p, entry.getValue())) {
-                inv.setItem(entry.getKey(), entry.getValue().getIndicator(player.getSkill(entry.getValue().getName()), false));
+                inv.setItem(entry.getKey(),
+                        entry.getValue().getIndicator(player.getSkill(entry.getValue().getName()), false));
             }
         }
 
@@ -187,7 +188,8 @@ public abstract class InventoryTree extends SkillTree {
 
         // Cannot be higher than 6
         if (height > 6) {
-            throw new SkillTreeException("Error generating the skill tree: " + tree.getName() + " - too large of a tree!");
+            throw new SkillTreeException(
+                    "Error generating the skill tree: " + tree.getName() + " - too large of a tree!");
         }
     }
 
@@ -199,7 +201,8 @@ public abstract class InventoryTree extends SkillTree {
     public void update(PlayerData player) {
         InventoryView view = player.getPlayer().getOpenInventory();
         for (Map.Entry<Integer, Skill> skills : skillSlots.entrySet()) {
-            view.setItem(skills.getKey(), skills.getValue().getIndicator(player.getSkill(skills.getValue().getName()), false));
+            view.setItem(skills.getKey(),
+                    skills.getValue().getIndicator(player.getSkill(skills.getValue().getName()), false));
         }
     }
 

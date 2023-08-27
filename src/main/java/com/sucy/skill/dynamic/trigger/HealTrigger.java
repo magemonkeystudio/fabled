@@ -1,7 +1,6 @@
 package com.sucy.skill.dynamic.trigger;
 
 import com.sucy.skill.api.Settings;
-import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 

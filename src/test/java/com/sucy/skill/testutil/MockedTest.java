@@ -26,7 +26,6 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
@@ -109,7 +108,9 @@ public abstract class MockedTest {
         engine = mock(NexEngine.class);
         nexEngine = mockStatic(NexEngine.class);
         nexEngine.when(() -> NexEngine.get()).thenReturn(engine);
-        when(engine.getDescription()).thenReturn(new PluginDescriptionFile("ProMCCore", coreVersion, NexEngine.class.getName()));
+        when(engine.getDescription()).thenReturn(new PluginDescriptionFile("ProMCCore",
+                coreVersion,
+                NexEngine.class.getName()));
         when(engine.getHooksManager()).thenReturn(hookManager);
         when(engine.getActionsManager()).thenReturn(actionsManager);
         when(engine.getNMS()).thenReturn(nms);
@@ -153,7 +154,9 @@ public abstract class MockedTest {
     @BeforeEach
     public void initClasses() {
         String sapiVersion = System.getProperty("PROSKILLAPI_VERSION");
-        File   classDir    = new File(server.getPluginsFolder().getAbsolutePath() + File.separator + "ProSkillAPI-" + sapiVersion + File.separator + "dynamic" + File.separator + "class");
+        File   classDir    = new File(
+                server.getPluginsFolder().getAbsolutePath() + File.separator + "ProSkillAPI-" + sapiVersion
+                        + File.separator + "dynamic" + File.separator + "class");
         if (!classDir.exists()) classDir.mkdirs();
         try {
             FileUtils.cleanDirectory(classDir);
@@ -167,7 +170,9 @@ public abstract class MockedTest {
         }
 
         classesToLoad.forEach(c -> {
-            File classFile = new File(server.getPluginsFolder().getAbsolutePath() + File.separator + "ProSkillAPI-" + sapiVersion + File.separator + "dynamic" + File.separator + "class", c + ".yml");
+            File classFile = new File(
+                    server.getPluginsFolder().getAbsolutePath() + File.separator + "ProSkillAPI-" + sapiVersion
+                            + File.separator + "dynamic" + File.separator + "class", c + ".yml");
             try {
                 if (!classFile.exists()) {
                     classFile.createNewFile();
@@ -175,7 +180,9 @@ public abstract class MockedTest {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("classes" + File.separator + c + ".yml")));
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(this.getClass()
+                    .getClassLoader()
+                    .getResourceAsStream("classes" + File.separator + c + ".yml")));
                  FileWriter writer = new FileWriter(classFile);) {
                 String str;
                 while ((str = in.readLine()) != null) {

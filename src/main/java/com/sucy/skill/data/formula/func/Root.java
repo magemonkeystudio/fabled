@@ -45,7 +45,6 @@ public class Root implements IValue {
      * Gets the value using the inputs
      *
      * @param input the input data
-     *
      * @return result value
      */
     @Override

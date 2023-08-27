@@ -137,7 +137,10 @@ public class RequirementTree extends InventoryTree {
             height = row + 1;
         }
 
-        height = Math.max(1, Math.min(SkillAPI.getConfig("gui").getConfig().getInt(GUIType.SKILL_TREE.getPrefix()+tree.getName()+".rows", height), 6));
+        height = Math.max(1,
+                Math.min(SkillAPI.getConfig("gui")
+                        .getConfig()
+                        .getInt(GUIType.SKILL_TREE.getPrefix() + tree.getName() + ".rows", height), 6));
     }
 
     /**
@@ -145,7 +148,6 @@ public class RequirementTree extends InventoryTree {
      *
      * @param skills skill list to check in
      * @param skill  skill to check for
-     *
      * @return true if attached, false otherwise
      */
     private boolean isChained(List<Skill> skills, Skill skill) {

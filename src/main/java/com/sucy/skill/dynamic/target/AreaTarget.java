@@ -47,7 +47,9 @@ public class AreaTarget extends TargetComponent {
 
     private final Random random = new Random();
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
@@ -57,7 +59,9 @@ public class AreaTarget extends TargetComponent {
         return determineTargets(caster, level, targets, t -> shuffle(Nearby.getLivingNearby(t, radius, true), random));
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     void playPreview(Player caster, final int level, final LivingEntity target, int step) {
         double radius = parseValues(caster, RADIUS, level, 3.0);

@@ -40,7 +40,6 @@ public interface TargetSkill {
      * @param target target of the skill
      * @param level  skill level
      * @param ally   whether the target is an ally
-     *
      * @return true if could cast, false otherwise
      */
     boolean cast(LivingEntity user, LivingEntity target, int level, boolean ally);

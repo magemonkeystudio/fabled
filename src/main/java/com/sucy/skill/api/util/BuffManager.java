@@ -102,7 +102,11 @@ public class BuffManager {
      * @param buff     buff to add
      * @param ticks    ticks to apply the buff for
      */
-    public static void addBuff(final LivingEntity entity, final BuffType type, final String category, final Buff buff, final int ticks) {
+    public static void addBuff(final LivingEntity entity,
+                               final BuffType type,
+                               final String category,
+                               final Buff buff,
+                               final int ticks) {
         if (entity == null) return;
         getBuffData(entity, true).addBuff(type, category, buff, ticks);
     }
@@ -163,7 +167,10 @@ public class BuffManager {
      * @param amount   base amount to modify
      * @return modified number
      */
-    public static double apply(final LivingEntity entity, final BuffType type, final String category, final double amount) {
+    public static double apply(final LivingEntity entity,
+                               final BuffType type,
+                               final String category,
+                               final double amount) {
         final BuffData data = getBuffData(entity, false);
         return data == null ? amount : data.apply(type, category, amount);
     }

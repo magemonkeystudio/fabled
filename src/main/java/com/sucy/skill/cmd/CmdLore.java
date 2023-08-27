@@ -69,7 +69,7 @@ public class CmdLore implements IFunction {
                 return;
             }
 
-            ItemMeta     meta = held.getItemMeta();
+            ItemMeta meta = held.getItemMeta();
             if (meta != null) {
                 List<String> lore = meta.getLore();
                 if (lore == null) lore = new ArrayList<String>();

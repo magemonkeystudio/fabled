@@ -32,8 +32,8 @@ import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ValueManaMechanic extends MechanicComponent {
     private static final String KEY  = "key";
@@ -50,7 +50,6 @@ public class ValueManaMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -58,10 +57,10 @@ public class ValueManaMechanic extends MechanicComponent {
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (!(targets.get(0) instanceof Player)) return false;
 
-        final PlayerData              player = SkillAPI.getPlayerData((Player) targets.get(0));
-        final String                  key    = settings.getString(KEY);
-        final String                  type   = settings.getString(TYPE, "current").toLowerCase();
-        final HashMap<String, Object> data   = DynamicSkill.getCastData(caster);
+        final PlayerData          player = SkillAPI.getPlayerData((Player) targets.get(0));
+        final String              key    = settings.getString(KEY);
+        final String              type   = settings.getString(TYPE, "current").toLowerCase();
+        final Map<String, Object> data   = DynamicSkill.getCastData(caster);
 
         switch (type) {
             case "max":

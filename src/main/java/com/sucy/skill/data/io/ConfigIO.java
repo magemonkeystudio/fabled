@@ -91,7 +91,8 @@ public class ConfigIO extends IOManager {
         if (!data.isLoaded()) return;
 
         try {
-            CommentedConfig config = new CommentedConfig(api, "players/" + data.getOfflinePlayer().getUniqueId().toString().toLowerCase());
+            CommentedConfig config = new CommentedConfig(api,
+                    "players/" + data.getOfflinePlayer().getUniqueId().toString().toLowerCase());
             config.clear();
 
             DataSection file = save(data);

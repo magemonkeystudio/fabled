@@ -217,7 +217,10 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
         }
         ArrayList<LivingEntity> targets = new ArrayList<>();
         targets.add(hit);
-        executeChildren(projectile.getShooter(), SkillAPI.getMetaInt(projectile, LEVEL), targets, skill.isForced(projectile.getShooter()));
+        executeChildren(projectile.getShooter(),
+                SkillAPI.getMetaInt(projectile, LEVEL),
+                targets,
+                skill.isForced(projectile.getShooter()));
         projectile.setCallback(null);
     }
 }

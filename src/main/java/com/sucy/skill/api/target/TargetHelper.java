@@ -124,7 +124,11 @@ public abstract class TargetHelper {
 
                 // Otherwise, select targets based on dot product
                 else {
-                    Vector relative = entity.getLocation().clone().add(0, getHeight(entity) * 0.5, 0).subtract(sourceLocation).toVector();
+                    Vector relative = entity.getLocation()
+                            .clone()
+                            .add(0, getHeight(entity) * 0.5, 0)
+                            .subtract(sourceLocation)
+                            .toVector();
                     relative.setY(0);
                     double dot   = relative.dot(dir);
                     double value = dot * dot / relative.lengthSquared();
@@ -291,14 +295,17 @@ public abstract class TargetHelper {
     public static AABB getAABB(Entity entity) {
         AABB.Vec3D origin = AABB.Vec3D.fromLocation(entity.getLocation());
         try {
-            if (PluginChecker.isDisguiseActive() && DisguiseAPI.isDisguised(entity) && DisguiseAPI.getDisguise(entity).isModifyBoundingBox()) {
+            if (PluginChecker.isDisguiseActive() && DisguiseAPI.isDisguised(entity) && DisguiseAPI.getDisguise(entity)
+                    .isModifyBoundingBox()) {
                 FakeBoundingBox boundingBox = DisguiseHook.getFakeBoundingBox(entity);
-                return new AABB(origin.add(new AABB.Vec3D(-boundingBox.getX(), 0, -boundingBox.getZ())), origin.add(new AABB.Vec3D(boundingBox.getX(), boundingBox.getY(), boundingBox.getZ())));
+                return new AABB(origin.add(new AABB.Vec3D(-boundingBox.getX(), 0, -boundingBox.getZ())),
+                        origin.add(new AABB.Vec3D(boundingBox.getX(), boundingBox.getY(), boundingBox.getZ())));
             }
         } catch (NullPointerException ignored) {
         }
         double halfWidth = entity.getWidth() / 2;
-        return new AABB(origin.add(new AABB.Vec3D(-halfWidth, 0, -halfWidth)), origin.add(new AABB.Vec3D(halfWidth, entity.getHeight(), halfWidth)));
+        return new AABB(origin.add(new AABB.Vec3D(-halfWidth, 0, -halfWidth)),
+                origin.add(new AABB.Vec3D(halfWidth, entity.getHeight(), halfWidth)));
     }
 
     public static double getHeight(Entity entity) {

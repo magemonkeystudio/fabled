@@ -66,7 +66,6 @@ public class WolfMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -82,7 +81,8 @@ public class WolfMechanic extends MechanicComponent {
 
         String       color   = settings.getString(COLOR);
         double       health  = parseValues(player, HEALTH, level, 10.0);
-        String       name    = TextFormatter.colorString(settings.getString(NAME, "").replace("{player}", player.getName()));
+        String       name    =
+                TextFormatter.colorString(settings.getString(NAME, "").replace("{player}", player.getName()));
         double       damage  = parseValues(player, DAMAGE, level, 3.0);
         double       amount  = parseValues(player, AMOUNT, level, 1.0);
         boolean      sitting = settings.getString(SITTING, "false").equalsIgnoreCase("true");

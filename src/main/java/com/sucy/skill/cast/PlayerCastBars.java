@@ -231,11 +231,11 @@ public class PlayerCastBars implements InventoryHolder {
                 if (meta == null) {
                     continue;
                 }
-                List<String> lore  = meta.getLore();
+                List<String> lore = meta.getLore();
                 if (lore == null) {
                     continue;
                 }
-                String       skill = lore.get(lore.size() - 1);
+                String skill = lore.get(lore.size() - 1);
                 if (unused.contains(skill)) {
                     bar.put(i, skill);
                     used.add(skill);
@@ -255,8 +255,8 @@ public class PlayerCastBars implements InventoryHolder {
         if (skill == null) {
             return null;
         }
-        ItemStack    item = SkillAPI.getSkill(skill).getIndicator(this.player.getSkill(skill), true);
-        ItemMeta     meta = item.getItemMeta();
+        ItemStack item = SkillAPI.getSkill(skill).getIndicator(this.player.getSkill(skill), true);
+        ItemMeta  meta = item.getItemMeta();
         if (meta != null) {
             List<String> lore = meta.getLore();
             if (lore == null) {

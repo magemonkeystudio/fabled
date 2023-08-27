@@ -1,5 +1,6 @@
 package com.sucy.skill.listener;
 
+import com.sucy.skill.api.DefaultCombatProtection;
 import com.sucy.skill.api.event.PlayerBlockDamageEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Statistic;
@@ -26,7 +27,7 @@ public class ShieldBlockListener extends SkillAPIListener {
      */
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof Player)) return;
+        if (!(event.getEntity() instanceof Player) || event instanceof DefaultCombatProtection.FakeEntityDamageByEntityEvent) return;
         Player player = (Player) event.getEntity();
         if (!player.isBlocking()) return;
         UUID player_uuid = player.getUniqueId();

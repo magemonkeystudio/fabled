@@ -233,7 +233,8 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         }
 
         String[] args = identifier.split("_");
-        if ((args.length == 3 && args[0].equals("default")) || (args.length == 4 && args[0].equals("player") && !args[1].equals("account"))) {
+        if ((args.length == 3 && args[0].equals("default")) || (args.length == 4 && args[0].equals("player")
+                && !args[1].equals("account"))) {
             // Another player
             String playerName = args[args.length - 1];
             UUID   uuid       = null;

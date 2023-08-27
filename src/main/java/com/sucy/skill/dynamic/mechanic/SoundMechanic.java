@@ -53,7 +53,6 @@ public class SoundMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -65,7 +64,8 @@ public class SoundMechanic extends MechanicComponent {
 
         String type = settings.getString(SOUND, settings.getString(SOUND2, "")).toUpperCase().replace(" ", "_");
         try {
-            String sound  = type.equals("CUSTOM") ? settings.getString(CUSTOM, "") : Sound.valueOf(type).getKey().toString();
+            String sound  =
+                    type.equals("CUSTOM") ? settings.getString(CUSTOM, "") : Sound.valueOf(type).getKey().toString();
             float  volume = (float) parseValues(caster, VOLUME, level, 100.0) / 100;
             float  pitch  = (float) parseValues(caster, PITCH, level, 0.0);
 

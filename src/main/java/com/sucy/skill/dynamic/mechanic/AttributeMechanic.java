@@ -93,7 +93,10 @@ public class AttributeMechanic extends MechanicComponent {
             if (target instanceof Player) {
                 worked = true;
                 final PlayerData        data     = SkillAPI.getPlayerData((Player) target);
-                PlayerAttributeModifier modifier = new PlayerAttributeModifier("skillapi.mechanic.attribute_mechanic", amount, Operation.valueOf(operation), false);
+                PlayerAttributeModifier modifier = new PlayerAttributeModifier("skillapi.mechanic.attribute_mechanic",
+                        amount,
+                        Operation.valueOf(operation),
+                        false);
 
                 if (casterTasks.containsKey(data.getPlayerName()) && !stackable) {
                     final AttribTask old = casterTasks.remove(data.getPlayerName());

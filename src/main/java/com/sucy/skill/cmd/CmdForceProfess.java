@@ -96,9 +96,17 @@ public class CmdForceProfess implements IFunction {
             else if (data.canProfess(target)) {
                 data.profess(target);
                 if (player.isOnline()) {
-                    cmd.sendMessage(sender, SUCCESSS, ChatColor.GOLD + "{player}" + ChatColor.DARK_GREEN + " is now a " + ChatColor.GOLD + "{class}", Filter.PLAYER.setReplacement(player.getName()), RPGFilter.CLASS.setReplacement(target.getName()));
+                    cmd.sendMessage(sender,
+                            SUCCESSS,
+                            ChatColor.GOLD + "{player}" + ChatColor.DARK_GREEN + " is now a " + ChatColor.GOLD
+                                    + "{class}",
+                            Filter.PLAYER.setReplacement(player.getName()),
+                            RPGFilter.CLASS.setReplacement(target.getName()));
                     if (!silent) {
-                        cmd.sendMessage((Player) player, PROFESSED, ChatColor.DARK_GREEN + "You are now a " + ChatColor.GOLD + "{class}", RPGFilter.CLASS.setReplacement(target.getName()));
+                        cmd.sendMessage((Player) player,
+                                PROFESSED,
+                                ChatColor.DARK_GREEN + "You are now a " + ChatColor.GOLD + "{class}",
+                                RPGFilter.CLASS.setReplacement(target.getName()));
                     }
                 }
             }

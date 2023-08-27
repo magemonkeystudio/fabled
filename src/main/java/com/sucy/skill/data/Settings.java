@@ -464,12 +464,12 @@ public class Settings {
      * @return the maximum level difference two players must have to be able to PVP, or -1 if disabled
      */
     @Getter
-    private int pvpLevelRange;
+    private int           pvpLevelRange;
     /**
      * @return the minimum level the player must be to be able to PVP with other players, or -1 if disabled
      */
     @Getter
-    private int pvpMinLevel;
+    private int           pvpMinLevel;
     /**
      * @return true if default casting is enabled
      */

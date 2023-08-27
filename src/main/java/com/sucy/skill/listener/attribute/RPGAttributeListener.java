@@ -20,11 +20,15 @@ public class RPGAttributeListener extends SkillAPIListener {
         // Scale damages
         event.getDamageMap().entrySet().forEach(damageEntry -> {
             DamageAttribute damageAttribute = damageEntry.getKey();
-            if (damageAttribute == null) {return;}
+            if (damageAttribute == null) {
+                return;
+            }
             double damage = damageEntry.getValue();
             if (event.getDamager() instanceof Player) {
                 Player player = (Player) event.getDamager();
-                if (CitizensHook.isNPC(player)) {return;}
+                if (CitizensHook.isNPC(player)) {
+                    return;
+                }
 
                 PlayerData data = SkillAPI.getPlayerData(player);
 
@@ -45,11 +49,15 @@ public class RPGAttributeListener extends SkillAPIListener {
         // Scale defenses
         event.getDefenseMap().entrySet().forEach(defenseEntry -> {
             DefenseAttribute defenseAttribute = defenseEntry.getKey();
-            if (defenseAttribute == null) {return;}
+            if (defenseAttribute == null) {
+                return;
+            }
             double defense = defenseEntry.getValue();
             if (event.getVictim() instanceof Player) {
                 Player player = (Player) event.getVictim();
-                if (CitizensHook.isNPC(player)) {return;}
+                if (CitizensHook.isNPC(player)) {
+                    return;
+                }
 
                 PlayerData data = SkillAPI.getPlayerData(player);
 

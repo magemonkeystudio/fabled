@@ -25,19 +25,26 @@ public class CustomTree extends InventoryTree {
     protected void arrange(List<Skill> skills) throws SkillTreeException {
         skillSlots.clear();
         height = 3;
-        DataSection section = SkillAPI.getConfig("gui").getConfig().getSection(GUIType.SKILL_TREE.getPrefix()+tree.getName());
-        if (section == null) { return; }
+        DataSection section =
+                SkillAPI.getConfig("gui").getConfig().getSection(GUIType.SKILL_TREE.getPrefix() + tree.getName());
+        if (section == null) {
+            return;
+        }
 
         height = Math.max(1, Math.min(section.getInt(GUIData.ROWS, 3), 6));
         DataSection slotsSection = section.getSection(GUIData.SLOTS);
-        if (slotsSection == null) { return; }
+        if (slotsSection == null) {
+            return;
+        }
         for (String key : slotsSection.keys()) {
-            int page = Integer.parseInt(key);
+            int         page        = Integer.parseInt(key);
             DataSection pageSection = slotsSection.getSection(key);
             for (String skillName : pageSection.keys()) {
                 Skill skill = SkillAPI.getSkill(skillName);
-                if (skill == null) { continue; }
-                skillSlots.put(pageSection.getInt(skillName)+(page-1)*height*9, skill);
+                if (skill == null) {
+                    continue;
+                }
+                skillSlots.put(pageSection.getInt(skillName) + (page - 1) * height * 9, skill);
             }
         }
     }

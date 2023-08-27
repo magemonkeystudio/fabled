@@ -16,26 +16,39 @@ public class EditorOption {
     public final String              description;
     public final Map<String, String> extra = new HashMap<>();
 
-    public static EditorOption number(final String key, final String name, final String description, final double base, final double scale) {
+    public static EditorOption number(final String key,
+                                      final String name,
+                                      final String description,
+                                      final double base,
+                                      final double scale) {
         final EditorOption option = new EditorOption(Type.NUMBER, key, name, description);
         option.extra.put("base", Double.toString(base));
         option.extra.put("scale", Double.toString(scale));
         return option;
     }
 
-    public static EditorOption text(final String key, final String name, final String description, final String initial) {
+    public static EditorOption text(final String key,
+                                    final String name,
+                                    final String description,
+                                    final String initial) {
         final EditorOption option = new EditorOption(Type.TEXT, key, name, description);
         option.extra.put("default", "\"" + initial + "\"");
         return option;
     }
 
-    public static EditorOption dropdown(final String key, final String name, final String description, final List<String> options) {
+    public static EditorOption dropdown(final String key,
+                                        final String name,
+                                        final String description,
+                                        final List<String> options) {
         final EditorOption option = new EditorOption(Type.DROPDOWN, key, name, description);
         option.extra.put("options", format(options));
         return option;
     }
 
-    public static EditorOption list(final String key, final String name, final String description, final List<String> options) {
+    public static EditorOption list(final String key,
+                                    final String name,
+                                    final String description,
+                                    final List<String> options) {
         final EditorOption option = new EditorOption(Type.LIST, key, name, description);
         option.extra.put("options", format(options));
         return option;

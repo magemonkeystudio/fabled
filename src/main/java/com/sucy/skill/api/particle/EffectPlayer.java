@@ -121,7 +121,8 @@ public class EffectPlayer {
         String keyMod = noPrefix ? "" : key;
 
         // Grab the particle type
-        Particle         particleType = ParticleHelper.getFromKey(settings.getString(keyMod + P_TYPE, "Villager happy"));
+        Particle         particleType =
+                ParticleHelper.getFromKey(settings.getString(keyMod + P_TYPE, "Villager happy"));
         ParticleSettings particle;
 
         try {

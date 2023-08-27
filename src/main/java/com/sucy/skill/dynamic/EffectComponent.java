@@ -38,7 +38,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -266,8 +265,8 @@ public abstract class EffectComponent {
             return filterSpecialChars(text);
         }
 
-        StringBuilder           builder = new StringBuilder();
-        HashMap<String, Object> data    = DynamicSkill.getCastData(caster);
+        StringBuilder       builder = new StringBuilder();
+        Map<String, Object> data    = DynamicSkill.getCastData(caster);
 
         int k = 0;
         while (i >= 0 && j > i) {

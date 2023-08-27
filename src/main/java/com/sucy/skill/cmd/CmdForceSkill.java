@@ -83,13 +83,19 @@ public class CmdForceSkill implements IFunction {
 
             if (args[1].equals("up")) {
                 playerData.forceUpSkill(skill);
-                command.sendMessage(sender, UPGRADED, "&6" + skill.getData().getName() + "&2 was upgraded for &6" + player.getName());
+                command.sendMessage(sender,
+                        UPGRADED,
+                        "&6" + skill.getData().getName() + "&2 was upgraded for &6" + player.getName());
             } else if (args[1].equals("down")) {
                 playerData.forceDownSkill(skill);
-                command.sendMessage(sender, DOWNGRADED, "&6" + skill.getData().getName() + "&2 was downgraded for &6" + player.getName());
+                command.sendMessage(sender,
+                        DOWNGRADED,
+                        "&6" + skill.getData().getName() + "&2 was downgraded for &6" + player.getName());
             } else if (args[1].equals("reset")) {
                 playerData.refundSkill(skill);
-                command.sendMessage(sender, RESET, "&6" + skill.getData().getName() + "&2 was reset for &6" + player.getName());
+                command.sendMessage(sender,
+                        RESET,
+                        "&6" + skill.getData().getName() + "&2 was reset for &6" + player.getName());
             } else
                 command.sendMessage(sender, NOT_FUNCTION, "&4That is not a valid function. Use up, down, or reset.");
         }

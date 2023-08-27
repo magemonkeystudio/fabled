@@ -56,7 +56,6 @@ public abstract class LevelTree extends InventoryTree {
      * Arranges the skill tree
      *
      * @param skills skills to arrange
-     *
      * @throws SkillTreeException
      */
     @Override
@@ -82,7 +81,8 @@ public abstract class LevelTree extends InventoryTree {
             int max   = tier * scale;
             int count = 0;
 
-            while (skills.size() > 0 && (getPerTierLimit() < 0 || count++ < getPerTierLimit()) && skills.get(0).getLevelReq(0) <= max) {
+            while (skills.size() > 0 && (getPerTierLimit() < 0 || count++ < getPerTierLimit())
+                    && skills.get(0).getLevelReq(0) <= max) {
                 list.add(skills.remove(0));
             }
         }
@@ -121,7 +121,10 @@ public abstract class LevelTree extends InventoryTree {
                 }
             }
         }
-        height = Math.max(1, Math.min(SkillAPI.getConfig("gui").getConfig().getInt(GUIType.SKILL_TREE.getPrefix()+tree.getName()+".rows", height), 6));
+        height = Math.max(1,
+                Math.min(SkillAPI.getConfig("gui")
+                        .getConfig()
+                        .getInt(GUIType.SKILL_TREE.getPrefix() + tree.getName() + ".rows", height), 6));
     }
 
     /**

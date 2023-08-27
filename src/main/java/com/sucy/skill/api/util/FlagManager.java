@@ -42,7 +42,6 @@ public class FlagManager {
      * no existing data is found.
      *
      * @param entity entity to retrieve the data for
-     *
      * @return the flag data for the entity
      */
     public static FlagData getFlagData(LivingEntity entity) {
@@ -56,7 +55,6 @@ public class FlagManager {
      *
      * @param entity entity to get the flag data for
      * @param create whether to create new data if it doesn't exist
-     *
      * @return the flag data for an enemy
      */
     public static FlagData getFlagData(LivingEntity entity, boolean create) {
@@ -101,7 +99,6 @@ public class FlagManager {
      *
      * @param entity the entity to check for
      * @param flag   the flag to check for
-     *
      * @return true if the flag is active on the entity, false otherwise
      */
     public static boolean hasFlag(LivingEntity entity, String flag) {
@@ -113,7 +110,6 @@ public class FlagManager {
      *
      * @param entity entity to get the time for
      * @param flag   flag to get the time for
-     *
      * @return time left on the flag in seconds for the entity
      */
     public static int getTimeLeft(LivingEntity entity, String flag) {

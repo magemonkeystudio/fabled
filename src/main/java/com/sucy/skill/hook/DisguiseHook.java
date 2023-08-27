@@ -145,10 +145,12 @@ public class DisguiseHook {
                 } else {
                     if (mobDisguise.getWatcher() != null) {
                         if (mobDisguise.getType() == DisguiseType.ARMOR_STAND) {
-                            return (((ArmorStandWatcher) mobDisguise.getWatcher()).isSmall() ? values.getBabyBox() : values.getAdultBox());
+                            return (((ArmorStandWatcher) mobDisguise.getWatcher()).isSmall() ? values.getBabyBox()
+                                    : values.getAdultBox());
                         }
 
-                        if (mobDisguise.getType() == DisguiseType.SLIME || mobDisguise.getType() == DisguiseType.MAGMA_CUBE) {
+                        if (mobDisguise.getType() == DisguiseType.SLIME
+                                || mobDisguise.getType() == DisguiseType.MAGMA_CUBE) {
                             double a = 0.51D * 0.255D * (double) ((SlimeWatcher) mobDisguise.getWatcher()).getSize();
                             return new FakeBoundingBox(a, a, a);
                         }
@@ -164,9 +166,11 @@ public class DisguiseHook {
             if (disguise.getWatcher() == null) {
                 return new FakeBoundingBox(0.6, 0.6, 1.8);
             } else if (disguise.getEntity() != null && !disguise.getWatcher().getModifiedEntityAnimations()[1]) {
-                return disguise.getEntity() instanceof Player && ((Player) disguise.getEntity()).isSneaking() ? new FakeBoundingBox(0.6, 0.6, 1.5) : new FakeBoundingBox(0.6, 0.6, 1.8);
+                return disguise.getEntity() instanceof Player && ((Player) disguise.getEntity()).isSneaking()
+                        ? new FakeBoundingBox(0.6, 0.6, 1.5) : new FakeBoundingBox(0.6, 0.6, 1.8);
             } else {
-                return disguise.getWatcher().isSneaking() ? new FakeBoundingBox(0.6, 0.6, 1.5) : new FakeBoundingBox(0.6, 0.6, 1.8);
+                return disguise.getWatcher().isSneaking() ? new FakeBoundingBox(0.6, 0.6, 1.5)
+                        : new FakeBoundingBox(0.6, 0.6, 1.8);
             }
         } else return null;
     }

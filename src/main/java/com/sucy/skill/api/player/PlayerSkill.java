@@ -68,9 +68,9 @@ public final class PlayerSkill {
      * this constructor as it is provided by the API. Get instances
      * through the PlayerData object.
      *
-     * @param player owning player data
-     * @param skill  skill template
-     * @param parent owning player class
+     * @param player   owning player data
+     * @param skill    skill template
+     * @param parent   owning player class
      * @param external whether the skill was added by an external plugin
      */
     public PlayerSkill(PlayerData player, Skill skill, PlayerClass parent, boolean external) {
@@ -141,7 +141,7 @@ public final class PlayerSkill {
      *
      * @return whether the skill was added by an external plugin
      */
-    public boolean isExternal() { return external; }
+    public boolean isExternal() {return external;}
 
     /**
      * Retrieves the cost to upgrade the skill to the next level

@@ -418,13 +418,13 @@ public class GUITool implements ToolMenu {
         i = 9;
         GUIPage page = guiData.getPage();
         for (String group : availableGroups) {
-            ItemStack item  = make(Material.DRAGON_EGG,
+            ItemStack item = make(Material.DRAGON_EGG,
                     group,
                     "",
                     "Spot for the player's current",
                     "class in the group should",
                     "be placed in the GUI");
-            int       index = page.getIndex(group);
+            int index = page.getIndex(group);
             if (index != -1)
                 inventoryContents[index] = item;
             else if (!guiData.has(group) && i < playerContents.length)

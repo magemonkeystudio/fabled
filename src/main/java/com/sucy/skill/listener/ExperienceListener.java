@@ -23,7 +23,7 @@ import java.util.HashSet;
  */
 public class ExperienceListener extends SkillAPIListener {
 
-    private static final String            CONFIG_KEY = "unnatural";
+    private static final String CONFIG_KEY = "unnatural";
 
     boolean         track;
     HashSet<String> unnatural = new HashSet<>();

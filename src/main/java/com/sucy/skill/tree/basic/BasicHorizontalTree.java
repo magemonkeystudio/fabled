@@ -62,11 +62,16 @@ public class BasicHorizontalTree extends InventoryTree {
         // Cycle through all skills that do not have children, put them
         // at the far left, and branch their children to the right
         for (Skill skill : skills) {
-            if (skill.getSkillReq() != null) { continue; }
+            if (skill.getSkillReq() != null) {
+                continue;
+            }
             skillSlots.put(9 * height, skill);
             height += placeChildren(skills, skill, height * 9 + 1, 0);
         }
-        height = Math.max(1, Math.min(SkillAPI.getConfig("gui").getConfig().getInt(GUIType.SKILL_TREE.getPrefix()+tree.getName()+".rows", height), 6));
+        height = Math.max(1,
+                Math.min(SkillAPI.getConfig("gui")
+                        .getConfig()
+                        .getInt(GUIType.SKILL_TREE.getPrefix() + tree.getName() + ".rows", height), 6));
     }
 
     /**
@@ -76,9 +81,7 @@ public class BasicHorizontalTree extends InventoryTree {
      * @param skill  skill to add the children of
      * @param slot   slot ID for the first child
      * @param depth  current depth of recursion
-     *
      * @return rows needed to fit the skill and all of its children
-     *
      */
     private int placeChildren(List<Skill> skills, Skill skill, int slot, int depth) {
 
@@ -89,8 +92,11 @@ public class BasicHorizontalTree extends InventoryTree {
                 continue;
             }
             if (s.getSkillReq().equalsIgnoreCase(skill.getName())) {
-                if (slot%9 == 8) {
-                    SkillAPI.inst().getLogger().warning(this.getClass().getSimpleName()+" for "+this.tree.getName()+" would be too big and could not be completed. Try changing the tree type of the class.");
+                if (slot % 9 == 8) {
+                    SkillAPI.inst()
+                            .getLogger()
+                            .warning(this.getClass().getSimpleName() + " for " + this.tree.getName()
+                                    + " would be too big and could not be completed. Try changing the tree type of the class.");
                     break;
                 }
                 skillSlots.put(slot + width * 9, s);

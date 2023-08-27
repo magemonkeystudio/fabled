@@ -77,7 +77,7 @@ public class MechanicListener extends SkillAPIListener {
     public static final String DAMAGE_CAUSE      = "damageCause";
 
     private static final HashMap<UUID, Double> flying = new HashMap<UUID, Double>();
-    private static       Map<UUID, Double>     exempt     = new HashMap<>();
+    private static       Map<UUID, Double>     exempt = new HashMap<>();
 
     /**
      * Cleans up listener data on shutdown
@@ -101,7 +101,9 @@ public class MechanicListener extends SkillAPIListener {
         if (inMap == isOnGround(event.getTo())) {
             if (inMap) {
                 double maxHeight = flying.remove(event.getPlayer().getUniqueId());
-                Bukkit.getPluginManager().callEvent(new PlayerLandEvent(event.getPlayer(), maxHeight - event.getPlayer().getLocation().getY()));
+                Bukkit.getPluginManager()
+                        .callEvent(new PlayerLandEvent(event.getPlayer(),
+                                maxHeight - event.getPlayer().getLocation().getY()));
             } else
                 flying.put(event.getPlayer().getUniqueId(), event.getPlayer().getLocation().getY());
         } else if (inMap) {
@@ -168,9 +170,13 @@ public class MechanicListener extends SkillAPIListener {
     }
 
     private boolean isIntersecting(BoundingBox box, Location loc) {
-        boolean xContains = box.getMinX() <= loc.getX() && loc.getX() <= box.getMaxX() || fuzzyEquals(box.getMinX(), loc.getX(), 0.3) || fuzzyEquals(box.getMaxX(), loc.getX(), 0.3);
+        boolean xContains = box.getMinX() <= loc.getX() && loc.getX() <= box.getMaxX() || fuzzyEquals(box.getMinX(),
+                loc.getX(),
+                0.3) || fuzzyEquals(box.getMaxX(), loc.getX(), 0.3);
         boolean yContains = box.getMinY() <= loc.getY() && loc.getY() <= box.getMaxY();
-        boolean zContains = box.getMinZ() <= loc.getZ() && loc.getZ() <= box.getMaxZ() || fuzzyEquals(box.getMinZ(), loc.getZ(), 0.3) || fuzzyEquals(box.getMaxZ(), loc.getZ(), 0.3);
+        boolean zContains = box.getMinZ() <= loc.getZ() && loc.getZ() <= box.getMaxZ() || fuzzyEquals(box.getMinZ(),
+                loc.getZ(),
+                0.3) || fuzzyEquals(box.getMaxZ(), loc.getZ(), 0.3);
 
         return xContains && yContains && zContains;
     }
@@ -274,9 +280,11 @@ public class MechanicListener extends SkillAPIListener {
             event.setCancelled(false);
         }
     }
+
     public static void addExemptExperience(Player player, double amount) {
         exempt.put(player.getUniqueId(), amount);
     }
+
     /**
      * Stop explosions of projectiles fired from skills
      *
@@ -304,8 +312,10 @@ public class MechanicListener extends SkillAPIListener {
                         .callback(p, (LivingEntity) entity);
                 event.setCancelled(true);
             }
-        } else if (damager instanceof LightningStrike && damager.hasMetadata(P_CALL) && entity instanceof LivingEntity) {
-            double damage = Objects.requireNonNull((LightningMechanic.Callback) SkillAPI.getMeta(damager, P_CALL)).execute((LivingEntity) entity);
+        } else if (damager instanceof LightningStrike && damager.hasMetadata(P_CALL)
+                && entity instanceof LivingEntity) {
+            double damage = Objects.requireNonNull((LightningMechanic.Callback) SkillAPI.getMeta(damager, P_CALL))
+                    .execute((LivingEntity) entity);
             if (damage <= 0) {
                 event.setCancelled(true);
             } else {
@@ -356,7 +366,8 @@ public class MechanicListener extends SkillAPIListener {
         Entity entity = event.getEntity();
         if (entity instanceof ArmorStand && SkillAPI.getMeta(entity, ARMOR_STAND) != null) {
             event.setCancelled(true);
-        } else if (event.getCause().equals(EntityDamageEvent.DamageCause.FIRE_TICK) && entity.hasMetadata(FireMechanic.META_KEY)) {
+        } else if (event.getCause().equals(EntityDamageEvent.DamageCause.FIRE_TICK)
+                && entity.hasMetadata(FireMechanic.META_KEY)) {
             event.setDamage(SkillAPI.getMetaDouble(entity, FireMechanic.META_KEY));
         }
     }

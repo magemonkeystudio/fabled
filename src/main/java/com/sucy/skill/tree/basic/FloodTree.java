@@ -54,7 +54,6 @@ public class FloodTree extends InventoryTree {
      * Arranges the skill tree
      *
      * @param skills skills to arrange
-     *
      * @throws com.sucy.skill.api.exception.SkillTreeException
      */
     @Override
@@ -63,11 +62,17 @@ public class FloodTree extends InventoryTree {
         skills.sort(levelComparator);
         int i = 0;
         for (Skill skill : skills) {
-            if (i%9 == 8) { i++; }
+            if (i % 9 == 8) {
+                i++;
+            }
             skillSlots.put(i, skill);
             i++;
         }
-        height = Math.max(1, Math.min(SkillAPI.getConfig("gui").getConfig().getInt(GUIType.SKILL_TREE.getPrefix()+tree.getName()+".rows", (skills.size()+7)/8), 6));
+        height = Math.max(1,
+                Math.min(SkillAPI.getConfig("gui")
+                                .getConfig()
+                                .getInt(GUIType.SKILL_TREE.getPrefix() + tree.getName() + ".rows", (skills.size() + 7) / 8),
+                        6));
     }
 
     /**

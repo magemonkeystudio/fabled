@@ -155,7 +155,7 @@ public class SkillDetailMenu extends MapMenu {
         // Get text to draw
         PlayerSkill  skill = SkillListMenu.getSkill(player);
         ItemStack    icon  = skill.getData().getIndicator(skill, true);
-        ItemMeta     meta = icon.getItemMeta();
+        ItemMeta     meta  = icon.getItemMeta();
         List<String> lore  = meta == null ? null : meta.getLore();
         if (lore == null) {
             lore = new ArrayList<>();

@@ -317,8 +317,8 @@ public class AttributeManager {
          * @return icon for the attribute for use in the GUI editor
          */
         public ItemStack getToolIcon() {
-            ItemStack icon = new ItemStack(this.icon.getType());
-            ItemMeta  meta = icon.getItemMeta();
+            ItemStack icon     = new ItemStack(this.icon.getType());
+            ItemMeta  meta     = icon.getItemMeta();
             ItemMeta  iconMeta = this.icon.getItemMeta();
             if (meta == null || iconMeta == null) {
                 return icon;

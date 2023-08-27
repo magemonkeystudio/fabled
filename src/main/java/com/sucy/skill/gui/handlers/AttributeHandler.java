@@ -41,17 +41,23 @@ public class AttributeHandler extends GUIHolder<AttributeManager.Attribute> {
         } else if (SkillAPI.getSettings().isAttributesDowngrade() && player.getAttribute(type.getKey()) > 0) {
 
             if (SkillAPI.getSettings().getAttributesDowngradePrice() > 0 && !VaultHook.isEconomyValid()) {
-                SkillAPI.inst().getLogger().info("Attributes should cost " + SkillAPI.getSettings().getAttributesDowngradePrice() + " to refund " +
-                        "but the Vault Hook couldn't find an economy plugin. Refunding anyway...");
+                SkillAPI.inst()
+                        .getLogger()
+                        .info("Attributes should cost " + SkillAPI.getSettings().getAttributesDowngradePrice()
+                                + " to refund " +
+                                "but the Vault Hook couldn't find an economy plugin. Refunding anyway...");
             }
 
-            if (SkillAPI.getSettings().getAttributesDowngradePrice() > 0 && VaultHook.isEconomyValid() && VaultHook.hasBalance(player.getPlayer(), SkillAPI.getSettings().getAttributesDowngradePrice())) {
+            if (SkillAPI.getSettings().getAttributesDowngradePrice() > 0 && VaultHook.isEconomyValid()
+                    && VaultHook.hasBalance(player.getPlayer(), SkillAPI.getSettings().getAttributesDowngradePrice())) {
                 if (player.refundAttribute(type.getKey())) {
-                    VaultHook.withdraw(player.getPlayer(), Double.parseDouble(String.valueOf(SkillAPI.getSettings().getAttributesDowngradePrice())));
+                    VaultHook.withdraw(player.getPlayer(),
+                            Double.parseDouble(String.valueOf(SkillAPI.getSettings().getAttributesDowngradePrice())));
                     setPage(page);
                 }
                 return;
-            } else if (VaultHook.isEconomyValid() && !VaultHook.hasBalance(player.getPlayer(), SkillAPI.getSettings().getAttributesDowngradePrice())) {
+            } else if (VaultHook.isEconomyValid() && !VaultHook.hasBalance(player.getPlayer(),
+                    SkillAPI.getSettings().getAttributesDowngradePrice())) {
                 SkillAPI.getLanguage().sendMessage(NO_MONEY, player.getPlayer());
                 return;
             }

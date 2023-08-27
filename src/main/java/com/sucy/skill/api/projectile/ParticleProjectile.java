@@ -223,10 +223,17 @@ public class ParticleProjectile extends CustomProjectile {
      * @param angle    angle of the spread
      * @param amount   number of projectiles to fire
      * @param callback optional callback for when projectiles hit
-     *
      * @return list of fired projectiles
      */
-    public static ArrayList<ParticleProjectile> spread(LivingEntity shooter, int level, Vector center, Location loc, Settings settings, double angle, int amount, ProjectileCallback callback, int lifespan) {
+    public static ArrayList<ParticleProjectile> spread(LivingEntity shooter,
+                                                       int level,
+                                                       Vector center,
+                                                       Location loc,
+                                                       Settings settings,
+                                                       double angle,
+                                                       int amount,
+                                                       ProjectileCallback callback,
+                                                       int lifespan) {
         ArrayList<Vector>             dirs = calcSpread(center, angle, amount);
         ArrayList<ParticleProjectile> list = new ArrayList<ParticleProjectile>();
         for (Vector dir : dirs) {
@@ -250,10 +257,17 @@ public class ParticleProjectile extends CustomProjectile {
      * @param height   height above the center location
      * @param amount   number of projectiles to fire
      * @param callback optional callback for when projectiles hit
-     *
      * @return list of fired projectiles
      */
-    public static ArrayList<ParticleProjectile> rain(LivingEntity shooter, int level, Location center, Settings settings, double radius, double height, int amount, ProjectileCallback callback, int lifespan) {
+    public static ArrayList<ParticleProjectile> rain(LivingEntity shooter,
+                                                     int level,
+                                                     Location center,
+                                                     Settings settings,
+                                                     double radius,
+                                                     double height,
+                                                     int amount,
+                                                     ProjectileCallback callback,
+                                                     int lifespan) {
         Vector                        vel  = new Vector(0, 1, 0);
         ArrayList<Location>           locs = calcRain(center, radius, height, amount);
         ArrayList<ParticleProjectile> list = new ArrayList<ParticleProjectile>();

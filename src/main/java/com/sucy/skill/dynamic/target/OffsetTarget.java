@@ -46,7 +46,9 @@ public class OffsetTarget extends TargetComponent {
     private static final String RIGHT      = "right";
     private static final String HORIZONTAL = "horizontal";
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void playPreview(Player caster, final int level, final LivingEntity target, int step) {
         final LivingEntity loc = getTargets(caster, level, ImmutableList.of(target)).get(0);
@@ -60,7 +62,9 @@ public class OffsetTarget extends TargetComponent {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {

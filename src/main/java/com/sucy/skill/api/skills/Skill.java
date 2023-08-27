@@ -442,8 +442,8 @@ public abstract class Skill implements IconHolder {
      * @return GUI tool indicator
      */
     public ItemStack getToolIndicator() {
-        ItemStack    item = new ItemStack(indicator.getType());
-        ItemMeta     meta = item.getItemMeta();
+        ItemStack item = new ItemStack(indicator.getType());
+        ItemMeta  meta = item.getItemMeta();
         if (meta != null) {
             List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
             if (meta.hasDisplayName())
@@ -537,7 +537,8 @@ public abstract class Skill implements IconHolder {
         ArrayList<String> lore = new ArrayList<>();
 
         String MET     = SkillAPI.getLanguage().getMessage(SkillNodes.REQUIREMENT_MET, true, FilterType.COLOR).get(0);
-        String NOT_MET = SkillAPI.getLanguage().getMessage(SkillNodes.REQUIREMENT_NOT_MET, true, FilterType.COLOR).get(0);
+        String NOT_MET =
+                SkillAPI.getLanguage().getMessage(SkillNodes.REQUIREMENT_NOT_MET, true, FilterType.COLOR).get(0);
         MET = MET.substring(0, MET.length() - 2);
         NOT_MET = NOT_MET.substring(0, NOT_MET.length() - 2);
 
@@ -547,8 +548,10 @@ public abstract class Skill implements IconHolder {
         final String branchReq = isCompatible(skillData.getPlayerData()) ? MET : NOT_MET;
         final String skillReq  = isCompatible(skillData.getPlayerData()) ? MET : NOT_MET;
 
-        String attrChanging = SkillAPI.getLanguage().getMessage(SkillNodes.ATTRIBUTE_CHANGING, true, FilterType.COLOR).get(0);
-        String attrStatic   = SkillAPI.getLanguage().getMessage(SkillNodes.ATTRIBUTE_NOT_CHANGING, true, FilterType.COLOR).get(0);
+        String attrChanging =
+                SkillAPI.getLanguage().getMessage(SkillNodes.ATTRIBUTE_CHANGING, true, FilterType.COLOR).get(0);
+        String attrStatic   =
+                SkillAPI.getLanguage().getMessage(SkillNodes.ATTRIBUTE_NOT_CHANGING, true, FilterType.COLOR).get(0);
 
         for (String line : iconLore) {
             try {
@@ -577,9 +580,14 @@ public abstract class Skill implements IconHolder {
                                 (int) Math.floor(NumberParser.parseDouble(nextValue.toString().replace(',', '.')));
 
                     if (currValue.equals(nextValue) || brief)
-                        line = line.replace("{attr:" + attr + "}", attrStatic.replace("{name}", getAttrName(attr)).replace("{value}", currValue.toString()));
+                        line = line.replace("{attr:" + attr + "}",
+                                attrStatic.replace("{name}", getAttrName(attr))
+                                        .replace("{value}", currValue.toString()));
                     else
-                        line = line.replace("{attr:" + attr + "}", attrChanging.replace("{name}", getAttrName(attr)).replace("{value}", currValue.toString()).replace("{new}", nextValue.toString()));
+                        line = line.replace("{attr:" + attr + "}",
+                                attrChanging.replace("{name}", getAttrName(attr))
+                                        .replace("{value}", currValue.toString())
+                                        .replace("{new}", nextValue.toString()));
                 }
 
                 // Full description
@@ -609,7 +617,9 @@ public abstract class Skill implements IconHolder {
 
             // Lines with invalid filters are ignored
             catch (Exception ex) {
-                Logger.invalid("Skill icon filter for the skill \"" + name + "\" is invalid (Line = \"" + line + "\") - " + ex.getMessage());
+                Logger.invalid(
+                        "Skill icon filter for the skill \"" + name + "\" is invalid (Line = \"" + line + "\") - "
+                                + ex.getMessage());
             }
         }
 
@@ -686,7 +696,8 @@ public abstract class Skill implements IconHolder {
             Location l = player.getLocation();
             for (Player p : player.getWorld().getPlayers()) {
                 if (p.getLocation().distanceSquared(l) < radius) {
-                    p.sendMessage(RPGFilter.SKILL.setReplacement(getName()).apply(Filter.PLAYER.setReplacement(player.getName()).apply(message)));
+                    p.sendMessage(RPGFilter.SKILL.setReplacement(getName())
+                            .apply(Filter.PLAYER.setReplacement(player.getName()).apply(message)));
                 }
             }
         }
@@ -724,7 +735,11 @@ public abstract class Skill implements IconHolder {
      * @param classification type of damage to deal
      * @param knockback      whether the damage should apply knockback
      */
-    public void damage(LivingEntity target, double damage, LivingEntity source, String classification, boolean knockback) {
+    public void damage(LivingEntity target,
+                       double damage,
+                       LivingEntity source,
+                       String classification,
+                       boolean knockback) {
         damage(target, damage, source, classification, knockback, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
     }
 
@@ -738,7 +753,12 @@ public abstract class Skill implements IconHolder {
      * @param knockback      whether the damage should apply knockback
      * @param cause          the cause of the damage, might affect death messages
      */
-    public void damage(LivingEntity target, double damage, LivingEntity source, String classification, boolean knockback, EntityDamageEvent.DamageCause cause) {
+    public void damage(LivingEntity target,
+                       double damage,
+                       LivingEntity source,
+                       String classification,
+                       boolean knockback,
+                       EntityDamageEvent.DamageCause cause) {
         if (target instanceof TempEntity) {
             return;
         }
@@ -812,7 +832,8 @@ public abstract class Skill implements IconHolder {
         TrueDamageEvent event = new TrueDamageEvent(this, source, target, damage);
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled() && event.getDamage() != 0) {
-            target.setHealth(Math.max(Math.min(target.getHealth() - event.getDamage(), target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()), 0));
+            target.setHealth(Math.max(Math.min(target.getHealth() - event.getDamage(),
+                    target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()), 0));
         }
     }
 
