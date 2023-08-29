@@ -80,7 +80,7 @@ export default class ProClass implements Serializable {
     data.put("needs-permission", this.permission);
     data.put("attributes", [this.health, this.mana, ...this.attributes]);
     data.put("mana-regen", this.manaRegen);
-    data.put("tree", this.skillTree.toUpperCase().replace(/ /g, "_"));
+    data.put("skill-tree", this.skillTree.toUpperCase().replace(/ /g, "_"));
     data.put("blacklist", this.unusableItems);
     data.put("skills", this.skills.map(s => s.name));
     data.put("icon", this.icon.material);
