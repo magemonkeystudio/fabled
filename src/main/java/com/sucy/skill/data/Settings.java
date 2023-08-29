@@ -58,6 +58,8 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import java.util.*;
 
+import static io.lumine.mythic.bukkit.utils.text.Text.DefaultFontInfo.t;
+
 /**
  * <p>The management class for SkillAPI's config.yml settings.</p>
  */
@@ -214,6 +216,8 @@ public class Settings {
     @Getter
     private int                 maxAccounts;
     private boolean             monsterEnemy;
+    @Getter
+    @Setter
     private boolean             passiveAlly;
     private boolean             playerAlly;
     private boolean             affectNpcs;
@@ -832,40 +836,34 @@ public class Settings {
      * @param attacker the attacking entity
      * @param target   the target entity
      * @param cause    the cause of the damage, might affect death messages
-     * @return true if can be attacked, false otherwise
+     * @return true if the target can be attacked, false otherwise
      */
     public boolean canAttack(LivingEntity attacker, LivingEntity target, EntityDamageEvent.DamageCause cause) {
         if (attacker.equals(target)) return true;
 
-        if (attacker instanceof Player) {
-            final Player player = (Player) attacker;
-            if (target instanceof Animals && !(target instanceof Tameable)) {
-                if (passiveAlly || passiveWorlds.contains(attacker.getWorld().getName())) {
-                    return false;
-                }
-            } else if (target instanceof Monster) {
-                if (monsterEnemy || monsterWorlds.contains(attacker.getWorld().getName())) {
-                    return true;
-                }
-            } else if (target instanceof Player) {
-                if (playerAlly || playerWorlds.contains(attacker.getWorld().getName())) {
-                    return false;
-                }
-
-                return combatProtection.canAttack(player, (Player) target, cause);
-            }
-            return combatProtection.canAttack(player, target, cause);
-        } else if (attacker instanceof Tameable) {
-            Tameable tameable = (Tameable) attacker;
-            if (tameable.isTamed() && (tameable.getOwner() instanceof LivingEntity)) {
-                return (tameable.getOwner() != target)
-                        && canAttack((LivingEntity) tameable.getOwner(), target);
-            }
+        if (attacker instanceof Player && target instanceof Player) {
+            return CombatProtection.canAttack(attacker, target, playerAlly, cause);
         } else {
-            return !(target instanceof Monster);
+            if (attacker instanceof Tameable) {
+                Tameable tameable = (Tameable) attacker;
+                if (tameable.isTamed() && (tameable.getOwner() instanceof LivingEntity)) {
+                    return (tameable.getOwner() != target)
+                            && canAttack((LivingEntity) tameable.getOwner(), target);
+                }
+            }
+            /*
+             * The attacker is neither a tameable mob, nor a player.
+             * In this case, it is a different mob of some sort, so
+             * we have to assume that the rules of `monsterEnemy` or `passiveAlly` come into place here
+             */
+            if(target instanceof Monster && (monsterEnemy || monsterWorlds.contains(attacker.getWorld().getName()))) {
+                return true;
+            } else if (target instanceof Animals && (passiveAlly || passiveWorlds.contains(attacker.getWorld().getName()))) {
+                return false;
+            }
         }
 
-        return combatProtection.canAttack(attacker, target, cause);
+        return CombatProtection.canAttack(attacker, target, passiveAlly, cause);
     }
 
     /**
