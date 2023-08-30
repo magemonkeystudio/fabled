@@ -2380,6 +2380,23 @@ class InterruptMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
+class InvisibilityMechanic extends ProMechanic {
+	public constructor() {
+		super({
+			name:        'Invisibility',
+			description: 'Applies invisibility effect on target, optionally hiding equipment (Requires ProtocolLib).',
+			data:		[
+				new IntSelect('Duration', 'duration', 200)
+					.setTooltip('Duration in ticks'),
+				new BooleanSelect('Hide Equipment', 'hideEquipment', false)
+					.setTooltip('Whether to hide equipment or not. Requires ProtocolLib.')
+			]
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class ItemMechanic extends ProMechanic {
 	public constructor() {
 		super({
@@ -3573,6 +3590,7 @@ export const initComponents = () => {
 		HELD_ITEM:           { name: 'Held Item', component: HeldItemMechanic },
 		IMMUNITY:            { name: 'Immunity', component: ImmunityMechanic },
 		INTERRUPT:           { name: 'Interrupt', component: InterruptMechanic },
+		INVISIBILITY:        { name: 'Invisibility', component: InvisibilityMechanic },
 		ITEM:                { name: 'Item', component: ItemMechanic },
 		ITEM_DROP:           { name: 'Item Drop', component: ItemDropMechanic },
 		ITEM_PROJECTILE:     { name: 'Item Projectile', component: ItemProjectileMechanic },
