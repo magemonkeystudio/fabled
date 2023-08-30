@@ -85,7 +85,7 @@ public class BuffListener extends SkillAPIListener {
     }
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onBuffExpire(final BuffExpiredEvent event){
-        if(event.getType().equals(BuffType.TRUE_INVISIBILITY)){
+        if(event.getType().equals(BuffType.INVISIBILITY)){
             if(PluginChecker.isProtocolLibActive())
                 PacketListener.updateEquipment((Player) event.getEntity());
         }

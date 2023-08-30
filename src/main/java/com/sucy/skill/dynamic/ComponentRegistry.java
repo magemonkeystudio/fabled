@@ -150,6 +150,7 @@ public class ComponentRegistry {
         register(new HeldItemMechanic());
         register(new ImmunityMechanic());
         register(new InterruptMechanic());
+        register(new InvisibilityMechanic());
         register(new ItemDropMechanic());
         register(new ItemMechanic());
         register(new ItemProjectileMechanic());
@@ -178,7 +179,6 @@ public class ComponentRegistry {
         register(new StatusMechanic());
         register(new TauntMechanic());
         register(new TriggerMechanic());
-        register(new TrueInvisibilityMechanic());
         register(new ValueAddMechanic());
         register(new ValueAttributeMechanic());
         register(new ValueCopyMechanic());

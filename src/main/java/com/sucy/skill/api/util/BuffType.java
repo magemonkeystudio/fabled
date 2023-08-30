@@ -32,5 +32,5 @@ public enum BuffType {
     SKILL_DAMAGE,
     SKILL_DEFENSE,
     HEALING,
-    TRUE_INVISIBILITY
+    INVISIBILITY
 }

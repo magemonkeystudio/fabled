@@ -77,7 +77,7 @@ public class PacketListener extends SkillAPIListener {
             if(!(entity instanceof LivingEntity)) return;
 
             BuffData data = BuffManager.getBuffData((LivingEntity) entity,false);
-            if(data == null || !data.isActive(BuffType.TRUE_INVISIBILITY) || !((LivingEntity) entity).hasPotionEffect(PotionEffectType.INVISIBILITY)) return;
+            if(data == null || !data.isActive(BuffType.INVISIBILITY) || !((LivingEntity) entity).hasPotionEffect(PotionEffectType.INVISIBILITY)) return;
 
             PacketContainer packet = event.getPacket();
             ItemStack air = new ItemStack(Material.AIR);
