@@ -2,6 +2,7 @@ package com.sucy.skill.listener;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.enums.ExpSource;
+import com.sucy.skill.api.event.PlayerExperienceGainEvent;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.player.PlayerData;
 import mc.promcteam.engine.mccore.config.CommentedConfig;
@@ -13,9 +14,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.OptionalInt;
+import java.util.Set;
 
 /**
  * ProSkillAPI © 2023
@@ -84,6 +88,18 @@ public class ExperienceListener extends SkillAPIListener {
                 playerClass.giveExp(yield, ExpSource.CRAFT);
             }
         }
+    }
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onExpGain(PlayerExperienceGainEvent event){
+        Player player = event.getPlayerData().getPlayer();
+        Set<PermissionAttachmentInfo> perms = player.getEffectivePermissions();
+        OptionalInt max = perms.stream()
+                .filter(c->c.getPermission().startsWith("skillapi.exp.booster"))
+                .map(c->c.getPermission().substring(21))
+                .mapToInt(c->Integer.valueOf(c))
+                .max();
+        if (max.isEmpty()) return;
+        event.setExp(event.getExp() + event.getExp()*max.getAsInt()/100);
     }
 
     private String format(Block block) {
