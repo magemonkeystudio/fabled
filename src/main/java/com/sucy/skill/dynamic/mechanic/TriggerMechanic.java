@@ -138,7 +138,10 @@ public class TriggerMechanic extends MechanicComponent {
         }
 
         @Override
-        public boolean execute(final LivingEntity target, final int level, final List<LivingEntity> targets, boolean force) {
+        public boolean execute(final LivingEntity target,
+                               final int level,
+                               final List<LivingEntity> targets,
+                               boolean force) {
             if (!CASTER_MAP.containsKey(target.getEntityId())) return false;
 
             final List<Context> contexts;

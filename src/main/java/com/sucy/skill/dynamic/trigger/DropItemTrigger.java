@@ -31,7 +31,8 @@ public class DropItemTrigger implements Trigger<PlayerDropItemEvent> {
     public boolean shouldTrigger(PlayerDropItemEvent event, int level, Settings settings) {
 
         return settings.getString("drop multiple").equalsIgnoreCase("Ignore") ||
-                (event.getItemDrop().getItemStack().getAmount() > 1) == settings.getString("drop multiple").equalsIgnoreCase("True");
+                (event.getItemDrop().getItemStack().getAmount() > 1) == settings.getString("drop multiple")
+                        .equalsIgnoreCase("True");
     }
 
     /**

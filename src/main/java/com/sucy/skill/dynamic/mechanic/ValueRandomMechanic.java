@@ -29,8 +29,8 @@ package com.sucy.skill.dynamic.mechanic;
 import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.entity.LivingEntity;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Adds to a cast data value
@@ -52,7 +52,6 @@ public class ValueRandomMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -67,8 +66,8 @@ public class ValueRandomMechanic extends MechanicComponent {
         double  min        = parseValues(caster, MIN, level, 1);
         double  max        = parseValues(caster, MAX, level, 1);
 
-        HashMap<String, Object> data = DynamicSkill.getCastData(caster);
-        double                  rand = triangular ? 0.5 * (Math.random() + Math.random()) : Math.random();
+        Map<String, Object> data = DynamicSkill.getCastData(caster);
+        double              rand = triangular ? 0.5 * (Math.random() + Math.random()) : Math.random();
         data.put(key, rand * (max - min) + min);
         return true;
     }

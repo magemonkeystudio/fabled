@@ -81,9 +81,14 @@ public class CmdForceReset implements IFunction {
             if (accounts.getAccountLimit() >= id && id > 0) {
                 accounts.setAccount(id);
                 accounts.getActiveData().resetAll();
-                command.sendMessage(sender, RESET, ChatColor.GOLD + "{player}'s" + ChatColor.DARK_GREEN + " active account has been reset", Filter.PLAYER.setReplacement(player.getName()));
+                command.sendMessage(sender,
+                        RESET,
+                        ChatColor.GOLD + "{player}'s" + ChatColor.DARK_GREEN + " active account has been reset",
+                        Filter.PLAYER.setReplacement(player.getName()));
                 if (player.isOnline()) {
-                    command.sendMessage((Player) player, TARGET, ChatColor.DARK_GREEN + "Your class data has been reset");
+                    command.sendMessage((Player) player,
+                            TARGET,
+                            ChatColor.DARK_GREEN + "Your class data has been reset");
                 }
                 return;
             }

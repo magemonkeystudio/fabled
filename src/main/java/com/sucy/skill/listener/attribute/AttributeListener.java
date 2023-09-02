@@ -125,9 +125,9 @@ public class AttributeListener extends SkillAPIListener {
         // Physical Damage
         if (event.getDamager() instanceof Player) {
             Player    player = (Player) event.getDamager();
-            ItemStack item = player.getInventory().getItemInMainHand();
+            ItemStack item   = player.getInventory().getItemInMainHand();
             // If it's an RPGItem, we'll handle this in RPGAttributeListener
-            if(PluginChecker.isRPGItemsActive() && RPGItemsHook.isRPGItem(item)) return;
+            if (PluginChecker.isRPGItemsActive() && RPGItemsHook.isRPGItem(item)) return;
             if (CitizensHook.isNPC(player)) return;
 
             PlayerData data = SkillAPI.getPlayerData(player);

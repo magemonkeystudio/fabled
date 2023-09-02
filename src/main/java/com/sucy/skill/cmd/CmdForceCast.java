@@ -93,7 +93,9 @@ public class CmdForceCast implements IFunction {
 
             // Not castable
             else {
-                cmd.sendMessage(sender, WRONG_SKILL, ChatColor.RED + "Skills must be skill shot skills or dynamic skills to be cast this way.");
+                cmd.sendMessage(sender,
+                        WRONG_SKILL,
+                        ChatColor.RED + "Skills must be skill shot skills or dynamic skills to be cast this way.");
             }
         }
     }

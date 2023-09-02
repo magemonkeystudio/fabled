@@ -41,7 +41,6 @@ public interface TreeType {
      *
      * @param api    - SkillAPI reference
      * @param parent - Parent class to organize
-     *
      * @return skill tree instance
      */
     InventoryTree getTree(SkillAPI api, RPGClass parent);

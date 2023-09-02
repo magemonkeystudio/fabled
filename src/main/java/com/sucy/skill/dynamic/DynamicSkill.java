@@ -52,14 +52,14 @@ import static com.sucy.skill.dynamic.ComponentRegistry.getTrigger;
  * A skill implementation for the Dynamic system
  */
 public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, Listener {
-    private static final HashMap<Integer, HashMap<String, Object>> castData   = new HashMap<>();
-    private final        List<TriggerHandler>                      triggers   = new ArrayList<>();
-    private final        Map<String, EffectComponent>              attribKeys = new HashMap<>();
-    private final        Map<Integer, Integer>                     active     = new HashMap<>();
-    private final        List<Integer>                             forced     = new ArrayList<>();
-    private              TriggerComponent                          castTrigger;
-    private              TriggerComponent                          initializeTrigger;
-    private              TriggerComponent                          cleanupTrigger;
+    private static final Map<Integer, Map<String, Object>> castData   = new HashMap<>();
+    private final        List<TriggerHandler>              triggers   = new ArrayList<>();
+    private final        Map<String, EffectComponent>      attribKeys = new HashMap<>();
+    private final        Map<Integer, Integer>             active     = new HashMap<>();
+    private final        List<Integer>                     forced     = new ArrayList<>();
+    private              TriggerComponent                  castTrigger;
+    private              TriggerComponent                  initializeTrigger;
+    private              TriggerComponent                  cleanupTrigger;
 
     private boolean cancel     = false;
     private double  multiplier = 1;
@@ -80,11 +80,11 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
      * @param caster caster to get the data for
      * @return cast data for the caster
      */
-    public static HashMap<String, Object> getCastData(final LivingEntity caster) {
+    public static Map<String, Object> getCastData(final LivingEntity caster) {
         if (caster == null) {
             return null;
         }
-        HashMap<String, Object> map = castData.get(caster.getEntityId());
+        Map<String, Object> map = castData.get(caster.getEntityId());
         if (map == null) {
             map = new HashMap<>();
             map.put("caster", caster);

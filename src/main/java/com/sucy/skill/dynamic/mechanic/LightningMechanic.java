@@ -60,7 +60,6 @@ public class LightningMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -101,7 +100,8 @@ public class LightningMechanic extends MechanicComponent {
             if (SkillAPI.getSettings().isValidTarget(entity)) {
                 String group = settings.getString(GROUP, "ENEMY").toUpperCase();
                 if (caster != entity) {
-                    canTarget = group.equals("BOTH") || group.equals("ALLY") == SkillAPI.getSettings().isAlly(caster, entity);
+                    canTarget = group.equals("BOTH") || group.equals("ALLY") == SkillAPI.getSettings()
+                            .isAlly(caster, entity);
                 } else {
                     canTarget = settings.getBool(CASTER, false);
                 }

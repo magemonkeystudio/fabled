@@ -132,7 +132,8 @@ public class EffectManager {
      */
     public static void clear(LivingEntity target) {
         instances.entrySet()
-                .removeIf(entry -> entry.getKey() instanceof EntityTarget && ((EntityTarget) entry.getKey()).getEntity() == target);
+                .removeIf(entry -> entry.getKey() instanceof EntityTarget
+                        && ((EntityTarget) entry.getKey()).getEntity() == target);
     }
 
     /**

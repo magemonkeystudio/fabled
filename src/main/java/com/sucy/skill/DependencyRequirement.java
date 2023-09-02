@@ -3,29 +3,45 @@ package com.sucy.skill;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DependencyRequirement {
 
-    public static final String MIN_CORE_VERSION = "1.0.4-R0.13-SNAPSHOT";
+    public static final String MIN_CORE_VERSION = "1.0.6-R0.5-SNAPSHOT";
 
     public static boolean meetsVersion(String requiredVersion, String providedVersion) {
-        List<String> required = splitVersion(requiredVersion);
-        List<String> provided = splitVersion(providedVersion);
+        List<Integer> required = splitVersion(requiredVersion);
+        List<Integer> provided = splitVersion(providedVersion);
         if (required.size() == 0) {
             return true;
-        } else if (provided.size() == 0) {return false;}
+        } else if (provided.size() == 0) {
+            return false;
+        }
 
         for (int i = 0, size = Math.min(required.size(), provided.size()); i < size; i++) {
-            int comparison = required.get(i).compareTo(provided.get(i));
-            if (comparison > 0) {return true;
-            } else if (comparison < 0) {return false;}
+            if (provided.get(i) > required.get(i)) {
+                return true;
+            } else if (provided.get(i) < required.get(i)) {
+                return false;
+            }
         }
         return true;
     }
 
-    private static List<String> splitVersion(String version) {
-        List<String> result = new ArrayList<>();
-        for (String a : version.split("-")) {result.addAll(Arrays.asList(a.split("\\.")));}
+    private static List<Integer> splitVersion(String version) {
+        List<Integer> result = new ArrayList<>();
+        for (String a : version.split("-")) {
+            result.addAll(
+                    Arrays.asList(a.split("\\.")).stream().map(
+                            str -> {
+                                try {
+                                    return Integer.parseInt(str.replace("R", "").replace("SNAPSHOT", ""));
+                                } catch (NumberFormatException e) {
+                                    return 0;
+                                }
+                            }).collect(Collectors.toList())
+            );
+        }
         return result;
     }
 }

@@ -123,7 +123,8 @@ public class SQLIO extends IOManager {
     private PlayerAccounts load(SQLConnection connection, OfflinePlayer player) {
         try {
             String      playerKey = player.getUniqueId().toString().toLowerCase();
-            DataSection file      = YAMLParser.parseText(connection.table.createEntry(playerKey).getString(DATA), STRING);
+            DataSection file      =
+                    new YAMLParser().parseText(connection.table.createEntry(playerKey).getString(DATA), STRING);
             return load(player, file);
         } catch (Exception ex) {
             Logger.bug("Failed to load data from the SQL Database - " + ex.getMessage());

@@ -99,7 +99,10 @@ public class PluginChecker extends SkillAPIListener {
     public static boolean isRPGItemsActive() {return rpgItems;}
     public static boolean isProtocolLibActive() {return protocolLib;}
 
-    public static boolean isPartiesActive() {return parties || Bukkit.getPluginManager().isPluginEnabled("ProSkillAPIParties");}
+    public static boolean isPartiesActive() {
+        return parties || Bukkit.getPluginManager()
+                .isPluginEnabled("ProSkillAPIParties");
+    }
 
     /**
      * Checks whether Mimic is present.
@@ -165,7 +168,8 @@ public class PluginChecker extends SkillAPIListener {
                 break;
             case "ProRPGItems":
                 rpgItems = isEnabled;
-                SkillAPI.inst().listen(new RPGAttributeListener(), isEnabled); // In case ProRPGItems enables after ProSkillAPI
+                SkillAPI.inst()
+                        .listen(new RPGAttributeListener(), isEnabled); // In case ProRPGItems enables after ProSkillAPI
                 break;
             case "ProtocolLib":
                 protocolLib = isEnabled;

@@ -30,8 +30,8 @@ import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Applies a flag to each target
@@ -50,7 +50,6 @@ public class WarpValueMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -60,8 +59,8 @@ public class WarpValueMechanic extends MechanicComponent {
             return false;
         }
 
-        String                  key  = settings.getString(KEY);
-        HashMap<String, Object> data = DynamicSkill.getCastData(caster);
+        String              key  = settings.getString(KEY);
+        Map<String, Object> data = DynamicSkill.getCastData(caster);
         if (!data.containsKey(key) || !(data.get(key) instanceof Location)) {
             return false;
         }

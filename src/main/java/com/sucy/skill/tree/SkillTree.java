@@ -59,11 +59,11 @@ public abstract class SkillTree {
      *
      * @param player player to check for
      * @param skill  skill to check for permissions
-     *
      * @return true if skill can be shown, false otherwise
      */
     public boolean canShow(Player player, Skill skill) {
-        return !(skill.canAutoLevel(0) && skill.canAutoLevel(1) && !skill.canCast() && !SkillAPI.getSettings().isShowingAutoSkills())
+        return !(skill.canAutoLevel(0) && skill.canAutoLevel(1) && !skill.canCast() && !SkillAPI.getSettings()
+                .isShowingAutoSkills())
                 && skill.isAllowed(player);
     }
 
@@ -81,7 +81,8 @@ public abstract class SkillTree {
                 Logger.invalid("Failed to add skill to tree - " + skill + ": Skill does not exist");
                 continue;
             }
-            if (SkillAPI.getSettings().isShowingAutoSkills() || skill.canCast() || !(skill.canAutoLevel(0) && skill.canAutoLevel(1))) {
+            if (SkillAPI.getSettings().isShowingAutoSkills() || skill.canCast() || !(skill.canAutoLevel(0)
+                    && skill.canAutoLevel(1))) {
                 skills.add(skill);
             }
         }
@@ -101,7 +102,6 @@ public abstract class SkillTree {
      * Checks if the class has the skill registered
      *
      * @param skill skill to check
-     *
      * @return true if registered, false otherwise
      */
     public abstract boolean hasSkill(Skill skill);

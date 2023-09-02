@@ -56,19 +56,21 @@ public class Data {
 
             final ItemStack item = new ItemStack(material);
             final ItemMeta  meta = item.getItemMeta();
-            if (data != 0) {
-                meta.setCustomModelData(data);
-            }
-            if (lore != null && !lore.isEmpty()) {
-                final List<String> colored = TextFormatter.colorStringList(lore);
-                meta.setDisplayName(colored.remove(0));
-                meta.setLore(colored);
-            }
+            if (meta != null) {
+                if (data != 0) {
+                    meta.setCustomModelData(data);
+                }
+                if (lore != null && !lore.isEmpty()) {
+                    final List<String> colored = TextFormatter.colorStringList(lore);
+                    meta.setDisplayName(colored.remove(0));
+                    meta.setLore(colored);
+                }
 
-            if (meta instanceof Damageable) {
-                ((Damageable) meta).setDamage(dur);
+                if (meta instanceof Damageable) {
+                    ((Damageable) meta).setDamage(dur);
+                }
+                item.setItemMeta(meta);
             }
-            item.setItemMeta(meta);
             return DamageLoreRemover.removeAttackDmg(item);
         } catch (final Exception ex) {
             return new ItemStack(Material.JACK_O_LANTERN);
@@ -85,23 +87,25 @@ public class Data {
         config.set(MAT, item.getType().name());
 
         ItemMeta meta = item.getItemMeta();
-        config.set(DATA, meta.hasCustomModelData() ? meta.getCustomModelData() : 0);
+        if (meta != null) {
+            config.set(DATA, meta.hasCustomModelData() ? meta.getCustomModelData() : 0);
 
-        if (meta instanceof Damageable) {
-            config.set(DURABILITY, ((Damageable) meta).getDamage());
-        } else {
-            config.set(DURABILITY, 0);
-        }
-
-        if (meta.hasDisplayName()) {
-            List<String> lore = item.getItemMeta().getLore();
-            if (lore == null) lore = new ArrayList<>();
-            lore.add(0, item.getItemMeta().getDisplayName());
-            int count = lore.size();
-            for (int i = 0; i < count; i++) {
-                lore.set(i, lore.get(i).replace(ChatColor.COLOR_CHAR, '&').replaceAll("attr:(&" + ".)+", "attr:"));
+            if (meta instanceof Damageable) {
+                config.set(DURABILITY, ((Damageable) meta).getDamage());
+            } else {
+                config.set(DURABILITY, 0);
             }
-            config.set(LORE, lore);
+
+            if (meta.hasDisplayName()) {
+                List<String> lore = item.getItemMeta().getLore();
+                if (lore == null) lore = new ArrayList<>();
+                lore.add(0, item.getItemMeta().getDisplayName());
+                int count = lore.size();
+                for (int i = 0; i < count; i++) {
+                    lore.set(i, lore.get(i).replace(ChatColor.COLOR_CHAR, '&').replaceAll("attr:(&" + ".)+", "attr:"));
+                }
+                config.set(LORE, lore);
+            }
         }
     }
 

@@ -377,10 +377,12 @@ public class MainListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPhysicalDamage(EntityDamageByEntityEvent event) {
+        if (event instanceof DefaultCombatProtection.FakeEntityDamageByEntityEvent) {
+            return;
+        }
         if (event.getDamager() instanceof Player && event.getEntity() instanceof Player &&
-                !(event instanceof DefaultCombatProtection.FakeEntityDamageByEntityEvent) &&
-                !SkillAPI.getSettings().canAttack((Player) event.getDamager(), (Player) event.getEntity(),
-                event.getCause())) {
+                !SkillAPI.getSettings()
+                        .canAttack((Player) event.getDamager(), (Player) event.getEntity(), event.getCause())) {
             event.setCancelled(true);
         }
         if (Skill.isSkillDamage()
@@ -396,7 +398,9 @@ public class MainListener extends SkillAPIListener {
                 event.getDamager() instanceof Projectile);
         Bukkit.getPluginManager().callEvent(e);
         event.setDamage(e.getDamage());
-        if (e.isCancelled()) {event.setCancelled(true);}
+        if (e.isCancelled()) {
+            event.setCancelled(true);
+        }
     }
 
     /**

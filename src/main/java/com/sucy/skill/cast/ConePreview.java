@@ -99,7 +99,14 @@ public class ConePreview extends Preview {
         }
     }
 
-    private void make(Player player, ParticleSettings particle, double x, double y, double z, double pos, double rfx, double rfz) {
+    private void make(Player player,
+                      ParticleSettings particle,
+                      double x,
+                      double y,
+                      double z,
+                      double pos,
+                      double rfx,
+                      double rfz) {
         while (pos <= radius) {
             particle.instance(player, x + pos * rfx, y, z + pos * rfz);
             pos += offset;

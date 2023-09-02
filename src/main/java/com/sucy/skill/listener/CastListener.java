@@ -126,7 +126,10 @@ public class CastListener extends SkillAPIListener {
         inv.setItem(slot, SkillAPI.getSettings().getCastItem());
         if (item != null && item.getType() != Material.AIR)
             inv.addItem(item);
-        inv.getItem(slot).setAmount(1);
+        ItemStack castItem = inv.getItem(slot);
+        if (castItem != null) {
+            castItem.setAmount(1);
+        }
     }
 
     @EventHandler

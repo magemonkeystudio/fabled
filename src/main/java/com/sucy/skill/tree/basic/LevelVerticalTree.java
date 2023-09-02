@@ -47,11 +47,11 @@ public class LevelVerticalTree extends LevelTree {
      * @return skills allowed per row
      */
     @Override
-    protected int getPerTierLimit() { return 8; }
+    protected int getPerTierLimit() {return 8;}
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected int getTierLimit() { return -1; }
+    protected int getTierLimit() {return -1;}
 }

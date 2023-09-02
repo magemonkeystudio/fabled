@@ -21,7 +21,8 @@ public class FoodCondition extends ConditionComponent {
         double value;
         switch (type) {
             case "difference percent":
-                value = (((Player) target).getFoodLevel() - ((Player) caster).getFoodLevel()) * 100 / ((Player) caster).getFoodLevel();
+                value = (((Player) target).getFoodLevel() - ((Player) caster).getFoodLevel()) * 100
+                        / ((Player) caster).getFoodLevel();
                 break;
             case "difference":
                 value = ((Player) target).getFoodLevel() - ((Player) caster).getFoodLevel();

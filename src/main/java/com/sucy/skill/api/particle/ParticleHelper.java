@@ -93,7 +93,18 @@ public final class ParticleHelper {
                 fillSphere(loc, settings, level, points, visibleRadius, particle, amount, dx, dy, dz, speed, object);
                 break;
             case "hemisphere":
-                fillHemisphere(loc, settings, level, points, visibleRadius, particle, amount, dx, dy, dz, speed, object);
+                fillHemisphere(loc,
+                        settings,
+                        level,
+                        points,
+                        visibleRadius,
+                        particle,
+                        amount,
+                        dx,
+                        dy,
+                        dz,
+                        speed,
+                        object);
                 break;
             default:
                 filterPlayers(Objects.requireNonNull(loc.getWorld()).getPlayers(), loc, visibleRadius).forEach(
@@ -224,7 +235,13 @@ public final class ParticleHelper {
         };
     }
 
-    public static Object makeObject(Particle particle, Material material, int cmd, int durability, Color dustColor, Color toColor, float dustSize) {
+    public static Object makeObject(Particle particle,
+                                    Material material,
+                                    int cmd,
+                                    int durability,
+                                    Color dustColor,
+                                    Color toColor,
+                                    float dustSize) {
         Object object = null;
         switch (particle) {
             case REDSTONE:

@@ -53,7 +53,9 @@ public class LocationTarget extends TargetComponent {
     //LEGACY
     private static final String GROUND = "ground";
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void playPreview(Player caster, final int level, final LivingEntity target, int step) {
         final LivingEntity loc = getTargets(caster, level, ImmutableList.of(target)).get(0);
@@ -67,7 +69,9 @@ public class LocationTarget extends TargetComponent {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
@@ -76,7 +80,10 @@ public class LocationTarget extends TargetComponent {
         final boolean fluids   = settings.getBool(FLUIDS, false);
         final boolean passable = settings.has(PASSABLE) ? settings.getBool(PASSABLE) : settings.getBool(GROUND, true);
         final boolean center   = settings.getBool(CENTER, false);
-        return determineTargets(caster, level, targets, t -> getTargetLoc(caster, t, range, entities, fluids, passable, center));
+        return determineTargets(caster,
+                level,
+                targets,
+                t -> getTargetLoc(caster, t, range, entities, fluids, passable, center));
     }
 
     private List<LivingEntity> getTargetLoc(

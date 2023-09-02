@@ -51,12 +51,16 @@ public class ClickListener extends SkillAPIListener {
 
         // Left clicks
         if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            Bukkit.getServer().getPluginManager().callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.LEFT));
+            Bukkit.getServer()
+                    .getPluginManager()
+                    .callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.LEFT));
         }
 
         // Right clicks
         else if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
-            Bukkit.getServer().getPluginManager().callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.RIGHT));
+            Bukkit.getServer()
+                    .getPluginManager()
+                    .callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.RIGHT));
         }
     }
 

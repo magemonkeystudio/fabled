@@ -4,8 +4,8 @@ import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ProSkillAPI © 2023
@@ -29,13 +29,16 @@ public class ValueDistanceMechanic extends MechanicComponent {
      * @return true if applied to something, false otherwise
      */
     @Override
-    public boolean execute(final LivingEntity caster, final int level, final List<LivingEntity> targets, boolean force) {
+    public boolean execute(final LivingEntity caster,
+                           final int level,
+                           final List<LivingEntity> targets,
+                           boolean force) {
         if (!settings.has(KEY) || !(caster instanceof Player)) {
             return false;
         }
 
-        final String                  key  = settings.getString(KEY);
-        final HashMap<String, Object> data = DynamicSkill.getCastData(caster);
+        final String              key  = settings.getString(KEY);
+        final Map<String, Object> data = DynamicSkill.getCastData(caster);
         data.put(key, targets.get(0).getLocation().distance(caster.getLocation()));
         return true;
     }

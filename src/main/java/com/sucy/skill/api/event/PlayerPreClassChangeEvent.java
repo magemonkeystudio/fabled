@@ -27,7 +27,10 @@ public class PlayerPreClassChangeEvent extends Event implements Cancellable {
      * @param previousClass previous class of the player (null if wasn't a profession)
      * @param newClass      new class of the player (null if using the reset command)
      */
-    public PlayerPreClassChangeEvent(PlayerData playerData, PlayerClass playerClass, RPGClass previousClass, RPGClass newClass) {
+    public PlayerPreClassChangeEvent(PlayerData playerData,
+                                     PlayerClass playerClass,
+                                     RPGClass previousClass,
+                                     RPGClass newClass) {
         this.playerData = playerData;
         this.playerClass = playerClass;
         this.previousClass = previousClass;

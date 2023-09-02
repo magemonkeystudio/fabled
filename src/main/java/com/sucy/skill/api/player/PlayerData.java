@@ -781,7 +781,7 @@ public class PlayerData {
     }
 
     public void addSkill(Skill skill, PlayerClass parent) {
-        String key = skill.getKey();
+        String      key      = skill.getKey();
         PlayerSkill existing = skills.get(key);
         if (existing == null || !existing.isExternal()) {
             PlayerSkill data = new PlayerSkill(this, skill, parent);
@@ -802,7 +802,7 @@ public class PlayerData {
             combos.addSkill(skill);
             forceUpSkill(data, level);
         } else if (existing.isExternal() && level > existing.getLevel()) {
-            forceUpSkill(existing, level-existing.getLevel());
+            forceUpSkill(existing, level - existing.getLevel());
         }
     }
 
@@ -811,10 +811,12 @@ public class PlayerData {
         extSkills.removeIf(extSkill -> extSkill.getId().equals(key) && extSkill.getKey().equals(namespacedKey));
         PlayerSkill existing = skills.get(key);
         if (existing != null && existing.isExternal()) {
-            ExternallyAddedSkill max = null;
-            int maxLevel = Integer.MIN_VALUE;
+            ExternallyAddedSkill max      = null;
+            int                  maxLevel = Integer.MIN_VALUE;
             for (ExternallyAddedSkill extSkill : extSkills) {
-                if (!extSkill.getId().equals(key)) { continue; }
+                if (!extSkill.getId().equals(key)) {
+                    continue;
+                }
                 int level = extSkill.getLevel();
                 if (level > maxLevel) {
                     maxLevel = level;
@@ -826,7 +828,7 @@ public class PlayerData {
                 combos.removeSkill(existing.getData());
                 forceDownSkill(existing, existing.getLevel());
             } else {
-                forceDownSkill(existing, existing.getLevel()-maxLevel);
+                forceDownSkill(existing, existing.getLevel() - maxLevel);
             }
         }
     }
@@ -858,7 +860,8 @@ public class PlayerData {
         }
 
         int lastLevel = data.getLevel();
-        while (data.getData().canAutoLevel(lastLevel) && !data.isMaxed() && data.getLevelReq() <= data.getPlayerClass().getLevel()) {
+        while (data.getData().canAutoLevel(lastLevel) && !data.isMaxed() && data.getLevelReq() <= data.getPlayerClass()
+                .getLevel()) {
             upgradeSkill(skill);
             if (lastLevel == data.getLevel()) {
                 break;
@@ -926,7 +929,9 @@ public class PlayerData {
 
     public void forceUpSkill(PlayerSkill skill, int amount) {
         Preconditions.checkArgument(amount >= 0);
-        if (amount == 0) { return; }
+        if (amount == 0) {
+            return;
+        }
         int oldLevel = skill.getLevel();
         skill.addLevels(amount);
 
@@ -976,7 +981,8 @@ public class PlayerData {
 
         // Must not be required by another skill
         for (PlayerSkill s : skills.values()) {
-            if (s.getData().getSkillReq() != null && s.getData().getSkillReq().equalsIgnoreCase(skill.getName()) && data.getLevel() <= s.getData().getSkillReqLevel() && s.getLevel() > 0) {
+            if (s.getData().getSkillReq() != null && s.getData().getSkillReq().equalsIgnoreCase(skill.getName())
+                    && data.getLevel() <= s.getData().getSkillReqLevel() && s.getLevel() > 0) {
                 return false;
             }
         }
@@ -1012,7 +1018,9 @@ public class PlayerData {
 
     public void forceDownSkill(PlayerSkill skill, int amount) {
         Preconditions.checkArgument(amount >= 0);
-        if (amount == 0) { return; }
+        if (amount == 0) {
+            return;
+        }
         skill.addLevels(-amount);
 
         // Passive calls
@@ -1084,7 +1092,16 @@ public class PlayerData {
                 iconMap.put(entry.getKey().toLowerCase(), entry.getValue().getData());
             }
 
-            GUITool.getDetailsMenu().show(new DetailsHandler(), this, SkillAPI.getLanguage().getMessage(GUINodes.CLASS_LIST, true, FilterType.COLOR, Filter.PLAYER.setReplacement(player.getName())).get(0), iconMap);
+            GUITool.getDetailsMenu()
+                    .show(new DetailsHandler(),
+                            this,
+                            SkillAPI.getLanguage()
+                                    .getMessage(GUINodes.CLASS_LIST,
+                                            true,
+                                            FilterType.COLOR,
+                                            Filter.PLAYER.setReplacement(player.getName()))
+                                    .get(0),
+                            iconMap);
             return true;
         } else {
             return false;
@@ -1102,8 +1119,18 @@ public class PlayerData {
             PlayerClass c = getClass(group);
             if (c == null || (c.getLevel() == c.getData().getMaxLevel() && c.getData().getOptions().size() > 0)) {
                 GUITool.getProfessMenu(c == null
-                        ? null
-                        : c.getData()).show(new ProfessHandler(), this, SkillAPI.getLanguage().getMessage(GUINodes.PROFESS_TITLE, true, FilterType.COLOR, Filter.PLAYER.setReplacement(player.getName()), RPGFilter.GROUP.setReplacement(group)).get(0), SkillAPI.getClasses());
+                                ? null
+                                : c.getData())
+                        .show(new ProfessHandler(),
+                                this,
+                                SkillAPI.getLanguage()
+                                        .getMessage(GUINodes.PROFESS_TITLE,
+                                                true,
+                                                FilterType.COLOR,
+                                                Filter.PLAYER.setReplacement(player.getName()),
+                                                RPGFilter.GROUP.setReplacement(group))
+                                        .get(0),
+                                SkillAPI.getClasses());
                 return true;
             }
         }
@@ -1243,7 +1270,9 @@ public class PlayerData {
             for (Skill skill : c.getData().getSkills()) {
                 String      nm = skill.getName().toLowerCase();
                 PlayerSkill ps = skills.get(nm);
-                if (previous != null && rpgClass.hasParent() && rpgClass.getParent().getName().equals(previous.getName())) {
+                if (previous != null && rpgClass.hasParent() && rpgClass.getParent()
+                        .getName()
+                        .equals(previous.getName())) {
                     GroupSettings group = SkillAPI.getSettings().getGroupSettings(rpgClass.getGroup());
                     if (group.isProfessReset()) {
                         if (group.isProfessRefundSkills() && ps.getInvestedCost() > 0)
@@ -1452,7 +1481,8 @@ public class PlayerData {
             final RPGClass    previous     = previousData == null ? null : previousData.getData();
 
             // Pre-class change event in case someone wants to stop it
-            final PlayerPreClassChangeEvent event = new PlayerPreClassChangeEvent(this, previousData, previous, rpgClass);
+            final PlayerPreClassChangeEvent event =
+                    new PlayerPreClassChangeEvent(this, previousData, previous, rpgClass);
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) {
                 return false;
@@ -1633,7 +1663,8 @@ public class PlayerData {
         this.updateWalkSpeed(player);
 
         // Update health if it's been changed
-        if (oldMaxHealth != this.maxHealth || player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() != this.maxHealth) {
+        if (oldMaxHealth != this.maxHealth
+                || player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() != this.maxHealth) {
             this.updateHealth(player);
         } else {
             // Health scaling is available starting with 1.6.2
@@ -1650,7 +1681,11 @@ public class PlayerData {
             this.updateMCAttribute(player, Attribute.GENERIC_ATTACK_SPEED, AttributeManager.ATTACK_SPEED, 0, 1024);
             this.updateMCAttribute(player, Attribute.GENERIC_ARMOR, AttributeManager.ARMOR, 0, 30);
             this.updateMCAttribute(player, Attribute.GENERIC_LUCK, AttributeManager.LUCK, -1024, 1024);
-            this.updateMCAttribute(player, Attribute.GENERIC_KNOCKBACK_RESISTANCE, AttributeManager.KNOCKBACK_RESIST, 0, 1.0);
+            this.updateMCAttribute(player,
+                    Attribute.GENERIC_KNOCKBACK_RESISTANCE,
+                    AttributeManager.KNOCKBACK_RESIST,
+                    0,
+                    1.0);
         }
         if (VersionManager.isVersionAtLeast(110200)) {
             this.updateMCAttribute(player, Attribute.GENERIC_ARMOR_TOUGHNESS, AttributeManager.ARMOR_TOUGHNESS, 0, 20);
@@ -1669,7 +1704,9 @@ public class PlayerData {
         try {
             player.setWalkSpeed(level);
         } catch (IllegalArgumentException e) {
-            SkillAPI.inst().getLogger().warning("Attempted to set player speed to " + level + " but failed: " + e.getMessage());
+            SkillAPI.inst()
+                    .getLogger()
+                    .warning("Attempted to set player speed to " + level + " but failed: " + e.getMessage());
         }
 
     }
@@ -1682,7 +1719,8 @@ public class PlayerData {
             if (equipment == null || equipment.getType().isAir() || equipment.getItemMeta() == null) continue;
 
             ItemMeta meta = equipment.getItemMeta();
-            if (!meta.hasAttributeModifiers() || meta.getAttributeModifiers(NBTAttribute.MAX_HEALTH.getAttribute()) == null)
+            if (!meta.hasAttributeModifiers()
+                    || meta.getAttributeModifiers(NBTAttribute.MAX_HEALTH.getAttribute()) == null)
                 continue;
 
             for (AttributeModifier modifier : meta.getAttributeModifiers(NBTAttribute.MAX_HEALTH.getAttribute())) {
@@ -1816,7 +1854,9 @@ public class PlayerData {
         Bukkit.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
-            Logger.log(LogType.MANA, 2, getPlayerName() + " gained " + amount + " mana due to " + event.getSource().name());
+            Logger.log(LogType.MANA,
+                    2,
+                    getPlayerName() + " gained " + amount + " mana due to " + event.getSource().name());
 
             mana += event.getAmount();
             if (mana > maxMana) {
@@ -1852,7 +1892,9 @@ public class PlayerData {
         Bukkit.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
-            Logger.log(LogType.MANA, 2, getPlayerName() + " used " + amount + " mana due to " + event.getSource().name());
+            Logger.log(LogType.MANA,
+                    2,
+                    getPlayerName() + " used " + amount + " mana due to " + event.getSource().name());
 
             mana -= event.getAmount();
             if (mana < 0) {
@@ -2252,7 +2294,8 @@ public class PlayerData {
         if (removeTimer != null) {
             if (!removeTimer.isCancelled()) removeTimer.cancel();
         }
-        removeTimer = Bukkit.getScheduler().runTaskLater(SkillAPI.inst(), () -> player.removeMetadata("custom-cooldown", SkillAPI.inst()), 20L);
+        removeTimer = Bukkit.getScheduler()
+                .runTaskLater(SkillAPI.inst(), () -> player.removeMetadata("custom-cooldown", SkillAPI.inst()), 20L);
         return true;
     }
 
@@ -2281,7 +2324,12 @@ public class PlayerData {
         // On Cooldown
         if (status == SkillStatus.ON_COOLDOWN && cooldown) {
             if (skill.getData().cooldownMessage() && !onCooldown.contains(getUUID())) {
-                SkillAPI.getLanguage().sendMessage(ErrorNodes.COOLDOWN, getPlayer(), FilterType.COLOR, RPGFilter.COOLDOWN.setReplacement(skill.getCooldown() + ""), RPGFilter.SKILL.setReplacement(skill.getData().getName()));
+                SkillAPI.getLanguage()
+                        .sendMessage(ErrorNodes.COOLDOWN,
+                                getPlayer(),
+                                FilterType.COLOR,
+                                RPGFilter.COOLDOWN.setReplacement(skill.getCooldown() + ""),
+                                RPGFilter.SKILL.setReplacement(skill.getData().getName()));
                 onCooldown.add(getUUID());
                 Bukkit.getScheduler().runTaskLater(SkillAPI.inst(), () -> onCooldown.remove(getUUID()), 40L);
             }
@@ -2290,7 +2338,14 @@ public class PlayerData {
 
         // Not enough mana
         else if (status == SkillStatus.MISSING_MANA && mana) {
-            SkillAPI.getLanguage().sendMessage(ErrorNodes.MANA, getPlayer(), FilterType.COLOR, RPGFilter.SKILL.setReplacement(skill.getData().getName()), RPGFilter.MANA.setReplacement(getMana() + ""), RPGFilter.COST.setReplacement((int) Math.ceil(cost) + ""), RPGFilter.MISSING.setReplacement((int) Math.ceil(cost - getMana()) + ""));
+            SkillAPI.getLanguage()
+                    .sendMessage(ErrorNodes.MANA,
+                            getPlayer(),
+                            FilterType.COLOR,
+                            RPGFilter.SKILL.setReplacement(skill.getData().getName()),
+                            RPGFilter.MANA.setReplacement(getMana() + ""),
+                            RPGFilter.COST.setReplacement((int) Math.ceil(cost) + ""),
+                            RPGFilter.MISSING.setReplacement((int) Math.ceil(cost - getMana()) + ""));
             return PlayerSkillCastFailedEvent.invoke(skill, Cause.NO_MANA);
         } else {
             return true;
@@ -2330,10 +2385,10 @@ public class PlayerData {
             this.level = level;
         }
 
-        public String getId() { return id; }
+        public String getId() {return id;}
 
-        public NamespacedKey getKey() { return key; }
+        public NamespacedKey getKey() {return key;}
 
-        public int getLevel() { return level; }
+        public int getLevel() {return level;}
     }
 }

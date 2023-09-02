@@ -79,7 +79,10 @@ public class Nearby {
         return getLivingNearby(null, loc, radius, includeCaster);
     }
 
-    private static List<LivingEntity> getLivingNearby(Entity source, Location loc, double radius, boolean includeCaster) {
+    private static List<LivingEntity> getLivingNearby(Entity source,
+                                                      Location loc,
+                                                      double radius,
+                                                      boolean includeCaster) {
         List<LivingEntity> result    = new ArrayList<>();
         Map<UUID, Double>  distances = new HashMap<>();
 
@@ -167,6 +170,7 @@ public class Nearby {
     }
 
     private static double boxDistance(Location loc1, Location loc2) {
-        return Math.max(Math.max(Math.abs(loc1.getX() - loc2.getX()), Math.abs(loc1.getY() - loc2.getY())), Math.abs(loc1.getZ() - loc2.getZ()));
+        return Math.max(Math.max(Math.abs(loc1.getX() - loc2.getX()), Math.abs(loc1.getY() - loc2.getY())),
+                Math.abs(loc1.getZ() - loc2.getZ()));
     }
 }

@@ -186,7 +186,10 @@ public class SkillListMenu extends MapMenu {
                 skills.add(skill);
 
                 scene.add(PLATE + id, new MapObject(scheme.getImage(Menu.NAMEPLATE), 0, 0));
-                scene.add(NAME + id, new MapObject(new MapString(scheme.getFont(Menu.LIST), scheme.getColor(Menu.FONT), skill.getData().getName()), 0, 0));
+                scene.add(NAME + id,
+                        new MapObject(new MapString(scheme.getFont(Menu.LIST),
+                                scheme.getColor(Menu.FONT),
+                                skill.getData().getName()), 0, 0));
             }
         }
         scene.add(SELECTOR, new MapObject(scheme.getImage(Menu.SELECTOR), 0, 0));

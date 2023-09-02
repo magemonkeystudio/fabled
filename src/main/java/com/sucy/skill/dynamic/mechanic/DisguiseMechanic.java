@@ -97,7 +97,11 @@ public class DisguiseMechanic extends MechanicComponent {
                 if (!(target instanceof TempEntity)) {
                     String dataType = settings.getString(MISC, "Painting");
                     if (dataType.equals("Dropped Item") || dataType.equals("Falling Block")) {
-                        DisguiseHook.disguiseMisc(target, dataType, Material.valueOf(settings.getString(MATERIAL, "Anvil").toUpperCase().replace(" ", "_")));
+                        DisguiseHook.disguiseMisc(target,
+                                dataType,
+                                Material.valueOf(settings.getString(MATERIAL, "Anvil")
+                                        .toUpperCase()
+                                        .replace(" ", "_")));
                     } else
                         DisguiseHook.disguiseMisc(target, dataType, settings.getInt(DATA, 0));
                 }

@@ -12,12 +12,13 @@ import java.util.regex.Pattern;
 
 public class DependencyResolver {
     private static Logger       log          = LoggerFactory.getLogger(DependencyResolver.class);
-    private static List<String> repositories = List.of("https://s01.oss.sonatype.org/content/repositories/snapshots/", "https://repo1.maven.org/maven2");
+    private static List<String> repositories =
+            List.of("https://s01.oss.sonatype.org/content/repositories/snapshots/", "https://repo1.maven.org/maven2");
 
     public static File resolve(String dependency) throws FileNotFoundException {
         log.info("Attempting to resolve dependency " + dependency);
-        String[] pieces = dependency.split(":");
-        String userHome = FileUtils.getUserDirectoryPath();
+        String[] pieces   = dependency.split(":");
+        String   userHome = FileUtils.getUserDirectoryPath();
         String path = userHome + "/.m2/repository/" + (pieces[0] + "/" + pieces[1]).replace('.', '/')
                 + "/" + pieces[2] + "/" + pieces[1] + "-" + pieces[2] + ".jar";
         File file = new File(path);
@@ -48,7 +49,8 @@ public class DependencyResolver {
         }
     }
 
-    private static String findArtifactUrl(String groupId, String artifact, String version) throws FileNotFoundException {
+    private static String findArtifactUrl(String groupId, String artifact, String version) throws
+            FileNotFoundException {
         for (String rep : repositories) {
             StringBuilder html       = new StringBuilder();
             String        repository = rep + (groupId + "/" + artifact).replace('.', '/') + "/" + version + "/";

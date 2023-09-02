@@ -270,6 +270,9 @@ public class PlayerEquips {
                 return;
 
             ItemMeta itemMeta = item.getItemMeta();
+            if (itemMeta == null) {
+                return;
+            }
 
             if (!itemMeta.hasLore()) {
                 return;
@@ -344,7 +347,8 @@ public class PlayerEquips {
 
                                 String normalized = SkillAPI.getAttributeManager().normalize(attr);
                                 int    current    = attribs.containsKey(attr) ? attribs.get(attr) : 0;
-                                int    extra      = NumberParser.parseInt(lower.substring(text.length()).replace("%", ""));
+                                int    extra      =
+                                        NumberParser.parseInt(lower.substring(text.length()).replace("%", ""));
                                 attribs.put(normalized, current + extra);
                                 break;
                             }
@@ -360,7 +364,10 @@ public class PlayerEquips {
         private void apply() {
             if (attribs != null) {
                 for (Map.Entry<String, Integer> entry : attribs.entrySet()) {
-                    PlayerAttributeModifier attrModifier = new PlayerAttributeModifier("skillapi.player_equips", entry.getValue(), Operation.ADD_NUMBER, false);
+                    PlayerAttributeModifier attrModifier = new PlayerAttributeModifier("skillapi.player_equips",
+                            entry.getValue(),
+                            Operation.ADD_NUMBER,
+                            false);
                     this.attrModifierUUIDs.add(attrModifier.getUUID());
                     playerData.addAttributeModifier(entry.getKey(), attrModifier, false);
                 }

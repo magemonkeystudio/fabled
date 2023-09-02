@@ -124,7 +124,8 @@ public class MineMechanic extends MechanicComponent {
                                 Material material     = b.getType();
                                 String   materialName = material.name();
                                 if (!SkillAPI.getSettings().getFilteredBlocks().contains(material) && !b.isLiquid() &&
-                                        (any || (origin && materialName.equals(originMaterial)) || materials.contains(materialName))) {
+                                        (any || (origin && materialName.equals(originMaterial)) || materials.contains(
+                                                materialName))) {
                                     blocks.add(b);
                                 }
                             }
@@ -158,11 +159,14 @@ public class MineMechanic extends MechanicComponent {
                 for (double i = x - width; i <= x + width + 0.01; i++) {
                     for (double j = y - height; j <= y + height + 0.01; j++) {
                         for (double k = z - depth; k <= z + depth + 0.01; k++) {
-                            Block    b            = w.getBlockAt((int) Math.floor(facingZ ? i : k), (int) Math.floor(j), (int) Math.floor(facingZ ? k : i));
+                            Block    b            = w.getBlockAt((int) Math.floor(facingZ ? i : k),
+                                    (int) Math.floor(j),
+                                    (int) Math.floor(facingZ ? k : i));
                             Material material     = b.getType();
                             String   materialName = material.name();
                             if (!SkillAPI.getSettings().getFilteredBlocks().contains(material) && !b.isLiquid() &&
-                                    (any || (origin && materialName.equals(originMaterial)) || materials.contains(materialName))) {
+                                    (any || (origin && materialName.equals(originMaterial)) || materials.contains(
+                                            materialName))) {
                                 blocks.add(b);
                             }
                         }

@@ -69,14 +69,16 @@ public class CmdLore implements IFunction {
                 return;
             }
 
-            ItemMeta     meta = held.getItemMeta();
-            List<String> lore = meta.getLore();
-            if (lore == null) lore = new ArrayList<String>();
-            String combined = args[0];
-            for (int i = 1; i < args.length; i++) combined += " " + args[i];
-            lore.add(TextFormatter.colorString(combined));
-            meta.setLore(lore);
-            held.setItemMeta(meta);
+            ItemMeta meta = held.getItemMeta();
+            if (meta != null) {
+                List<String> lore = meta.getLore();
+                if (lore == null) lore = new ArrayList<String>();
+                String combined = args[0];
+                for (int i = 1; i < args.length; i++) combined += " " + args[i];
+                lore.add(TextFormatter.colorString(combined));
+                meta.setLore(lore);
+                held.setItemMeta(meta);
+            }
 
             // Messages
             cmd.sendMessage(sender, LORE_ADDED, ChatColor.DARK_GREEN + "The lore has been added to your item");

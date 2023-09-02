@@ -14,7 +14,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
-import java.util.Objects;
 
 public final class ItemStackReader {
     private static final String MATERIAL    = "material";
@@ -78,7 +77,10 @@ public final class ItemStackReader {
 
     public static ItemStack read(Settings settings) {
         ItemStack item = new ItemStack(readMaterial(settings), settings.getInt(AMOUNT, 1));
-        ItemMeta  meta = Objects.requireNonNull(item.getItemMeta());
+        ItemMeta  meta = item.getItemMeta();
+        if (meta == null) {
+            return item;
+        }
 
         if (meta instanceof Damageable) {
             Damageable damageable = (Damageable) meta;
@@ -114,7 +116,8 @@ public final class ItemStackReader {
             } catch (Exception ignored) {
             }
             try {
-                pm.setColor(Color.fromRGB(Integer.parseInt(settings.getString(POTION_COLOR, "#385dc6").substring(1), 16)));
+                pm.setColor(Color.fromRGB(Integer.parseInt(settings.getString(POTION_COLOR, "#385dc6").substring(1),
+                        16)));
             } catch (Exception ignored) {
             }
         }
@@ -122,7 +125,8 @@ public final class ItemStackReader {
         if (meta instanceof LeatherArmorMeta) {
             LeatherArmorMeta leatherMeta = (LeatherArmorMeta) meta;
             try {
-                leatherMeta.setColor(Color.fromRGB(Integer.parseInt(settings.getString(ARMOR_COLOR, "#a06540").substring(1), 16)));
+                leatherMeta.setColor(Color.fromRGB(Integer.parseInt(settings.getString(ARMOR_COLOR, "#a06540")
+                        .substring(1), 16)));
             } catch (Exception ignored) {
             }
         }

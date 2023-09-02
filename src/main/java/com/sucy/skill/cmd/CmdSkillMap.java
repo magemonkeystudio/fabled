@@ -73,7 +73,9 @@ public class CmdSkillMap implements IFunction {
                     return;
                 }
             }
-            cmd.sendMessage(sender, MAP_GIVEN, ChatColor.DARK_GREEN + "You were given the skill tree map. Hold it in your hand to view skills.");
+            cmd.sendMessage(sender,
+                    MAP_GIVEN,
+                    ChatColor.DARK_GREEN + "You were given the skill tree map. Hold it in your hand to view skills.");
             p.getInventory().addItem(map);
         }
 

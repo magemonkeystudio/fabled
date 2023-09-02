@@ -44,7 +44,9 @@ public class ConeTarget extends TargetComponent {
 
     private ConePreview preview;
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     void playPreview(Player caster, int level, LivingEntity target, int step) {
         double arc    = parseValues(caster, ANGLE, level, 90.0) * Math.PI / 180;
@@ -55,7 +57,9 @@ public class ConeTarget extends TargetComponent {
         preview.playParticles(caster, PreviewSettings.particle, target.getLocation(), step);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     List<LivingEntity> getTargets(LivingEntity caster, int level, List<LivingEntity> targets) {
         double range = parseValues(caster, RANGE, level, 3.0);

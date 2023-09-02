@@ -32,6 +32,7 @@ public class MountedCondition extends ConditionComponent {
         Set<String> passengers = target.getPassengers().stream()
                 .map(e -> e.getType().name())
                 .collect(Collectors.toSet());
-        return !passengers.isEmpty() && (types.isEmpty() || types.contains("ANY") || !Collections.disjoint(passengers, types));
+        return !passengers.isEmpty() && (types.isEmpty() || types.contains("ANY") || !Collections.disjoint(passengers,
+                types));
     }
 }

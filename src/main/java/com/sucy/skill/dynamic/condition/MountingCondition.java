@@ -28,6 +28,7 @@ public class MountingCondition extends ConditionComponent {
 
     @Override
     boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        return target.isInsideVehicle() && (types.isEmpty() || types.contains("ANY") || types.contains(target.getVehicle().getType().name()));
+        return target.isInsideVehicle() && (types.isEmpty() || types.contains("ANY")
+                || types.contains(target.getVehicle().getType().name()));
     }
 }

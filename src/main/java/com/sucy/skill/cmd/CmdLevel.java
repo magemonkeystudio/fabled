@@ -70,7 +70,8 @@ public class CmdLevel implements IFunction {
     @Override
     public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
         // Disabled world
-        if (sender instanceof Player && !SkillAPI.getSettings().isWorldEnabled(((Player) sender).getWorld()) && args.length == 1) {
+        if (sender instanceof Player && !SkillAPI.getSettings().isWorldEnabled(((Player) sender).getWorld())
+                && args.length == 1) {
             cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
         }
 
@@ -151,7 +152,8 @@ public class CmdLevel implements IFunction {
                     cmd.sendMessage(
                             target.getPlayer(),
                             RECEIVED_LEVEL,
-                            ChatColor.DARK_GREEN + "You have received " + ChatColor.GOLD + "{level} levels " + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}",
+                            ChatColor.DARK_GREEN + "You have received " + ChatColor.GOLD + "{level} levels "
+                                    + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}",
                             Filter.PLAYER.setReplacement(sender.getName()),
                             RPGFilter.LEVEL.setReplacement("" + amount));
                 }

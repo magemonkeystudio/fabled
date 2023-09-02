@@ -2,10 +2,12 @@ package com.sucy.skill.testutil;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
+import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.util.DamageLoreRemover;
+import lombok.extern.slf4j.Slf4j;
 import mc.promcteam.engine.NexEngine;
 import mc.promcteam.engine.core.config.CoreLang;
 import mc.promcteam.engine.hooks.HookManager;
@@ -15,10 +17,12 @@ import mc.promcteam.engine.nms.NMS;
 import mc.promcteam.engine.utils.ItemUT;
 import mc.promcteam.engine.utils.Reflex;
 import mc.promcteam.engine.utils.actions.ActionsManager;
+import mc.promcteam.engine.utils.reflection.ReflectionManager;
 import mc.promcteam.engine.utils.reflection.ReflectionUtil;
 import mc.promcteam.engine.utils.reflection.Reflection_1_17;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
@@ -26,8 +30,6 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.*;
@@ -38,34 +40,44 @@ import java.util.zip.ZipOutputStream;
 
 import static org.mockito.Mockito.*;
 
+@Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class MockedTest {
-    private static org.slf4j.Logger                log              = LoggerFactory.getLogger(MockedTest.class);
-    protected      ServerMock                      server;
-    protected      NexEngine                       engine;
-    protected      SkillAPI                        plugin;
-    protected      List<PlayerMock>                players          = new ArrayList<>();
-    protected      Map<UUID, PlayerData>           activePlayerData = new HashMap<>();
-    protected      MockedStatic<Reflex>            reflex;
-    protected      MockedStatic<ReflectionUtil>    mockedReflection;
-    protected      MockedStatic<Reflection_1_17>   mockedReflection17;
-    protected      MockedStatic<NexEngine>         nexEngine;
-    protected      MockedStatic<Board>             board;
-    protected      MockedStatic<DamageLoreRemover> damageLoreRemover;
-    protected      HookManager                     hookManager;
-    protected      NMS                             nms;
-    protected      ActionsManager                  actionsManager;
-    protected      CoreLang                        coreLang;
-    private        Set<String>                     classesToLoad    = new HashSet<>();
-    protected      boolean                         loadClasses      = false;
+    protected List<PlayerMock>      players          = new ArrayList<>();
+    protected Map<UUID, PlayerData> activePlayerData = new HashMap<>();
+    private   Set<String>           classesToLoad    = new HashSet<>();
+    private   Set<String>           skillsToLoad     = new HashSet<>();
+    protected boolean               loadClasses      = false;
+    protected boolean loadSkills = false;
+
+    protected ServerMock server;
+    protected WorldMock  world;
+    protected NexEngine  engine;
+    protected SkillAPI   plugin;
+
+    protected HookManager    hookManager;
+    protected NMS            nms;
+    protected ActionsManager actionsManager;
+    protected CoreLang       coreLang;
+
+    protected ReflectionUtil                  reflectionMock;
+    protected Reflection_1_17                 reflection17Mock;
+    protected MockedStatic<ReflectionManager> reflectionManager;
+    protected MockedStatic<Reflex>            reflex;
+    protected MockedStatic<NexEngine>         nexEngine;
+    protected MockedStatic<Board>             board;
+    protected MockedStatic<DamageLoreRemover> damageLoreRemover;
 
     public void preInit() {}
 
     public void loadClasses(String... classes) {
         loadClasses = true;
-        for (String aClass : classes) {
-            classesToLoad.add(aClass);
-        }
+        Collections.addAll(classesToLoad, classes);
+    }
+
+    public void loadSkills(String... skills) {
+        loadSkills = true;
+        Collections.addAll(skillsToLoad, skills);
     }
 
     @BeforeAll
@@ -73,6 +85,7 @@ public abstract class MockedTest {
         preInit();
 
         server = spy(MockBukkit.mock());
+        world       = server.addSimpleWorld("test");
         String coreVersion = System.getProperty("PROMCCORE_VERSION");
 
         try {
@@ -87,8 +100,11 @@ public abstract class MockedTest {
                 .thenAnswer(a -> a.getArgument(0));
         board = mockStatic(Board.class);
         reflex = mockStatic(Reflex.class);
-        mockedReflection = mockStatic(ReflectionUtil.class);
-        mockedReflection17 = mockStatic(Reflection_1_17.class);
+        reflectionMock = mock(ReflectionUtil.class);
+        reflection17Mock = mock(Reflection_1_17.class);
+        reflectionManager = mockStatic(ReflectionManager.class);
+        reflectionManager.when(() -> ReflectionManager.getReflectionUtil())
+                .thenReturn(reflectionMock);
 
         coreLang = mock(CoreLang.class);
         when(coreLang.getEnum(any()))
@@ -109,7 +125,9 @@ public abstract class MockedTest {
         engine = mock(NexEngine.class);
         nexEngine = mockStatic(NexEngine.class);
         nexEngine.when(() -> NexEngine.get()).thenReturn(engine);
-        when(engine.getDescription()).thenReturn(new PluginDescriptionFile("ProMCCore", coreVersion, NexEngine.class.getName()));
+        when(engine.getDescription()).thenReturn(new PluginDescriptionFile("ProMCCore",
+                coreVersion,
+                NexEngine.class.getName()));
         when(engine.getHooksManager()).thenReturn(hookManager);
         when(engine.getActionsManager()).thenReturn(actionsManager);
         when(engine.getNMS()).thenReturn(nms);
@@ -140,8 +158,7 @@ public abstract class MockedTest {
         CommandManager.unregisterAll();
 
         reflex.close();
-        mockedReflection.close();
-        mockedReflection17.close();
+        reflectionManager.close();
         nexEngine.close();
         board.close();
         damageLoreRemover.close();
@@ -153,7 +170,9 @@ public abstract class MockedTest {
     @BeforeEach
     public void initClasses() {
         String sapiVersion = System.getProperty("PROSKILLAPI_VERSION");
-        File   classDir    = new File(server.getPluginsFolder().getAbsolutePath() + File.separator + "ProSkillAPI-" + sapiVersion + File.separator + "dynamic" + File.separator + "class");
+        File classDir = new File(
+                server.getPluginsFolder().getAbsolutePath() + File.separator + "ProSkillAPI-" + sapiVersion
+                        + File.separator + "dynamic" + File.separator + "class");
         if (!classDir.exists()) classDir.mkdirs();
         try {
             FileUtils.cleanDirectory(classDir);
@@ -161,13 +180,10 @@ public abstract class MockedTest {
             throw new RuntimeException(e);
         }
 
-        if (loadClasses && classesToLoad.isEmpty()) {
-            plugin.reload();
-            return;
-        }
-
         classesToLoad.forEach(c -> {
-            File classFile = new File(server.getPluginsFolder().getAbsolutePath() + File.separator + "ProSkillAPI-" + sapiVersion + File.separator + "dynamic" + File.separator + "class", c + ".yml");
+            File classFile = new File(
+                    server.getPluginsFolder().getAbsolutePath() + File.separator + "ProSkillAPI-" + sapiVersion
+                            + File.separator + "dynamic" + File.separator + "class", c + ".yml");
             try {
                 if (!classFile.exists()) {
                     classFile.createNewFile();
@@ -175,13 +191,40 @@ public abstract class MockedTest {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("classes" + File.separator + c + ".yml")));
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(this.getClass()
+                    .getClassLoader()
+                    .getResourceAsStream("classes" + File.separator + c + ".yml")));
                  FileWriter writer = new FileWriter(classFile);) {
                 String str;
                 while ((str = in.readLine()) != null) {
                     writer.write(str + "\n");
                 }
-                log.info("Saved classfile " + c);
+                log.info("Saved class file " + c);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        skillsToLoad.forEach(s -> {
+            File skillFile = new File(
+                    server.getPluginsFolder().getAbsolutePath() + File.separator + "ProSkillAPI-" + sapiVersion
+                            + File.separator + "dynamic" + File.separator + "skill", s + ".yml");
+            try {
+                if (!skillFile.exists()) {
+                    skillFile.createNewFile();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(this.getClass()
+                    .getClassLoader()
+                    .getResourceAsStream("skills" + File.separator + s + ".yml")));
+                 FileWriter writer = new FileWriter(skillFile);) {
+                String str;
+                while ((str = in.readLine()) != null) {
+                    writer.write(str + "\n");
+                }
+                log.info("Saved skill file " + s);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

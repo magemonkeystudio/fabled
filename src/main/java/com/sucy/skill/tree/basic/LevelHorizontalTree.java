@@ -48,11 +48,11 @@ public class LevelHorizontalTree extends LevelTree {
      * @return skills allowed per row
      */
     @Override
-    protected int getPerTierLimit() { return -1; }
+    protected int getPerTierLimit() {return -1;}
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected int getTierLimit() { return 8; }
+    protected int getTierLimit() {return 8;}
 }

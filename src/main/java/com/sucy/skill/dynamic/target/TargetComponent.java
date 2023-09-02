@@ -130,7 +130,8 @@ public abstract class TargetComponent extends EffectComponent {
         if (SkillAPI.getMeta(target, MechanicListener.ARMOR_STAND) != null) return false;
         if (target instanceof TempEntity) return true;
         if (target instanceof Player && (
-                ((Player) target).getGameMode() == GameMode.SPECTATOR || ((Player) target).getGameMode() == GameMode.CREATIVE
+                ((Player) target).getGameMode() == GameMode.SPECTATOR
+                        || ((Player) target).getGameMode() == GameMode.CREATIVE
         )) return false;
 
         return target != caster && SkillAPI.getSettings().isValidTarget(target)

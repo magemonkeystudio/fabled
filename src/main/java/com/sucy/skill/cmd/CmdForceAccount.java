@@ -78,9 +78,16 @@ public class CmdForceAccount implements IFunction {
 
                 if (accounts.getAccountLimit() >= id && id > 0) {
                     accounts.setAccount(id);
-                    command.sendMessage(sender, CHANGED, ChatColor.GOLD + "{player}'s" + ChatColor.DARK_GREEN + " active account has been changed", Filter.PLAYER.setReplacement(player.getName()));
+                    command.sendMessage(sender,
+                            CHANGED,
+                            ChatColor.GOLD + "{player}'s" + ChatColor.DARK_GREEN + " active account has been changed",
+                            Filter.PLAYER.setReplacement(player.getName()));
                     if (player.isOnline()) {
-                        command.sendMessage((Player) player, TARGET, ChatColor.DARK_GREEN + "Your account has been forced to " + ChatColor.GOLD + "Account #{account}", RPGFilter.ACCOUNT.setReplacement(id + ""));
+                        command.sendMessage((Player) player,
+                                TARGET,
+                                ChatColor.DARK_GREEN + "Your account has been forced to " + ChatColor.GOLD
+                                        + "Account #{account}",
+                                RPGFilter.ACCOUNT.setReplacement(id + ""));
                     }
                     return;
                 }

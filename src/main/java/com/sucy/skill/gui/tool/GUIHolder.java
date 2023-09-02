@@ -86,7 +86,8 @@ public abstract class GUIHolder<T extends IconHolder> implements InventoryHolder
         boolean top    = event.getRawSlot() < event.getView().getTopInventory().getSize();
         T       result = get(event.getSlot());
         if (top && result != null && result.isAllowed((Player) event.getWhoClicked())) {
-            if (event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD || event.getAction() == InventoryAction.HOTBAR_SWAP)
+            if (event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD
+                    || event.getAction() == InventoryAction.HOTBAR_SWAP)
                 onHotBar(result, event.getSlot(), event.getHotbarButton());
             else
                 onClick(result, event.getSlot(), event.isLeftClick(), event.isShiftClick());

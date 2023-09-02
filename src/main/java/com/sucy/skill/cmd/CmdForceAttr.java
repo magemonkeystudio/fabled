@@ -77,20 +77,30 @@ public class CmdForceAttr implements IFunction {
         // Reset their attributes
         if (args.length == 1) {
             data.refundAttributes();
-            cmd.sendMessage(sender, RESET, ChatColor.GOLD + "{player}'s " + ChatColor.DARK_GREEN + "attributes were refunded", Filter.PLAYER.setReplacement(args[0]));
+            cmd.sendMessage(sender,
+                    RESET,
+                    ChatColor.GOLD + "{player}'s " + ChatColor.DARK_GREEN + "attributes were refunded",
+                    Filter.PLAYER.setReplacement(args[0]));
             return;
         }
 
         // Validate the attribute
         if (SkillAPI.getAttributeManager().getAttribute(args[1]) == null) {
-            cmd.sendMessage(sender, NOT_ATTR, ChatColor.GOLD + "{name}" + ChatColor.RED + " is not a valid attribute name", RPGFilter.NAME.setReplacement(args[1]));
+            cmd.sendMessage(sender,
+                    NOT_ATTR,
+                    ChatColor.GOLD + "{name}" + ChatColor.RED + " is not a valid attribute name",
+                    RPGFilter.NAME.setReplacement(args[1]));
             return;
         }
 
         // Reset a specific attribute
         if (args.length == 2) {
             data.refundAttributes(args[1]);
-            cmd.sendMessage(sender, RESET_ONE, ChatColor.GOLD + "{player}'s {name}" + ChatColor.DARK_GREEN + " attributes were refunded", Filter.PLAYER.setReplacement(args[0]), RPGFilter.NAME.setReplacement(args[1]));
+            cmd.sendMessage(sender,
+                    RESET_ONE,
+                    ChatColor.GOLD + "{player}'s {name}" + ChatColor.DARK_GREEN + " attributes were refunded",
+                    Filter.PLAYER.setReplacement(args[0]),
+                    RPGFilter.NAME.setReplacement(args[1]));
         }
 
         // Give a specific attribute
@@ -98,9 +108,18 @@ public class CmdForceAttr implements IFunction {
             try {
                 int amount = Integer.parseInt(args[2]);
                 data.giveAttribute(args[1], amount);
-                cmd.sendMessage(sender, GAVE_ATTR, ChatColor.GOLD + "{player}" + ChatColor.DARK_GREEN + " was given " + ChatColor.GOLD + "{amount} {name} points", Filter.PLAYER.setReplacement(args[0]), RPGFilter.NAME.setReplacement(args[1]), Filter.AMOUNT.setReplacement(amount + ""));
+                cmd.sendMessage(sender,
+                        GAVE_ATTR,
+                        ChatColor.GOLD + "{player}" + ChatColor.DARK_GREEN + " was given " + ChatColor.GOLD
+                                + "{amount} {name} points",
+                        Filter.PLAYER.setReplacement(args[0]),
+                        RPGFilter.NAME.setReplacement(args[1]),
+                        Filter.AMOUNT.setReplacement(amount + ""));
             } catch (Exception ex) {
-                cmd.sendMessage(sender, NOT_NUM, ChatColor.GOLD + "{amount} " + ChatColor.RED + "is not an integer number", Filter.AMOUNT.setReplacement(args[2]));
+                cmd.sendMessage(sender,
+                        NOT_NUM,
+                        ChatColor.GOLD + "{amount} " + ChatColor.RED + "is not an integer number",
+                        Filter.AMOUNT.setReplacement(args[2]));
             }
         }
     }

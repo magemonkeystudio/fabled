@@ -120,11 +120,12 @@ public class BlockMechanic extends MechanicComponent {
         int     ticks  = (int) (20 * parseValues(caster, SECONDS, level, 5));
         byte    data   = (byte) settings.getInt(DATA, 0);
 
-        String  type     = settings.getString(TYPE, "solid").toLowerCase();
-        boolean solid    = type.equals("solid");
-        boolean air      = type.equals("air");
-        Material matType = !solid && !air && !type.equals("any") ? Material.valueOf(type.toUpperCase().replace(' ', '_')) : null;
-        boolean resetYaw = settings.getBool(RESET_YAW, false);
+        String   type     = settings.getString(TYPE, "solid").toLowerCase();
+        boolean  solid    = type.equals("solid");
+        boolean  air      = type.equals("air");
+        Material matType  =
+                !solid && !air && !type.equals("any") ? Material.valueOf(type.toUpperCase().replace(' ', '_')) : null;
+        boolean  resetYaw = settings.getBool(RESET_YAW, false);
 
         double forward = parseValues(caster, FORWARD, level, 0);
         double upward  = parseValues(caster, UPWARD, level, 0);
