@@ -96,7 +96,13 @@ public class ExperienceListener extends SkillAPIListener {
         OptionalInt max = perms.stream()
                 .filter(c->c.getPermission().startsWith("skillapi.exp.booster"))
                 .map(c->c.getPermission().substring(21))
-                .mapToInt(c->Integer.valueOf(c))
+                .mapToInt(number->{
+                    try{
+                        return Integer.parseInt(number);
+                    }catch (NumberFormatException e){
+                        return 0;
+                    }
+                })
                 .max();
         if (max.isEmpty()) return;
         event.setExp(event.getExp() + event.getExp()*max.getAsInt()/100);
