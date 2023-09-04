@@ -52,6 +52,7 @@ public class PluginChecker extends SkillAPIListener {
     private static boolean parties;
     private static boolean mimic;
     private static boolean rpgItems;
+    private static boolean protocolLib;
 
     /**
      * Checks if vault permissions is active on the server
@@ -96,6 +97,7 @@ public class PluginChecker extends SkillAPIListener {
     public static boolean isWorldGuardActive() {return worldGuard;}
 
     public static boolean isRPGItemsActive() {return rpgItems;}
+    public static boolean isProtocolLibActive() {return protocolLib;}
 
     public static boolean isPartiesActive() {
         return parties || Bukkit.getPluginManager()
@@ -125,6 +127,7 @@ public class PluginChecker extends SkillAPIListener {
         worldGuard = pluginManager.isPluginEnabled("WorldGuard");
         parties = pluginManager.isPluginEnabled("ProSkillAPIParties");
         mimic = pluginManager.isPluginEnabled("Mimic");
+        protocolLib = pluginManager.isPluginEnabled("ProtocolLib");
     }
 
     @EventHandler
@@ -167,6 +170,9 @@ public class PluginChecker extends SkillAPIListener {
                 rpgItems = isEnabled;
                 SkillAPI.inst()
                         .listen(new RPGAttributeListener(), isEnabled); // In case ProRPGItems enables after ProSkillAPI
+                break;
+            case "ProtocolLib":
+                protocolLib = isEnabled;
                 break;
         }
     }

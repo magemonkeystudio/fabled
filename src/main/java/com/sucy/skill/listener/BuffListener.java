@@ -1,10 +1,13 @@
 package com.sucy.skill.listener;
 
+import com.sucy.skill.api.event.BuffExpiredEvent;
 import com.sucy.skill.api.event.PhysicalDamageEvent;
 import com.sucy.skill.api.event.SkillDamageEvent;
 import com.sucy.skill.api.event.SkillHealEvent;
 import com.sucy.skill.api.util.BuffManager;
 import com.sucy.skill.api.util.BuffType;
+import com.sucy.skill.hook.PluginChecker;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
@@ -78,6 +81,13 @@ public class BuffListener extends SkillAPIListener {
         event.setAmount(withBuff);
         if (withBuff <= 0) {
             event.setCancelled(true);
+        }
+    }
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onBuffExpire(final BuffExpiredEvent event){
+        if(event.getType().equals(BuffType.INVISIBILITY)){
+            if(PluginChecker.isProtocolLibActive())
+                PacketListener.updateEquipment((Player) event.getEntity());
         }
     }
 }

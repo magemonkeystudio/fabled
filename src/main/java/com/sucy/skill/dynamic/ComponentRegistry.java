@@ -155,6 +155,7 @@ public class ComponentRegistry {
         register(new HeldItemMechanic());
         register(new ImmunityMechanic());
         register(new InterruptMechanic());
+        register(new InvisibilityMechanic());
         register(new ItemDropMechanic());
         register(new ItemMechanic());
         register(new ItemProjectileMechanic());
