@@ -30,6 +30,7 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.player.*;
 import com.sucy.skill.api.skills.Skill;
+import com.sucy.skill.cast.CastMode;
 import com.sucy.skill.listener.MainListener;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.manager.ComboManager;
@@ -180,7 +181,7 @@ public abstract class IOManager {
             }
 
             // Load skill bar
-            if (SkillAPI.getSettings().isSkillBarEnabled() || SkillAPI.getSettings().isUsingCombat()) {
+            if (SkillAPI.getSettings().isSkillBarEnabled() || SkillAPI.getSettings().getCastMode().equals(CastMode.COMBAT)) {
                 final DataSection    skillBar = account.getSection(SKILL_BAR);
                 final PlayerSkillBar bar      = acc.getSkillBar();
                 if (skillBar != null && bar != null) {
@@ -306,7 +307,7 @@ public abstract class IOManager {
                 }
 
                 // Save skill bar
-                if ((SkillAPI.getSettings().isSkillBarEnabled() || SkillAPI.getSettings().isUsingCombat())
+                if ((SkillAPI.getSettings().isSkillBarEnabled() || SkillAPI.getSettings().getCastMode().equals(CastMode.COMBAT))
                         && acc.getSkillBar() != null) {
                     DataSection    skillBar = account.createSection(SKILL_BAR);
                     PlayerSkillBar bar      = acc.getSkillBar();

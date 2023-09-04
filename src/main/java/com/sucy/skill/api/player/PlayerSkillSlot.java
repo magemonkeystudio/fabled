@@ -27,6 +27,7 @@
 package com.sucy.skill.api.player;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.gui.tool.GUITool;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -61,9 +62,9 @@ public class PlayerSkillSlot {
      * @return item display
      */
     public ItemStack getDisplay() {
-        return skills.size() == 0 ?
+        return skills.isEmpty() ?
                 SkillAPI.getSettings().getCastItem()
-                : skills.get(index).getData().getIndicator(skills.get(index), true);
+                : GUITool.markCastItem(skills.get(index).getData().getIndicator(skills.get(index), true));
     }
 
     /**
@@ -110,7 +111,7 @@ public class PlayerSkillSlot {
      * Activates the skill slot, casting the hovered item
      */
     public void activate() {
-        if (skills.size() > 0)
+        if (!skills.isEmpty())
             player.cast(skills.get(index));
     }
 
@@ -118,7 +119,7 @@ public class PlayerSkillSlot {
      * Cycles to the next skill
      */
     public void next() {
-        if (skills.size() > 0) {
+        if (!skills.isEmpty()) {
             index = (index + 1) % skills.size();
             updateItem(player.getPlayer());
         }
@@ -128,7 +129,7 @@ public class PlayerSkillSlot {
      * Cycles to the previous skill
      */
     public void prev() {
-        if (skills.size() > 0) {
+        if (!skills.isEmpty()) {
             index = (index + skills.size() - 1) % skills.size();
             updateItem(player.getPlayer());
         }

@@ -682,11 +682,14 @@ public class SkillAPI extends JavaPlugin {
         listen(new ComboListener(), settings.isCombosEnabled());
         listen(new AttributeListener(), settings.isAttributesEnabled());
         listen(new ItemListener(), settings.isCheckLore() || settings.isCheckAttributes());
-        listen(new CastListener(), settings.isUsingBars());
-        listen(new CastOffhandListener(),
-                settings.isCastEnabled() && VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
-        listen(new CastItemListener(), settings.isUsingWand());
-        listen(new CastCombatListener(), settings.isUsingCombat());
+        if (settings.isCastEnabled()) {
+            switch (settings.getCastMode()) {
+                case ITEM -> listen(new CastItemListener(), true);
+                case BARS -> listen(new CastBarsListener(), true);
+                case COMBAT -> listen(new CastCombatListener(), true);
+            }
+            listen(new CastOffhandListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
+        }
         listen(new DeathListener(), !VersionManager.isVersionAtLeast(11000));
         listen(new CombatProtectionListener(), VersionManager.isVersionAtLeast(11000));
         listen(new LingeringPotionListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));

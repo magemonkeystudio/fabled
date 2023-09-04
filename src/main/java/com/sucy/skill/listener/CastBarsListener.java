@@ -30,8 +30,7 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.event.PlayerClassChangeEvent;
 import com.sucy.skill.api.event.PlayerSkillUnlockEvent;
 import com.sucy.skill.cast.PlayerCastBars;
-import com.sucy.skill.thread.MainThread;
-import com.sucy.skill.thread.ThreadTask;
+import com.sucy.skill.gui.tool.GUITool;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -44,21 +43,27 @@ import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Listener for the main casting system
  */
-public class CastListener extends SkillAPIListener {
-    private static int slot = SkillAPI.getSettings().getCastSlot();
+public class CastBarsListener extends SkillAPIListener {
+    private final Set<UUID> playersDropping = new HashSet<>();
 
     private static void cleanup(Player player) {
-        if (SkillAPI.getSettings().isWorldEnabled(player.getWorld()))
+        if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
             forceCleanup(player);
+        }
     }
 
     private static void forceCleanup(Player player) {
-        SkillAPI.getPlayerData(player).getCastBars().restore(player);
-        player.getInventory().setItem(slot, null);
+        SkillAPI.getPlayerData(player).getCastBars().restore();
+        GUITool.removeCastItems(player);
     }
 
     @Override
@@ -73,18 +78,14 @@ public class CastListener extends SkillAPIListener {
      */
     @Override
     public void cleanup() {
-        if (slot == -1)
-            return;
-
-        Bukkit.getOnlinePlayers().forEach(CastListener::cleanup);
-        slot = -1;
+        Bukkit.getOnlinePlayers().forEach(CastBarsListener::cleanup);
     }
 
     @EventHandler
     public void onDamaged(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
-            SkillAPI.getPlayerData(player).getCastBars().restore(player);
+            SkillAPI.getPlayerData(player).getCastBars().restore();
         }
     }
 
@@ -112,12 +113,12 @@ public class CastListener extends SkillAPIListener {
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
         if (SkillAPI.getSettings().isWorldEnabled(event.getEntity().getWorld())) {
-            if (slot == -1) return;
-            event.getDrops().remove(event.getEntity().getInventory().getItem(slot));
+            event.getDrops().remove(event.getEntity().getInventory().getItem(SkillAPI.getSettings().getCastSlot()));
         }
     }
 
     private void init(Player player) {
+        GUITool.removeCastItems(player);
         if (!SkillAPI.getSettings().isWorldEnabled(player.getWorld())) return;
 
         PlayerInventory inv  = player.getInventory();
@@ -126,10 +127,6 @@ public class CastListener extends SkillAPIListener {
         inv.setItem(slot, SkillAPI.getSettings().getCastItem());
         if (item != null && item.getType() != Material.AIR)
             inv.addItem(item);
-        ItemStack castItem = inv.getItem(slot);
-        if (castItem != null) {
-            castItem.setAmount(1);
-        }
     }
 
     @EventHandler
@@ -139,12 +136,12 @@ public class CastListener extends SkillAPIListener {
 
     @EventHandler
     public void onOpen(InventoryOpenEvent event) {
-        SkillAPI.getPlayerData((Player) event.getPlayer()).getCastBars().handleOpen((Player) event.getPlayer());
+        SkillAPI.getPlayerData((Player) event.getPlayer()).getCastBars().handleOpen();
     }
 
     @EventHandler
     public void onClose(InventoryCloseEvent event) {
-        SkillAPI.getPlayerData((Player) event.getPlayer()).getCastBars().restore((Player) event.getPlayer());
+        SkillAPI.getPlayerData((Player) event.getPlayer()).getCastBars().restore();
         init((Player) event.getPlayer());
     }
 
@@ -162,26 +159,45 @@ public class CastListener extends SkillAPIListener {
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         if (SkillAPI.getSettings().isWorldEnabled(event.getWhoClicked().getWorld())) {
-            if (event.getSlot() == slot && event.getSlotType() == InventoryType.SlotType.QUICKBAR)
+            int slot = SkillAPI.getSettings().getCastSlot();
+            if ((event.getView().getTopInventory().getHolder() instanceof PlayerCastBars // Organizer menu
+                    && event.getClickedInventory() instanceof PlayerInventory
+                    && event.getSlot() == slot+27)
+                    || (event.getSlot() == slot
+                    && event.getSlotType() == InventoryType.SlotType.QUICKBAR)
+                    || ((event.getAction() == InventoryAction.HOTBAR_SWAP || event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD)
+                    && event.getHotbarButton() == slot)) {
                 event.setCancelled(true);
-            else if ((event.getAction() == InventoryAction.HOTBAR_SWAP
-                    || event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD)
-                    && event.getHotbarButton() == slot)
-                event.setCancelled(true);
+            }
         }
     }
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent event) {
-        if (!SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld()))
+        Player player = event.getPlayer();
+        if (!SkillAPI.getSettings().isWorldEnabled(player.getWorld()))
             return;
 
-        if (SkillAPI.getPlayerData(event.getPlayer()).getCastBars().handleInteract(event.getPlayer())) {
+        // Cancelling te event would re-add the skill indicator to the inventory after event handling
+        // That's why Entity#remove() is used instead
+        if (SkillAPI.getPlayerData(player).getCastBars().handleInteract(player)) {
             event.getItemDrop().remove();
-        } else if (event.getPlayer().getInventory().getHeldItemSlot() == slot) {
+            dropped(player.getUniqueId());
+        } else if (player.getInventory().getHeldItemSlot() == SkillAPI.getSettings().getCastSlot()) {
             event.getItemDrop().remove();
-            MainThread.register(new OrganizerTask(event.getPlayer()));
+            dropped(player.getUniqueId());
+            SkillAPI.getPlayerData(player).getCastBars().showOrganizer(player);
         }
+    }
+
+    private void dropped(UUID uuid) {
+        this.playersDropping.add(uuid);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                playersDropping.remove(uuid);
+            }
+        }.runTask(SkillAPI.inst());
     }
 
     @EventHandler
@@ -192,14 +208,16 @@ public class CastListener extends SkillAPIListener {
         PlayerCastBars bars = SkillAPI.getPlayerData(event.getPlayer()).getCastBars();
 
         // Interaction while in a view
-        if (bars.isHovering())
+        if (event.getPlayer().getInventory().getHeldItemSlot() == SkillAPI.getSettings().getCastSlot()) {
             event.setCancelled(true);
 
-            // Entering a view
-        else if (event.getPlayer().getInventory().getHeldItemSlot() == slot) {
-            event.setCancelled(true);
-            if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK)
+            if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
+                if (this.playersDropping.remove(event.getPlayer().getUniqueId())) {
+                    return;
+                }
+                SkillAPI.getPlayerData(event.getPlayer()).getCastBars().restore();
                 bars.showHoverBar(event.getPlayer());
+            }
             else if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
                 bars.showInstantBar(event.getPlayer());
         }
@@ -211,19 +229,6 @@ public class CastListener extends SkillAPIListener {
     }
 
     private void handleClear(final Player player) {
-        player.getInventory().setItem(slot, SkillAPI.getSettings().getCastItem());
-    }
-
-    private class OrganizerTask extends ThreadTask {
-        private final Player player;
-
-        public OrganizerTask(Player player) {
-            this.player = player;
-        }
-
-        @Override
-        public void run() {
-            SkillAPI.getPlayerData(player).getCastBars().showOrganizer(player);
-        }
+        player.getInventory().setItem(SkillAPI.getSettings().getCastSlot(), SkillAPI.getSettings().getCastItem());
     }
 }

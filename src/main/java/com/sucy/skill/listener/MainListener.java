@@ -39,6 +39,7 @@ import com.sucy.skill.api.util.FlagManager;
 import com.sucy.skill.data.Permissions;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.dynamic.mechanic.ImmunityMechanic;
+import com.sucy.skill.gui.tool.GUITool;
 import com.sucy.skill.hook.CitizensHook;
 import com.sucy.skill.manager.ClassBoardManager;
 import mc.promcteam.engine.mccore.util.VersionManager;
@@ -119,6 +120,7 @@ public class MainListener extends SkillAPIListener {
     public static void init(final Player player) {
         final PlayerData data = SkillAPI.getPlayerData(player);
         data.init(player);
+        GUITool.removeCastItems(player);
         JOIN_HANDLERS.forEach(handler -> handler.accept(player));
     }
 

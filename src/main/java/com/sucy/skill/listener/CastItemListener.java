@@ -47,22 +47,24 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /**
  * Handles the alternate casting option for casting via a cycling slot
  */
 public class CastItemListener extends SkillAPIListener {
-    private static final HashMap<UUID, PlayerSkillSlot> data = new HashMap<UUID, PlayerSkillSlot>();
+    private final HashMap<UUID, PlayerSkillSlot> data = new HashMap<>();
+    private final Set<UUID> playersDropping = new HashSet<>();
 
-    private static int slot = SkillAPI.getSettings().getCastSlot();
-
-    private static void cleanup(Player player) {
+    private void cleanup(Player player) {
         data.remove(player.getUniqueId());
         if (SkillAPI.getSettings().isWorldEnabled(player.getWorld()))
-            player.getInventory().setItem(slot, null);
+            player.getInventory().setItem(SkillAPI.getSettings().getCastSlot(), null);
     }
 
     @Override
@@ -78,12 +80,8 @@ public class CastItemListener extends SkillAPIListener {
      */
     @Override
     public void cleanup() {
-        if (slot == -1)
-            return;
-
         for (Player player : Bukkit.getOnlinePlayers())
             cleanup(player);
-        slot = -1;
     }
 
     /**
@@ -122,7 +120,7 @@ public class CastItemListener extends SkillAPIListener {
     }
 
     private PlayerSkillSlot get(PlayerData data) {
-        return CastItemListener.data.get(data.getPlayer().getUniqueId());
+        return this.data.get(data.getPlayer().getUniqueId());
     }
 
     /**
@@ -174,10 +172,10 @@ public class CastItemListener extends SkillAPIListener {
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         if (SkillAPI.getSettings().isWorldEnabled(event.getWhoClicked().getWorld())) {
-            if (event.getSlot() == slot && event.getSlotType() == InventoryType.SlotType.QUICKBAR)
+            if (event.getSlot() == SkillAPI.getSettings().getCastSlot() && event.getSlotType() == InventoryType.SlotType.QUICKBAR)
                 event.setCancelled(true);
             else if (event.getAction() == InventoryAction.HOTBAR_SWAP
-                    && event.getHotbarButton() == slot)
+                    && event.getHotbarButton() == SkillAPI.getSettings().getCastSlot())
                 event.setCancelled(true);
         }
     }
@@ -190,16 +188,23 @@ public class CastItemListener extends SkillAPIListener {
     @EventHandler
     public void onDrop(PlayerDropItemEvent event) {
         if (SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld())
-                && event.getPlayer().getInventory().getHeldItemSlot() == slot) {
+                && event.getPlayer().getInventory().getHeldItemSlot() == SkillAPI.getSettings().getCastSlot()) {
             event.setCancelled(true);
             get(event.getPlayer()).activate();
+            this.playersDropping.add(event.getPlayer().getUniqueId());
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    playersDropping.remove(event.getPlayer().getUniqueId());
+                }
+            }.runTask(SkillAPI.inst());
         }
     }
 
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
         if (SkillAPI.getSettings().isWorldEnabled(event.getEntity().getWorld())) {
-            event.getDrops().remove(event.getEntity().getInventory().getItem(slot));
+            event.getDrops().remove(event.getEntity().getInventory().getItem(SkillAPI.getSettings().getCastSlot()));
         }
     }
 
@@ -212,16 +217,19 @@ public class CastItemListener extends SkillAPIListener {
     public void onInteract(PlayerInteractEvent event) {
         // Cycling skills
         if (SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld())
-                && event.getPlayer().getInventory().getHeldItemSlot() == slot) {
+                && event.getPlayer().getInventory().getHeldItemSlot() == SkillAPI.getSettings().getCastSlot()) {
             event.setCancelled(true);
-            if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK)
-                get(event.getPlayer()).next();
-            else if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
+            if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
+                if (this.playersDropping.remove(event.getPlayer().getUniqueId())) {
+                    return;
+                }
                 get(event.getPlayer()).prev();
+            } else if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
+                get(event.getPlayer()).next();
         }
     }
 
     private void handleClear(final Player player) {
-        player.getInventory().setItem(slot, SkillAPI.getSettings().getCastItem());
+        player.getInventory().setItem(SkillAPI.getSettings().getCastSlot(), SkillAPI.getSettings().getCastItem());
     }
 }

@@ -39,6 +39,7 @@ import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.util.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -46,6 +47,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -57,6 +60,7 @@ public class GUITool implements ToolMenu {
     private static final HashMap<String, ItemStack> items     = new HashMap<>();
     private static       boolean                    inUse     = false;
     private static       CommentedConfig            config;
+    private static final NamespacedKey              CAST_ITEM_KEY = new NamespacedKey(SkillAPI.inst(), "castItem");
 
     private static ItemStack
             NEXT,
@@ -179,6 +183,39 @@ public class GUITool implements ToolMenu {
         }
 
         return DamageLoreRemover.removeAttackDmg(item);
+    }
+
+    public static ItemStack markCastItem(@Nullable ItemStack itemStack) {
+        if (itemStack == null) {
+            return null;
+        }
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta != null) {
+            meta.getPersistentDataContainer().set(CAST_ITEM_KEY, PersistentDataType.BYTE, (byte) 1);
+            itemStack.setItemMeta(meta);
+        }
+        return itemStack;
+    }
+
+    public static boolean isCastItem(@Nullable ItemStack itemStack) {
+        if (itemStack == null) {
+            return false;
+        }
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta != null) {
+            Byte data = meta.getPersistentDataContainer().get(CAST_ITEM_KEY, PersistentDataType.BYTE);
+            return data != null && data >= 1;
+        }
+        return false;
+    }
+
+    public static void removeCastItems(Player player) {
+        ItemStack[] contents = player.getInventory().getContents();
+        for (int i = 0; i < contents.length; i++) {
+            if (GUITool.isCastItem(contents[i])) {
+                player.getInventory().setItem(i, null);
+            }
+        }
     }
 
     public static void cleanUp() {

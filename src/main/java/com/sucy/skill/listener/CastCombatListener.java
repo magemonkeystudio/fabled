@@ -120,7 +120,7 @@ public class CastCombatListener extends SkillAPIListener {
                             .getLogger()
                             .warning(
                                     "You appear to have casting bars enabled, but don't have a slot for the player to equip a weapon. We're disabling cast bars until this is resolved.");
-                    SkillAPI.getSettings().setCastBars(false);
+                    //SkillAPI.getSettings().setCastBars(false);
                     break; // It's unknown that kind of behavior this will cause... but we need to break the loop sometime.
                 }
             }

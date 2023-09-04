@@ -33,6 +33,7 @@ import com.sucy.skill.api.CombatProtection;
 import com.sucy.skill.api.DefaultCombatProtection;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.skills.Skill;
+import com.sucy.skill.cast.CastMode;
 import com.sucy.skill.cast.PreviewSettings;
 import com.sucy.skill.data.formula.Formula;
 import com.sucy.skill.data.formula.value.CustomValue;
@@ -57,8 +58,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import java.util.*;
-
-import static io.lumine.mythic.bukkit.utils.text.Text.DefaultFontInfo.t;
 
 /**
  * <p>The management class for SkillAPI's config.yml settings.</p>
@@ -138,8 +137,7 @@ public class Settings {
             PVP_LEVEL_RANGE        = PVP_BASE + "level-range",
             CAST_BASE              = "Casting.",
             CAST_ENABLED           = CAST_BASE + "enabled",
-            CAST_BARS              = CAST_BASE + "bars",
-            CAST_COMBAT            = CAST_BASE + "combat",
+            CAST_MODE              = CAST_BASE + "mode",
             CAST_INDICATOR         = CAST_BASE + "cast-indicator",
             CAST_SLOT              = CAST_BASE + "slot",
             CAST_ITEM              = CAST_BASE + "item",
@@ -479,9 +477,11 @@ public class Settings {
      */
     @Getter
     private boolean       castEnabled;
-    @Setter
-    private boolean       castBars;
-    private boolean       combatEnabled;
+    /**
+     *
+     */
+    @Getter
+    private CastMode castMode;
     /**
      * @return slot the cast item is stored in
      */
@@ -495,24 +495,21 @@ public class Settings {
     /**
      * @return cast item to use in the slot
      */
-    @Getter
     private ItemStack     castItem;
-    @Getter
     private ItemStack     hoverItem;
-    @Getter
-    private ItemStack     instantItem;
+    private     ItemStack instantItem;
     /**
      * @return enabled clicks as an array of booleans indexed by click ID
      */
     @Getter
-    private boolean[]     enabledClicks;
+    private     boolean[] enabledClicks;
     /**
      * Checks whether click combos are enabled
      *
      * @return true if enabled, false otherwise
      */
     @Getter
-    private boolean       combosEnabled;
+    private boolean   combosEnabled;
     /**
      * Checks whether players can customize their click combos
      *
@@ -1181,19 +1178,16 @@ public class Settings {
         titleMessages = config.getList(GUI_LIST);
     }
 
-    /**
-     * @return true if using bar format, false otherwise
-     */
-    public boolean isUsingBars() {
-        return castEnabled && castBars && !combatEnabled;
+    public ItemStack getCastItem() {
+        return castItem.clone();
     }
 
-    public boolean isUsingWand() {
-        return castEnabled && !castBars && !combatEnabled;
+    public ItemStack getHoverItem() {
+        return hoverItem.clone();
     }
 
-    public boolean isUsingCombat() {
-        return castEnabled && combatEnabled;
+    public ItemStack getInstantItem() {
+        return instantItem.clone();
     }
 
     private void loadPVPSettings() {
@@ -1203,13 +1197,17 @@ public class Settings {
 
     private void loadCastSettings() {
         castEnabled = config.getBoolean(CAST_ENABLED);
-        castBars = config.getBoolean(CAST_BARS);
-        combatEnabled = config.getBoolean(CAST_COMBAT);
+        try {
+            castMode = CastMode.valueOf(config.getString(CAST_MODE).toUpperCase());
+        } catch (IllegalArgumentException e) {
+            castMode = CastMode.BARS;
+            config.set(CAST_MODE, CastMode.BARS.name().toLowerCase());
+        }
         castSlot = config.getInt(CAST_SLOT) - 1;
         castCooldown = (long) (config.getDouble(CAST_COOLDOWN) * 1000);
-        castItem = GUITool.parseItem(config.getSection(CAST_ITEM));
-        hoverItem = GUITool.parseItem(config.getSection(CAST_HOVER));
-        instantItem = GUITool.parseItem(config.getSection(CAST_INSTANT));
+        castItem = GUITool.markCastItem(GUITool.parseItem(config.getSection(CAST_ITEM)));
+        hoverItem = GUITool.markCastItem(GUITool.parseItem(config.getSection(CAST_HOVER)));
+        instantItem = GUITool.markCastItem(GUITool.parseItem(config.getSection(CAST_INSTANT)));
         castEnabled = castEnabled && castItem != null;
         PreviewSettings.load(config.getSection(CAST_INDICATOR));
     }
@@ -1355,7 +1353,7 @@ public class Settings {
                 DataSection slot = layout.getSection((i + 1) + "");
                 defaultBarLayout[i] = slot.getBoolean("skill", i <= 5);
                 lockedSlots[i] = slot.getBoolean("locked", false);
-                if (isUsingCombat() && i == castSlot) {
+                if (castMode.equals(CastMode.COMBAT) && i == castSlot) {
                     lockedSlots[i] = true;
                     defaultBarLayout[i] = false;
                 }
