@@ -36,7 +36,7 @@ public class InvisibilityMechanic extends MechanicComponent{
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         int             duration        = settings.getInt("duration",20);
         boolean         hideEquipment   = settings.getBool("hideEquipment",false);
-        PotionEffect    potion          = new PotionEffect(PotionEffectType.INVISIBILITY, duration,0,false);
+        PotionEffect    potion          = new PotionEffect(PotionEffectType.INVISIBILITY, duration,0,false, false, true);
         targets.forEach(c->c.addPotionEffect(potion));
         if (!hideEquipment || !PluginChecker.isProtocolLibActive()) return true;
         targets.forEach(target->{
