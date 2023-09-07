@@ -33,13 +33,18 @@ public class ChatTrigger implements Trigger<AsyncPlayerChatEvent> {
      */
     @Override
     public boolean shouldTrigger(final AsyncPlayerChatEvent event, final int level, final Settings settings) {
-        boolean     cancelMessage   = settings.getBool("cancel",false);
-        String      message         = settings.getString("message", "");
-        if (!event.getMessage().contains(message)) return false;
+        boolean     cancelMessage   = settings.getBool("cancel", false);
+        boolean     regex           = settings.getBool("regex", false);
+        String      format          = settings.getString("format", "");
+        if (regex) {
+            if (!event.getMessage().matches(format)) {
+                return false;
+            }
+        } else if (!event.getMessage().contains(format)) return false;
+
         event.setCancelled(cancelMessage);
         return true;
     }
-
     /**
      * {@inheritDoc}
      */
