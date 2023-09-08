@@ -37,6 +37,7 @@ public class ComponentRegistry {
         register(new ArmorEquipTrigger());
         register(new BlockBreakTrigger());
         register(new BlockPlaceTrigger());
+        register(new ChatTrigger());
         register(new ClickLeftTrigger());
         register(new ClickRightTrigger());
         register(new CrouchTrigger());
