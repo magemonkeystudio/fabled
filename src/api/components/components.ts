@@ -97,6 +97,25 @@ class CastTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
+class ChatTrigger extends ProTrigger {
+	public constructor() {
+		super({
+			name:        'Chat',
+			description: 'Applies skill effects when a player sends a chat message in the specified format',
+			data:        [
+				new BooleanSelect('Cancel','cancel', false)
+					.setTooltip('Whether to cancel message or not'),
+				new BooleanSelect('Regex','regex', false)
+					.setTooltip('Whether to use format value as regex or check if message contains format value'),
+				new StringSelect('Format','format', '')
+					.setTooltip('Format of message (if message contains format or regex)')
+			]
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class CleanupTrigger extends ProTrigger {
 	public constructor() {
 		super({
@@ -3473,6 +3492,7 @@ export const initComponents = () => {
 		BLOCK_BREAK:    { name: 'Block Break', component: BlockBreakTrigger },
 		BLOCK_PLACE:    { name: 'Block Place', component: BlockPlaceTrigger },
 		CAST:           { name: 'Cast', component: CastTrigger },
+		CHAT:           { name: 'Chat', component: ChatTrigger },
 		CONSUME:        { name: 'Consume', component: ConsumeTrigger },
 		CLEANUP:        { name: 'Cleanup', component: CleanupTrigger },
 		CROUCH:         { name: 'Crouch', component: CrouchTrigger },
