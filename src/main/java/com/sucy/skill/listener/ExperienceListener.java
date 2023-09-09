@@ -105,7 +105,7 @@ public class ExperienceListener extends SkillAPIListener {
                 })
                 .max();
         if (max.isEmpty()) return;
-        event.setExp(event.getExp() + event.getExp()*max.getAsInt()/100);
+        event.setExp(event.getExp()*max.getAsInt()/100);
     }
 
     private String format(Block block) {
