@@ -892,7 +892,7 @@ public class PlayerData {
         }
 
         // Must meet any skill requirements
-        if (!skill.isCompatible(this) || !skill.hasInvestedEnough(this) || !skill.hasDependency(this)) {
+        if (!skill.isCompatible(this) || !skill.hasInvestedEnough(this) || !skill.hasEnoughAttributes(this) || !skill.hasDependency(this)) {
             return false;
         }
 
