@@ -15,7 +15,7 @@ export default class MaterialSelect extends Requirements implements ComponentOpt
     if (def) this.data.material = def;
   }
 
-  setTooltip = (tooltip: string): MaterialSelect => {
+  setTooltip = (tooltip: string): this => {
     this.tooltip = tooltip;
     return this;
   };

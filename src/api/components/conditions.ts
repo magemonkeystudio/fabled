@@ -54,6 +54,7 @@ export default class ProCondition extends ProComponent {
   }
 
   public override deserialize(yaml: YAMLObject): void {
+    super.deserialize(yaml);
     const data = yaml.get<YAMLObject, YAMLObject>("data");
 
     this.iconKey = data.get("icon-key");

@@ -19,7 +19,7 @@ export default class StringListSelect extends Requirements implements ComponentO
     this.data.value = def || [];
   }
 
-  setTooltip = (tooltip: string): StringListSelect => {
+  setTooltip = (tooltip: string): this => {
     this.tooltip = tooltip;
     return this;
   };

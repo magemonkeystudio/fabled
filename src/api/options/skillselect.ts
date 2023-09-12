@@ -20,7 +20,7 @@ export default class SkillSelect extends Requirements implements ComponentOption
     this.multiple = multiple;
   }
 
-  setTooltip = (tooltip: string): SkillSelect => {
+  setTooltip = (tooltip: string): this => {
     this.tooltip = tooltip;
     return this;
   };

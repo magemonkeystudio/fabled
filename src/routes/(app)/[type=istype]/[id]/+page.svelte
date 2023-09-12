@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import ProSkill               from '$api/proskill';
+  import type ProSkill               from '$api/proskill';
   import ComponentWidget        from '$components/ComponentWidget.svelte';
   import Modal                  from '$components/Modal.svelte';
   import { draggingComponent }  from '../../../../data/store';
@@ -9,6 +9,7 @@
   import Registry               from '$api/components/registry';
   import { onDestroy, onMount } from 'svelte';
   import type { Unsubscriber }  from 'svelte/types/runtime/store';
+  import type ProTrigger             from '$api/components/triggers';
 
   export let data: { data: ProSkill };
   let skill: ProSkill;
@@ -16,9 +17,9 @@
   let triggerModal = false;
   let hovered      = false;
   let searchParams = '';
-  let sortedTriggers;
+  let sortedTriggers: ProTrigger[] = []
   let unsub: Unsubscriber;
-  let triggers     = {};
+  let triggers: {[key: string] : {name: string, component: typeof ProTrigger}}     = {};
 
   onMount(() => {
     unsub = Registry.triggers.subscribe(tri => triggers = tri);

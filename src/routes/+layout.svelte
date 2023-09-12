@@ -1,140 +1,151 @@
 <script lang='ts'>
-  import '../app.css';
-  import { active, importing, loadFile, saveData, showSidebar } from '../data/store';
-  import { onDestroy, onMount }                                 from 'svelte';
-  import { browser }                                            from '$app/environment';
-  import ImportModal                                            from '$components/ImportModal.svelte';
-  import NavBar                                                 from '$components/NavBar.svelte';
-  import HeaderBar                                              from '$components/HeaderBar.svelte';
-  import { initComponents }                                     from '$api/components/components';
-  import Modal                                                  from '$components/Modal.svelte';
-  import Toggle                                                 from '$input/Toggle.svelte';
-  import ProInput                                               from '$input/ProInput.svelte';
-  import { animationEnabled, useSymbols }                       from '../data/settings';
-  import { serverOptions, version }                             from '../version/data';
-  import { isSaving }                                           from '../data/skill-store';
-  import { fly }                                                from 'svelte/transition';
-  import type { Unsubscriber }                                  from 'svelte/types/runtime/store';
-  import Sidebar                                                from "$components/sidebar/Sidebar.svelte";
+    import '../app.css';
+    import {active, importing, loadFile, saveData, showSidebar} from '../data/store';
+    import {onDestroy, onMount} from 'svelte';
+    import {browser} from '$app/environment';
+    import ImportModal from '$components/ImportModal.svelte';
+    import NavBar from '$components/NavBar.svelte';
+    import HeaderBar from '$components/HeaderBar.svelte';
+    import {initComponents} from '$api/components/components';
+    import Modal from '$components/Modal.svelte';
+    import Toggle from '$input/Toggle.svelte';
+    import ProInput from '$input/ProInput.svelte';
+    import {animationEnabled, useSymbols} from '../data/settings';
+    import {serverOptions, version} from '../version/data';
+    import {isSaving, skills} from '../data/skill-store';
+    import {fly} from 'svelte/transition';
+    import type {Unsubscriber} from 'svelte/types/runtime/store';
+    import Sidebar from '$components/sidebar/Sidebar.svelte';
+    import {activeModal, closeModal, modalData} from '../data/modal-service';
+    import {get} from "svelte/store";
 
-  let dragging    = false;
-  let settings    = false;
-  let displaySave = false;
-  let saveTask: number;
-  let saveSub: Unsubscriber;
+    let dragging = false;
+    let settings = false;
+    let displaySave = false;
+    let saveTask: number;
+    let saveSub: Unsubscriber;
 
-  onMount(() => {
-    if (!browser) return;
-    document.addEventListener('dragover', dragover);
-    document.addEventListener('drop', loadFiles);
+    onMount(() => {
+        if (!browser) return;
+        document.addEventListener('dragover', dragover);
+        document.addEventListener('drop', loadFiles);
 
-    saveSub = isSaving.subscribe(saving => {
-      if (!saving) {
-        setTimeout(() => displaySave = false, 1000);
-        return;
-      }
+        saveSub = isSaving.subscribe(saving => {
+            if (!saving) {
+                setTimeout(() => displaySave = false, 1000);
+                return;
+            }
 
-      if (saveTask) {
-        clearTimeout(saveTask);
-      }
+            if (saveTask) {
+                clearTimeout(saveTask);
+            }
 
-      saveTask = setTimeout(() => displaySave = true, 1000);
+            saveTask = setTimeout(() => displaySave = true, 1000);
+        });
+
+        initComponents();
     });
 
-    initComponents();
-  });
+    onDestroy(() => {
+        if (!browser) return;
+        document.removeEventListener('dragover', dragover);
+        document.removeEventListener('drop', loadFiles);
 
-  onDestroy(() => {
-    if (!browser) return;
-    document.removeEventListener('dragover', dragover);
-    document.removeEventListener('drop', loadFiles);
+        if (saveSub) saveSub();
+    });
 
-    if (saveSub) saveSub();
-  });
+    const backup = () => {
+        alert('This feature isn\'t implemented yet');
+    };
 
-  const backup = () => {
-    alert('This feature isn\'t implemented yet');
-  };
+    const dragover = (e: DragEvent) => {
+        if (!(e.dataTransfer?.types?.length > 0 && e.dataTransfer?.types[0] == 'Files')) return;
+        e.dataTransfer.dropEffect = 'copy';
+        e.stopPropagation();
+        e.preventDefault();
+        dragging = true;
+    };
 
-  const dragover = (e: DragEvent) => {
-    if (!(e.dataTransfer?.types?.length > 0 && e.dataTransfer?.types[0] == 'Files')) return;
-    e.dataTransfer.dropEffect = 'copy';
-    e.stopPropagation();
-    e.preventDefault();
-    dragging = true;
-  };
+    const dragleave = () => {
+        setTimeout(() => dragging = false, 50);
+    };
 
-  const dragleave = () => {
-    setTimeout(() => dragging = false, 50);
-  };
+    const loadFiles = (e: DragEvent) => {
+        dragging = false;
+        for (let i = 0; i < e.dataTransfer.files.length; i++) {
+            const file = e.dataTransfer.files[i];
+            if (file.name.indexOf('.yml') == -1) continue;
 
-  const loadFiles = (e: DragEvent) => {
-    dragging = false;
-    for (let i = 0; i < e.dataTransfer.files.length; i++) {
-      const file = e.dataTransfer.files[i];
-      if (file.name.indexOf('.yml') == -1) continue;
+            loadFile(file);
+        }
+        e.stopPropagation();
+        e.preventDefault();
+    };
 
-      loadFile(file);
-    }
-    e.stopPropagation();
-    e.preventDefault();
-  };
+    const save = () => skills.set([...get(skills)]);
 </script>
 
 <HeaderBar/>
 <NavBar/>
 <div id='body-container' class:empty={!$active}>
-  {#if $showSidebar}
-    <Sidebar/>
-  {/if}
-  <div id='body' class:centered={!$active}>
-    <slot/>
-  </div>
+    {#if $showSidebar}
+        <Sidebar/>
+    {/if}
+    <div id='body' class:centered={!$active}>
+        <slot/>
+    </div>
 </div>
 <div id='floating-buttons'>
-  <div class='button backup' title='Backup All Data' on:click={backup}>
-    <span class='material-symbols-rounded'>cloud_download</span>
-  </div>
-  <div class='button settings' title='Change Settings' on:click={() => settings = true}>
-    <span class='material-symbols-rounded'>settings</span>
-  </div>
-  <div class='button save' title='Save' on:click={() => saveData()}>
-    <span class='material-symbols-rounded'>save</span>
-  </div>
+    <div class='button backup' title='Backup All Data' on:click={backup}>
+        <span class='material-symbols-rounded'>cloud_download</span>
+    </div>
+    <div class='button settings' title='Change Settings' on:click={() => settings = true}>
+        <span class='material-symbols-rounded'>settings</span>
+    </div>
+    <div class='button save' title='Save' on:click={() => saveData()}>
+        <span class='material-symbols-rounded'>save</span>
+    </div>
 </div>
 
 {#if $importing}
-  <ImportModal/>
+    <ImportModal/>
 {/if}
 
-<Modal bind:open={settings} width="50rem">
-  <h1>Settings</h1>
-  <hr/>
-  <div class='settings-container'>
-    <ProInput label='Server' tooltip='This should match your target Spigot server version'>
-      <select bind:value={$version}>
-        {#each serverOptions as opt}
-          <option value={opt.substring(2)}>{opt}</option>
-        {/each}
-      </select>
-    </ProInput>
-    <ProInput label='Use Symbols' tooltip='If skill components should use symbols instead of text'>
-      <Toggle left='Symbols' right='Text' bind:data={$useSymbols}/>
-    </ProInput>
-    <ProInput label='Waterfall Animation' tooltip='If the waterfall animation should play in the sidebar'>
-      <Toggle bind:data={$animationEnabled}/>
-    </ProInput>
-  </div>
+<Modal bind:open={settings} width='50rem'>
+    <h1>Settings</h1>
+    <hr/>
+    <div class='settings-container'>
+        <ProInput label='Server' tooltip='This should match your target Spigot server version'>
+            <select bind:value={$version}>
+                {#each serverOptions as opt}
+                    <option value={opt.substring(2)}>{opt}</option>
+                {/each}
+            </select>
+        </ProInput>
+        <ProInput label='Use Symbols' tooltip='If skill components should use symbols instead of text'>
+            <Toggle left='Symbols' right='Text' bind:data={$useSymbols}/>
+        </ProInput>
+        <ProInput label='Waterfall Animation' tooltip='If the waterfall animation should play in the sidebar'>
+            <Toggle bind:data={$animationEnabled}/>
+        </ProInput>
+    </div>
 </Modal>
 
+<!--Display our active modal-->
+<svelte:component
+        this={$activeModal}
+        data={$modalData}
+        on:close={closeModal}
+        on:save={save}/>
+
 {#if displaySave}
-  <div class='saving' transition:fly={{y: -20}}>{$isSaving ? 'Saving...' : 'Saved!'}</div>
+    <div class='saving' transition:fly={{y: -20}}>{$isSaving ? 'Saving...' : 'Saved!'}</div>
 {/if}
 
 {#if dragging}
-  <div class='dragging' on:dragleave={dragleave}>
-    Drop to Import
-  </div>
+    <div class='dragging' on:dragleave={dragleave}>
+        Drop to Import
+    </div>
 {/if}
 
 <style>

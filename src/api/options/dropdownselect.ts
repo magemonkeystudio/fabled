@@ -40,12 +40,12 @@ export default class DropdownSelect extends Requirements implements ComponentOpt
       this.data.selected = this.data.value[0];
   };
 
-  setTooltip = (tooltip: string): DropdownSelect => {
+  setTooltip = (tooltip: string): this => {
     this.tooltip = tooltip;
     return this;
   };
 
-  clone = (): ComponentOption => new DropdownSelect(this.name, this.key, [...this.data.value], this.data.selected);
+  clone = (): DropdownSelect => new DropdownSelect(this.name, this.key, [...this.data.value], this.data.selected);
 
   getData = (): { [key: string]: any } => {
     const data: { [key: string]: any } = {};

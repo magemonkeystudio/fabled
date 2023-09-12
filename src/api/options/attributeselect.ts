@@ -19,7 +19,7 @@ export default class AttributeSelect extends Requirements implements ComponentOp
     this.data = new ProAttribute(name, base, scale);
   }
 
-  setTooltip = (tooltip: string): AttributeSelect => {
+  setTooltip = (tooltip: string): this => {
     this.tooltip = tooltip;
     return this;
   };

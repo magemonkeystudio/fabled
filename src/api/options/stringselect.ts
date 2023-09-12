@@ -18,7 +18,7 @@ export default class StringSelect extends Requirements implements ComponentOptio
     this.data = def;
   }
 
-  setTooltip = (tooltip: string): StringSelect => {
+  setTooltip = (tooltip: string): this => {
     this.tooltip = tooltip;
     return this;
   };

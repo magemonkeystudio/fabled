@@ -18,7 +18,7 @@ export default class BooleanSelect extends Requirements implements ComponentOpti
     this.data = def;
   }
 
-  setTooltip = (tooltip: string): BooleanSelect => {
+  setTooltip = (tooltip: string): this => {
     this.tooltip = tooltip;
     return this;
   };

@@ -55,9 +55,12 @@ export default class ProMechanic extends ProComponent {
   }
 
   deserialize(yaml: YAMLObject): void {
+    super.deserialize(yaml);
     const data = yaml.get<YAMLObject, YAMLObject>("data");
 
     if (data) this.data.forEach((opt: ComponentOption) => opt.deserialize(data));
+    this.iconKey = data.get("icon-key", "");
+    this.countsAsCast = data.get("counts", true);
 
     this.setComponents(yaml.get<YAMLObject, ProComponent[]>("children", [], (obj) => Registry.deserializeComponents(obj)));
   }

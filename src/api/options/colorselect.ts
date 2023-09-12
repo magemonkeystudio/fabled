@@ -18,7 +18,7 @@ export default class ColorSelect extends Requirements implements ComponentOption
     this.data = def;
   }
 
-  setTooltip = (tooltip: string): ColorSelect => {
+  setTooltip = (tooltip: string): this => {
     this.tooltip = tooltip;
     return this;
   };

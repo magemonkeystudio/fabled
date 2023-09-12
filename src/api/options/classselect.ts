@@ -21,7 +21,7 @@ export default class ClassSelect extends Requirements implements ComponentOption
     this.multiple = multiple;
   }
 
-  setTooltip = (tooltip: string): ClassSelect => {
+  setTooltip = (tooltip: string): this => {
     this.tooltip = tooltip;
     return this;
   };

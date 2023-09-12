@@ -6,8 +6,8 @@ import Registry                 from "$api/components/registry";
 import { get }                  from "svelte/store";
 
 export default class ProTrigger extends ProComponent {
-  mana     = false;
-  cooldown = false;
+  public mana     = false;
+  public cooldown = false;
 
   protected constructor(data: TriggerData, isDeprecated = false) {
     super("trigger", data);
@@ -71,6 +71,7 @@ export default class ProTrigger extends ProComponent {
   }
 
   public override deserialize(yaml: YAMLObject) {
+    super.deserialize(yaml);
     const data = yaml.get<YAMLObject, YAMLObject>("data");
     if (data) {
       this.mana     = data.get("mana", false);

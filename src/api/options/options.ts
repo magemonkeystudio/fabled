@@ -4,7 +4,7 @@ import type ProComponent   from "$api/components/procomponent";
 export interface ComponentOption extends Cloneable<ComponentOption> {
   getData: () => { [key: string]: any };
   deserialize: (yaml: YAMLObject) => void;
-  setTooltip: (tooltip: string) => ComponentOption;
+  setTooltip: (tooltip: string) => this;
   meetsRequirements: (comp: ProComponent) => boolean;
 }
 

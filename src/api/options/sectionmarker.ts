@@ -13,7 +13,7 @@ export default class SectionMarker extends Requirements implements ComponentOpti
     this.data = name;
   }
 
-  setTooltip = (_: string): SectionMarker => this;
+  setTooltip = (tooltip: string): this => this;
 
   clone = (): ComponentOption => new SectionMarker(this.data);
 

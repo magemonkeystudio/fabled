@@ -18,7 +18,7 @@ export default class IntSelect extends Requirements implements ComponentOption {
     this.data = def;
   }
 
-  setTooltip = (tooltip: string): IntSelect => {
+  setTooltip = (tooltip: string): this => {
     this.tooltip = tooltip;
     return this;
   };

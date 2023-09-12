@@ -57,6 +57,7 @@ export interface Icon {
 export interface ComponentData {
   name: string;
   data?: ComponentOption[];
+  preview?: ComponentOption[];
   components?: ProComponent[];
   description?: string;
 }

@@ -18,7 +18,7 @@ export default class DoubleSelect extends Requirements implements ComponentOptio
     this.data = def;
   }
 
-  setTooltip = (tooltip: string): DoubleSelect => {
+  setTooltip = (tooltip: string): this => {
     this.tooltip = tooltip;
     return this;
   };
