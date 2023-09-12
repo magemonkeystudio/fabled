@@ -66,9 +66,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Represents a template for a skill used in the RPG system. This is
@@ -82,8 +80,6 @@ public abstract class Skill implements IconHolder {
     private static final String            MAX              = "max-level";
     private static final String            REQ              = "skill-req";
     private static final String            REQLVL           = "skill-req-lvl";
-    private static final String            ATTRIBUTE        = "attribute";
-    private static final String            ATTRIBUTE_LEVEL  = "attribute-level";
     private static final String            MSG              = "msg";
     private static final String            PERM             = "needs-permission";
     private static final String            COOLDOWN_MESSAGE = "cooldown-message";
@@ -108,8 +104,6 @@ public abstract class Skill implements IconHolder {
     private              String            skillReq;
     private              int               maxLevel;
     private              int               skillReqLevel;
-    private              String            attribute;
-    private              int               attributeLevel;
     private              boolean           needsPermission;
     private              boolean           cooldownMessage;
     private              int               combo;
@@ -168,7 +162,7 @@ public abstract class Skill implements IconHolder {
      * @param skillReqLevel level of the required skill needed
      */
     public Skill(String name, String type, ItemStack indicator, int maxLevel, String skillReq, int skillReqLevel) {
-        this(name, type, indicator, maxLevel, skillReq, skillReqLevel, "", 0);
+        this(name, type, indicator, maxLevel, skillReq, skillReqLevel, null);
     }
     /**
      * Initializes a skill that requires another skill to be upgraded
@@ -176,16 +170,15 @@ public abstract class Skill implements IconHolder {
      * The indicator's display name and lore will be used as the layout
      * for the skill tree display.
      *
-     * @param name              name of the skill
-     * @param type              descriptive type of the skill
-     * @param indicator         indicator to represent the skill
-     * @param maxLevel          max level the skill can reach
-     * @param skillReq          name of the skill required to raise this one
-     * @param skillReqLevel     level of the required skill needed
-     * @param attribute         name of attribute required to raise this one
-     * @param attributeLevel    level of the required attribute needed
+     * @param name          name of the skill
+     * @param type          descriptive type of the skill
+     * @param indicator     indicator to represent the skill
+     * @param maxLevel      max level the skill can reach
+     * @param skillReq      name of the skill required to raise this one
+     * @param skillReqLevel level of the required skill needed
+     * @param attributes    attributes and their levels required to upgrade skill
      */
-    public Skill(String name, String type, ItemStack indicator, int maxLevel, String skillReq, int skillReqLevel, String attribute, int attributeLevel) {
+    public Skill(String name, String type, ItemStack indicator, int maxLevel, String skillReq, int skillReqLevel, Map<String, Map.Entry<Double, Double>> attributes) {
         if (name == null) {
             throw new IllegalArgumentException("Skill name cannot be null");
         }
@@ -200,10 +193,10 @@ public abstract class Skill implements IconHolder {
         if (maxLevel < 1) {
             maxLevel = 1;
         }
-        if (attribute.isEmpty()){
-            attributeLevel = 0;
-            attribute = "";
-        }
+        if (attributes != null)
+            for (Map.Entry<String, Map.Entry<Double, Double>> attribute : attributes.entrySet()){
+                settings.set(attribute.getKey(), attribute.getValue().getKey(), attribute.getValue().getValue());
+            }
 
         this.key = name.toLowerCase();
         this.type = type;
@@ -212,8 +205,6 @@ public abstract class Skill implements IconHolder {
         this.maxLevel = maxLevel;
         this.skillReq = skillReq;
         this.skillReqLevel = skillReqLevel;
-        this.attribute = attribute;
-        this.attributeLevel = attributeLevel;
         this.needsPermission = false;
 
         this.message = SkillAPI.getLanguage().getMessage(NotificationNodes.CAST, true, FilterType.COLOR).get(0);
@@ -249,7 +240,7 @@ public abstract class Skill implements IconHolder {
      * @return true if skill can level up automatically to the next level, false otherwise
      */
     public boolean canAutoLevel(final int level) {
-        return getCost(level) == 0 && attribute.isEmpty();
+        return getCost(level) == 0 && !doesRequireAttributes(level);
     }
 
     /**
@@ -418,6 +409,19 @@ public abstract class Skill implements IconHolder {
     }
 
     /**
+     * Checks if skill requires attributes to be upgraded
+     *
+     * @return true if requires, false otherwise
+     */
+    private boolean doesRequireAttributes(int level){
+        Set<String> attributes = SkillAPI.getAttributeManager().getKeys();
+        for(String key : attributes){
+            if (settings.getAttr(key,level,0) != 0) return true;
+        }
+        return false;
+    }
+
+    /**
      * Checks whether a message is sent when attempting to run the skill while in cooldown
      *
      * @return true if the message is sent, false otherwise
@@ -536,7 +540,16 @@ public abstract class Skill implements IconHolder {
         return playerData.getInvestedSkillPoints() >= reqPoints;
     }
     public boolean hasEnoughAttributes(final PlayerData playerData){
-        return playerData.getAttribute(attribute) >= attributeLevel;
+        Set<String> attributes = SkillAPI.getAttributeManager().getKeys();
+        for(String attr : attributes){
+            if (!checkSingleAttribute(playerData, attr)) return false;
+        }
+        return true;
+    }
+    public boolean checkSingleAttribute(final PlayerData playerData, String key){
+        final PlayerSkill skill = playerData.getSkill(name);
+        double reqAttr = settings.getAttr(key, skill.getLevel()+1);
+        return playerData.getAttribute(key) >= reqAttr;
     }
 
     /**
@@ -578,6 +591,10 @@ public abstract class Skill implements IconHolder {
         final String branchReq = isCompatible(skillData.getPlayerData()) ? MET : NOT_MET;
         final String skillReq  = isCompatible(skillData.getPlayerData()) ? MET : NOT_MET;
         final String attrReq   = hasEnoughAttributes(skillData.getPlayerData())? MET : NOT_MET;
+        Map<String, String> attributeSpecificReq = new HashMap<>();
+        for(String key : SkillAPI.getAttributeManager().getKeys()){
+            attributeSpecificReq.put(key, checkSingleAttribute(skillData.getPlayerData(), key) ? MET : NOT_MET);
+        }
 
         String attrChanging =
                 SkillAPI.getLanguage().getMessage(SkillNodes.ATTRIBUTE_CHANGING, true, FilterType.COLOR).get(0);
@@ -595,12 +612,13 @@ public abstract class Skill implements IconHolder {
                         .replace("{req:branch}", branchReq)
                         .replace("{req:skill}", skillReq)
                         .replace("{req:attribute}", attrReq)
-                        .replace("{attribute}",attribute)
-                        .replace("{attribute_level}",""+attributeLevel)
                         .replace("{max}", "" + maxLevel)
                         .replace("{name}", name)
                         .replace("{type}", type)
                         .replace("{skill_points}", String.valueOf(skillData.getPlayerClass().getPoints()));
+                for(Map.Entry<String,String> entry : attributeSpecificReq.entrySet()){
+                    line = line.replace("{req:"+ entry.getKey() +"}", entry.getValue());
+                }
 
                 // Attributes
                 while (line.contains("{attr:")) {
@@ -892,8 +910,6 @@ public abstract class Skill implements IconHolder {
         config.set(MAX, maxLevel);
         config.set(REQ, skillReq);
         config.set(REQLVL, skillReqLevel);
-        config.set(ATTRIBUTE, attribute);
-        config.set(ATTRIBUTE_LEVEL, attributeLevel);
         config.set(PERM, needsPermission);
         config.set(COOLDOWN_MESSAGE, cooldownMessage);
         if (combo >= 0 && canCast())
@@ -933,8 +949,6 @@ public abstract class Skill implements IconHolder {
         skillReq = config.getString(REQ);
         if (skillReq == null || skillReq.length() == 0) skillReq = null;
         skillReqLevel = config.getInt(REQLVL, skillReqLevel);
-        attribute = config.getString(ATTRIBUTE, attribute);
-        attributeLevel = config.getInt(ATTRIBUTE_LEVEL, attributeLevel);
         message = TextFormatter.colorString(config.getString(MSG, message));
         needsPermission = config.getString(PERM, needsPermission + "").equalsIgnoreCase("true");
         cooldownMessage = config.getBoolean(COOLDOWN_MESSAGE, true);
