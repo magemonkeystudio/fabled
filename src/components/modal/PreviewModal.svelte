@@ -1,10 +1,4 @@
 <script lang='ts'>
-    import ProTrigger from '$api/components/triggers';
-    import ProTarget from '$api/components/targets';
-    import ProCondition from '$api/components/conditions';
-    import ProMechanic from '$api/components/mechanics';
-    import Toggle from '$input/Toggle.svelte';
-    import ProInput from '$input/ProInput.svelte';
     import Modal from '$components/Modal.svelte';
     import type ProComponent from '$api/components/procomponent';
     import type DropdownSelect from "$api/options/dropdownselect";
@@ -14,13 +8,12 @@
     let modalOpen = true;
 
     $: if (modalOpen && data) {
-            data.preview.filter((dat: ComponentOption) => (dat['dataSource'])).forEach((dat: DropdownSelect) => dat.init());
+        data.preview.filter((dat: ComponentOption) => (dat['dataSource'])).forEach((dat: DropdownSelect) => dat.init());
     }
 </script>
 
 <Modal bind:open={modalOpen} on:close width='70%'>
-    {#if data.isDeprecated}<h2><s>{data.name}</s> <small>deprecated</small></h2>{:else}
-        <h2>{data.name}</h2>{/if}
+    <h2 class:deprecated={data.isDeprecated}><span>{data.name} - Preview</span></h2>
     {#if data.description}
         <div class='modal-desc'>{data.description}</div>
     {/if}
@@ -41,6 +34,22 @@
 </Modal>
 
 <style>
+    .deprecated {
+        align-items: center;
+        display: flex;
+    }
+    .deprecated > span {
+        text-decoration: line-through;
+    }
+
+    .deprecated::after {
+        text-decoration: unset;
+        margin-left: 0.5rem;
+        content: 'deprecated';
+        font-size: 0.6em;
+        color: goldenrod;
+    }
+
     .component-entry {
         display: grid;
         grid-template-columns: calc(50% - 3rem) calc(50% + 3rem);

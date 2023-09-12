@@ -19,8 +19,7 @@
 </script>
 
 <Modal bind:open={modalOpen} on:close width='70%'>
-    {#if data.isDeprecated}<h2><s>{data.name}</s> <small>deprecated</small></h2>{:else}
-        <h2>{data.name}</h2>{/if}
+    <h2 class:deprecated={data.isDeprecated}><span>{data.name}</span></h2>
     {#if data.description}
         <div class='modal-desc'>{data.description}</div>
     {/if}
@@ -60,6 +59,22 @@
 </Modal>
 
 <style>
+    .deprecated {
+        align-items: center;
+        display: flex;
+    }
+    .deprecated > span {
+        text-decoration: line-through;
+    }
+
+    .deprecated::after {
+        text-decoration: unset;
+        margin-left: 0.5rem;
+        content: 'deprecated';
+        font-size: 0.6em;
+        color: goldenrod;
+    }
+
     .component-entry {
         display: grid;
         grid-template-columns: calc(50% - 3rem) calc(50% + 3rem);
