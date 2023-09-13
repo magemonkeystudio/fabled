@@ -1,7 +1,7 @@
 <script lang='ts'>
     import '../app.css';
-    import {active, importing, loadFile, saveData, showSidebar} from '../data/store';
-    import {onDestroy, onMount} from 'svelte';
+    import { active, importing, loadFile, saveAll, saveData, showSidebar } from '../data/store';
+    import {onDestroy, onMount}                                            from 'svelte';
     import {browser} from '$app/environment';
     import ImportModal from '$components/ImportModal.svelte';
     import NavBar from '$components/NavBar.svelte';
@@ -54,10 +54,6 @@
         if (saveSub) saveSub();
     });
 
-    const backup = () => {
-        alert('This feature isn\'t implemented yet');
-    };
-
     const dragover = (e: DragEvent) => {
         if (!(e.dataTransfer?.types?.length > 0 && e.dataTransfer?.types[0] == 'Files')) return;
         e.dataTransfer.dropEffect = 'copy';
@@ -96,13 +92,13 @@
     </div>
 </div>
 <div id='floating-buttons'>
-    <div class='button backup' title='Backup All Data' on:click={backup}>
+    <div class='button backup' title='Backup All Data' on:click={saveAll}>
         <span class='material-symbols-rounded'>cloud_download</span>
     </div>
     <div class='button settings' title='Change Settings' on:click={() => settings = true}>
         <span class='material-symbols-rounded'>settings</span>
     </div>
-    <div class='button save' title='Save' on:click={() => saveData()}>
+    <div class='button save' title='Save' on:click={saveData}>
         <span class='material-symbols-rounded'>save</span>
     </div>
 </div>

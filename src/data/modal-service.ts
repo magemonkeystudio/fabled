@@ -9,7 +9,6 @@ export const modalData = writable<any>(undefined);
 
 export const openModal = (modal: Modal | ComponentModal | ComponentSelectModal,
                           data: ProComponent) => {
-    console.log("Opening ", data);
     activeModal.set(modal);
     modalData.set(data);
 };

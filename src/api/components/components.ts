@@ -1,10 +1,10 @@
-import ProMechanic from '$api/components/mechanics';
-import BlockSelect from '$api/options/blockselect';
-import ProCondition from '$api/components/conditions';
-import DropdownSelect from '$api/options/dropdownselect';
-import ProTrigger from '$api/components/triggers';
-import ProTarget from '$api/components/targets';
-import MaterialSelect from '$api/options/materialselect';
+import ProMechanic                            from '$api/components/mechanics';
+import BlockSelect                            from '$api/options/blockselect';
+import ProCondition                           from '$api/components/conditions';
+import DropdownSelect                         from '$api/options/dropdownselect';
+import ProTrigger                             from '$api/components/triggers';
+import ProTarget                              from '$api/components/targets';
+import MaterialSelect                         from '$api/options/materialselect';
 import {
     getAnyConsumable,
     getAnyEntities,
@@ -26,29 +26,29 @@ import {
     getPotionTypes,
     getProjectiles,
     getSounds
-} from '../../version/data';
-import BooleanSelect from '$api/options/booleanselect';
-import DoubleSelect from '$api/options/doubleselect';
-import Registry from '$api/components/registry';
-import StringListSelect from '$api/options/stringlistselect';
-import type {ComponentOption, Requirements} from '$api/options/options';
-import AttributeSelect from '$api/options/attributeselect';
-import SectionMarker from '$api/options/sectionmarker';
-import StringSelect from '$api/options/stringselect';
-import ClassSelect from '$api/options/classselect';
-import SkillSelect from '$api/options/skillselect';
-import IntSelect from '$api/options/intselect';
-import ColorSelect from '$api/options/colorselect';
-import {get} from 'svelte/store';
+}                                             from '../../version/data';
+import BooleanSelect                          from '$api/options/booleanselect';
+import DoubleSelect                           from '$api/options/doubleselect';
+import Registry                               from '$api/components/registry';
+import StringListSelect                       from '$api/options/stringlistselect';
+import type { ComponentOption, Requirements } from '$api/options/options';
+import AttributeSelect                        from '$api/options/attributeselect';
+import SectionMarker                          from '$api/options/sectionmarker';
+import StringSelect                           from '$api/options/stringselect';
+import ClassSelect                            from '$api/options/classselect';
+import SkillSelect                            from '$api/options/skillselect';
+import IntSelect                              from '$api/options/intselect';
+import ColorSelect                            from '$api/options/colorselect';
+import { get }                                from 'svelte/store';
 
 // TRIGGERS
 
 class ArmorEquipTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Armor Equip',
+            name:        'Armor Equip',
             description: 'Applies skill effects when a player equips a new item in an armor or hand slot',
-            data: [new DropdownSelect('Slots', 'slots', ['Any', 'Helmet', 'Chestplate', 'Leggings', 'Boots', 'Main hand', 'Offhand'], ['Any'], true)
+            data:        [new DropdownSelect('Slots', 'slots', ['Any', 'Helmet', 'Chestplate', 'Leggings', 'Boots', 'Main hand', 'Offhand'], ['Any'], true)
                 .setTooltip('The armor slots to check for')]
         });
     }
@@ -59,9 +59,9 @@ class ArmorEquipTrigger extends ProTrigger {
 class BlockBreakTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Block Break',
+            name:        'Block Break',
             description: 'Applies skill effects when a player breaks a block matching the given details',
-            data: [new BlockSelect(
+            data:        [new BlockSelect(
                 'The type of block expected to be broken',
                 'The expected data value of the block (-1 for any data value)'
             )]
@@ -74,9 +74,9 @@ class BlockBreakTrigger extends ProTrigger {
 class BlockPlaceTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Block Place',
+            name:        'Block Place',
             description: 'Applies skill effects when a player places a block matching the given details',
-            data: [new BlockSelect(
+            data:        [new BlockSelect(
                 'The type of block expected to be placed',
                 'The expected data value of the block (-1 for any data value)'
             )]
@@ -89,7 +89,7 @@ class BlockPlaceTrigger extends ProTrigger {
 class CastTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Cast',
+            name:        'Cast',
             description: 'Applies skill effects when a player casts the skill using either the cast command, the skill bar, or click combos'
         });
     }
@@ -100,9 +100,9 @@ class CastTrigger extends ProTrigger {
 class ChatTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Chat',
+            name:        'Chat',
             description: 'Applies skill effects when a player sends a chat message in the specified format',
-            data: [
+            data:        [
                 new BooleanSelect('Cancel', 'cancel', false)
                     .setTooltip('Whether to cancel message or not'),
                 new BooleanSelect('Regex', 'regex', false)
@@ -119,7 +119,7 @@ class ChatTrigger extends ProTrigger {
 class CleanupTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Cleanup',
+            name:        'Cleanup',
             description: 'Applies skill effects when the player disconnects or unlearns the skill. This is always applied with a skill level of 1 just for the sake of math'
         });
     }
@@ -130,9 +130,9 @@ class CleanupTrigger extends ProTrigger {
 class CrouchTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Crouch',
+            name:        'Crouch',
             description: 'Applies skill effects when a player starts or stops crouching using the shift key',
-            data: [
+            data:        [
                 new DropdownSelect('Crouching', 'type', ['Start Crouching', 'Stop Crouching', 'Both'])
             ]
         });
@@ -144,7 +144,7 @@ class CrouchTrigger extends ProTrigger {
 class DeathTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Death',
+            name:        'Death',
             description: 'Applies skill effects when a player dies'
         });
     }
@@ -155,9 +155,9 @@ class DeathTrigger extends ProTrigger {
 class DropItemTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Drop Item',
+            name:        'Drop Item',
             description: 'Applies skill effects upon dropping an item',
-            data: [
+            data:        [
                 new DropdownSelect('Drop multiple', 'drop multiple', ['True', 'False', 'Ignore'], 'Ignore')
                     .setTooltip('Whether the player has to drop multiple items or a single item')
             ]
@@ -170,9 +170,9 @@ class DropItemTrigger extends ProTrigger {
 class EnvironmentDamageTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Environment Damage',
+            name:        'Environment Damage',
             description: 'Applies skill effects when a player takes environmental damage',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', getDamageTypes, 'Fall')
                     .setTooltip('The source of damage to apply for')
             ]
@@ -185,7 +185,7 @@ class EnvironmentDamageTrigger extends ProTrigger {
 class FishingTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Fishing',
+            name:        'Fishing',
             description: 'Applies skill effects upon right-clicking with a fishing rod'
         });
     }
@@ -196,7 +196,7 @@ class FishingTrigger extends ProTrigger {
 class FishingBiteTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Fishing Bite',
+            name:        'Fishing Bite',
             description: 'Applies skill effects when a fish bites the fishing rod of a player'
         });
     }
@@ -207,7 +207,7 @@ class FishingBiteTrigger extends ProTrigger {
 class FishingFailTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Fishing Fail',
+            name:        'Fishing Fail',
             description: 'Applies skill effects when a player fails to catch a fish due to poor timing'
         });
     }
@@ -218,7 +218,7 @@ class FishingFailTrigger extends ProTrigger {
 class FishingGrabTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Fishing Grab',
+            name:        'Fishing Grab',
             description: 'Applies skill effects when a player catches a fish'
         });
     }
@@ -229,7 +229,7 @@ class FishingGrabTrigger extends ProTrigger {
 class FishingGroundTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Fishing Ground',
+            name:        'Fishing Ground',
             description: 'Applies skill effects when the bobber of a fishing rod hits the ground'
         });
     }
@@ -240,7 +240,7 @@ class FishingGroundTrigger extends ProTrigger {
 class FishingReelTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Fishing Reel',
+            name:        'Fishing Reel',
             description: 'Applies skill effects when a player reels in a fishing rod out of water or air with no fish on the rod'
         });
     }
@@ -251,7 +251,7 @@ class FishingReelTrigger extends ProTrigger {
 class InitializeTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Initialize',
+            name:        'Initialize',
             description: 'Applies skill effects immediately. This can be used for passive abilities'
         });
     }
@@ -262,9 +262,9 @@ class InitializeTrigger extends ProTrigger {
 class ItemSwapTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Item Swap',
+            name:        'Item Swap',
             description: 'Applies skill effects upon pressing the swap-key on your keyboard',
-            data: [
+            data:        [
                 new BooleanSelect('Cancel Swap', 'cancel', true)
                     .setTooltip('True cancels the item swap. False allows the item swap')
             ]
@@ -277,7 +277,7 @@ class ItemSwapTrigger extends ProTrigger {
 class KillTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Kill',
+            name:        'Kill',
             description: 'Applies skill effects upon killing something'
         });
     }
@@ -288,9 +288,9 @@ class KillTrigger extends ProTrigger {
 class LandTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Land',
+            name:        'Land',
             description: 'Applies skill effects when a player lands on the ground',
-            data: [new DoubleSelect('Min Distance', 'min-distance')
+            data:        [new DoubleSelect('Min Distance', 'min-distance')
                 .setTooltip('The minimum distance the player should fall before effects activate')]
         });
     }
@@ -301,9 +301,9 @@ class LandTrigger extends ProTrigger {
 class LaunchTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Launch',
+            name:        'Launch',
             description: 'Applies skill effects when a player launches a projectile',
-            data: [new DropdownSelect('Type', 'type', getAnyProjectiles, 'Any')
+            data:        [new DropdownSelect('Type', 'type', getAnyProjectiles, 'Any')
                 .setTooltip('The type of projectile that should be launched')]
         });
     }
@@ -314,9 +314,9 @@ class LaunchTrigger extends ProTrigger {
 class LeftClickTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Left Click',
+            name:        'Left Click',
             description: 'Applies skill effects upon performing a left-click',
-            data: [new DropdownSelect('Crouch', 'crouch', ['Crouch', 'Dont crouch', 'Both'], 'Crouch')
+            data:        [new DropdownSelect('Crouch', 'crouch', ['Crouch', 'Dont crouch', 'Both'], 'Crouch')
                 .setTooltip('If the player has to be crouching in order for this trigger to function')]
         });
     }
@@ -327,7 +327,7 @@ class LeftClickTrigger extends ProTrigger {
 class MoveTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Move',
+            name:        'Move',
             description: 'Applies skill effects when a player moves around. This triggers every tick the player is moving, so use this sparingly. Use the \'api-moved\' value to check/use the distance traveled'
         });
     }
@@ -338,9 +338,9 @@ class MoveTrigger extends ProTrigger {
 class PhysicalDamageTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Physical Damage',
+            name:        'Physical Damage',
             description: 'Applies skill effects when a player deals physical (or non-skill) damage. This includes melee attacks and firing a bow',
-            data: [
+            data:        [
                 new BooleanSelect('Target Caster', 'target', true)
                     .setTooltip('True makes the children target the caster. False makes children target the damaged entity'),
                 new DropdownSelect('Type', 'type', ['Both', 'Melee', 'Projectile'], 'Both')
@@ -359,9 +359,9 @@ class PhysicalDamageTrigger extends ProTrigger {
 class ProjectileHitTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Projectile Hit',
+            name:        'Projectile Hit',
             description: 'Applies skill effects when a projectile hits a block/entity',
-            data: [
+            data:        [
                 new BooleanSelect('Target Caster', 'target', true)
                     .setTooltip('True makes the children target the caster. False makes children target the damaged entity'),
                 new DropdownSelect('Type', 'type', ['Both', 'Entity', 'Block'], 'Both')
@@ -378,9 +378,9 @@ class ProjectileHitTrigger extends ProTrigger {
 class ProjectileTickTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Projectile Tick',
+            name:        'Projectile Tick',
             description: 'Applies skill effects every interval while a projectile is in the air',
-            data: [
+            data:        [
                 new BooleanSelect('Target Caster', 'target', true)
                     .setTooltip('True makes the children target the caster. False makes children target the damaged entity'),
                 new IntSelect('Interval', 'interval', 1)
@@ -399,9 +399,9 @@ class ProjectileTickTrigger extends ProTrigger {
 class RightClickTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Right Click',
+            name:        'Right Click',
             description: 'Applies skill effects upon performing a right-click (NOTE: When clicking in air, you have to have an item in your hand)',
-            data: [
+            data:        [
                 new DropdownSelect('Crouch', 'crouch', ['Crouch', 'Dont crouch', 'Both'], 'Crouch')
                     .setTooltip('If the player has to be crouching in order for this trigger to function')
             ]
@@ -414,9 +414,9 @@ class RightClickTrigger extends ProTrigger {
 class SkillCastTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Skill Cast',
+            name:        'Skill Cast',
             description: 'Applies skill effects when a player casts a skill',
-            data: [
+            data:        [
                 new BooleanSelect('Cancel Cast', 'cancel', false)
                     .setTooltip('True cancels the skill cast. False allows the skill cast'),
                 new StringListSelect('Classes', 'allowed-classes')
@@ -433,9 +433,9 @@ class SkillCastTrigger extends ProTrigger {
 class SkillDamageTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Skill Damage',
+            name:        'Skill Damage',
             description: 'Applies skill effects when a player deals damage with a skill',
-            data: [
+            data:        [
                 new BooleanSelect('Target Caster', 'target', true)
                     .setTooltip('True makes children target the caster. False makes children target the damaged entity'),
                 new DoubleSelect('Min Damage', 'dmg-min', 0)
@@ -454,9 +454,9 @@ class SkillDamageTrigger extends ProTrigger {
 class TookPhysicalTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Took Physical Damage',
+            name:        'Took Physical Damage',
             description: 'Applies skill effects when a player takes physical (or non-skill) damage. This includes melee attacks and projectiles not fired by a skill',
-            data: [
+            data:        [
                 new BooleanSelect('Target Caster', 'target', true)
                     .setTooltip('True makes children target the caster. False makes children target the attacking entity'),
                 new DropdownSelect('Type', 'type', ['Both', 'Melee', 'Projectile'], 'Both')
@@ -475,9 +475,9 @@ class TookPhysicalTrigger extends ProTrigger {
 class TookSkillTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Took Skill Damage',
+            name:        'Took Skill Damage',
             description: 'Applies skill effects when a player takes damage from a skill other than their own',
-            data: [
+            data:        [
                 new BooleanSelect('Target Caster', 'target', true)
                     .setTooltip('True makes children target the caster. False makes children target the attacking entity'),
                 new DoubleSelect('Min Damage', 'dmg-min', 0)
@@ -496,9 +496,9 @@ class TookSkillTrigger extends ProTrigger {
 class ConsumeTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Consume',
+            name:        'Consume',
             description: 'Applies skill effects when a player consumes an item',
-            data: [
+            data:        [
                 new DropdownSelect('Material', 'material', getAnyConsumable, 'Any')
                     .setTooltip('The type of item that the player has consumed.'),
                 new DropdownSelect('Potion', 'potion', getAnyPotion, 'Any')
@@ -515,9 +515,9 @@ class ConsumeTrigger extends ProTrigger {
 class HealTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Heal',
+            name:        'Heal',
             description: 'Applies skill effects when the player receives heal from any source. Use {api-heal} to get heal value',
-            data: [
+            data:        [
                 new DoubleSelect('Min Heal', 'heal-min', 0)
                     .setTooltip('The minimum health that needs to be received'),
                 new DoubleSelect('Max Heal', 'heal-max', 999)
@@ -532,9 +532,9 @@ class HealTrigger extends ProTrigger {
 class ShieldTrigger extends ProTrigger {
     public constructor() {
         super({
-            name: 'Shield',
+            name:        'Shield',
             description: 'Applies skill effects when the player blocks damage with their shield. Use {api-blocked} to get amount of blocked damage.',
-            data: [
+            data:        [
                 new BooleanSelect('Target Caster', 'target', true)
                     .setTooltip('True makes children target the caster. False makes children target the attacking entity'),
                 new DropdownSelect('Type', 'type', ['Both', 'Melee', 'Projectile'], 'Both')
@@ -566,9 +566,9 @@ const targetOptions = (): ComponentOption[] => {
 class AreaTarget extends ProTarget {
     public constructor() {
         super({
-            name: 'Area',
+            name:        'Area',
             description: 'Targets all units in a radius from the current target (the casting player is the default target)',
-            data: [
+            data:        [
                 new AttributeSelect('Radius', 'radius', 3)
                     .setTooltip('The radius of the area to target in blocks'),
                 ...targetOptions(),
@@ -584,9 +584,9 @@ class AreaTarget extends ProTarget {
 class ConeTarget extends ProTarget {
     public constructor() {
         super({
-            name: 'Cone',
+            name:        'Cone',
             description: 'Targets all units in a line in front of the current target (the casting player is the default target). If you include the caster, that counts towards the max amount',
-            data: [
+            data:        [
                 new AttributeSelect('Range', 'range', 5)
                     .setTooltip('The max distance away any target can be in blocks'),
                 new AttributeSelect('Angle', 'angle', 90)
@@ -602,9 +602,9 @@ class ConeTarget extends ProTarget {
 class LinearTarget extends ProTarget {
     public constructor() {
         super({
-            name: 'Linear',
+            name:        'Linear',
             description: 'Targets all units in a line in front of the current target (the casting player is the default target)',
-            data: [
+            data:        [
                 new AttributeSelect('Range', 'range', 5)
                     .setTooltip('The max distance away any target can be in blocks'),
                 new AttributeSelect('Tolerance', 'tolerance')
@@ -620,9 +620,9 @@ class LinearTarget extends ProTarget {
 class LocationTarget extends ProTarget {
     public constructor() {
         super({
-            name: 'Location',
+            name:        'Location',
             description: 'Targets the location the target or caster is looking at. Combine this with another targeting type for ranged area effects',
-            data: [
+            data:        [
                 new AttributeSelect('Range', 'range', 5)
                     .setTooltip('The max distance the location can be from the target\'s eyes'),
                 new BooleanSelect('Entities', 'entities', true)
@@ -643,9 +643,9 @@ class LocationTarget extends ProTarget {
 class NearestTarget extends ProTarget {
     public constructor() {
         super({
-            name: 'Nearest',
+            name:        'Nearest',
             description: 'Targets the closest unit(s) in a radius from the current target (the casting player is the default target). If you include the caster, that counts towards the max number',
-            data: [
+            data:        [
                 new AttributeSelect('Range', 'range', 3)
                     .setTooltip('The radius of the area to target in blocks'),
                 ...targetOptions()
@@ -659,9 +659,9 @@ class NearestTarget extends ProTarget {
 class OffsetTarget extends ProTarget {
     public constructor() {
         super({
-            name: 'Offset',
+            name:        'Offset',
             description: 'Targets a location that is the given offset away from each target',
-            data: [
+            data:        [
                 new SectionMarker('Offset'),
                 new AttributeSelect('Forward', 'forward')
                     .setTooltip('The offset from the target in the direction they are facing. Negative numbers go backwards'),
@@ -679,9 +679,9 @@ class OffsetTarget extends ProTarget {
 class RememberTarget extends ProTarget {
     public constructor() {
         super({
-            name: 'Remember',
+            name:        'Remember',
             description: 'Targets entities stored using the "Remember Targets" mechanic for the matching key. If it was never set, this will fail',
-            data: [
+            data:        [
                 new StringSelect('Key', 'key', 'target')
                     .setTooltip('The unique key for the target group that should match that used by the "Remember Targets" skill')
             ]
@@ -694,7 +694,7 @@ class RememberTarget extends ProTarget {
 class SelfTarget extends ProTarget {
     public constructor() {
         super({
-            name: 'Self',
+            name:        'Self',
             description: 'Returns the current target back to the caster'
         });
     }
@@ -705,9 +705,9 @@ class SelfTarget extends ProTarget {
 class SingleTarget extends ProTarget {
     public constructor() {
         super({
-            name: 'Single',
+            name:        'Single',
             description: 'Targets a single unit in front of the current target (the casting player is the default target)',
-            data: [
+            data:        [
                 new AttributeSelect('Range', 'range', 5)
                     .setTooltip('The max distance away any target can be in blocks'),
                 new AttributeSelect('Tolerance', 'tolerance')
@@ -760,9 +760,9 @@ const itemConditionOptions = (): ComponentOption[] => {
 class AltitudeCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Altitude',
+            name:        'Altitude',
             description: 'Applies child components whenever the player is on a certain height-level',
-            data: [
+            data:        [
                 new AttributeSelect('Min', 'min')
                     .setTooltip('The minimum height a player has to be on'),
                 new AttributeSelect('Max', 'max')
@@ -777,9 +777,9 @@ class AltitudeCondition extends ProCondition {
 class ArmorCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Armor',
+            name:        'Armor',
             description: 'Applies child components when the target is wearing an armor item matching the given details',
-            data: [
+            data:        [
                 new DropdownSelect('Armor', 'armor', ['Any', 'Helmet', 'Chestplate', 'Leggings', 'Boots'])
                     .setTooltip('The type of armor to check'),
                 ...itemConditionOptions()
@@ -793,9 +793,9 @@ class ArmorCondition extends ProCondition {
 class AttributeCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Attribute',
+            name:        'Attribute',
             description: 'Requires the target to have a given number of attributes',
-            data: [
+            data:        [
                 new StringSelect('Attribute', 'attribute', 'Vitality')
                     .setTooltip('The name of the attribute you are checking the value of'),
                 new AttributeSelect('Min', 'min')
@@ -812,9 +812,9 @@ class AttributeCondition extends ProCondition {
 class BiomeCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Biome',
+            name:        'Biome',
             description: 'Applies child components when in a specified biome',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', ['In Biome', 'Not In Biome'], 'In Biome')
                     .setTooltip('Whether the target should be in the biome. If checking for in the biome, they must be in any one of the checked biomes. If checking for the opposite, they must not be in any of the checked biomes'),
                 new DropdownSelect('Biome', 'biome', getBiomes, ['Forest'], true)
@@ -830,9 +830,9 @@ class BiomeCondition extends ProCondition {
 class BlockCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Block',
+            name:        'Block',
             description: 'Applies child components if the target is currently standing on a block of the given type',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'standing', ['On Block', 'Not On Block', 'In Block', 'Not In Block'])
                     .setTooltip('Specifies which block to check and whether it should match the selected material. "On Block" is directly below the player while "In Block" is the block a player\'s feet are in'),
                 new MaterialSelect()
@@ -848,9 +848,9 @@ class BlockCondition extends ProCondition {
 class BurningCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Burning',
+            name:        'Burning',
             description: 'Applies child components if the caster burns or not',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'burn', ['Burn', 'Dont burn'], 'Burn')
                     .setTooltip('Specifies whether the player has to be burning for this skill to be performed')
             ]
@@ -863,9 +863,9 @@ class BurningCondition extends ProCondition {
 class CeilingCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Ceiling',
+            name:        'Ceiling',
             description: 'Checks the height of the ceiling above each target',
-            data: [
+            data:        [
                 new AttributeSelect('Distance', 'distance', 5)
                     .setTooltip('How high to check for the ceiling'),
                 new BooleanSelect('At least', 'at-least', true)
@@ -880,9 +880,9 @@ class CeilingCondition extends ProCondition {
 class ChanceCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Chance',
+            name:        'Chance',
             description: 'Rolls a chance to apply child components',
-            data: [
+            data:        [
                 new AttributeSelect('Chance', 'chance', 25)
                     .setTooltip('The chance to execute children as a percentage. "25" would be 25%')
             ]
@@ -895,9 +895,9 @@ class ChanceCondition extends ProCondition {
 class ClassCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Class',
+            name:        'Class',
             description: 'Applies child components when the target is the given class or optionally a profession of that class. For example, if you check for "Fighter" which professes into "Warrior", a "Warrior" will pass the check if you do not enable "exact"',
-            data: [
+            data:        [
                 new ClassSelect('Class', 'class', false)
                     .setTooltip('The class the player should be'),
                 new BooleanSelect('Exact', 'exact', false)
@@ -912,9 +912,9 @@ class ClassCondition extends ProCondition {
 class ClassLevelCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Class Level',
+            name:        'Class Level',
             description: 'Applies child components when the level of the class with this skill is within the range. This only checks the level of the caster, not the targets',
-            data: [
+            data:        [
                 new IntSelect('Min Level', 'min-level', 2)
                     .setTooltip('The minimum class level the player should be. If the player has multiple classes, this will be of their main class'),
                 new IntSelect('Max Level', 'max-level', 99)
@@ -929,9 +929,9 @@ class ClassLevelCondition extends ProCondition {
 class CombatCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Combat',
+            name:        'Combat',
             description: 'Applies child components to targets that are in/out of combat, depending on the settings',
-            data: [
+            data:        [
                 new BooleanSelect('In Combat', 'combat', true)
                     .setTooltip('Whether the target should be in or out of combat'),
                 new DoubleSelect('Seconds', 'seconds', 10)
@@ -946,9 +946,9 @@ class CombatCondition extends ProCondition {
 class CrouchCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Crouch',
+            name:        'Crouch',
             description: 'Applies child components if the target player(s) are crouching',
-            data: [
+            data:        [
                 new BooleanSelect('Crouching', 'crouch', true)
                     .setTooltip('Whether the player should be crouching')
             ]
@@ -961,9 +961,9 @@ class CrouchCondition extends ProCondition {
 class DirectionCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Direction',
+            name:        'Direction',
             description: 'Applies child components when the target or caster is facing the correct direction relative to the other',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', ['Target', 'Caster'])
                     .setTooltip('The entity to check the direction of'),
                 new DropdownSelect('Direction', 'direction', ['Away', 'Towards'])
@@ -978,9 +978,9 @@ class DirectionCondition extends ProCondition {
 class ElevationCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Elevation',
+            name:        'Elevation',
             description: 'Applies child components when the elevation of the target matches the settings',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', ['Normal', 'Difference'])
                     .setTooltip('The type of comparison to make. Normal is just their Y-coordinate. Difference would be the difference between that the caster\'s Y-coordinate'),
                 new AttributeSelect('Min Value', 'min-value')
@@ -997,7 +997,7 @@ class ElevationCondition extends ProCondition {
 class ElseCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Else',
+            name:        'Else',
             description: 'Applies child elements if the previous component failed to execute. This not only applies for conditions not passing, but mechanics failing due to no target or other cases'
         });
     }
@@ -1008,9 +1008,9 @@ class ElseCondition extends ProCondition {
 class EntityTypeCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Entity Type',
+            name:        'Entity Type',
             description: 'Applies child elements if the target matches one of the selected entity types',
-            data: [
+            data:        [
                 new DropdownSelect('Types', 'types', getEntities, [], true)
                     .setTooltip('The entity types to target')
             ]
@@ -1023,9 +1023,9 @@ class EntityTypeCondition extends ProCondition {
 class FireCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Fire',
+            name:        'Fire',
             description: 'Applies child components when the target is on fire',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', ['On Fire', 'Not On Fire'], 'On Fire')
                     .setTooltip('Whether the target should be on fire')
             ]
@@ -1038,9 +1038,9 @@ class FireCondition extends ProCondition {
 class FlagCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Flag',
+            name:        'Flag',
             description: 'Applies child components when the target is marked by the appropriate flag',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', ['Set', 'Not Set'], 'Set')
                     .setTooltip('Whether the flag should be set'),
                 new StringSelect('Key', 'key', 'key')
@@ -1055,9 +1055,9 @@ class FlagCondition extends ProCondition {
 class FoodCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Food',
+            name:        'Food',
             description: 'Applies child components when the target\'s food level matches the settings',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', ['Food', 'Percent', 'Difference', 'Difference Percent'])
                     .setTooltip('The type of measurement to use for the food. Food level is their flat food left. Percent is the percentage of food they have left. Difference is the difference between the target\'s flat food and the caster\'s. Difference percent is the difference between the target\'s percentage food left and the caster\'s'),
                 new AttributeSelect('Min Value', 'min-value')
@@ -1074,9 +1074,9 @@ class FoodCondition extends ProCondition {
 class GroundCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Ground',
+            name:        'Ground',
             description: 'Applies child components when the target is on the ground',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', ['On Ground', 'Not On Ground'])
                     .setTooltip('Whether the target should be on the ground')
             ]
@@ -1089,9 +1089,9 @@ class GroundCondition extends ProCondition {
 class HealthCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Health',
+            name:        'Health',
             description: 'Applies child components when the target\'s health matches the settings',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', ['Health', 'Percent', 'Difference', 'Difference Percent'])
                     .setTooltip('The type of measurement to use for the health. Health is their flat health left. Percent is the percentage of health they have left. Difference is the difference between the target\'s flat health and the caster\'s. Difference percent is the difference between the target\'s percentage health left and the caster\'s'),
                 new AttributeSelect('Min Value', 'min-value')
@@ -1108,9 +1108,9 @@ class HealthCondition extends ProCondition {
 class ItemCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Item',
+            name:        'Item',
             description: 'Applies child components when the target is wielding an item matching the given material',
-            data: [...itemConditionOptions()]
+            data:        [...itemConditionOptions()]
         });
     }
 
@@ -1120,9 +1120,9 @@ class ItemCondition extends ProCondition {
 class InventoryCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Inventory',
+            name:        'Inventory',
             description: 'Applies child components when the target player contains the given item in their inventory. This does not work on mobs',
-            data: [
+            data:        [
                 new AttributeSelect('Amount', 'amount', 1)
                     .setTooltip('The amount of the item needed in the player\'s inventory'),
                 ...itemConditionOptions()
@@ -1136,9 +1136,9 @@ class InventoryCondition extends ProCondition {
 class LightCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Light',
+            name:        'Light',
             description: 'Applies child components when the light level at the target\'s location matches the settings',
-            data: [
+            data:        [
                 new AttributeSelect('Min Light', 'min-light')
                     .setTooltip('The minimum light level needed. 16 is full brightness while 0 is complete darkness'),
                 new AttributeSelect('Max Light', 'max-light', 16, 16)
@@ -1153,9 +1153,9 @@ class LightCondition extends ProCondition {
 class ManaCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Mana',
+            name:        'Mana',
             description: 'Applies child components when the target\'s mana matches the settings',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', ['Mana', 'Percent', 'Difference', 'Difference Percent'], 'Mana')
                     .setTooltip('The type of measurement to use for the mana. Mana is their flat mana left. Percent is the percentage of mana they have left. Difference is the difference between the target\'s flat mana and the caster\'s. Difference percent is the difference between the target\'s percentage mana left and the caster\'s'),
                 new AttributeSelect('Min Value', 'min-value')
@@ -1172,9 +1172,9 @@ class ManaCondition extends ProCondition {
 class MoneyCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Money',
+            name:        'Money',
             description: 'Applies child components when the target\'s balance matches the settings (requires Vault and an economy plugin). Always is false for non-player targets',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', ['Min', 'Max', 'Between'], 'Min')
                     .setTooltip('The type of comparison to make'),
                 new AttributeSelect('Min Value', 'min-value', 10)
@@ -1193,9 +1193,9 @@ class MoneyCondition extends ProCondition {
 class MountedCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Mounted',
+            name:        'Mounted',
             description: 'Applies child elements if the target is being mounted by one of the selected entity types',
-            data: [
+            data:        [
                 new DropdownSelect('Types', 'types', getAnyEntities, ['Any'], true)
                     .setTooltip('The entity types that can be mounting the target')
             ]
@@ -1208,9 +1208,9 @@ class MountedCondition extends ProCondition {
 class MountingCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Mounting',
+            name:        'Mounting',
             description: 'Applies child elements if the target is mounting one of the selected entity types',
-            data: [
+            data:        [
                 new DropdownSelect('Types', 'types', getAnyEntities, ['Any'], true)
                     .setTooltip('The entity types the target can be mounting')
             ]
@@ -1223,9 +1223,9 @@ class MountingCondition extends ProCondition {
 class MythicMobTypeCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'MythicMob Type',
+            name:        'MythicMob Type',
             description: 'Applies child elements if the target corresponds to one of the entered MythicMob types, or is not a MythicMob if left empty',
-            data: [
+            data:        [
                 new StringListSelect('MythicMob Types', 'types')
                     .setTooltip('The MythicMob types to target')
             ]
@@ -1238,9 +1238,9 @@ class MythicMobTypeCondition extends ProCondition {
 class NameCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Name',
+            name:        'Name',
             description: 'Applies child components when the target has a name matching the settings',
-            data: [
+            data:        [
                 new BooleanSelect('Contains Text', 'contains', true)
                     .setTooltip('Whether the target should have a name containing the text'),
                 new BooleanSelect('Regex', 'regex', false)
@@ -1257,9 +1257,9 @@ class NameCondition extends ProCondition {
 class OffhandCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Offhand',
+            name:        'Offhand',
             description: 'Applies child components when the target is wielding an item matching the given material as an offhand item. This is for v1.9+ servers only',
-            data: [...itemConditionOptions()]
+            data:        [...itemConditionOptions()]
         });
     }
 
@@ -1269,9 +1269,9 @@ class OffhandCondition extends ProCondition {
 class PermissionCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Permission',
+            name:        'Permission',
             description: 'Applies child components if the caster has the required permission',
-            data: [
+            data:        [
                 new StringSelect('Permission', 'perm', 'some.permission')
                     .setTooltip('The permission the player needs to have')
             ]
@@ -1284,9 +1284,9 @@ class PermissionCondition extends ProCondition {
 class PotionCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Potion',
+            name:        'Potion',
             description: 'Applies child components when the target has the potion effect',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', ['Active', 'Not Active'], 'Active')
                     .setTooltip('Whether the potion should be active'),
                 new DropdownSelect('Potion', 'potion', getAnyPotion, 'Any')
@@ -1305,9 +1305,9 @@ class PotionCondition extends ProCondition {
 class SkillLevelCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Skill Level',
+            name:        'Skill Level',
             description: 'Applies child components when the skill level is with the range. This checks the skill level of the caster, not the targets',
-            data: [
+            data:        [
                 new SkillSelect('Skill', 'skill', false)
                     .setTooltip('The name of the skill to check the level of. If you want to check the current skill, enter the current skill\'s name anyway'),
                 new IntSelect('Min Level', 'min-level', 2)
@@ -1324,9 +1324,9 @@ class SkillLevelCondition extends ProCondition {
 class SlotCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Slot',
+            name:        'Slot',
             description: 'Applies child components when the target player has a matching item in the given slot',
-            data: [
+            data:        [
                 new StringListSelect('Slots (one per line)', 'slot', ['9'])
                     .setTooltip('The slots to look at. Slots 0-8 are the hot bar, 9-35 are the main inventory, 36-39 are armor, and 40 is the offhand slot. Multiple slots will check if any of the slots match'),
                 ...itemConditionOptions()
@@ -1340,9 +1340,9 @@ class SlotCondition extends ProCondition {
 class StatusCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Status',
+            name:        'Status',
             description: 'Applies child components when the target has the status condition',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', ['Active', 'Not Active'])
                     .setTooltip('Whether the status should be active'),
                 new DropdownSelect('Status', 'status',
@@ -1367,9 +1367,9 @@ class StatusCondition extends ProCondition {
 class TimeCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Time',
+            name:        'Time',
             description: 'Applies child components when the server time matches the settings',
-            data: [
+            data:        [
                 new DropdownSelect('Time', 'time', ['Day', 'Night'], 'Day')
                     .setTooltip('The time to check for in the current world')
             ]
@@ -1382,9 +1382,9 @@ class TimeCondition extends ProCondition {
 class ToolCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Tool',
+            name:        'Tool',
             description: 'Applies child components when the target is wielding a matching tool',
-            data: [
+            data:        [
                 new DropdownSelect('Material', 'material', ['Any',
                     'Wood',
                     'Stone',
@@ -1405,9 +1405,9 @@ class ToolCondition extends ProCondition {
 class ValueCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Value',
+            name:        'Value',
             description: 'Applies child components if a stored value is within the given range',
-            data: [
+            data:        [
                 new StringSelect('Key', 'key', 'value')
                     .setTooltip('The unique string used for the value set by the Value mechanics'),
                 new AttributeSelect('Min Value', 'min-value', 1)
@@ -1424,9 +1424,9 @@ class ValueCondition extends ProCondition {
 class WaterCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Water',
+            name:        'Water',
             description: 'Applies child components when the target is in or out of water, depending on the settings',
-            data: [
+            data:        [
                 new DropdownSelect('State', 'state', ['In Water', 'Out Of Water'])
                     .setTooltip('Whether the target needs to be in the water')
             ]
@@ -1439,9 +1439,9 @@ class WaterCondition extends ProCondition {
 class WeatherCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'Weather',
+            name:        'Weather',
             description: 'Applies child components when the target\'s location has the given weather condition',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', ['Rain', 'None', 'Snow', 'Thunder'])
                     .setTooltip('Whether the target needs to be in the water')
             ]
@@ -1454,9 +1454,9 @@ class WeatherCondition extends ProCondition {
 class WorldCondition extends ProCondition {
     public constructor() {
         super({
-            name: 'World',
+            name:        'World',
             description: 'Applies child components when the target is in a specific world',
-            data: [
+            data:        [
                 new BooleanSelect('Blacklist', 'blacklist', false)
                     .setTooltip('Whether the list should be seen as a blacklist'),
                 new StringListSelect('Worlds', 'worlds')
@@ -1710,9 +1710,9 @@ const effectOptions = (optional: boolean): ComponentOption[] => {
 class ArmorMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Armor',
+            name:        'Armor',
             description: 'Sets the specified armor slot of the target to the item defined by the settings',
-            data: [
+            data:        [
                 new DropdownSelect('Slot', 'slot', ['Hand', 'Off Hand', 'Feet', 'Legs', 'Chest', 'Head'])
                     .setTooltip('The slot number to set the item to'),
                 new BooleanSelect('Overwrite', 'overwrite', false)
@@ -1728,9 +1728,9 @@ class ArmorMechanic extends ProMechanic {
 class ArmorStandMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Armor Stand',
+            name:        'Armor Stand',
             description: 'Summons an armor stand that can be used as a marker or for item display (check Armor Mechanic for latter). Applies child components on the armor stand',
-            data: [
+            data:        [
                 new StringSelect('Armor Stand Key', 'key', 'default')
                     .setTooltip('The key to refer to the armor stand by. Only one armor stand of each key can be active per target at a time'),
                 new AttributeSelect('Duration', 'duration', 5)
@@ -1770,9 +1770,9 @@ class ArmorStandMechanic extends ProMechanic {
 class ArmorStandPoseMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Armor Stand Pose',
+            name:        'Armor Stand Pose',
             description: 'Sets the pose of an armor stand target. Values should be in the format x,y,z where rotations are in degrees. Example: 0.0,0.0,0.0',
-            data: [
+            data:        [
                 new StringSelect('Head', 'head', '').setTooltip('The pose values of the head. Leave empty if should be ignored'),
                 new StringSelect('Body', 'body', '').setTooltip('The pose values of the body. Leave empty if should be ignored'),
                 new StringSelect('Left Arm', 'left-arm', '').setTooltip('The pose values of the left arm. Leave empty if should be ignored'),
@@ -1789,9 +1789,9 @@ class ArmorStandPoseMechanic extends ProMechanic {
 class AttributeMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Attribute',
+            name:        'Attribute',
             description: 'Gives a player bonus attributes temporarily',
-            data: [
+            data:        [
                 new StringSelect('Attribute', 'key', 'Intelligence')
                     .setTooltip('The name of the attribute to add to'),
                 new DropdownSelect('Operation', 'operation', ['ADD_NUMBER', 'MULTIPLY_PERCENTAGE'], 'ADD_NUMBER')
@@ -1812,9 +1812,9 @@ class AttributeMechanic extends ProMechanic {
 class BlockMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Block',
+            name:        'Block',
             description: 'Changes blocks to the given type of block for a limited duration',
-            data: [
+            data:        [
                 new DropdownSelect('Shape', 'shape', ['Sphere', 'Cuboid'], 'Sphere')
                     .setTooltip('The shape of the region to change the blocks for'),
                 new DropdownSelect('Type', 'type', (() => ['Air', 'Any', 'Solid', ...getBlocks()]), 'Solid')
@@ -1861,9 +1861,9 @@ class BlockMechanic extends ProMechanic {
 class BuffMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Buff',
+            name:        'Buff',
             description: 'Buffs combat stats of the target',
-            data: [
+            data:        [
                 new BooleanSelect('Immediate', 'immediate', false)
                     .setTooltip('Whether to apply the buff to the current damage trigger'),
                 new DropdownSelect('Type', 'type', ['DAMAGE',
@@ -1893,7 +1893,7 @@ class BuffMechanic extends ProMechanic {
 class CancelMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Cancel',
+            name:        'Cancel',
             description: 'Cancels the event that caused the trigger this is under to go off. For example, damage based triggers will stop the damage that was dealt while the Launch trigger would stop the projectile from firing'
         });
     }
@@ -1904,9 +1904,9 @@ class CancelMechanic extends ProMechanic {
 class CancelEffectMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Cancel Effect',
+            name:        'Cancel Effect',
             description: 'Stops a particle effect prematurely',
-            data: [
+            data:        [
                 new StringSelect('Effect Key', 'effect-key', 'default')
                     .setTooltip('The key used when setting up the effect')
             ]
@@ -1919,9 +1919,9 @@ class CancelEffectMechanic extends ProMechanic {
 class ChannelMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Channel',
+            name:        'Channel',
             description: 'Applies child effects after a duration which can be interrupted. During the channel, the player cannot move, attack, or use other spells',
-            data: [
+            data:        [
                 new BooleanSelect('Still', 'still', true)
                     .setTooltip('Whether to hold the player in place while channeling'),
                 new AttributeSelect('Time', 'time', 3)
@@ -1936,9 +1936,9 @@ class ChannelMechanic extends ProMechanic {
 class CleanseMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Cleanse',
+            name:        'Cleanse',
             description: 'Cleanses negative potion or status effects from the targets',
-            data: [
+            data:        [
                 new DropdownSelect('Potion', 'potion', getBadPotions, undefined, true)
                     .setTooltip('The type of potion effect to remove from the target'),
                 new DropdownSelect('Status', 'status', ['All', 'Curse', 'Disarm', 'Root', 'Silence', 'Stun'], undefined, true)
@@ -1953,9 +1953,9 @@ class CleanseMechanic extends ProMechanic {
 class CommandMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Command',
+            name:        'Command',
             description: 'Executes a command for each of the targets',
-            data: [
+            data:        [
                 new StringSelect('Command', 'command', '')
                     .setTooltip('The command to execute. {player} = caster\'s name, {target} = target\'s name, {targetUUID} = target\'s UUID (useful if targets are non players), &lc: "{", &rc: "}", &sq: "\'"'),
                 new DropdownSelect('Execute Type', 'type', ['Console', 'OP'], 'OP')
@@ -1970,9 +1970,9 @@ class CommandMechanic extends ProMechanic {
 class CooldownMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Cooldown',
+            name:        'Cooldown',
             description: 'Lowers the cooldowns of the target\'s skill(s). If you provide a negative amount, it will increase the cooldown',
-            data: [
+            data:        [
                 new StringSelect('Skill (or "all")', 'skill', 'all')
                     .setTooltip('The skill to modify the cooldown for'),
                 new DropdownSelect('Type', 'type', ['Seconds', 'Percent'], 'Seconds')
@@ -1989,9 +1989,9 @@ class CooldownMechanic extends ProMechanic {
 class DamageMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Damage',
+            name:        'Damage',
             description: 'Inflicts skill damage to each target. Multiplier type would be a percentage of the target health',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', ['Damage', 'Multiplier', 'Percent Left', 'Percent Missing'], 'Damage')
                     .setTooltip('The unit to use for the amount of damage. Damage will deal flat damage, Multiplier will deal a percentage of the target\'s max health, Percent Left will deal a percentage of their current health, and Percent Missing will deal a percentage of the difference between their max health and current health'),
                 new AttributeSelect('Value', 'value', 3, 1)
@@ -2015,9 +2015,9 @@ class DamageMechanic extends ProMechanic {
 class DamageBuffMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Damage Buff',
+            name:        'Damage Buff',
             description: 'Modifies the physical damage dealt by each target by a multiplier or a flat amount for a limited duration. Negative flat amounts or multipliers less than one will reduce damage dealt while the opposite will increase damage dealt. (e.g. a 5% damage buff would be a multiplier or 1.05)',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', ['Flat', 'Multiplier'], 'Flat')
                     .setTooltip('The type of buff to apply. Flat increases damage by a fixed amount while multiplier increases it by a percentage'),
                 new BooleanSelect('Skill Damage', 'skill')
@@ -2036,9 +2036,9 @@ class DamageBuffMechanic extends ProMechanic {
 class DamageLoreMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Damage Lore',
+            name:        'Damage Lore',
             description: 'Damages each target based on a value found in the lore of the item held by the caster',
-            data: [
+            data:        [
                 new DropdownSelect('Hand', 'hand', ['Main', 'Offhand'], 'Main')
                     .setTooltip('The hand to check for the item. Offhand items are MC 1.9+ only'),
                 new StringSelect('Regex', 'regex', 'Damage: {value}')
@@ -2064,9 +2064,9 @@ class DamageLoreMechanic extends ProMechanic {
 class DefenseBuffMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Defense Buff',
+            name:        'Defense Buff',
             description: 'Modifies the physical damage taken by each target by a multiplier or a flat amount for a limited duration. Negative flag amounts or multipliers less than one will reduce damage taken while the opposite will increase damage taken. (e.g. a 5% defense buff would be a multiplier or 0.95, since you would be taking 95% damage)',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', ['Flat', 'Multiplier'], 'Flat')
                     .setTooltip('The type of buff to apply. Flat will increase/reduce incoming damage by a fixed amount where Multiplier does it by a percentage of the damage. Multipliers above 1 will increase damage taken while multipliers below 1 reduce damage taken'),
                 new BooleanSelect('Skill Defense', 'skill')
@@ -2085,9 +2085,9 @@ class DefenseBuffMechanic extends ProMechanic {
 class DelayMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Delay',
+            name:        'Delay',
             description: 'Applies child components after a delay',
-            data: [
+            data:        [
                 new AttributeSelect('Delay', 'delay', 2)
                     .setTooltip('The amount of time to wait before applying child components in seconds')
             ]
@@ -2100,9 +2100,9 @@ class DelayMechanic extends ProMechanic {
 class DisguiseMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Disguise',
+            name:        'Disguise',
             description: 'Disguises each target according to the settings. This mechanic requires the LibsDisguise plugin to be installed on your server',
-            data: [
+            data:        [
                 new AttributeSelect('Duration', 'duration', -1)
                     .setTooltip('How long to apply the disguise for in seconds. Use a negative number to permanently disguise the targets'),
                 new DropdownSelect('Type', 'type', ['Mob', 'Player', 'Misc'], 'Mob')
@@ -2161,7 +2161,7 @@ class DisguiseMechanic extends ProMechanic {
                     .setTooltip('Material to use for the disguise type.'),
                 new DropdownSelect('Material', 'mat', (() => [...getBlocks()]), 'Anvil')
                     .requireValue('misc', ['Falling block'])
-                    .setTooltip('Block to use for the disguise type.'),
+                    .setTooltip('Block to use for the disguise type.')
             ]
         }, false);
     }
@@ -2172,9 +2172,9 @@ class DisguiseMechanic extends ProMechanic {
 class DurabilityMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Durability',
+            name:        'Durability',
             description: 'Lowers the durability of a held item',
-            data: [
+            data:        [
                 new AttributeSelect('Amount', 'amount', 1)
                     .setTooltip('Amount to reduce the item\'s durability by'),
                 new BooleanSelect('Offhand', 'offhand')
@@ -2189,9 +2189,9 @@ class DurabilityMechanic extends ProMechanic {
 class ExperienceMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Experience',
+            name:        'Experience',
             description: 'Modifies target\'s specified class experience',
-            data: [
+            data:        [
                 new IntSelect('Value', 'value', 1),
                 new DropdownSelect('Mode', 'mode', ['give', 'take', 'set'], 'give', false)
                     .setTooltip('To give, take or set specified valued'),
@@ -2211,9 +2211,9 @@ class ExperienceMechanic extends ProMechanic {
 class ExplosionMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Explosion',
+            name:        'Explosion',
             description: 'Causes an explosion at the current target\'s position',
-            data: [
+            data:        [
                 new AttributeSelect('Power', 'power', 3)
                     .setTooltip('The strength of the explosion'),
                 new BooleanSelect('Damage Blocks', 'damage')
@@ -2230,9 +2230,9 @@ class ExplosionMechanic extends ProMechanic {
 class FireMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Fire',
+            name:        'Fire',
             description: 'Sets the target on fire for a duration',
-            data: [
+            data:        [
                 new AttributeSelect('Damage', 'damage', 1)
                     .setTooltip('The damage dealt by each fire tick'),
                 new AttributeSelect('Seconds', 'seconds', 3, 1)
@@ -2247,9 +2247,9 @@ class FireMechanic extends ProMechanic {
 class FlagMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Flag',
+            name:        'Flag',
             description: 'Marks the target with a flag for a duration. Flags can be checked by other triggers, spells or the related for interesting synergies and effects',
-            data: [
+            data:        [
                 new StringSelect('Key', 'key', 'key')
                     .setTooltip('The unique string for the flag. Use the same key when checking it in a Flag Condition'),
                 new AttributeSelect('Seconds', 'seconds', 3, 1)
@@ -2264,9 +2264,9 @@ class FlagMechanic extends ProMechanic {
 class FlagClearMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Flag Clear',
+            name:        'Flag Clear',
             description: 'Clears a flag from the target',
-            data: [
+            data:        [
                 new StringSelect('Key', 'key', 'key')
                     .setTooltip('The unique string for the flag. This should match that of the mechanic that set the flag to begin with')
             ]
@@ -2279,9 +2279,9 @@ class FlagClearMechanic extends ProMechanic {
 class FlagToggleMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Flag Toggle',
+            name:        'Flag Toggle',
             description: 'Toggles a flag on or off for the target. This can be used to make toggle effects',
-            data: [
+            data:        [
                 new StringSelect('Key', 'key', 'key')
                     .setTooltip('The unique string for the flag. Use the same key when checking it in a Flag Condition')
             ]
@@ -2294,9 +2294,9 @@ class FlagToggleMechanic extends ProMechanic {
 class FoodMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Food',
+            name:        'Food',
             description: 'Adds or removes to a player\'s hunger and saturation',
-            data: [
+            data:        [
                 new AttributeSelect('Food', 'food', 1, 1)
                     .setTooltip('The amount of food to give. Use a negative number to lower the food meter'),
                 new AttributeSelect('Saturation', 'saturation')
@@ -2311,9 +2311,9 @@ class FoodMechanic extends ProMechanic {
 class ForgetTargetsMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Forget Targets',
+            name:        'Forget Targets',
             description: 'Clears targets stored by the "Remember Targets" mechanic',
-            data: [
+            data:        [
                 new StringSelect('Key', 'key', 'key')
                     .setTooltip('The unique key the targets were stored under')
             ]
@@ -2326,9 +2326,9 @@ class ForgetTargetsMechanic extends ProMechanic {
 class HealMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Heal',
+            name:        'Heal',
             description: 'Restores health to each target',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', ['Health', 'Percent'], 'Health')
                     .setTooltip('The unit to use for the amount of health to restore. Health restores a flat amount while Percent restores a percentage of their max health'),
                 new AttributeSelect('Value', 'value', 3, 1)
@@ -2343,9 +2343,9 @@ class HealMechanic extends ProMechanic {
 class HealthSetMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Health Set',
+            name:        'Health Set',
             description: 'Sets the target\'s health to the specified amount, ignoring resistances, damage buffs, and so on',
-            data: [
+            data:        [
                 new AttributeSelect('Health', 'health', 1)
                     .setTooltip('The health to set to')
             ]
@@ -2358,9 +2358,9 @@ class HealthSetMechanic extends ProMechanic {
 class HeldItemMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Held Item',
+            name:        'Held Item',
             description: 'Sets the held item slot of the target player. This will do nothing if trying to set it to a skill slot',
-            data: [
+            data:        [
                 new AttributeSelect('Slot', 'slot')
                     .setTooltip('The slot to set it to')
             ]
@@ -2373,9 +2373,9 @@ class HeldItemMechanic extends ProMechanic {
 class ImmunityMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Immunity',
+            name:        'Immunity',
             description: 'Provides damage immunity from one source for a duration',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', getDamageTypes, 'Poison')
                     .setTooltip('The damage type to give an immunity for'),
                 new AttributeSelect('Seconds', 'seconds', 3)
@@ -2392,7 +2392,7 @@ class ImmunityMechanic extends ProMechanic {
 class InterruptMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Interrupt',
+            name:        'Interrupt',
             description: 'Interrupts any channeling being done by each target if applicable'
         });
     }
@@ -2403,9 +2403,9 @@ class InterruptMechanic extends ProMechanic {
 class InvisibilityMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Invisibility',
+            name:        'Invisibility',
             description: 'Applies invisibility effect on target, optionally hiding equipment (Requires ProtocolLib).',
-            data: [
+            data:        [
                 new IntSelect('Duration', 'duration', 200)
                     .setTooltip('Duration in ticks'),
                 new BooleanSelect('Hide Equipment', 'hideEquipment', false)
@@ -2420,9 +2420,9 @@ class InvisibilityMechanic extends ProMechanic {
 class ItemMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Item',
+            name:        'Item',
             description: 'Gives each player target the item defined by the settings',
-            data: [...itemOptions()]
+            data:        [...itemOptions()]
         });
     }
 
@@ -2432,9 +2432,9 @@ class ItemMechanic extends ProMechanic {
 class ItemDropMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Item Drop',
+            name:        'Item Drop',
             description: 'Spawns a dropped item defined by the settings at the specified location',
-            data: [
+            data:        [
                 new AttributeSelect('Pickup Delay', 'pickup_delay', 10)
                     .setTooltip('How many ticks must pass before the item can be picked up, in ticks'),
                 new AttributeSelect('Duration', 'duration', 6000)
@@ -2459,9 +2459,9 @@ class ItemDropMechanic extends ProMechanic {
 class ItemProjectileMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Item Projectile',
+            name:        'Item Projectile',
             description: 'Launches a projectile using an item as its visual that applies child components upon landing. The target passed on will be the collided target or the location where it landed if it missed',
-            data: [
+            data:        [
                 new DropdownSelect('Group', 'group', ['Ally', 'Enemy'], 'Enemy')
                     .setTooltip('The alignment of targets to hit'),
 
@@ -2478,9 +2478,9 @@ class ItemProjectileMechanic extends ProMechanic {
 class ItemRemoveMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Item Remove',
+            name:        'Item Remove',
             description: 'Removes an item from a player inventory. This does nothing to mobs',
-            data: [
+            data:        [
                 new AttributeSelect('Amount', 'amount', 1)
                     .setTooltip('The amount of the item needed in the player\'s inventory'),
 
@@ -2495,9 +2495,9 @@ class ItemRemoveMechanic extends ProMechanic {
 class LaunchMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Launch',
+            name:        'Launch',
             description: 'Launches the target relative to their forward direction. Use negative values to go in the opposite direction (e.g. negative forward makes the target go backwards)',
-            data: [
+            data:        [
                 new DropdownSelect('Relative', 'relative', ['Target', 'Caster', 'Between'], 'Target')
                     .setTooltip('Determines what is considered "forward". Target uses the direction the target is facing, Caster uses the direction the caster is facing, and Between uses the direction from the caster to the target'),
                 new AttributeSelect('Forward Speed', 'forward')
@@ -2516,9 +2516,9 @@ class LaunchMechanic extends ProMechanic {
 class LightningMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Lightning',
+            name:        'Lightning',
             description: 'Strikes lightning on or near the target, applying child components to the struck targets. Negative offsets will offset it in the opposite direction (e.g. negative forward offset puts it behind the target)',
-            data: [
+            data:        [
                 new AttributeSelect('Damage', 'damage', 5)
                     .setTooltip('The damage dealt by the lightning bolt'),
                 new DropdownSelect('Group', 'group', ['Ally', 'Enemy', 'Both'], 'Enemy')
@@ -2541,9 +2541,9 @@ class LightningMechanic extends ProMechanic {
 class ManaMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Mana',
+            name:        'Mana',
             description: 'Restores or deducts mana from the target',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', ['Mana', 'Percent'], 'Mana')
                     .setTooltip('The unit to use for the amount of mana to restore/drain. Mana does a flat amount while Percent does a percentage of their max mana'),
                 new AttributeSelect('Value', 'value', 1)
@@ -2558,9 +2558,9 @@ class ManaMechanic extends ProMechanic {
 class MessageMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Message',
+            name:        'Message',
             description: 'Sends a message to each player target. To include numbers from Value mechanics, use the filters {<key>} where <key> is the key the value is stored under',
-            data: [
+            data:        [
                 new StringSelect('Message', 'message', 'text')
                     .setTooltip('The message to display. {player} = caster\'s name, {target} = target\'s name, {targetUUID} = target\'s UUID (useful if targets are non players), &lc: "{", &rc: "}", &sq: "\'"')
             ]
@@ -2573,9 +2573,9 @@ class MessageMechanic extends ProMechanic {
 class MineMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Mine',
+            name:        'Mine',
             description: 'Destroys a selection of blocks at the location of the target',
-            data: [
+            data:        [
                 new DropdownSelect('Material', 'materials', (() => ['Origin', 'Any', ...getBlocks()]), ['Origin'], true)
                     .setTooltip('The types of blocks allowed to be broken. \'Origin\' refers to the material at the targeted location'),
                 new BooleanSelect('Drop', 'drop', true)
@@ -2615,9 +2615,9 @@ class MineMechanic extends ProMechanic {
 class MoneyMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Money',
+            name:        'Money',
             description: 'Adds or multiplies the target\'s balance by some amount (requires Vault and an economy plugin). Fails if the resulting balance is not within the range allowed by the economy plugin',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', ['Add', 'Multiply'], 'Add')
                     .setTooltip('Whether the target\'s balance will be added or multiplied by the set amount'),
                 new AttributeSelect('Amount', 'amount', 5)
@@ -2634,9 +2634,9 @@ class MoneyMechanic extends ProMechanic {
 class ParticleMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Particle',
+            name:        'Particle',
             description: 'Plays a particle effect about the target',
-            data: [
+            data:        [
                 ...particleOptions(),
                 new SectionMarker('Offset'),
                 new DoubleSelect('Forward Offset', 'forward')
@@ -2655,9 +2655,9 @@ class ParticleMechanic extends ProMechanic {
 class ParticleAnimationMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Particle Animation',
+            name:        'Particle Animation',
             description: 'Plays an animated particle effect at the location of each target over time by applying various transformations',
-            data: [
+            data:        [
                 new IntSelect('Steps', 'steps', 1)
                     .setTooltip('The number of times to play particles and apply translations each application'),
                 new DoubleSelect('Frequency', 'frequency', 0.05)
@@ -2699,9 +2699,9 @@ class ParticleAnimationMechanic extends ProMechanic {
 class ParticleEffectMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Particle Effect',
+            name:        'Particle Effect',
             description: 'Plays a particle effect that follows the current target, using formulas to determine shape, size, and motion',
-            data: [
+            data:        [
                 ...effectOptions(false)
             ]
         });
@@ -2713,9 +2713,9 @@ class ParticleEffectMechanic extends ProMechanic {
 class ParticleProjectileMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Particle Projectile',
+            name:        'Particle Projectile',
             description: 'Launches a projectile using particles as its visual that applies child components upon landing. The target passed on will be the collided target or the location where it landed if it missed',
-            data: [
+            data:        [
                 new DoubleSelect('Gravity', 'gravity')
                     .setTooltip('How much gravity to apply each tick. Negative values make it fall while positive values make it rise'),
                 new BooleanSelect('Pierce', 'pierce')
@@ -2740,9 +2740,9 @@ class ParticleProjectileMechanic extends ProMechanic {
 class PassiveMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Passive',
+            name:        'Passive',
             description: 'Applies child components continuously every period. The seconds value below is the period or how often it applies',
-            data: [
+            data:        [
                 new AttributeSelect('Seconds', 'seconds', 1)
                     .setTooltip('The delay in seconds between each application')
             ]
@@ -2755,9 +2755,9 @@ class PassiveMechanic extends ProMechanic {
 class PermissionMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Permission',
+            name:        'Permission',
             description: 'Grants each player target a permission for a limited duration. This mechanic requires Vault with an accompanying permissions plugin in order to work',
-            data: [
+            data:        [
                 new StringSelect('Permission', 'perm', 'plugin.perm.key')
                     .setTooltip('The permission to give to the player'),
                 new AttributeSelect('Seconds', 'seconds', 3)
@@ -2772,9 +2772,9 @@ class PermissionMechanic extends ProMechanic {
 class PotionMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Potion',
+            name:        'Potion',
             description: 'Applies a potion effect to the target for a duration',
-            data: [
+            data:        [
                 new DropdownSelect('Potion', 'potion', getPotionTypes, 'Absorption')
                     .setTooltip('The type of potion effect to apply'),
                 new BooleanSelect('Ambient Particles', 'ambient', true)
@@ -2793,9 +2793,9 @@ class PotionMechanic extends ProMechanic {
 class PotionProjectileMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Potion Projectile',
+            name:        'Potion Projectile',
             description: 'Drops a splash potion from each target that does not apply potion effects by default. This will apply child elements when the potion lands. The targets supplied will be everything hit by the potion. If nothing is hit by the potion, the target will be the location it landed',
-            data: [
+            data:        [
                 new ColorSelect('Color', 'color', '#ff0000')
                     .setTooltip('The hex color code to use for the potion'),
                 new DropdownSelect('Group', 'group', ['Ally', 'Enemy', 'Both'], 'Enemy')
@@ -2812,9 +2812,9 @@ class PotionProjectileMechanic extends ProMechanic {
 class ProjectileMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Projectile',
+            name:        'Projectile',
             description: 'Launches a projectile that applies child components on hit. The target supplied will be the struck target',
-            data: [
+            data:        [
                 new DropdownSelect('Projectile', 'projectile', getProjectiles, 'Arrow')
                     .setTooltip('The type of projectile to fire'),
                 new BooleanSelect('Flaming', 'flaming', false)
@@ -2835,9 +2835,9 @@ class ProjectileMechanic extends ProMechanic {
 class PurgeMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Purge',
+            name:        'Purge',
             description: 'Purges the target of positive potion effects or statuses',
-            data: [
+            data:        [
                 new DropdownSelect('Potion', 'potion', getGoodPotions, undefined, true)
                     .setTooltip('The potion effect to remove from the target, if any'),
                 new DropdownSelect('Status', 'status', ['All', 'Absorb', 'Invincible'], ['All'], true)
@@ -2852,9 +2852,9 @@ class PurgeMechanic extends ProMechanic {
 class PushMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Push',
+            name:        'Push',
             description: 'Pushes the target relative to the caster. This will do nothing if used with the caster as the target. Positive numbers apply knockback while negative numbers pull them in',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', ['Fixed', 'Inverse', 'Scaled'], 'Fixed')
                     .setTooltip('How to scale the speed based on relative position. Fixed does the same speed to all targets. Inverse pushes enemies farther away faster. Scaled pushes enemies closer faster'),
                 new AttributeSelect('Speed', 'speed', 3, 1)
@@ -2871,9 +2871,9 @@ class PushMechanic extends ProMechanic {
 class RememberTargetsMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Remember Targets',
+            name:        'Remember Targets',
             description: 'Stores the current targets for later use under a specified key',
-            data: [
+            data:        [
                 new StringSelect('Key', 'key', 'target')
                     .setTooltip('The unique key to store the targets under. The "Remember" target will use this key to apply effects to the targets later on')
             ]
@@ -2886,9 +2886,9 @@ class RememberTargetsMechanic extends ProMechanic {
 class RepeatMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Repeat',
+            name:        'Repeat',
             description: 'Applies child components multiple times. When it applies them is determined by the delay (seconds before the first application) and period (seconds between successive applications)',
-            data: [
+            data:        [
                 new AttributeSelect('Repetitions', 'repetitions', 3)
                     .setTooltip('How many times to activate child components'),
                 new DoubleSelect('Period', 'period', 1)
@@ -2907,9 +2907,9 @@ class RepeatMechanic extends ProMechanic {
 class SkillCastMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Skill cast',
+            name:        'Skill cast',
             description: 'Make target cast other skill. Applicable to players only!',
-            data: [
+            data:        [
                 new DropdownSelect('Cast mode', 'mode', ['All', 'First', 'Random'], 'All')
                     .setTooltip('Choose which skills to cast (excluding unavailable skills).'),
                 new BooleanSelect('Force cast', 'force', false)
@@ -2926,9 +2926,9 @@ class SkillCastMechanic extends ProMechanic {
 class SoundMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Sound',
+            name:        'Sound',
             description: 'Plays a sound at the target\'s location',
-            data: [
+            data:        [
                 new DropdownSelect('Sound', 'sound', (() => ['Custom', ...getSounds()]), 'Ambient Cave')
                     .setTooltip('The sound clip to play. Select \'Custom\' to enter custom sounds from your resource pack'),
                 new StringSelect('Custom sound name', 'custom', 'myrp:some_sound')
@@ -2948,9 +2948,9 @@ class SoundMechanic extends ProMechanic {
 class StatMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Stat',
+            name:        'Stat',
             description: 'Gives a player bonus stat temporarily',
-            data: [
+            data:        [
                 // new DropdownSelect('Stat', 'key', ['health',
                 //                                              'mana',
                 //                                              'mana-regen',
@@ -2994,9 +2994,9 @@ class StatMechanic extends ProMechanic {
 class StatusMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Status',
+            name:        'Status',
             description: 'Applies a status effect to the target for a duration',
-            data: [
+            data:        [
                 new DropdownSelect('Status', 'status', ['Absorb',
                     'Curse',
                     'Disarm',
@@ -3017,9 +3017,9 @@ class StatusMechanic extends ProMechanic {
 class TauntMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Taunt',
+            name:        'Taunt',
             description: 'Draws aggro of targeted creatures. Regular mobs are set to attack the caster. The Spigot/Bukkit API for this was not functional on older versions, so it may not work on older servers. For MythicMobs, this uses their aggro system using the amount chosen below',
-            data: [
+            data:        [
                 new AttributeSelect('Amount', 'amount', 1)
                     .setTooltip('The amount of aggro to apply if MythicMobs is active. Use negative amounts to reduce aggro')
             ]
@@ -3032,9 +3032,9 @@ class TauntMechanic extends ProMechanic {
 class TriggerMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Trigger',
+            name:        'Trigger',
             description: 'Listens for a trigger on the current targets for a duration',
-            data: [
+            data:        [
                 new DropdownSelect('Trigger', 'trigger', () => Object.values(get(Registry.triggers)).map((trigger: {
                     name: string,
                     component: typeof ProTrigger
@@ -3122,9 +3122,9 @@ class TriggerMechanic extends ProMechanic {
 class ValueAddMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Value Add',
+            name:        'Value Add',
             description: 'Adds to a stored value under a unique key for the caster. If the value wasn\'t set before, this will set the value to the given amount',
-            data: [
+            data:        [
                 new StringSelect('Key', 'key', 'value')
                     .setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
                 new AttributeSelect('Amount', 'amount', 1)
@@ -3139,9 +3139,9 @@ class ValueAddMechanic extends ProMechanic {
 class ValueAttributeMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Value Attribute',
+            name:        'Value Attribute',
             description: 'Loads a player\'s attribute count for a specific attribute as a stored value to be used in other mechanics',
-            data: [
+            data:        [
                 new StringSelect('Key', 'key', 'attribute')
                     .setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
                 new StringSelect('Attribute', 'attribute', 'Vitality')
@@ -3156,9 +3156,9 @@ class ValueAttributeMechanic extends ProMechanic {
 class ValueCopyMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Value Copy',
+            name:        'Value Copy',
             description: 'Copies a stored value from the caster to the target or vice versa',
-            data: [
+            data:        [
                 new StringSelect('Key', 'key', 'value')
                     .setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
                 new StringSelect('Destination', 'destination', 'value')
@@ -3175,9 +3175,9 @@ class ValueCopyMechanic extends ProMechanic {
 class ValueDistanceMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Value Distance',
+            name:        'Value Distance',
             description: 'Stores the distance between the target and the caster into a value',
-            data: [
+            data:        [
                 new StringSelect('Key', 'key', 'attribute')
                     .setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value')
             ]
@@ -3190,9 +3190,9 @@ class ValueDistanceMechanic extends ProMechanic {
 class ValueHealthMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Value Health',
+            name:        'Value Health',
             description: 'Stores the target\'s current health as a value under a given key for the caster',
-            data: [
+            data:        [
                 new StringSelect('Key', 'key', 'value')
                     .setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
                 new DropdownSelect('Type', 'type', ['Current', 'Max', 'Missing', 'Percent'], 'Current')
@@ -3207,9 +3207,9 @@ class ValueHealthMechanic extends ProMechanic {
 class ValueLocationMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Value Location',
+            name:        'Value Location',
             description: 'Loads the first target\'s current location into a stored value for use at a later time',
-            data: [
+            data:        [
                 new StringSelect('Key', 'key', 'location')
                     .setTooltip('The unique key to store the location under. This key can be used in place of attribute values to use the stored value')
             ]
@@ -3222,9 +3222,9 @@ class ValueLocationMechanic extends ProMechanic {
 class ValueLoreMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Value Lore',
+            name:        'Value Lore',
             description: 'Loads a value from a held item\'s lore into a stored value under the given unique key for the caster',
-            data: [
+            data:        [
                 new StringSelect('Key', 'key', 'lore')
                     .setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
                 new DropdownSelect('Hand', 'hand', ['Main', 'Offhand'], 'Main')
@@ -3243,9 +3243,9 @@ class ValueLoreMechanic extends ProMechanic {
 class ValueLoreSlotMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Value Lore Slot',
+            name:        'Value Lore Slot',
             description: 'Loads a value from an item\'s lore into a stored value under the given unique key for the caster',
-            data: [
+            data:        [
                 new StringSelect('Key', 'key', 'lore')
                     .setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
                 new IntSelect('Slot', 'slot', 9)
@@ -3264,9 +3264,9 @@ class ValueLoreSlotMechanic extends ProMechanic {
 class ValueManaMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Value Mana',
+            name:        'Value Mana',
             description: 'Stores the target player\'s current mana as a value under a given key for the caster',
-            data: [
+            data:        [
                 new StringSelect('Key', 'key', 'value')
                     .setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
                 new DropdownSelect('Type', 'type', ['Current', 'Max', 'Missing', 'Percent'], 'Current')
@@ -3281,9 +3281,9 @@ class ValueManaMechanic extends ProMechanic {
 class ValueMultiplyMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Value Multiply',
+            name:        'Value Multiply',
             description: 'Multiplies a stored value under a unique key for the caster. If the value wasn\'t set before, this will not do anything',
-            data: [
+            data:        [
                 new StringSelect('Key', 'key', 'value')
                     .setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
                 new AttributeSelect('Multiplier', 'multiplier', 1)
@@ -3298,9 +3298,9 @@ class ValueMultiplyMechanic extends ProMechanic {
 class ValuePlaceholderMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Value Placeholder',
+            name:        'Value Placeholder',
             description: 'Uses a placeholder string and stores it as a value for the caster',
-            data: [
+            data:        [
                 new StringSelect('Key', 'key', 'value')
                     .setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
                 new DropdownSelect('Type', 'type', ['Number', 'String'], 'Number')
@@ -3317,9 +3317,9 @@ class ValuePlaceholderMechanic extends ProMechanic {
 class ValueRandomMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Value Random',
+            name:        'Value Random',
             description: 'Stores a specified value under a given key for the caster',
-            data: [
+            data:        [
                 new StringSelect('Key', 'key', 'value')
                     .setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
                 new DropdownSelect('Type', 'type', ['Normal', 'Triangular'], 'Normal')
@@ -3338,9 +3338,9 @@ class ValueRandomMechanic extends ProMechanic {
 class ValueSetMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Value Set',
+            name:        'Value Set',
             description: 'Stores a specified value under a given key for the caster',
-            data: [
+            data:        [
                 new StringSelect('Key', 'key', 'value')
                     .setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
                 new AttributeSelect('Value', 'value', 1)
@@ -3355,9 +3355,9 @@ class ValueSetMechanic extends ProMechanic {
 class WarpMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Warp',
+            name:        'Warp',
             description: 'Warps the target relative to their forward direction. Use negative numbers to go in the opposite direction (e.g. negative forward will cause the target to warp backwards)',
-            data: [
+            data:        [
                 new BooleanSelect('Through Walls', 'walls')
                     .setTooltip('Whether to allow the target to teleport through walls'),
                 new SectionMarker('Position'),
@@ -3377,9 +3377,9 @@ class WarpMechanic extends ProMechanic {
 class WarpLocMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Warp Location',
+            name:        'Warp Location',
             description: 'Warps the target to a specified location',
-            data: [
+            data:        [
                 new StringSelect('World (or "current")', 'world', 'current')
                     .setTooltip('The name of the world that the location is in'),
                 new DoubleSelect('X', 'x', 0)
@@ -3402,9 +3402,9 @@ class WarpLocMechanic extends ProMechanic {
 class WarpRandomMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Warp Random',
+            name:        'Warp Random',
             description: 'Warps the target in a random direction the given distance',
-            data: [
+            data:        [
                 new BooleanSelect('Only Horizontal', 'horizontal', true)
                     .setTooltip('Whether to limit the random position to the horizontal plane'),
                 new BooleanSelect('Through Walls', 'walls', false)
@@ -3421,7 +3421,7 @@ class WarpRandomMechanic extends ProMechanic {
 class WarpSwapMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Warp Swap',
+            name:        'Warp Swap',
             description: 'Switches the location of the caster and the target. If multiple targets are provided, this takes the first one'
         });
     }
@@ -3432,9 +3432,9 @@ class WarpSwapMechanic extends ProMechanic {
 class WarpTargetMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Warp Target',
+            name:        'Warp Target',
             description: 'Warps either the target or the caster to the other. This does nothing when the target is the caster',
-            data: [
+            data:        [
                 new DropdownSelect('Type', 'type', ['Caster to Target', 'Target to Caster'], 'Caster to Target')
                     .setTooltip('The direction to warp the involved targets')
             ]
@@ -3447,9 +3447,9 @@ class WarpTargetMechanic extends ProMechanic {
 class WarpValueMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Warp Value',
+            name:        'Warp Value',
             description: 'Warps all targets to a location remembered using the Value Location mechanic',
-            data: [
+            data:        [
                 new StringSelect('Key', 'key', 'location')
                     .setTooltip('The unique key the location is stored under. This should be the same key used in the Value Location mechanic')
             ]
@@ -3462,9 +3462,9 @@ class WarpValueMechanic extends ProMechanic {
 class WolfMechanic extends ProMechanic {
     public constructor() {
         super({
-            name: 'Wolf',
+            name:        'Wolf',
             description: 'Summons a wolf on each target for a duration. Child components will start off targeting the wolf so you can add effects to it. You can also give it its own skillset, though Cast triggers will not occur',
-            data: [
+            data:        [
                 new DropdownSelect('Collar Color', 'color', getDyes, 'Black')
                     .setTooltip('The color of the collar that the wolf should wear'),
                 new StringSelect('Wolf Name', 'name', '{player}\'s Wolf')
@@ -3490,179 +3490,179 @@ class WolfMechanic extends ProMechanic {
 
 export const initComponents = () => {
     Registry.triggers.set({
-        ARMOR_EQUIP: {name: 'Armor Equip', component: ArmorEquipTrigger},
-        BLOCK_BREAK: {name: 'Block Break', component: BlockBreakTrigger},
-        BLOCK_PLACE: {name: 'Block Place', component: BlockPlaceTrigger},
-        CAST: {name: 'Cast', component: CastTrigger},
-        CHAT: {name: 'Chat', component: ChatTrigger},
-        CONSUME: {name: 'Consume', component: ConsumeTrigger},
-        CLEANUP: {name: 'Cleanup', component: CleanupTrigger},
-        CROUCH: {name: 'Crouch', component: CrouchTrigger},
-        DEATH: {name: 'Death', component: DeathTrigger},
-        DROP_ITEM: {name: 'Drop Item', component: DropItemTrigger},
-        ENV_DAMAGE: {name: 'Environment Damage', component: EnvironmentDamageTrigger},
-        FISHING: {name: 'Fishing', component: FishingTrigger},
-        FISHING_BITE: {name: 'Fishing Bite', component: FishingBiteTrigger},
-        FISHING_FAIL: {name: 'Fishing Fail', component: FishingFailTrigger},
-        FISHING_GRAB: {name: 'Fishing Grab', component: FishingGrabTrigger},
-        FISHING_GROUND: {name: 'Fishing Ground', component: FishingGroundTrigger},
-        FISHING_REEL: {name: 'Fishing Reel', component: FishingReelTrigger},
-        HEAL: {name: 'Heal', component: HealTrigger},
-        INIT: {name: 'Initialize', component: InitializeTrigger},
-        ITEM_SWAP: {name: 'Item Swap', component: ItemSwapTrigger},
-        KILL: {name: 'Kill', component: KillTrigger},
-        LAND: {name: 'Land', component: LandTrigger},
-        LAUNCH: {name: 'Launch', component: LaunchTrigger},
-        LEFT_CLICK: {name: 'Left Click', component: LeftClickTrigger},
-        RIGHT_CLICK: {name: 'Right Click', component: RightClickTrigger},
-        MOVE: {name: 'Move', component: MoveTrigger},
-        PHYS_DAMAGE: {name: 'Physical Damage', component: PhysicalDamageTrigger},
-        PROJ_HIT: {name: 'Projectile Hit', component: ProjectileHitTrigger},
-        PROJ_TICK: {name: 'Projectile Launch', component: ProjectileTickTrigger},
-        SHIELD: {name: 'Shield', component: ShieldTrigger},
-        SKILL_DAMAGE: {name: 'Skill Damage', component: SkillDamageTrigger},
-        SKILL_CAST: {name: 'Skill Cast', component: SkillCastTrigger},
-        TOOK_PHYS: {name: 'Took Physical Damage', component: TookPhysicalTrigger},
-        TOOK_SKILL: {name: 'Took Skill Damage', component: TookSkillTrigger}
+        ARMOR_EQUIP:    { name: 'Armor Equip', component: ArmorEquipTrigger },
+        BLOCK_BREAK:    { name: 'Block Break', component: BlockBreakTrigger },
+        BLOCK_PLACE:    { name: 'Block Place', component: BlockPlaceTrigger },
+        CAST:           { name: 'Cast', component: CastTrigger },
+        CHAT:           { name: 'Chat', component: ChatTrigger },
+        CONSUME:        { name: 'Consume', component: ConsumeTrigger },
+        CLEANUP:        { name: 'Cleanup', component: CleanupTrigger },
+        CROUCH:         { name: 'Crouch', component: CrouchTrigger },
+        DEATH:          { name: 'Death', component: DeathTrigger },
+        DROP_ITEM:      { name: 'Drop Item', component: DropItemTrigger },
+        ENV_DAMAGE:     { name: 'Environment Damage', component: EnvironmentDamageTrigger },
+        FISHING:        { name: 'Fishing', component: FishingTrigger },
+        FISHING_BITE:   { name: 'Fishing Bite', component: FishingBiteTrigger },
+        FISHING_FAIL:   { name: 'Fishing Fail', component: FishingFailTrigger },
+        FISHING_GRAB:   { name: 'Fishing Grab', component: FishingGrabTrigger },
+        FISHING_GROUND: { name: 'Fishing Ground', component: FishingGroundTrigger },
+        FISHING_REEL:   { name: 'Fishing Reel', component: FishingReelTrigger },
+        HEAL:           { name: 'Heal', component: HealTrigger },
+        INIT:           { name: 'Initialize', component: InitializeTrigger },
+        ITEM_SWAP:      { name: 'Item Swap', component: ItemSwapTrigger },
+        KILL:           { name: 'Kill', component: KillTrigger },
+        LAND:           { name: 'Land', component: LandTrigger },
+        LAUNCH:         { name: 'Launch', component: LaunchTrigger },
+        LEFT_CLICK:     { name: 'Left Click', component: LeftClickTrigger },
+        RIGHT_CLICK:    { name: 'Right Click', component: RightClickTrigger },
+        MOVE:           { name: 'Move', component: MoveTrigger },
+        PHYS_DAMAGE:    { name: 'Physical Damage', component: PhysicalDamageTrigger },
+        PROJ_HIT:       { name: 'Projectile Hit', component: ProjectileHitTrigger },
+        PROJ_TICK:      { name: 'Projectile Launch', component: ProjectileTickTrigger },
+        SHIELD:         { name: 'Shield', component: ShieldTrigger },
+        SKILL_DAMAGE:   { name: 'Skill Damage', component: SkillDamageTrigger },
+        SKILL_CAST:     { name: 'Skill Cast', component: SkillCastTrigger },
+        TOOK_PHYS:      { name: 'Took Physical Damage', component: TookPhysicalTrigger },
+        TOOK_SKILL:     { name: 'Took Skill Damage', component: TookSkillTrigger }
     });
     Registry.targets.set({
-        AREA: {name: 'Area', component: AreaTarget},
-        CONE: {name: 'Cone', component: ConeTarget},
-        LINEAR: {name: 'Linear', component: LinearTarget},
-        LOCATION: {name: 'Location', component: LocationTarget},
-        NEAREST: {name: 'Nearest', component: NearestTarget},
-        OFFSET: {name: 'Offset', component: OffsetTarget},
-        REMEMBER: {name: 'Remember', component: RememberTarget},
-        SELF: {name: 'Self', component: SelfTarget},
-        SINGLE: {name: 'Single', component: SingleTarget}
+        AREA:     { name: 'Area', component: AreaTarget },
+        CONE:     { name: 'Cone', component: ConeTarget },
+        LINEAR:   { name: 'Linear', component: LinearTarget },
+        LOCATION: { name: 'Location', component: LocationTarget },
+        NEAREST:  { name: 'Nearest', component: NearestTarget },
+        OFFSET:   { name: 'Offset', component: OffsetTarget },
+        REMEMBER: { name: 'Remember', component: RememberTarget },
+        SELF:     { name: 'Self', component: SelfTarget },
+        SINGLE:   { name: 'Single', component: SingleTarget }
     });
     Registry.conditions.set({
-        ALTITUDE: {name: 'Altitude', component: AltitudeCondition},
-        ARMOR: {name: 'Armor', component: ArmorCondition},
-        ATTRIBUTE: {name: 'Attribute', component: AttributeCondition},
-        BIOME: {name: 'Biome', component: BiomeCondition},
-        BLOCK: {name: 'Block', component: BlockCondition},
-        BURNING: {name: 'Burning', component: BurningCondition},
-        CEILING: {name: 'Ceiling', component: CeilingCondition},
-        CHANCE: {name: 'Chance', component: ChanceCondition},
-        CLASS: {name: 'Class', component: ClassCondition},
-        CLASS_LEVEL: {name: 'Class Level', component: ClassLevelCondition},
-        COMBAT: {name: 'Combat', component: CombatCondition},
-        CROUCH: {name: 'Crouch', component: CrouchCondition},
-        DIRECTION: {name: 'Direction', component: DirectionCondition},
-        ELEVATION: {name: 'Elevation', component: ElevationCondition},
-        ELSE: {name: 'Else', component: ElseCondition},
-        ENTITY_TYPE: {name: 'Entity Type', component: EntityTypeCondition},
-        FIRE: {name: 'Fire', component: FireCondition},
-        FLAG: {name: 'Flag', component: FlagCondition},
-        FOOD: {name: 'Food', component: FoodCondition},
-        GROUND: {name: 'Ground', component: GroundCondition},
-        HEALTH: {name: 'Health', component: HealthCondition},
-        INVENTORY: {name: 'Inventory', component: InventoryCondition},
-        ITEM: {name: 'Item', component: ItemCondition},
-        LIGHT: {name: 'Light', component: LightCondition},
-        MANA: {name: 'Mana', component: ManaCondition},
-        MONEY: {name: 'Money', component: MoneyCondition},
-        MOUNTED: {name: 'Mounted', component: MountedCondition},
-        MOUNTING: {name: 'Mounting', component: MountingCondition},
-        MYTHICMOB_TYPE: {name: 'MythicMob Type', component: MythicMobTypeCondition},
-        NAME: {name: 'Name', component: NameCondition},
-        OFFHAND: {name: 'Offhand', component: OffhandCondition},
-        PERMISSION: {name: 'Permission', component: PermissionCondition},
-        POTION: {name: 'Potion', component: PotionCondition},
-        SKILL_LEVEL: {name: 'Skill Level', component: SkillLevelCondition},
-        SLOT: {name: 'Slot', component: SlotCondition},
-        STATUS: {name: 'Status', component: StatusCondition},
-        TIME: {name: 'Time', component: TimeCondition},
-        TOOL: {name: 'Tool', component: ToolCondition},
-        VALUE: {name: 'Value', component: ValueCondition},
-        WATER: {name: 'Water', component: WaterCondition},
-        WEATHER: {name: 'Weather', component: WeatherCondition},
-        WORLD: {name: 'World', component: WorldCondition}
+        ALTITUDE:       { name: 'Altitude', component: AltitudeCondition },
+        ARMOR:          { name: 'Armor', component: ArmorCondition },
+        ATTRIBUTE:      { name: 'Attribute', component: AttributeCondition },
+        BIOME:          { name: 'Biome', component: BiomeCondition },
+        BLOCK:          { name: 'Block', component: BlockCondition },
+        BURNING:        { name: 'Burning', component: BurningCondition },
+        CEILING:        { name: 'Ceiling', component: CeilingCondition },
+        CHANCE:         { name: 'Chance', component: ChanceCondition },
+        CLASS:          { name: 'Class', component: ClassCondition },
+        CLASS_LEVEL:    { name: 'Class Level', component: ClassLevelCondition },
+        COMBAT:         { name: 'Combat', component: CombatCondition },
+        CROUCH:         { name: 'Crouch', component: CrouchCondition },
+        DIRECTION:      { name: 'Direction', component: DirectionCondition },
+        ELEVATION:      { name: 'Elevation', component: ElevationCondition },
+        ELSE:           { name: 'Else', component: ElseCondition },
+        ENTITY_TYPE:    { name: 'Entity Type', component: EntityTypeCondition },
+        FIRE:           { name: 'Fire', component: FireCondition },
+        FLAG:           { name: 'Flag', component: FlagCondition },
+        FOOD:           { name: 'Food', component: FoodCondition },
+        GROUND:         { name: 'Ground', component: GroundCondition },
+        HEALTH:         { name: 'Health', component: HealthCondition },
+        INVENTORY:      { name: 'Inventory', component: InventoryCondition },
+        ITEM:           { name: 'Item', component: ItemCondition },
+        LIGHT:          { name: 'Light', component: LightCondition },
+        MANA:           { name: 'Mana', component: ManaCondition },
+        MONEY:          { name: 'Money', component: MoneyCondition },
+        MOUNTED:        { name: 'Mounted', component: MountedCondition },
+        MOUNTING:       { name: 'Mounting', component: MountingCondition },
+        MYTHICMOB_TYPE: { name: 'MythicMob Type', component: MythicMobTypeCondition },
+        NAME:           { name: 'Name', component: NameCondition },
+        OFFHAND:        { name: 'Offhand', component: OffhandCondition },
+        PERMISSION:     { name: 'Permission', component: PermissionCondition },
+        POTION:         { name: 'Potion', component: PotionCondition },
+        SKILL_LEVEL:    { name: 'Skill Level', component: SkillLevelCondition },
+        SLOT:           { name: 'Slot', component: SlotCondition },
+        STATUS:         { name: 'Status', component: StatusCondition },
+        TIME:           { name: 'Time', component: TimeCondition },
+        TOOL:           { name: 'Tool', component: ToolCondition },
+        VALUE:          { name: 'Value', component: ValueCondition },
+        WATER:          { name: 'Water', component: WaterCondition },
+        WEATHER:        { name: 'Weather', component: WeatherCondition },
+        WORLD:          { name: 'World', component: WorldCondition }
     });
     Registry.mechanics.set({
-        ARMOR: {name: 'Armor', component: ArmorMechanic},
-        ARMOR_STAND: {name: 'Armor Stand', component: ArmorStandMechanic},
-        ARMOR_STAND_POSE: {name: 'Armor Stand Pose', component: ArmorStandPoseMechanic},
-        ATTRIBUTE: {name: 'Attribute', component: AttributeMechanic},
-        BLOCK: {name: 'Block', component: BlockMechanic},
-        BUFF: {name: 'Buff', component: BuffMechanic},
-        CANCEL: {name: 'Cancel', component: CancelMechanic},
-        CHANNEL: {name: 'Channel', component: ChannelMechanic},
-        CLEANSE: {name: 'Cleanse', component: CleanseMechanic},
-        COMMAND: {name: 'Command', component: CommandMechanic},
-        COOLDOWN: {name: 'Cooldown', component: CooldownMechanic},
-        DAMAGE: {name: 'Damage', component: DamageMechanic},
-        DAMAGE_BUFF: {name: 'Damage Buff', component: DamageBuffMechanic},
-        DAMAGE_LORE: {name: 'Damage Lore', component: DamageLoreMechanic},
-        DEFENSE_BUFF: {name: 'Defense Buff', component: DefenseBuffMechanic},
-        DELAY: {name: 'Delay', component: DelayMechanic},
-        DISGUISE: {name: 'Disguise', component: DisguiseMechanic},
-        DURABILITY: {name: 'Durability', component: DurabilityMechanic},
-        EXPERIENCE: {name: 'Experience', component: ExperienceMechanic},
-        EXPLOSION: {name: 'Explosion', component: ExplosionMechanic},
-        FIRE: {name: 'Fire', component: FireMechanic},
-        FLAG: {name: 'Flag', component: FlagMechanic},
-        FLAG_CLEAR: {name: 'Flag Clear', component: FlagClearMechanic},
-        FLAG_TOGGLE: {name: 'Flag Toggle', component: FlagToggleMechanic},
-        FOOD: {name: 'Food', component: FoodMechanic},
-        FORGET_TARGETS: {name: 'Forget Targets', component: ForgetTargetsMechanic},
-        HEAL: {name: 'Heal', component: HealMechanic},
-        HEALTH_SET: {name: 'Health Set', component: HealthSetMechanic},
-        HELD_ITEM: {name: 'Held Item', component: HeldItemMechanic},
-        IMMUNITY: {name: 'Immunity', component: ImmunityMechanic},
-        INTERRUPT: {name: 'Interrupt', component: InterruptMechanic},
-        INVISIBILITY: {name: 'Invisibility', component: InvisibilityMechanic},
-        ITEM: {name: 'Item', component: ItemMechanic},
-        ITEM_DROP: {name: 'Item Drop', component: ItemDropMechanic},
-        ITEM_PROJECTILE: {name: 'Item Projectile', component: ItemProjectileMechanic},
-        ITEM_REMOVE: {name: 'Item Remove', component: ItemRemoveMechanic},
-        LAUNCH: {name: 'Launch', component: LaunchMechanic},
-        LIGHTNING: {name: 'Lightning', component: LightningMechanic},
-        MANA: {name: 'Mana', component: ManaMechanic},
-        MESSAGE: {name: 'Message', component: MessageMechanic},
-        MINE: {name: 'Mine', component: MineMechanic},
-        MONEY: {name: 'Money', component: MoneyMechanic},
-        PARTICLE: {name: 'Particle', component: ParticleMechanic},
-        PARTICLE_ANIMATION: {name: 'Particle Animation', component: ParticleAnimationMechanic},
-        PARTICLE_EFFECT: {name: 'Particle Effect', component: ParticleEffectMechanic},
-        CANCEL_EFFECT: {name: 'Cancel Effect', component: CancelEffectMechanic},
-        PARTICLE_PROJECTILE: {name: 'Particle Projectile', component: ParticleProjectileMechanic},
-        PASSIVE: {name: 'Passive', component: PassiveMechanic},
-        PERMISSION: {name: 'Permission', component: PermissionMechanic},
-        POTION: {name: 'Potion', component: PotionMechanic},
-        POTION_PROJECTILE: {name: 'Potion Projectile', component: PotionProjectileMechanic},
-        PROJECTILE: {name: 'Projectile', component: ProjectileMechanic},
-        PURGE: {name: 'Purge', component: PurgeMechanic},
-        PUSH: {name: 'Push', component: PushMechanic},
-        REMEMBER_TARGETS: {name: 'Remember Targets', component: RememberTargetsMechanic},
-        REPEAT: {name: 'Repeat', component: RepeatMechanic},
-        SKILL_CAST: {name: 'Skill Cast', component: SkillCastMechanic},
-        SOUND: {name: 'Sound', component: SoundMechanic},
-        STAT: {name: 'Stat', component: StatMechanic},
-        STATUS: {name: 'Status', component: StatusMechanic},
-        TAUNT: {name: 'Taunt', component: TauntMechanic},
-        TRIGGER: {name: 'Trigger', component: TriggerMechanic},
-        VALUE_ADD: {name: 'Value Add', component: ValueAddMechanic},
-        VALUE_ATTRIBUTE: {name: 'Value Attribute', component: ValueAttributeMechanic},
-        VALUE_COPY: {name: 'Value Copy', component: ValueCopyMechanic},
-        VALUE_DISTANCE: {name: 'Value Distance', component: ValueDistanceMechanic},
-        VALUE_HEALTH: {name: 'Value Health', component: ValueHealthMechanic},
-        VALUE_LOCATION: {name: 'Value Location', component: ValueLocationMechanic},
-        VALUE_LORE: {name: 'Value Lore', component: ValueLoreMechanic},
-        VALUE_LORE_SLOT: {name: 'Value Lore Slot', component: ValueLoreSlotMechanic},
-        VALUE_MANA: {name: 'Value Mana', component: ValueManaMechanic},
-        VALUE_MULTIPLY: {name: 'Value Multiply', component: ValueMultiplyMechanic},
-        VALUE_PLACEHOLDER: {name: 'Value Placeholder', component: ValuePlaceholderMechanic},
-        VALUE_RANDOM: {name: 'Value Random', component: ValueRandomMechanic},
-        VALUE_SET: {name: 'Value Set', component: ValueSetMechanic},
-        WARP: {name: 'Warp', component: WarpMechanic},
-        WARP_LOC: {name: 'Warp Location', component: WarpLocMechanic},
-        WARP_RANDOM: {name: 'Warp Random', component: WarpRandomMechanic},
-        WARP_SWAP: {name: 'Warp Swap', component: WarpSwapMechanic},
-        WARP_TARGET: {name: 'Warp Target', component: WarpTargetMechanic},
-        WARP_VALUE: {name: 'Warp Value', component: WarpValueMechanic},
-        WOLF: {name: 'Wolf', component: WolfMechanic}
+        ARMOR:               { name: 'Armor', component: ArmorMechanic },
+        ARMOR_STAND:         { name: 'Armor Stand', component: ArmorStandMechanic },
+        ARMOR_STAND_POSE:    { name: 'Armor Stand Pose', component: ArmorStandPoseMechanic },
+        ATTRIBUTE:           { name: 'Attribute', component: AttributeMechanic },
+        BLOCK:               { name: 'Block', component: BlockMechanic },
+        BUFF:                { name: 'Buff', component: BuffMechanic },
+        CANCEL:              { name: 'Cancel', component: CancelMechanic },
+        CHANNEL:             { name: 'Channel', component: ChannelMechanic },
+        CLEANSE:             { name: 'Cleanse', component: CleanseMechanic },
+        COMMAND:             { name: 'Command', component: CommandMechanic },
+        COOLDOWN:            { name: 'Cooldown', component: CooldownMechanic },
+        DAMAGE:              { name: 'Damage', component: DamageMechanic },
+        DAMAGE_BUFF:         { name: 'Damage Buff', component: DamageBuffMechanic },
+        DAMAGE_LORE:         { name: 'Damage Lore', component: DamageLoreMechanic },
+        DEFENSE_BUFF:        { name: 'Defense Buff', component: DefenseBuffMechanic },
+        DELAY:               { name: 'Delay', component: DelayMechanic },
+        DISGUISE:            { name: 'Disguise', component: DisguiseMechanic },
+        DURABILITY:          { name: 'Durability', component: DurabilityMechanic },
+        EXPERIENCE:          { name: 'Experience', component: ExperienceMechanic },
+        EXPLOSION:           { name: 'Explosion', component: ExplosionMechanic },
+        FIRE:                { name: 'Fire', component: FireMechanic },
+        FLAG:                { name: 'Flag', component: FlagMechanic },
+        FLAG_CLEAR:          { name: 'Flag Clear', component: FlagClearMechanic },
+        FLAG_TOGGLE:         { name: 'Flag Toggle', component: FlagToggleMechanic },
+        FOOD:                { name: 'Food', component: FoodMechanic },
+        FORGET_TARGETS:      { name: 'Forget Targets', component: ForgetTargetsMechanic },
+        HEAL:                { name: 'Heal', component: HealMechanic },
+        HEALTH_SET:          { name: 'Health Set', component: HealthSetMechanic },
+        HELD_ITEM:           { name: 'Held Item', component: HeldItemMechanic },
+        IMMUNITY:            { name: 'Immunity', component: ImmunityMechanic },
+        INTERRUPT:           { name: 'Interrupt', component: InterruptMechanic },
+        INVISIBILITY:        { name: 'Invisibility', component: InvisibilityMechanic },
+        ITEM:                { name: 'Item', component: ItemMechanic },
+        ITEM_DROP:           { name: 'Item Drop', component: ItemDropMechanic },
+        ITEM_PROJECTILE:     { name: 'Item Projectile', component: ItemProjectileMechanic },
+        ITEM_REMOVE:         { name: 'Item Remove', component: ItemRemoveMechanic },
+        LAUNCH:              { name: 'Launch', component: LaunchMechanic },
+        LIGHTNING:           { name: 'Lightning', component: LightningMechanic },
+        MANA:                { name: 'Mana', component: ManaMechanic },
+        MESSAGE:             { name: 'Message', component: MessageMechanic },
+        MINE:                { name: 'Mine', component: MineMechanic },
+        MONEY:               { name: 'Money', component: MoneyMechanic },
+        PARTICLE:            { name: 'Particle', component: ParticleMechanic },
+        PARTICLE_ANIMATION:  { name: 'Particle Animation', component: ParticleAnimationMechanic },
+        PARTICLE_EFFECT:     { name: 'Particle Effect', component: ParticleEffectMechanic },
+        CANCEL_EFFECT:       { name: 'Cancel Effect', component: CancelEffectMechanic },
+        PARTICLE_PROJECTILE: { name: 'Particle Projectile', component: ParticleProjectileMechanic },
+        PASSIVE:             { name: 'Passive', component: PassiveMechanic },
+        PERMISSION:          { name: 'Permission', component: PermissionMechanic },
+        POTION:              { name: 'Potion', component: PotionMechanic },
+        POTION_PROJECTILE:   { name: 'Potion Projectile', component: PotionProjectileMechanic },
+        PROJECTILE:          { name: 'Projectile', component: ProjectileMechanic },
+        PURGE:               { name: 'Purge', component: PurgeMechanic },
+        PUSH:                { name: 'Push', component: PushMechanic },
+        REMEMBER_TARGETS:    { name: 'Remember Targets', component: RememberTargetsMechanic },
+        REPEAT:              { name: 'Repeat', component: RepeatMechanic },
+        SKILL_CAST:          { name: 'Skill Cast', component: SkillCastMechanic },
+        SOUND:               { name: 'Sound', component: SoundMechanic },
+        STAT:                { name: 'Stat', component: StatMechanic },
+        STATUS:              { name: 'Status', component: StatusMechanic },
+        TAUNT:               { name: 'Taunt', component: TauntMechanic },
+        TRIGGER:             { name: 'Trigger', component: TriggerMechanic },
+        VALUE_ADD:           { name: 'Value Add', component: ValueAddMechanic },
+        VALUE_ATTRIBUTE:     { name: 'Value Attribute', component: ValueAttributeMechanic },
+        VALUE_COPY:          { name: 'Value Copy', component: ValueCopyMechanic },
+        VALUE_DISTANCE:      { name: 'Value Distance', component: ValueDistanceMechanic },
+        VALUE_HEALTH:        { name: 'Value Health', component: ValueHealthMechanic },
+        VALUE_LOCATION:      { name: 'Value Location', component: ValueLocationMechanic },
+        VALUE_LORE:          { name: 'Value Lore', component: ValueLoreMechanic },
+        VALUE_LORE_SLOT:     { name: 'Value Lore Slot', component: ValueLoreSlotMechanic },
+        VALUE_MANA:          { name: 'Value Mana', component: ValueManaMechanic },
+        VALUE_MULTIPLY:      { name: 'Value Multiply', component: ValueMultiplyMechanic },
+        VALUE_PLACEHOLDER:   { name: 'Value Placeholder', component: ValuePlaceholderMechanic },
+        VALUE_RANDOM:        { name: 'Value Random', component: ValueRandomMechanic },
+        VALUE_SET:           { name: 'Value Set', component: ValueSetMechanic },
+        WARP:                { name: 'Warp', component: WarpMechanic },
+        WARP_LOC:            { name: 'Warp Location', component: WarpLocMechanic },
+        WARP_RANDOM:         { name: 'Warp Random', component: WarpRandomMechanic },
+        WARP_SWAP:           { name: 'Warp Swap', component: WarpSwapMechanic },
+        WARP_TARGET:         { name: 'Warp Target', component: WarpTargetMechanic },
+        WARP_VALUE:          { name: 'Warp Value', component: WarpValueMechanic },
+        WOLF:                { name: 'Wolf', component: WolfMechanic }
     });
     Registry.initialized.set(true);
 };

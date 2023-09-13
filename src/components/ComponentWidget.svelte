@@ -1,23 +1,25 @@
 <!--suppress CssUnresolvedCustomProperty -->
 <script lang='ts'>
-    import type ProComponent from '$api/components/procomponent';
-    import ProTrigger from '$api/components/triggers';
-    import ProCondition from '$api/components/conditions';
-    import ProTarget from '$api/components/targets';
-    import ProMechanic from '$api/components/mechanics';
-    import {slide} from 'svelte/transition';
-    import {backOut} from 'svelte/easing';
-    import {draggingComponent} from '../data/store';
-    import type ProSkill from '$api/proskill';
-    import {createEventDispatcher, onDestroy, onMount} from 'svelte';
-    import type {Unsubscriber} from 'svelte/types/runtime/store';
-    import {useSymbols} from '../data/settings';
-    import {get} from 'svelte/store';
-    import Control from '$components/control/Control.svelte';
-    import {openModal} from '../data/modal-service';
-    import ComponentModal from '$components/modal/ComponentModal.svelte';
-    import ComponentSelectModal from "$components/modal/ComponentSelectModal.svelte";
-    import PreviewModal from "$components/modal/PreviewModal.svelte";
+    import type ProComponent                             from '$api/components/procomponent';
+    import ProTrigger                                    from '$api/components/triggers';
+    import ProCondition                                  from '$api/components/conditions';
+    import ProTarget                                     from '$api/components/targets';
+    import ProMechanic                                   from '$api/components/mechanics';
+    import { slide }                                     from 'svelte/transition';
+    import { backOut }                                   from 'svelte/easing';
+    import { draggingComponent }                         from '../data/store';
+    import type ProSkill                                 from '$api/proskill';
+    import { createEventDispatcher, onDestroy, onMount } from 'svelte';
+    import type { Unsubscriber }                         from 'svelte/types/runtime/store';
+    import { useSymbols }                                from '../data/settings';
+    import { get }                                       from 'svelte/store';
+    import Control                                       from '$components/control/Control.svelte';
+    import { openModal }                                 from '../data/modal-service';
+    import ComponentModal                                from '$components/modal/ComponentModal.svelte';
+    import ComponentSelectModal                          from '$components/modal/ComponentSelectModal.svelte';
+    import PreviewModal                                  from '$components/modal/PreviewModal.svelte';
+    import { parseYAML, YAMLObject }                     from '$api/yaml';
+    import Registry                                      from '$api/components/registry';
 
     export let skill: ProSkill;
     export let component: ProComponent;
@@ -27,11 +29,11 @@
 
     const dispatch = createEventDispatcher();
 
-    let collapsed = false;
-    let over = false;
+    let collapsed    = false;
+    let over         = false;
     let overChildren = false;
-    let top = false;
-    let bottom = false;
+    let top          = false;
+    let bottom       = false;
 
     let childCompsSub: Unsubscriber;
 
@@ -40,11 +42,11 @@
     const openCompModal = () => openModal(ComponentModal, component);
 
     const openCompSelectModal = () => openModal(ComponentSelectModal, component);
-    const openPreviewModal = () => openModal(PreviewModal, component);
+    const openPreviewModal    = () => openModal(PreviewModal, component);
 
     onMount(() => {
         childCompsSub = component.components
-            .subscribe((comps: ProComponent) => childrenList = comps);
+            .subscribe((comps: ProComponent[]) => childrenList = comps);
 
         if (component._defaultOpen) {
             openCompModal();
@@ -95,7 +97,7 @@
         return 'orange';
     };
 
-    const spin = (node: Node, {duration}: { duration: number }) => {
+    const spin = (node: Node, { duration }: { duration: number }) => {
         return {
             duration,
             css: (t: number) => {
@@ -112,13 +114,13 @@
         if (component instanceof ProTrigger) return;
         const rect = wrapper.getBoundingClientRect();
 
-        top = e.clientY < (rect.height / 2) + rect.top;
+        top    = e.clientY < (rect.height / 2) + rect.top;
         bottom = e.clientY >= (rect.height / 2) + rect.top;
     };
 
     const clearStatus = () => {
-        over = false;
-        top = false;
+        over   = false;
+        top    = false;
         bottom = false;
     };
 
@@ -131,19 +133,34 @@
     const drop = () => {
         let comp = get(draggingComponent);
 
-        dispatch('addskill', {comp, relativeTo: component, above: top});
+        dispatch('addskill', { comp, relativeTo: component, above: top });
         clearStatus();
     };
 
     const addSkill = (e: { detail: { comp: ProComponent, relativeTo: ProComponent, above: ProComponent } }) => {
-        let comp = e.detail.comp;
+        let comp       = e.detail.comp;
         let relativeTo = e.detail.relativeTo;
-        let above = e.detail.above;
-        let index = childrenList.indexOf(relativeTo);
+        let above      = e.detail.above;
+        let index      = childrenList.indexOf(relativeTo);
 
         skill.removeComponent(comp);
         component.addComponent(comp, index + (!above ? 1 : 0));
         dispatch('save');
+    };
+
+    const clone = () => {
+        const test: YAMLObject = new YAMLObject(component.name + '-copy');
+        const testYaml: string = test.toYaml(component.name + '-copy', component.toYamlObj());
+
+        const newData: YAMLObject    = parseYAML(testYaml);
+        const cloned: ProComponent[] = Registry.deserializeComponents(newData);
+
+        if (component.parent) {
+            cloned.forEach(c => component.parent?.addComponent(c));
+        } else {
+            cloned.forEach(c => skill.addComponent(c));
+            dispatch('update');
+        }
     };
 </script>
 
@@ -191,18 +208,18 @@
                     <Control title='Add Component'
                              icon='add'
                              color={getColor()}
-                             on:click={openCompSelectModal}/>
+                             on:click={openCompSelectModal} />
                 {/if}
                 {#if component.preview && component.preview.length > 0}
                     <Control title='Preview Settings'
                              icon='visibility'
                              color='gray'
-                             on:click={openPreviewModal}/>
+                             on:click={openPreviewModal} />
                 {/if}
-                <Control title='Copy'
+                <Control title='Clone'
                          icon='content_copy'
                          color='white'
-                         on:click={() => console.log('clicked copy')}
+                         on:click={clone}
                 />
                 <Control title='Delete'
                          icon='delete'
@@ -210,7 +227,7 @@
                          on:click={() => {
 									 skill.removeComponent(component);
 									 dispatch("update");
-								 }}/>
+								 }} />
             </div>
             <div class='children' transition:slide|local>
                 {#if childrenList.length === 0}
@@ -232,13 +249,13 @@
                    let comp = get(draggingComponent);
                    skill.removeComponent(comp);
                    component.addComponent(comp);
-                 }}/>
+                 }} />
                     {/if}
                 {:else}
                     <div class='child-wrapper' bind:this={children}>
                         {#each childrenList as child (child.id)}
             <span transition:slide|local>
-              <svelte:self {skill} bind:component={child} on:update on:save on:addskill={addSkill}/>
+              <svelte:self {skill} bind:component={child} on:update on:save on:addskill={addSkill} />
             </span>
                         {/each}
                     </div>
