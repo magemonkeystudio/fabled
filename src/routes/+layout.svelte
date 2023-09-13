@@ -98,7 +98,7 @@
     <div class='button settings' title='Change Settings' on:click={() => settings = true}>
         <span class='material-symbols-rounded'>settings</span>
     </div>
-    <div class='button save' title='Save' on:click={saveData}>
+    <div class='button save' title='Save' on:click={() => saveData()}>
         <span class='material-symbols-rounded'>save</span>
     </div>
 </div>

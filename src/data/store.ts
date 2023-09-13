@@ -156,6 +156,7 @@ export const saveData = (data?: ProSkill | ProClass) => {
     const act = data || get(active);
     if (!act) return;
 
+    console.log(act);
     saveToFile(act.name + '.yml', act.serializeYaml().toString());
 };
 
