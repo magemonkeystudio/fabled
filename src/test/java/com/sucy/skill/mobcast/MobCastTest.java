@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Disabled("This can only actually be tested properly one PRs have been merged into MockBukkit")
 public class MobCastTest extends MockedTest {
 
     private SkillShot skill;
