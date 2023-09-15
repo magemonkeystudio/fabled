@@ -3,6 +3,8 @@
     import type ProComponent from '$api/components/procomponent';
     import type DropdownSelect from "$api/options/dropdownselect";
     import type {ComponentOption} from "$api/options/options";
+    import Toggle from '$input/Toggle.svelte';
+    import ProInput from '$input/ProInput.svelte';
 
     export let data: ProComponent | undefined = undefined;
     let modalOpen = true;
@@ -19,6 +21,10 @@
     {/if}
     <hr/>
     <div class='component-entry'>
+        <ProInput label='Enable Preview'
+                  tooltip={'[enabled] Whether this component will show its preview while casting. Requires a compatible casting mode: Item, Bars (hover bar only), Action bar, Title, Subtitle or Chat'}>
+            <Toggle bind:data={data.enablePreview}/>
+        </ProInput>
         {#each data.preview as datum}
             {#if datum.meetsRequirements(data)}
                 <svelte:component

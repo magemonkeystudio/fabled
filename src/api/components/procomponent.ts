@@ -15,6 +15,7 @@ export default abstract class ProComponent extends Constructable {
 	public components: Writable<ProComponent[]> = writable([]);
 	public data: ComponentOption[]              = [];
 	public preview: ComponentOption[]           = [];
+    public enablePreview                        = false;
 	public summaryItems: string[]               = [];
 	public isParent                             = true;
 	public isDeprecated                         = false;
@@ -113,7 +114,10 @@ export default abstract class ProComponent extends Constructable {
 
 	public deserialize(yaml: YAMLObject): void {
 		const preview = yaml.get<YAMLObject, YAMLObject>('preview');
-		if (preview) this.preview.forEach((opt: ComponentOption) => opt.deserialize(preview));
+        if (preview) {
+            this.enablePreview = preview.get("enabled", false);
+            this.preview.forEach((opt: ComponentOption) => opt.deserialize(preview));
+        }
 
 		this.comment = yaml.get<string, string>('comment', '').replaceAll('\\n', '\n');
 	}
