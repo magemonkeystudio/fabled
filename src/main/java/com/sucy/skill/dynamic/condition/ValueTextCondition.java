@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 /**
  * A condition for dynamic skills that requires the text value to match the settings
  */
-public class TextCondition extends ConditionComponent {
+public class ValueTextCondition extends ConditionComponent {
 
     private static final String MODE   = "mode";
     private static final String VALUE  = "value";
