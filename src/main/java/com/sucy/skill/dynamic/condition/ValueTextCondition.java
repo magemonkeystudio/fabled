@@ -30,7 +30,7 @@ public class ValueTextCondition extends ConditionComponent {
     @Override
     boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
         final CompareMode mode = CompareMode.valueOf(settings.getString(MODE).toUpperCase());
-        final Object value = DynamicSkill.getCastData(caster).get(VALUE);
+        final Object value = DynamicSkill.getCastData(caster).get(settings.getString(VALUE));
         final String expect = settings.getString(EXPECT);
         if (value == null || expect == null) return false;
         return mode.compare((String)value, expect);
