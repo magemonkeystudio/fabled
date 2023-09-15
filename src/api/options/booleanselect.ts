@@ -35,5 +35,9 @@ export default class BooleanSelect extends Requirements implements ComponentOpti
     return data;
   };
 
+  getSummary = (): string => {
+    return this.data ? "true" : "";
+  };
+
   deserialize = (yaml: YAMLObject) => this.data = yaml.get<boolean, boolean>(this.key, false);
 }

@@ -35,6 +35,10 @@ export default class StringListSelect extends Requirements implements ComponentO
     return data;
   };
 
+  getSummary = (): string => {
+    return this.data.value.join(", ");
+  }
+
   deserialize = (yaml: YAMLObject) => {
     this.data.value = yaml.get<string[], string[]>(this.key);
   };

@@ -9,9 +9,9 @@
     import {initComponents} from '$api/components/components';
     import Modal from '$components/Modal.svelte';
     import Toggle from '$input/Toggle.svelte';
-    import ProInput from '$input/ProInput.svelte';
-    import {animationEnabled, useSymbols} from '../data/settings';
-    import {serverOptions, version} from '../version/data';
+    import ProInput                                           from '$input/ProInput.svelte';
+    import { animationEnabled, showSummaryItems, useSymbols } from '../data/settings';
+    import {serverOptions, version}                           from '../version/data';
     import {isSaving, skills} from '../data/skill-store';
     import {fly} from 'svelte/transition';
     import type {Unsubscriber} from 'svelte/types/runtime/store';
@@ -121,6 +121,9 @@
         <ProInput label='Use Symbols' tooltip='If skill components should use symbols instead of text'>
             <Toggle left='Symbols' right='Text' bind:data={$useSymbols}/>
         </ProInput>
+        <ProInput label='Show Summary Items' tooltip='If skill components should show a simplified summary on the element'>
+            <Toggle left='True' right='False' bind:data={$showSummaryItems}/>
+        </ProInput>
         <ProInput label='Waterfall Animation' tooltip='If the waterfall animation should play in the sidebar'>
             <Toggle bind:data={$animationEnabled}/>
         </ProInput>
@@ -165,6 +168,7 @@
     }
 
     #body-container {
+        max-width: 100dvw;
         flex-grow: 1;
         display: flex;
         flex-direction: row;
@@ -175,7 +179,8 @@
         flex-direction: column;
         align-items: center;
         /*padding-bottom: 1rem;*/
-        flex-grow: 1;
+        width: 10%;
+        flex: 1;
     }
 
     #body.centered {

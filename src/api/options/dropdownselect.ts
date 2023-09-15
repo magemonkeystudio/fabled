@@ -54,5 +54,10 @@ export default class DropdownSelect extends Requirements implements ComponentOpt
     return data;
   };
 
+  getSummary = (): string => {
+    if (this.data.selected instanceof Array) return this.data.selected.join(", ");
+    return this.data.selected;
+  }
+
   deserialize = (yaml: YAMLObject) => this.data.selected = yaml.get(this.key);
 }

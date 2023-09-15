@@ -35,5 +35,9 @@ export default class IntSelect extends Requirements implements ComponentOption {
     return data;
   };
 
+  getSummary = (): string => {
+    return this.data.toString();
+  };
+
   deserialize = (yaml: YAMLObject) => this.data = yaml.get<number, number>(this.key, 0);
 }

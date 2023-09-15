@@ -37,6 +37,10 @@ export default class AttributeSelect extends Requirements implements ComponentOp
     return data;
   };
 
+  getSummary = (): string => {
+    return this.data.base.toString();
+  }
+
   deserialize = (yaml: YAMLObject) => {
     this.data.base = yaml.get<number, number>(this.key + "-base", 0);
     this.data.scale = yaml.get<number, number>(this.key + "-scale", 0);

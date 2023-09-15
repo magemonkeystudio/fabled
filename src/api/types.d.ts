@@ -59,7 +59,9 @@ export interface ComponentData {
   data?: ComponentOption[];
   preview?: ComponentOption[];
   components?: ProComponent[];
+  summaryItems?: string[];
   description?: string;
+  comment?: string;
 }
 
 export interface TriggerData extends ComponentData {

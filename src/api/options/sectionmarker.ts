@@ -5,6 +5,7 @@ import SectionMarkerComponent   from "$input/SectionMarkerComponent.svelte";
 import { Requirements }         from "$api/options/options";
 
 export default class SectionMarker extends Requirements implements ComponentOption {
+  key = "section-marker";
   component: typeof SvelteComponent = SectionMarkerComponent;
   data: string;
 
@@ -18,6 +19,8 @@ export default class SectionMarker extends Requirements implements ComponentOpti
   clone = (): ComponentOption => new SectionMarker(this.data);
 
   getData = (): { [key: string]: any } => ({});
+
+  getSummary = (): string => this.data;
 
   deserialize = (_: YAMLObject) => {
     // No-op

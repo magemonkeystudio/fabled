@@ -21,8 +21,13 @@
     });
     dispatch("save");
   } else if (data && !(data instanceof ProClass)) {
+    console.log("data is string")
     const clazz = getClass(<string>data);
     if (clazz) data = clazz;
+  }
+
+  $: if (!(data instanceof Array)) {
+    dispatch("save");
   }
 </script>
 

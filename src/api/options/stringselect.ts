@@ -35,5 +35,7 @@ export default class StringSelect extends Requirements implements ComponentOptio
     return data;
   };
 
+  getSummary = (): string => this.data;
+
   deserialize = (yaml: YAMLObject) => this.data = yaml.get(this.key, "");
 }

@@ -5,6 +5,7 @@ import type { YAMLObject }      from "$api/yaml";
 import { Requirements }         from "$api/options/options";
 
 export default class BlockSelect extends Requirements implements ComponentOption {
+  key = 'block';
   component: typeof SvelteComponent                                                        = BlockSelectOption;
   data: { material: string[], data: number, materialTooltip: string, dataTooltip: string } = {
     material:        ["Any"],
@@ -36,6 +37,10 @@ throw new Error("Block Select requires tooltips be set in the constructor");
 
     return data;
   };
+
+  getSummary = (): string => {
+    return this.data.material + (this.data.data != -1 ? ':' + this.data.data : '');
+  }
 
   deserialize = (yaml: YAMLObject) => {
     this.data.material = yaml.get<string[], string[]>("material", ["Any"]);

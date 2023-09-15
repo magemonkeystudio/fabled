@@ -42,6 +42,18 @@ export default class ClassSelect extends Requirements implements ComponentOption
     return data;
   };
 
+  getSummary = (): string => {
+    if(this.data instanceof Array) {
+      // Join the names of the classes with commas
+      return this.data.map(cl => cl instanceof ProClass ? cl.name : cl).join(", ");
+    } else if (this.data instanceof ProClass) {
+      // Return the name of the class
+      return this.data.name;
+    } else {
+      return this.data;
+    }
+  }
+
   deserialize = (yaml: YAMLObject) => {
     this.data = yaml.get(this.key, this.multiple ? [] : "");
   };

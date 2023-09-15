@@ -22,7 +22,11 @@ export default class ProTrigger extends ProComponent {
       components: [...get(this.components)],
       mana:       this.mana,
       cooldown:   this.cooldown,
-      data:       [...this.data]
+      data:       [...this.data],
+      preview:    [...this.preview],
+      comment:    this.comment,
+      description: this.description,
+      summaryItems: [...this.summaryItems]
     });
   };
 
