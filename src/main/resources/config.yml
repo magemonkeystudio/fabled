@@ -339,6 +339,26 @@ Casting:
   # - In combat mode, works like the instant skill bar
   # - In passive mode, no skills are shown
   # - Skills are assigned through the /class skill menu
+  # ACTION_BAR:
+  # - Hand swapping (F by default) enters casting mode
+  # - Assigned skills are displayed in the action bar
+  # - Pressing the corresponding number key casts the desired skill
+  # - Skills are assigned through the /class skill menu
+  # TITLE:
+  # - Hand swapping (F by default) enters casting mode
+  # - Assigned skills are displayed as a title
+  # - Pressing the corresponding number key casts the desired skill
+  # - Skills are assigned through the /class skill menu
+  # SUBTITLE:
+  # - Hand swapping (F by default) enters casting mode
+  # - Assigned skills are displayed as a subtitle
+  # - Pressing the corresponding number key casts the desired skill
+  # - Skills are assigned through the /class skill menu
+  # CHAT:
+  # - Hand swapping (F by default) enters casting mode
+  # - Assigned skills are displayed in the chat
+  # - Pressing the corresponding number key casts the desired skill
+  # - Skills are assigned through the /class skill menu
   mode: bars
   #
   # Global cooldown between skill casts in seconds
@@ -416,6 +436,12 @@ Casting:
     - 'the cast item and will be'
     - 'cast immediately when switching'
     - 'to their slot.'
+  #
+  # The format for skills displayed while on a text casting mode (action-bar, title, subtitle or chat)
+  message-mode-format:
+    skill: "&6[%number%] &a%skill%"
+    separator: "&7 - "
+
 #
 Click Combos:
   #

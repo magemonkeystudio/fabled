@@ -57,7 +57,7 @@ import java.util.*;
  * use by other plugins as it is handled by the API.
  */
 public class CastCombatListener extends SkillAPIListener {
-    private final String ITEM_SAVE_KEY = "combatItems";
+    private static final String ITEM_SAVE_KEY = "combatItems";
 
     private final HashMap<UUID, ItemStack[]> backup = new HashMap<>();
 

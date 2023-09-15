@@ -38,6 +38,7 @@ import com.sucy.skill.api.skills.SkillShot;
 import com.sucy.skill.api.skills.TargetSkill;
 import com.sucy.skill.api.target.TargetHelper;
 import com.sucy.skill.cast.PlayerCastBars;
+import com.sucy.skill.cast.PlayerTextCastingData;
 import com.sucy.skill.data.GroupSettings;
 import com.sucy.skill.data.PlayerEquips;
 import com.sucy.skill.dynamic.EffectComponent;
@@ -97,9 +98,10 @@ public class PlayerData {
 
     private final DataSection    extraData  = new DataSection();
     private final UUID           playerUUID;
-    private final PlayerSkillBar skillBar;
-    private final PlayerCastBars castBars;
-    private final PlayerCombos   combos;
+    private       PlayerSkillBar skillBar;
+    private       PlayerCastBars        castBars;
+    private       PlayerTextCastingData textCastingData;
+    private final PlayerCombos          combos;
     private final PlayerEquips   equips;
     private final List<UUID>     onCooldown = new ArrayList<>();
     public        int            attribPoints;
@@ -123,7 +125,6 @@ public class PlayerData {
      */
     PlayerData(OfflinePlayer player, boolean init) {
         this.playerUUID = player.getUniqueId();
-        this.skillBar = new PlayerSkillBar(this);
         this.castBars = new PlayerCastBars(this);
         this.combos = new PlayerCombos(this);
         this.equips = new PlayerEquips(this);
@@ -168,6 +169,7 @@ public class PlayerData {
      * @return skill bar data of the owner
      */
     public PlayerSkillBar getSkillBar() {
+        if (skillBar == null) this.skillBar = new PlayerSkillBar(this);
         return skillBar;
     }
 
@@ -175,7 +177,16 @@ public class PlayerData {
      * @return cast bars data for the player
      */
     public PlayerCastBars getCastBars() {
+        if (castBars == null) castBars = new PlayerCastBars(this);
         return castBars;
+    }
+
+    /**
+     * @return cast bars data for the player
+     */
+    public PlayerTextCastingData getTextCastingData() {
+        if (textCastingData == null) textCastingData = new PlayerTextCastingData(this);
+        return textCastingData;
     }
 
     /**
@@ -1547,7 +1558,7 @@ public class PlayerData {
      */
     public void giveExp(double amount, ExpSource source, boolean message) {
         for (PlayerClass playerClass : classes.values()) {
-            playerClass.giveExp(amount, source, message);
+            playerClass.giveExp(amount, source, message); // TODO Xp duplicating
         }
     }
 

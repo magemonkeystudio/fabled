@@ -144,6 +144,8 @@ public class Settings {
             CAST_COOLDOWN          = CAST_BASE + "cooldown",
             CAST_HOVER             = CAST_BASE + "hover-item",
             CAST_INSTANT           = CAST_BASE + "instant-item",
+            CAST_FORMAT_SKILL      = CAST_BASE + "message-mode-format.skill",
+            CAST_FORMAT_SEPARATOR  = CAST_BASE + "message-mode-format.separator",
             COMBO_BASE             = "Click Combos.",
             COMBO_ENABLED          = COMBO_BASE + "enabled",
             COMBO_CUSTOM           = COMBO_BASE + "allow-custom",
@@ -498,6 +500,10 @@ public class Settings {
     private ItemStack     castItem;
     private ItemStack     hoverItem;
     private     ItemStack instantItem;
+    @Getter
+    private String        messageFormatSkill;
+    @Getter
+    private String        messageFormatSeparator;
     /**
      * @return enabled clicks as an array of booleans indexed by click ID
      */
@@ -1198,7 +1204,7 @@ public class Settings {
     private void loadCastSettings() {
         castEnabled = config.getBoolean(CAST_ENABLED);
         try {
-            castMode = CastMode.valueOf(config.getString(CAST_MODE).toUpperCase());
+            castMode = CastMode.valueOf(config.getString(CAST_MODE).toUpperCase().replace('-', '_'));
         } catch (IllegalArgumentException e) {
             castMode = CastMode.BARS;
             config.set(CAST_MODE, CastMode.BARS.name().toLowerCase());
@@ -1208,6 +1214,8 @@ public class Settings {
         castItem = GUITool.markCastItem(GUITool.parseItem(config.getSection(CAST_ITEM)));
         hoverItem = GUITool.markCastItem(GUITool.parseItem(config.getSection(CAST_HOVER)));
         instantItem = GUITool.markCastItem(GUITool.parseItem(config.getSection(CAST_INSTANT)));
+        messageFormatSkill = config.getString(CAST_FORMAT_SKILL, "&6[%number%] &a%skill%");
+        messageFormatSeparator = config.getString(CAST_FORMAT_SEPARATOR, "&7 - ");
         castEnabled = castEnabled && castItem != null;
         PreviewSettings.load(config.getSection(CAST_INDICATOR));
     }

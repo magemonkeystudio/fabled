@@ -689,6 +689,7 @@ public class SkillAPI extends JavaPlugin {
                 case ITEM -> listen(new CastItemListener(), true);
                 case BARS -> listen(new CastBarsListener(), true);
                 case COMBAT -> listen(new CastCombatListener(), true);
+                case ACTION_BAR, TITLE, SUBTITLE, CHAT -> listen(new CastTextListener(settings.getCastMode()), true);
             }
             listen(new CastOffhandListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
         }
