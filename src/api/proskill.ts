@@ -25,7 +25,6 @@ export default class ProSkill implements Serializable {
     minSpent: ProAttribute = new ProAttribute("points-spent-req", 0, 0);
     castMessage = "&6{player} &2has cast &6{skill}";
     combo = "";
-    indicator: "2D" | "3D" | "None" = "2D";
     icon: Icon = {
         material: "Pumpkin",
         customModelData: 0,
@@ -61,7 +60,6 @@ export default class ProSkill implements Serializable {
         if (data?.minSpent) this.minSpent = data.minSpent;
         if (data?.castMessage) this.castMessage = data.castMessage;
         if (data?.combo) this.combo = data.combo;
-        if (data?.indicator) this.indicator = data.indicator;
         if (data?.icon) this.icon = data.icon;
         if (data?.incompatible) this.incompatible = data.incompatible;
         if (data?.triggers) this.triggers = data.triggers;
@@ -107,7 +105,6 @@ export default class ProSkill implements Serializable {
         data.put("cooldown-message", this.cooldownMessage);
         data.put("msg", this.castMessage);
         data.put("combo", this.combo);
-        data.put("indicator", this.indicator);
         data.put("icon", this.icon.material);
         data.put("icon-data", this.icon.customModelData);
         data.put("icon-lore", this.icon.lore);
@@ -135,7 +132,6 @@ export default class ProSkill implements Serializable {
         this.cooldownMessage = yaml.get("cooldown-message", this.cooldownMessage);
         this.castMessage = yaml.get("msg", this.castMessage);
         this.combo = yaml.get("combo", this.combo);
-        this.indicator = yaml.get("indicator", this.indicator);
 
         const attributes: YAMLObject = yaml.get("attributes");
         this.levelReq = new ProAttribute("level", attributes.get("level-base"), attributes.get("level-scale"));
