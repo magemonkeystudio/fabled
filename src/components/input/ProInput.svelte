@@ -1,46 +1,55 @@
 <script lang='ts'>
-    import { fly, slide } from 'svelte/transition';
+	import { fly, slide } from 'svelte/transition';
+	import { onMount }    from 'svelte';
 
-    export let tooltip: string | undefined        = undefined;
-    export let label: string | undefined          = undefined;
-    export let type: 'string' | 'number'          = 'string';
-    export let intMode                            = false;
-    export let value: string | number | undefined = undefined;
-    export let placeholder: string | undefined    = undefined;
-    export let nowrap                             = false;
-    let hovered                                   = false;
-    let ypos                                      = 0;
+	export let tooltip: string | undefined        = undefined;
+	export let label: string | undefined          = undefined;
+	export let type: 'string' | 'number'          = 'string';
+	export let intMode                            = false;
+	export let value: string | number | undefined = undefined;
+	export let placeholder: string | undefined    = undefined;
+	export let nowrap                             = false;
+	export let autofocus                          = false;
+	let input: HTMLElement;
+	let hovered                                   = false;
+	let ypos                                      = 0;
+
+	onMount(() => {
+		if (autofocus && input) {
+			input.focus();
+		}
+	});
 </script>
 
 <div class='label'
-     transition:slide>
-    {#if tooltip && tooltip.length > 0 && hovered}
-        <div class='tooltip' class:top={ypos < window.innerHeight / 2.5}
-             transition:fly={{x: -20, duration: 100}}>
-            {tooltip}
-        </div>
-    {/if}
-    <span class='display'
-          class:nowrap
-          on:mouseenter={(e) => {
+		 transition:slide>
+	{#if tooltip && tooltip.length > 0 && hovered}
+		<div class='tooltip' class:top={ypos < window.innerHeight / 2.5}
+				 transition:fly={{x: -20, duration: 100}}>
+			{tooltip}
+		</div>
+	{/if}
+	<span class='display'
+				class:nowrap
+				on:mouseenter={(e) => {
           ypos = e.target.getBoundingClientRect().top;
           hovered = true;
         }}
-          on:mouseleave={() => hovered = false}>
+				on:mouseleave={() => hovered = false}>
     {label || ''}
-        <slot name='label' />
+		<slot name='label' />
   </span>
 </div>
 <div transition:slide class='input-wrapper' class:labeled={!!label}>
-    <!--{#if type === "number"}-->
-    <!--    <input type="number" bind:value use:numberOnly={{intMode, enabled: type === "number"}}-->
-    <!--           {placeholder} />-->
-    <!--  {:else}-->
-    {#if !!value || value === "" || value === 0}
-        <input bind:value {placeholder} />
-    {/if}
-    <!--{/if}-->
-    <slot />
+	<!--{#if type === "number"}-->
+	<!--    <input type="number" bind:value use:numberOnly={{intMode, enabled: type === "number"}}-->
+	<!--           {placeholder} />-->
+	<!--  {:else}-->
+	{#if !!value || value === "" || value === 0}
+		<input bind:this={input} bind:value {placeholder} />
+	{/if}
+	<!--{/if}-->
+	<slot />
 </div>
 
 <style>

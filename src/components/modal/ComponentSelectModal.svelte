@@ -72,7 +72,7 @@
         <div/>
         <h2>Add a Component</h2>
         <div class='search-bar'>
-            <ProInput bind:value={searchParams} placeholder='Search...'/>
+            <ProInput bind:value={searchParams} placeholder='Search...' autofocus/>
         </div>
     </div>
     {#if sortedTargets.length > 0}
