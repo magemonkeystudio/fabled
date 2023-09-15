@@ -92,15 +92,17 @@ export default abstract class ProComponent extends Constructable {
 		data.put('type', this.type);
 		data.put('comment', this.comment);
 
-		const previewData = new YAMLObject('preview');
-		this.preview
-			.forEach((opt: ComponentOption) => {
-				const optData: { [key: string]: string } = opt.getData();
-				Object.keys(optData).forEach(key => previewData.put(key, optData[key]));
-			});
-
-		if (previewData.getKeys().length > 0)
-			data.put('preview', previewData);
+        if (this.preview.length > 0) {
+            const previewData = new YAMLObject("preview");
+            previewData.put("enabled", this.enablePreview);
+            this.preview
+                .forEach((opt: ComponentOption) => {
+                    const optData: { [key: string]: string } = opt.getData();
+                    Object.keys(optData).forEach(key => previewData.put(key, optData[key]));
+                });
+    
+            data.put("preview", previewData);
+        }
 
 		return data;
 	};
