@@ -9,21 +9,34 @@ import java.util.Map;
 import java.util.Objects;
 
 public class SignalTrigger implements Trigger<SignalEmitEvent>{
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getKey() {
         return "signal";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Class<SignalEmitEvent> getEvent() {
         return SignalEmitEvent.class;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean shouldTrigger(SignalEmitEvent event, int level, Settings settings) {
         return Objects.equals(settings.getString("signal"), event.getSignal());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setValues(SignalEmitEvent event, Map<String, Object> data) {
         List<String> arguments = event.getArguments();
@@ -34,11 +47,17 @@ public class SignalTrigger implements Trigger<SignalEmitEvent>{
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LivingEntity getCaster(SignalEmitEvent event) {
         return event.isSelfHandling() ? event.getEmitter() : event.getReceiver();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LivingEntity getTarget(SignalEmitEvent event, Settings settings) {
         return settings.getBool("target", false) ? event.getReceiver() : event.getEmitter();
