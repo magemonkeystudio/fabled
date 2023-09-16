@@ -63,6 +63,7 @@ public class ComponentRegistry {
         register(new SkillDealtTrigger());
         register(new SkillTakenTrigger());
         register(new ShieldTrigger());
+        register(new SignalTrigger());
         register(new SkillCastTrigger());
         register(new ConsumeTrigger());
 
@@ -180,6 +181,7 @@ public class ComponentRegistry {
         register(new PushMechanic());
         register(new RememberTargetsMechanic());
         register(new RepeatMechanic());
+        register(new SignalEmitMechanic());
         register(new SkillCastMechanic());
         register(new StatMechanic());
         register(new SoundMechanic());
