@@ -4,7 +4,9 @@ import com.sucy.skill.api.event.SignalEmitEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SignalEmitMechanic extends MechanicComponent{
     private static final String SIGNAL = "signal";
@@ -30,7 +32,10 @@ public class SignalEmitMechanic extends MechanicComponent{
         String signal = settings.getString(SIGNAL);
         List<String> arguments = settings.getStringList(ARGUMENT);
         boolean selfHandling = settings.getBool(HANDLER);
-        targets.forEach(target -> Bukkit.getPluginManager().callEvent(new SignalEmitEvent(skill, caster, target, signal, arguments, selfHandling)));
+        targets.forEach(target -> {
+            List<String> filtered = arguments.parallelStream().map(arg -> filter(caster, target, arg)).collect(Collectors.toList());
+            Bukkit.getPluginManager().callEvent(new SignalEmitEvent(skill, caster, target, signal, filtered, selfHandling));
+        });
         return true;
     }
 }
