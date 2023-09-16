@@ -19,7 +19,7 @@ public class ValueTextCondition extends ConditionComponent {
 
     @Override
     public String getKey() {
-        return "text";
+        return "valuetext";
     }
 
     @Override
