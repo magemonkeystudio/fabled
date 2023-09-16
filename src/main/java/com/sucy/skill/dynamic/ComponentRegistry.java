@@ -119,6 +119,7 @@ public class ComponentRegistry {
         register(new TimeCondition());
         register(new ToolCondition());
         register(new ValueCondition());
+        register(new ValueTextCondition());
         register(new WaterCondition());
         register(new WeatherCondition());
         register(new WorldCondition());
