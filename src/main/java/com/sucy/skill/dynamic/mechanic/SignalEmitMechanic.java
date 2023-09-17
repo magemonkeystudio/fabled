@@ -1,6 +1,7 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.api.event.SignalEmitEvent;
+import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 
@@ -33,7 +34,10 @@ public class SignalEmitMechanic extends MechanicComponent{
         List<String> arguments = settings.getStringList(ARGUMENT);
         boolean selfHandling = settings.getBool(HANDLER);
         targets.forEach(target -> {
-            List<String> filtered = arguments.parallelStream().map(arg -> filter(caster, target, arg)).collect(Collectors.toList());
+            List<Object> filtered = arguments.parallelStream().map(arg -> {
+                Object value = DynamicSkill.getCastData(caster).get(arg);
+                return value==null?filter(caster, target, arg):value;
+            }).collect(Collectors.toList());
             Bukkit.getPluginManager().callEvent(new SignalEmitEvent(skill, caster, target, signal, filtered, selfHandling));
         });
         return true;

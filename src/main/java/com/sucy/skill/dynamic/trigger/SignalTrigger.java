@@ -39,9 +39,9 @@ public class SignalTrigger implements Trigger<SignalEmitEvent>{
      */
     @Override
     public void setValues(SignalEmitEvent event, Map<String, Object> data) {
-        List<String> arguments = event.getArguments();
+        List<Object> arguments = event.getArguments();
         for (int i = 0; i < arguments.size(); i++) {
-            String arg = arguments.get(i);
+            Object arg = arguments.get(i);
             if (i==0) data.put("api-arg", arg);
             data.put(String.format("api-arg[%d]", i), arg);
         }

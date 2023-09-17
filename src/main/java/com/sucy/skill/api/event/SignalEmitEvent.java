@@ -16,7 +16,7 @@ public class SignalEmitEvent extends Event {
     private final LivingEntity emitter;
     private final LivingEntity receiver;
     private final String signal;
-    private final List<String> arguments;
+    private final List<Object> arguments;
     private final boolean selfHandling;
 
     /**
@@ -28,7 +28,7 @@ public class SignalEmitEvent extends Event {
      * @param arguments     arguments use for handling signal
      * @param selfHandling  whether the signal is handling by the emitter or by the receiver
      */
-    public SignalEmitEvent(Skill skill, LivingEntity emitter, LivingEntity receiver, String signal, List<String> arguments, boolean selfHandling) {
+    public SignalEmitEvent(Skill skill, LivingEntity emitter, LivingEntity receiver, String signal, List<Object> arguments, boolean selfHandling) {
         this.skill = skill;
         this.emitter = emitter;
         this.receiver = receiver;
