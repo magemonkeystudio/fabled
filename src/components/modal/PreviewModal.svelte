@@ -25,17 +25,19 @@
                   tooltip={'[enabled] Whether this component will show its preview while casting. Requires a compatible casting mode: Item, Bars (hover bar only), Action bar, Title, Subtitle or Chat'}>
             <Toggle bind:data={data.enablePreview}/>
         </ProInput>
-        {#each data.preview as datum}
-            {#if datum.meetsRequirements(data)}
-                <svelte:component
-                        this={datum.component}
-                        bind:data={datum.data}
-                        name={datum.name}
-                        tooltip="{datum.key ? '[' + datum.key + '] ' : ''}{datum.tooltip}"
-                        multiple={datum.multiple}
-                        on:save/>
-            {/if}
-        {/each}
+        {#if data.enablePreview}
+            {#each data.preview as datum}
+                {#if datum.meetsPreviewRequirements(data)}
+                    <svelte:component
+                            this={datum.component}
+                            bind:data={datum.data}
+                            name={datum.name}
+                            tooltip="{datum.key ? '[' + datum.key + '] ' : ''}{datum.tooltip}"
+                            multiple={datum.multiple}
+                            on:save/>
+                {/if}
+            {/each}
+        {/if}
     </div>
 </Modal>
 

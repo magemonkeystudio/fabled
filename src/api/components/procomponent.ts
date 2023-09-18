@@ -97,6 +97,7 @@ export default abstract class ProComponent extends Constructable {
             const previewData = new YAMLObject("preview");
             previewData.put("enabled", this.enablePreview);
             this.preview
+			    .filter(opt => opt.meetsPreviewRequirements(this))
                 .forEach((opt: ComponentOption) => {
                     const optData: { [key: string]: string } = opt.getData();
                     Object.keys(optData).forEach(key => previewData.put(key, optData[key]));
@@ -111,6 +112,18 @@ export default abstract class ProComponent extends Constructable {
 	public abstract getData(): YAMLObject;
 
 	public abstract getRawData(): YAMLObject;
+
+	public getRawPreviewData(): YAMLObject {
+		const data = new YAMLObject("preview");
+	
+		this.preview
+		  .forEach((opt: ComponentOption) => {
+			const optData: { [key: string]: string } = opt.getData();
+			Object.keys(optData).forEach(key => data.put(key, optData[key]));
+		  });
+	
+		return data;
+	}
 
 	public deserialize(yaml: YAMLObject): void {
 		const preview = yaml.get<YAMLObject, YAMLObject>('preview');
