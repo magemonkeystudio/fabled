@@ -56,7 +56,7 @@ public class CastTextListener extends SkillAPIListener {
     }
 
     private void init(Player player) {
-        if (player.getOpenInventory().getTopInventory().getHolder() instanceof SkillHandler) player.closeInventory();
+        if (player.getOpenInventory().getTopInventory() != null && player.getOpenInventory().getTopInventory().getHolder() instanceof SkillHandler) player.closeInventory();
         SkillAPI.getPlayerData(player).getTextCastingData().validate();
     }
 

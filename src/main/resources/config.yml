@@ -359,7 +359,7 @@ Casting:
   # - Assigned skills are displayed in the chat
   # - Pressing the corresponding number key casts the desired skill
   # - Skills are assigned through the /class skill menu
-  mode: bars
+  mode: ACTION_BAR
   #
   # Global cooldown between skill casts in seconds
   cooldown: 0
