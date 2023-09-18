@@ -208,6 +208,7 @@ public class CastBarsListener extends SkillAPIListener {
         PlayerCastBars bars = SkillAPI.getPlayerData(event.getPlayer()).getCastBars();
 
         // Interaction while in a view
+        if (bars.isHovering()) event.setCancelled(true);
         if (event.getPlayer().getInventory().getHeldItemSlot() == SkillAPI.getSettings().getCastSlot()) {
             event.setCancelled(true);
 
