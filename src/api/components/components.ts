@@ -3673,7 +3673,7 @@ class WolfMechanic extends ProMechanic {
 
 const particlePreviewOptions = (key: string): ComponentOption[] => {
 	return [
-		new IntSelect('Refresh frequency', key+'-frequency', 5)
+		new IntSelect('Refresh period', key+'-period', 5)
 			.requireValue(key, [true])
 			.setTooltip('How many ticks to wait before refreshing the preview, recalculating targets and the location of the particle effects'),
 		new DropdownSelect('Particle', key+'-particle', getParticles, 'Villager happy')
