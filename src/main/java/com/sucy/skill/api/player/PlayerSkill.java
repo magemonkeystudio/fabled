@@ -31,7 +31,6 @@ import com.sucy.skill.api.enums.SkillStatus;
 import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.manager.AttributeManager;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 /**
  * Represents player-specific data for a skill such as the player's
@@ -320,11 +319,9 @@ public final class PlayerSkill {
     }
 
     /**
-     * Makes the packets for active indicators
-     *
-     * @param step animation step
+     * Starts the skill preview effects
      */
-    public void playParticles(Player player, int step) {
-        skill.playPreview(player, level, step);
+    public void startPreview() {
+        skill.playPreview(player, level);
     }
 }

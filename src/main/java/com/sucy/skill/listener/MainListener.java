@@ -97,6 +97,7 @@ public class MainListener extends SkillAPIListener {
 
         PlayerData data = SkillAPI.getPlayerData(player);
         if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
+            data.setOnPreviewStop(null);
             data.record(player);
             data.stopPassives(player);
         }

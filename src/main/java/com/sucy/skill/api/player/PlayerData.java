@@ -117,6 +117,7 @@ public class PlayerData {
     private       boolean        passive;
     private       long           skillTimer;
     private       BukkitTask     removeTimer;
+    private       Runnable       onPreviewStop;
 
     /**
      * Initializes a new account data representation for a player.
@@ -2361,6 +2362,17 @@ public class PlayerData {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Stops the current preview, if any, and registers
+     * the on-stop runnable for a new preview, if any
+     *
+     * @param onPreviewStop runnable to execute when the new preview stops
+     */
+    public void setOnPreviewStop(@Nullable Runnable onPreviewStop) {
+        if (this.onPreviewStop != null) this.onPreviewStop.run();
+        this.onPreviewStop = onPreviewStop;
     }
 
     /**

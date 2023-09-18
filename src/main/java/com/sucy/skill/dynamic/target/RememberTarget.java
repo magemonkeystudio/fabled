@@ -27,10 +27,8 @@
 package com.sucy.skill.dynamic.target;
 
 import com.google.common.collect.ImmutableList;
-import com.sucy.skill.cast.PreviewSettings;
 import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -43,7 +41,7 @@ public class RememberTarget extends TargetComponent {
     /**
      * {@inheritDoc}
      */
-    @Override
+    /*@Override
     public void playPreview(Player caster, final int level, final LivingEntity target, int step) {
         final List<LivingEntity> targets = getTargets(caster, level, null);
         for (LivingEntity entity : targets) {
@@ -62,7 +60,7 @@ public class RememberTarget extends TargetComponent {
                     break;
             }
         }
-    }
+    }*/
 
     /**
      * {@inheritDoc}

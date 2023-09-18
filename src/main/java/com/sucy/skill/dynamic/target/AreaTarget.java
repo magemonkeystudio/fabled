@@ -27,9 +27,8 @@
 package com.sucy.skill.dynamic.target;
 
 import com.sucy.skill.api.util.Nearby;
-import com.sucy.skill.cast.*;
+import com.sucy.skill.cast.RoundPreview;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +61,7 @@ public class AreaTarget extends TargetComponent {
     /**
      * {@inheritDoc}
      */
-    @Override
+    /*@Override
     void playPreview(Player caster, final int level, final LivingEntity target, int step) {
         double radius = parseValues(caster, RADIUS, level, 3.0);
         if (preview == null || radius != preview.getRadius()) {
@@ -71,7 +70,7 @@ public class AreaTarget extends TargetComponent {
                     new SpherePreview(radius);
         }
         preview.playParticles(caster, PreviewSettings.particle, target.getLocation().add(0, 0.1, 0), step);
-    }
+    }*/
 
     @Override
     public String getKey() {

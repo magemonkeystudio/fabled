@@ -34,7 +34,6 @@ import com.sucy.skill.api.DefaultCombatProtection;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.cast.CastMode;
-import com.sucy.skill.cast.PreviewSettings;
 import com.sucy.skill.data.formula.Formula;
 import com.sucy.skill.data.formula.value.CustomValue;
 import com.sucy.skill.dynamic.DynamicSkill;
@@ -138,7 +137,6 @@ public class Settings {
             CAST_BASE              = "Casting.",
             CAST_ENABLED           = CAST_BASE + "enabled",
             CAST_MODE              = CAST_BASE + "mode",
-            CAST_INDICATOR         = CAST_BASE + "cast-indicator",
             CAST_SLOT              = CAST_BASE + "slot",
             CAST_ITEM              = CAST_BASE + "item",
             CAST_COOLDOWN          = CAST_BASE + "cooldown",
@@ -1217,7 +1215,6 @@ public class Settings {
         messageFormatSkill = config.getString(CAST_FORMAT_SKILL, "&6[%number%] &a%skill%");
         messageFormatSeparator = config.getString(CAST_FORMAT_SEPARATOR, "&7 - ");
         castEnabled = castEnabled && castItem != null;
-        PreviewSettings.load(config.getSection(CAST_INDICATOR));
     }
 
     private void loadComboSettings() {

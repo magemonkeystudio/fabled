@@ -28,7 +28,6 @@ package com.sucy.skill.dynamic.target;
 
 import com.sucy.skill.api.target.TargetHelper;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -54,10 +53,10 @@ public class LinearTarget extends TargetComponent {
     /**
      * {@inheritDoc}
      */
-    @Override
+    /*@Override
     void playPreview(final Player caster, final int level, final LivingEntity target, int step) {
         // TODO - add indicators for linear targeting
-    }
+    }*/
 
     @Override
     public String getKey() {

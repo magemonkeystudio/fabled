@@ -72,7 +72,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
     /**
      * {@inheritDoc}
      */
-    @Override
+    /*@Override
     public void playPreview(Player caster, int level, List<LivingEntity> targets, int step) {
         double speed  = parseValues(caster, VELOCITY, level, 1);
         String spread = settings.getString(SPREAD, "cone").toLowerCase();
@@ -114,7 +114,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
                 }
             });
         }
-    }
+    }*/
 
     @Override
     public String getKey() {

@@ -27,14 +27,12 @@
 package com.sucy.skill.dynamic.target;
 
 import com.google.common.collect.ImmutableList;
-import com.sucy.skill.cast.PreviewSettings;
 import com.sucy.skill.dynamic.TempEntity;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
@@ -56,7 +54,7 @@ public class LocationTarget extends TargetComponent {
     /**
      * {@inheritDoc}
      */
-    @Override
+    /*@Override
     public void playPreview(Player caster, final int level, final LivingEntity target, int step) {
         final LivingEntity loc = getTargets(caster, level, ImmutableList.of(target)).get(0);
         switch (previewType) {
@@ -67,7 +65,7 @@ public class LocationTarget extends TargetComponent {
                 spherePreview.playParticles(caster, PreviewSettings.particle, loc.getLocation().add(0, 0.1, 0), step);
                 break;
         }
-    }
+    }*/
 
     /**
      * {@inheritDoc}

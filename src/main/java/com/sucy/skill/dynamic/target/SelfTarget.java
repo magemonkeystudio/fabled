@@ -27,9 +27,7 @@
 package com.sucy.skill.dynamic.target;
 
 import com.google.common.collect.ImmutableList;
-import com.sucy.skill.cast.PreviewSettings;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -41,7 +39,7 @@ public class SelfTarget extends TargetComponent {
     /**
      * {@inheritDoc}
      */
-    @Override
+    /*@Override
     public void playPreview(Player caster, final int level, final LivingEntity target, int step) {
         switch (previewType) {
             case DIM_2:
@@ -57,7 +55,7 @@ public class SelfTarget extends TargetComponent {
                         step);
                 break;
         }
-    }
+    }*/
 
     /**
      * {@inheritDoc}

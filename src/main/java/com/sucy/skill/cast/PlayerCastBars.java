@@ -30,8 +30,6 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkill;
 import com.sucy.skill.gui.tool.GUITool;
-import com.sucy.skill.thread.MainThread;
-import com.sucy.skill.thread.RepeatThreadTask;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -96,21 +94,11 @@ public class PlayerCastBars implements InventoryHolder {
     private void hoverSkill(int slot) {
         if (hoverBar.containsKey(slot)) {
             hovered = this.player.getSkill(hoverBar.get(slot));
+            hovered.startPreview();
         } else {
             hovered = null;
+            player.setOnPreviewStop(null);
         }
-    }
-
-    /**
-     * Makes the packets for cast previews
-     *
-     * @param step animation step
-     */
-    public void playHoverParticles(Player player, int step) {
-        if (hovered == null) {
-            return;
-        }
-        hovered.playParticles(player, step);
     }
 
     /**
@@ -275,23 +263,11 @@ public class PlayerCastBars implements InventoryHolder {
      * @param player player to show to
      */
     public boolean showHoverBar(Player player) {
-        boolean result = show(player, PlayerView.HOVER_BAR, hoverBar);
-        MainThread.register(new RepeatThreadTask(0, PreviewSettings.interval) {
-            private int step = 0;
-
-            @Override
-            public void run() {
-                PlayerData playerData = SkillAPI.getPlayerData(player);
-                // Expire when not in the hover view anymore
-                if (!playerData.getCastBars().isHovering()) {
-                    expired = true;
-                    return;
-                }
-
-                playerData.getCastBars().playHoverParticles(player, step++);
-            }
-        });
-        return result;
+        if (show(player, PlayerView.HOVER_BAR, hoverBar)) {
+            if (hovered != null) hovered.startPreview();
+            return true;
+        }
+        return false;
     }
 
     /**

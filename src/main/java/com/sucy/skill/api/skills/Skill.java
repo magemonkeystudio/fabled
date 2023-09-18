@@ -838,14 +838,12 @@ public abstract class Skill implements IconHolder {
     }
 
     /**
-     * Plays the skill previews.
-     * This should be implemented by each skill.
-     *
-     * @param player player to base location on
-     * @param level  the level of the skill to create for
-     * @param step   the current progress of the indicator
+     * Starts the skill's preview effects.
+     * Removal of any registered listeners, tasks, entities, or other
+     * temporary effects should be included in a {@link Runnable}
+     * passed to {@link PlayerData#setOnPreviewStop(Runnable)}
      */
-    public void playPreview(Player player, int level, int step) {}
+    public void playPreview(PlayerData playerData, int level) {}
 
     /**
      * Saves the skill data to the configuration, overwriting all previous data

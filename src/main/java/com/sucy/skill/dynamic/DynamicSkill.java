@@ -28,6 +28,7 @@ package com.sucy.skill.dynamic;
 
 import com.google.common.collect.ImmutableList;
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.skills.PassiveSkill;
 import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.api.skills.SkillShot;
@@ -37,7 +38,6 @@ import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.util.TextFormatter;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Listener;
 
@@ -265,17 +265,14 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
     }
 
     /**
-     * Plays the skill previews.
-     * This should be implemented by each skill.
-     *
-     * @param player player to base location on
-     * @param level  the level of the skill to create for
-     * @param step   the current progress of the indicator
+     * {@inheritDoc}
      */
     @Override
-    public void playPreview(Player player, int level, int step) {
+    public void playPreview(PlayerData playerData, int level) {
         if (castTrigger != null) {
-            castTrigger.playPreview(player, level, ImmutableList.of(player), level);
+            List<Runnable> onPreviewStop = new ArrayList<>();
+            castTrigger.playChildrenPreviews(onPreviewStop, playerData.getPlayer(), level, ImmutableList.of(playerData.getPlayer()));
+            playerData.setOnPreviewStop(() -> onPreviewStop.forEach(Runnable::run));
         }
     }
 

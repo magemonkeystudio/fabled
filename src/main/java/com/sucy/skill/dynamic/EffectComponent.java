@@ -30,7 +30,6 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkill;
-import com.sucy.skill.cast.PreviewType;
 import com.sucy.skill.log.Logger;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.util.MobManager;
@@ -48,7 +47,7 @@ public abstract class EffectComponent {
     private static final String                     ICON_KEY   = "icon-key";
     private static final String                     COUNTS_KEY = "counts";
     private static final String                     TYPE       = "type";
-    private static final String                     PREVIEW    = "indicator";
+    private static final String                     PREVIEW    = "preview";
     private static       boolean                    passed;
     /**
      * Child components
@@ -57,19 +56,19 @@ public abstract class EffectComponent {
     /**
      * The settings for the component
      */
-    protected final      Settings                   settings   = new Settings();
+    protected final      Settings settings   = new Settings();
     /**
-     * Whether the component has preview effects
+     * Whether the component should display preview effects
      */
-    public               boolean                    hasPreview;
+    private boolean  isPreviewEnabled        = false;
+    /**
+     * The preview settings for the component
+     */
+    protected final      Settings preview    = new Settings();
     /**
      * Parent class of the component
      */
     protected            DynamicSkill               skill;
-    /**
-     * Type of indicators to show
-     */
-    protected            PreviewType                previewType;
     private              String                     instanceKey;
 
     private static String filterSpecialChars(String string) {
@@ -129,11 +128,9 @@ public abstract class EffectComponent {
     }
 
     /**
-     * Whether the component or its children have a preview effect
-     *
-     * @return true if has a preview, false otherwise
+     * @return true if the component or its children should play their preview effects, or false otherwise
      */
-    public boolean hasPreview() {return hasPreview;}
+    public boolean isPreviewEnabled() {return isPreviewEnabled;}
 
     /**
      * Retrieves an attribute value while applying attribute
@@ -321,18 +318,31 @@ public abstract class EffectComponent {
     public abstract boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force);
 
     /**
-     * Creates the list of indicators for the skill
+     * Starts the component's preview effects.
+     * Removal of any registered listeners, tasks, entities, or other
+     * temporary effects should be included in a {@link Runnable} added
+     * to the provided {@link List}.
      *
+     * @param onPreviewStop {@link List} of {@link Runnable}s to add to
      * @param caster  caster reference
-     * @param targets location to base location on
-     * @param level   the level of the skill to create for
-     * @param step    the current progress of the indicator
+     * @param level   the level of the skill to preview for
+     * @param targets targets to preview on
      */
-    public void playPreview(Player caster, int level, List<LivingEntity> targets, int step) {
-        if (hasPreview) {
-            for (EffectComponent component : children) {
-                component.playPreview(caster, level, targets, step);
-            }
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {}
+
+    /**
+     * Starts the preview effects of children components
+     * with previews enabled (see {@link #isPreviewEnabled()}),
+     * and adds their onPreviewStop {@link Runnable}s to the provided {@link List}.
+     *
+     * @param onPreviewStop {@link List} of {@link Runnable}s to add to
+     * @param caster  caster reference
+     * @param level   the level of the skill to preview for
+     * @param targets targets to preview on
+     */
+    public void playChildrenPreviews(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
+        for (EffectComponent child : children) {
+            if (child.isPreviewEnabled) child.playPreview(onPreviewStop, caster, level, targets);
         }
     }
 
@@ -343,8 +353,8 @@ public abstract class EffectComponent {
      */
     public void save(DataSection config) {
         config.set(TYPE, getType().name().toLowerCase());
-        config.set(PREVIEW, previewType.getKey());
         settings.save(config.createSection("data"));
+        preview.save(config.createSection(PREVIEW));
         DataSection children = config.createSection("children");
         for (EffectComponent child : this.children) {
             child.save(children.createSection(child.instanceKey));
@@ -369,7 +379,9 @@ public abstract class EffectComponent {
                 skill.setAttribKey(key, this);
             }
         }
-        previewType = PreviewType.getByKey(config.getString(PREVIEW, "NONE"));
+
+        preview.load(config.getSection(PREVIEW));
+        isPreviewEnabled = preview.getBool("enabled", false);
 
         DataSection children = config.getSection("children");
         if (children != null) {
@@ -389,16 +401,6 @@ public abstract class EffectComponent {
                 } catch (Exception ex) {
                     // Failed to create the component, just don't add it
                     Logger.bug("Failed to create " + type + " component: " + key);
-                }
-            }
-        }
-
-        hasPreview = previewType != PreviewType.NONE;
-        if (!hasPreview) {
-            for (EffectComponent child : this.children) {
-                if (child.hasPreview()) {
-                    hasPreview = true;
-                    break;
                 }
             }
         }
