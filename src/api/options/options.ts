@@ -7,6 +7,7 @@ export interface ComponentOption extends Cloneable<ComponentOption> {
   deserialize: (yaml: YAMLObject) => void;
   setTooltip: (tooltip: string) => this;
   meetsRequirements: (comp: ProComponent) => boolean;
+  meetsPreviewRequirements: (comp: ProComponent) => boolean;
   getSummary: () => string;
 }
 
@@ -15,17 +16,23 @@ interface Cloneable<T> {
 }
 
 export abstract class Requirements {
-  private targetKey: string | undefined;
-  private targetValue: any[] = [];
+  private requirements: { [key: string]: any[] } = {};
   public requireValue        = (key: string, value: any[]): this => {
-    this.targetKey   = key;
-    this.targetValue = value;
+    this.requirements[key] = value;
     return this;
   };
 
   meetsRequirements = (comp: ProComponent): boolean => {
-    if (!this.targetKey) return true;
+		for (const key in this.requirements) {
+      if (!this.requirements[key].includes(comp.getRawData().get(key))) return false;
+		}
+    return true;
+  };
 
-    return this.targetValue.includes(comp.getRawData().get(this.targetKey));
+  meetsPreviewRequirements = (comp: ProComponent): boolean => {
+		for (const key in this.requirements) {
+      if (!this.requirements[key].includes(comp.getRawPreviewData().get(key))) return false;
+		}
+    return true;
   };
 }

@@ -15,6 +15,7 @@ export default abstract class ProComponent extends Constructable {
 	public components: Writable<ProComponent[]> = writable([]);
 	public data: ComponentOption[]              = [];
 	public preview: ComponentOption[]           = [];
+    public enablePreview                        = false;
 	public summaryItems: string[]               = [];
 	public isParent                             = true;
 	public isDeprecated                         = false;
@@ -92,15 +93,18 @@ export default abstract class ProComponent extends Constructable {
 		data.put('type', this.type);
 		data.put('comment', this.comment);
 
-		const previewData = new YAMLObject('preview');
-		this.preview
-			.forEach((opt: ComponentOption) => {
-				const optData: { [key: string]: string } = opt.getData();
-				Object.keys(optData).forEach(key => previewData.put(key, optData[key]));
-			});
-
-		if (previewData.getKeys().length > 0)
-			data.put('preview', previewData);
+        if (this.preview.length > 0) {
+            const previewData = new YAMLObject("preview");
+            previewData.put("enabled", this.enablePreview);
+            this.preview
+			    .filter(opt => opt.meetsPreviewRequirements(this))
+                .forEach((opt: ComponentOption) => {
+                    const optData: { [key: string]: string } = opt.getData();
+                    Object.keys(optData).forEach(key => previewData.put(key, optData[key]));
+                });
+    
+            data.put("preview", previewData);
+        }
 
 		return data;
 	};
@@ -109,9 +113,24 @@ export default abstract class ProComponent extends Constructable {
 
 	public abstract getRawData(): YAMLObject;
 
+	public getRawPreviewData(): YAMLObject {
+		const data = new YAMLObject("preview");
+	
+		this.preview
+		  .forEach((opt: ComponentOption) => {
+			const optData: { [key: string]: string } = opt.getData();
+			Object.keys(optData).forEach(key => data.put(key, optData[key]));
+		  });
+	
+		return data;
+	}
+
 	public deserialize(yaml: YAMLObject): void {
 		const preview = yaml.get<YAMLObject, YAMLObject>('preview');
-		if (preview) this.preview.forEach((opt: ComponentOption) => opt.deserialize(preview));
+        if (preview) {
+            this.enablePreview = preview.get("enabled", false);
+            this.preview.forEach((opt: ComponentOption) => opt.deserialize(preview));
+        }
 
 		this.comment = yaml.get<string, string>('comment', '').replaceAll('\\n', '\n');
 	}

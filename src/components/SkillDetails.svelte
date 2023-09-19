@@ -69,14 +69,6 @@
   <ProInput label="Combo"
             tooltip='The click combo to assign the skill (if enabled). Use L, R, S, LS, RS, P, Q and F for the types of clicks separated by spaces. For example, "L L R R" would work for 4 click combos.'
             bind:value={data.combo} />
-  <ProInput label="Indicator"
-            tooltip='What sort of display to use for cast previews. This applies to the "hover bar" in the casting bars setup'>
-    <select bind:value={data.indicator}>
-      <option value="2D">2D</option>
-      <option value="3D">3D</option>
-      <option value="None">None</option>
-    </select>
-  </ProInput>
   <IconInput bind:icon={data.icon} />
   <ProInput label="Incompatible"
             tooltip="List of skills that must not be upgraded in order to upgrade this skill">
