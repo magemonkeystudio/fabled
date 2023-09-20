@@ -211,9 +211,9 @@ public class CastTextListener extends SkillAPIListener {
         PlayerData            playerData = SkillAPI.getPlayerData(player);
         PlayerTextCastingData castData   = playerData.getTextCastingData();
         if (castData.isCasting()) {
-            castData.setState(false);
+            castData.setCasting(false);
         } else if (!castData.isEmpty()) {
-            castData.setState(true);
+            castData.setCasting(true);
             switch (castMode) {
                 case ACTION_BAR, TITLE, SUBTITLE -> new CastTextTask(playerData).runTaskTimer(SkillAPI.inst(), 0, 1);
                 case CHAT -> player.sendMessage(castData.getMessage());

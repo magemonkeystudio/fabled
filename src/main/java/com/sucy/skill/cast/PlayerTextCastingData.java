@@ -131,7 +131,7 @@ public class PlayerTextCastingData {
         return casting;
     }
 
-    public void setState(boolean casting) {
+    public void setCasting(boolean casting) {
         this.casting = casting;
         PlayerInventory inventory = player.getPlayer().getInventory();
         if (casting) {
@@ -143,7 +143,6 @@ public class PlayerTextCastingData {
     }
 
     public boolean cast(int slot) {
-        setState(false);
         PlayerSkill skill = player.getSkill(skills[slot]);
         if (skill != null) return player.cast(skill);
         return false;
