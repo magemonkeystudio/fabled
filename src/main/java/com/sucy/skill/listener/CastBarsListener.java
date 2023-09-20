@@ -231,5 +231,6 @@ public class CastBarsListener extends SkillAPIListener {
 
     private void handleClear(final Player player) {
         player.getInventory().setItem(SkillAPI.getSettings().getCastSlot(), SkillAPI.getSettings().getCastItem());
+        SkillAPI.getPlayerData(player).setOnPreviewStop(null);
     }
 }
