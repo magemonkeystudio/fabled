@@ -84,7 +84,7 @@ public abstract class TargetComponent extends EffectComponent {
                         );
                     }
                 }
-            }.runTaskTimer(SkillAPI.inst(),0, 5);
+            }.runTaskTimer(SkillAPI.inst(),0, Math.max(1, preview.getInt("per-target-"+"period", 5)));
             onPreviewStop.add(task::cancel);
         }
     }
