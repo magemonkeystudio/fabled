@@ -199,7 +199,8 @@ public class CastTextListener extends SkillAPIListener {
         public synchronized void cancel() throws IllegalStateException {
             super.cancel();
             if (castMode == CastMode.ACTION_BAR) {
-                playerData.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
+                Player player = playerData.getPlayer();
+                if (player != null) player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(""));
             }
         }
     }
