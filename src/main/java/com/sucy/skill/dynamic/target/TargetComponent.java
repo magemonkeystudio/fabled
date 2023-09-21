@@ -80,7 +80,7 @@ public abstract class TargetComponent extends EffectComponent {
                 public void run() {
                     for (LivingEntity target : getTargets(caster, level, targets)) {
                         ParticleHelper.play(target.getLocation(), preview, Set.of(caster), "per-target-",
-                                settings.getBool("per-target-"+"hitbox") ? target.getBoundingBox() : null
+                                preview.getBool("per-target-"+"hitbox") ? target.getBoundingBox() : null
                         );
                     }
                 }

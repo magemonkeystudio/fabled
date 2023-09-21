@@ -265,6 +265,7 @@ public class PlayerCastBars implements InventoryHolder {
      */
     public boolean showHoverBar(Player player) {
         if (show(player, PlayerView.HOVER_BAR, hoverBar)) {
+            hoverSkill(player.getInventory().getHeldItemSlot());
             if (hovered != null) hovered.startPreview();
             return true;
         }
