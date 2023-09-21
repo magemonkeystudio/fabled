@@ -26,12 +26,19 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
+import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.particle.ParticleHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Strikes lightning about each target with an offset
@@ -49,6 +56,27 @@ public class WarpLocMechanic extends MechanicComponent {
         return "warp location";
     }
 
+    @Nullable
+    private Location parseLocation(LivingEntity caster) {
+        String world = settings.getString(WORLD, "current");
+        if (world.equalsIgnoreCase("current")) {
+            world = caster.getWorld().getName();
+        }
+        World w = Bukkit.getWorld(world);
+        if (w == null) {
+            return null;
+        }
+
+        // Get the other values
+        double x     = settings.getDouble(X, 0.0);
+        double y     = settings.getDouble(Y, 0.0);
+        double z     = settings.getDouble(Z, 0.0);
+        float  yaw   = (float) settings.getDouble(YAW, 0.0);
+        float  pitch = (float) settings.getDouble(PITCH, 0.0);
+
+        return new Location(w, x, y, z, yaw, pitch);
+    }
+
     /**
      * Executes the component
      *
@@ -60,32 +88,29 @@ public class WarpLocMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0) {
-            return false;
-        }
+        if (targets.isEmpty()) return false;
 
-        // Get the world
-        String world = settings.getString(WORLD, "current");
-        if (world.equalsIgnoreCase("current")) {
-            world = caster.getWorld().getName();
-        }
-        World w = Bukkit.getWorld(world);
-        if (w == null) {
-            return false;
-        }
-
-        // Get the other values
-        double x     = settings.getDouble(X, 0.0);
-        double y     = settings.getDouble(Y, 0.0);
-        double z     = settings.getDouble(Z, 0.0);
-        float  yaw   = (float) settings.getDouble(YAW, 0.0);
-        float  pitch = (float) settings.getDouble(PITCH, 0.0);
-
-        Location loc = new Location(w, x, y, z, yaw, pitch);
+        Location loc = parseLocation(caster);
+        if (loc == null) return false;
 
         for (LivingEntity target : targets) {
             target.teleport(loc);
         }
-        return targets.size() > 0;
+        return true;
+    }
+
+    @Override
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
+        if (preview.getBool("per-target") && !targets.isEmpty()) {
+            BukkitTask task = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    Location loc = parseLocation(caster);
+                    if (loc == null) return;
+                    ParticleHelper.play(loc, preview, Set.of(caster), "per-target-", null);
+                }
+            }.runTaskTimer(SkillAPI.inst(),0, Math.max(1, preview.getInt("per-target-"+"period", 5)));
+            onPreviewStop.add(task::cancel);
+        }
     }
 }

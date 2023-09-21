@@ -28,6 +28,7 @@ package com.sucy.skill.dynamic.mechanic;
 
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.particle.ParticleHelper;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -35,8 +36,11 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Waterlogged;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -64,15 +68,20 @@ public class MineMechanic extends MechanicComponent {
         return "mine";
     }
 
-    @Override
-    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0) {
-            return false;
-        }
+    private Location getLocation(LivingEntity caster, int level, LivingEntity target) {
+        double forward = parseValues(caster, FORWARD, level, 0);
+        double upward  = parseValues(caster, UPWARD, level, 0);
+        double right   = parseValues(caster, RIGHT, level, 0);
+        Location loc = target.getLocation();
+        Vector   dir = target.getLocation().getDirection().setY(0).normalize();
+        Vector   nor = dir.clone().crossProduct(UP);
+        loc.add(dir.multiply(forward).add(nor.multiply(right)));
+        loc.add(0, upward, 0);
+        return loc;
+    }
 
-        boolean drop   = settings.getBool(DROP, true);
+    private Map<LivingEntity, List<Block>> getAffectedBlocks(LivingEntity caster, int level, List<LivingEntity> targets) {
         boolean sphere = settings.getString(SHAPE, "sphere").equalsIgnoreCase("sphere");
-
         Set<String> materials = new HashSet<>();
         boolean     any;
         boolean     origin    = false;
@@ -87,9 +96,7 @@ public class MineMechanic extends MechanicComponent {
             }
         }
 
-        double forward = parseValues(caster, FORWARD, level, 0);
-        double upward  = parseValues(caster, UPWARD, level, 0);
-        double right   = parseValues(caster, RIGHT, level, 0);
+
 
         Map<LivingEntity, List<Block>> blockMap = new HashMap<>();
         World                          w        = caster.getWorld();
@@ -102,11 +109,7 @@ public class MineMechanic extends MechanicComponent {
             for (LivingEntity t : targets) {
                 List<Block> blocks = new ArrayList<>();
                 blockMap.put(t, blocks);
-                Location loc = t.getLocation();
-                Vector   dir = t.getLocation().getDirection().setY(0).normalize();
-                Vector   nor = dir.clone().crossProduct(UP);
-                loc.add(dir.multiply(forward).add(nor.multiply(right)));
-                loc.add(0, upward, 0);
+                Location loc = getLocation(caster, level, t);
 
                 x = loc.getBlockX();
                 y = loc.getBlockY();
@@ -142,11 +145,7 @@ public class MineMechanic extends MechanicComponent {
             for (LivingEntity t : targets) {
                 List<Block> blocks = new ArrayList<>();
                 blockMap.put(t, blocks);
-                Location loc = t.getLocation();
-                Vector   dir = t.getLocation().getDirection().setY(0).normalize();
-                Vector   nor = dir.clone().crossProduct(UP);
-                loc.add(dir.multiply(forward).add(nor.multiply(right)));
-                loc.add(0, upward, 0);
+                Location loc = getLocation(caster, level, t);
 
                 double  yaw     = loc.getYaw();
                 boolean facingZ = Math.abs(yaw) < 45 || Math.abs(yaw) > 135;
@@ -174,6 +173,15 @@ public class MineMechanic extends MechanicComponent {
                 }
             }
         }
+        return blockMap;
+    }
+
+    @Override
+    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
+        if (targets.isEmpty()) return false;
+
+        Map<LivingEntity, List<Block>> blockMap = getAffectedBlocks(caster, level, targets);
+        boolean drop   = settings.getBool(DROP, true);
 
         // Mine blocks
         boolean success = false;
@@ -204,14 +212,14 @@ public class MineMechanic extends MechanicComponent {
                     tool = new ItemStack(Material.AIR);
                 }
                 List<Block> blocks = entry.getValue();
-                success = success || blocks.size() > 0;
+                success = success || !blocks.isEmpty();
                 for (Block block : blocks) {
                     block.breakNaturally(tool);
                 }
             }
         } else {
             for (List<Block> blocks : blockMap.values()) {
-                success = success || blocks.size() > 0;
+                success = success || !blocks.isEmpty();
                 for (Block block : blocks) {
                     BlockData blockState = block.getBlockData();
                     block.setType(blockState instanceof Waterlogged && ((Waterlogged) blockState).isWaterlogged() ?
@@ -221,5 +229,30 @@ public class MineMechanic extends MechanicComponent {
             }
         }
         return success;
+    }
+
+    @Override
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
+        if (preview.getBool("per-target")) {
+            BukkitTask task = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (preview.getBool("per-target-center-only", true))
+                        for (LivingEntity t : targets)
+                            ParticleHelper.play(getLocation(caster, level, t), preview, Set.of(caster), "per-target-", null);
+                    else {
+                        Map<LivingEntity, List<Block>> blockMap = getAffectedBlocks(caster, level, targets);
+                        for (List<Block> blocks : blockMap.values()) {
+                            for (Block block : blocks) {
+                                ParticleHelper.play(block.getLocation(), preview, Set.of(caster), "per-target-",
+                                        preview.getBool("per-target-"+"hitbox") ? block.getBoundingBox() : null
+                                );
+                            }
+                        }
+                    }
+                }
+            }.runTaskTimer(SkillAPI.inst(),0, Math.max(1, preview.getInt("per-target-"+"period", 5)));
+            onPreviewStop.add(task::cancel);
+        }
     }
 }
