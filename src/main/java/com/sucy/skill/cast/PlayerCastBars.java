@@ -138,6 +138,7 @@ public class PlayerCastBars implements InventoryHolder {
         player.getPlayer().getInventory().setContents(backup);
         view = PlayerView.INVENTORY;
         player.getPlayer().getInventory().setHeldItemSlot(oldSlot);
+        player.setOnPreviewStop(null);
     }
 
     /**
