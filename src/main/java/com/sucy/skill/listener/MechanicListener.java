@@ -327,13 +327,15 @@ public class MechanicListener extends SkillAPIListener {
     }
 
     @EventHandler
-    public void blockIgnite(BlockIgniteEvent event) {
-        if (event.getCause() != BlockIgniteEvent.IgniteCause.LIGHTNING) return;
-
-        Entity entity = event.getIgnitingEntity();
-        if (entity instanceof LightningStrike && entity.hasMetadata(NO_FIRE)) {
+    public void combust(EntityCombustByEntityEvent event) {
+        if (event.getCombuster() != null && event.getCombuster().hasMetadata(NO_FIRE))
             event.setCancelled(true);
-        }
+    }
+
+    @EventHandler
+    public void blockIgnite(BlockIgniteEvent event) {
+        if (event.getIgnitingEntity() != null && event.getIgnitingEntity().hasMetadata(NO_FIRE))
+            event.setCancelled(true);
     }
 
     /**
