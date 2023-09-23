@@ -32,7 +32,7 @@ import org.bukkit.entity.LivingEntity;
 import java.util.List;
 
 /**
- * Strikes lightning about each target with an offset
+ * Swaps to entities
  */
 public class WarpSwapMechanic extends MechanicComponent {
     @Override

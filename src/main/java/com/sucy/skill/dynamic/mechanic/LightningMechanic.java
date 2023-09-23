@@ -48,6 +48,7 @@ public class LightningMechanic extends MechanicComponent {
     private static final String CASTER  = "caster";
     private static final String FORWARD = "forward";
     private static final String RIGHT   = "right";
+    private static final String FIRE    = "fire";
 
     @Override
     public String getKey() {
@@ -68,14 +69,19 @@ public class LightningMechanic extends MechanicComponent {
         if (targets.size() == 0) {
             return false;
         }
-        double forward = parseValues(caster, FORWARD, level, 0);
-        double right   = parseValues(caster, RIGHT, level, 0);
+        double  forward    = parseValues(caster, FORWARD, level, 0);
+        double  right      = parseValues(caster, RIGHT, level, 0);
+        boolean startFires = settings.getBool(FIRE, true);
         for (LivingEntity target : targets) {
             Vector          dir       = target.getLocation().getDirection().setY(0).normalize();
             Vector          nor       = dir.clone().crossProduct(up);
             Location        loc       = target.getLocation().add(dir.multiply(forward).add(nor.multiply(right)));
             LightningStrike lightning = target.getWorld().strikeLightning(loc);
             SkillAPI.setMeta(lightning, MechanicListener.P_CALL, new Callback(caster, level, force));
+
+            if (!startFires) {
+                SkillAPI.setMeta(lightning, MechanicListener.NO_FIRE, "valNotUsed");
+            }
         }
         return targets.size() > 0;
     }

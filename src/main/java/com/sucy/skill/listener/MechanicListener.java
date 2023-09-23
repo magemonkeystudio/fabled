@@ -49,6 +49,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
@@ -67,6 +68,7 @@ import java.util.*;
 public class MechanicListener extends SkillAPIListener {
     public static final String SUMMON_DAMAGE     = "sapiSumDamage";
     public static final String P_CALL            = "pmCallback";
+    public static final String NO_FIRE = "noFire";
     public static final String POTION_PROJECTILE = "potionProjectile";
     public static final String ITEM_PROJECTILE   = "itemProjectile";
     public static final String SKILL_LEVEL       = "skill_level";
@@ -321,6 +323,16 @@ public class MechanicListener extends SkillAPIListener {
             } else {
                 event.setDamage(damage);
             }
+        }
+    }
+
+    @EventHandler
+    public void blockIgnite(BlockIgniteEvent event) {
+        if (event.getCause() != BlockIgniteEvent.IgniteCause.LIGHTNING) return;
+
+        Entity entity = event.getIgnitingEntity();
+        if (entity instanceof LightningStrike && entity.hasMetadata(NO_FIRE)) {
+            event.setCancelled(true);
         }
     }
 

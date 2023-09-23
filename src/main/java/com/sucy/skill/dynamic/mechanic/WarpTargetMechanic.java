@@ -31,7 +31,7 @@ import org.bukkit.entity.LivingEntity;
 import java.util.List;
 
 /**
- * Strikes lightning about each target with an offset
+ * Warp to a target
  */
 public class WarpTargetMechanic extends MechanicComponent {
     private static final String TYPE = "type";

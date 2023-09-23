@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Strikes lightning about each target with an offset
+ * Warps the target relative to their current location
  */
 public class WarpMechanic extends MechanicComponent {
     private static final Vector UP = new Vector(0, 1, 0);

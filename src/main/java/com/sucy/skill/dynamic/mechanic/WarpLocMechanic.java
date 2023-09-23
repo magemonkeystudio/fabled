@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Strikes lightning about each target with an offset
+ * Warps the target to a location
  */
 public class WarpLocMechanic extends MechanicComponent {
     private static final String WORLD = "world";
