@@ -1721,6 +1721,8 @@ const projectileOptions = (): ComponentOption[] => {
 			.setTooltip('How fast the projectile is launched. A negative value fires it in the opposite direction.'),
 		new AttributeSelect('Lifespan', 'lifespan', 5)
 			.setTooltip('How long in secods before the projectile will expire in case it doesn\'t hit anything.'),
+		new BooleanSelect('On Expire', 'on-expire', false)
+			.setTooltip('Whether to add the projectile\'s expire location as one of the targets. You can filter out this target with EntityTypeContidion: Location'),
 		new DropdownSelect('Spread', 'spread', ['Cone', 'Horizontal Cone', 'Rain'], 'Cone')
 			.setTooltip('The orientation for firing projectiles. Cone will fire arrows in a cone centered on your reticle. Horizontal cone does the same as cone, just locked to the XZ axis (parallel to the ground). Rain drops the projectiles from above the target. For firing one arrow straight, use "Cone"'),
 		new AttributeSelect('Amount', 'amount', 1)
