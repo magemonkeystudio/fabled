@@ -1,53 +1,55 @@
-<script lang="ts">
-  import Modal from "./Modal.svelte";
-  import { loadFile, loadRaw, setImporting } from "../data/store";
-  import { getHaste } from "$api/hastebin";
+<script lang='ts'>
+	import Modal                               from './Modal.svelte';
+	import { loadFile, loadRaw, setImporting } from '../data/store';
+	import { getHaste }                        from '$api/hastebin';
 
-  let importUrl: string | undefined;
-  let files: File[] | undefined;
+	let importUrl: string | undefined;
+	let files: File[] | undefined;
 
-  const onClose = () => {
-    importUrl = files = undefined;
-    setImporting(false);
-  };
+	const onClose = () => {
+		importUrl = files = undefined;
+		setImporting(false);
+	};
 
-  const importFromUrl = () => {
-    if (!importUrl) return;
-    if (!importUrl.startsWith("http")) importUrl = "https://" + importUrl;
+	const importFromUrl = () => {
+		if (!importUrl) return;
+		if (!importUrl.startsWith('http')) importUrl = 'https://' + importUrl;
 
-    getHaste({ url: importUrl })
-      .then(text => {
-        onClose();
-        loadRaw(text);
-      })
-      .catch(err => {
-        console.error(err);
-      });
-  };
+		getHaste({ url: importUrl })
+			.then(text => {
+				onClose();
+				loadRaw(text);
+			})
+			.catch(console.error);
+	};
 
-  $: if (files && files.length > 0) {
-    for (const file of files) {
-      if (file.name.indexOf(".yml") == -1) continue;
-      loadFile(file);
-      onClose();
-    }
-  }
+	$: if (files && files.length > 0) {
+		for (const file of files) {
+			if (file.name.indexOf('.yml') == -1) continue;
+			loadFile(file);
+			onClose();
+		}
+	}
 </script>
 
 <Modal open={true} on:close={onClose}>
-  <div class="options">
-    <div class="option">
-      <div>Upload File</div>
-      <label for="file-upload" class="button">Select File</label>
-      <input id="file-upload" type="file" bind:files={files} class="hidden" multiple />
-    </div>
-    <div class="or"><span>OR</span></div>
-    <div class="option">
-      <div>Import from URL</div>
-      <input bind:value={importUrl} />
-      <div class="button" on:click={importFromUrl}>Import</div>
-    </div>
-  </div>
+	<div class='options'>
+		<div class='option'>
+			<div>Upload File</div>
+			<label for='file-upload' class='button'>Select File</label>
+			<input id='file-upload' type='file' bind:files={files} class='hidden' multiple />
+		</div>
+		<div class='or'><span>OR</span></div>
+		<div class='option'>
+			<div>Import from URL</div>
+			<input bind:value={importUrl} />
+			<div class='button'
+					 on:click={importFromUrl}
+					 on:keypress={e => e.key === "Enter" && importFromUrl()}
+			>Import
+			</div>
+		</div>
+	</div>
 </Modal>
 
 <style>

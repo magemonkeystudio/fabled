@@ -3,10 +3,10 @@ import type { Writable } from 'svelte/store';
 import { writable }      from 'svelte/store';
 
 export const showSummaryItems: Writable<boolean> = ((): Writable<boolean> => {
-	let saved = false;
+	let saved = true;
 	if (browser) {
 		const stored = localStorage.getItem('show-summary-items');
-		saved        = stored === 'true';
+		saved        = stored !== null ? stored === 'true' : saved;
 	}
 
 	const {
@@ -50,7 +50,7 @@ export const animationEnabled: Writable<boolean> = ((): Writable<boolean> => {
 	let saved = true;
 	if (browser) {
 		const stored = localStorage.getItem('animation-enabled');
-		saved        = stored === 'true';
+		saved        = stored !== null ? stored === 'true' : saved;
 	}
 
 	const {

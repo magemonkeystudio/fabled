@@ -206,6 +206,8 @@ export const loadSkills = (e: ProgressEvent<FileReader>) => {
 
 export const isSaving: Writable<boolean> = writable(false);
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 let saveTask: NodeJS.Timeout;
 export const persistSkills = (list?: ProSkill[]) => {
   if (get(isSaving) && saveTask) {

@@ -29,14 +29,14 @@ export const createPaste = (content: string) => {
     });
 };
 
-export const getHaste = async (data: { id?: string, url?: string }) => {
+export const getHaste = async (data: { id?: string, url?: string }): Promise<string> => {
   if (data.url && (data.url.includes("astebin.com") || data.url.includes("paste.travja.dev")) && !data.url.includes("raw"))
     data.url = data.url.replace(/(astebin\.com|paste\.travja\.dev)/, "$1/raw");
   // const req = await fetch(`${awsUrl}?${data.id ? "id=" + data.id : "url=" + data.url}`);
   if (!data.url && data.id)
     data.url = `${hastebinUrl}/raw/${data.id}`;
 
-  if (!data.url) return;
+  if (!data.url) return "";
 
   const req  = await fetch(data.url);
   const text = await req.text();
