@@ -1,5 +1,6 @@
 import type { LayoutLoad }       from './$types';
 import { createPaste, getHaste } from '$api/hastebin';
+import { base }                  from '$app/paths';
 
 export const ssr = false;
 
@@ -13,8 +14,8 @@ export const load: LayoutLoad = ({ url }) => {
 
 		getHaste({ url: url.searchParams.get('migrationData') || undefined })
 			.then(data => {
-				const skillData = data.split(separator)[0];
-				const classData = data.split(separator)[1];
+				const skillData    = data.split(separator)[0];
+				const classData    = data.split(separator)[1];
 				const skillFolders = data.split(separator)[2];
 				const classFolders = data.split(separator)[3];
 
@@ -23,7 +24,7 @@ export const load: LayoutLoad = ({ url }) => {
 				localStorage.setItem('skillFolders', skillFolders);
 				localStorage.setItem('classFolders', classFolders);
 
-				window.location.href = `http://${expectedHost}`;
+				window.location.href = `http://${expectedHost}/${base}`;
 			})
 			.catch(console.error);
 
@@ -45,10 +46,10 @@ export const load: LayoutLoad = ({ url }) => {
 		+ classFolders;
 
 	createPaste(qualifiedData)
-				.then((data) => {
-					console.log(data);
-					window.location.href = `http://${expectedHost}/proskillapi?migrationData=${data}`;
-				});
+		.then((data) => {
+			console.log(data);
+			window.location.href = `http://${expectedHost}/proskillapi?migrationData=${data}`;
+		});
 
 	return;
 };
