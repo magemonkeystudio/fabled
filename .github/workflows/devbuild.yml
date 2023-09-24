@@ -17,9 +17,8 @@ jobs:
           path: app
       - name: Configure git
         run: |
-          cd app
-          git config user.name "Auto Bot"
-          git config user.email "<>"
+          git config --global user.name "Auto Bot"
+          git config --global user.email "<>"
       - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
@@ -49,8 +48,6 @@ jobs:
           path: editor
       - name: Update Javadocs
         run: |
-          git config user.name "Auto Bot"
-          git config user.email "<>"
           cp main/gh-pages/javadocs editor/javadocs
           cd editor
           git add .
