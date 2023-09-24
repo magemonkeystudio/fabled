@@ -1087,7 +1087,7 @@ class EntityTypeCondition extends ProCondition {
 			name:         'Entity Type',
 			description:  'Applies child elements if the target matches one of the selected entity types',
 			data:         [
-				new DropdownSelect('Types', 'types', getEntities, [], true)
+				new DropdownSelect('Types', 'types', ["Location", ...getEntities()], [], true)
 					.setTooltip('The entity types to target')
 			],
 			summaryItems: ['types']
