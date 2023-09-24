@@ -29,9 +29,7 @@ package com.sucy.skill.dynamic.mechanic;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.particle.ParticleHelper;
 import com.sucy.skill.dynamic.DynamicSkill;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -95,7 +93,7 @@ public class WarpValueMechanic extends MechanicComponent {
                     if (loc == null) return;
                     ParticleHelper.play(loc, preview, Set.of(caster), "per-target-", null);
                 }
-            }.runTaskTimer(SkillAPI.inst(),0, Math.max(1, preview.getInt("per-target-"+"period", 5)));
+            }.runTaskTimer(SkillAPI.inst(), 0, Math.max(1, preview.getInt("per-target-" + "period", 5)));
             onPreviewStop.add(task::cancel);
         }
     }

@@ -5,14 +5,13 @@ import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SignalEmitMechanic extends MechanicComponent{
-    private static final String SIGNAL = "signal";
+public class SignalEmitMechanic extends MechanicComponent {
+    private static final String SIGNAL   = "signal";
     private static final String ARGUMENT = "argument";
-    private static final String HANDLER = "handler";
+    private static final String HANDLER  = "handler";
 
     @Override
     public String getKey() {
@@ -30,15 +29,16 @@ public class SignalEmitMechanic extends MechanicComponent{
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        String signal = settings.getString(SIGNAL);
-        List<String> arguments = settings.getStringList(ARGUMENT);
-        boolean selfHandling = settings.getBool(HANDLER);
+        String       signal       = settings.getString(SIGNAL);
+        List<String> arguments    = settings.getStringList(ARGUMENT);
+        boolean      selfHandling = settings.getBool(HANDLER);
         targets.forEach(target -> {
             List<Object> filtered = arguments.parallelStream().map(arg -> {
                 Object value = DynamicSkill.getCastData(caster).get(arg);
-                return value==null?filter(caster, target, arg):value;
+                return value == null ? filter(caster, target, arg) : value;
             }).collect(Collectors.toList());
-            Bukkit.getPluginManager().callEvent(new SignalEmitEvent(skill, caster, target, signal, filtered, selfHandling));
+            Bukkit.getPluginManager()
+                    .callEvent(new SignalEmitEvent(skill, caster, target, signal, filtered, selfHandling));
         });
         return true;
     }

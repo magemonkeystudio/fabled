@@ -5,7 +5,6 @@ import com.sucy.skill.api.DefaultCombatProtection;
 import com.sucy.skill.api.event.PhysicalDamageEvent;
 import com.sucy.skill.testutil.MockedTest;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;

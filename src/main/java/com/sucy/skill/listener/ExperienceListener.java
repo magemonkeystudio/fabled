@@ -89,23 +89,24 @@ public class ExperienceListener extends SkillAPIListener {
             }
         }
     }
+
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onExpGain(PlayerExperienceGainEvent event){
-        Player player = event.getPlayerData().getPlayer();
-        Set<PermissionAttachmentInfo> perms = player.getEffectivePermissions();
+    public void onExpGain(PlayerExperienceGainEvent event) {
+        Player                        player = event.getPlayerData().getPlayer();
+        Set<PermissionAttachmentInfo> perms  = player.getEffectivePermissions();
         OptionalInt max = perms.stream()
-                .filter(c->c.getPermission().startsWith("skillapi.exp.booster"))
-                .map(c->c.getPermission().substring(21))
-                .mapToInt(number->{
-                    try{
+                .filter(c -> c.getPermission().startsWith("skillapi.exp.booster"))
+                .map(c -> c.getPermission().substring(21))
+                .mapToInt(number -> {
+                    try {
                         return Integer.parseInt(number);
-                    }catch (NumberFormatException e){
+                    } catch (NumberFormatException e) {
                         return 0;
                     }
                 })
                 .max();
         if (max.isEmpty()) return;
-        event.setExp(event.getExp()*max.getAsInt()/100);
+        event.setExp(event.getExp() * max.getAsInt() / 100);
     }
 
     private String format(Block block) {

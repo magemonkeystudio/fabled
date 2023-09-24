@@ -144,7 +144,8 @@ public class BuffData {
     public double apply(final BuffType type, final double value) {
         return doApply(value, type.name());
     }
-    public boolean isActive(final BuffType type){
+
+    public boolean isActive(final BuffType type) {
         final Map<String, Buff> typeBuffs = buffs.get(type.name());
         return typeBuffs != null;
     }
@@ -154,15 +155,16 @@ public class BuffData {
      *
      * @param type type of buff
      */
-    public void clearByType(final BuffType type){
+    public void clearByType(final BuffType type) {
         Map<String, Buff> buffType = buffs.get(type.name());
-        if(buffType==null) return;
+        if (buffType == null) return;
         for (final Buff buff : buffType.values()) {
             buff.task.cancel();
         }
         buffs.remove(type.name());
 
     }
+
     /**
      * Applies all buffs of the given type to the specified value
      *
@@ -306,7 +308,7 @@ public class BuffData {
                     BuffManager.clearData(entity);
                 }
             }
-            BuffExpiredEvent event = new BuffExpiredEvent(entity,typeBuffs.get(type),BuffType.valueOf(this.type));
+            BuffExpiredEvent event = new BuffExpiredEvent(entity, typeBuffs.get(type), BuffType.valueOf(this.type));
             Bukkit.getPluginManager().callEvent(event);
         }
     }

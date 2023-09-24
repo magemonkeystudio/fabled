@@ -92,7 +92,7 @@ public class AttributeMechanic extends MechanicComponent {
         for (LivingEntity target : targets) {
             if (target instanceof Player) {
                 worked = true;
-                final PlayerData        data     = SkillAPI.getPlayerData((Player) target);
+                final PlayerData data = SkillAPI.getPlayerData((Player) target);
                 PlayerAttributeModifier modifier = new PlayerAttributeModifier("skillapi.mechanic.attribute_mechanic",
                         amount,
                         Operation.valueOf(operation),

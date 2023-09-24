@@ -55,8 +55,8 @@ import java.util.UUID;
  * Handles the alternate casting option for casting via a cycling slot
  */
 public class CastItemListener extends SkillAPIListener {
-    private final HashMap<UUID, PlayerSkillSlot> data = new HashMap<>();
-    private final Set<UUID> playersDropping = new HashSet<>();
+    private final HashMap<UUID, PlayerSkillSlot> data            = new HashMap<>();
+    private final Set<UUID>                      playersDropping = new HashSet<>();
 
     private void cleanup(Player player) {
         data.remove(player.getUniqueId());
@@ -169,7 +169,8 @@ public class CastItemListener extends SkillAPIListener {
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         if (SkillAPI.getSettings().isWorldEnabled(event.getWhoClicked().getWorld())) {
-            if (event.getSlot() == SkillAPI.getSettings().getCastSlot() && event.getSlotType() == InventoryType.SlotType.QUICKBAR)
+            if (event.getSlot() == SkillAPI.getSettings().getCastSlot()
+                    && event.getSlotType() == InventoryType.SlotType.QUICKBAR)
                 event.setCancelled(true);
             else if (event.getAction() == InventoryAction.HOTBAR_SWAP
                     && event.getHotbarButton() == SkillAPI.getSettings().getCastSlot())
@@ -228,7 +229,8 @@ public class CastItemListener extends SkillAPIListener {
 
     @EventHandler
     public void onItemHeld(PlayerItemHeldEvent event) {
-        data.get(event.getPlayer().getUniqueId()).setHovering(event.getNewSlot() == SkillAPI.getSettings().getCastSlot());
+        data.get(event.getPlayer().getUniqueId())
+                .setHovering(event.getNewSlot() == SkillAPI.getSettings().getCastSlot());
     }
 
     private void handleClear(final Player player) {

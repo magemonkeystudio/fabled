@@ -64,10 +64,10 @@ public class SoundMechanic extends MechanicComponent {
 
         String type = settings.getString(SOUND, settings.getString(SOUND2, "")).toUpperCase().replace(" ", "_");
         try {
-            String sound  =
+            String sound =
                     type.equals("CUSTOM") ? settings.getString(CUSTOM, "") : Sound.valueOf(type).getKey().toString();
-            float  volume = (float) parseValues(caster, VOLUME, level, 100.0) / 100;
-            float  pitch  = (float) parseValues(caster, PITCH, level, 0.0);
+            float volume = (float) parseValues(caster, VOLUME, level, 100.0) / 100;
+            float pitch  = (float) parseValues(caster, PITCH, level, 0.0);
 
             volume = Math.max(0, volume);
             pitch = Math.min(2, Math.max(0.5f, pitch));

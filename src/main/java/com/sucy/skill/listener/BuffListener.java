@@ -86,19 +86,23 @@ public class BuffListener extends SkillAPIListener {
             event.setCancelled(true);
         }
     }
+
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onBuffExpire(final BuffExpiredEvent event){
-        if(event.getType().equals(BuffType.INVISIBILITY)){
-            if(PluginChecker.isProtocolLibActive())
+    public void onBuffExpire(final BuffExpiredEvent event) {
+        if (event.getType().equals(BuffType.INVISIBILITY)) {
+            if (PluginChecker.isProtocolLibActive())
                 PacketListener.updateEquipment((Player) event.getEntity());
         }
     }
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onEffectExpire(final EntityPotionEffectEvent event){
-        if(!(event.getEntity() instanceof Player) || !event.getModifiedType().equals(PotionEffectType.INVISIBILITY)) return;
-        if(event.getAction().equals(EntityPotionEffectEvent.Action.CLEARED) || event.getAction().equals(EntityPotionEffectEvent.Action.REMOVED)){
+    public void onEffectExpire(final EntityPotionEffectEvent event) {
+        if (!(event.getEntity() instanceof Player) || !event.getModifiedType().equals(PotionEffectType.INVISIBILITY))
+            return;
+        if (event.getAction().equals(EntityPotionEffectEvent.Action.CLEARED) || event.getAction()
+                .equals(EntityPotionEffectEvent.Action.REMOVED)) {
             BuffManager.getBuffData((LivingEntity) event.getEntity()).clearByType(BuffType.INVISIBILITY);
-            if(PluginChecker.isProtocolLibActive()) PacketListener.updateEquipment((Player) event.getEntity());
+            if (PluginChecker.isProtocolLibActive()) PacketListener.updateEquipment((Player) event.getEntity());
         }
     }
 }

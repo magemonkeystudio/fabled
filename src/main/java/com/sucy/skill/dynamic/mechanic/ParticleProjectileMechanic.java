@@ -113,7 +113,6 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
             });
         }
     }*/
-
     @Override
     public String getKey() {
         return "particle projectile";

@@ -69,19 +69,21 @@ public class MineMechanic extends MechanicComponent {
     }
 
     private Location getLocation(LivingEntity caster, int level, LivingEntity target) {
-        double forward = parseValues(caster, FORWARD, level, 0);
-        double upward  = parseValues(caster, UPWARD, level, 0);
-        double right   = parseValues(caster, RIGHT, level, 0);
-        Location loc = target.getLocation();
-        Vector   dir = target.getLocation().getDirection().setY(0).normalize();
-        Vector   nor = dir.clone().crossProduct(UP);
+        double   forward = parseValues(caster, FORWARD, level, 0);
+        double   upward  = parseValues(caster, UPWARD, level, 0);
+        double   right   = parseValues(caster, RIGHT, level, 0);
+        Location loc     = target.getLocation();
+        Vector   dir     = target.getLocation().getDirection().setY(0).normalize();
+        Vector   nor     = dir.clone().crossProduct(UP);
         loc.add(dir.multiply(forward).add(nor.multiply(right)));
         loc.add(0, upward, 0);
         return loc;
     }
 
-    private Map<LivingEntity, List<Block>> getAffectedBlocks(LivingEntity caster, int level, List<LivingEntity> targets) {
-        boolean sphere = settings.getString(SHAPE, "sphere").equalsIgnoreCase("sphere");
+    private Map<LivingEntity, List<Block>> getAffectedBlocks(LivingEntity caster,
+                                                             int level,
+                                                             List<LivingEntity> targets) {
+        boolean     sphere    = settings.getString(SHAPE, "sphere").equalsIgnoreCase("sphere");
         Set<String> materials = new HashSet<>();
         boolean     any;
         boolean     origin    = false;
@@ -95,7 +97,6 @@ public class MineMechanic extends MechanicComponent {
                 }
             }
         }
-
 
 
         Map<LivingEntity, List<Block>> blockMap = new HashMap<>();
@@ -158,7 +159,7 @@ public class MineMechanic extends MechanicComponent {
                 for (double i = x - width; i <= x + width + 0.01; i++) {
                     for (double j = y - height; j <= y + height + 0.01; j++) {
                         for (double k = z - depth; k <= z + depth + 0.01; k++) {
-                            Block    b            = w.getBlockAt((int) Math.floor(facingZ ? i : k),
+                            Block b = w.getBlockAt((int) Math.floor(facingZ ? i : k),
                                     (int) Math.floor(j),
                                     (int) Math.floor(facingZ ? k : i));
                             Material material     = b.getType();
@@ -181,7 +182,7 @@ public class MineMechanic extends MechanicComponent {
         if (targets.isEmpty()) return false;
 
         Map<LivingEntity, List<Block>> blockMap = getAffectedBlocks(caster, level, targets);
-        boolean drop   = settings.getBool(DROP, true);
+        boolean                        drop     = settings.getBool(DROP, true);
 
         // Mine blocks
         boolean success = false;
@@ -239,19 +240,23 @@ public class MineMechanic extends MechanicComponent {
                 public void run() {
                     if (preview.getBool("per-target-center-only", true))
                         for (LivingEntity t : targets)
-                            ParticleHelper.play(getLocation(caster, level, t), preview, Set.of(caster), "per-target-", null);
+                            ParticleHelper.play(getLocation(caster, level, t),
+                                    preview,
+                                    Set.of(caster),
+                                    "per-target-",
+                                    null);
                     else {
                         Map<LivingEntity, List<Block>> blockMap = getAffectedBlocks(caster, level, targets);
                         for (List<Block> blocks : blockMap.values()) {
                             for (Block block : blocks) {
                                 ParticleHelper.play(block.getLocation(), preview, Set.of(caster), "per-target-",
-                                        preview.getBool("per-target-"+"hitbox") ? block.getBoundingBox() : null
+                                        preview.getBool("per-target-" + "hitbox") ? block.getBoundingBox() : null
                                 );
                             }
                         }
                     }
                 }
-            }.runTaskTimer(SkillAPI.inst(),0, Math.max(1, preview.getInt("per-target-"+"period", 5)));
+            }.runTaskTimer(SkillAPI.inst(), 0, Math.max(1, preview.getInt("per-target-" + "period", 5)));
             onPreviewStop.add(task::cancel);
         }
     }

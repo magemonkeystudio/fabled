@@ -481,7 +481,7 @@ public class Settings {
      *
      */
     @Getter
-    private CastMode castMode;
+    private CastMode      castMode;
     /**
      * @return slot the cast item is stored in
      */
@@ -497,7 +497,7 @@ public class Settings {
      */
     private ItemStack     castItem;
     private ItemStack     hoverItem;
-    private     ItemStack instantItem;
+    private ItemStack     instantItem;
     @Getter
     private String        messageFormatSkill;
     @Getter
@@ -506,14 +506,14 @@ public class Settings {
      * @return enabled clicks as an array of booleans indexed by click ID
      */
     @Getter
-    private     boolean[] enabledClicks;
+    private boolean[]     enabledClicks;
     /**
      * Checks whether click combos are enabled
      *
      * @return true if enabled, false otherwise
      */
     @Getter
-    private boolean   combosEnabled;
+    private boolean       combosEnabled;
     /**
      * Checks whether players can customize their click combos
      *
@@ -857,9 +857,10 @@ public class Settings {
              * In this case, it is a different mob of some sort, so
              * we have to assume that the rules of `monsterEnemy` or `passiveAlly` come into place here
              */
-            if(target instanceof Monster && (monsterEnemy || monsterWorlds.contains(attacker.getWorld().getName()))) {
+            if (target instanceof Monster && (monsterEnemy || monsterWorlds.contains(attacker.getWorld().getName()))) {
                 return true;
-            } else if (target instanceof Animals && (passiveAlly || passiveWorlds.contains(attacker.getWorld().getName()))) {
+            } else if (target instanceof Animals && (passiveAlly || passiveWorlds.contains(attacker.getWorld()
+                    .getName()))) {
                 return false;
             }
         }

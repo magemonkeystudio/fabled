@@ -29,26 +29,28 @@ public class ValueTextCondition extends ConditionComponent {
 
     @Override
     boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        final CompareMode mode = CompareMode.valueOf(settings.getString(MODE).toUpperCase());
-        final Object value = DynamicSkill.getCastData(caster).get(settings.getString(VALUE));
-        final String expect = settings.getString(EXPECT);
+        final CompareMode mode   = CompareMode.valueOf(settings.getString(MODE).toUpperCase());
+        final Object      value  = DynamicSkill.getCastData(caster).get(settings.getString(VALUE));
+        final String      expect = settings.getString(EXPECT);
         if (value == null || expect == null) return false;
-        return mode.compare((String)value, expect);
+        return mode.compare((String) value, expect);
     }
 
-    private enum CompareMode{
-        REGEX((r,c)-> Pattern.compile(c).matcher(r).find()),
+    private enum CompareMode {
+        REGEX((r, c) -> Pattern.compile(c).matcher(r).find()),
         EXACTLY(Objects::equals),
         CONTAIN(String::contains),
         START(String::startsWith),
         END(String::endsWith);
 
-        private final BiPredicate<String,String> consumer;
-        CompareMode(BiPredicate<String, String> consumer){
+        private final BiPredicate<String, String> consumer;
+
+        CompareMode(BiPredicate<String, String> consumer) {
             this.consumer = consumer;
         }
-        public boolean compare(String raw, String con){
-            return  consumer.test(raw, con);
+
+        public boolean compare(String raw, String con) {
+            return consumer.test(raw, con);
         }
     }
 

@@ -98,11 +98,11 @@ public class WarpMechanic extends MechanicComponent {
                 public void run() {
                     for (LivingEntity target : targets) {
                         ParticleHelper.play(getLocation(caster, level, target), preview, Set.of(caster), "per-target-",
-                                preview.getBool("per-target-"+"hitbox") ? target.getBoundingBox() : null
+                                preview.getBool("per-target-" + "hitbox") ? target.getBoundingBox() : null
                         );
                     }
                 }
-            }.runTaskTimer(SkillAPI.inst(),0, Math.max(1, preview.getInt("per-target-"+"period", 5)));
+            }.runTaskTimer(SkillAPI.inst(), 0, Math.max(1, preview.getInt("per-target-" + "period", 5)));
             onPreviewStop.add(task::cancel);
         }
     }

@@ -44,27 +44,27 @@ import java.util.Map;
  * A component for dynamic skills which takes care of one effect
  */
 public abstract class EffectComponent {
-    private static final String                     ICON_KEY   = "icon-key";
-    private static final String                     COUNTS_KEY = "counts";
-    private static final String                     TYPE       = "type";
-    private static final String                     PREVIEW    = "preview";
+    private static final String                     ICON_KEY         = "icon-key";
+    private static final String                     COUNTS_KEY       = "counts";
+    private static final String                     TYPE             = "type";
+    private static final String                     PREVIEW          = "preview";
     private static       boolean                    passed;
     /**
      * Child components
      */
-    public final         ArrayList<EffectComponent> children   = new ArrayList<>();
+    public final         ArrayList<EffectComponent> children         = new ArrayList<>();
     /**
      * The settings for the component
      */
-    protected final      Settings settings   = new Settings();
+    protected final      Settings                   settings         = new Settings();
     /**
      * Whether the component should display preview effects
      */
-    private boolean  isPreviewEnabled        = false;
+    private              boolean                    isPreviewEnabled = false;
     /**
      * The preview settings for the component
      */
-    protected final      Settings preview    = new Settings();
+    protected final      Settings                   preview          = new Settings();
     /**
      * Parent class of the component
      */
@@ -324,9 +324,9 @@ public abstract class EffectComponent {
      * to the provided {@link List}.
      *
      * @param onPreviewStop {@link List} of {@link Runnable}s to add to
-     * @param caster  caster reference
-     * @param level   the level of the skill to preview for
-     * @param targets targets to preview on
+     * @param caster        caster reference
+     * @param level         the level of the skill to preview for
+     * @param targets       targets to preview on
      */
     public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {}
 
@@ -336,11 +336,14 @@ public abstract class EffectComponent {
      * and adds their onPreviewStop {@link Runnable}s to the provided {@link List}.
      *
      * @param onPreviewStop {@link List} of {@link Runnable}s to add to
-     * @param caster  caster reference
-     * @param level   the level of the skill to preview for
-     * @param targets targets to preview on
+     * @param caster        caster reference
+     * @param level         the level of the skill to preview for
+     * @param targets       targets to preview on
      */
-    public void playChildrenPreviews(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
+    public void playChildrenPreviews(List<Runnable> onPreviewStop,
+                                     Player caster,
+                                     int level,
+                                     List<LivingEntity> targets) {
         for (EffectComponent child : children) {
             if (child.isPreviewEnabled) child.playPreview(onPreviewStop, caster, level, targets);
         }

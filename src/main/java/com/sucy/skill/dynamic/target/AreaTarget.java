@@ -71,7 +71,6 @@ public class AreaTarget extends TargetComponent {
         }
         preview.playParticles(caster, PreviewSettings.particle, target.getLocation().add(0, 0.1, 0), step);
     }*/
-
     @Override
     public String getKey() {
         return "area";

@@ -54,11 +54,11 @@ import java.util.*;
 
 public class GUITool implements ToolMenu {
     // Page buttons
-    private static final String                     NEXT_PAGE = "NEXT_PAGE";
-    private static final String                     PREV_PAGE = "PREV_PAGE";
-    private static final HashMap<String, GUIData>   setups    = new HashMap<>();
-    private static final HashMap<String, ItemStack> items     = new HashMap<>();
-    private static       boolean                    inUse     = false;
+    private static final String                     NEXT_PAGE     = "NEXT_PAGE";
+    private static final String                     PREV_PAGE     = "PREV_PAGE";
+    private static final HashMap<String, GUIData>   setups        = new HashMap<>();
+    private static final HashMap<String, ItemStack> items         = new HashMap<>();
+    private static       boolean                    inUse         = false;
     private static       CommentedConfig            config;
     private static final NamespacedKey              CAST_ITEM_KEY = new NamespacedKey(SkillAPI.inst(), "castItem");
 

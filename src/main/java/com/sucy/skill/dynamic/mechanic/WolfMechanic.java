@@ -79,9 +79,9 @@ public class WolfMechanic extends MechanicComponent {
 
         final Player player = (Player) caster;
 
-        String       color   = settings.getString(COLOR);
-        double       health  = parseValues(player, HEALTH, level, 10.0);
-        String       name    =
+        String color  = settings.getString(COLOR);
+        double health = parseValues(player, HEALTH, level, 10.0);
+        String name =
                 TextFormatter.colorString(settings.getString(NAME, "").replace("{player}", player.getName()));
         double       damage  = parseValues(player, DAMAGE, level, 3.0);
         double       amount  = parseValues(player, AMOUNT, level, 1.0);

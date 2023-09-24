@@ -97,6 +97,7 @@ public class PluginChecker extends SkillAPIListener {
     public static boolean isWorldGuardActive() {return worldGuard;}
 
     public static boolean isRPGItemsActive() {return rpgItems;}
+
     public static boolean isProtocolLibActive() {return protocolLib;}
 
     public static boolean isPartiesActive() {

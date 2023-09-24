@@ -96,9 +96,9 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
         }
     }
 
-    private   final HashMap<String, List<MetadataValue>> metadata = new HashMap<>();
-    private   final Set<Integer>                         hit      = new HashSet<>();
-    private   final LivingEntity                         thrower;
+    private final   HashMap<String, List<MetadataValue>> metadata = new HashMap<>();
+    private final   Set<Integer>                         hit      = new HashSet<>();
+    private final   LivingEntity                         thrower;
     protected       ProjectileCallback                   callback;
     protected final Settings                             settings;
     private         boolean                              enemy    = true;

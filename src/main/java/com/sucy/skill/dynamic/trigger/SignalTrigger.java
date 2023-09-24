@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class SignalTrigger implements Trigger<SignalEmitEvent>{
+public class SignalTrigger implements Trigger<SignalEmitEvent> {
 
     /**
      * {@inheritDoc}
@@ -42,7 +42,7 @@ public class SignalTrigger implements Trigger<SignalEmitEvent>{
         List<Object> arguments = event.getArguments();
         for (int i = 0; i < arguments.size(); i++) {
             Object arg = arguments.get(i);
-            if (i==0) data.put("api-arg", arg);
+            if (i == 0) data.put("api-arg", arg);
             data.put(String.format("api-arg[%d]", i), arg);
         }
     }

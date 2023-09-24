@@ -109,7 +109,7 @@ public class WarpLocMechanic extends MechanicComponent {
                     if (loc == null) return;
                     ParticleHelper.play(loc, preview, Set.of(caster), "per-target-", null);
                 }
-            }.runTaskTimer(SkillAPI.inst(),0, Math.max(1, preview.getInt("per-target-"+"period", 5)));
+            }.runTaskTimer(SkillAPI.inst(), 0, Math.max(1, preview.getInt("per-target-" + "period", 5)));
             onPreviewStop.add(task::cancel);
         }
     }

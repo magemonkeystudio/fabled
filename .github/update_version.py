@@ -27,7 +27,7 @@ def replace_version():
         else:
             version = ver[0][2]
             minor = int(ver[0][3])
-            new_version = version[:-(len(str(minor)))] + str(minor+1)
+            new_version = version[:-(len(str(minor)))] + str(minor + 1)
         contents = re.sub(regex,
                           '    <version>' + new_version + '</version>',
                           contents,

@@ -57,7 +57,6 @@ public class LinearTarget extends TargetComponent {
     void playPreview(final Player caster, final int level, final LivingEntity target, int step) {
         // TODO - add indicators for linear targeting
     }*/
-
     @Override
     public String getKey() {
         return "linear";

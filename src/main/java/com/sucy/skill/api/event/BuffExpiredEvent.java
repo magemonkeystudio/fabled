@@ -9,9 +9,9 @@ import org.bukkit.event.HandlerList;
 public class BuffExpiredEvent extends Event {
 
     private static final HandlerList  handlers = new HandlerList();
-    private final Buff buff;
-    private final BuffType type;
-    private final LivingEntity entity;
+    private final        Buff         buff;
+    private final        BuffType     type;
+    private final        LivingEntity entity;
 
     public BuffExpiredEvent(LivingEntity entity, Buff buff, BuffType type) {
         this.entity = entity;
@@ -23,6 +23,7 @@ public class BuffExpiredEvent extends Event {
     public HandlerList getHandlers() {
         return handlers;
     }
+
     /**
      * @return gets the handlers for the event
      */

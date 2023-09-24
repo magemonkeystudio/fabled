@@ -96,28 +96,28 @@ public class PlayerData {
     private final HashMap<String, List<PlayerAttributeModifier>> attributesModifiers = new HashMap<>();
     private final HashMap<String, List<PlayerStatModifier>>      statModifiers       = new HashMap<>();
 
-    private final DataSection    extraData  = new DataSection();
-    private final UUID           playerUUID;
-    private       PlayerSkillBar skillBar;
+    private final DataSection           extraData  = new DataSection();
+    private final UUID                  playerUUID;
+    private       PlayerSkillBar        skillBar;
     private       PlayerCastBars        castBars;
     private       PlayerTextCastingData textCastingData;
     private final PlayerCombos          combos;
-    private final PlayerEquips   equips;
-    private final List<UUID>     onCooldown = new ArrayList<>();
-    public        int            attribPoints;
-    private       String         scheme;
-    private       String         menuClass;
-    private       double         mana;
-    private       double         maxMana;
-    private       double         lastHealth;
-    private       double         health;
-    private       double         maxHealth;
-    private       double         hunger;
-    private       boolean        init;
-    private       boolean        passive;
-    private       long           skillTimer;
-    private       BukkitTask     removeTimer;
-    private       Runnable       onPreviewStop;
+    private final PlayerEquips          equips;
+    private final List<UUID>            onCooldown = new ArrayList<>();
+    public        int                   attribPoints;
+    private       String                scheme;
+    private       String                menuClass;
+    private       double                mana;
+    private       double                maxMana;
+    private       double                lastHealth;
+    private       double                health;
+    private       double                maxHealth;
+    private       double                hunger;
+    private       boolean               init;
+    private       boolean               passive;
+    private       long                  skillTimer;
+    private       BukkitTask            removeTimer;
+    private       Runnable              onPreviewStop;
 
     /**
      * Initializes a new account data representation for a player.
