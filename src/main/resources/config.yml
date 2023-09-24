@@ -1,12 +1,10 @@
-# ---------------------------------------------- #
-#              General Configuration             #
-# ---------------------------------------------- #
-# If you are unsure of how to use this file,     #
-# but would like to change how the plugin shows  #
-# text, visit the BukkitDev page at:             #
-# http://dev.bukkit.org/bukkit-plugins/skillapi/ #
-# and look at the default configuration section  #
-# ---------------------------------------------- #
+# -------------------------------------------------------------------------------------------------------------------------- #
+#                                              General Configuration                                                         #
+# -------------------------------------------------------------------------------------------------------------------------- #
+# If you are unsure of how to use this file but would like to change how the plugin shows text, visit the BukkitDev page at: #
+# https://www.spigotmc.org/resources/proskillapi-create-custom-races-classes-skills-spells-with-an-easy-online-editor.91913/ #
+# and look at the default configuration section                                                                              #
+# -------------------------------------------------------------------------------------------------------------------------- #
 Accounts:
   #
   # The main class group used for GUI displays
