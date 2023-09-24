@@ -17,6 +17,7 @@
   import { browser } from "$app/environment";
   import Toggle from "../input/Toggle.svelte";
   import { addSkill, addSkillFolder, skillFolders, skills } from "../../data/skill-store";
+  import { base } from '$app/paths';
 
   let folders: ProFolder[] = [];
   let classSub: Unsubscriber;
@@ -91,7 +92,7 @@
         <SidebarEntry
           data={cl}
           delay={200 + 100*i}
-          on:click={() => goto(`/class/${cl.name}/edit`)}>
+          on:click={() => goto(`${base}/class/${cl.name}/edit`)}>
           {cl.name}
         </SidebarEntry>
       {/each}
@@ -116,7 +117,7 @@
           data={sk}
           direction="right"
           delay={200 + 100*i}
-          on:click={() => goto(`/skill/${sk.name}`)}>
+          on:click={() => goto(`${base}/skill/${sk.name}`)}>
           {sk.name}
         </SidebarEntry>
       {/each}

@@ -8,6 +8,7 @@
   import ProClass                                                                        from "$api/proclass";
   import ProSkill                                                                        from "$api/proskill";
   import { get }                                                                         from "svelte/store";
+  import { base }                                                                        from '$app/paths';
 
   export let folder: ProFolder;
   let elm: HTMLElement;
@@ -125,7 +126,7 @@
         <svelte:self folder={data} />
       {:else}
         <SidebarEntry {data}
-                      on:click={() => goto(`/${data.isClass ? 'class' : 'skill'}/${data.name}${data.isClass ? '/edit' : ''}`)}>
+                      on:click={() => goto(`${base}/${data.isClass ? 'class' : 'skill'}/${data.name}${data.isClass ? '/edit' : ''}`)}>
           {data.name}
         </SidebarEntry>
       {/if}

@@ -7,6 +7,7 @@ import { browser }               from "$app/environment";
 import ProSkill                  from "$api/proskill";
 import { active, rename }        from "./store";
 import { goto }                  from "$app/navigation";
+import { base }                  from '$app/paths';
 
 const loadSkillTextToArray = (text: string): ProSkill[] => {
   const list: ProSkill[] = [];
@@ -156,8 +157,8 @@ export const deleteSkill = (data: ProSkill) => {
 
   if (!(act instanceof ProSkill)) return;
 
-  if (filtered.length === 0) goto("/");
-  else if (!filtered.find(sk => sk === get(active))) goto(`/skill/${filtered[0].name}`);
+  if (filtered.length === 0) goto(`${base}/`);
+  else if (!filtered.find(sk => sk === get(active))) goto(`${base}/skill/${filtered[0].name}`);
 };
 
 export const refreshSkills       = () => skills.set(sort<ProSkill>(get(skills)));

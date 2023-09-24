@@ -5,7 +5,7 @@
 </script>
 
 <div id="header">
-  <div class="home" on:click={() => goto("/")}>
+  <div class="home" on:click={() => goto(`${base}/`)}>
     <h1 class="accent">ProSkillAPI</h1>
     <h2>Dynamic Editor</h2>
     <div class="copy">&copy; ProMCTeam {new Date().getFullYear()}</div>

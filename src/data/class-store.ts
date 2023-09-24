@@ -8,6 +8,7 @@ import { browser }               from "$app/environment";
 import ProClass                  from "$api/proclass";
 import ProSkill                  from "$api/proskill";
 import { goto }                  from "$app/navigation";
+import { base }                  from '$app/paths';
 
 const loadClassTextToArray = (text: string): ProClass[] => {
   const list: ProClass[] = [];
@@ -163,8 +164,8 @@ export const deleteClass = (data: ProClass) => {
 
   if (!(act instanceof ProClass)) return;
 
-  if (filtered.length === 0) goto("/");
-  else if (!filtered.find(cl => cl === get(active))) goto(`/class/${filtered[0].name}/edit`);
+  if (filtered.length === 0) goto(`${base}/`);
+  else if (!filtered.find(cl => cl === get(active))) goto(`${base}/class/${filtered[0].name}/edit`);
 };
 
 export const refreshClasses      = () => classes.set(sort<ProClass>(get(classes)));
