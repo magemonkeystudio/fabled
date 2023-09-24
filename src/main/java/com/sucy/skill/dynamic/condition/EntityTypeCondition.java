@@ -27,6 +27,7 @@
 package com.sucy.skill.dynamic.condition;
 
 import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.dynamic.TempEntity;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.entity.LivingEntity;
 
@@ -54,6 +55,7 @@ public class EntityTypeCondition extends ConditionComponent {
 
     @Override
     boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        return types.contains(target.getType().name());
+        if (target instanceof TempEntity) return types.contains("LOCATION");
+        else return types.contains(target.getType().name());
     }
 }
