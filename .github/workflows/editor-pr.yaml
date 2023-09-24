@@ -1,4 +1,4 @@
-name: Test PR
+name: Test Editor PR
 on:
   pull_request:
     branches:
