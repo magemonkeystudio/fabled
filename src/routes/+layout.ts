@@ -24,7 +24,7 @@ export const load: LayoutLoad = ({ url }) => {
 				localStorage.setItem('skillFolders', skillFolders);
 				localStorage.setItem('classFolders', classFolders);
 
-				window.location.href = `http://${expectedHost}/${base}`;
+				window.location.href = `http://${expectedHost}${base}`;
 			})
 			.catch(console.error);
 
