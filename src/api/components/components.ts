@@ -1088,7 +1088,9 @@ class EntityTypeCondition extends ProCondition {
 			description:  'Applies child elements if the target matches one of the selected entity types',
 			data:         [
 				new DropdownSelect('Types', 'types', ["Location", ...getEntities()], [], true)
-					.setTooltip('The entity types to target')
+					.setTooltip('The entity types to target'),
+				new BooleanSelect('Blacklist', 'blacklist', false)
+					.setTooltip('Whether to consider the listed types as a blacklist, meaning only entities that do NOT match one of them will pass the condition.')
 			],
 			summaryItems: ['types']
 		});
