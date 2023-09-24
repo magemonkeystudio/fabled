@@ -571,6 +571,24 @@ class ShieldTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
+class SignalTrigger extends ProTrigger {
+	public constructor() {
+		super({
+			name:         'Signal',
+			description:  'Applies skill effects when the player receive a signal emitted from Signal Emit mechanic.',
+			data:         [
+				new BooleanSelect('Target Receiver', 'target', true)
+					.setTooltip('True makes children target the receiver. False makes children target the emitter'),
+				new StringSelect('Signal', 'signal')
+					.setTooltip('Name of signal want to receive.')
+			],
+			summaryItems: ['target', 'signal']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 // TARGETS
 
 const targetOptions = (): ComponentOption[] => {
@@ -605,7 +623,7 @@ class AreaTarget extends ProTarget {
 				new BooleanSelect('Random', 'random', false)
 					.setTooltip('Whether to randomize the targets selected')
 			],
-			preview:         [
+			preview:      [
 				...particlesAtTargetPreviewOptions()
 			],
 			summaryItems: ['radius', 'group', 'wall', 'caster', 'max', 'random']
@@ -627,7 +645,7 @@ class ConeTarget extends ProTarget {
 					.setTooltip('The angle of the cone arc in degrees'),
 				...targetOptions()
 			],
-			preview:         [
+			preview:      [
 				...particlesAtTargetPreviewOptions()
 			],
 			summaryItems: ['range', 'angle', 'group', 'wall', 'caster', 'max']
@@ -649,7 +667,7 @@ class LinearTarget extends ProTarget {
 					.setTooltip('How much to expand the potential entity\'s hit-box in all directions, in blocks. This makes it easier to aim'),
 				...targetOptions()
 			],
-			preview:         [
+			preview:      [
 				...particlesAtTargetPreviewOptions()
 			],
 			summaryItems: ['range', 'tolerance', 'group', 'wall', 'caster', 'max']
@@ -676,7 +694,7 @@ class LocationTarget extends ProTarget {
 				new BooleanSelect('Center', 'center', false)
 					.setTooltip('Whether to move the hit location to the center of the block')
 			],
-			preview:         [
+			preview:      [
 				...particlesAtTargetPreviewOptions()
 			],
 			summaryItems: ['range', 'entities', 'fluids', 'passable']
@@ -696,7 +714,7 @@ class NearestTarget extends ProTarget {
 					.setTooltip('The radius of the area to target in blocks'),
 				...targetOptions()
 			],
-			preview:         [
+			preview:      [
 				...particlesAtTargetPreviewOptions()
 			],
 			summaryItems: ['range', 'group', 'wall', 'caster', 'max']
@@ -720,7 +738,7 @@ class OffsetTarget extends ProTarget {
 				new AttributeSelect('Right', 'right')
 					.setTooltip('The offset from the target to their right. Negative numbers go to the left')
 			],
-			preview:         [
+			preview:      [
 				...particlesAtTargetPreviewOptions()
 			],
 			summaryItems: ['forward', 'upward', 'right']
@@ -739,7 +757,7 @@ class RememberTarget extends ProTarget {
 				new StringSelect('Key', 'key', 'target')
 					.setTooltip('The unique key for the target group that should match that used by the "Remember Targets" skill')
 			],
-			preview:         [
+			preview:      [
 				...particlesAtTargetPreviewOptions()
 			],
 			summaryItems: ['key']
@@ -775,7 +793,7 @@ class SingleTarget extends ProTarget {
 				new BooleanSelect('Through Wall', 'wall', false)
 					.setTooltip('Whether to allow targets to be on the other side of a wall')
 			],
-			preview:         [
+			preview:      [
 				...particlesAtTargetPreviewOptions()
 			],
 			summaryItems: ['range', 'tolerance', 'group', 'wall']
@@ -1087,7 +1105,7 @@ class EntityTypeCondition extends ProCondition {
 			name:         'Entity Type',
 			description:  'Applies child elements if the target matches one of the selected entity types',
 			data:         [
-				new DropdownSelect('Types', 'types', ["Location", ...getEntities()], [], true)
+				new DropdownSelect('Types', 'types', ['Location', ...getEntities()], [], true)
 					.setTooltip('The entity types to target'),
 				new BooleanSelect('Blacklist', 'blacklist', false)
 					.setTooltip('Whether to consider the listed types as a blacklist, meaning only entities that do NOT match one of them will pass the condition.')
@@ -1522,17 +1540,18 @@ class ValueCondition extends ProCondition {
 
 	public static override new = () => new this();
 }
+
 class ValueTextCondition extends ProCondition {
 	public constructor() {
 		super({
 			name:        'Value Text',
 			description: 'Applies child components if text value match to the settings',
 			data:        [
-				new DropdownSelect('Mode', 'mode', ['REGEX','EXACTLY','CONTAIN','START','END'], 'EXACTLY')
+				new DropdownSelect('Mode', 'mode', ['REGEX', 'EXACTLY', 'CONTAIN', 'START', 'END'], 'EXACTLY')
 					.setTooltip('The comparison mode should be conditioned.'),
-				new StringSelect('Key', 'value', "")
+				new StringSelect('Key', 'value', '')
 					.setTooltip('Key of the value to be compared.'),
-				new StringSelect('Expect', 'expect', "")
+				new StringSelect('Expect', 'expect', '')
 					.setTooltip('Strings used for comparison.')
 			]
 		});
@@ -3084,6 +3103,26 @@ class RepeatMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
+class SignalEmitMechanic extends ProMechanic {
+	public constructor() {
+		super({
+			name:         'Signal Emit',
+			description:  'Send a custom signal to all target that can be reused and processed separately.',
+			data:         [
+				new StringSelect('Signal', 'signal')
+					.setTooltip('The name of signal will be emit.'),
+				new BooleanSelect('Self-handling', 'handler', false)
+					.setTooltip('\nIf true, the signal will be sent to the caster itself and the target are the current targets.\n If false, a signal is sent to each target and the target is caster'),
+				new StringListSelect('Arguments', 'argument')
+					.setTooltip('Arguments used for signal processing. One value per line. The value will be stored in value api-arg[<index>]. The first value will be specially stored at api-arg')
+			],
+			summaryItems: ['signal', 'handler', 'argument']
+		}, true);
+	}
+
+	public static override new = () => new this();
+}
+
 class SkillCastMechanic extends ProMechanic {
 	public constructor() {
 		super({
@@ -3695,66 +3734,66 @@ class WolfMechanic extends ProMechanic {
 
 const particlePreviewOptions = (key: string): ComponentOption[] => {
 	return [
-		new IntSelect('Refresh period', key+'-period', 5)
+		new IntSelect('Refresh period', key + '-period', 5)
 			.requireValue(key, [true])
 			.setTooltip('How many ticks to wait before refreshing the preview, recalculating targets and the location of the particle effects'),
-		new DropdownSelect('Particle', key+'-particle', getParticles, 'Villager happy')
+		new DropdownSelect('Particle', key + '-particle', getParticles, 'Villager happy')
 			.setTooltip('The type of particle to display')
 			.requireValue(key, [true]),
-		new DropdownSelect('Material', key+'-material', (() => [...getMaterials()]), 'Arrow')
-			.requireValue(key+'-particle', ['Item crack'])
+		new DropdownSelect('Material', key + '-material', (() => [...getMaterials()]), 'Arrow')
+			.requireValue(key + '-particle', ['Item crack'])
 			.requireValue(key, [true])
 			.setTooltip('The material to use for the particles'),
-		new DropdownSelect('Material', key+'-material', (() => [...getBlocks()]), 'Dirt')
-			.requireValue(key+'-particle', [
+		new DropdownSelect('Material', key + '-material', (() => [...getBlocks()]), 'Dirt')
+			.requireValue(key + '-particle', [
 				'Block crack',
 				'Block dust',
 				'Falling dust',
 				'Block marker'])
 			.requireValue(key, [true])
 			.setTooltip('The block to use for the particles'),
-		new IntSelect('Durability', key+'-durability', 0)
-			.requireValue(key+'-particle', ['Item crack'])
+		new IntSelect('Durability', key + '-durability', 0)
+			.requireValue(key + '-particle', ['Item crack'])
 			.requireValue(key, [true])
 			.setTooltip('The durability to be reduced from the item used to make the particles'),
-		new IntSelect('CustomModelData', key+'-type', 0)
-			.requireValue(key+'-particle', ['Item crack'])
+		new IntSelect('CustomModelData', key + '-type', 0)
+			.requireValue(key + '-particle', ['Item crack'])
 			.requireValue(key, [true])
 			.setTooltip('The CustomModelData of the item used to make the particles'),
-		new ColorSelect('Dust Color', key+'-dust-color', '#FF0000')
-			.requireValue(key+'-particle', ['Redstone', 'Dust color transition'])
+		new ColorSelect('Dust Color', key + '-dust-color', '#FF0000')
+			.requireValue(key + '-particle', ['Redstone', 'Dust color transition'])
 			.requireValue(key, [true])
 			.setTooltip('The color of the dust particles in hex RGB'),
-		new ColorSelect('Final Dust Color', key+'-final-dust-color', '#FF0000')
-			.requireValue(key+'-particle', ['Dust color transition'])
+		new ColorSelect('Final Dust Color', key + '-final-dust-color', '#FF0000')
+			.requireValue(key + '-particle', ['Dust color transition'])
 			.requireValue(key, [true])
 			.setTooltip('The color to transition to, in hex RGB'),
-		new DoubleSelect('Dust Size', key+'-dust-size', 1)
-			.requireValue(key+'-particle', ['Redstone', 'Dust color transition'])
+		new DoubleSelect('Dust Size', key + '-dust-size', 1)
+			.requireValue(key + '-particle', ['Redstone', 'Dust color transition'])
 			.requireValue(key, [true])
 			.setTooltip('The size of the dust particles'),
 
-		new DropdownSelect('Arrangement', key+'-arrangement', ['Sphere', 'Circle', 'Hemisphere'], 'Sphere')
+		new DropdownSelect('Arrangement', key + '-arrangement', ['Sphere', 'Circle', 'Hemisphere'], 'Sphere')
 			.requireValue(key, [true])
 			.setTooltip('The arrangement to use for the particles. Circle is a 2D circle, Hemisphere is half a 3D sphere, and Sphere is a 3D sphere'),
 		// Circle arrangement direction
-		new DropdownSelect('Circle Direction', key+'-direction', ['XY', 'XZ', 'YZ'], 'XZ')
-			.requireValue(key+'-arrangement', ['Circle'])
+		new DropdownSelect('Circle Direction', key + '-direction', ['XY', 'XZ', 'YZ'], 'XZ')
+			.requireValue(key + '-arrangement', ['Circle'])
 			.requireValue(key, [true])
 			.setTooltip('The orientation of the circle. XY and YZ are vertical circles while XZ is a horizontal circle'),
-		new AttributeSelect('Radius', key+'-radius', 0.5)
+		new AttributeSelect('Radius', key + '-radius', 0.5)
 			.requireValue(key, [true])
 			.setTooltip('The radius of the arrangement in blocks'),
-		new BooleanSelect('Increase size by hitbox', key+'-hitbox', true)
+		new BooleanSelect('Increase size by hitbox', key + '-hitbox', true)
 			.requireValue(key, [true])
 			.setTooltip('Increases the \'radius\' parameter by the size of the target\'s hitbox'),
-		new AttributeSelect('Points', key+'-particles', 20)
+		new AttributeSelect('Points', key + '-particles', 20)
 			.requireValue(key, [true])
 			.setTooltip('The amount of points that conform the chosen arrangement'),
 
 		// Bukkit particle data value
-		new IntSelect('Effect Data', key+'-data')
-			.requireValue(key+'-particle',
+		new IntSelect('Effect Data', key + '-data')
+			.requireValue(key + '-particle',
 				[
 					'Smoke',
 					'Ender Signal',
@@ -3764,19 +3803,19 @@ const particlePreviewOptions = (key: string): ComponentOption[] => {
 				])
 			.requireValue(key, [true])
 			.setTooltip('The data value to use for the particle. The effect changes between particles such as the orientation for smoke particles or the color for potion break'),
-		new DoubleSelect('DX', key+'-dx')
+		new DoubleSelect('DX', key + '-dx')
 			.requireValue(key, [true])
 			.setTooltip('Offset in the X direction, used as the Red value for some particles'),
-		new DoubleSelect('DY', key+'-dy')
+		new DoubleSelect('DY', key + '-dy')
 			.requireValue(key, [true])
 			.setTooltip('Offset in the Y direction, used as the Green value for some particles'),
-		new DoubleSelect('DZ', key+'-dz')
+		new DoubleSelect('DZ', key + '-dz')
 			.requireValue(key, [true])
 			.setTooltip('Offset in the Z direction, used as the Blue value for some particles'),
-		new DoubleSelect('Amount', key+'-amount', 1)
+		new DoubleSelect('Amount', key + '-amount', 1)
 			.requireValue(key, [true])
 			.setTooltip('Number of particles to play per point. For "Spell mob" and "Spell mob ambient" particles, set to 0 to control the particle color'),
-		new DoubleSelect('Speed', key+'-speed', 0.1)
+		new DoubleSelect('Speed', key + '-speed', 0.1)
 			.requireValue(key, [true])
 			.setTooltip('Speed of the particle. For some particles controls other parameters, such as size')
 	];
@@ -3813,6 +3852,7 @@ export const initComponents = () => {
 		PHYS_DAMAGE:    { name: 'Physical Damage', component: PhysicalDamageTrigger },
 		PROJ_HIT:       { name: 'Projectile Hit', component: ProjectileHitTrigger },
 		PROJ_TICK:      { name: 'Projectile Launch', component: ProjectileTickTrigger },
+		SIGNAL:         { name: 'Signal', component: SignalTrigger },
 		SHIELD:         { name: 'Shield', component: ShieldTrigger },
 		SKILL_DAMAGE:   { name: 'Skill Damage', component: SkillDamageTrigger },
 		SKILL_CAST:     { name: 'Skill Cast', component: SkillCastTrigger },
@@ -3932,6 +3972,7 @@ export const initComponents = () => {
 		PUSH:                { name: 'Push', component: PushMechanic },
 		REMEMBER_TARGETS:    { name: 'Remember Targets', component: RememberTargetsMechanic },
 		REPEAT:              { name: 'Repeat', component: RepeatMechanic },
+		SIGNAL_EMIT:         { name: 'Signal Emit', component: SignalEmitMechanic },
 		SKILL_CAST:          { name: 'Skill Cast', component: SkillCastMechanic },
 		SOUND:               { name: 'Sound', component: SoundMechanic },
 		STAT:                { name: 'Stat', component: StatMechanic },
