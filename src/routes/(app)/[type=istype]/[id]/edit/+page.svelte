@@ -1,27 +1,28 @@
-<script lang="ts">
-  import ProClass from "$api/proclass";
-  import ProSkill from "$api/proskill";
-  import ClassDetails from "$components/ClassDetails.svelte";
-  import SkillDetails from "$components/SkillDetails.svelte";
+<script lang='ts'>
+	import ProClass     from '$api/proclass';
+	import ProSkill     from '$api/proskill';
+	import ClassDetails from '$components/ClassDetails.svelte';
+	import SkillDetails from '$components/SkillDetails.svelte';
+	import { base }     from '$app/paths';
 
-  export let data: { data: ProClass | ProSkill };
+	export let data: { data: ProClass | ProSkill };
 </script>
 
 <svelte:head>
-  <title>ProSkillAPI Dynamic Editor - {data.data.name}</title>
+	<title>ProSkillAPI Dynamic Editor - {data.data.name}</title>
 </svelte:head>
 <h1>{data?.data?.name}
-  {#if data?.data instanceof ProSkill}
-    <a href="/skill/{data.data.name}" class="material-symbols-rounded chip edit-skill">auto_fix</a>
-  {/if}
+	{#if data?.data instanceof ProSkill}
+		<a href='{base}/skill/{data.data.name}' class='material-symbols-rounded chip edit-skill'>auto_fix</a>
+	{/if}
 </h1>
 <hr />
-<div class="container">
-  {#if data?.data instanceof ProClass}
-    <ClassDetails bind:data={data.data} />
-  {:else}
-    <SkillDetails bind:data={data.data} />
-  {/if}
+<div class='container'>
+	{#if data?.data instanceof ProClass}
+		<ClassDetails bind:data={data.data} />
+	{:else}
+		<SkillDetails bind:data={data.data} />
+	{/if}
 </div>
 
 

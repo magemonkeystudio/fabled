@@ -10,6 +10,7 @@
 	import { onDestroy, onMount } from 'svelte';
 	import type { Unsubscriber }  from 'svelte/types/runtime/store';
 	import type ProTrigger        from '$api/components/triggers';
+	import { base }               from '$app/paths';
 
 	export let data: { data: ProSkill };
 	let skill: ProSkill;
@@ -72,7 +73,7 @@
 	<h2>
 		{skill.name}
 		<a class='material-symbols-rounded edit-skill chip' title='Edit'
-			 href='/skill/{skill.name}/edit'>edit</a>
+			 href='{base}/skill/{skill.name}/edit'>edit</a>
 		<div class='add-trigger chip' title='Add Trigger' on:click={() => triggerModal = true}>
 			<span class='material-symbols-rounded'>
 				new_label
@@ -161,7 +162,7 @@
         overflow: hidden;
         font-size: inherit;
         color: white;
-				margin-right: 0.5rem;
+        margin-right: 0.5rem;
         text-decoration: none;
         transition: background-color 0.25s ease;
     }

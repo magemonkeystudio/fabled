@@ -1,6 +1,7 @@
 <script lang="ts">
   import DiscordLogo from "./DiscordLogo.svelte";
   import { goto } from "$app/navigation";
+  import { base }    from '$app/paths';
 </script>
 
 <div id="header">
@@ -17,12 +18,12 @@
     <a class="social github"
        href="https://github.com/promcteam/proskillapi"
        title="Check out our GitHub">
-      <img src="/github-mark-white.svg" />
+      <img src="{base}/github-mark-white.svg" />
     </a>
     <a class="social spigot"
        href="https://www.spigotmc.org/resources/proskillapi-create-custom-races-classes-skills-spells-with-an-easy-online-editor.91913/"
        title="Check out our resource on Spigot">
-      <img src="/spigot.png" />
+      <img src="{base}/spigot.png" />
     </a>
     <a class="social wiki"
        href="https://promcteam.com/wiki/index.php?title=Proskillapi:Proskillapi"
