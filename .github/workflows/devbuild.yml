@@ -17,6 +17,7 @@ jobs:
           path: app
       - name: Configure git
         run: |
+          cd app
           git config user.name "Auto Bot"
           git config user.email "<>"
       - name: Set up JDK 17
