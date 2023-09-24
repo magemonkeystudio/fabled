@@ -30,6 +30,7 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.player.*;
 import com.sucy.skill.api.skills.Skill;
+import com.sucy.skill.cast.CastMode;
 import com.sucy.skill.listener.MainListener;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.manager.ComboManager;
@@ -53,24 +54,25 @@ public abstract class IOManager {
             ACCOUNT_PREFIX = "acc",
             HEALTH         = "health",
             MANA           = "mana",
-            CLASSES        = "classes",
-            SKILLS         = "skills",
-            BINDS          = "binds",
-            LEVEL          = "level",
-            EXP            = "exp",
-            POINTS         = "points",
-            SKILL_BAR      = "bar",
-            HOVER          = "hover",
-            EXTRA          = "extra",
-            INSTANT        = "instant",
-            ENABLED        = "enabled",
-            SLOTS          = "slots",
-            UNASSIGNED     = "e",
-            COMBOS         = "combos",
-            ATTRIBS        = "attribs",
-            COOLDOWN       = "cd",
-            HUNGER         = "hunger",
-            ATTRIB_POINTS  = "attrib-points";
+            CLASSES       = "classes",
+            SKILLS        = "skills",
+            BINDS         = "binds",
+            LEVEL         = "level",
+            EXP           = "exp",
+            POINTS        = "points",
+            SKILL_BAR     = "bar",
+            HOVER         = "hover",
+            EXTRA         = "extra",
+            INSTANT       = "instant",
+            TEXT_LAYOUT   = "text-layout",
+            ENABLED       = "enabled",
+            SLOTS         = "slots",
+            UNASSIGNED    = "e",
+            COMBOS        = "combos",
+            ATTRIBS       = "attribs",
+            COOLDOWN      = "cd",
+            HUNGER        = "hunger",
+            ATTRIB_POINTS = "attrib-points";
 
     /**
      * API reference
@@ -180,7 +182,7 @@ public abstract class IOManager {
             }
 
             // Load skill bar
-            if (SkillAPI.getSettings().isSkillBarEnabled() || SkillAPI.getSettings().isUsingCombat()) {
+            if (SkillAPI.getSettings().isSkillBarEnabled() || SkillAPI.getSettings().getCastMode().equals(CastMode.COMBAT)) {
                 final DataSection    skillBar = account.getSection(SKILL_BAR);
                 final PlayerSkillBar bar      = acc.getSkillBar();
                 if (skillBar != null && bar != null) {
@@ -236,9 +238,14 @@ public abstract class IOManager {
 
             // Load cast bars
             if (SkillAPI.getSettings().isCastEnabled()) {
-                acc.getCastBars().reset();
-                acc.getCastBars().load(account.getSection(HOVER), true);
-                acc.getCastBars().load(account.getSection(INSTANT), false);
+                switch (SkillAPI.getSettings().getCastMode()) {
+                    case BARS -> {
+                        acc.getCastBars().reset();
+                        acc.getCastBars().load(account.getSection(HOVER), true);
+                        acc.getCastBars().load(account.getSection(INSTANT), false);
+                    }
+                    case ACTION_BAR, TITLE, SUBTITLE, CHAT -> acc.getTextCastingData().load(account.getSection(TEXT_LAYOUT));
+                }
             }
 
             acc.setHungerValue(account.getDouble(HUNGER, 1));
@@ -289,7 +296,9 @@ public abstract class IOManager {
                 // Save skills
                 DataSection skills = account.createSection(SKILLS);
                 for (PlayerSkill skill : acc.getSkills()) {
-                    if (skill.isExternal()) { continue; }
+                    if (skill.isExternal()) {
+                        continue;
+                    }
                     DataSection skillSection = skills.createSection(skill.getData().getName());
                     skillSection.set(LEVEL, skill.getLevel());
                     if (skill.isOnCooldown())
@@ -304,7 +313,7 @@ public abstract class IOManager {
                 }
 
                 // Save skill bar
-                if ((SkillAPI.getSettings().isSkillBarEnabled() || SkillAPI.getSettings().isUsingCombat())
+                if ((SkillAPI.getSettings().isSkillBarEnabled() || SkillAPI.getSettings().getCastMode().equals(CastMode.COMBAT))
                         && acc.getSkillBar() != null) {
                     DataSection    skillBar = account.createSection(SKILL_BAR);
                     PlayerSkillBar bar      = acc.getSkillBar();
@@ -342,8 +351,13 @@ public abstract class IOManager {
 
                 // Save cast bars
                 if (SkillAPI.getSettings().isCastEnabled()) {
-                    acc.getCastBars().save(account.createSection(HOVER), true);
-                    acc.getCastBars().save(account.createSection(INSTANT), false);
+                    switch (SkillAPI.getSettings().getCastMode()) {
+                        case BARS -> {
+                            acc.getCastBars().save(account.createSection(HOVER), true);
+                            acc.getCastBars().save(account.createSection(INSTANT), false);
+                        }
+                        case ACTION_BAR, TITLE, SUBTITLE, CHAT -> acc.getTextCastingData().save(account.createSection(TEXT_LAYOUT));
+                    }
                 }
 
                 account.set(HUNGER, acc.getHungerValue());

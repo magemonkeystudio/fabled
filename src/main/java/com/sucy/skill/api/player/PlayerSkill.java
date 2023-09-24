@@ -31,7 +31,6 @@ import com.sucy.skill.api.enums.SkillStatus;
 import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.manager.AttributeManager;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 
 /**
  * Represents player-specific data for a skill such as the player's
@@ -68,9 +67,9 @@ public final class PlayerSkill {
      * this constructor as it is provided by the API. Get instances
      * through the PlayerData object.
      *
-     * @param player owning player data
-     * @param skill  skill template
-     * @param parent owning player class
+     * @param player   owning player data
+     * @param skill    skill template
+     * @param parent   owning player class
      * @param external whether the skill was added by an external plugin
      */
     public PlayerSkill(PlayerData player, Skill skill, PlayerClass parent, boolean external) {
@@ -141,7 +140,7 @@ public final class PlayerSkill {
      *
      * @return whether the skill was added by an external plugin
      */
-    public boolean isExternal() { return external; }
+    public boolean isExternal() {return external;}
 
     /**
      * Retrieves the cost to upgrade the skill to the next level
@@ -320,11 +319,9 @@ public final class PlayerSkill {
     }
 
     /**
-     * Makes the packets for active indicators
-     *
-     * @param step animation step
+     * Starts the skill preview effects
      */
-    public void playParticles(Player player, int step) {
-        skill.playPreview(player, level, step);
+    public void startPreview() {
+        skill.playPreview(player, level);
     }
 }

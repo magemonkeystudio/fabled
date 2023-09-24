@@ -78,7 +78,8 @@ public class CmdRefund implements IFunction {
                 int current = playerData.getInvestedAttribute(args[2].toLowerCase());
 
                 if (current > 0) {
-                    PlayerRefundAttributeEvent event = new PlayerRefundAttributeEvent(playerData, args[2].toLowerCase());
+                    PlayerRefundAttributeEvent event =
+                            new PlayerRefundAttributeEvent(playerData, args[2].toLowerCase());
                     Bukkit.getPluginManager().callEvent(event);
                     if (event.isCancelled()) {
                         return;
@@ -92,7 +93,9 @@ public class CmdRefund implements IFunction {
                         playerData.attribPoints += Integer.parseInt(args[3]);
                     }
                     playerData.updatePlayerStat(playerData.getPlayer());
-                    cmd.sendMessage(sender, REFUNDED_OTHER, "&6" + args[3] + " " + args[2] + " &2attribute points have been refunded for &6" + args[0]);
+                    cmd.sendMessage(sender,
+                            REFUNDED_OTHER,
+                            "&6" + args[3] + " " + args[2] + " &2attribute points have been refunded for &6" + args[0]);
                 }
             } else if (args.length == 2 && args[1].equals("attribute")) {
 

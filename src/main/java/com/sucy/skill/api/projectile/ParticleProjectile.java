@@ -68,7 +68,6 @@ public class ParticleProjectile extends CustomProjectile {
     private static final String PIERCE = "pierce";
 
     private       Location loc;
-    private final Settings settings;
     private       Vector   vel;
     private final int      steps;
     private       int      count;
@@ -86,10 +85,9 @@ public class ParticleProjectile extends CustomProjectile {
      * @param settings settings for the projectile
      */
     public ParticleProjectile(LivingEntity shooter, int level, Location loc, Settings settings, int lifespan) {
-        super(shooter);
+        super(shooter, settings);
 
         this.loc = loc;
-        this.settings = settings;
         this.vel = loc.getDirection().multiply(settings.getAttr(SPEED, level, 1.0));
         this.freq = (int) (20 * settings.getDouble(FREQUENCY, 0.5));
         this.life = lifespan;
@@ -207,6 +205,7 @@ public class ParticleProjectile extends CustomProjectile {
         // Lifespan
         life--;
         if (life <= 0) {
+            if (settings.getBool("on-expire")) callback.callback(this, null);
             cancel();
             Bukkit.getPluginManager().callEvent(new ParticleProjectileExpireEvent(this));
         }
@@ -223,10 +222,17 @@ public class ParticleProjectile extends CustomProjectile {
      * @param angle    angle of the spread
      * @param amount   number of projectiles to fire
      * @param callback optional callback for when projectiles hit
-     *
      * @return list of fired projectiles
      */
-    public static ArrayList<ParticleProjectile> spread(LivingEntity shooter, int level, Vector center, Location loc, Settings settings, double angle, int amount, ProjectileCallback callback, int lifespan) {
+    public static ArrayList<ParticleProjectile> spread(LivingEntity shooter,
+                                                       int level,
+                                                       Vector center,
+                                                       Location loc,
+                                                       Settings settings,
+                                                       double angle,
+                                                       int amount,
+                                                       ProjectileCallback callback,
+                                                       int lifespan) {
         ArrayList<Vector>             dirs = calcSpread(center, angle, amount);
         ArrayList<ParticleProjectile> list = new ArrayList<ParticleProjectile>();
         for (Vector dir : dirs) {
@@ -250,10 +256,17 @@ public class ParticleProjectile extends CustomProjectile {
      * @param height   height above the center location
      * @param amount   number of projectiles to fire
      * @param callback optional callback for when projectiles hit
-     *
      * @return list of fired projectiles
      */
-    public static ArrayList<ParticleProjectile> rain(LivingEntity shooter, int level, Location center, Settings settings, double radius, double height, int amount, ProjectileCallback callback, int lifespan) {
+    public static ArrayList<ParticleProjectile> rain(LivingEntity shooter,
+                                                     int level,
+                                                     Location center,
+                                                     Settings settings,
+                                                     double radius,
+                                                     double height,
+                                                     int amount,
+                                                     ProjectileCallback callback,
+                                                     int lifespan) {
         Vector                        vel  = new Vector(0, 1, 0);
         ArrayList<Location>           locs = calcRain(center, radius, height, amount);
         ArrayList<ParticleProjectile> list = new ArrayList<ParticleProjectile>();

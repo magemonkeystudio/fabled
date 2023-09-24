@@ -33,6 +33,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.util.BoundingBox;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -72,34 +74,65 @@ public final class ParticleHelper {
     /**
      * Plays particles about the given location using the given settings
      */
-    public static void play(Location loc, Settings settings) {
-        double   visibleRadius = settings.getDouble(VISIBLE_RADIUS_KEY, 25);
-        Particle particle      = ParticleHelper.getFromKey(settings.getString(PARTICLE_KEY, "Villager happy"));
-        int      amount        = settings.getInt(AMOUNT_KEY, 1);
-        double   dx            = settings.getDouble(DX_KEY, 0);
-        double   dy            = settings.getDouble(DY_KEY, 0);
-        double   dz            = settings.getDouble(DZ_KEY, 0);
-        float    speed         = (float) settings.getDouble(SPEED_KEY, 0.1);
-        Object   object        = makeObject(particle, settings);
+    public static void play(Location loc, Settings settings, @Nullable Set<Player> viewers, String particleKey, @Nullable BoundingBox targetHitbox) {
+        double   visibleRadius = settings.getDouble(particleKey+VISIBLE_RADIUS_KEY, 25);
+        Particle particle      = ParticleHelper.getFromKey(settings.getString(particleKey+PARTICLE_KEY, "Villager happy"));
+        int      amount        = settings.getInt(particleKey+AMOUNT_KEY, 1);
+        double   dx            = settings.getDouble(particleKey+DX_KEY, 0);
+        double   dy            = settings.getDouble(particleKey+DY_KEY, 0);
+        double   dz            = settings.getDouble(particleKey+DZ_KEY, 0);
+        float    speed         = (float) settings.getDouble(particleKey+SPEED_KEY, 0.1);
+        Object   object        = makeObject(particle, settings, particleKey);
 
-        String arrangement = settings.getString(ARRANGEMENT_KEY, "").toLowerCase();
-        int    level       = settings.getInt(LEVEL, 1);
-        int    points      = (int) settings.getAttr(POINTS_KEY, 0, 20);
+        String arrangement = settings.getString(particleKey+ARRANGEMENT_KEY, "").toLowerCase();
+        int    level       = settings.getInt(particleKey+LEVEL, 1);
+        int    points      = (int) settings.getAttr(particleKey+POINTS_KEY, 0, 20);
+        if (targetHitbox != null) {
+            switch (arrangement) {
+                case "sphere":
+                case "hemisphere":
+                    loc.add(0, targetHitbox.getHeight()/2,0 );
+                    break;
+                default:
+            }
+        }
         switch (arrangement) {
             case "circle":
-                fillCircle(loc, settings, level, points, visibleRadius, particle, amount, dx, dy, dz, speed, object);
+                fillCircle(loc, settings, level, points, visibleRadius, particle, amount, dx, dy, dz, speed, object, particleKey, viewers);
                 break;
             case "sphere":
-                fillSphere(loc, settings, level, points, visibleRadius, particle, amount, dx, dy, dz, speed, object);
+                fillSphere(loc, settings, level, points, visibleRadius, particle, amount, dx, dy, dz, speed, object, particleKey, viewers);
                 break;
             case "hemisphere":
-                fillHemisphere(loc, settings, level, points, visibleRadius, particle, amount, dx, dy, dz, speed, object);
+                fillHemisphere(loc,
+                        settings,
+                        level,
+                        points,
+                        visibleRadius,
+                        particle,
+                        amount,
+                        dx,
+                        dy,
+                        dz,
+                        speed,
+                        object,
+                        particleKey,
+                        viewers);
                 break;
             default:
-                filterPlayers(Objects.requireNonNull(loc.getWorld()).getPlayers(), loc, visibleRadius).forEach(
+                if (viewers == null) viewers = filterPlayers(Objects.requireNonNull(loc.getWorld()).getPlayers(), loc, visibleRadius);
+                viewers.forEach(
                         player -> player.spawnParticle(particle, loc, amount, dx, dy, dz, speed, object));
                 break;
         }
+    }
+
+
+    /**
+     * Plays particles about the given location using the given settings
+     */
+    public static void play(Location loc, Settings settings) {
+        play(loc, settings, null, "", null);
     }
 
     /**
@@ -107,8 +140,9 @@ public final class ParticleHelper {
      */
     public static void fillCircle(
             Location loc, Settings settings, int level, int points, double visibleRadius,
-            Particle particle, int amount, double dx, double dy, double dz, float speed, Object object) {
-        double       radius       = settings.getAttr(RADIUS_KEY, level, 3.0);
+            Particle particle, int amount, double dx, double dy, double dz, float speed, Object object,
+            String particleKey, @Nullable Set<Player> viewers) {
+        double       radius       = settings.getAttr(particleKey+RADIUS_KEY, level, 3.0);
         World        world        = Objects.requireNonNull(loc.getWorld());
         List<Player> worldPlayers = world.getPlayers();
         double       rSquared     = radius * radius;
@@ -118,9 +152,9 @@ public final class ParticleHelper {
         int      index = 0;
 
         Direction direction = null;
-        if (settings.has(DIRECTION_KEY)) {
+        if (settings.has(particleKey+DIRECTION_KEY)) {
             try {
-                direction = Direction.valueOf(settings.getString(DIRECTION_KEY));
+                direction = Direction.valueOf(settings.getString(particleKey+DIRECTION_KEY));
             } catch (Exception ex) { /* Use default value */ }
         }
         if (direction == null) {
@@ -143,10 +177,16 @@ public final class ParticleHelper {
                 continue;
             }
 
-            filterPlayers(worldPlayers, temp, visibleRadius).forEach(
-                    player -> player.spawnParticle(particle, temp, amount, dx, dy, dz, speed, object));
+            if (viewers == null) viewers = filterPlayers(worldPlayers, temp, visibleRadius);
+            viewers.forEach(player -> player.spawnParticle(particle, temp, amount, dx, dy, dz, speed, object));
             index++;
         }
+    }
+
+    public static void fillCircle(
+            Location loc, Settings settings, int level, int points, double visibleRadius,
+            Particle particle, int amount, double dx, double dy, double dz, float speed, Object object) {
+        fillCircle(loc, settings, level, points, visibleRadius, particle, amount, dx, dy, dz, speed, object, "", null);
     }
 
     /**
@@ -154,8 +194,9 @@ public final class ParticleHelper {
      */
     public static void fillSphere(
             Location loc, Settings settings, int level, int points, double visibleRadius,
-            Particle particle, int amount, double dx, double dy, double dz, float speed, Object object) {
-        double       radius       = settings.getAttr(RADIUS_KEY, level, 3.0);
+            Particle particle, int amount, double dx, double dy, double dz, float speed, Object object,
+            String particleKey, @Nullable Set<Player> viewers) {
+        double       radius       = settings.getAttr(particleKey+RADIUS_KEY, level, 3.0);
         World        world        = Objects.requireNonNull(loc.getWorld());
         List<Player> worldPlayers = world.getPlayers();
         double       rSquared     = radius * radius;
@@ -174,10 +215,17 @@ public final class ParticleHelper {
                 continue;
             }
 
-            filterPlayers(worldPlayers, temp, visibleRadius).forEach(
+            if (viewers == null) viewers = filterPlayers(worldPlayers, temp, visibleRadius);
+            viewers.forEach(
                     player -> player.spawnParticle(particle, temp, amount, dx, dy, dz, speed, object));
             index++;
         }
+    }
+
+    public static void fillSphere(
+            Location loc, Settings settings, int level, int points, double visibleRadius,
+            Particle particle, int amount, double dx, double dy, double dz, float speed, Object object) {
+        fillSphere(loc, settings, level, points, visibleRadius, particle, amount, dx, dy, dz, speed, object, "", null);
     }
 
     /**
@@ -185,8 +233,9 @@ public final class ParticleHelper {
      */
     public static void fillHemisphere(
             Location loc, Settings settings, int level, int points, double visibleRadius,
-            Particle particle, int amount, double dx, double dy, double dz, float speed, Object object) {
-        double       radius       = settings.getAttr(RADIUS_KEY, level, 3.0);
+            Particle particle, int amount, double dx, double dy, double dz, float speed, Object object,
+            String particleKey, @Nullable Set<Player> viewers) {
+        double       radius       = settings.getAttr(particleKey+RADIUS_KEY, level, 3.0);
         World        world        = Objects.requireNonNull(loc.getWorld());
         List<Player> worldPlayers = world.getPlayers();
         double       rSquared     = radius * radius;
@@ -205,26 +254,42 @@ public final class ParticleHelper {
                 continue;
             }
 
-            filterPlayers(worldPlayers, temp, visibleRadius).forEach(
+            if (viewers == null) viewers = filterPlayers(worldPlayers, temp, visibleRadius);
+            viewers.forEach(
                     player -> player.spawnParticle(particle, temp, amount, dx, dy, dz, speed, object));
             index++;
         }
     }
+    public static void fillHemisphere(
+            Location loc, Settings settings, int level, int points, double visibleRadius,
+            Particle particle, int amount, double dx, double dy, double dz, float speed, Object object) {
+        fillHemisphere(loc, settings, level, points, visibleRadius, particle, amount, dx, dy, dz, speed, object, "", null);
+    }
 
-    public static Object makeObject(Particle particle, Settings settings) {
+    public static Object makeObject(Particle particle, Settings settings, String particleKey) {
         return switch (particle) {
-            case SCULK_CHARGE -> Float.parseFloat(settings.getString(DATA_KEY, "0"));
+            case SCULK_CHARGE -> Float.parseFloat(settings.getString(particleKey+DATA_KEY, "0"));
             default -> makeObject(particle,
-                    Material.valueOf(settings.getString(MATERIAL_KEY, "DIRT").toUpperCase().replace(" ", "_")),
-                    settings.getInt(CMD_KEY, 0),
-                    settings.getInt(DURABILITY_KEY, 0),
-                    Color.fromRGB(Integer.parseInt(settings.getString(DUST_COLOR, "#FF0000").substring(1), 16)),
-                    Color.fromRGB(Integer.parseInt(settings.getString(FINAL_DUST_COLOR, "#FF0000").substring(1), 16)),
-                    (float) settings.getDouble(DUST_SIZE, 1));
+                    Material.valueOf(settings.getString(particleKey+MATERIAL_KEY, "DIRT").toUpperCase().replace(" ", "_")),
+                    settings.getInt(particleKey+CMD_KEY, 0),
+                    settings.getInt(particleKey+DURABILITY_KEY, 0),
+                    Color.fromRGB(Integer.parseInt(settings.getString(particleKey+DUST_COLOR, "#FF0000").substring(1), 16)),
+                    Color.fromRGB(Integer.parseInt(settings.getString(particleKey+FINAL_DUST_COLOR, "#FF0000").substring(1), 16)),
+                    (float) settings.getDouble(particleKey+DUST_SIZE, 1));
         };
     }
 
-    public static Object makeObject(Particle particle, Material material, int cmd, int durability, Color dustColor, Color toColor, float dustSize) {
+    public static Object makeObject(Particle particle, Settings settings) {
+        return makeObject(particle, settings, "");
+    }
+
+    public static Object makeObject(Particle particle,
+                                    Material material,
+                                    int cmd,
+                                    int durability,
+                                    Color dustColor,
+                                    Color toColor,
+                                    float dustSize) {
         Object object = null;
         switch (particle) {
             case REDSTONE:

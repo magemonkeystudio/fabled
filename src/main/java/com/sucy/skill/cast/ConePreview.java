@@ -25,7 +25,7 @@
  * THE SOFTWARE.
  */
 package com.sucy.skill.cast;
-
+/*
 import com.sucy.skill.api.particle.ParticleSettings;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -41,7 +41,7 @@ public class ConePreview extends Preview {
      * @param arc    angle of the cone in radians
      * @param radius radius of the cone
      */
-    public ConePreview(double arc, double radius) {
+    /*public ConePreview(double arc, double radius) {
         if (radius == 0) {
             throw new IllegalArgumentException("Invalid radius - cannot be 0");
         }
@@ -65,7 +65,7 @@ public class ConePreview extends Preview {
      * @param particle particle type to use
      * @param step     animation step
      */
-    @Override
+    /*@Override
     public void playParticles(Player player, ParticleSettings particle, Location location, int step) {
         double x = location.getX();
         double y = location.getY();
@@ -99,7 +99,14 @@ public class ConePreview extends Preview {
         }
     }
 
-    private void make(Player player, ParticleSettings particle, double x, double y, double z, double pos, double rfx, double rfz) {
+    private void make(Player player,
+                      ParticleSettings particle,
+                      double x,
+                      double y,
+                      double z,
+                      double pos,
+                      double rfx,
+                      double rfz) {
         while (pos <= radius) {
             particle.instance(player, x + pos * rfx, y, z + pos * rfz);
             pos += offset;
@@ -109,4 +116,4 @@ public class ConePreview extends Preview {
     public double getArc() {return arc;}
 
     public double getRadius() {return radius;}
-}
+}*/

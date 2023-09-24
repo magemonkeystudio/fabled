@@ -28,6 +28,7 @@ package com.sucy.skill.api.player;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.event.PlayerAccountChangeEvent;
+import com.sucy.skill.cast.CastMode;
 import com.sucy.skill.manager.ClassBoardManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -217,8 +218,7 @@ public class PlayerAccounts {
                 active = event.getNewID();
                 getActiveData().startPassives(player);
                 getActiveData().updateScoreboard();
-                if (getActiveData().hasClass() && SkillAPI.getSettings().isSkillBarEnabled() && !SkillAPI.getSettings()
-                        .isUsingCombat()) {
+                if (getActiveData().hasClass() && SkillAPI.getSettings().isSkillBarEnabled() && !SkillAPI.getSettings().getCastMode().equals(CastMode.COMBAT)) {
                     getActiveData().getSkillBar().setup(player);
                 }
                 getActiveData().getEquips().update(player);

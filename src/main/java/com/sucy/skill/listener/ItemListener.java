@@ -61,7 +61,8 @@ public class ItemListener extends SkillAPIListener {
     public static final Set<Material> ARMOR_TYPES = getArmorMaterials();
 
     private static Set<Material> getArmorMaterials() {
-        final Set<String>                    armorSuffixes = ImmutableSet.of("BOOTS", "LEGGINGS", "CHESTPLATE", "HELMET");
+        final Set<String>                    armorSuffixes =
+                ImmutableSet.of("BOOTS", "LEGGINGS", "CHESTPLATE", "HELMET");
         final ImmutableSet.Builder<Material> builder       = ImmutableSet.builder();
         for (Material material : Material.values()) {
             final int    index  = material.name().lastIndexOf('_') + 1;
@@ -221,7 +222,8 @@ public class ItemListener extends SkillAPIListener {
 
             PlayerData playerData = SkillAPI.getPlayerData(player);
 
-            PlayerEquips.EquipData data = playerData.getEquips().getEquipData(item, PlayerEquips.EquipType.fromSlot(slot));
+            PlayerEquips.EquipData data =
+                    playerData.getEquips().getEquipData(item, PlayerEquips.EquipType.fromSlot(slot));
             if (!data.hasMetConditions()) {
                 event.setCancelled(true);
                 SkillAPI.getLanguage().sendMessage(ErrorNodes.CANNOT_USE, player, FilterType.COLOR);

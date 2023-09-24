@@ -27,10 +27,8 @@
 package com.sucy.skill.dynamic.target;
 
 import com.google.common.collect.ImmutableList;
-import com.sucy.skill.cast.PreviewSettings;
 import com.sucy.skill.dynamic.TempEntity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.List;
@@ -46,8 +44,10 @@ public class OffsetTarget extends TargetComponent {
     private static final String RIGHT      = "right";
     private static final String HORIZONTAL = "horizontal";
 
-    /** {@inheritDoc} */
-    @Override
+    /**
+     * {@inheritDoc}
+     */
+    /*@Override
     public void playPreview(Player caster, final int level, final LivingEntity target, int step) {
         final LivingEntity loc = getTargets(caster, level, ImmutableList.of(target)).get(0);
         switch (previewType) {
@@ -58,9 +58,11 @@ public class OffsetTarget extends TargetComponent {
                 spherePreview.playParticles(caster, PreviewSettings.particle, loc.getLocation().add(0, 0.1, 0), step);
                 break;
         }
-    }
+    }*/
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {

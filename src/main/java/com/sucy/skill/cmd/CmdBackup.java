@@ -105,7 +105,7 @@ public class CmdBackup implements IFunction {
                 // Go through every entry, saving it to disk
                 while (query.next()) {
                     String sqlYaml = query.getString(SQLIO.DATA);
-                    String yaml    = YAMLParser.parseText(sqlYaml, SQLIO.STRING).toString();
+                    String yaml    = new YAMLParser().parseText(sqlYaml, SQLIO.STRING).toString();
                     String name    = query.getString("Name");
 
                     FileOutputStream out   = new FileOutputStream(new File(file, name + ".yml"));

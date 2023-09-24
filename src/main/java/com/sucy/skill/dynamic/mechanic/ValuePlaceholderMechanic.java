@@ -53,7 +53,8 @@ public class ValuePlaceholderMechanic extends MechanicComponent {
                     try {
                         DynamicSkill.getCastData(caster).put(key, Double.parseDouble(value));
                     } catch (final Exception ex) {
-                        Logger.invalid(placeholder + " is not a valid numeric placeholder - PlaceholderAPI returned " + value);
+                        Logger.invalid(
+                                placeholder + " is not a valid numeric placeholder - PlaceholderAPI returned " + value);
                         return false;
                     }
             }

@@ -37,6 +37,7 @@ public class ComponentRegistry {
         register(new ArmorEquipTrigger());
         register(new BlockBreakTrigger());
         register(new BlockPlaceTrigger());
+        register(new ChatTrigger());
         register(new ClickLeftTrigger());
         register(new ClickRightTrigger());
         register(new CrouchTrigger());
@@ -49,6 +50,7 @@ public class ComponentRegistry {
         register(new FishingGrabTrigger());
         register(new FishingGroundTrigger());
         register(new FishingReelTrigger());
+        register(new HealTrigger());
         register(new ItemSwapTrigger());
         register(new KillTrigger());
         register(new LandTrigger());
@@ -60,6 +62,7 @@ public class ComponentRegistry {
         register(new ProjectileTickTrigger());
         register(new SkillDealtTrigger());
         register(new SkillTakenTrigger());
+        register(new ShieldTrigger());
         register(new SkillCastTrigger());
         register(new ConsumeTrigger());
 
@@ -116,6 +119,7 @@ public class ComponentRegistry {
         register(new TimeCondition());
         register(new ToolCondition());
         register(new ValueCondition());
+        register(new ValueTextCondition());
         register(new WaterCondition());
         register(new WeatherCondition());
         register(new WorldCondition());
@@ -140,6 +144,7 @@ public class ComponentRegistry {
         register(new DelayMechanic());
         register(new DisguiseMechanic());
         register(new DurabilityMechanic());
+        register(new ExperienceMechanic());
         register(new ExplosionMechanic());
         register(new FireMechanic());
         register(new FlagMechanic());
@@ -152,6 +157,7 @@ public class ComponentRegistry {
         register(new HeldItemMechanic());
         register(new ImmunityMechanic());
         register(new InterruptMechanic());
+        register(new InvisibilityMechanic());
         register(new ItemDropMechanic());
         register(new ItemMechanic());
         register(new ItemProjectileMechanic());
@@ -175,6 +181,7 @@ public class ComponentRegistry {
         register(new PushMechanic());
         register(new RememberTargetsMechanic());
         register(new RepeatMechanic());
+        register(new SkillCastMechanic());
         register(new StatMechanic());
         register(new SoundMechanic());
         register(new StatusMechanic());

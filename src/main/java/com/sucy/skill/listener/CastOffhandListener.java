@@ -26,16 +26,16 @@
  */
 package com.sucy.skill.listener;
 
-import com.sucy.skill.SkillAPI;
+import com.sucy.skill.gui.tool.GUITool;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 
 public class CastOffhandListener extends SkillAPIListener {
-    private static int slot = SkillAPI.getSettings().getCastSlot();
 
     @EventHandler
     public void handleOffhandDupe(PlayerSwapHandItemsEvent event) {
-        if (event.getOffHandItem() != null && event.getPlayer().getInventory().getHeldItemSlot() == slot)
+        if (GUITool.isCastItem(event.getMainHandItem())) {
             event.setCancelled(true);
+        }
     }
 }

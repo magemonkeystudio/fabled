@@ -77,7 +77,9 @@ public class DamageLoreRemover {
             SET_BOOL = NBT_COMPOUND.getMethod(ReflectionManager.MINOR_VERSION >= 18
                     ? "a"
                     : "setBoolean", String.class, boolean.class);
-            SET_INT = NBT_COMPOUND.getMethod(ReflectionManager.MINOR_VERSION >= 18 ? "a" : "setInt", String.class, int.class);
+            SET_INT = NBT_COMPOUND.getMethod(ReflectionManager.MINOR_VERSION >= 18 ? "a" : "setInt",
+                    String.class,
+                    int.class);
         } catch (Exception ex) {
             Logger.bug("Failed to set up reflection for removing damage lores.");
         }

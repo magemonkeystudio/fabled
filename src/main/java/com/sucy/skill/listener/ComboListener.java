@@ -76,14 +76,16 @@ public class ComboListener extends SkillAPIListener {
                 combo.applyClick(Click.Q);
                 break;
             case LEFT:
-                if (event.getPlayer().isSneaking() && SkillAPI.getComboManager().isClickEnabled(Click.LEFT_SHIFT.getId())) {
+                if (event.getPlayer().isSneaking() && SkillAPI.getComboManager()
+                        .isClickEnabled(Click.LEFT_SHIFT.getId())) {
                     combo.applyClick(Click.LEFT_SHIFT);
                 } else {
                     combo.applyClick(Click.LEFT);
                 }
                 break;
             case RIGHT:
-                if (event.getPlayer().isSneaking() && SkillAPI.getComboManager().isClickEnabled(Click.RIGHT_SHIFT.getId())) {
+                if (event.getPlayer().isSneaking() && SkillAPI.getComboManager()
+                        .isClickEnabled(Click.RIGHT_SHIFT.getId())) {
                     combo.applyClick(Click.RIGHT_SHIFT);
                 } else {
                     combo.applyClick(Click.RIGHT);

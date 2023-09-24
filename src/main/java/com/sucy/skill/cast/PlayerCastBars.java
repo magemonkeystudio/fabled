@@ -29,11 +29,9 @@ package com.sucy.skill.cast;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkill;
-import com.sucy.skill.task.PreviewTask;
-import com.sucy.skill.thread.MainThread;
+import com.sucy.skill.gui.tool.GUITool;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -47,17 +45,14 @@ import java.util.*;
  * Representation of cast bar data for a single player
  */
 public class PlayerCastBars implements InventoryHolder {
-    private HashMap<Integer, String> hoverBar   = new HashMap<Integer, String>();
-    private HashMap<Integer, String> instantBar = new HashMap<Integer, String>();
-
-    private HashSet<String> used   = new HashSet<String>();
-    private HashSet<String> unused = new HashSet<String>();
+    private final HashMap<Integer, String> hoverBar   = new HashMap<>();
+    private final HashMap<Integer, String> instantBar = new HashMap<>();
 
     private PlayerView view = PlayerView.INVENTORY;
 
     private ItemStack[] backup;
 
-    private PlayerData player;
+    private final PlayerData player;
 
     private PlayerSkill hovered;
 
@@ -96,24 +91,14 @@ public class PlayerCastBars implements InventoryHolder {
      *
      * @param slot skill slot
      */
-    private void hoverSkill(Player player, int slot) {
+    private void hoverSkill(int slot) {
         if (hoverBar.containsKey(slot)) {
             hovered = this.player.getSkill(hoverBar.get(slot));
+            hovered.startPreview();
         } else {
             hovered = null;
+            player.setOnPreviewStop(null);
         }
-    }
-
-    /**
-     * Makes the packets for cast previews
-     *
-     * @param step animation step
-     */
-    public void playHoverParticles(Player player, int step) {
-        if (hovered == null) {
-            return;
-        }
-        hovered.playParticles(player, step);
     }
 
     /**
@@ -122,23 +107,20 @@ public class PlayerCastBars implements InventoryHolder {
      * @param map data of the bar to validate
      */
     private void validate(HashMap<Integer, String> map) {
-        Iterator<Map.Entry<Integer, String>> iterator = map.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<Integer, String> entry = iterator.next();
-            if (!player.hasSkill(entry.getValue()) || !player.getSkill(entry.getValue()).isUnlocked()) {
-                iterator.remove();
-                used.remove(entry.getValue());
-            }
-        }
+        map.entrySet().removeIf(entry -> {
+            String skillName = entry.getValue();
+            if (!player.hasSkill(skillName)) return false;
+            PlayerSkill playerSkill = player.getSkill(skillName);
+            return playerSkill == null || !playerSkill.isUnlocked() || !playerSkill.getData().canCast();
+        });
     }
 
     /**
      * Restores the players inventory after
      * viewing one of the related views
      *
-     * @param player player to restore
      */
-    public void restore(Player player) {
+    public void restore() {
         if (view == PlayerView.INVENTORY) {
             return;
         }
@@ -147,15 +129,16 @@ public class PlayerCastBars implements InventoryHolder {
         if (view == PlayerView.ORGANIZER) {
             reset();
 
-            ItemStack[] contents = player.getInventory().getContents();
+            ItemStack[] contents = player.getPlayer().getInventory().getContents();
             update(contents, hoverBar, 0);
-            update(contents, instantBar, 24);
+            update(contents, instantBar, 27);
         }
 
         // Restore player's items
-        player.getInventory().setContents(backup);
+        player.getPlayer().getInventory().setContents(backup);
         view = PlayerView.INVENTORY;
-        player.getInventory().setHeldItemSlot(oldSlot);
+        player.getPlayer().getInventory().setHeldItemSlot(oldSlot);
+        player.setOnPreviewStop(null);
     }
 
     /**
@@ -165,7 +148,7 @@ public class PlayerCastBars implements InventoryHolder {
      * @return true if opened
      */
     public boolean showOrganizer(Player player) {
-        if (used.size() + unused.size() == 0 || view != PlayerView.INVENTORY) {
+        if (view != PlayerView.INVENTORY) {
             return false;
         }
 
@@ -174,21 +157,22 @@ public class PlayerCastBars implements InventoryHolder {
 
         // Set up player inventory for the different bars
         ItemStack[] playerContents = new ItemStack[36];
-        playerContents[8] = SkillAPI.getSettings().getHoverItem();
-        playerContents[35] = SkillAPI.getSettings().getInstantItem();
         fill(playerContents, hoverBar, 0);
-        fill(playerContents, instantBar, 24);
+        fill(playerContents, instantBar, 27);
+        int castSlot = SkillAPI.getSettings().getCastSlot();
+        playerContents[castSlot] = SkillAPI.getSettings().getHoverItem();
+        playerContents[castSlot+27] = SkillAPI.getSettings().getInstantItem();
 
         // Make the inventory for unused skills
-        int         size     = Math.min(54, 9 * ((used.size() + unused.size() + 8) / 9));
-        Inventory   inv      = player.getServer().createInventory(this, size);
-        ItemStack[] contents = new ItemStack[size];
+        Set<String> unused = getUnused();
+        Inventory   inv      = player.getServer().createInventory(this, 54);
+        ItemStack[] contents = new ItemStack[54];
         int         i        = 0;
         int         j        = 9;
         for (String skill : unused) {
             if (i < contents.length) {
                 contents[i++] = makeIndicator(skill);
-            } else if (j < 24) {
+            } else if (j < 27) {
                 playerContents[j++] = makeIndicator(skill);
             }
         }
@@ -196,6 +180,7 @@ public class PlayerCastBars implements InventoryHolder {
         // Apply layouts and open the view
         player.getInventory().setContents(playerContents);
         inv.setContents(contents);
+        oldSlot = player.getInventory().getHeldItemSlot();
         new BukkitRunnable() {
             @Override
             public void run() {player.openInventory(inv);}
@@ -225,15 +210,26 @@ public class PlayerCastBars implements InventoryHolder {
      * @param index    starting index
      */
     private void update(ItemStack[] contents, HashMap<Integer, String> bar, int index) {
-        for (int i = 0; i < 8; i++) {
-            if (contents[i + index] != null) {
-                List<String> lore  = contents[i + index].getItemMeta().getLore();
-                String       skill = lore.get(lore.size() - 1);
-                if (unused.contains(skill)) {
-                    bar.put(i, skill);
-                    used.add(skill);
-                    unused.remove(skill);
-                }
+        int castSlot = SkillAPI.getSettings().getCastSlot();
+        for (int i = 0; i < 9; i++) {
+            if (i == castSlot) {
+                continue;
+            }
+            if (contents[i + index] == null) {
+                continue;
+            }
+            ItemMeta meta = contents[i + index].getItemMeta();
+            if (meta == null) {
+                continue;
+            }
+            List<String> lore = meta.getLore();
+            if (lore == null) {
+                continue;
+            }
+            String skillName = lore.get(lore.size() - 1);
+            PlayerSkill skill = this.player.getSkill(skillName);
+            if (skill != null) {
+                bar.put(i, skillName);
             }
         }
     }
@@ -248,13 +244,18 @@ public class PlayerCastBars implements InventoryHolder {
         if (skill == null) {
             return null;
         }
-        ItemStack    item = SkillAPI.getSkill(skill).getIndicator(this.player.getSkill(skill), true);
-        ItemMeta     meta = item.getItemMeta();
-        List<String> lore = meta.getLore();
-        lore.add(skill);
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-        return item;
+        ItemStack item = SkillAPI.getSkill(skill).getIndicator(this.player.getSkill(skill), true);
+        ItemMeta  meta = item.getItemMeta();
+        if (meta != null) {
+            List<String> lore = meta.getLore();
+            if (lore == null) {
+                lore = new ArrayList<>();
+            }
+            lore.add(skill);
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+        }
+        return GUITool.markCastItem(item);
     }
 
     /**
@@ -263,11 +264,12 @@ public class PlayerCastBars implements InventoryHolder {
      * @param player player to show to
      */
     public boolean showHoverBar(Player player) {
-        boolean result = show(player, PlayerView.HOVER_BAR, hoverBar);
-        player.getInventory().setHeldItemSlot(0);
-        hoverSkill(player, 0);
-        MainThread.register(new PreviewTask(player));
-        return result;
+        if (show(player, PlayerView.HOVER_BAR, hoverBar)) {
+            hoverSkill(player.getInventory().getHeldItemSlot());
+            if (hovered != null) hovered.startPreview();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -288,7 +290,7 @@ public class PlayerCastBars implements InventoryHolder {
      */
     private boolean show(Player player, PlayerView view, HashMap<Integer, String> bar) {
         long left = System.currentTimeMillis() - cooldown - SkillAPI.getSettings().getCastCooldown();
-        if (this.view != PlayerView.INVENTORY || bar.size() == 0 || left < 0) {
+        if (this.view != PlayerView.INVENTORY || bar.isEmpty() || left < 0) {
             return false;
         }
 
@@ -298,6 +300,7 @@ public class PlayerCastBars implements InventoryHolder {
         ItemStack[] contents = new ItemStack[36];
         makeContents(bar, contents, 0);
         player.getInventory().setContents(contents);
+        player.getInventory().setItem(SkillAPI.getSettings().getCastSlot(), SkillAPI.getSettings().getCastItem());
 
         return true;
     }
@@ -314,12 +317,12 @@ public class PlayerCastBars implements InventoryHolder {
                     player.cast(instantBar.get(event.getNewSlot()));
                     cooldown = System.currentTimeMillis();
                 }
-                restore(event.getPlayer());
+                restore();
                 event.setCancelled(true);
                 return true;
 
             case HOVER_BAR:
-                hoverSkill(event.getPlayer(), event.getNewSlot());
+                hoverSkill(event.getNewSlot());
                 return true;
 
             case INVENTORY:
@@ -338,7 +341,7 @@ public class PlayerCastBars implements InventoryHolder {
     public boolean handleInteract(Player player) {
         switch (view) {
             case INSTANT_BAR:
-                restore(player);
+                restore();
                 return true;
 
             case HOVER_BAR:
@@ -346,7 +349,7 @@ public class PlayerCastBars implements InventoryHolder {
                     this.player.cast(hoverBar.get(player.getInventory().getHeldItemSlot()));
                     cooldown = System.currentTimeMillis();
                 }
-                restore(player);
+                restore();
                 return true;
         }
         return false;
@@ -354,27 +357,10 @@ public class PlayerCastBars implements InventoryHolder {
 
     /**
      * Handles when the player opens an inventory
-     *
-     * @param player player to handle for
      */
-    public void handleOpen(Player player) {
+    public void handleOpen() {
         if (view == PlayerView.HOVER_BAR || view == PlayerView.INSTANT_BAR) {
-            restore(player);
-        }
-    }
-
-    /**
-     * Handles clicking in the GUI
-     *
-     * @param event event details
-     */
-    public void handle(InventoryClickEvent event) {
-        if (event.getInventory() == event.getWhoClicked().getInventory()) {
-            if (event.getSlot() == 8 || event.getSlot() == 35) {
-                event.setCancelled(true);
-            }
-        } else if (event.getSlot() < 0) {
-            event.setCancelled(true);
+            restore();
         }
     }
 
@@ -387,6 +373,7 @@ public class PlayerCastBars implements InventoryHolder {
         if (!addTo(hoverBar, skill)) {
             addTo(instantBar, skill);
         }
+        validate();
     }
 
     /**
@@ -415,8 +402,6 @@ public class PlayerCastBars implements InventoryHolder {
      */
     private void add(HashMap<Integer, String> bar, String skill, int slot) {
         bar.put(slot, skill);
-        used.add(skill);
-        unused.remove(skill);
     }
 
     /**
@@ -424,15 +409,22 @@ public class PlayerCastBars implements InventoryHolder {
      * with all available skills
      */
     public void reset() {
-        unused.clear();
-        used.clear();
         instantBar.clear();
         hoverBar.clear();
+    }
+
+    private HashSet<String> getUnused() {
+        HashSet<String> unused = new HashSet<>();
         for (PlayerSkill skill : player.getSkills()) {
             if (skill.isUnlocked() && skill.getData().canCast()) {
-                unused.add(skill.getData().getName());
+                String name = skill.getData().getName();
+                if (!hoverBar.containsValue(name) && !instantBar.containsValue(name)) {
+                    unused.add(name);
+                }
             }
         }
+
+        return unused;
     }
 
     /**
@@ -446,7 +438,7 @@ public class PlayerCastBars implements InventoryHolder {
         for (Map.Entry<Integer, String> slot : slots.entrySet()) {
             PlayerSkill skill = this.player.getSkill(slot.getValue());
             if (skill != null) {
-                contents[offset + slot.getKey()] = skill.getData().getIndicator(skill, true);
+                contents[offset + slot.getKey()] = GUITool.markCastItem(skill.getData().getIndicator(skill, true));
             }
         }
     }
@@ -466,6 +458,7 @@ public class PlayerCastBars implements InventoryHolder {
         for (String key : config.keys()) {
             add(bar, key, config.getInt(key));
         }
+        validate(bar);
     }
 
     /**

@@ -27,20 +27,20 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.particle.ParticleHelper;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Mechanic that changes blocks for a duration before
@@ -94,43 +94,35 @@ public class BlockMechanic extends MechanicComponent {
         }
     }
 
-    /**
-     * Executes the component
-     *
-     * @param caster  caster of the skill
-     * @param level   level of the skill
-     * @param targets targets to apply to
-     * @param force
-     * @return true if applied to something, false otherwise
-     */
-    @Override
-    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0) {
-            return false;
-        }
-
-        Material block = Material.ICE;
-        try {
-            block = Material.valueOf(settings.getString(BLOCK, "ICE").toUpperCase().replace(' ', '_'));
-        } catch (Exception ex) {
-            // Use default
-        }
-
-        boolean sphere = settings.getString(SHAPE, "sphere").equalsIgnoreCase("sphere");
-        int     ticks  = (int) (20 * parseValues(caster, SECONDS, level, 5));
-        byte    data   = (byte) settings.getInt(DATA, 0);
-
-        String  type     = settings.getString(TYPE, "solid").toLowerCase();
-        boolean solid    = type.equals("solid");
-        boolean air      = type.equals("air");
-        Material matType = !solid && !air && !type.equals("any") ? Material.valueOf(type.toUpperCase().replace(' ', '_')) : null;
-        boolean resetYaw = settings.getBool(RESET_YAW, false);
+    private Location getLocation(LivingEntity caster, int level, LivingEntity target) {
+        // Get the location with offsets included
 
         double forward = parseValues(caster, FORWARD, level, 0);
         double upward  = parseValues(caster, UPWARD, level, 0);
         double right   = parseValues(caster, RIGHT, level, 0);
+        boolean  resetYaw = settings.getBool(RESET_YAW, false);
 
-        List<Block> blocks = new ArrayList<Block>();
+        Location loc    = target.getLocation();
+        Location dirLoc = target.getLocation().clone();
+        if (resetYaw) dirLoc.setYaw(0);
+        Vector dir = dirLoc.getDirection().setY(0).normalize();
+        Vector nor = dir.clone().crossProduct(UP);
+        loc.add(dir.multiply(forward).add(nor.multiply(right)));
+        loc.add(0, upward, 0);
+        return loc;
+    }
+
+    private List<Block> getAffectedBlocks(LivingEntity caster, int level, List<LivingEntity> targets) {
+        boolean sphere = settings.getString(SHAPE, "sphere").equalsIgnoreCase("sphere");
+
+        String   type     = settings.getString(TYPE, "solid").toLowerCase();
+        boolean  solid    = type.equals("solid");
+        boolean  air      = type.equals("air");
+        Material matType  =
+                !solid && !air && !type.equals("any") ? Material.valueOf(type.toUpperCase().replace(' ', '_')) : null;
+        boolean  resetYaw = settings.getBool(RESET_YAW, false);
+
+        List<Block> blocks = new ArrayList<>();
         World       w      = caster.getWorld();
 
         // Grab blocks in a sphere
@@ -139,15 +131,7 @@ public class BlockMechanic extends MechanicComponent {
             double x, y, z, dx, dy, dz;
             double rSq    = radius * radius;
             for (LivingEntity t : targets) {
-                // Get the center with offsets included
-                Location loc    = t.getLocation();
-                Location dirLoc = t.getLocation().clone();
-                if (resetYaw) dirLoc.setYaw(0);
-                Vector dir = dirLoc.getDirection().setY(0).normalize();
-                Vector nor = dir.clone().crossProduct(UP);
-                loc.add(dir.multiply(forward).add(nor.multiply(right)));
-                loc.add(0, upward, 0);
-
+                Location loc    = getLocation(caster, level, t);
                 x = loc.getBlockX();
                 y = loc.getBlockY();
                 z = loc.getBlockZ();
@@ -183,16 +167,7 @@ public class BlockMechanic extends MechanicComponent {
             double x, y, z;
 
             for (LivingEntity t : targets) {
-                // Get the location with offsets included
-                Location loc    = t.getLocation();
-                Location dirLoc = t.getLocation().clone();
-                if (resetYaw) dirLoc.setYaw(0);
-                Vector dir = dirLoc.getDirection().setY(0).normalize();
-                Vector nor = dir.clone().crossProduct(UP);
-                loc.add(dir.multiply(forward).add(nor.multiply(right)));
-                loc.add(0, upward, 0);
-
-
+                Location loc    = getLocation(caster, level, t);
                 x = loc.getX();
                 y = loc.getY();
                 z = loc.getZ();
@@ -222,10 +197,34 @@ public class BlockMechanic extends MechanicComponent {
                 }
             }
         }
+        return blocks;
+    }
+
+    /**
+     * Executes the component
+     *
+     * @param caster  caster of the skill
+     * @param level   level of the skill
+     * @param targets targets to apply to
+     * @param force
+     * @return true if applied to something, false otherwise
+     */
+    @Override
+    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
+        if (targets.isEmpty()) return false;
+
+        Material block = Material.ICE;
+        try {
+            block = Material.valueOf(settings.getString(BLOCK, "ICE").toUpperCase().replace(' ', '_'));
+        } catch (Exception ex) {
+            // Use default
+        }
+        int     ticks  = (int) (20 * parseValues(caster, SECONDS, level, 5));
+        byte    data   = (byte) settings.getInt(DATA, 0);
 
         // Change blocks
         ArrayList<Location> states = new ArrayList<>();
-        for (Block b : blocks) {
+        for (Block b : getAffectedBlocks(caster, level, targets)) {
             // Increment the counter
             Location loc = b.getLocation();
             if (pending.containsKey(loc)) {
@@ -249,6 +248,26 @@ public class BlockMechanic extends MechanicComponent {
         tasks.computeIfAbsent(caster.getEntityId(), ArrayList::new).add(task);
 
         return true;
+    }
+
+    @Override
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
+        if (preview.getBool("per-target")) {
+            BukkitTask task = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (preview.getBool("per-target-center-only", true))
+                        for (LivingEntity t : targets)
+                            ParticleHelper.play(getLocation(caster, level, t), preview, Set.of(caster), "per-target-", null);
+                    else
+                        for (Block block : getAffectedBlocks(caster, level, targets))
+                            ParticleHelper.play(block.getLocation(), preview, Set.of(caster), "per-target-",
+                                    preview.getBool("per-target-"+"hitbox") ? block.getBoundingBox() : null
+                            );
+                }
+            }.runTaskTimer(SkillAPI.inst(),0, Math.max(1, preview.getInt("per-target-"+"period", 5)));
+            onPreviewStop.add(task::cancel);
+        }
     }
 
     /**

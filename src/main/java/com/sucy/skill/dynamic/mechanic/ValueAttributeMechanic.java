@@ -31,8 +31,8 @@ import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Adds to a cast data value
@@ -52,7 +52,6 @@ public class ValueAttributeMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -62,9 +61,9 @@ public class ValueAttributeMechanic extends MechanicComponent {
             return false;
         }
 
-        String                  key  = settings.getString(KEY);
-        String                  attr = settings.getString(ATTR);
-        HashMap<String, Object> data = DynamicSkill.getCastData(caster);
+        String              key  = settings.getString(KEY);
+        String              attr = settings.getString(ATTR);
+        Map<String, Object> data = DynamicSkill.getCastData(caster);
         data.put(key, (double) SkillAPI.getPlayerData((Player) targets.get(0)).getAttribute(attr));
         return true;
     }

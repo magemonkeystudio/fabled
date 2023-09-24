@@ -64,7 +64,8 @@ public class CmdMana implements IFunction {
     @Override
     public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
         // Disabled world
-        if (sender instanceof Player && !SkillAPI.getSettings().isWorldEnabled(((Player) sender).getWorld()) && args.length == 1) {
+        if (sender instanceof Player && !SkillAPI.getSettings().isWorldEnabled(((Player) sender).getWorld())
+                && args.length == 1) {
             cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
         }
 
@@ -98,10 +99,19 @@ public class CmdMana implements IFunction {
 
             // Messages
             if (target != sender) {
-                cmd.sendMessage(sender, GAVE_MANA, ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD + "{player} {mana} mana", Filter.PLAYER.setReplacement(target.getName()), RPGFilter.MANA.setReplacement("" + amount));
+                cmd.sendMessage(sender,
+                        GAVE_MANA,
+                        ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD + "{player} {mana} mana",
+                        Filter.PLAYER.setReplacement(target.getName()),
+                        RPGFilter.MANA.setReplacement("" + amount));
             }
             if (target.isOnline()) {
-                cmd.sendMessage(target.getPlayer(), RECEIVED_MANA, ChatColor.DARK_GREEN + "You have received " + ChatColor.GOLD + "{mana} mana " + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}", Filter.PLAYER.setReplacement(sender.getName()), RPGFilter.MANA.setReplacement("" + amount));
+                cmd.sendMessage(target.getPlayer(),
+                        RECEIVED_MANA,
+                        ChatColor.DARK_GREEN + "You have received " + ChatColor.GOLD + "{mana} mana "
+                                + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}",
+                        Filter.PLAYER.setReplacement(sender.getName()),
+                        RPGFilter.MANA.setReplacement("" + amount));
             }
         }
 

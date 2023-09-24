@@ -1,10 +1,8 @@
 package com.sucy.skill.dynamic.target;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.particle.ParticleHelper;
 import com.sucy.skill.api.target.TargetHelper;
-import com.sucy.skill.cast.CirclePreview;
-import com.sucy.skill.cast.PreviewType;
-import com.sucy.skill.cast.SpherePreview;
 import com.sucy.skill.dynamic.ComponentType;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.dynamic.EffectComponent;
@@ -15,9 +13,11 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -30,9 +30,6 @@ public abstract class TargetComponent extends EffectComponent {
     private static final String WALL   = "wall";
     private static final String CASTER = "caster";
     private static final String MAX    = "max";
-
-    protected static final SpherePreview spherePreview = new SpherePreview(0.5);
-    protected static final CirclePreview circlePreview = new CirclePreview(0.5);
 
     boolean       everyone;
     boolean       allies;
@@ -75,30 +72,21 @@ public abstract class TargetComponent extends EffectComponent {
             final int level,
             final List<LivingEntity> targets);
 
-    abstract void playPreview(final Player caster, final int level, final LivingEntity target, int step);
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void playPreview(Player caster, int level, List<LivingEntity> targets, int step) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (previewType != PreviewType.NONE) {
-                    targets.forEach(target -> playPreview(caster, level, target, step));
-                }
-                List<LivingEntity> childTargets = null;
-                for (final EffectComponent component : children) {
-                    if (component.hasPreview()) {
-                        if (childTargets == null) {
-                            childTargets = getTargets(caster, level, targets);
-                        }
-                        component.playPreview(caster, level, childTargets, step);
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
+        if (preview.getBool("per-target")) {
+            BukkitTask task = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    for (LivingEntity target : getTargets(caster, level, targets)) {
+                        ParticleHelper.play(target.getLocation(), preview, Set.of(caster), "per-target-",
+                                preview.getBool("per-target-"+"hitbox") ? target.getBoundingBox() : null
+                        );
                     }
                 }
-            }
-        }.runTask(SkillAPI.inst());
+            }.runTaskTimer(SkillAPI.inst(),0, Math.max(1, preview.getInt("per-target-"+"period", 5)));
+            onPreviewStop.add(task::cancel);
+        }
     }
 
     List<LivingEntity> determineTargets(
@@ -130,7 +118,8 @@ public abstract class TargetComponent extends EffectComponent {
         if (SkillAPI.getMeta(target, MechanicListener.ARMOR_STAND) != null) return false;
         if (target instanceof TempEntity) return true;
         if (target instanceof Player && (
-                ((Player) target).getGameMode() == GameMode.SPECTATOR || ((Player) target).getGameMode() == GameMode.CREATIVE
+                ((Player) target).getGameMode() == GameMode.SPECTATOR
+                        || ((Player) target).getGameMode() == GameMode.CREATIVE
         )) return false;
 
         return target != caster && SkillAPI.getSettings().isValidTarget(target)

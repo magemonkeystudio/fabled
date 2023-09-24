@@ -80,7 +80,11 @@ public class CmdUnbind implements IFunction {
             } else {
                 PlayerSkill skill = player.getBoundSkill(item.getType());
                 player.clearBind(item.getType());
-                command.sendMessage(sender, SKILL_BOUND, "&6{skill} &2has been unbound from &6{item}", RPGFilter.SKILL.setReplacement(skill.getData().getName()), RPGFilter.ITEM.setReplacement(TextFormatter.format(item.getType().name())));
+                command.sendMessage(sender,
+                        SKILL_BOUND,
+                        "&6{skill} &2has been unbound from &6{item}",
+                        RPGFilter.SKILL.setReplacement(skill.getData().getName()),
+                        RPGFilter.ITEM.setReplacement(TextFormatter.format(item.getType().name())));
             }
         }
     }

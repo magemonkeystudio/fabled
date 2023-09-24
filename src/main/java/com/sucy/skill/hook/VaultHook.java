@@ -48,11 +48,13 @@ public class VaultHook {
      */
     private static void initialize() {
         try {
-            RegisteredServiceProvider<Permission> permissionProvider = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
+            RegisteredServiceProvider<Permission> permissionProvider =
+                    Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
             if (permissionProvider != null) {
                 permission = permissionProvider.getProvider();
             }
-            RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
+            RegisteredServiceProvider<Economy> economyProvider =
+                    Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
             if (economyProvider != null) {
                 economy = economyProvider.getProvider();
             }

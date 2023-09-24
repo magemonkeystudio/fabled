@@ -34,7 +34,6 @@ public interface IValue {
      * Gets the value using the two inputs
      *
      * @param input the input data
-     *
      * @return result value
      */
     public double compute(double... input);

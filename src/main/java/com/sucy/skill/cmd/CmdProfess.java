@@ -69,7 +69,9 @@ public class CmdProfess implements IFunction {
 
             if (args.length == 0) {
                 if (!data.showProfession((Player) sender))
-                    cmd.sendMessage(sender, NOT_AVAILABLE, ChatColor.RED + "There's no profession available at this time");
+                    cmd.sendMessage(sender,
+                            NOT_AVAILABLE,
+                            ChatColor.RED + "There's no profession available at this time");
             } else {
                 String name = args[0];
                 for (int i = 1; i < args.length; i++) name += ' ' + args[i];
@@ -84,12 +86,17 @@ public class CmdProfess implements IFunction {
                 // Can profess
                 else if (data.canProfess(target)) {
                     data.profess(target);
-                    cmd.sendMessage(sender, PROFESSED, ChatColor.DARK_GREEN + "You are now a " + ChatColor.GOLD + "{class}", RPGFilter.CLASS.setReplacement(target.getName()));
+                    cmd.sendMessage(sender,
+                            PROFESSED,
+                            ChatColor.DARK_GREEN + "You are now a " + ChatColor.GOLD + "{class}",
+                            RPGFilter.CLASS.setReplacement(target.getName()));
                 }
 
                 // Cannot profess
                 else {
-                    cmd.sendMessage(sender, CANNOT_PROFESS, ChatColor.RED + "You cannot profess to this class currently");
+                    cmd.sendMessage(sender,
+                            CANNOT_PROFESS,
+                            ChatColor.RED + "You cannot profess to this class currently");
                 }
             }
         }

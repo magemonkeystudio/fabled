@@ -38,7 +38,10 @@ public class TriggerComponent extends EffectComponent {
     }
 
     @Override
-    public boolean execute(final LivingEntity caster, final int level, final List<LivingEntity> targets, boolean force) {
+    public boolean execute(final LivingEntity caster,
+                           final int level,
+                           final List<LivingEntity> targets,
+                           boolean force) {
         try {
             running = true;
             return executeChildren(caster, level, targets, force);

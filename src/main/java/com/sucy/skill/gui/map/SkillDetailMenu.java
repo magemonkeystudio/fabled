@@ -31,7 +31,9 @@ import com.sucy.skill.api.player.PlayerSkill;
 import mc.promcteam.engine.mccore.gui.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SkillDetailMenu extends MapMenu {
@@ -153,8 +155,14 @@ public class SkillDetailMenu extends MapMenu {
         // Get text to draw
         PlayerSkill  skill = SkillListMenu.getSkill(player);
         ItemStack    icon  = skill.getData().getIndicator(skill, true);
-        List<String> lore  = icon.getItemMeta().getLore();
-        lore.add(0, icon.getItemMeta().getDisplayName());
+        ItemMeta     meta  = icon.getItemMeta();
+        List<String> lore  = meta == null ? null : meta.getLore();
+        if (lore == null) {
+            lore = new ArrayList<>();
+        }
+        if (meta != null) {
+            lore.add(0, meta.getDisplayName());
+        }
 
         // Find page details
         MapFont font         = scheme.getFont(Menu.DETAIL);

@@ -167,10 +167,13 @@ public class ItemSerializer {
             nbtTagList_add = Reflex.getMethod(nbtTagList, "add", nbtBase);
             nbtTagList_size = Reflex.getMethod(nbtTagList, "size");
 
-            nbtCompressedStreamTools_write = Reflex.getMethod(nbtCompressedStreamTools, "a", nbtTagCompound, DataOutput.class);
+            nbtCompressedStreamTools_write =
+                    Reflex.getMethod(nbtCompressedStreamTools, "a", nbtTagCompound, DataOutput.class);
             nbtCompressedStreamTools_read = Reflex.getMethod(nbtCompressedStreamTools, "a", DataInputStream.class);
         } catch (Exception ex) {
-            SkillAPI.inst().getLogger().warning("Server doesn't support NBT serialization - resorting to a less complete implementation");
+            SkillAPI.inst()
+                    .getLogger()
+                    .warning("Server doesn't support NBT serialization - resorting to a less complete implementation");
         }
     }
 
@@ -219,16 +222,19 @@ public class ItemSerializer {
         try {
             ByteArrayInputStream inputStream     = new ByteArrayInputStream(new BigInteger(data, 32).toByteArray());
             DataInputStream      dataInputStream = new DataInputStream(inputStream);
-            Object               wrapper         = Reflex.invokeMethod(nbtCompressedStreamTools_read, null, dataInputStream);
+            Object               wrapper         =
+                    Reflex.invokeMethod(nbtCompressedStreamTools_read, null, dataInputStream);
             Object               itemList        = Reflex.invokeMethod(nbtTagCompound_getList, wrapper, "i", 10);
-            ItemStack[]          items           = new ItemStack[(Integer) Reflex.invokeMethod(nbtTagList_size, itemList)];
+            ItemStack[]          items           =
+                    new ItemStack[(Integer) Reflex.invokeMethod(nbtTagList_size, itemList)];
 
             for (int i = 0; i < items.length; i++) {
                 Object inputObject = Reflex.invokeMethod(nbtTagList_get, itemList, i);
 
                 // IsEmpty
                 if (!(Boolean) Reflex.invokeMethod(nbtTagCompound_isEmpty, inputObject)) {
-                    items[i] = (ItemStack) Reflex.invokeConstructor(craftItemNMSConstructor, Reflex.invokeConstructor(nmsItemConstructor, inputObject));
+                    items[i] = (ItemStack) Reflex.invokeConstructor(craftItemNMSConstructor,
+                            Reflex.invokeConstructor(nmsItemConstructor, inputObject));
                 }
             }
 
@@ -292,15 +298,17 @@ public class ItemSerializer {
                 }
 
                 ItemMeta meta = is.getItemMeta();
-                if (meta.hasDisplayName()) {
-                    builder.append(":n@");
-                    builder.append(meta.getDisplayName().replaceAll("[:@#;]", ""));
-                }
+                if (meta != null) {
+                    if (meta.hasDisplayName()) {
+                        builder.append(":n@");
+                        builder.append(meta.getDisplayName().replaceAll("[:@#;]", ""));
+                    }
 
-                if (meta.hasLore()) {
-                    for (String line : meta.getLore()) {
-                        builder.append(":l@");
-                        builder.append(line.replaceAll("[:;@#]", ""));
+                    if (meta.hasLore()) {
+                        for (String line : meta.getLore()) {
+                            builder.append(":l@");
+                            builder.append(line.replaceAll("[:;@#]", ""));
+                        }
                     }
                 }
 
@@ -353,16 +361,20 @@ public class ItemSerializer {
                     is.addUnsafeEnchantment(Enchantment.getByName(name), Integer.valueOf(itemAttribute[2]));
                 } else if (itemAttribute[0].equals("n") && createdItemStack) {
                     ItemMeta meta = is.getItemMeta();
-                    meta.setDisplayName(itemAttribute[1]);
-                    is.setItemMeta(meta);
+                    if (meta != null) {
+                        meta.setDisplayName(itemAttribute[1]);
+                        is.setItemMeta(meta);
+                    }
                 } else if (itemAttribute[0].equals("l") && createdItemStack) {
-                    ItemMeta     meta = is.getItemMeta();
-                    List<String> lore = meta.getLore();
-                    if (lore == null) lore = new ArrayList<>();
-                    if (itemAttribute.length >= 1)
-                        lore.add(itemAttribute[1]);
-                    meta.setLore(lore);
-                    is.setItemMeta(meta);
+                    ItemMeta meta = is.getItemMeta();
+                    if (meta != null) {
+                        List<String> lore = meta.getLore();
+                        if (lore == null) lore = new ArrayList<>();
+                        if (itemAttribute.length >= 1)
+                            lore.add(itemAttribute[1]);
+                        meta.setLore(lore);
+                        is.setItemMeta(meta);
+                    }
                 }
             }
             deserializedInventory[stackPosition] = is;

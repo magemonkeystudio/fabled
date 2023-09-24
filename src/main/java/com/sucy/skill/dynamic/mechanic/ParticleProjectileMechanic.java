@@ -34,11 +34,10 @@ import com.sucy.skill.api.particle.target.FollowTarget;
 import com.sucy.skill.api.projectile.CustomProjectile;
 import com.sucy.skill.api.projectile.ParticleProjectile;
 import com.sucy.skill.api.projectile.ProjectileCallback;
-import com.sucy.skill.cast.*;
+import com.sucy.skill.cast.Preview;
 import com.sucy.skill.dynamic.TempEntity;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -71,7 +70,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
     /**
      * {@inheritDoc}
      */
-    @Override
+    /*@Override
     public void playPreview(Player caster, int level, List<LivingEntity> targets, int step) {
         double speed  = parseValues(caster, VELOCITY, level, 1);
         String spread = settings.getString(SPREAD, "cone").toLowerCase();
@@ -113,7 +112,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                 }
             });
         }
-    }
+    }*/
 
     @Override
     public String getKey() {
@@ -217,6 +216,9 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
         }
         ArrayList<LivingEntity> targets = new ArrayList<LivingEntity>();
         targets.add(hit);
-        executeChildren(projectile.getShooter(), SkillAPI.getMetaInt(projectile, LEVEL), targets, skill.isForced(projectile.getShooter()));
+        executeChildren(projectile.getShooter(),
+                SkillAPI.getMetaInt(projectile, LEVEL),
+                targets,
+                skill.isForced(projectile.getShooter()));
     }
 }

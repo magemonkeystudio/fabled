@@ -19,7 +19,7 @@ public class HomingProjectile extends CustomProjectile {
     private final double           angle;
 
     public HomingProjectile(final CustomProjectile baseProjectile, final EffectTarget target, final double angle) {
-        super(baseProjectile.getShooter());
+        super(baseProjectile.getShooter(), baseProjectile.settings);
         this.baseProjectile = baseProjectile;
         this.target = target;
         this.angle = angle;

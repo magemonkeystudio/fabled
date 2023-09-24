@@ -103,7 +103,12 @@ public class StatusListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onMove(PlayerMoveEvent event) {
-        if (((event.getPlayer()).isOnGround() || event.getTo().getY() > event.getFrom().getY()) && check(event, event.getPlayer(), event.getPlayer(), StatusFlag.STUN, StatusFlag.ROOT, StatusFlag.CHANNELING)) {
+        if (((event.getPlayer()).isOnGround() || event.getTo().getY() > event.getFrom().getY()) && check(event,
+                event.getPlayer(),
+                event.getPlayer(),
+                StatusFlag.STUN,
+                StatusFlag.ROOT,
+                StatusFlag.CHANNELING)) {
             event.getPlayer().setVelocity(ZERO);
         }
     }
@@ -221,7 +226,6 @@ public class StatusListener extends SkillAPIListener {
      * Checks for the delay between sending status messages
      *
      * @param player player to check for
-     *
      * @return true if can send a message, false otherwise
      */
     private boolean checkTime(Player player) {
@@ -240,7 +244,6 @@ public class StatusListener extends SkillAPIListener {
      * @param entity   entity to check for flags
      * @param receiver entity to send messages to
      * @param flags    flags to check for
-     *
      * @return the canceled state of the event
      */
     private boolean check(Cancellable event, LivingEntity entity, LivingEntity receiver, String... flags) {

@@ -31,7 +31,8 @@ public class FishingGroundTrigger implements Trigger<ProjectileHitEvent> {
     @Override
     public boolean shouldTrigger(ProjectileHitEvent event, int level, Settings settings) {
 
-        if (event.getEntityType() == EntityType.FISHING_HOOK && event.getHitEntity() == null && event.getHitBlock() != null) {
+        if (event.getEntityType() == EntityType.FISHING_HOOK && event.getHitEntity() == null
+                && event.getHitBlock() != null) {
             return true;
         }
         return false;

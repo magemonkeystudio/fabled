@@ -27,6 +27,7 @@
 package com.sucy.skill.api.player;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.cast.CastMode;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -57,7 +58,7 @@ public class PlayerSkillBar {
      * @param player owning player data
      */
     public PlayerSkillBar(PlayerData player) {
-        if (SkillAPI.getSettings().isUsingCombat()) {
+        if (SkillAPI.getSettings().getCastMode().equals(CastMode.COMBAT)) {
             reserve(SkillAPI.getSettings().getCastSlot());
         }
 
@@ -151,7 +152,8 @@ public class PlayerSkillBar {
 
         ItemStack[] items = p.getInventory().getContents();
         for (int i = 0; i < items.length; i++)
-            if ((items[i] == null || items[i].getType() == Material.AIR) && !slots.containsKey(i + 1) && !reserved.contains(i))
+            if ((items[i] == null || items[i].getType() == Material.AIR) && !slots.containsKey(i + 1)
+                    && !reserved.contains(i))
                 count++;
 
         return count;

@@ -26,16 +26,22 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
+import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.particle.ParticleHelper;
 import com.sucy.skill.api.target.TargetHelper;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.List;
+import java.util.Set;
 
 /**
- * Strikes lightning about each target with an offset
+ * Warps the target relative to their current location
  */
 public class WarpMechanic extends MechanicComponent {
     private static final Vector UP = new Vector(0, 1, 0);
@@ -50,38 +56,54 @@ public class WarpMechanic extends MechanicComponent {
         return "warp";
     }
 
+    private Location getLocation(LivingEntity caster, int level, LivingEntity target) {
+        boolean throughWalls = settings.getString(WALL, "false").toLowerCase().equals("true");
+        double  forward      = parseValues(caster, FORWARD, level, 0.0);
+        double  upward       = parseValues(caster, UPWARD, level, 0.0);
+        double  right        = parseValues(caster, RIGHT, level, 0.0);
+
+        Vector   dir  = target.getLocation().getDirection();
+        Vector   side = dir.clone().crossProduct(UP).multiply(right);
+        Location loc  = target.getLocation().add(dir.multiply(forward)).add(side).add(0, upward, 0).add(0, 1, 0);
+        loc = TargetHelper.getOpenLocation(target.getLocation().add(0, 1, 0), loc, throughWalls);
+        if (!loc.getBlock().getType().isSolid() && loc.getBlock().getRelative(BlockFace.DOWN).getType().isSolid()) {
+            loc.add(0, 1, 0);
+        }
+        return loc.subtract(0, 1, 0);
+    }
+
     /**
      * Executes the component
      *
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0) {
-            return false;
-        }
-
-        // Get the world
-        boolean throughWalls = settings.getString(WALL, "false").toLowerCase().equals("true");
-        double  forward      = parseValues(caster, FORWARD, level, 0.0);
-        double  upward       = parseValues(caster, UPWARD, level, 0.0);
-        double  right        = parseValues(caster, RIGHT, level, 0.0);
-
+        if (targets.isEmpty()) return false;
         for (LivingEntity target : targets) {
-            Vector   dir  = target.getLocation().getDirection();
-            Vector   side = dir.clone().crossProduct(UP).multiply(right);
-            Location loc  = target.getLocation().add(dir.multiply(forward)).add(side).add(0, upward, 0).add(0, 1, 0);
-            loc = TargetHelper.getOpenLocation(target.getLocation().add(0, 1, 0), loc, throughWalls);
-            if (!loc.getBlock().getType().isSolid() && loc.getBlock().getRelative(BlockFace.DOWN).getType().isSolid()) {
-                loc.add(0, 1, 0);
-            }
-            target.teleport(loc.subtract(0, 1, 0));
+            target.teleport(getLocation(caster, level, target));
         }
-        return targets.size() > 0;
+        return true;
+    }
+
+    @Override
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
+        if (preview.getBool("per-target")) {
+            BukkitTask task = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    for (LivingEntity target : targets) {
+                        ParticleHelper.play(getLocation(caster, level, target), preview, Set.of(caster), "per-target-",
+                                preview.getBool("per-target-"+"hitbox") ? target.getBoundingBox() : null
+                        );
+                    }
+                }
+            }.runTaskTimer(SkillAPI.inst(),0, Math.max(1, preview.getInt("per-target-"+"period", 5)));
+            onPreviewStop.add(task::cancel);
+        }
     }
 }

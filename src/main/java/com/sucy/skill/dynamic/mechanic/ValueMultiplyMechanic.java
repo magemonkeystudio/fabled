@@ -29,8 +29,8 @@ package com.sucy.skill.dynamic.mechanic;
 import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.entity.LivingEntity;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Adds to a cast data value
@@ -50,7 +50,6 @@ public class ValueMultiplyMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
@@ -60,9 +59,9 @@ public class ValueMultiplyMechanic extends MechanicComponent {
             return false;
         }
 
-        String                  key        = settings.getString(KEY);
-        double                  multiplier = parseValues(caster, MULTIPLIER, level, 1);
-        HashMap<String, Object> data       = DynamicSkill.getCastData(caster);
+        String              key        = settings.getString(KEY);
+        double              multiplier = parseValues(caster, MULTIPLIER, level, 1);
+        Map<String, Object> data       = DynamicSkill.getCastData(caster);
         if (data.containsKey(key)) {
             data.put(key, multiplier * (Double) data.get(key));
         }

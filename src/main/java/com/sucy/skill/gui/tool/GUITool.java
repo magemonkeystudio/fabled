@@ -39,6 +39,7 @@ import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.util.TextFormatter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -46,6 +47,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -57,6 +60,7 @@ public class GUITool implements ToolMenu {
     private static final HashMap<String, ItemStack> items     = new HashMap<>();
     private static       boolean                    inUse     = false;
     private static       CommentedConfig            config;
+    private static final NamespacedKey              CAST_ITEM_KEY = new NamespacedKey(SkillAPI.inst(), "castItem");
 
     private static ItemStack
             NEXT,
@@ -166,17 +170,52 @@ public class GUITool implements ToolMenu {
         Material  material = Material.valueOf(data.getString("type").toUpperCase().replace(" ", "_"));
         ItemStack item     = new ItemStack(material);
         ItemMeta  meta     = item.getItemMeta();
-        meta.setCustomModelData(data.getInt("data"));
-        if (meta instanceof Damageable) {
-            ((Damageable) meta).setDamage(data.getInt("durability"));
+        if (meta != null) {
+            meta.setCustomModelData(data.getInt("data"));
+            if (meta instanceof Damageable) {
+                ((Damageable) meta).setDamage(data.getInt("durability"));
+            }
+
+            meta.setDisplayName(TextFormatter.colorString(data.getString("name")));
+            meta.setLore(TextFormatter.colorStringList(data.getList("lore")));
+
+            item.setItemMeta(meta);
         }
 
-        meta.setDisplayName(TextFormatter.colorString(data.getString("name")));
-        meta.setLore(TextFormatter.colorStringList(data.getList("lore")));
-
-        item.setItemMeta(meta);
-
         return DamageLoreRemover.removeAttackDmg(item);
+    }
+
+    public static ItemStack markCastItem(@Nullable ItemStack itemStack) {
+        if (itemStack == null) {
+            return null;
+        }
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta != null) {
+            meta.getPersistentDataContainer().set(CAST_ITEM_KEY, PersistentDataType.BYTE, (byte) 1);
+            itemStack.setItemMeta(meta);
+        }
+        return itemStack;
+    }
+
+    public static boolean isCastItem(@Nullable ItemStack itemStack) {
+        if (itemStack == null) {
+            return false;
+        }
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta != null) {
+            Byte data = meta.getPersistentDataContainer().get(CAST_ITEM_KEY, PersistentDataType.BYTE);
+            return data != null && data >= 1;
+        }
+        return false;
+    }
+
+    public static void removeCastItems(Player player) {
+        ItemStack[] contents = player.getInventory().getContents();
+        for (int i = 0; i < contents.length; i++) {
+            if (GUITool.isCastItem(contents[i])) {
+                player.getInventory().setItem(i, null);
+            }
+        }
     }
 
     public static void cleanUp() {
@@ -267,9 +306,11 @@ public class GUITool implements ToolMenu {
     private static ItemStack make(Material mat, String name, String... lore) {
         ItemStack item = new ItemStack(mat);
         ItemMeta  meta = item.getItemMeta();
-        meta.setDisplayName(name);
-        meta.setLore(Arrays.asList(lore));
-        item.setItemMeta(meta);
+        if (meta != null) {
+            meta.setDisplayName(name);
+            meta.setLore(Arrays.asList(lore));
+            item.setItemMeta(meta);
+        }
         return item;
     }
 
@@ -374,9 +415,11 @@ public class GUITool implements ToolMenu {
     private ItemStack toPlaceholder(String key, ItemStack custom) {
         ItemStack copy = custom.clone();
         ItemMeta  meta = copy.getItemMeta();
-        meta.setDisplayName(key);
-        meta.setLore(new ArrayList<>());
-        copy.setItemMeta(meta);
+        if (meta != null) {
+            meta.setDisplayName(key);
+            meta.setLore(new ArrayList<>());
+            copy.setItemMeta(meta);
+        }
         return copy;
     }
 
@@ -412,13 +455,13 @@ public class GUITool implements ToolMenu {
         i = 9;
         GUIPage page = guiData.getPage();
         for (String group : availableGroups) {
-            ItemStack item  = make(Material.DRAGON_EGG,
+            ItemStack item = make(Material.DRAGON_EGG,
                     group,
                     "",
                     "Spot for the player's current",
                     "class in the group should",
                     "be placed in the GUI");
-            int       index = page.getIndex(group);
+            int index = page.getIndex(group);
             if (index != -1)
                 inventoryContents[index] = item;
             else if (!guiData.has(group) && i < playerContents.length)

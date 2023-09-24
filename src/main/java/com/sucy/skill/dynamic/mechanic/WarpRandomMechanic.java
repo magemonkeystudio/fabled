@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Strikes lightning about each target with an offset
+ * Warps a random distance
  */
 public class WarpRandomMechanic extends MechanicComponent {
     private static final Random random = new Random();
@@ -55,7 +55,6 @@ public class WarpRandomMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */

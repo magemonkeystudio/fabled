@@ -111,7 +111,8 @@ public class ParticleSettings {
         this.dz = config.getFloat(DZ_KEY, 0);
         this.speed = config.getFloat(SPEED_KEY, 1);
         this.amount = config.getInt(AMOUNT_KEY, 1);
-        this.object = ParticleHelper.makeObject(type, Material.valueOf(config.getString(MATERIAL_KEY, "Dirt").toUpperCase().replace(" ", "_")),
+        this.object = ParticleHelper.makeObject(type,
+                Material.valueOf(config.getString(MATERIAL_KEY, "Dirt").toUpperCase().replace(" ", "_")),
                 config.getInt(DATA_KEY, 0),
                 config.getInt(DURABILITY_KEY, 0),
                 Color.fromRGB(Integer.parseInt(config.getString(DUST_COLOR, "#FF0000").substring(1), 16)),

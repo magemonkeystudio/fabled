@@ -27,6 +27,7 @@
 package com.sucy.skill.api.projectile;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.event.ItemProjectileExpireEvent;
 import com.sucy.skill.api.event.ItemProjectileHitEvent;
 import com.sucy.skill.api.event.ItemProjectileLandEvent;
@@ -64,18 +65,26 @@ public class ItemProjectile extends CustomProjectile {
     /**
      * <p>Constructs a new item projectile.</p>
      *
-     * @param thrower the entity throwing the projectile
-     * @param loc     the location to shoot from
-     * @param item    the item to represent the projectile
-     * @param vel     the velocity of the projectile
+     * @param thrower      the entity throwing the projectile
+     * @param loc          the location to shoot from
+     * @param item         the item to represent the projectile
+     * @param vel          the velocity of the projectile
      * @param collideWalls whether to consider wall collisions as the projectile landing
      */
-    public ItemProjectile(LivingEntity thrower, Location loc, ItemStack item, Vector vel, int lifespan, boolean collideWalls) {
-        super(thrower);
+    public ItemProjectile(LivingEntity thrower,
+                          Location loc,
+                          Settings settings,
+                          ItemStack item,
+                          Vector vel,
+                          int lifespan,
+                          boolean collideWalls) {
+        super(thrower, settings);
 
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(NAME + NEXT++);
-        item.setItemMeta(meta);
+        if (meta != null) {
+            meta.setDisplayName(NAME + NEXT++);
+            item.setItemMeta(meta);
+        }
         DamageLoreRemover.removeAttackDmg(item);
 
         this.item = thrower.getWorld().dropItem(loc.add(0, 1, 0), item);
@@ -210,6 +219,7 @@ public class ItemProjectile extends CustomProjectile {
 
         life--;
         if (life <= 0) {
+            if (settings.getBool("on-expire")) callback.callback(this, null);
             cancel();
             Bukkit.getPluginManager().callEvent(new ItemProjectileExpireEvent(this));
         }
@@ -227,26 +237,34 @@ public class ItemProjectile extends CustomProjectile {
     /**
      * Fires a spread of projectiles from the location.
      *
-     * @param shooter  entity shooting the projectiles
-     * @param center   the center velocity of the spread
-     * @param loc      location to shoot from
-     * @param item     the item to use for the projectile
-     * @param angle    angle of the spread
-     * @param amount   number of projectiles to fire
-     * @param callback optional callback for when projectiles hit
-     * @param lifespan maximum duration of the projectile
+     * @param shooter      entity shooting the projectiles
+     * @param center       the center velocity of the spread
+     * @param loc          location to shoot from
+     * @param item         the item to use for the projectile
+     * @param angle        angle of the spread
+     * @param amount       number of projectiles to fire
+     * @param callback     optional callback for when projectiles hit
+     * @param lifespan     maximum duration of the projectile
      * @param collideWalls whether to consider wall collisions as the projectiles landing
-     *
      * @return list of fired projectiles
      */
-    public static ArrayList<ItemProjectile> spread(LivingEntity shooter, Vector center, Location loc, ItemStack item, double angle, int amount, ProjectileCallback callback, int lifespan, boolean collideWalls) {
+    public static ArrayList<ItemProjectile> spread(LivingEntity shooter,
+                                                   Vector center,
+                                                   Location loc,
+                                                   Settings settings,
+                                                   ItemStack item,
+                                                   double angle,
+                                                   int amount,
+                                                   ProjectileCallback callback,
+                                                   int lifespan,
+                                                   boolean collideWalls) {
         double speed = center.length();
         center.normalize();
         ArrayList<Vector>         dirs = calcSpread(shooter.getLocation().getDirection(), angle, amount);
         ArrayList<ItemProjectile> list = new ArrayList<ItemProjectile>();
         for (Vector dir : dirs) {
             Vector         vel = dir.multiply(speed);
-            ItemProjectile p   = new ItemProjectile(shooter, loc.clone(), item, vel, lifespan, collideWalls);
+            ItemProjectile p   = new ItemProjectile(shooter, loc.clone(), settings, item, vel, lifespan, collideWalls);
             p.setCallback(callback);
             list.add(p);
         }
@@ -256,20 +274,29 @@ public class ItemProjectile extends CustomProjectile {
     /**
      * Fires a spread of projectiles from the location.
      *
-     * @param shooter  entity shooting the projectiles
-     * @param center   the center location to rain on
-     * @param item     the item to use for the projectile
-     * @param radius   radius of the circle
-     * @param height   height above the center location
-     * @param speed    speed of the projectiles
-     * @param amount   number of projectiles to fire
-     * @param callback optional callback for when projectiles hit
-     * @param lifespan maximum duration of the projectile
+     * @param shooter      entity shooting the projectiles
+     * @param center       the center location to rain on
+     * @param item         the item to use for the projectile
+     * @param radius       radius of the circle
+     * @param height       height above the center location
+     * @param speed        speed of the projectiles
+     * @param amount       number of projectiles to fire
+     * @param callback     optional callback for when projectiles hit
+     * @param lifespan     maximum duration of the projectile
      * @param collideWalls whether to consider wall collisions as the projectiles landing
-     *
      * @return list of fired projectiles
      */
-    public static ArrayList<ItemProjectile> rain(LivingEntity shooter, Location center, ItemStack item, double radius, double height, double speed, int amount, ProjectileCallback callback, int lifespan, boolean collideWalls) {
+    public static ArrayList<ItemProjectile> rain(LivingEntity shooter,
+                                                 Location center,
+                                                 Settings settings,
+                                                 ItemStack item,
+                                                 double radius,
+                                                 double height,
+                                                 double speed,
+                                                 int amount,
+                                                 ProjectileCallback callback,
+                                                 int lifespan,
+                                                 boolean collideWalls) {
         Vector vel = new Vector(0, speed, 0);
         if (vel.getY() == 0) {
             vel.setY(1);
@@ -278,7 +305,7 @@ public class ItemProjectile extends CustomProjectile {
         ArrayList<ItemProjectile> list = new ArrayList<ItemProjectile>();
         for (Location l : locs) {
             l.setDirection(vel);
-            ItemProjectile p = new ItemProjectile(shooter, l, item, vel, lifespan, collideWalls);
+            ItemProjectile p = new ItemProjectile(shooter, l, settings, item, vel, lifespan, collideWalls);
             p.setCallback(callback);
             list.add(p);
         }

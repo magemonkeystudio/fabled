@@ -28,10 +28,7 @@ package com.sucy.skill.dynamic.target;
 
 import com.google.common.collect.ImmutableList;
 import com.sucy.skill.api.target.TargetHelper;
-import com.sucy.skill.cast.ConePreview;
-import com.sucy.skill.cast.PreviewSettings;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -43,10 +40,10 @@ public class SingleTarget extends TargetComponent {
     private static final String RANGE     = "range";
     private static final String TOLERANCE = "tolerance";
 
-    private ConePreview preview;
-
-    /** {@inheritDoc} */
-    @Override
+    /**
+     * {@inheritDoc}
+     */
+    /*@Override
     public void playPreview(Player caster, int level, LivingEntity target, int step) {
         double arc    = parseValues(caster, TOLERANCE, level, 4.0) * Math.PI / 180;
         double radius = parseValues(caster, RANGE, level, 3.0);
@@ -54,9 +51,11 @@ public class SingleTarget extends TargetComponent {
             preview = new ConePreview(arc, radius);
         }
         preview.playParticles(caster, PreviewSettings.particle, target.getLocation(), step);
-    }
+    }*/
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {

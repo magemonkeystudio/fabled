@@ -27,10 +27,8 @@
 package com.sucy.skill.dynamic.target;
 
 import com.google.common.collect.ImmutableList;
-import com.sucy.skill.cast.PreviewSettings;
 import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -40,23 +38,33 @@ import java.util.List;
 public class RememberTarget extends TargetComponent {
     private static final String KEY = "key";
 
-    /** {@inheritDoc} */
-    @Override
+    /**
+     * {@inheritDoc}
+     */
+    /*@Override
     public void playPreview(Player caster, final int level, final LivingEntity target, int step) {
         final List<LivingEntity> targets = getTargets(caster, level, null);
         for (LivingEntity entity : targets) {
             switch (previewType) {
                 case DIM_2:
-                    circlePreview.playParticles(caster, PreviewSettings.particle, entity.getLocation().add(0, 0.1, 0), step);
+                    circlePreview.playParticles(caster,
+                            PreviewSettings.particle,
+                            entity.getLocation().add(0, 0.1, 0),
+                            step);
                     break;
                 case DIM_3:
-                    spherePreview.playParticles(caster, PreviewSettings.particle, entity.getLocation().add(0, 0.1, 0), step);
+                    spherePreview.playParticles(caster,
+                            PreviewSettings.particle,
+                            entity.getLocation().add(0, 0.1, 0),
+                            step);
                     break;
             }
         }
-    }
+    }*/
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {

@@ -27,8 +27,8 @@
 package com.sucy.skill.api.player;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.gui.tool.GUITool;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 
@@ -39,6 +39,7 @@ public class PlayerSkillSlot {
     private final ArrayList<PlayerSkill> skills = new ArrayList<PlayerSkill>();
     private       int                    index  = 0;
     private       PlayerData             player;
+    private       boolean                hovering = false;
 
     /**
      * Initializes the skill slot for the given player
@@ -53,17 +54,7 @@ public class PlayerSkillSlot {
         for (PlayerSkill skill : data.getSkills())
             if (skill.getData().canCast() && skill.isUnlocked())
                 skills.add(skill);
-    }
-
-    /**
-     * Gets the current item that should be displayed in the skill slot
-     *
-     * @return item display
-     */
-    public ItemStack getDisplay() {
-        return skills.size() == 0 ?
-                SkillAPI.getSettings().getCastItem()
-                : skills.get(index).getData().getIndicator(skills.get(index), true);
+        setHovering(player.getPlayer().getInventory().getHeldItemSlot() == SkillAPI.getSettings().getCastSlot());
     }
 
     /**
@@ -77,40 +68,30 @@ public class PlayerSkillSlot {
     }
 
     /**
-     * Clears a specified skill, if available
-     *
-     * @param skill skill to clear
-     */
-    public void clear(PlayerSkill skill) {
-        if (skill.getData().canCast()) {
-            skills.remove(skill);
-            index = Math.max(Math.min(index, skills.size() - 1), 0);
-        }
-    }
-
-    /**
-     * Clears all available skills
-     */
-    public void clearAll() {
-        skills.clear();
-        index = 0;
-    }
-
-    /**
      * Updates the displayed item for the player
      *
      * @param player player to update for
      */
     public void updateItem(Player player) {
-        if (player != null)
-            player.getInventory().setItem(SkillAPI.getSettings().getCastSlot(), getDisplay());
+        if (player != null) {
+            PlayerData playerData = SkillAPI.getPlayerData(player);
+            if (skills.isEmpty()) {
+                player.getInventory().setItem(SkillAPI.getSettings().getCastSlot(), SkillAPI.getSettings().getCastItem());
+                playerData.setOnPreviewStop(null);
+            } else {
+                PlayerSkill playerSkill = skills.get(index);
+                if (hovering) playerSkill.startPreview();
+                player.getInventory().setItem(SkillAPI.getSettings().getCastSlot(),
+                        GUITool.markCastItem(playerSkill.getData().getIndicator(skills.get(index), true)));
+            }
+        }
     }
 
     /**
      * Activates the skill slot, casting the hovered item
      */
     public void activate() {
-        if (skills.size() > 0)
+        if (!skills.isEmpty())
             player.cast(skills.get(index));
     }
 
@@ -118,7 +99,7 @@ public class PlayerSkillSlot {
      * Cycles to the next skill
      */
     public void next() {
-        if (skills.size() > 0) {
+        if (!skills.isEmpty()) {
             index = (index + 1) % skills.size();
             updateItem(player.getPlayer());
         }
@@ -128,9 +109,15 @@ public class PlayerSkillSlot {
      * Cycles to the previous skill
      */
     public void prev() {
-        if (skills.size() > 0) {
+        if (!skills.isEmpty()) {
             index = (index + skills.size() - 1) % skills.size();
             updateItem(player.getPlayer());
         }
+    }
+
+    public void setHovering(boolean hovering) {
+        this.hovering = true;
+        if (hovering && !skills.isEmpty()) skills.get(index).startPreview();
+        else player.setOnPreviewStop(null);
     }
 }

@@ -33,7 +33,7 @@ import com.sucy.skill.api.CombatProtection;
 import com.sucy.skill.api.DefaultCombatProtection;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.skills.Skill;
-import com.sucy.skill.cast.PreviewSettings;
+import com.sucy.skill.cast.CastMode;
 import com.sucy.skill.data.formula.Formula;
 import com.sucy.skill.data.formula.value.CustomValue;
 import com.sucy.skill.dynamic.DynamicSkill;
@@ -136,14 +136,14 @@ public class Settings {
             PVP_LEVEL_RANGE        = PVP_BASE + "level-range",
             CAST_BASE              = "Casting.",
             CAST_ENABLED           = CAST_BASE + "enabled",
-            CAST_BARS              = CAST_BASE + "bars",
-            CAST_COMBAT            = CAST_BASE + "combat",
-            CAST_INDICATOR         = CAST_BASE + "cast-indicator",
+            CAST_MODE              = CAST_BASE + "mode",
             CAST_SLOT              = CAST_BASE + "slot",
             CAST_ITEM              = CAST_BASE + "item",
             CAST_COOLDOWN          = CAST_BASE + "cooldown",
             CAST_HOVER             = CAST_BASE + "hover-item",
             CAST_INSTANT           = CAST_BASE + "instant-item",
+            CAST_FORMAT_SKILL      = CAST_BASE + "message-mode-format.skill",
+            CAST_FORMAT_SEPARATOR  = CAST_BASE + "message-mode-format.separator",
             COMBO_BASE             = "Click Combos.",
             COMBO_ENABLED          = COMBO_BASE + "enabled",
             COMBO_CUSTOM           = COMBO_BASE + "allow-custom",
@@ -214,6 +214,8 @@ public class Settings {
     @Getter
     private int                 maxAccounts;
     private boolean             monsterEnemy;
+    @Getter
+    @Setter
     private boolean             passiveAlly;
     private boolean             playerAlly;
     private boolean             affectNpcs;
@@ -464,20 +466,22 @@ public class Settings {
      * @return the maximum level difference two players must have to be able to PVP, or -1 if disabled
      */
     @Getter
-    private int pvpLevelRange;
+    private int           pvpLevelRange;
     /**
      * @return the minimum level the player must be to be able to PVP with other players, or -1 if disabled
      */
     @Getter
-    private int pvpMinLevel;
+    private int           pvpMinLevel;
     /**
      * @return true if default casting is enabled
      */
     @Getter
     private boolean       castEnabled;
-    @Setter
-    private boolean       castBars;
-    private boolean       combatEnabled;
+    /**
+     *
+     */
+    @Getter
+    private CastMode castMode;
     /**
      * @return slot the cast item is stored in
      */
@@ -491,24 +495,25 @@ public class Settings {
     /**
      * @return cast item to use in the slot
      */
-    @Getter
     private ItemStack     castItem;
-    @Getter
     private ItemStack     hoverItem;
+    private     ItemStack instantItem;
     @Getter
-    private ItemStack     instantItem;
+    private String        messageFormatSkill;
+    @Getter
+    private String        messageFormatSeparator;
     /**
      * @return enabled clicks as an array of booleans indexed by click ID
      */
     @Getter
-    private boolean[]     enabledClicks;
+    private     boolean[] enabledClicks;
     /**
      * Checks whether click combos are enabled
      *
      * @return true if enabled, false otherwise
      */
     @Getter
-    private boolean       combosEnabled;
+    private boolean   combosEnabled;
     /**
      * Checks whether players can customize their click combos
      *
@@ -832,40 +837,34 @@ public class Settings {
      * @param attacker the attacking entity
      * @param target   the target entity
      * @param cause    the cause of the damage, might affect death messages
-     * @return true if can be attacked, false otherwise
+     * @return true if the target can be attacked, false otherwise
      */
     public boolean canAttack(LivingEntity attacker, LivingEntity target, EntityDamageEvent.DamageCause cause) {
         if (attacker.equals(target)) return true;
 
-        if (attacker instanceof Player) {
-            final Player player = (Player) attacker;
-            if (target instanceof Animals && !(target instanceof Tameable)) {
-                if (passiveAlly || passiveWorlds.contains(attacker.getWorld().getName())) {
-                    return false;
-                }
-            } else if (target instanceof Monster) {
-                if (monsterEnemy || monsterWorlds.contains(attacker.getWorld().getName())) {
-                    return true;
-                }
-            } else if (target instanceof Player) {
-                if (playerAlly || playerWorlds.contains(attacker.getWorld().getName())) {
-                    return false;
-                }
-
-                return combatProtection.canAttack(player, (Player) target, cause);
-            }
-            return combatProtection.canAttack(player, target, cause);
-        } else if (attacker instanceof Tameable) {
-            Tameable tameable = (Tameable) attacker;
-            if (tameable.isTamed() && (tameable.getOwner() instanceof LivingEntity)) {
-                return (tameable.getOwner() != target)
-                        && canAttack((LivingEntity) tameable.getOwner(), target);
-            }
+        if (attacker instanceof Player && target instanceof Player) {
+            return CombatProtection.canAttack(attacker, target, playerAlly, cause);
         } else {
-            return !(target instanceof Monster);
+            if (attacker instanceof Tameable) {
+                Tameable tameable = (Tameable) attacker;
+                if (tameable.isTamed() && (tameable.getOwner() instanceof LivingEntity)) {
+                    return (tameable.getOwner() != target)
+                            && canAttack((LivingEntity) tameable.getOwner(), target);
+                }
+            }
+            /*
+             * The attacker is neither a tameable mob, nor a player.
+             * In this case, it is a different mob of some sort, so
+             * we have to assume that the rules of `monsterEnemy` or `passiveAlly` come into place here
+             */
+            if(target instanceof Monster && (monsterEnemy || monsterWorlds.contains(attacker.getWorld().getName()))) {
+                return true;
+            } else if (target instanceof Animals && (passiveAlly || passiveWorlds.contains(attacker.getWorld().getName()))) {
+                return false;
+            }
         }
 
-        return combatProtection.canAttack(attacker, target, cause);
+        return CombatProtection.canAttack(attacker, target, passiveAlly, cause);
     }
 
     /**
@@ -1183,19 +1182,16 @@ public class Settings {
         titleMessages = config.getList(GUI_LIST);
     }
 
-    /**
-     * @return true if using bar format, false otherwise
-     */
-    public boolean isUsingBars() {
-        return castEnabled && castBars && !combatEnabled;
+    public ItemStack getCastItem() {
+        return castItem.clone();
     }
 
-    public boolean isUsingWand() {
-        return castEnabled && !castBars && !combatEnabled;
+    public ItemStack getHoverItem() {
+        return hoverItem.clone();
     }
 
-    public boolean isUsingCombat() {
-        return castEnabled && combatEnabled;
+    public ItemStack getInstantItem() {
+        return instantItem.clone();
     }
 
     private void loadPVPSettings() {
@@ -1205,15 +1201,20 @@ public class Settings {
 
     private void loadCastSettings() {
         castEnabled = config.getBoolean(CAST_ENABLED);
-        castBars = config.getBoolean(CAST_BARS);
-        combatEnabled = config.getBoolean(CAST_COMBAT);
+        try {
+            castMode = CastMode.valueOf(config.getString(CAST_MODE).toUpperCase().replace('-', '_'));
+        } catch (IllegalArgumentException e) {
+            castMode = CastMode.BARS;
+            config.set(CAST_MODE, CastMode.BARS.name().toLowerCase());
+        }
         castSlot = config.getInt(CAST_SLOT) - 1;
         castCooldown = (long) (config.getDouble(CAST_COOLDOWN) * 1000);
-        castItem = GUITool.parseItem(config.getSection(CAST_ITEM));
-        hoverItem = GUITool.parseItem(config.getSection(CAST_HOVER));
-        instantItem = GUITool.parseItem(config.getSection(CAST_INSTANT));
+        castItem = GUITool.markCastItem(GUITool.parseItem(config.getSection(CAST_ITEM)));
+        hoverItem = GUITool.markCastItem(GUITool.parseItem(config.getSection(CAST_HOVER)));
+        instantItem = GUITool.markCastItem(GUITool.parseItem(config.getSection(CAST_INSTANT)));
+        messageFormatSkill = config.getString(CAST_FORMAT_SKILL, "&6[%number%] &a%skill%");
+        messageFormatSeparator = config.getString(CAST_FORMAT_SEPARATOR, "&7 - ");
         castEnabled = castEnabled && castItem != null;
-        PreviewSettings.load(config.getSection(CAST_INDICATOR));
     }
 
     private void loadComboSettings() {
@@ -1332,43 +1333,44 @@ public class Settings {
         unassigned = new ItemStack(mat);
 
         ItemMeta meta = unassigned.getItemMeta();
-
-        final int data = icon.getInt("data", 0);
-        if (data != 0) {
-            meta.setCustomModelData(data);
-        }
-
-        if (icon.isList("text")) {
-            List<String> format = TextFormatter.colorStringList(icon.getList("text"));
-            meta.setDisplayName(format.remove(0));
-            meta.setLore(format);
-        } else {
-            meta.setDisplayName(TextFormatter.colorString(icon.getString("text", "&7Unassigned")));
-        }
-
-        if (meta instanceof Damageable) {
-            ((Damageable) meta).setDamage(icon.getInt("durability", 0));
-        }
-        unassigned.setItemMeta(meta);
-
-        DataSection layout     = bar.getSection("layout");
-        int         skillCount = 0;
-        for (int i = 0; i < 9; i++) {
-            DataSection slot = layout.getSection((i + 1) + "");
-            defaultBarLayout[i] = slot.getBoolean("skill", i <= 5);
-            lockedSlots[i] = slot.getBoolean("locked", false);
-            if (isUsingCombat() && i == castSlot) {
-                lockedSlots[i] = true;
-                defaultBarLayout[i] = false;
+        if (meta != null) {
+            final int data = icon.getInt("data", 0);
+            if (data != 0) {
+                meta.setCustomModelData(data);
             }
-            if (defaultBarLayout[i]) {
-                skillCount++;
+
+            if (icon.isList("text")) {
+                List<String> format = TextFormatter.colorStringList(icon.getList("text"));
+                meta.setDisplayName(format.remove(0));
+                meta.setLore(format);
+            } else {
+                meta.setDisplayName(TextFormatter.colorString(icon.getString("text", "&7Unassigned")));
             }
-        }
-        if (skillCount == 9) {
-            Logger.invalid("Invalid Skill Bar Setup - Cannot have all 9 skill slots!");
-            Logger.invalid("  -> Setting last slot to be a weapon slot");
-            defaultBarLayout[8] = false;
+
+            if (meta instanceof Damageable) {
+                ((Damageable) meta).setDamage(icon.getInt("durability", 0));
+            }
+            unassigned.setItemMeta(meta);
+
+            DataSection layout     = bar.getSection("layout");
+            int         skillCount = 0;
+            for (int i = 0; i < 9; i++) {
+                DataSection slot = layout.getSection((i + 1) + "");
+                defaultBarLayout[i] = slot.getBoolean("skill", i <= 5);
+                lockedSlots[i] = slot.getBoolean("locked", false);
+                if (castMode.equals(CastMode.COMBAT) && i == castSlot) {
+                    lockedSlots[i] = true;
+                    defaultBarLayout[i] = false;
+                }
+                if (defaultBarLayout[i]) {
+                    skillCount++;
+                }
+            }
+            if (skillCount == 9) {
+                Logger.invalid("Invalid Skill Bar Setup - Cannot have all 9 skill slots!");
+                Logger.invalid("  -> Setting last slot to be a weapon slot");
+                defaultBarLayout[8] = false;
+            }
         }
     }
 

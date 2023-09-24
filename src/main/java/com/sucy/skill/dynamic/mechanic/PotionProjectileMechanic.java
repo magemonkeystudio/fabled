@@ -76,7 +76,9 @@ public class PotionProjectileMechanic extends MechanicComponent {
         // Get common values
         String     potion = settings.getString(POTION, "slowness").toUpperCase().replace(" ", "_");
         String     color  = settings.getString(COLOR);
-        boolean    linger = settings.getString(LINGER, "false").equalsIgnoreCase("true") && VersionManager.isVersionAtLeast(VersionManager.V1_9_0);
+        boolean    linger =
+                settings.getString(LINGER, "false").equalsIgnoreCase("true") && VersionManager.isVersionAtLeast(
+                        VersionManager.V1_9_0);
         PotionType type;
         try {
             type = PotionType.valueOf(potion);

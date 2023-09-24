@@ -1,0 +1,61 @@
+'Brilliance Strike':
+  name: 'Brilliance Strike'
+  type: 'Mantra'
+  max-level: 5
+  skill-req-lvl: 1
+  needs-permission: true
+  cooldown-message: true
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Bell'
+  icon-data: 0
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  'attributes':
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 2
+    cooldown-base: 12
+    cooldown-scale: -1
+    mana-base: 20
+    mana-scale: 5
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+  incompatible: []
+  components:
+    'Cast-a':
+      type: 'trigger'
+      children:
+        'Nearest-b':
+          type: 'target'
+          'data':
+            icon-key: ''
+            range-base: 3
+            range-scale: 0
+            group: 'Both'
+            wall: true
+            caster: 'False'
+            max-base: 99
+            max-scale: 0
+          children:
+            'Damage-c':
+              type: 'mechanic'
+              'data':
+                icon-key: ''
+                counts: true
+                type: 'Damage'
+                value-base: 3
+                value-scale: 1
+                true: false
+                classifier: 'default'
+                knockback: true
+                cause: 'Custom'

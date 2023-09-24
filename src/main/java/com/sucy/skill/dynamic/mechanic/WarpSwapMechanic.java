@@ -32,7 +32,7 @@ import org.bukkit.entity.LivingEntity;
 import java.util.List;
 
 /**
- * Strikes lightning about each target with an offset
+ * Swaps to entities
  */
 public class WarpSwapMechanic extends MechanicComponent {
     @Override
@@ -46,7 +46,6 @@ public class WarpSwapMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */

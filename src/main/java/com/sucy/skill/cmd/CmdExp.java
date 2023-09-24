@@ -66,12 +66,14 @@ public class CmdExp implements IFunction {
     @Override
     public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String... args) {
         // Disabled world
-        if (sender instanceof Player && !SkillAPI.getSettings().isWorldEnabled(((Player) sender).getWorld()) && args.length == 1) {
+        if (sender instanceof Player && !SkillAPI.getSettings().isWorldEnabled(((Player) sender).getWorld())
+                && args.length == 1) {
             cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
         }
 
         // Only can show info of a player so console needs to provide a name
-        else if ((args.length >= 1 && sender instanceof Player && IS_NUMBER.matcher(args[0]).matches()) || args.length >= 2) {
+        else if ((args.length >= 1 && sender instanceof Player && IS_NUMBER.matcher(args[0]).matches())
+                || args.length >= 2) {
             int numberIndex = IS_NUMBER.matcher(args[0]).matches() ? 0 : 1;
             if (args.length > 1 && IS_NUMBER.matcher(args[1]).matches()) numberIndex = 1;
 
@@ -110,7 +112,8 @@ public class CmdExp implements IFunction {
                             cmd.sendMessage(
                                     sender,
                                     GAVE_EXP,
-                                    ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD + "{player} {exp}{class} experience",
+                                    ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD
+                                            + "{player} {exp}{class} experience",
                                     Filter.PLAYER.setReplacement(target.getName()),
                                     RPGFilter.EXP.setReplacement("" + amount),
                                     RPGFilter.CLASS.setReplacement(' ' + playerClass.getData().getGroup()));
@@ -122,7 +125,8 @@ public class CmdExp implements IFunction {
                         cmd.sendMessage(
                                 sender,
                                 TOOK_EXP,
-                                ChatColor.DARK_GREEN + "You have taken " + ChatColor.GOLD + "{exp}{class} experience " + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}",
+                                ChatColor.DARK_GREEN + "You have taken " + ChatColor.GOLD + "{exp}{class} experience "
+                                        + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}",
                                 Filter.PLAYER.setReplacement(target.getName()),
                                 RPGFilter.EXP.setReplacement("" + -amount),
                                 RPGFilter.CLASS.setReplacement(' ' + playerClass.getData().getGroup()));
@@ -139,7 +143,8 @@ public class CmdExp implements IFunction {
                             cmd.sendMessage(
                                     sender,
                                     GAVE_EXP,
-                                    ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD + "{player} {exp}{class} experience",
+                                    ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD
+                                            + "{player} {exp}{class} experience",
                                     Filter.PLAYER.setReplacement(target.getName()),
                                     RPGFilter.EXP.setReplacement("" + amount),
                                     RPGFilter.CLASS.setReplacement(""));
@@ -151,7 +156,8 @@ public class CmdExp implements IFunction {
                         cmd.sendMessage(
                                 sender,
                                 TOOK_EXP,
-                                ChatColor.DARK_GREEN + "You have taken " + ChatColor.GOLD + "{exp}{class} experience " + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}",
+                                ChatColor.DARK_GREEN + "You have taken " + ChatColor.GOLD + "{exp}{class} experience "
+                                        + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}",
                                 Filter.PLAYER.setReplacement(target.getName()),
                                 RPGFilter.EXP.setReplacement("" + -amount),
                                 RPGFilter.CLASS.setReplacement(""));

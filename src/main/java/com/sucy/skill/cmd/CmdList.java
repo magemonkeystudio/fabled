@@ -62,7 +62,8 @@ public class CmdList implements IFunction {
     @Override
     public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
         // Disabled world
-        if (sender instanceof Player && !SkillAPI.getSettings().isWorldEnabled(((Player) sender).getWorld()) && args.length == 0) {
+        if (sender instanceof Player && !SkillAPI.getSettings().isWorldEnabled(((Player) sender).getWorld())
+                && args.length == 0) {
             cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
         }
 
@@ -75,8 +76,14 @@ public class CmdList implements IFunction {
             }
 
             PlayerAccounts accounts = SkillAPI.getPlayerAccountData(target);
-            cmd.sendMessage(sender, TITLE, ChatColor.DARK_GRAY + "--" + ChatColor.DARK_GREEN + " {player} " + ChatColor.DARK_GRAY + "-----------", Filter.PLAYER.setReplacement(target.getName()));
-            String line = cmd.getMessage(LINE, ChatColor.GRAY + "[" + ChatColor.GOLD + "{id}" + ChatColor.GRAY + "] " + ChatColor.DARK_GREEN + "Lv" + ChatColor.GOLD + "{level} {class}");
+            cmd.sendMessage(sender,
+                    TITLE,
+                    ChatColor.DARK_GRAY + "--" + ChatColor.DARK_GREEN + " {player} " + ChatColor.DARK_GRAY
+                            + "-----------",
+                    Filter.PLAYER.setReplacement(target.getName()));
+            String line = cmd.getMessage(LINE,
+                    ChatColor.GRAY + "[" + ChatColor.GOLD + "{id}" + ChatColor.GRAY + "] " + ChatColor.DARK_GREEN + "Lv"
+                            + ChatColor.GOLD + "{level} {class}");
             if (accounts != null) {
                 for (int i = 1; i <= accounts.getAccountLimit(); i++) {
                     PlayerData  data  = accounts.getData(i);

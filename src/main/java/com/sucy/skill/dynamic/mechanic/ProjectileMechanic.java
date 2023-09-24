@@ -64,17 +64,19 @@ public class ProjectileMechanic extends MechanicComponent {
     private static final String                                       FORWARD            = "forward";
     private static final String                                       UPWARD             = "upward";
     private static final String                                       RIGHT              = "right";
-    private static final HashMap<String, Class<? extends Projectile>> PROJECTILES        = new HashMap<String, Class<? extends Projectile>>() {{
-        put("arrow", Arrow.class);
-        put("egg", Egg.class);
-        put("ghast fireball", LargeFireball.class);
-        put("snowball", Snowball.class);
-    }};
-    private static final HashMap<String, Material>                    MATERIALS          = new HashMap<String, Material>() {{
-        put("arrow", Material.ARROW);
-        put("egg", Material.EGG);
-        put("snowball", snowBall());
-    }};
+    private static final HashMap<String, Class<? extends Projectile>> PROJECTILES        =
+            new HashMap<String, Class<? extends Projectile>>() {{
+                put("arrow", Arrow.class);
+                put("egg", Egg.class);
+                put("ghast fireball", LargeFireball.class);
+                put("snowball", Snowball.class);
+            }};
+    private static final HashMap<String, Material>                    MATERIALS          =
+            new HashMap<String, Material>() {{
+                put("arrow", Material.ARROW);
+                put("egg", Material.EGG);
+                put("snowball", snowBall());
+            }};
     private static final Class<Enum<?>>                               PICKUP_STATUS_ENUM = null;
 
     private static Class<? extends Projectile> getProjectileClass(String projectileName) {
@@ -165,7 +167,10 @@ public class ProjectileMechanic extends MechanicComponent {
                                 //1.12+
                                 Arrow    arrow             = (Arrow) p;
                                 Class<?> pickupStatusClass = Class.forName("org.bukkit.Arrow$PickupStatus");
-                                Arrow.class.getMethod("setPickupStatus", pickupStatusClass).invoke(arrow, pickupStatusClass.getMethod("valueOf", String.class).invoke(null, "DISALLOWED"));
+                                Arrow.class.getMethod("setPickupStatus", pickupStatusClass)
+                                        .invoke(arrow,
+                                                pickupStatusClass.getMethod("valueOf", String.class)
+                                                        .invoke(null, "DISALLOWED"));
                             }
                         } catch (NoSuchMethodError | ClassNotFoundException | NoSuchMethodException |
                                  IllegalAccessException | InvocationTargetException ignored) {
@@ -207,13 +212,20 @@ public class ProjectileMechanic extends MechanicComponent {
                                 //1.12+
                                 Arrow    arrow             = (Arrow) p;
                                 Class<?> pickupStatusClass = Class.forName("org.bukkit.Arrow$PickupStatus");
-                                Arrow.class.getMethod("setPickupStatus", pickupStatusClass).invoke(arrow, pickupStatusClass.getMethod("valueOf", String.class).invoke(null, "DISALLOWED"));
+                                Arrow.class.getMethod("setPickupStatus", pickupStatusClass)
+                                        .invoke(arrow,
+                                                pickupStatusClass.getMethod("valueOf", String.class)
+                                                        .invoke(null, "DISALLOWED"));
                             }
                         } catch (NoSuchMethodError | ClassNotFoundException | NoSuchMethodException |
                                  IllegalAccessException | InvocationTargetException ignored) {
                         }
                     } else {
-                        p.teleport(target.getLocation().add(looking).add(0, upward + 0.5, 0).add(p.getVelocity()).setDirection(d));
+                        p.teleport(target.getLocation()
+                                .add(looking)
+                                .add(0, upward + 0.5, 0)
+                                .add(p.getVelocity())
+                                .setDirection(d));
                     }
                     p.setVelocity(d.multiply(speed));
                     SkillAPI.setMeta(p, MechanicListener.P_CALL, this);
@@ -225,7 +237,17 @@ public class ProjectileMechanic extends MechanicComponent {
         }
 
         new RepeatingEntityTask<>(projectiles, proj -> ParticleHelper.play(proj.getLocation(), settings));
-        new RemoveTask(projectiles, (int) parseValues(caster, LIFESPAN, level, 9999) * 20);
+        new RemoveTask(projectiles, (int) parseValues(caster, LIFESPAN, level, 9999) * 20) {
+            @Override
+            public void run() {
+                super.run();
+                if (settings.getBool("on-expire", false)) {
+                    for (Projectile projectile1 : projectiles) {
+                        callback(projectile1, null);
+                    }
+                }
+            }
+        };
 
         return targets.size() > 0;
     }
@@ -243,7 +265,10 @@ public class ProjectileMechanic extends MechanicComponent {
         Bukkit.getScheduler().runTaskLater(SkillAPI.inst(), () -> {
             ArrayList<LivingEntity> targets = new ArrayList<>();
             targets.add(finalHit);
-            executeChildren((LivingEntity) projectile.getShooter(), SkillAPI.getMetaInt(projectile, LEVEL), targets, skill.isForced((LivingEntity) projectile.getShooter()));
+            executeChildren((LivingEntity) projectile.getShooter(),
+                    SkillAPI.getMetaInt(projectile, LEVEL),
+                    targets,
+                    skill.isForced((LivingEntity) projectile.getShooter()));
             SkillAPI.removeMeta(projectile, MechanicListener.P_CALL);
             projectile.remove();
         }, 1L);

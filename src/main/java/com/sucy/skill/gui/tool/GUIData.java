@@ -48,8 +48,8 @@ public class GUIData {
             PAGES = "pages",
             SLOTS = "slots";
 
-    private final ArrayList<GUIPage> pageMap = new ArrayList<GUIPage>();
-    private boolean editable = true;
+    private final ArrayList<GUIPage> pageMap  = new ArrayList<GUIPage>();
+    private       boolean            editable = true;
 
     private int rows  = 3;
     private int pages = 1;
@@ -60,7 +60,9 @@ public class GUIData {
     }
 
     GUIData(InventoryTree skillTree) {
-        if (!(skillTree instanceof CustomTree)) { editable = false; }
+        if (!(skillTree instanceof CustomTree)) {
+            editable = false;
+        }
         rows = skillTree.getHeight();
         try {
             Preconditions.checkArgument(rows > 0 && rows <= 6);
@@ -68,10 +70,10 @@ public class GUIData {
             SkillAPI.inst().getLogger().warning("Error loading GUI: Rows should be > 0 and <= 6. Rows: " + rows);
             throw e;
         }
-        TreeMap<Integer, Skill> skillSlots = skillTree.getSkillSlots();
-        int slotsPerPage = rows*9;
-        int i = slotsPerPage;
-        Map<Integer,Skill> map = new HashMap<>();
+        TreeMap<Integer, Skill> skillSlots   = skillTree.getSkillSlots();
+        int                     slotsPerPage = rows * 9;
+        int                     i            = slotsPerPage;
+        Map<Integer, Skill>     map          = new HashMap<>();
         for (Map.Entry<Integer, Skill> entry : skillSlots.entrySet()) {
             int slot = entry.getKey();
             if (slot >= i) {
@@ -79,7 +81,7 @@ public class GUIData {
                 map.clear();
                 i += slotsPerPage;
             }
-            map.put(slot-i+slotsPerPage, entry.getValue());
+            map.put(slot - i + slotsPerPage, entry.getValue());
         }
         if (!map.isEmpty() || this.pageMap.isEmpty()) {
             this.pageMap.add(new GUIPage(this, map));
@@ -117,7 +119,7 @@ public class GUIData {
         player.getPlayer().openInventory(inv);
     }
 
-    public boolean isEditable() { return editable; }
+    public boolean isEditable() {return editable;}
 
     public GUIPage getPage(int page) {
         return pageMap.get(page % pages);

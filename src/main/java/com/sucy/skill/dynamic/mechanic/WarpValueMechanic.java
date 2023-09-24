@@ -26,12 +26,21 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
+import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.particle.ParticleHelper;
 import com.sucy.skill.dynamic.DynamicSkill;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Applies a flag to each target
@@ -44,32 +53,50 @@ public class WarpValueMechanic extends MechanicComponent {
         return "warp value";
     }
 
+    @Nullable
+    private Location parseLocation(LivingEntity caster) {
+        Map<String, Object> data = DynamicSkill.getCastData(caster);
+        if (data == null) return null;
+        String key = settings.getString(KEY);
+        if (key == null) return null;
+        Object obj = data.get(key);
+        if (obj instanceof Location) return (Location) obj;
+        return null;
+    }
+
     /**
      * Executes the component
      *
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     *
      * @param force
      * @return true if applied to something, false otherwise
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0 || !settings.has(KEY)) {
-            return false;
-        }
+        if (targets.isEmpty()) return false;
 
-        String                  key  = settings.getString(KEY);
-        HashMap<String, Object> data = DynamicSkill.getCastData(caster);
-        if (!data.containsKey(key) || !(data.get(key) instanceof Location)) {
-            return false;
-        }
-
-        Location loc = (Location) data.get(key);
+        Location loc = parseLocation(caster);
+        if (loc == null) return false;
         for (LivingEntity target : targets) {
             target.teleport(loc);
         }
         return true;
+    }
+
+    @Override
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
+        if (preview.getBool("per-target")) {
+            BukkitTask task = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    Location loc = parseLocation(caster);
+                    if (loc == null) return;
+                    ParticleHelper.play(loc, preview, Set.of(caster), "per-target-", null);
+                }
+            }.runTaskTimer(SkillAPI.inst(),0, Math.max(1, preview.getInt("per-target-"+"period", 5)));
+            onPreviewStop.add(task::cancel);
+        }
     }
 }

@@ -129,7 +129,8 @@ public class SkillAPI extends JavaPlugin {
      */
     public static SkillAPI inst() {
         if (singleton == null) {
-            throw new SkillAPINotEnabledException("Cannot use SkillAPI methods before it is enabled - add it to your plugin.yml as a dependency");
+            throw new SkillAPINotEnabledException(
+                    "Cannot use SkillAPI methods before it is enabled - add it to your plugin.yml as a dependency");
         }
         return singleton;
     }
@@ -374,7 +375,9 @@ public class SkillAPI extends JavaPlugin {
      * @return true if data has loaded, false otherwise
      */
     public static boolean hasPlayerData(OfflinePlayer player) {
-        return singleton != null && player != null && singleton.players.containsKey(player.getUniqueId().toString().toLowerCase());
+        return singleton != null && player != null && singleton.players.containsKey(player.getUniqueId()
+                .toString()
+                .toLowerCase());
     }
 
     /**
@@ -388,7 +391,8 @@ public class SkillAPI extends JavaPlugin {
     }
 
     public static void unloadPlayerData(final OfflinePlayer player, final boolean skipSaving) {
-        if (singleton == null || player == null || singleton.disabling || !singleton.players.containsKey(player.getUniqueId().toString().toLowerCase())) {
+        if (singleton == null || player == null || singleton.disabling
+                || !singleton.players.containsKey(player.getUniqueId().toString().toLowerCase())) {
             return;
         }
 
@@ -560,11 +564,9 @@ public class SkillAPI extends JavaPlugin {
      */
     @Override
     public void onDisable() {
-        if (!this.isEnabled()) return;
-
         // Validate instance
         if (singleton != this) {
-            throw new IllegalStateException("This is not a valid, enabled SkillAPI copy!");
+            return;
         }
 
         disabling = true;
@@ -619,7 +621,7 @@ public class SkillAPI extends JavaPlugin {
             throw new IllegalStateException("Cannot enable SkillAPI twice!");
         }
 
-        String  coreVersion       = NexEngine.getEngine().getDescription().getVersion();
+        String coreVersion = NexEngine.getEngine().getDescription().getVersion();
         if (!DependencyRequirement.meetsVersion(DependencyRequirement.MIN_CORE_VERSION, coreVersion)) {
             getLogger().warning("Missing required ProMCCore version. " + coreVersion + " installed. "
                     + DependencyRequirement.MIN_CORE_VERSION + " required. Disabling.");
@@ -646,6 +648,7 @@ public class SkillAPI extends JavaPlugin {
             new PlaceholderAPIHook(this).register();
             getLogger().info("ProSkillAPI hook into PlaceholderAPI: " + ChatColor.GREEN + "success.");
         }
+        boolean protocolLib = Bukkit.getPluginManager().getPlugin("ProtocolLib") != null;
 
         // Set up managers
         comboManager = new ComboManager();
@@ -669,7 +672,9 @@ public class SkillAPI extends JavaPlugin {
         listen(new BuffListener(), true);
         listen(new MainListener(), true);
         listen(new MechanicListener(), true);
-        listen(new ProjectileListener(),true);
+        if(protocolLib) listen(new PacketListener(), true);
+        listen(new ProjectileListener(), true);
+        listen(new ShieldBlockListener(), true);
         listen(new StatusListener(), true);
         listen(new ToolListener(), true);
         listen(new KillListener(), true);
@@ -679,11 +684,15 @@ public class SkillAPI extends JavaPlugin {
         listen(new ComboListener(), settings.isCombosEnabled());
         listen(new AttributeListener(), settings.isAttributesEnabled());
         listen(new ItemListener(), settings.isCheckLore() || settings.isCheckAttributes());
-        listen(new CastListener(), settings.isUsingBars());
-        listen(new CastOffhandListener(),
-                settings.isCastEnabled() && VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
-        listen(new CastItemListener(), settings.isUsingWand());
-        listen(new CastCombatListener(), settings.isUsingCombat());
+        if (settings.isCastEnabled()) {
+            switch (settings.getCastMode()) {
+                case ITEM -> listen(new CastItemListener(), true);
+                case BARS -> listen(new CastBarsListener(), true);
+                case COMBAT -> listen(new CastCombatListener(), true);
+                case ACTION_BAR, TITLE, SUBTITLE, CHAT -> listen(new CastTextListener(settings.getCastMode()), true);
+            }
+            listen(new CastOffhandListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
+        }
         listen(new DeathListener(), !VersionManager.isVersionAtLeast(11000));
         listen(new CombatProtectionListener(), VersionManager.isVersionAtLeast(11000));
         listen(new LingeringPotionListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
@@ -738,7 +747,7 @@ public class SkillAPI extends JavaPlugin {
     public void listen(SkillAPIListener listener, boolean enabled) {
         if (enabled) {
             // Prevent double listener registering
-            for (Iterator<SkillAPIListener> iterator = this.listeners.iterator(); iterator.hasNext();) {
+            for (Iterator<SkillAPIListener> iterator = this.listeners.iterator(); iterator.hasNext(); ) {
                 SkillAPIListener listener1 = iterator.next();
                 if (listener.getClass().equals(listener1.getClass())) {
                     HandlerList.unregisterAll(listener1);

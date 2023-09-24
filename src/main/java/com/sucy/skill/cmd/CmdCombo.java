@@ -87,7 +87,10 @@ public class CmdCombo implements IFunction {
                 for (int i = args.length - comboSize; i < args.length; i++) {
                     Click click = Click.getByName(args[i]);
                     if (click == null) {
-                        command.sendMessage(sender, NOT_CLICK, "&6{name} &4is not a valid click type. Use Left, Right, or Shift instead", RPGFilter.NAME);
+                        command.sendMessage(sender,
+                                NOT_CLICK,
+                                "&6{name} &4is not a valid click type. Use Left, Right, or Shift instead",
+                                RPGFilter.NAME);
                         return;
                     }
                     clicks[i - args.length + comboSize] = click;
@@ -97,7 +100,10 @@ public class CmdCombo implements IFunction {
                     if (SkillAPI.getSettings().isSkillBarEnabled() && player.getSkillBar().isSetup()) {
                         player.getSkillBar().update(player.getPlayer());
                     }
-                    command.sendMessage(sender, COMBO_SET, "&2The combo for &6{skill} &2has been updated", RPGFilter.SKILL.setReplacement(skill.getData().getName()));
+                    command.sendMessage(sender,
+                            COMBO_SET,
+                            "&2The combo for &6{skill} &2has been updated",
+                            RPGFilter.SKILL.setReplacement(skill.getData().getName()));
                 } else {
                     command.sendMessage(sender, NOT_COMBO, "&4That combo cannot be used");
                 }

@@ -274,22 +274,24 @@ public class AttributeManager {
             ItemStack item     = new ItemStack(icon.getType());
             ItemMeta  iconMeta = icon.getItemMeta();
             ItemMeta  meta     = item.getItemMeta();
-            meta.setDisplayName(filter(data, iconMeta.getDisplayName()));
-            List<String> iconLore = iconMeta.getLore();
-            List<String> lore = iconLore != null
-                    ? iconLore.stream().map(iconLine -> filter(data, iconLine)).collect(Collectors.toList())
-                    : new ArrayList<>();
+            if (meta != null && iconMeta != null) {
+                meta.setDisplayName(filter(data, iconMeta.getDisplayName()));
+                List<String> iconLore = iconMeta.getLore();
+                List<String> lore = iconLore != null
+                        ? iconLore.stream().map(iconLine -> filter(data, iconLine)).collect(Collectors.toList())
+                        : new ArrayList<>();
 
-            if (meta instanceof Damageable) {
-                ((Damageable) meta).setDamage(((Damageable) iconMeta).getDamage());
+                if (meta instanceof Damageable) {
+                    ((Damageable) meta).setDamage(((Damageable) iconMeta).getDamage());
+                }
+
+                if (iconMeta.hasCustomModelData()) {
+                    meta.setCustomModelData(iconMeta.getCustomModelData());
+                }
+
+                meta.setLore(lore);
+                item.setItemMeta(meta);
             }
-
-            if (iconMeta.hasCustomModelData()) {
-                meta.setCustomModelData(iconMeta.getCustomModelData());
-            }
-
-            meta.setLore(lore);
-            item.setItemMeta(meta);
             return DamageLoreRemover.removeAttackDmg(item);
         }
 
@@ -315,15 +317,21 @@ public class AttributeManager {
          * @return icon for the attribute for use in the GUI editor
          */
         public ItemStack getToolIcon() {
-            ItemStack icon = new ItemStack(this.icon.getType());
-            ItemMeta  meta = icon.getItemMeta();
+            ItemStack icon     = new ItemStack(this.icon.getType());
+            ItemMeta  meta     = icon.getItemMeta();
+            ItemMeta  iconMeta = this.icon.getItemMeta();
+            if (meta == null || iconMeta == null) {
+                return icon;
+            }
             meta.setDisplayName(key);
-            List<String> lore =
-                    this.icon.hasItemMeta() && this.icon.getItemMeta().hasLore()
-                            ? this.icon.getItemMeta().getLore()
-                            : new ArrayList<>();
-            if (this.icon.hasItemMeta() && this.icon.getItemMeta().hasDisplayName())
-                lore.add(0, this.icon.getItemMeta().getDisplayName());
+            List<String> lore = iconMeta.hasLore()
+                    ? iconMeta.getLore()
+                    : null;
+            if (lore == null) {
+                lore = new ArrayList<>();
+            }
+            if (iconMeta.hasDisplayName())
+                lore.add(0, iconMeta.getDisplayName());
             meta.setLore(lore);
             icon.setItemMeta(meta);
             return icon;

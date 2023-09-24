@@ -26,15 +26,22 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
+import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.particle.ParticleHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Set;
 
 /**
- * Strikes lightning about each target with an offset
+ * Warps the target to a location
  */
 public class WarpLocMechanic extends MechanicComponent {
     private static final String WORLD = "world";
@@ -49,30 +56,15 @@ public class WarpLocMechanic extends MechanicComponent {
         return "warp location";
     }
 
-    /**
-     * Executes the component
-     *
-     * @param caster  caster of the skill
-     * @param level   level of the skill
-     * @param targets targets to apply to
-     *
-     * @param force
-     * @return true if applied to something, false otherwise
-     */
-    @Override
-    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0) {
-            return false;
-        }
-
-        // Get the world
+    @Nullable
+    private Location parseLocation(LivingEntity caster) {
         String world = settings.getString(WORLD, "current");
         if (world.equalsIgnoreCase("current")) {
             world = caster.getWorld().getName();
         }
         World w = Bukkit.getWorld(world);
         if (w == null) {
-            return false;
+            return null;
         }
 
         // Get the other values
@@ -82,11 +74,43 @@ public class WarpLocMechanic extends MechanicComponent {
         float  yaw   = (float) settings.getDouble(YAW, 0.0);
         float  pitch = (float) settings.getDouble(PITCH, 0.0);
 
-        Location loc = new Location(w, x, y, z, yaw, pitch);
+        return new Location(w, x, y, z, yaw, pitch);
+    }
+
+    /**
+     * Executes the component
+     *
+     * @param caster  caster of the skill
+     * @param level   level of the skill
+     * @param targets targets to apply to
+     * @param force
+     * @return true if applied to something, false otherwise
+     */
+    @Override
+    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
+        if (targets.isEmpty()) return false;
+
+        Location loc = parseLocation(caster);
+        if (loc == null) return false;
 
         for (LivingEntity target : targets) {
             target.teleport(loc);
         }
-        return targets.size() > 0;
+        return true;
+    }
+
+    @Override
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
+        if (preview.getBool("per-target") && !targets.isEmpty()) {
+            BukkitTask task = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    Location loc = parseLocation(caster);
+                    if (loc == null) return;
+                    ParticleHelper.play(loc, preview, Set.of(caster), "per-target-", null);
+                }
+            }.runTaskTimer(SkillAPI.inst(),0, Math.max(1, preview.getInt("per-target-"+"period", 5)));
+            onPreviewStop.add(task::cancel);
+        }
     }
 }

@@ -72,7 +72,6 @@ public enum DefaultTreeType implements TreeType {
      * Retrieves a tree type by enum value name
      *
      * @param name enum value name
-     *
      * @return corresponding tree type or the default REQUIREMENT if invalid
      */
     public static DefaultTreeType getByName(String name) {

@@ -193,7 +193,8 @@ public class RegistrationManager {
                     } catch (Exception ex) {
                         Logger.invalid("Failed to load skill: " + name + " - " + ex.getMessage());
                         if (ex instanceof NullPointerException)
-                            Logger.log("Please check that " + (SKILL_DIR + name) + ".yml exists and has proper contents");
+                            Logger.log(
+                                    "Please check that " + (SKILL_DIR + name) + ".yml exists and has proper contents");
                         ex.printStackTrace();
                     }
                 });
@@ -326,7 +327,11 @@ public class RegistrationManager {
         DataSection configSection = config.getConfig();
         String      sectionName   = name;
         if (name == null || name.isBlank() || !configSection.has(name)) {
-            sectionName = configSection.keys().stream().findFirst().orElseThrow(() -> new ConfigurationException(name + ".yml does not appear to contain any class data"));
+            sectionName = configSection.keys()
+                    .stream()
+                    .findFirst()
+                    .orElseThrow(() -> new ConfigurationException(
+                            name + ".yml does not appear to contain any class data"));
         }
         return configSection.getSection(sectionName);
     }
@@ -380,7 +385,8 @@ public class RegistrationManager {
                 // Skill is ready to be registered
                 return skill;
             } catch (Exception ex) {
-                Logger.bug("Failed to save skill data to config for \"" + skill.getName() + "\" - skipping registration");
+                Logger.bug(
+                        "Failed to save skill data to config for \"" + skill.getName() + "\" - skipping registration");
                 ex.printStackTrace();
             }
         }
@@ -434,7 +440,8 @@ public class RegistrationManager {
                 // Skill is ready to be registered
                 return rpgClass;
             } catch (Exception ex) {
-                Logger.bug("Failed to save class data to config for \"" + rpgClass.getName() + "\" - skipping registration");
+                Logger.bug("Failed to save class data to config for \"" + rpgClass.getName()
+                        + "\" - skipping registration");
                 ex.printStackTrace();
             }
         }

@@ -135,7 +135,6 @@ public class FlagData {
      * If the flag is not active, this will instead return 0.
      *
      * @param flag flag to check the time left for
-     *
      * @return the seconds left rounded up to the nearest second or 0 if not set
      */
     public int getSecondsLeft(String flag) {
@@ -151,7 +150,6 @@ public class FlagData {
      * If the flag is not active, this will instead return 0.
      *
      * @param flag flag to check the time left for
-     *
      * @return the number of milliseconds left or 0 if not set
      */
     public int getMillisLeft(String flag) {
@@ -165,7 +163,6 @@ public class FlagData {
      * Checks whether the entity currently has the flag set
      *
      * @param flag the flag to check if set or not
-     *
      * @return true if set, false otherwise
      */
     public boolean hasFlag(String flag) {

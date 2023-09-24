@@ -16,7 +16,8 @@ public class LingeringPotionListener extends SkillAPIListener {
 
     @EventHandler
     public void onLingerSplash(LingeringPotionSplashEvent event) {
-        PotionProjectileMechanic mechanic = (PotionProjectileMechanic) SkillAPI.getMeta(event.getEntity(), POTION_PROJECTILE);
+        PotionProjectileMechanic mechanic =
+                (PotionProjectileMechanic) SkillAPI.getMeta(event.getEntity(), POTION_PROJECTILE);
         if (mechanic != null) {
             SkillAPI.setMeta(event.getAreaEffectCloud(), POTION_PROJECTILE, mechanic);
             event.getAreaEffectCloud().setMetadata(SKILL_LEVEL, event.getEntity().getMetadata(SKILL_LEVEL).get(0));
@@ -26,7 +27,8 @@ public class LingeringPotionListener extends SkillAPIListener {
 
     @EventHandler
     public void onLinger(AreaEffectCloudApplyEvent event) {
-        PotionProjectileMechanic mechanic = (PotionProjectileMechanic) SkillAPI.getMeta(event.getEntity(), POTION_PROJECTILE);
+        PotionProjectileMechanic mechanic =
+                (PotionProjectileMechanic) SkillAPI.getMeta(event.getEntity(), POTION_PROJECTILE);
         if (mechanic != null) {
             mechanic.callback(event.getEntity(), event.getAffectedEntities());
             event.getAffectedEntities().clear();

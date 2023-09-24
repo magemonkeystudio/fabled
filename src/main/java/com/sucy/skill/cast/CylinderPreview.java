@@ -25,7 +25,7 @@
  * THE SOFTWARE.
  */
 package com.sucy.skill.cast;
-
+/*
 import com.sucy.skill.api.particle.ParticleSettings;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -43,7 +43,7 @@ public class CylinderPreview extends RoundPreview {
     /**
      * @param radius radius of the circle
      */
-    public CylinderPreview(double radius, double height) {
+    /*public CylinderPreview(double radius, double height) {
         if (radius == 0) {
             throw new IllegalArgumentException("Invalid radius - cannot be 0");
         }
@@ -66,7 +66,7 @@ public class CylinderPreview extends RoundPreview {
      * @param particle particle type to use
      * @param step     animation step
      */
-    @Override
+    /*@Override
     public void playParticles(Player player, ParticleSettings particle, Location location, int step) {
         double x = location.getX();
         double y = location.getY();
@@ -98,4 +98,4 @@ public class CylinderPreview extends RoundPreview {
     public double getRadius() {return radius;}
 
     public double getHeight() {return height;}
-}
+}*/

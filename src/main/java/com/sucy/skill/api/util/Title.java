@@ -32,7 +32,8 @@ public class Title {
         titleType = titleSerializer.getField("TITLE").get(null);
         subtitleType = titleSerializer.getField("SUBTITLE").get(null);
 
-        timesConstructor = packetTitle.getConstructor(titleSerializer, chatBaseComponent, int.class, int.class, int.class);
+        timesConstructor =
+                packetTitle.getConstructor(titleSerializer, chatBaseComponent, int.class, int.class, int.class);
         contentConstructor = packetTitle.getConstructor(titleSerializer, chatBaseComponent);
     }
 
@@ -52,7 +53,8 @@ public class Title {
 //        }
     }
 
-    private static void send(Player player, String text, Object type, int fadeIn, int duration, int fadeOut) throws Exception {
+    private static void send(Player player, String text, Object type, int fadeIn, int duration, int fadeOut) throws
+            Exception {
         Object chatText = serialize.invoke(null, "{\"text\":\"" + text + "\"}");
 
         Object packet = timesConstructor.newInstance(timesType, chatText, fadeIn, duration, fadeOut);

@@ -28,7 +28,6 @@ package com.sucy.skill.cmd;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerData;
-import com.sucy.skill.api.player.PlayerSkill;
 import mc.promcteam.engine.mccore.commands.CommandManager;
 import mc.promcteam.engine.mccore.commands.ConfigurableCommand;
 import mc.promcteam.engine.mccore.commands.IFunction;
@@ -80,7 +79,9 @@ public class CmdCast implements IFunction {
 
                 // Class mismatch
             else if (!player.hasSkill(skill))
-                command.sendMessage(sender, NOT_AVAILABLE, ChatColor.RED + "That skill is not available for your class");
+                command.sendMessage(sender,
+                        NOT_AVAILABLE,
+                        ChatColor.RED + "That skill is not available for your class");
 
                 // Not unlocked
             else if (!player.hasSkill(skill) || player.getSkillLevel(skill) == 0)

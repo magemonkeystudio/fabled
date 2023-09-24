@@ -25,7 +25,7 @@
  * THE SOFTWARE.
  */
 package com.sucy.skill.cast;
-
+/*
 import com.sucy.skill.api.particle.ParticleSettings;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -33,7 +33,7 @@ import org.bukkit.entity.Player;
 /**
  * An indicator for a circular pattern
  */
-public class CirclePreview extends RoundPreview {
+/*public class CirclePreview extends RoundPreview {
     private double radius;
     private double sin, cos;
     private int particles;
@@ -41,7 +41,7 @@ public class CirclePreview extends RoundPreview {
     /**
      * @param radius radius of the circle
      */
-    public CirclePreview(double radius) {
+    /*public CirclePreview(double radius) {
         if (radius == 0) {
             throw new IllegalArgumentException("Invalid radius - cannot be 0");
         }
@@ -60,7 +60,7 @@ public class CirclePreview extends RoundPreview {
      * @param particle particle type to use
      * @param step     animation step
      */
-    @Override
+    /*@Override
     public void playParticles(Player player, ParticleSettings particle, Location location, int step) {
         double x = location.getX();
         double y = location.getY();
@@ -83,4 +83,4 @@ public class CirclePreview extends RoundPreview {
 
     @Override
     public double getRadius() {return radius;}
-}
+}*/

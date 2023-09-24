@@ -37,7 +37,6 @@ public class Addition implements IOperator {
      *
      * @param a first value
      * @param b second value
-     *
      * @return result
      */
     public double compute(double a, double b) {
