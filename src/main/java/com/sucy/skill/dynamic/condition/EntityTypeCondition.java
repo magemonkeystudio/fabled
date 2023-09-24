@@ -36,7 +36,8 @@ import java.util.stream.Collectors;
 
 public class EntityTypeCondition extends ConditionComponent {
 
-    private static final String TYPE = "types";
+    private static final String TYPE      = "types";
+    private static final String BLACKLIST = "blacklist";
 
     private Set<String> types;
 
@@ -55,7 +56,9 @@ public class EntityTypeCondition extends ConditionComponent {
 
     @Override
     boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        if (target instanceof TempEntity) return types.contains("LOCATION");
-        else return types.contains(target.getType().name());
+        boolean result = target instanceof TempEntity
+                ? types.contains("LOCATION")
+                : types.contains(target.getType().name());
+        return settings.getBool(BLACKLIST, false) != result;
     }
 }
