@@ -38,6 +38,7 @@ jobs:
         env:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
+          cd app
           mvn clean deploy -P gpg,publish -DcreateChecksum=true 2>&1 | tee log.txt
           result_code=${PIPESTATUS[0]}
           exit $result_code
@@ -59,6 +60,7 @@ jobs:
         run: python ./.github/update_version.py true
       - name: Push to git
         run: |
+          cd app
           git add .
           git reset settings.xml log.txt
           git commit -m "Update dev version"
