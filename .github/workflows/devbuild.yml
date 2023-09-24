@@ -13,6 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Configure git
+        with:
+          path: app
         run: |
           git config user.name "Auto Bot"
           git config user.email "<>"
@@ -37,6 +39,18 @@ jobs:
           mvn clean deploy -P gpg,publish -DcreateChecksum=true 2>&1 | tee log.txt
           result_code=${PIPESTATUS[0]}
           exit $result_code
+      - uses: actions/checkout@v3
+      - name: Update Javadocs
+        with:
+          ref: editor
+          path: editor
+        run: |
+          git config user.name "Auto Bot"
+          git config user.email "<>"
+          cp ../main/gh-pages/javadocs ./javadocs
+          git add .
+          git commit -m "Update javadocs"
+          git push
       - name: Update version
         run: python ./.github/update_version.py true
       - name: Push to git

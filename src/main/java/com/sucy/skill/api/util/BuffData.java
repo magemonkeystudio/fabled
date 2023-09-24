@@ -150,10 +150,9 @@ public class BuffData {
     }
 
     /**
-     * Gets all buffs of the given type. Returns modifiable map.
+     * Clears buffs by the given type
      *
      * @param type type of buff
-     * @return map with buffs
      */
     public void clearByType(final BuffType type){
         Map<String, Buff> buffType = buffs.get(type.name());
