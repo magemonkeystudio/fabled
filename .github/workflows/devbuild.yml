@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Configure git
+        name: Configure git
         with:
           path: app
         run: |
@@ -40,7 +40,7 @@ jobs:
           result_code=${PIPESTATUS[0]}
           exit $result_code
       - uses: actions/checkout@v3
-      - name: Update Javadocs
+        name: Update Javadocs
         with:
           ref: editor
           path: editor
