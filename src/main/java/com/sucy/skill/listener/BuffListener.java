@@ -7,9 +7,12 @@ import com.sucy.skill.api.event.SkillHealEvent;
 import com.sucy.skill.api.util.BuffManager;
 import com.sucy.skill.api.util.BuffType;
 import com.sucy.skill.hook.PluginChecker;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityPotionEffectEvent;
+import org.bukkit.potion.PotionEffectType;
 
 import static com.sucy.skill.listener.attribute.AttributeListener.PHYSICAL;
 
@@ -88,6 +91,14 @@ public class BuffListener extends SkillAPIListener {
         if(event.getType().equals(BuffType.INVISIBILITY)){
             if(PluginChecker.isProtocolLibActive())
                 PacketListener.updateEquipment((Player) event.getEntity());
+        }
+    }
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onEffectExpire(final EntityPotionEffectEvent event){
+        if(!(event.getEntity() instanceof Player) || !event.getModifiedType().equals(PotionEffectType.INVISIBILITY)) return;
+        if(event.getAction().equals(EntityPotionEffectEvent.Action.CLEARED) || event.getAction().equals(EntityPotionEffectEvent.Action.REMOVED)){
+            BuffManager.getBuffData((LivingEntity) event.getEntity()).clearByType(BuffType.INVISIBILITY);
+            if(PluginChecker.isProtocolLibActive()) PacketListener.updateEquipment((Player) event.getEntity());
         }
     }
 }

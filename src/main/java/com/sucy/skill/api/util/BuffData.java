@@ -148,6 +148,22 @@ public class BuffData {
         final Map<String, Buff> typeBuffs = buffs.get(type.name());
         return typeBuffs != null;
     }
+
+    /**
+     * Gets all buffs of the given type. Returns modifiable map.
+     *
+     * @param type type of buff
+     * @return map with buffs
+     */
+    public void clearByType(final BuffType type){
+        Map<String, Buff> buffType = buffs.get(type.name());
+        if(buffType==null) return;
+        for (final Buff buff : buffType.values()) {
+            buff.task.cancel();
+        }
+        buffs.remove(type.name());
+
+    }
     /**
      * Applies all buffs of the given type to the specified value
      *
