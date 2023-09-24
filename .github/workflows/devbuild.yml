@@ -12,9 +12,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-        name: Configure git
+        name: Checkout repo
         with:
           path: app
+      - name: Configure git
         run: |
           git config user.name "Auto Bot"
           git config user.email "<>"
@@ -40,14 +41,16 @@ jobs:
           result_code=${PIPESTATUS[0]}
           exit $result_code
       - uses: actions/checkout@v3
-        name: Update Javadocs
+        name: Checkout editor branch
         with:
           ref: editor
           path: editor
+      - name: Update Javadocs
         run: |
           git config user.name "Auto Bot"
           git config user.email "<>"
-          cp ../main/gh-pages/javadocs ./javadocs
+          cp main/gh-pages/javadocs editor/javadocs
+          cd editor
           git add .
           git commit -m "Update javadocs"
           git push
