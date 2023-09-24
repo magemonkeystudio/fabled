@@ -27,17 +27,19 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.particle.EffectPlayer;
+import com.sucy.skill.api.particle.ParticleHelper;
 import com.sucy.skill.api.particle.target.FollowTarget;
 import com.sucy.skill.api.projectile.CustomProjectile;
 import com.sucy.skill.api.projectile.ItemProjectile;
+import com.sucy.skill.api.projectile.ParticleProjectile;
 import com.sucy.skill.api.projectile.ProjectileCallback;
 import com.sucy.skill.api.util.ItemStackReader;
-import com.sucy.skill.cast.*;
+import com.sucy.skill.cast.Preview;
 import com.sucy.skill.dynamic.TempEntity;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -142,6 +144,11 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
         boolean walls    = settings.getBool(WALLS, false);
         int     lifespan = (int) (parseValues(caster, LIFESPAN, level, 9999) * 20);
 
+        final Settings copy = new Settings(settings);
+        copy.set(ParticleProjectile.SPEED, parseValues(caster, ParticleProjectile.SPEED, level, 1), 0);
+        copy.set(ParticleHelper.POINTS_KEY, parseValues(caster, ParticleHelper.POINTS_KEY, level, 1), 0);
+        copy.set(ParticleHelper.RADIUS_KEY, parseValues(caster, ParticleHelper.RADIUS_KEY, level, 0), 0);
+
         // Fire from each target
         for (LivingEntity target : targets) {
             Location loc = target.getLocation();
@@ -151,7 +158,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
             if (spread.equals("rain")) {
                 double radius = parseValues(caster, RADIUS, level, 2.0);
                 double height = parseValues(caster, HEIGHT, level, 8.0);
-                list = ItemProjectile.rain(caster, loc, item, radius, height, speed, amount, this, lifespan, walls);
+                list = ItemProjectile.rain(caster, loc, copy, item, radius, height, speed, amount, this, lifespan, walls);
             } else {
                 Vector dir = target.getLocation().getDirection();
 
@@ -173,6 +180,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
                         caster,
                         dir,
                         loc.add(looking).add(0, 0.5 + upward, 0),
+                        copy,
                         item,
                         angle,
                         amount,

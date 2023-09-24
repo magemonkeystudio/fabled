@@ -237,7 +237,17 @@ public class ProjectileMechanic extends MechanicComponent {
         }
 
         new RepeatingEntityTask<>(projectiles, proj -> ParticleHelper.play(proj.getLocation(), settings));
-        new RemoveTask(projectiles, (int) parseValues(caster, LIFESPAN, level, 9999) * 20);
+        new RemoveTask(projectiles, (int) parseValues(caster, LIFESPAN, level, 9999) * 20) {
+            @Override
+            public void run() {
+                super.run();
+                if (settings.getBool("on-expire", false)) {
+                    for (Projectile projectile1 : projectiles) {
+                        callback(projectile1, null);
+                    }
+                }
+            }
+        };
 
         return targets.size() > 0;
     }

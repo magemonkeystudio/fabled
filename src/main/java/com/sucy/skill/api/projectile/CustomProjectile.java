@@ -27,6 +27,7 @@
 package com.sucy.skill.api.projectile;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.particle.target.Followable;
 import com.sucy.skill.log.Logger;
 import mc.promcteam.engine.utils.Reflex;
@@ -95,21 +96,23 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
         }
     }
 
-    private final HashMap<String, List<MetadataValue>> metadata = new HashMap<>();
-    private final Set<Integer>                         hit      = new HashSet<>();
-    private final LivingEntity                         thrower;
-    private       ProjectileCallback                   callback;
-    private       boolean                              enemy    = true;
-    private       boolean                              ally     = false;
-    private       boolean                              valid    = true;
+    private   final HashMap<String, List<MetadataValue>> metadata = new HashMap<>();
+    private   final Set<Integer>                         hit      = new HashSet<>();
+    private   final LivingEntity                         thrower;
+    protected       ProjectileCallback                   callback;
+    protected final Settings                             settings;
+    private         boolean                              enemy    = true;
+    private         boolean                              ally     = false;
+    private         boolean                              valid    = true;
 
     /**
      * Constructs a new custom projectile and starts its timer task
      *
      * @param thrower entity firing the projectile
      */
-    public CustomProjectile(LivingEntity thrower) {
+    public CustomProjectile(LivingEntity thrower, Settings settings) {
         this.thrower = thrower;
+        this.settings = settings;
         runTaskTimer(SkillAPI.inst(), 1, 1);
     }
 

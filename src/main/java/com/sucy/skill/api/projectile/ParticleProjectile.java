@@ -68,7 +68,6 @@ public class ParticleProjectile extends CustomProjectile {
     private static final String PIERCE = "pierce";
 
     private       Location loc;
-    private final Settings settings;
     private       Vector   vel;
     private final int      steps;
     private       int      count;
@@ -86,10 +85,9 @@ public class ParticleProjectile extends CustomProjectile {
      * @param settings settings for the projectile
      */
     public ParticleProjectile(LivingEntity shooter, int level, Location loc, Settings settings, int lifespan) {
-        super(shooter);
+        super(shooter, settings);
 
         this.loc = loc;
-        this.settings = settings;
         this.vel = loc.getDirection().multiply(settings.getAttr(SPEED, level, 1.0));
         this.freq = (int) (20 * settings.getDouble(FREQUENCY, 0.5));
         this.life = lifespan;
@@ -207,6 +205,7 @@ public class ParticleProjectile extends CustomProjectile {
         // Lifespan
         life--;
         if (life <= 0) {
+            if (settings.getBool("on-expire")) callback.callback(this, null);
             cancel();
             Bukkit.getPluginManager().callEvent(new ParticleProjectileExpireEvent(this));
         }

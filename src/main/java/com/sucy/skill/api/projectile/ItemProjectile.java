@@ -27,6 +27,7 @@
 package com.sucy.skill.api.projectile;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.event.ItemProjectileExpireEvent;
 import com.sucy.skill.api.event.ItemProjectileHitEvent;
 import com.sucy.skill.api.event.ItemProjectileLandEvent;
@@ -72,11 +73,12 @@ public class ItemProjectile extends CustomProjectile {
      */
     public ItemProjectile(LivingEntity thrower,
                           Location loc,
+                          Settings settings,
                           ItemStack item,
                           Vector vel,
                           int lifespan,
                           boolean collideWalls) {
-        super(thrower);
+        super(thrower, settings);
 
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
@@ -217,6 +219,7 @@ public class ItemProjectile extends CustomProjectile {
 
         life--;
         if (life <= 0) {
+            if (settings.getBool("on-expire")) callback.callback(this, null);
             cancel();
             Bukkit.getPluginManager().callEvent(new ItemProjectileExpireEvent(this));
         }
@@ -248,6 +251,7 @@ public class ItemProjectile extends CustomProjectile {
     public static ArrayList<ItemProjectile> spread(LivingEntity shooter,
                                                    Vector center,
                                                    Location loc,
+                                                   Settings settings,
                                                    ItemStack item,
                                                    double angle,
                                                    int amount,
@@ -260,7 +264,7 @@ public class ItemProjectile extends CustomProjectile {
         ArrayList<ItemProjectile> list = new ArrayList<ItemProjectile>();
         for (Vector dir : dirs) {
             Vector         vel = dir.multiply(speed);
-            ItemProjectile p   = new ItemProjectile(shooter, loc.clone(), item, vel, lifespan, collideWalls);
+            ItemProjectile p   = new ItemProjectile(shooter, loc.clone(), settings, item, vel, lifespan, collideWalls);
             p.setCallback(callback);
             list.add(p);
         }
@@ -284,6 +288,7 @@ public class ItemProjectile extends CustomProjectile {
      */
     public static ArrayList<ItemProjectile> rain(LivingEntity shooter,
                                                  Location center,
+                                                 Settings settings,
                                                  ItemStack item,
                                                  double radius,
                                                  double height,
@@ -300,7 +305,7 @@ public class ItemProjectile extends CustomProjectile {
         ArrayList<ItemProjectile> list = new ArrayList<ItemProjectile>();
         for (Location l : locs) {
             l.setDirection(vel);
-            ItemProjectile p = new ItemProjectile(shooter, l, item, vel, lifespan, collideWalls);
+            ItemProjectile p = new ItemProjectile(shooter, l, settings, item, vel, lifespan, collideWalls);
             p.setCallback(callback);
             list.add(p);
         }
