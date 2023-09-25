@@ -1,41 +1,19 @@
-# create-svelte
+# ProSkillAPI Editor
 
-Everything you need to build a Svelte project, powered
-by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
-
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+This project is powered by [SvelteKit](https://kit.svelte.dev/).
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a
-development server:
+After cloning the repository, run `npm install` to fetch dependencies.
 
-```bash
-npm run dev
+To run the project locally, run `npm run dev` and navigate to [localhost:5173](http://localhost:5173). Alternatively run `npm run dev -- --open` to open the project in your default browser automatically.
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+## Deploying
 
-## Building
+This app is set up to have a pretty automatic pipeline. You should just need to
+create a pull request and merge it into `editor` to deploy the app. The app will
+be deployed to [promcteam.github.io/proskillapi](https://promcteam.github.io/proskillapi/) where you can edit to your hearts content.
 
-To create a production version of your app:
+## SvelteKit
 
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target
-> environment.
+SvelteKit is the meat and potatoes of this project. It's a framework for building web apps with Svelte. You can find the documentation [here](https://kit.svelte.dev/docs) in order to learn how to effectively contribute to the project.

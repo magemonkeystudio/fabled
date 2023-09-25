@@ -46,10 +46,7 @@ export const load: LayoutLoad = ({ url }) => {
 		+ classFolders;
 
 	createPaste(qualifiedData)
-		.then((data) => {
-			console.log(data);
-			window.location.href = `http://${expectedHost}/proskillapi?migrationData=${data}`;
-		});
+		.then((url: string) => window.location.href = `http://${expectedHost}/proskillapi?migrationData=${url}`);
 
 	return;
 };
