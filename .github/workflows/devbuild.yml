@@ -54,7 +54,7 @@ jobs:
           git commit -m "Update javadocs"
           git push
       - name: Update version
-        run: python ./.github/update_version.py true
+        run: cd app && python ./.github/update_version.py true
       - name: Push to git
         run: |
           cd app
@@ -63,4 +63,4 @@ jobs:
           git commit -m "Update dev version"
           git push
       - name: Notify Discord
-        run: pip install simplejson && python ./app/.github/notify_published.py ${{ secrets.WEBHOOK_URL }}
+        run: cd app && pip install simplejson && python ./.github/notify_published.py ${{ secrets.WEBHOOK_URL }}
