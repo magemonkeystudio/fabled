@@ -48,7 +48,7 @@ jobs:
           path: editor
       - name: Update Javadocs
         run: |
-          cp app/gh-pages/javadocs editor/javadocs
+          cp -r app/gh-pages/javadocs editor/javadocs
           cd editor
           git add .
           git commit -m "Update javadocs"
