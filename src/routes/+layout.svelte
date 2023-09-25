@@ -130,7 +130,7 @@
     </div>
 </Modal>
 
-<!--Display our active modal-->
+<!-- Display our active modal -->
 <svelte:component
         this={$activeModal}
         data={$modalData}
