@@ -63,4 +63,4 @@ jobs:
           git commit -m "Update dev version"
           git push
       - name: Notify Discord
-        run: pip install simplejson && python ./.github/notify_published.py ${{ secrets.WEBHOOK_URL }}
+        run: pip install simplejson && python ./app/.github/notify_published.py ${{ secrets.WEBHOOK_URL }}
