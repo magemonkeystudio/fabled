@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Represents a single click in a click combination
+ * Represents a single click in a click combination. Note that all keys cannot be caught
  */
 public enum Click {
     LEFT(1, "L"),
