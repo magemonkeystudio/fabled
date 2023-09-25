@@ -30,9 +30,7 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -50,18 +48,13 @@ public class WorldTarget extends TargetComponent {
     @Override
     List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
-        final Set<LivingEntity> result = new HashSet<>();
-        for (LivingEntity target : targets) {
-            target.getWorld().getLivingEntities().stream()
-                    .filter(e -> {
-                        GameMode gm = e instanceof Player ? ((Player) e).getGameMode() : GameMode.SURVIVAL;
-                        if (gm == GameMode.SPECTATOR || gm == GameMode.CREATIVE) return false;
+        return caster.getWorld().getLivingEntities().stream()
+                .filter(e -> {
+                    GameMode gm = e instanceof Player ? ((Player) e).getGameMode() : GameMode.SURVIVAL;
+                    if (gm == GameMode.SPECTATOR || gm == GameMode.CREATIVE) return false;
 
-                        return true;
-                    })
-                    .forEach(result::add);
-
-        }
-        return result.stream().collect(Collectors.toList());
+                    return true;
+                })
+                .collect(Collectors.toList());
     }
 }
