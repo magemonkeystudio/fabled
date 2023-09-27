@@ -8,6 +8,8 @@ const expectedHost = 'promcteam.github.io';
 const separator    = '\n\n\n~~~~~\n\n\n';
 
 export const load: LayoutLoad = ({ url }) => {
+	if (url.host.includes('localhost')) return;
+
 	if (url.searchParams.has('migrationData')) {
 		// Load the skills into the editor.
 		// This should be from migrations.

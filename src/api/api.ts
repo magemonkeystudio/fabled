@@ -29,14 +29,20 @@ export const localStore = <T>(key: string, def: T) => {
 			}
 		}
 
-		saved = JSON.parse(<string>localStorage.getItem(key));
+		if (typeof def === 'number')
+			saved = <T>parseInt(<string>localStorage.getItem(key));
+		else if (typeof def === 'boolean')
+			saved = <T>(<string>localStorage.getItem(key) === 'true');
+		else
+			saved = JSON.parse(<string>localStorage.getItem(key));
 	}
 
 	const { subscribe, set, update } = writable(saved);
 
 	return {
 		subscribe,
-		set: (value: T) => {		if (browser) {
+		set: (value: T) => {
+			if (browser) {
 				if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
 					localStorage.setItem(key, value.toString());
 				} else {

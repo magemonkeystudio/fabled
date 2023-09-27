@@ -114,7 +114,7 @@
         <ProInput label='Server' tooltip='This should match your target Spigot server version'>
             <select bind:value={$version}>
                 {#each serverOptions as opt}
-                    <option value={opt.substring(2)}>{opt}</option>
+                    <option value={opt}>1.{opt}</option>
                 {/each}
             </select>
         </ProInput>
