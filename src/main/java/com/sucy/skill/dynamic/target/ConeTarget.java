@@ -26,8 +26,15 @@
  */
 package com.sucy.skill.dynamic.target;
 
+import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.particle.ParticleSettings;
 import com.sucy.skill.api.target.TargetHelper;
+import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import java.util.List;
 
@@ -39,18 +46,92 @@ public class ConeTarget extends TargetComponent {
     private static final String ANGLE = "angle";
     private static final String RANGE = "range";
 
+
     /**
      * {@inheritDoc}
      */
-    /*@Override
-    void playPreview(Player caster, int level, LivingEntity target, int step) {
-        double arc    = parseValues(caster, ANGLE, level, 90.0) * Math.PI / 180;
-        double radius = parseValues(caster, RANGE, level, 3.0);
-        if (preview == null || preview.getArc() != arc || preview.getRadius() != radius) {
-            preview = new ConePreview(arc, radius);
+    @Override
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
+        super.playPreview(onPreviewStop, caster, level, targets);
+
+        if (preview.getBool("triangle", false)) {
+            BukkitTask task = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    ParticleSettings particleSettings = new ParticleSettings(preview, "triangle-");
+                    double angle = parseValues(caster, ANGLE, level, 90.0)*Math.PI/360; // Intentional division by 2
+                    double range = parseValues(caster, RANGE, level, 5.0);
+                    double density = preview.getDouble("cone-"+"density", 1);
+
+                    double rStep = 1/range/density;
+
+                    for (LivingEntity target : targets) {
+                        Location origin = target.getEyeLocation();
+                        Vector direction = origin.getDirection();
+
+                        Location altDirection = origin.clone();
+                        altDirection.setPitch((origin.getPitch()+135)%180-90); // Move pitch 45° without overflow
+                        Vector perpendicular = altDirection.getDirection().crossProduct(direction);
+
+                        Vector directionStep = direction.clone().multiply(rStep);
+                        double startDistance = preview.getDouble("triangle-start-distance", 2);
+                        origin.add(direction.clone().multiply(startDistance));
+                        for (double rLocation = startDistance; rLocation <= range; rLocation += rStep) {
+                            double radius = rLocation*Math.tan(angle);
+                            Vector vector = perpendicular.clone().multiply(radius);
+                            particleSettings.instance(caster, origin.getX()+vector.getX(), origin.getY()+vector.getY(), origin.getZ()+vector.getZ());
+                            vector.rotateAroundNonUnitAxis(direction, Math.PI);
+                            particleSettings.instance(caster, origin.getX()+vector.getX(), origin.getY()+vector.getY(), origin.getZ()+vector.getZ());
+
+                            origin.add(directionStep);
+                        }
+                    }
+                }
+            }.runTaskTimer(SkillAPI.inst(),0, Math.max(1, preview.getInt("triangle-"+"period", 5)));
+            onPreviewStop.add(task::cancel);
         }
-        preview.playParticles(caster, PreviewSettings.particle, target.getLocation(), step);
-    }*/
+
+        if (preview.getBool("cone", false)) {
+            BukkitTask task = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    ParticleSettings particleSettings = new ParticleSettings(preview, "cone-");
+                    double angle = parseValues(caster, ANGLE, level, 90.0)*Math.PI/360; // Intentional division by 2
+                    double range = parseValues(caster, RANGE, level, 5.0);
+                    double density = preview.getDouble("cone-"+"density", 1);
+                    double twoPi = 2*Math.PI;
+
+                    double rStep = 1/range/density;
+
+                    for (LivingEntity target : targets) {
+                        Location origin = target.getEyeLocation();
+                        Vector direction = origin.getDirection();
+
+                        Location altDirection = origin.clone();
+                        altDirection.setPitch((origin.getPitch()+135)%180-90); // Move pitch 45° without overflow
+                        Vector perpendicular = altDirection.getDirection().crossProduct(direction);
+
+                        Vector directionStep = direction.clone().multiply(rStep);
+                        double startDistance = preview.getDouble("cone-start-distance", 2);
+                        origin.add(direction.clone().multiply(startDistance));
+                        for (double rLocation = startDistance; rLocation <= range; rLocation += rStep) {
+                            double radius = rLocation*Math.tan(angle);
+
+                            Vector radiusVec = perpendicular.clone().multiply(radius);
+                            double angleStep = 1/radius/density;
+                            for (double totalAngle = 0; totalAngle <= twoPi; totalAngle += angleStep) {
+                                Vector vector = radiusVec.clone().rotateAroundNonUnitAxis(direction, totalAngle);
+                                particleSettings.instance(caster, origin.getX()+vector.getX(), origin.getY()+vector.getY(), origin.getZ()+vector.getZ());
+                            }
+
+                            origin.add(directionStep);
+                        }
+                    }
+                }
+            }.runTaskTimer(SkillAPI.inst(),0, Math.max(1, preview.getInt("cone-"+"period", 5)));
+            onPreviewStop.add(task::cancel);
+        }
+    }
 
     /**
      * {@inheritDoc}

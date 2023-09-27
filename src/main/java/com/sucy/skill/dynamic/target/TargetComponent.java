@@ -72,6 +72,9 @@ public abstract class TargetComponent extends EffectComponent {
             final int level,
             final List<LivingEntity> targets);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
         if (preview.getBool("per-target")) {
