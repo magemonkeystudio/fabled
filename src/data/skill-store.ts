@@ -81,7 +81,10 @@ export const getSkill = (name: string): ProSkill | undefined => {
 
 export const skillFolders: Writable<ProFolder[]> = setupSkillStore<ProFolder[]>("skillFolders", [],
   (data: string) => {
+    if (!data || data === 'null') return [];
+
     const parsedData = JSON.parse(data, (key: string, value) => {
+      if (!value) return;
       if (/\d+/.test(key)) {
         if (typeof (value) === "string") {
           return getSkill(value);

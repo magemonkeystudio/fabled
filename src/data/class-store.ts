@@ -84,6 +84,8 @@ export const getClass = (name: string): ProClass | undefined => {
 
 export const classFolders: Writable<ProFolder[]> = setupClassStore<ProFolder[]>("classFolders", [],
   (data: string) => {
+    if (!data || data === 'null') return [];
+
     const parsedData = JSON.parse(data, (key: string, value) => {
       if (!value) return;
       if (/\d+/.test(key)) {
