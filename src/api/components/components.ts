@@ -607,7 +607,23 @@ const particlesAtTargetPreviewOptions = (): ComponentOption[] => {
 		new SectionMarker('Particles at target'),
 		new BooleanSelect('Particles at target', 'per-target', false)
 			.setTooltip('Displays particles at the location of the current targets'),
-		...particlePreviewOptions('per-target')
+		...particlePreviewOptions('per-target'),
+		new DropdownSelect('Arrangement', 'per-target-arrangement', ['Sphere', 'Circle', 'Hemisphere'], 'Sphere')
+			.requireValue('per-target', [true])
+			.setTooltip('The arrangement to use for the particles. Circle is a 2D circle, Hemisphere is half a 3D sphere, and Sphere is a 3D sphere'),
+		new DropdownSelect('Circle Direction', 'per-target-direction', ['XY', 'XZ', 'YZ'], 'XZ')
+			.requireValue('per-target'+'-arrangement', ['Circle'])
+			.requireValue('per-target', [true])
+			.setTooltip('The orientation of the circle. XY and YZ are vertical circles while XZ is a horizontal circle'),
+		new AttributeSelect('Radius', 'per-target-radius', 0.5)
+			.requireValue('per-target', [true])
+			.setTooltip('The radius of the arrangement in blocks'),
+		new BooleanSelect('Increase size by hitbox', 'per-target-hitbox', true)
+			.requireValue('per-target', [true])
+			.setTooltip('Increases the \'radius\' parameter by the size of the target\'s hitbox'),
+		new AttributeSelect('Points', 'per-target-particles', 20)
+			.requireValue('per-target', [true])
+			.setTooltip('The amount of points that conform the chosen arrangement'),
 	];
 };
 
@@ -624,7 +640,21 @@ class AreaTarget extends ProTarget {
 					.setTooltip('Whether to randomize the targets selected')
 			],
 			preview:      [
-				...particlesAtTargetPreviewOptions()
+				...particlesAtTargetPreviewOptions(),
+				new SectionMarker('Circle Preview'),
+				new BooleanSelect('Circle Preview', 'circle', false)
+					.setTooltip('Displays particles as a circle around the targeted area'),
+				new DoubleSelect('Density', 'circle-density', 1)
+					.setTooltip('The minimum amount of points to display per meter')
+					.requireValue('circle', [true]),
+				...particlePreviewOptions('circle'),
+				new SectionMarker('Sphere Preview'),
+				new BooleanSelect('Sphere Preview', 'sphere', false)
+					.setTooltip('Displays particles as a sphere around the targeted area'),
+				new DoubleSelect('Density', 'sphere-density', 1)
+					.setTooltip('The minimum amount of points to display per meter')
+					.requireValue('sphere', [true]),
+				...particlePreviewOptions('sphere')
 			],
 			summaryItems: ['radius', 'group', 'wall', 'caster', 'max', 'random']
 		});
@@ -646,7 +676,27 @@ class ConeTarget extends ProTarget {
 				...targetOptions()
 			],
 			preview:      [
-				...particlesAtTargetPreviewOptions()
+				...particlesAtTargetPreviewOptions(),
+				new SectionMarker('Triangle Preview'),
+				new BooleanSelect('Triangle Preview', 'triangle', false)
+					.setTooltip('Displays particles as a two lines on both sides around the targeted area'),
+				new DoubleSelect('Density', 'triangle-density', 1)
+					.setTooltip('The minimum amount of points to display per meter')
+					.requireValue('triangle', [true]),
+				new DoubleSelect('Start distance', 'triangle-start-distance', 2)
+					.setTooltip('How far from the target\'s face to start drawing the preview, in meters')
+					.requireValue('triangle', [true]),
+				...particlePreviewOptions('triangle'),
+				new SectionMarker('Cone Preview'),
+				new BooleanSelect('Cone Preview', 'cone', false)
+					.setTooltip('Displays particles as a cone around the targeted area'),
+				new DoubleSelect('Density', 'cone-density', 1)
+					.setTooltip('The minimum amount of points to display per meter')
+					.requireValue('cone', [true]),
+				new DoubleSelect('Start distance', 'cone-start-distance', 2)
+					.setTooltip('How far from the target\'s face to start drawing the preview, in meters')
+					.requireValue('cone', [true]),
+				...particlePreviewOptions('cone')
 			],
 			summaryItems: ['range', 'angle', 'group', 'wall', 'caster', 'max']
 		});
@@ -3759,7 +3809,7 @@ const particlePreviewOptions = (key: string): ComponentOption[] => {
 		new IntSelect('Refresh period', key + '-period', 5)
 			.requireValue(key, [true])
 			.setTooltip('How many ticks to wait before refreshing the preview, recalculating targets and the location of the particle effects'),
-		new DropdownSelect('Particle', key + '-particle', getParticles, 'Villager happy')
+		new DropdownSelect('Particle', key + '-particle', getParticles, 'Crit')
 			.setTooltip('The type of particle to display')
 			.requireValue(key, [true]),
 		new DropdownSelect('Material', key + '-material', (() => [...getMaterials()]), 'Arrow')
@@ -3794,24 +3844,6 @@ const particlePreviewOptions = (key: string): ComponentOption[] => {
 			.requireValue(key + '-particle', ['Redstone', 'Dust color transition'])
 			.requireValue(key, [true])
 			.setTooltip('The size of the dust particles'),
-
-		new DropdownSelect('Arrangement', key + '-arrangement', ['Sphere', 'Circle', 'Hemisphere'], 'Sphere')
-			.requireValue(key, [true])
-			.setTooltip('The arrangement to use for the particles. Circle is a 2D circle, Hemisphere is half a 3D sphere, and Sphere is a 3D sphere'),
-		// Circle arrangement direction
-		new DropdownSelect('Circle Direction', key + '-direction', ['XY', 'XZ', 'YZ'], 'XZ')
-			.requireValue(key + '-arrangement', ['Circle'])
-			.requireValue(key, [true])
-			.setTooltip('The orientation of the circle. XY and YZ are vertical circles while XZ is a horizontal circle'),
-		new AttributeSelect('Radius', key + '-radius', 0.5)
-			.requireValue(key, [true])
-			.setTooltip('The radius of the arrangement in blocks'),
-		new BooleanSelect('Increase size by hitbox', key + '-hitbox', true)
-			.requireValue(key, [true])
-			.setTooltip('Increases the \'radius\' parameter by the size of the target\'s hitbox'),
-		new AttributeSelect('Points', key + '-particles', 20)
-			.requireValue(key, [true])
-			.setTooltip('The amount of points that conform the chosen arrangement'),
 
 		// Bukkit particle data value
 		new IntSelect('Effect Data', key + '-data')
