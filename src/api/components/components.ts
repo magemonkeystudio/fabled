@@ -1999,6 +1999,13 @@ class BlockMechanic extends ProMechanic {
 				new AttributeSelect('Right Offset', 'right')
 					.setTooltip('How far to the right the region should be of the target. A negative value will put it to the left')
 			],
+			preview:         [
+				...particlesAtTargetPreviewOptions(),
+				new BooleanSelect('Center only', 'per-target-center-only', true)
+					.setTooltip('Whether to display particles only at the center of the affected area, or at each affected block')
+					.requireValue('per-target', [true])
+
+			],
 			summaryItems: ['shape', 'type', 'block', 'seconds']
 		});
 	}
@@ -2789,6 +2796,12 @@ class MineMechanic extends ProMechanic {
 					.setTooltip('How far above the target the region should be in blocks. A negative value will put it below'),
 				new AttributeSelect('Right Offset', 'right')
 					.setTooltip('How far to the right the region should be of the target. A negative value will put it to the left')
+			],
+			preview:         [
+				...particlesAtTargetPreviewOptions(),
+				new BooleanSelect('Center only', 'per-target-center-only', true)
+					.setTooltip('Whether to display particles only at the center of the affected area, or at each affected block')
+					.requireValue('per-target', [true])
 			],
 			summaryItems: ['materials', 'drop', 'tool', 'shape', 'radius']
 		});
@@ -3606,6 +3619,9 @@ class WarpMechanic extends ProMechanic {
 				new AttributeSelect('Right', 'right')
 					.setTooltip('How far to the right in blocks to teleport. A negative value teleports to the left')
 			],
+			preview:         [
+				...particlesAtTargetPreviewOptions()
+			],
 			summaryItems: ['walls', 'forward', 'upward', 'right']
 		}, false);
 	}
@@ -3631,6 +3647,9 @@ class WarpLocMechanic extends ProMechanic {
 					.setTooltip('The Yaw of the desired position (left/right orientation)'),
 				new DoubleSelect('Pitch', 'pitch', 0)
 					.setTooltip('The Pitch of the desired position (up/down orientation)')
+			],
+			preview:         [
+				...particlesAtTargetPreviewOptions()
 			],
 			summaryItems: ['world', 'x', 'y', 'z']
 		}, false);
@@ -3694,6 +3713,9 @@ class WarpValueMechanic extends ProMechanic {
 			data:         [
 				new StringSelect('Key', 'key', 'location')
 					.setTooltip('The unique key the location is stored under. This should be the same key used in the Value Location mechanic')
+			],
+			preview:         [
+				...particlesAtTargetPreviewOptions()
 			],
 			summaryItems: ['key']
 		}, false);
