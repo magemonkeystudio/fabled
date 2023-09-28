@@ -80,8 +80,7 @@ public class ConeTarget extends TargetComponent {
                             double radius = rLocation*Math.tan(angle);
                             Vector vector = perpendicular.clone().multiply(radius);
                             particleSettings.instance(caster, origin.getX()+vector.getX(), origin.getY()+vector.getY(), origin.getZ()+vector.getZ());
-                            vector.rotateAroundNonUnitAxis(direction, Math.PI);
-                            particleSettings.instance(caster, origin.getX()+vector.getX(), origin.getY()+vector.getY(), origin.getZ()+vector.getZ());
+                            particleSettings.instance(caster, origin.getX()-vector.getX(), origin.getY()-vector.getY(), origin.getZ()-vector.getZ());
 
                             origin.add(directionStep);
                         }
@@ -99,7 +98,6 @@ public class ConeTarget extends TargetComponent {
                     double angle = parseValues(caster, ANGLE, level, 90.0)*Math.PI/360; // Intentional division by 2
                     double range = parseValues(caster, RANGE, level, 5.0);
                     double density = preview.getDouble("cone-"+"density", 1);
-                    double twoPi = 2*Math.PI;
 
                     double rStep = 1/range/density;
 
@@ -119,9 +117,10 @@ public class ConeTarget extends TargetComponent {
 
                             Vector radiusVec = perpendicular.clone().multiply(radius);
                             double angleStep = 1/radius/density;
-                            for (double totalAngle = 0; totalAngle <= twoPi; totalAngle += angleStep) {
+                            for (double totalAngle = 0; totalAngle <= Math.PI + 0.1; totalAngle += angleStep) {
                                 Vector vector = radiusVec.clone().rotateAroundNonUnitAxis(direction, totalAngle);
                                 particleSettings.instance(caster, origin.getX()+vector.getX(), origin.getY()+vector.getY(), origin.getZ()+vector.getZ());
+                                particleSettings.instance(caster, origin.getX()-vector.getX(), origin.getY()-vector.getY(), origin.getZ()-vector.getZ());
                             }
 
                             origin.add(directionStep);

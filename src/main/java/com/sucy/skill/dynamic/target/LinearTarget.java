@@ -26,8 +26,15 @@
  */
 package com.sucy.skill.dynamic.target;
 
+import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.particle.ParticleSettings;
 import com.sucy.skill.api.target.TargetHelper;
+import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import java.util.List;
 
@@ -53,10 +60,76 @@ public class LinearTarget extends TargetComponent {
     /**
      * {@inheritDoc}
      */
-    /*@Override
-    void playPreview(final Player caster, final int level, final LivingEntity target, int step) {
-        // TODO - add indicators for linear targeting
-    }*/
+    @Override
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
+        super.playPreview(onPreviewStop, caster, level, targets);
+
+        if (preview.getBool("line", false)) {
+            BukkitTask task = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    ParticleSettings particleSettings = new ParticleSettings(preview, "line-");
+                    double           range            = parseValues(caster, RANGE, level, 5.0);
+                    double           density          = preview.getDouble("line-"+"density", 1);
+
+                    double rStep = 1/range/density;
+
+                    for (LivingEntity target : targets) {
+                        Location origin    = target.getEyeLocation();
+                        Vector   direction = origin.getDirection();
+
+                        Vector directionStep = direction.clone().multiply(rStep);
+                        double startDistance = preview.getDouble("line-start-distance", 2);
+                        origin.add(direction.clone().multiply(startDistance));
+                        for (double rLocation = startDistance; rLocation <= range; rLocation += rStep) {
+                            particleSettings.instance(caster, origin.getX(), origin.getY(), origin.getZ());
+                            origin.add(directionStep);
+                        }
+                    }
+                }
+            }.runTaskTimer(SkillAPI.inst(),0, Math.max(1, preview.getInt("line-"+"period", 5)));
+            onPreviewStop.add(task::cancel);
+        }
+
+        if (preview.getBool("cylinder", false)) {
+            BukkitTask task = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    ParticleSettings particleSettings = new ParticleSettings(preview, "cylinder-");
+                    double range = parseValues(caster, RANGE, level, 5.0);
+                    double radius = parseValues(caster, TOLERANCE, level, 0);
+                    double density = preview.getDouble("cylinder-"+"density", 1);
+
+                    double rStep = 1/range/density;
+                    double angleStep = 1/radius/density;
+
+                    for (LivingEntity target : targets) {
+                        Location origin = target.getEyeLocation();
+                        Vector direction = origin.getDirection();
+
+                        Location altDirection = origin.clone();
+                        altDirection.setPitch((origin.getPitch()+135)%180-90); // Move pitch 45° without overflow
+                        Vector radiusVec = altDirection.getDirection().crossProduct(direction).multiply(radius);
+
+                        Vector directionStep = direction.clone().multiply(rStep);
+                        double startDistance = preview.getDouble("cylinder-start-distance", 2);
+                        origin.add(direction.clone().multiply(startDistance));
+                        for (double rLocation = startDistance; rLocation <= range; rLocation += rStep) {
+                            for (double totalAngle = 0; totalAngle <= Math.PI + 0.1; totalAngle += angleStep) {
+                                Vector vector = radiusVec.clone().rotateAroundNonUnitAxis(direction, totalAngle);
+                                particleSettings.instance(caster, origin.getX()+vector.getX(), origin.getY()+vector.getY(), origin.getZ()+vector.getZ());
+                                particleSettings.instance(caster, origin.getX()-vector.getX(), origin.getY()-vector.getY(), origin.getZ()-vector.getZ());
+                            }
+
+                            origin.add(directionStep);
+                        }
+                    }
+                }
+            }.runTaskTimer(SkillAPI.inst(),0, Math.max(1, preview.getInt("cylinder-"+"period", 5)));
+            onPreviewStop.add(task::cancel);
+        }
+    }
+
     @Override
     public String getKey() {
         return "linear";
