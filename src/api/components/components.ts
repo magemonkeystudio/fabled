@@ -3621,6 +3621,8 @@ class ValueRandomMechanic extends ProMechanic {
 			data:         [
 				new StringSelect('Key', 'key', 'value')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
+				new BooleanSelect('Integer', 'integer', false)
+					.setTooltip('Whether to only generate integer values'),
 				new DropdownSelect('Type', 'type', ['Normal', 'Triangular'], 'Normal')
 					.setTooltip('The type of random to use. Triangular favors numbers in the middle, similar to rolling two dice'),
 				new AttributeSelect('Min', 'min')
