@@ -26,20 +26,18 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
+import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.target.TargetHelper;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
-import java.util.Random;
 
 /**
  * Warps a random distance
  */
 public class WarpRandomMechanic extends MechanicComponent {
-    private static final Random random = new Random();
-
     private static final String WALL       = "walls";
     private static final String HORIZONTAL = "horizontal";
     private static final String DISTANCE   = "distance";
@@ -89,6 +87,6 @@ public class WarpRandomMechanic extends MechanicComponent {
     }
 
     private double rand(double distance) {
-        return random.nextDouble() * distance * 2 - distance;
+        return SkillAPI.RANDOM.nextDouble() * distance * 2 - distance;
     }
 }

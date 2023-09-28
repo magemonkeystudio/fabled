@@ -26,6 +26,7 @@
  */
 package com.sucy.skill.api.particle;
 
+import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.enums.Direction;
 import org.bukkit.*;
@@ -62,8 +63,6 @@ public final class ParticleHelper {
     public static final String DUST_COLOR         = "dust-color";
     public static final String FINAL_DUST_COLOR   = "final-dust-color";
     public static final String DUST_SIZE          = "dust-size";
-
-    private static final Random random = new Random();
 
     private ParticleHelper() {}
 
@@ -196,13 +195,13 @@ public final class ParticleHelper {
         // Play the particles
         while (index < points) {
             if (direction == Direction.XY || direction == Direction.XZ) {
-                temp.setX(loc.getX() + random.nextDouble() * twoRadius - radius);
+                temp.setX(loc.getX() + SkillAPI.RANDOM.nextDouble() * twoRadius - radius);
             }
             if (direction == Direction.XY || direction == Direction.YZ) {
-                temp.setY(loc.getY() + random.nextDouble() * twoRadius - radius);
+                temp.setY(loc.getY() + SkillAPI.RANDOM.nextDouble() * twoRadius - radius);
             }
             if (direction == Direction.XZ || direction == Direction.YZ) {
-                temp.setZ(loc.getZ() + random.nextDouble() * twoRadius - radius);
+                temp.setZ(loc.getZ() + SkillAPI.RANDOM.nextDouble() * twoRadius - radius);
             }
 
             if (temp.distanceSquared(loc) > rSquared) {
@@ -239,9 +238,9 @@ public final class ParticleHelper {
 
         // Play the particles
         while (index < points) {
-            temp.setX(loc.getX() + random.nextDouble() * twoRadius - radius);
-            temp.setY(loc.getY() + random.nextDouble() * twoRadius - radius);
-            temp.setZ(loc.getZ() + random.nextDouble() * twoRadius - radius);
+            temp.setX(loc.getX() + SkillAPI.RANDOM.nextDouble() * twoRadius - radius);
+            temp.setY(loc.getY() + SkillAPI.RANDOM.nextDouble() * twoRadius - radius);
+            temp.setZ(loc.getZ() + SkillAPI.RANDOM.nextDouble() * twoRadius - radius);
 
             if (temp.distanceSquared(loc) > rSquared) {
                 continue;
@@ -278,9 +277,9 @@ public final class ParticleHelper {
 
         // Play the particles
         while (index < points) {
-            temp.setX(loc.getX() + random.nextDouble() * twoRadius - radius);
-            temp.setY(loc.getY() + random.nextDouble() * radius);
-            temp.setZ(loc.getZ() + random.nextDouble() * twoRadius - radius);
+            temp.setX(loc.getX() + SkillAPI.RANDOM.nextDouble() * twoRadius - radius);
+            temp.setY(loc.getY() + SkillAPI.RANDOM.nextDouble() * radius);
+            temp.setZ(loc.getZ() + SkillAPI.RANDOM.nextDouble() * twoRadius - radius);
 
             if (temp.distanceSquared(loc) > rSquared) {
                 continue;

@@ -7,7 +7,10 @@ import com.sucy.skill.api.skills.SkillShot;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SkillCastMechanic extends MechanicComponent {
@@ -59,7 +62,7 @@ public class SkillCastMechanic extends MechanicComponent {
                 case "first" -> cast(player, filtered.get(0).getKey(), filtered.get(0).getValue(), force_cast);
                 case "all" -> handle.forEach(entry -> cast(player, entry.getKey(), entry.getValue(), force_cast));
                 case "random" -> {
-                    int i = new Random().nextInt(filtered.size());
+                    int i = SkillAPI.RANDOM.nextInt(filtered.size());
                     cast(player, filtered.get(i).getKey(), filtered.get(i).getValue(), force_cast);
                 }
             }

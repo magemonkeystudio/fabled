@@ -38,7 +38,6 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Applies child components to the closest all nearby entities around
@@ -47,8 +46,6 @@ import java.util.Random;
 public class AreaTarget extends TargetComponent {
     private static final String RADIUS = "radius";
     private static final String RANDOM = "random";
-
-    private final Random random = new Random();
 
     /**
      * {@inheritDoc}
@@ -141,7 +138,7 @@ public class AreaTarget extends TargetComponent {
 
         final List<LivingEntity> list = new ArrayList<>();
         while (!targets.isEmpty()) {
-            list.add(targets.remove(this.random.nextInt(targets.size())));
+            list.add(targets.remove(SkillAPI.RANDOM.nextInt(targets.size())));
         }
         return list;
     }
