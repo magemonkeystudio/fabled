@@ -785,7 +785,21 @@ class NearestTarget extends ProTarget {
 				...targetOptions()
 			],
 			preview:      [
-				...particlesAtTargetPreviewOptions()
+				...particlesAtTargetPreviewOptions(),
+				new SectionMarker('Circle Preview'),
+				new BooleanSelect('Circle Preview', 'circle', false)
+					.setTooltip('Displays particles as a circle around the targeted area'),
+				new DoubleSelect('Density', 'circle-density', 1)
+					.setTooltip('The minimum amount of points to display per meter')
+					.requireValue('circle', [true]),
+				...particlePreviewOptions('circle'),
+				new SectionMarker('Sphere Preview'),
+				new BooleanSelect('Sphere Preview', 'sphere', false)
+					.setTooltip('Displays particles as a sphere around the targeted area'),
+				new DoubleSelect('Density', 'sphere-density', 1)
+					.setTooltip('The minimum amount of points to display per meter')
+					.requireValue('sphere', [true]),
+				...particlePreviewOptions('sphere')
 			],
 			summaryItems: ['range', 'group', 'wall', 'caster', 'max']
 		});
@@ -864,7 +878,27 @@ class SingleTarget extends ProTarget {
 					.setTooltip('Whether to allow targets to be on the other side of a wall')
 			],
 			preview:      [
-				...particlesAtTargetPreviewOptions()
+				...particlesAtTargetPreviewOptions(),
+				new SectionMarker('Line Preview'),
+				new BooleanSelect('Line Preview', 'line', false)
+					.setTooltip('Displays particles as a line of particles in front of the caster'),
+				new DoubleSelect('Density', 'line-density', 1)
+					.setTooltip('The minimum amount of points to display per meter')
+					.requireValue('line', [true]),
+				new DoubleSelect('Start distance', 'line-start-distance', 2)
+					.setTooltip('How far from the target\'s face to start drawing the preview, in meters')
+					.requireValue('line', [true]),
+				...particlePreviewOptions('line'),
+				new SectionMarker('Cylinder Preview'),
+				new BooleanSelect('Cylinder Preview', 'cylinder', false)
+					.setTooltip('Displays particles as a cylinder of particles in front of the caster, showing the component\'s tolerance'),
+				new DoubleSelect('Density', 'cylinder-density', 1)
+					.setTooltip('The minimum amount of points to display per meter')
+					.requireValue('cylinder', [true]),
+				new DoubleSelect('Start distance', 'cylinder-start-distance', 2)
+					.setTooltip('How far from the target\'s face to start drawing the preview, in meters')
+					.requireValue('cylinder', [true]),
+				...particlePreviewOptions('cylinder')
 			],
 			summaryItems: ['range', 'tolerance', 'group', 'wall']
 		});
