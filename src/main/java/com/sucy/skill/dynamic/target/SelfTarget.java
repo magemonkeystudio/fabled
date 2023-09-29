@@ -39,27 +39,6 @@ public class SelfTarget extends TargetComponent {
     /**
      * {@inheritDoc}
      */
-    /*@Override
-    public void playPreview(Player caster, final int level, final LivingEntity target, int step) {
-        switch (previewType) {
-            case DIM_2:
-                circlePreview.playParticles(caster,
-                        PreviewSettings.particle,
-                        caster.getLocation().add(0, 0.1, 0),
-                        step);
-                break;
-            case DIM_3:
-                spherePreview.playParticles(caster,
-                        PreviewSettings.particle,
-                        caster.getLocation().add(0, 0.1, 0),
-                        step);
-                break;
-        }
-    }*/
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
