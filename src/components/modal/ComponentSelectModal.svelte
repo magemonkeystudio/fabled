@@ -65,6 +65,7 @@
             closeModal();
         }
 </script>
+
 <Modal width='70%'
        open={true}
        on:close={closeModal}>

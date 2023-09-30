@@ -6,7 +6,7 @@
     import Toggle from '$input/Toggle.svelte';
     import ProInput from '$input/ProInput.svelte';
 
-    export let data: ProComponent | undefined = undefined;
+    export let data: ProComponent;
     let modalOpen = true;
 
     $: if (modalOpen && data) {
