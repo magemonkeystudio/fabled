@@ -102,8 +102,8 @@ public class Formula implements IValue {
         this.equation = equation;
 
         // Parse the formula
-        ArrayList<IValue>       vals   = new ArrayList<IValue>();
-        ArrayList<IOperator>    ops    = new ArrayList<IOperator>();
+        ArrayList<IValue>       vals   = new ArrayList<>();
+        ArrayList<IOperator>    ops    = new ArrayList<>();
         int                     parens = 0, l = equation.length(), valStart = 0, lastOp = -1;
         Class<? extends IValue> func   = null;
         for (i = 0; i < l; i++) {

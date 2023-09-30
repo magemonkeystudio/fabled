@@ -27,7 +27,7 @@ public class TriggerMechanic extends MechanicComponent {
     private static final String STACKABLE = "stackable";
     private static final String ONCE      = "once";
 
-    private final Map<Integer, List<Context>> CASTER_MAP = new HashMap<Integer, List<Context>>();
+    private final Map<Integer, List<Context>> CASTER_MAP = new HashMap<>();
 
     private TriggerHandler triggerHandler;
     private boolean        once;
