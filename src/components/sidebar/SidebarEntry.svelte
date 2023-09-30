@@ -121,7 +121,14 @@
           content_copy
         </span>
 			</div>
-			<div on:click|preventDefault|stopPropagation={() => deleting = true}
+			<div on:click|preventDefault|stopPropagation={() => {
+				// If holding shift, delete without confirmation
+				if (window.event?.shiftKey) {
+					deleteProData(data);
+					return;
+				}
+				deleting = true
+			}}
 					 class='delete'
 					 title="Delete {data.triggers ? 'Skill' : 'Class'}">
         <span class='material-symbols-rounded'>
