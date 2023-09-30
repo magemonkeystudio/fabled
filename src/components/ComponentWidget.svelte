@@ -312,7 +312,7 @@
         flex-direction: column;
         align-items: stretch;
         justify-items: center;
-        padding: 0.25rem;
+        padding: 0.25rem 0.5rem 0.75rem;
         background-color: #333;
         width: min-content;
         box-shadow: inset 0 0 0.5rem #111;
@@ -357,7 +357,7 @@
         display: flex;
         flex-direction: column;
         align-items: stretch;
-        padding-left: 0.7rem;
+        padding: 0 0.5rem;
     }
 
     .wrapper {
