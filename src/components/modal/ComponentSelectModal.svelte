@@ -128,7 +128,7 @@
         </div>
     {/if}
     <hr/>
-    <div class='cancel' on:click={() => closeModal}
+    <div class='cancel' on:click={closeModal}
          on:keypress={(e) => {
            if (e.key === 'Enter') closeModal();
          }}

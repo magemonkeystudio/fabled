@@ -52,6 +52,7 @@
 
 		if (component._defaultOpen) {
 			openCompModal();
+			component._defaultOpen = false;
 		}
 	});
 
