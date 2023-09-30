@@ -616,7 +616,7 @@ const particlesAtTargetPreviewOptions = (): ComponentOption[] => {
 			.requireValue('per-target', [true])
 			.setTooltip('The arrangement to use for the particles. Circle is a 2D circle, Hemisphere is half a 3D sphere, and Sphere is a 3D sphere'),
 		new DropdownSelect('Circle Direction', 'per-target-direction', ['XY', 'XZ', 'YZ'], 'XZ')
-			.requireValue('per-target'+'-arrangement', ['Circle'])
+			.requireValue('per-target' + '-arrangement', ['Circle'])
 			.requireValue('per-target', [true])
 			.setTooltip('The orientation of the circle. XY and YZ are vertical circles while XZ is a horizontal circle'),
 		new AttributeSelect('Radius', 'per-target-radius', 0.5)
@@ -627,7 +627,7 @@ const particlesAtTargetPreviewOptions = (): ComponentOption[] => {
 			.setTooltip('Increases the \'radius\' parameter by the size of the target\'s hitbox'),
 		new AttributeSelect('Points', 'per-target-particles', 20)
 			.requireValue('per-target', [true])
-			.setTooltip('The amount of points that conform the chosen arrangement'),
+			.setTooltip('The amount of points that conform the chosen arrangement')
 	];
 };
 
@@ -2107,7 +2107,7 @@ class BlockMechanic extends ProMechanic {
 				new AttributeSelect('Right Offset', 'right')
 					.setTooltip('How far to the right the region should be of the target. A negative value will put it to the left')
 			],
-			preview:         [
+			preview:      [
 				...particlesAtTargetPreviewOptions(),
 				new BooleanSelect('Center only', 'per-target-center-only', true)
 					.setTooltip('Whether to display particles only at the center of the affected area, or at each affected block')
@@ -2905,7 +2905,7 @@ class MineMechanic extends ProMechanic {
 				new AttributeSelect('Right Offset', 'right')
 					.setTooltip('How far to the right the region should be of the target. A negative value will put it to the left')
 			],
-			preview:         [
+			preview:      [
 				...particlesAtTargetPreviewOptions(),
 				new BooleanSelect('Center only', 'per-target-center-only', true)
 					.setTooltip('Whether to display particles only at the center of the affected area, or at each affected block')
@@ -3456,9 +3456,14 @@ class TriggerMechanic extends ProMechanic {
 					.setTooltip('The minimum damage that needs to be dealt'),
 				new DoubleSelect('Max Damage', 'dmg-max', 999)
 					.requireValue('trigger', ['Physical Damage', 'Skill Damage', 'Took Physical Damage', 'Took Skill Damage'])
-					.setTooltip('The maximum damage that needs to be dealt')
+					.setTooltip('The maximum damage that needs to be dealt'),
+
+				// SIGNAL
+				new StringSelect('Signal', 'signal', '')
+					.requireValue('trigger', ['Signal'])
+					.setTooltip('The name of signal will be listened to')
 			],
-			summaryItems: ['trigger', 'duration', 'once']
+			summaryItems: ['trigger', 'duration', 'once', 'signal']
 		}, true);
 	}
 
@@ -3729,7 +3734,7 @@ class WarpMechanic extends ProMechanic {
 				new AttributeSelect('Right', 'right')
 					.setTooltip('How far to the right in blocks to teleport. A negative value teleports to the left')
 			],
-			preview:         [
+			preview:      [
 				...particlesAtTargetPreviewOptions()
 			],
 			summaryItems: ['walls', 'forward', 'upward', 'right']
@@ -3758,7 +3763,7 @@ class WarpLocMechanic extends ProMechanic {
 				new DoubleSelect('Pitch', 'pitch', 0)
 					.setTooltip('The Pitch of the desired position (up/down orientation)')
 			],
-			preview:         [
+			preview:      [
 				...particlesAtTargetPreviewOptions()
 			],
 			summaryItems: ['world', 'x', 'y', 'z']
@@ -3824,7 +3829,7 @@ class WarpValueMechanic extends ProMechanic {
 				new StringSelect('Key', 'key', 'location')
 					.setTooltip('The unique key the location is stored under. This should be the same key used in the Value Location mechanic')
 			],
-			preview:         [
+			preview:      [
 				...particlesAtTargetPreviewOptions()
 			],
 			summaryItems: ['key']
