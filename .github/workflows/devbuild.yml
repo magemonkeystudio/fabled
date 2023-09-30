@@ -8,19 +8,19 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: github.event.commits[0].author.name != 'Auto Bot'
 
     steps:
       - uses: actions/checkout@v3
         name: Checkout repo
         with:
           path: app
+          token: ${{ secrets.ACTIONS_PAT }}
       - name: Configure git
         run: |
           git config --global user.name "Auto Bot"
           git config --global user.email "<>"
       - name: Set up JDK 17
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@3
         with:
           distribution: 'zulu'
           java-version: 17
@@ -41,6 +41,12 @@ jobs:
           mvn clean deploy -P gpg,publish -DcreateChecksum=true 2>&1 | tee log.txt
           result_code=${PIPESTATUS[0]}
           exit $result_code
+      - name: Tag release version
+        run: |
+          git add .
+          version=$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout)
+          git tag -a $version -m "Dev $version"
+          git commit -m "[ci skip] Deploy dev version $version"
       - uses: actions/checkout@v3
         name: Checkout editor branch
         with:
@@ -59,7 +65,8 @@ jobs:
         run: |
           cd app
           git add .
-          git commit -m "Update dev version"
+          git commit -m "[ci skip] Update dev version"
           git push
+          git push --tags
       - name: Notify Discord
-        run: cd app && pip install simplejson && python ./.github/notify_published.py ${{ secrets.WEBHOOK_URL }}
+        run: cd app && pip install simplejson && python ./.github/notify_published.py ${{ secrets.WEBHOOK_URL }} true
