@@ -4,8 +4,19 @@
 	import ProInput                                           from '$input/ProInput.svelte';
 	import Toggle                                             from '$input/Toggle.svelte';
 	import Modal                                              from '$components/Modal.svelte';
+	import { classes, classFolders }                          from '../../data/class-store';
+	import { skillFolders, skills }                           from '../../data/skill-store';
 
 	let modalOpen = true;
+
+	const clearData = () => {
+		if (!confirm('Are you sure you want to clear all data?')) return;
+
+		classes.set([]);
+		classFolders.set([]);
+		skills.set([]);
+		skillFolders.set([]);
+	};
 </script>
 
 <Modal bind:open={modalOpen} on:close width='50rem'>
@@ -28,6 +39,10 @@
 		<ProInput label='Waterfall Animation' tooltip='If the waterfall animation should play in the sidebar'>
 			<Toggle bind:data={$animationEnabled} />
 		</ProInput>
+		<hr class='span' />
+		<!--		<ProInput label='Clear data' tooltip='Clear all data stored in the editor'>-->
+		<button class='button btn-danger span' on:click={clearData}>Clear Data</button>
+		<!--		</ProInput>-->
 	</div>
 </Modal>
 
@@ -38,5 +53,18 @@
         width: 100%;
         padding-inline: 0.5rem;
         padding-top: 0.25rem;
+    }
+
+    .span {
+        grid-column: 1 / span 2;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+        width: fit-content;
+        margin: 0 auto;
+        font-weight: bold;
+        padding: 0.5rem 2rem;
     }
 </style>
