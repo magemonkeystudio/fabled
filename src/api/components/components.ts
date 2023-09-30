@@ -286,7 +286,11 @@ class KillTrigger extends ProTrigger {
 	public constructor() {
 		super({
 			name:        'Kill',
-			description: 'Applies skill effects upon killing something'
+			description: 'Applies skill effects upon killing something',
+			data:        [
+				new BooleanSelect('Target Caster', 'target', true)
+					.setTooltip('True makes children target the caster. False makes children target the attacking entity')
+			]
 		});
 	}
 
