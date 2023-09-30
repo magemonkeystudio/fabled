@@ -5,8 +5,10 @@ import { browser }    from '$app/environment';
 import { writable }   from 'svelte/store';
 
 export const toProperCase = (s: string) => {
-	return s.replace('_', ' ').toLowerCase()
-		.replace(/^(.)|\s(.)/g, $1 => $1.toUpperCase());
+	return s
+		.replace('_', ' ')
+		.toLowerCase()
+		.replace(/^(.)|\s(.)/g, ($1) => $1.toUpperCase());
 };
 
 export const toEditorCase = (s: string) => {
@@ -29,12 +31,10 @@ export const localStore = <T>(key: string, def: T) => {
 			}
 		}
 
-		if (typeof def === 'number')
-			saved = <T>parseInt(<string>localStorage.getItem(key));
-		else if (typeof def === 'boolean')
-			saved = <T>(<string>localStorage.getItem(key) === 'true');
-		else
-			saved = JSON.parse(<string>localStorage.getItem(key));
+		if (typeof def === 'number') saved = <T>parseInt(<string>localStorage.getItem(key));
+		else if (typeof def === 'boolean') saved = <T>(<string>localStorage.getItem(key) === 'true');
+		else if (typeof def === 'string') saved = <T>localStorage.getItem(key);
+		else saved = JSON.parse(<string>localStorage.getItem(key));
 	}
 
 	const { subscribe, set, update } = writable(saved);

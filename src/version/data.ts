@@ -10,25 +10,21 @@ import { localStore }       from '$api/api';
 
 export const expSources = ['Mob', 'Block Break', 'Block Place', 'Craft', 'Command', 'Special', 'Exp Bottle', 'Smelt', 'Quest'];
 
-type Versions = "20" | "19" | "18" | "17" | "16";
+type Versions = '20' | '19' | '18' | '17' | '16';
 
-const VERSIONS              = {
-	"20": DATA_1_20,
-	"19": DATA_1_19,
-	"18": DATA_1_18,
-	"17": DATA_1_17,
-	"16": DATA_1_16
+export const VERSIONS                           = {
+	'20': DATA_1_20,
+	'19': DATA_1_19,
+	'18': DATA_1_18,
+	'17': DATA_1_17,
+	'16': DATA_1_16
 };
-const versionKeys: string[] = Object.keys(VERSIONS).reverse();
+export const versionData: Writable<VersionData> = writable(VERSIONS[<Versions>Object.keys(VERSIONS)[0]]);
 
-export const versionData: Writable<VersionData> = writable(VERSIONS[<Versions>versionKeys[0]]);
-
-export const serverOptions: string[] = [];
-versionKeys.forEach((v: string) => serverOptions.push(v));
-export const version: Writable<Versions> = localStore<Versions>('server-version', <Versions>versionKeys[0]);
+export const version: Writable<Versions> = localStore<Versions>('server-version', <Versions>Object.keys(VERSIONS)[0]);
 version.subscribe((ver: Versions) => {
 	if (!(ver in VERSIONS)) {
-		ver = <Versions>versionKeys[0];
+		ver = <Versions>Object.keys(VERSIONS)[0];
 		version.set(ver);
 		return;
 	}

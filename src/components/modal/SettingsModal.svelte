@@ -1,5 +1,5 @@
 <script lang='ts'>
-	import { serverOptions, version }                         from '../../version/data';
+	import { version, VERSIONS }                              from '../../version/data';
 	import { animationEnabled, showSummaryItems, useSymbols } from '../../data/settings';
 	import ProInput                                           from '$input/ProInput.svelte';
 	import Toggle                                             from '$input/Toggle.svelte';
@@ -25,7 +25,7 @@
 	<div class='settings-container'>
 		<ProInput label='Server' tooltip='This should match your target Spigot server version'>
 			<select bind:value={$version}>
-				{#each serverOptions as opt}
+				{#each Object.keys(VERSIONS).reverse() as opt}
 					<option value={opt}>1.{opt}</option>
 				{/each}
 			</select>
@@ -33,10 +33,16 @@
 		<ProInput label='Use Symbols' tooltip='If skill components should use symbols instead of text'>
 			<Toggle left='Symbols' right='Text' bind:data={$useSymbols} />
 		</ProInput>
-		<ProInput label='Show Summary Items' tooltip='If skill components should show a simplified summary on the element'>
+		<ProInput
+			label='Show Summary Items'
+			tooltip='If skill components should show a simplified summary on the element'
+		>
 			<Toggle left='True' right='False' bind:data={$showSummaryItems} />
 		</ProInput>
-		<ProInput label='Waterfall Animation' tooltip='If the waterfall animation should play in the sidebar'>
+		<ProInput
+			label='Waterfall Animation'
+			tooltip='If the waterfall animation should play in the sidebar'
+		>
 			<Toggle bind:data={$animationEnabled} />
 		</ProInput>
 		<hr class='span' />
