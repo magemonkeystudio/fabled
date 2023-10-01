@@ -20,7 +20,7 @@ jobs:
           git config --global user.name "Auto Bot"
           git config --global user.email "<>"
       - name: Set up JDK 17
-        uses: actions/setup-java@3
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: 17
