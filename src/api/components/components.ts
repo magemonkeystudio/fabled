@@ -1176,6 +1176,24 @@ class DirectionCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
+class DistanceCondition extends ProCondition {
+	public constructor() {
+		super({
+			name:         'Distance',
+			description:  'Applies child components when the distance between the caster and the target matches the settings',
+			data:         [
+				new AttributeSelect('Min Value', 'min-value')
+					.setTooltip('The minimum value for the distance required. This should be >= 0'),
+				new AttributeSelect('Max Value', 'max-value', 50)
+					.setTooltip('The maximum value for the distance required. This should be larger than the minimum value')
+			],
+			summaryItems: ['min-value', 'max-value']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class ElevationCondition extends ProCondition {
 	public constructor() {
 		super({
@@ -4003,6 +4021,7 @@ export const initComponents = () => {
 		COMBAT:         { name: 'Combat', component: CombatCondition },
 		CROUCH:         { name: 'Crouch', component: CrouchCondition },
 		DIRECTION:      { name: 'Direction', component: DirectionCondition },
+		DISTANCE:       { name: 'Distance', component: DistanceCondition },
 		ELEVATION:      { name: 'Elevation', component: ElevationCondition },
 		ELSE:           { name: 'Else', component: ElseCondition },
 		ENTITY_TYPE:    { name: 'Entity Type', component: EntityTypeCondition },
