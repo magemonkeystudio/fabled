@@ -74,8 +74,8 @@ import java.io.File;
 import java.util.*;
 
 /**
- * <p>The main class of the plugin which has the accessor methods into most of the API.</p>
- * <p>You can retrieve a reference to this through Bukkit the same way as any other plugin.</p>
+ * <p>The main class of the plugin which has the accessor methods into most of the API</p>
+ * <p>You can retrieve a reference to this through Bukkit the same way as any other plugin</p>
  */
 public class SkillAPI extends JavaPlugin {
     private static SkillAPI singleton;
