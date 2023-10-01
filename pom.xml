@@ -108,6 +108,7 @@
         <dependency>
             <groupId>com.promcteam</groupId>
             <artifactId>promccore</artifactId>
+            <version>1.0.6-R0.8-SNAPSHOT</version>
         </dependency>
 
         <!-- Test Dependencies -->
