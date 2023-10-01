@@ -1,145 +1,144 @@
 <!--suppress CssUnresolvedCustomProperty -->
-<script lang="ts">
-  import { addClass, addClassFolder, classes, classFolders } from "../../data/class-store";
-  import { closeSidebar, isShowClasses, showSidebar, sidebarOpen } from "../../data/store";
-  import SidebarEntry from "./SidebarEntry.svelte";
-  import { squish } from "../../data/squish";
-  import { goto } from "$app/navigation";
-  import { beforeUpdate, onDestroy, onMount } from "svelte";
-  import type { Unsubscriber } from "svelte/store";
-  import { get } from "svelte/store";
-  import ProFolder from "$api/profolder";
-  import ProClass from "$api/proclass";
-  import ProSkill from "$api/proskill";
-  import Folder from "../Folder.svelte";
-  import { fly } from "svelte/transition";
-  import { clickOutside } from "$api/clickoutside";
-  import { browser } from "$app/environment";
-  import Toggle from "../input/Toggle.svelte";
-  import { addSkill, addSkillFolder, skillFolders, skills } from "../../data/skill-store";
-  import { base } from '$app/paths';
+<script lang='ts'>
+	import { addClass, addClassFolder, classes, classFolders } from '../../data/class-store';
+	import { closeSidebar, isShowClasses, sidebarOpen }        from '../../data/store';
+	import SidebarEntry                                        from './SidebarEntry.svelte';
+	import { squish }                                          from '../../data/squish';
+	import { goto }                                            from '$app/navigation';
+	import { beforeUpdate, onDestroy, onMount }                from 'svelte';
+	import type { Unsubscriber }                               from 'svelte/store';
+	import { get }                                             from 'svelte/store';
+	import ProFolder                                           from '$api/profolder';
+	import ProClass                                            from '$api/proclass';
+	import ProSkill                                            from '$api/proskill';
+	import Folder                                              from '../Folder.svelte';
+	import { fly }                                             from 'svelte/transition';
+	import { clickOutside }                                    from '$api/clickoutside';
+	import { browser }                                         from '$app/environment';
+	import Toggle                                              from '../input/Toggle.svelte';
+	import { addSkill, addSkillFolder, skillFolders, skills }  from '../../data/skill-store';
+	import { base }                                            from '$app/paths';
 
-  let folders: ProFolder[] = [];
-  let classSub: Unsubscriber;
-  let skillSub: Unsubscriber;
-  let classIncluded: Array<ProClass | ProSkill> = [];
-  let skillIncluded: Array<ProClass | ProSkill> = [];
+	let folders: ProFolder[]                      = [];
+	let classSub: Unsubscriber;
+	let skillSub: Unsubscriber;
+	let classIncluded: Array<ProClass | ProSkill> = [];
+	let skillIncluded: Array<ProClass | ProSkill> = [];
 
-  let width: number;
-  let height: number;
-  let scrollY: number;
-  const appendIncluded = (item: Array<ProFolder | ProClass | ProSkill> | ProFolder | ProClass | ProSkill, include: Array<ProClass | ProSkill>) => {
-    if (item instanceof Array) item.forEach(fold => appendIncluded(fold, include));
-    if (item instanceof ProFolder) appendIncluded(item.data, include);
-    else if (item instanceof ProClass || item instanceof ProSkill) include.push(item);
-  };
+	let width: number;
+	let height: number;
+	let scrollY: number;
+	const appendIncluded = (item: Array<ProFolder | ProClass | ProSkill> | ProFolder | ProClass | ProSkill, include: Array<ProClass | ProSkill>) => {
+		if (item instanceof Array) item.forEach(fold => appendIncluded(fold, include));
+		if (item instanceof ProFolder) appendIncluded(item.data, include);
+		else if (item instanceof ProClass || item instanceof ProSkill) include.push(item);
+	};
 
-  const rebuildFolders = (fold?: ProFolder[]) => {
-    if (get(isShowClasses)) {
-      folders = fold || get(classFolders);
-      classIncluded = [];
-      appendIncluded(folders, classIncluded);
-    } else {
-      folders = fold || get(skillFolders);
-      skillIncluded = [];
-      appendIncluded(folders, skillIncluded);
-    }
-  };
+	const rebuildFolders = (fold?: ProFolder[]) => {
+		if (get(isShowClasses)) {
+			folders       = fold || get(classFolders);
+			classIncluded = [];
+			appendIncluded(folders, classIncluded);
+		} else {
+			folders       = fold || get(skillFolders);
+			skillIncluded = [];
+			appendIncluded(folders, skillIncluded);
+		}
+	};
 
-  onMount(() => {
-    if (!browser) return;
+	onMount(() => {
+		if (!browser) return;
 
-    classSub = classFolders.subscribe(rebuildFolders);
-    skillSub = skillFolders.subscribe(rebuildFolders);
-  });
+		classSub = classFolders.subscribe(rebuildFolders);
+		skillSub = skillFolders.subscribe(rebuildFolders);
+	});
 
-  beforeUpdate(rebuildFolders);
+	beforeUpdate(rebuildFolders);
 
-  onDestroy(() => {
-    if (classSub) classSub();
-    if (skillSub) skillSub();
-  });
+	onDestroy(() => {
+		if (classSub) classSub();
+		if (skillSub) skillSub();
+	});
 
-  const clickOut = (e: any) => {
-    if (width < 500) {
-      e.detail.stopPropagation();
-      closeSidebar();
-    }
-  };
+	const clickOut = (e: any) => {
+		if (width < 500) {
+			e.detail.stopPropagation();
+			closeSidebar();
+		}
+	};
 </script>
 
 <svelte:window bind:innerWidth={width} bind:innerHeight={height} bind:scrollY={scrollY} />
 
-<div id="sidebar"
-     transition:squish
-     on:introend={() => sidebarOpen.set(true)}
-     on:outroend={() => sidebarOpen.set(false)}
-     use:clickOutside
-     on:outclick={clickOut}
-     style:--height="calc({height}px - 6rem + min(3rem, {scrollY}px))">
-  <div class="type-wrap">
-    <Toggle bind:data={$isShowClasses} left="Classes" right="Skills" color="#111" inline={false} />
-    <hr />
-  </div>
-  {#if $isShowClasses}
-    <div class="items"
-         in:fly={{x: -100}}
-         out:fly={{x: -100}}>
-      {#each $classFolders as cf}
-        <Folder folder={cf} />
-      {/each}
-      {#each $classes.filter(c => !classIncluded.includes(c)) as cl, i (cl.key)}
-        <SidebarEntry
-          data={cl}
-          delay={200 + 100*i}
-          on:click={() => goto(`${base}/class/${cl.name}/edit`)}>
-          {cl.name}
-        </SidebarEntry>
-      {/each}
-      <SidebarEntry
-        delay={200 + 100*($classes.length+1)}>
-        <div class="new">
-          <span on:click={() => addClass()}>New Class</span>
-          <span class="new-folder"
-                on:click={() => addClassFolder(new ProFolder())}>New Folder</span>
-        </div>
-      </SidebarEntry>
-    </div>
-  {:else}
-    <div class="items"
-         in:fly={{ x: 100 }}
-         out:fly={{ x: 100 }}>
-      {#each $skillFolders as sk}
-        <Folder folder={sk} />
-      {/each}
-      {#each $skills.filter(s => !skillIncluded.includes(s)) as sk, i (sk.key)}
-        <SidebarEntry
-          data={sk}
-          direction="right"
-          delay={200 + 100*i}
-          on:click={() => goto(`${base}/skill/${sk.name}`)}>
-          {sk.name}
-        </SidebarEntry>
-      {/each}
-      <SidebarEntry
-        delay={200 + 100*($skills.length+1)}
-        direction="right">
-        <div class="new">
-          <span on:click={() => addSkill()}>New Skill</span>
-          <span class="new-folder"
-                on:click={() => addSkillFolder(new ProFolder())}>New Folder</span>
-        </div>
-      </SidebarEntry>
-    </div>
-  {/if}
+<div id='sidebar'
+		 transition:squish
+		 on:introend={() => sidebarOpen.set(true)}
+		 on:outroend={() => sidebarOpen.set(false)}
+		 use:clickOutside
+		 on:outclick={clickOut}
+		 style:--height='calc({height}px - 6rem + min(3rem, {scrollY}px))'>
+	<div class='type-wrap'>
+		<Toggle bind:data={$isShowClasses} left='Classes' right='Skills' color='#111' inline={false} />
+		<hr />
+	</div>
+	{#if $isShowClasses}
+		<div class='items'
+				 in:fly={{x: -100}}
+				 out:fly={{x: -100}}>
+			{#each $classFolders as cf}
+				<Folder folder={cf} />
+			{/each}
+			{#each $classes.filter(c => !classIncluded.includes(c)) as cl, i (cl.key)}
+				<SidebarEntry
+					data={cl}
+					delay={200 + 100*i}
+					on:click={() => goto(`${base}/class/${cl.name}/edit`)}>
+					{cl.name}
+				</SidebarEntry>
+			{/each}
+			<SidebarEntry
+				delay={200 + 100*($classes.length+1)}>
+				<div class='new'>
+					<span on:click={() => addClass()}>New Class</span>
+					<span class='new-folder'
+								on:click={() => addClassFolder(new ProFolder())}>New Folder</span>
+				</div>
+			</SidebarEntry>
+		</div>
+	{:else}
+		<div class='items'
+				 in:fly={{ x: 100 }}
+				 out:fly={{ x: 100 }}>
+			{#each $skillFolders as sk}
+				<Folder folder={sk} />
+			{/each}
+			{#each $skills.filter(s => !skillIncluded.includes(s)) as sk, i (sk.key)}
+				<SidebarEntry
+					data={sk}
+					direction='right'
+					delay={200 + 100*i}
+					on:click={() => goto(`${base}/skill/${sk.name}`)}>
+					{sk.name}
+				</SidebarEntry>
+			{/each}
+			<SidebarEntry
+				delay={200 + 100*($skills.length+1)}
+				direction='right'>
+				<div class='new'>
+					<span on:click={() => addSkill()}>New Skill</span>
+					<span class='new-folder'
+								on:click={() => addSkillFolder(new ProFolder())}>New Folder</span>
+				</div>
+			</SidebarEntry>
+		</div>
+	{/if}
 </div>
 
 <style>
     #sidebar {
-        /*position: absolute;*/
-        /*top: 100%;*/
-        position: sticky;
-        top: 3rem;
+        position: absolute;
+        top: 0;
+        left: 0;
         z-index: 30;
         background-color: #222;
         max-height: var(--height);
@@ -230,6 +229,8 @@
 
     @media screen and (min-width: 500px) {
         #sidebar {
+            position: sticky;
+            top: 3rem;
             width: 15rem;
             min-width: 10rem;
             overflow-x: hidden;
