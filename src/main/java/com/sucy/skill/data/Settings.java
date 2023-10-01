@@ -72,7 +72,6 @@ public class Settings {
             GUI_FOOD                     = GUI_BASE + "food-bar",
             GUI_ACTION                   = GUI_BASE + "use-action-bar",
             GUI_TEXT                     = GUI_BASE + "action-bar-text",
-            GUI_BOARD                    = GUI_BASE + "scoreboard-enabled",
             GUI_NAME                     = GUI_BASE + "show-class-name",
             GUI_LEVEL                    = GUI_BASE + "show-class-level",
             GUI_BINDS                    = GUI_BASE + "show-binds",
@@ -1171,7 +1170,7 @@ public class Settings {
         foodBar = config.getString(GUI_FOOD);
         useActionBar = config.getBoolean(GUI_ACTION);
         actionText = config.getString(GUI_TEXT);
-        showScoreboard = config.getBoolean(GUI_BOARD);
+        showScoreboard = config.getBoolean("scoreboard.enabled");
         showClassName = config.getBoolean(GUI_NAME);
         showClassLevel = config.getBoolean(GUI_LEVEL);
         showBinds = config.getBoolean(GUI_BINDS);
@@ -1425,5 +1424,12 @@ public class Settings {
         expDisabledRegions = ImmutableSet.copyOf(data.getList(WG_EXP));
     }
 
+    public List<String> getScoreboardFormat() {
+        return config.getList("scoreboard.format");
+    }
+
+    public String getScoreboardTitle() {
+        return config.getString("scoreboard.title");
+    }
 
 }

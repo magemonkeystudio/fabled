@@ -643,7 +643,7 @@ public class SkillAPI extends JavaPlugin {
 
         // Hook plugins
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PlaceholderAPIHook(this).register();
+            new PlaceholderAPIHook().register();
             getLogger().info("ProSkillAPI hook into PlaceholderAPI: " + ChatColor.GREEN + "success.");
         }
         boolean protocolLib = Bukkit.getPluginManager().getPlugin("ProtocolLib") != null;

@@ -28,14 +28,12 @@ package com.sucy.skill.manager;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
-import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.player.PlayerData;
-import com.sucy.skill.data.PlayerStats;
+import com.sucy.skill.data.CustomScoreboardHolder;
+import com.sucy.skill.util.PlaceholderUtil;
 import mc.promcteam.engine.mccore.chat.Chat;
 import mc.promcteam.engine.mccore.chat.Prefix;
-import mc.promcteam.engine.mccore.scoreboard.BoardManager;
-import mc.promcteam.engine.mccore.scoreboard.StatBoard;
-import mc.promcteam.engine.mccore.scoreboard.Team;
+import mc.promcteam.engine.mccore.scoreboard.*;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -77,23 +75,22 @@ public class ClassBoardManager {
                     new Prefix("SkillAPI", prefix, braceColor)
             );
 
+            PlayerBoards boards = BoardManager.getPlayerBoards(player.getPlayerName());
+
             // Clear previous data
-            BoardManager.getPlayerBoards(player.getPlayerName()).removeBoards("SkillAPI");
+            boards.removeBoards("SkillAPI");
             BoardManager.clearTeam(player.getPlayerName());
 
             // Apply new data
             if (SkillAPI.getSettings().isShowScoreboard()) {
-                for (PlayerClass c : player.getClasses()) {
-                    RPGClass clazz = c.getData();
-                    if (clazz.getGroupSettings().isShowScoreboard()) {
-                        String title = clazz.getPrefix();
-                        if (title == null || ChatColor.stripColor(title).isBlank()) title = clazz.getName();
-
-                        StatBoard board = new StatBoard(title, "SkillAPI");
-                        board.addStats(new PlayerStats(c));
-                        BoardManager.getPlayerBoards(player.getPlayerName()).addBoard(board);
-                    }
-                }
+                StatBoard board = new StatBoard(
+                        PlaceholderUtil.colorizeAndReplace(
+                                SkillAPI.getSettings().getScoreboardTitle(),
+                                player.getPlayer()
+                        ), "SkillAPI");
+                StatHolder holder = new CustomScoreboardHolder(player.getPlayer());
+                board.addStats(holder);
+                boards.addBoard(board);
             }
             if (SkillAPI.getSettings().isShowClassName()) {
                 BoardManager.setTeam(player.getPlayerName(), player.getMainClass().getData().getName());
