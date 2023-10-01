@@ -27,7 +27,6 @@ public abstract class ConditionComponent extends EffectComponent {
     @Override
     public boolean execute(
             final LivingEntity caster, final int level, final List<LivingEntity> targets, boolean force) {
-
         final List<LivingEntity> filtered = targets.stream()
                 .filter(t -> test(caster, level, t))
                 .collect(Collectors.toList());
