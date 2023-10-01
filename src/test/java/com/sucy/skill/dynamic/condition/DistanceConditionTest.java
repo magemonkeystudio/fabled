@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DistanceConditionTest extends MockedTest {
-
     private PlayerMock        player;
     private LivingEntity      target;
     private DistanceCondition condition;
