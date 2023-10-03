@@ -13,7 +13,6 @@ softdepend:
   - WorldGuard
   - WorldEdit
   - Mimic
-  - ProRPGItems
   - ProtocolLib
 loadbefore: [ ProRPGItems, Quests, TAB ]
 provides: [ SkillAPI ]
