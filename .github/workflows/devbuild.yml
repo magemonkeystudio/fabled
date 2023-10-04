@@ -45,9 +45,9 @@ jobs:
         run: |
           cd app
           git add .
+          git commit -m "[ci skip] Deploy dev version $version"
           version=$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout)
           git tag -a $version -m "Dev $version"
-          git commit -m "[ci skip] Deploy dev version $version"
       - uses: actions/checkout@v3
         name: Checkout editor branch
         with:
