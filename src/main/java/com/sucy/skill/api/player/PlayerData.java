@@ -730,7 +730,17 @@ public class PlayerData {
         if (name == null) {
             return null;
         }
-        return skills.get(name.toLowerCase());
+        PlayerSkill skill = skills.get(name.toLowerCase());
+        if (skill != null) return skill;
+
+        // We'll try it by manually searching and comparing the name
+        for (PlayerSkill playerSkill : skills.values()) {
+            if (playerSkill.getData().getName().equalsIgnoreCase(name)) {
+                return playerSkill;
+            }
+        }
+
+        return null;
     }
 
     public int getInvestedSkillPoints() {
@@ -898,7 +908,7 @@ public class PlayerData {
         }
 
         // Must be a valid available skill
-        PlayerSkill data = skills.get(skill.getName().toLowerCase());
+        PlayerSkill data = getSkill(skill.getName());
         if (data == null) {
             return false;
         }

@@ -276,8 +276,10 @@ public class CastCombatListener extends SkillAPIListener {
         event.getEntity().getInventory().setItem(slot, null);
 
         ItemStack[] hidden = backup.get(event.getEntity().getUniqueId());
-        Arrays.stream(hidden).filter(Objects::nonNull).forEach(item -> event.getDrops().add(item));
-        backup.put(event.getEntity().getUniqueId(), new ItemStack[9]);
+        if (hidden != null) {
+            Arrays.stream(hidden).filter(Objects::nonNull).forEach(item -> event.getDrops().add(item));
+            backup.put(event.getEntity().getUniqueId(), new ItemStack[9]);
+        }
     }
 
     /**
