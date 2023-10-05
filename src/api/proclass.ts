@@ -101,6 +101,7 @@ export default class ProClass implements Serializable {
 	public load = (yaml: YAMLObject) => {
 		this.name                 = yaml.get('name', this.name);
 		this.actionBar            = yaml.get('action-bar', this.actionBar);
+		this.manaName             = yaml.get('mana', this.manaName);
 		this.prefix               = yaml.get('prefix', this.prefix);
 		this.group                = yaml.get('group', this.group);
 		this.maxLevel             = yaml.get('max-level', this.maxLevel);
