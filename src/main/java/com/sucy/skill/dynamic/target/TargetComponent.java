@@ -1,7 +1,6 @@
 package com.sucy.skill.dynamic.target;
 
 import com.sucy.skill.SkillAPI;
-import com.sucy.skill.api.particle.ParticleHelper;
 import com.sucy.skill.api.target.TargetHelper;
 import com.sucy.skill.dynamic.ComponentType;
 import com.sucy.skill.dynamic.DynamicSkill;
@@ -12,13 +11,11 @@ import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.GameMode;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * ProSkillAPI © 2023
@@ -76,20 +73,10 @@ public abstract class TargetComponent extends EffectComponent {
      * {@inheritDoc}
      */
     @Override
-    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
-        if (preview.getBool("per-target")) {
-            BukkitTask task = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    for (LivingEntity target : getTargets(caster, level, targets)) {
-                        ParticleHelper.play(target.getLocation(), preview, Set.of(caster), "per-target-",
-                                preview.getBool("per-target-" + "hitbox") ? target.getBoundingBox() : null
-                        );
-                    }
-                }
-            }.runTaskTimer(SkillAPI.inst(), 0, Math.max(1, preview.getInt("per-target-" + "period", 5)));
-            onPreviewStop.add(task::cancel);
-        }
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, Supplier<List<LivingEntity>> targetSupplier) {
+        Supplier<List<LivingEntity>> supplier = () -> getTargets(caster, level, targetSupplier.get());
+        super.playPreview(onPreviewStop, caster, level, supplier);
+        playChildrenPreviews(onPreviewStop, caster, level, supplier);
     }
 
     List<LivingEntity> determineTargets(

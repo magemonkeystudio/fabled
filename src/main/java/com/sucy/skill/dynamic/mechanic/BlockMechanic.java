@@ -41,6 +41,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Mechanic that changes blocks for a duration before
@@ -251,20 +252,20 @@ public class BlockMechanic extends MechanicComponent {
     }
 
     @Override
-    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, Supplier<List<LivingEntity>> targetSupplier) {
         if (preview.getBool("per-target")) {
             BukkitTask task = new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (preview.getBool("per-target-center-only", true))
-                        for (LivingEntity t : targets)
+                        for (LivingEntity t : targetSupplier.get())
                             ParticleHelper.play(getLocation(caster, level, t),
                                     preview,
                                     Set.of(caster),
                                     "per-target-",
                                     null);
                     else
-                        for (Block block : getAffectedBlocks(caster, level, targets))
+                        for (Block block : getAffectedBlocks(caster, level, targetSupplier.get()))
                             ParticleHelper.play(block.getLocation(), preview, Set.of(caster), "per-target-",
                                     preview.getBool("per-target-" + "hitbox") ? block.getBoundingBox() : null
                             );

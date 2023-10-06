@@ -37,6 +37,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Applies child components to the entities in a line in front of each of the
@@ -61,8 +62,8 @@ public class LinearTarget extends TargetComponent {
      * {@inheritDoc}
      */
     @Override
-    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
-        super.playPreview(onPreviewStop, caster, level, targets);
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, Supplier<List<LivingEntity>> targetSupplier) {
+        super.playPreview(onPreviewStop, caster, level, targetSupplier);
 
         if (preview.getBool("line", false)) {
             BukkitTask task = new BukkitRunnable() {
@@ -74,7 +75,7 @@ public class LinearTarget extends TargetComponent {
 
                     double rStep = 1/range/density;
 
-                    for (LivingEntity target : targets) {
+                    for (LivingEntity target : targetSupplier.get()) {
                         Location origin    = target.getEyeLocation();
                         Vector   direction = origin.getDirection();
 
@@ -103,7 +104,7 @@ public class LinearTarget extends TargetComponent {
                     double rStep = 1/range/density;
                     double angleStep = 1/radius/density;
 
-                    for (LivingEntity target : targets) {
+                    for (LivingEntity target : targetSupplier.get()) {
                         Location origin = target.getEyeLocation();
                         Vector direction = origin.getDirection();
 

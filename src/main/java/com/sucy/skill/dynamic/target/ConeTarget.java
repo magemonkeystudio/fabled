@@ -37,6 +37,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Applies child components to the closest all nearby entities around
@@ -51,8 +52,8 @@ public class ConeTarget extends TargetComponent {
      * {@inheritDoc}
      */
     @Override
-    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
-        super.playPreview(onPreviewStop, caster, level, targets);
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, Supplier<List<LivingEntity>> targetSupplier) {
+        super.playPreview(onPreviewStop, caster, level, targetSupplier);
 
         if (preview.getBool("triangle", false)) {
             BukkitTask task = new BukkitRunnable() {
@@ -65,7 +66,7 @@ public class ConeTarget extends TargetComponent {
 
                     double rStep = 1/range/density;
 
-                    for (LivingEntity target : targets) {
+                    for (LivingEntity target : targetSupplier.get()) {
                         Location origin = target.getEyeLocation();
                         Vector direction = origin.getDirection();
 
@@ -101,7 +102,7 @@ public class ConeTarget extends TargetComponent {
 
                     double rStep = 1/range/density;
 
-                    for (LivingEntity target : targets) {
+                    for (LivingEntity target : targetSupplier.get()) {
                         Location origin = target.getEyeLocation();
                         Vector direction = origin.getDirection();
 

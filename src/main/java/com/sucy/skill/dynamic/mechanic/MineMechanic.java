@@ -44,6 +44,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Mechanic that destroys a selection of blocks at the location of the target
@@ -233,20 +234,20 @@ public class MineMechanic extends MechanicComponent {
     }
 
     @Override
-    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, Supplier<List<LivingEntity>> targetSupplier) {
         if (preview.getBool("per-target")) {
             BukkitTask task = new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (preview.getBool("per-target-center-only", true))
-                        for (LivingEntity t : targets)
+                        for (LivingEntity t : targetSupplier.get())
                             ParticleHelper.play(getLocation(caster, level, t),
                                     preview,
                                     Set.of(caster),
                                     "per-target-",
                                     null);
                     else {
-                        Map<LivingEntity, List<Block>> blockMap = getAffectedBlocks(caster, level, targets);
+                        Map<LivingEntity, List<Block>> blockMap = getAffectedBlocks(caster, level, targetSupplier.get());
                         for (List<Block> blocks : blockMap.values()) {
                             for (Block block : blocks) {
                                 ParticleHelper.play(block.getLocation(), preview, Set.of(caster), "per-target-",
