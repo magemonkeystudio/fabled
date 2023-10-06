@@ -3,15 +3,18 @@ package com.sucy.skill.dynamic.mechanic;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.armorstand.ArmorStandInstance;
 import com.sucy.skill.api.armorstand.ArmorStandManager;
+import com.sucy.skill.dynamic.TempEntity;
 import com.sucy.skill.listener.MechanicListener;
 import com.sucy.skill.task.RemoveTask;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Summons an armor stand that can be used as a marker or for item display. Applies child components on the armor stand
@@ -97,5 +100,25 @@ public class ArmorStandMechanic extends MechanicComponent {
         executeChildren(caster, level, armorStands, force);
         new RemoveTask(armorStands, duration);
         return targets.size() > 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, Supplier<List<LivingEntity>> targetSupplier) {
+        double  forward     = parseValues(caster, FORWARD, level, 0);
+        double  upward      = parseValues(caster, UPWARD, level, 0);
+        double  right       = parseValues(caster, RIGHT, level, 0);
+        super.playPreview(onPreviewStop, caster, level, () -> {List<LivingEntity> newTargets = new ArrayList<>();
+            for (LivingEntity target : targetSupplier.get()) {
+                Location loc  = target.getLocation().clone();
+                Vector   dir  = loc.getDirection().setY(0).normalize();
+                Vector   side = dir.clone().crossProduct(UP);
+                loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
+                newTargets.add(new TempEntity(loc));
+            }
+            return newTargets;
+        });
     }
 }
