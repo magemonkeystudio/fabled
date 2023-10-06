@@ -2012,8 +2012,11 @@ class ArmorStandMechanic extends ProMechanic {
 					.setTooltip('Whether the armor stand\'s name should be visible from afar'),
 				new BooleanSelect('Follow target', 'follow', false)
 					.setTooltip('Whether the armor stand should follow the target'),
+				new BooleanSelect('Marker', 'marker', false)
+					.setTooltip('Setting this to true will remove the armor stand\'s hit-box but will also disable gravity'),
 				new BooleanSelect('Apply gravity', 'gravity', true)
-					.setTooltip('Whether the armor stand should be affected by gravity'),
+					.setTooltip('Whether the armor stand should be affected by gravity')
+					.requireValue('marker', [false]),
 				new BooleanSelect('Small', 'tiny', false)
 					.setTooltip('Whether the armor stand should be small'),
 				new BooleanSelect('Show arms', 'arms', false)
@@ -2022,8 +2025,6 @@ class ArmorStandMechanic extends ProMechanic {
 					.setTooltip('Whether the armor stand should display its base plate'),
 				new BooleanSelect('Visible', 'visible', true)
 					.setTooltip('Whether the armor stand should be visible'),
-				new BooleanSelect('Marker', 'marker', true)
-					.setTooltip('Setting this to true will remove the armor stand\'s hitbox'),
 				new SectionMarker('Offset'),
 				new AttributeSelect('Forward Offset', 'forward')
 					.setTooltip('How far forward in front of the target the armor stand should be in blocks. A negative value will put it behind'),
