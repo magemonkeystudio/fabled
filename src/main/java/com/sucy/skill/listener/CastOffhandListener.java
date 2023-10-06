@@ -34,7 +34,7 @@ public class CastOffhandListener extends SkillAPIListener {
 
     @EventHandler
     public void handleOffhandDupe(PlayerSwapHandItemsEvent event) {
-        if (GUITool.isCastItem(event.getMainHandItem())) {
+        if (GUITool.isCastItem(event.getMainHandItem()) || GUITool.isCastItem(event.getOffHandItem())) {
             event.setCancelled(true);
         }
     }

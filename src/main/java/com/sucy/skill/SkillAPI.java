@@ -686,12 +686,20 @@ public class SkillAPI extends JavaPlugin {
         listen(new ItemListener(), settings.isCheckLore() || settings.isCheckAttributes());
         if (settings.isCastEnabled()) {
             switch (settings.getCastMode()) {
-                case ITEM -> listen(new CastItemListener(), true);
-                case BARS -> listen(new CastBarsListener(), true);
-                case COMBAT -> listen(new CastCombatListener(), true);
+                case ITEM -> {
+                    listen(new CastItemListener(), true);
+                    listen(new CastOffhandListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
+                }
+                case BARS -> {
+                    listen(new CastBarsListener(), true);
+                    listen(new CastOffhandListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
+                }
+                case COMBAT -> {
+                    listen(new CastCombatListener(), true);
+                    listen(new CastOffhandListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
+                }
                 case ACTION_BAR, TITLE, SUBTITLE, CHAT -> listen(new CastTextListener(settings.getCastMode()), true);
             }
-            listen(new CastOffhandListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
         }
         listen(new DeathListener(), !VersionManager.isVersionAtLeast(11000));
         listen(new CombatProtectionListener(), VersionManager.isVersionAtLeast(11000));
