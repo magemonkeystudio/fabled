@@ -163,9 +163,9 @@ public class Settings {
     private final SkillAPI                       plugin;
     private final DataSection                    config;
     private final HashMap<String, Integer>       permAccounts     = new HashMap<>();
-    private final ArrayList<String>              monsterWorlds    = new ArrayList<>();
-    private final ArrayList<String>              passiveWorlds    = new ArrayList<>();
-    private final ArrayList<String>              playerWorlds     = new ArrayList<>();
+    private final List<String>                   monsterWorlds    = new ArrayList<>();
+    private final List<String>                   passiveWorlds    = new ArrayList<>();
+    private final List<String>                   playerWorlds     = new ArrayList<>();
     /**
      * Retrieves the default skill bar layout
      *
@@ -842,7 +842,9 @@ public class Settings {
         if (attacker.equals(target)) return true;
 
         if (attacker instanceof Player && target instanceof Player) {
-            return CombatProtection.canAttack(attacker, target, playerAlly, cause);
+            if (playerAlly) return false;
+            if (playerWorlds.contains(target.getWorld().getName())) return false;
+            return CombatProtection.canAttack(attacker, target, passiveAlly, cause);
         } else {
             if (attacker instanceof Tameable) {
                 Tameable tameable = (Tameable) attacker;
