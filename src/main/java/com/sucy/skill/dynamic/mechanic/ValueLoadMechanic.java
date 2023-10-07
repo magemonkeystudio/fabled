@@ -67,7 +67,7 @@ public class ValueLoadMechanic extends MechanicComponent {
         if (!data.containsKey(key) || override) {
             data.put(key, playerData.getPersistentData(key));
         }
-        if (settings.getBool(SAVE, false))
+        if (!override && settings.getBool(SAVE, false))
             SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.get(key));
         return true;
     }
