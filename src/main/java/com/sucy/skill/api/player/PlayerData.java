@@ -2179,7 +2179,10 @@ public class PlayerData {
      *             Number, String, Player, TempEntity, Entity
      */
     public void setPersistentData(String key, Object data){
-        if (data==null) return;
+        if (data==null || Objects.equals(data, 0)) {
+            removePersistentData(key);
+            return;
+        }
         if (data instanceof List){
             List<String> sum = new ArrayList<>();
             ((List<?>) data).forEach(entry -> {
