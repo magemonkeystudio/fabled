@@ -114,8 +114,8 @@ export default class ProSkill implements Serializable {
 		attributes.put('cooldown', this.cooldown);
 		attributes.put('mana', this.mana);
 		attributes.put('points-spent-req', this.minSpent);
+		attributes.put('incompatible', this.incompatible.map(s => s.name));
 		data.put('attributes', attributes);
-		data.put('incompatible', this.incompatible.map(s => s.name));
 		data.put('components', this.triggers);
 
 		yaml.data = data.data;
@@ -139,11 +139,11 @@ export default class ProSkill implements Serializable {
 		this.cooldown                = new ProAttribute('cooldown', attributes.get('cooldown-base'), attributes.get('cooldown-scale'));
 		this.mana                    = new ProAttribute('mana', attributes.get('mana-base'), attributes.get('mana-scale'));
 		this.minSpent                = new ProAttribute('points-spent-req', attributes.get('points-spent-req-base'), attributes.get('points-spent-req-scale'));
+		this.incompStr               = attributes.get('incompatible', this.incompStr);
 
 		this.icon.material        = yaml.get<string, string>('icon', this.icon.material, toEditorCase);
 		this.icon.customModelData = yaml.get('icon-data', this.icon.customModelData);
 		this.icon.lore            = yaml.get('icon-lore', this.icon.lore);
-		this.incompStr            = yaml.get('incompatible', this.incompStr);
 
 		let unsub: Unsubscriber | undefined = undefined;
 
