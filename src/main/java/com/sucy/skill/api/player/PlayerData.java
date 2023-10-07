@@ -2140,6 +2140,15 @@ public class PlayerData {
             });
             return targets;
         }
+        if (data.startsWith("loc")) {
+            String[] loc = data.split(",");
+            return new Location(
+                    Bukkit.getWorld(loc[1]),
+                    Double.parseDouble(loc[2]),
+                    Double.parseDouble(loc[3]),
+                    Double.parseDouble(loc[4])
+            );
+        }
         try {
             return Double.parseDouble(data);
         } catch (NumberFormatException ignored){}
@@ -2147,6 +2156,7 @@ public class PlayerData {
     }
 
     public void setPersistentData(String key, Object data){
+        if (data==null) return;
         if (data instanceof List){
             List<String> sum = new ArrayList<>();
             ((List<?>) data).forEach(entry -> {
@@ -2160,6 +2170,11 @@ public class PlayerData {
             });
             if (sum.isEmpty()) return;
             persistentData.put(key,"targets-"+String.join(";", sum));
+            return;
+        }
+        if (data instanceof Location){
+            Location loc = (Location) data;
+            persistentData.put(key, String.format("loc,%s,%f,%f,%f", loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ()));
             return;
         }
         persistentData.put(key,data.toString());
