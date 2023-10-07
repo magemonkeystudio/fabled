@@ -66,6 +66,7 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -2142,6 +2143,9 @@ public class PlayerData {
                             Double.parseDouble(loc[4])
                     );
                     targets.add(new TempEntity(location));
+                } else if (target.startsWith("entity-")) {
+                    Entity entity = Bukkit.getEntity(UUID.fromString(target.substring(7)));
+                    if (entity!=null) targets.add((LivingEntity) entity);
                 } else {
                     Player player = Bukkit.getPlayer(UUID.fromString(target));
                     if (player==null || !player.isOnline()) return;
@@ -2176,6 +2180,8 @@ public class PlayerData {
                     Location loc = ((TempEntity) entry).getLocation();
                     if (loc.getWorld()==null) return;
                     sum.add(String.format("loc,%s,%f,%f,%f", loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ()));
+                } else if (entry instanceof Entity){
+                    sum.add("entity-"+((Entity) entry).getUniqueId());
                 }
             });
             if (sum.isEmpty()) return;
