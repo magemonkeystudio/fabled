@@ -42,9 +42,6 @@ dependencies:
   - name: Mimic
     required: false
     bootstrap: true
-  - name: ProRPGItems
-    required: false
-    bootstrap: true
 load-before:
   - name: ProRPGItems
     boostrap: false

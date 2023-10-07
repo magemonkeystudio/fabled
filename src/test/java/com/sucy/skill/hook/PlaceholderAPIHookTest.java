@@ -30,7 +30,7 @@ public class PlaceholderAPIHookTest extends MockedTest {
                     String identifier = ans.getArgument(1);
                     return identifier.replaceFirst("sapi_", "");
                 });
-        hook = new PlaceholderAPIHook(plugin);
+        hook = new PlaceholderAPIHook();
     }
 
     @BeforeEach

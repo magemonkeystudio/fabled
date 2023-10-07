@@ -274,7 +274,7 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
             castTrigger.playChildrenPreviews(onPreviewStop,
                     playerData.getPlayer(),
                     level,
-                    ImmutableList.of(playerData.getPlayer()));
+                    () -> ImmutableList.of(playerData.getPlayer()));
             playerData.setOnPreviewStop(() -> onPreviewStop.forEach(Runnable::run));
         }
     }

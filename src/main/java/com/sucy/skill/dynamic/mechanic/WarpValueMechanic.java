@@ -39,6 +39,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * Applies a flag to each target
@@ -84,7 +85,7 @@ public class WarpValueMechanic extends MechanicComponent {
     }
 
     @Override
-    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, Supplier<List<LivingEntity>> targetSupplier) {
         if (preview.getBool("per-target")) {
             BukkitTask task = new BukkitRunnable() {
                 @Override

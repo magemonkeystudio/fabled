@@ -37,34 +37,30 @@ public class ValuePlaceholderMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (!PluginChecker.isPlaceholderAPIActive()) {
-            return false;
+        final String key         = settings.getString(KEY);
+        final String placeholder = settings.getString(PLACEHOLDER);
+        final String type        = settings.getString(TYPE).toUpperCase();
+
+        String value = placeholder;
+        if (PluginChecker.isPlaceholderAPIActive() && targets.get(0) instanceof Player) {
+            value = PlaceholderAPIHook.format(placeholder, (Player) targets.get(0));
         }
 
-        if (targets.get(0) instanceof Player) {
-            final String key         = settings.getString(KEY);
-            final String placeholder = settings.getString(PLACEHOLDER);
-            final String type        = settings.getString(TYPE).toUpperCase();
-
-            final String value = PlaceholderAPIHook.format(placeholder, (Player) targets.get(0));
-
-            switch (type.charAt(0)) {
-                case 'S': // STRING
-                    DynamicSkill.getCastData(caster).put(key, value);
-                    break;
-                default: // NUMBER
-                    try {
-                        DynamicSkill.getCastData(caster).put(key, Double.parseDouble(value));
-                    } catch (final Exception ex) {
-                        Logger.invalid(
-                                placeholder + " is not a valid numeric placeholder - PlaceholderAPI returned " + value);
-                        return false;
-                    }
-            }
-            if (settings.getBool(SAVE, false))
-                SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,DynamicSkill.getCastData(caster).get(key));
-            return true;
+        switch (type.charAt(0)) {
+            case 'S': // STRING
+                DynamicSkill.getCastData(caster).put(key, value);
+                break;
+            default: // NUMBER
+                try {
+                    DynamicSkill.getCastData(caster).put(key, Double.parseDouble(value));
+                } catch (final Exception ex) {
+                    Logger.invalid(
+                            placeholder + " is not a valid numeric placeholder - PlaceholderAPI returned " + value);
+                    return false;
+                }
         }
-        return false;
+        if (settings.getBool(SAVE, false))
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,DynamicSkill.getCastData(caster).get(key));
+        return true;
     }
 }

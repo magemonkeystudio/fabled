@@ -24,6 +24,7 @@
 
 package com.sucy.skill;
 
+import com.sucy.skill.api.SkillAPIAttributeProvider;
 import com.sucy.skill.api.armorstand.ArmorStandManager;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.particle.EffectManager;
@@ -45,7 +46,6 @@ import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.hook.mimic.MimicHook;
 import com.sucy.skill.listener.*;
 import com.sucy.skill.listener.attribute.AttributeListener;
-import com.sucy.skill.listener.attribute.RPGAttributeListener;
 import com.sucy.skill.manager.*;
 import com.sucy.skill.task.CooldownTask;
 import com.sucy.skill.task.GUITask;
@@ -56,6 +56,7 @@ import mc.promcteam.engine.NexEngine;
 import mc.promcteam.engine.mccore.config.CommentedConfig;
 import mc.promcteam.engine.mccore.config.CommentedLanguageConfig;
 import mc.promcteam.engine.mccore.util.VersionManager;
+import mc.promcteam.engine.registry.attribute.AttributeRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -74,8 +75,8 @@ import java.io.File;
 import java.util.*;
 
 /**
- * <p>The main class of the plugin which has the accessor methods into most of the API.</p>
- * <p>You can retrieve a reference to this through Bukkit the same way as any other plugin.</p>
+ * <p>The main class of the plugin which has the accessor methods into most of the API</p>
+ * <p>You can retrieve a reference to this through Bukkit the same way as any other plugin</p>
  */
 public class SkillAPI extends JavaPlugin {
     private static SkillAPI singleton;
@@ -554,6 +555,7 @@ public class SkillAPI extends JavaPlugin {
     @Override
     public void onLoad() {
         MimicHook.init(this);
+        AttributeRegistry.registerProvider(new SkillAPIAttributeProvider(this));
     }
 
     /**
@@ -643,7 +645,7 @@ public class SkillAPI extends JavaPlugin {
 
         // Hook plugins
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PlaceholderAPIHook(this).register();
+            new PlaceholderAPIHook().register();
             getLogger().info("ProSkillAPI hook into PlaceholderAPI: " + ChatColor.GREEN + "success.");
         }
         boolean protocolLib = Bukkit.getPluginManager().getPlugin("ProtocolLib") != null;
@@ -684,20 +686,26 @@ public class SkillAPI extends JavaPlugin {
         listen(new ItemListener(), settings.isCheckLore() || settings.isCheckAttributes());
         if (settings.isCastEnabled()) {
             switch (settings.getCastMode()) {
-                case ITEM -> listen(new CastItemListener(), true);
-                case BARS -> listen(new CastBarsListener(), true);
-                case COMBAT -> listen(new CastCombatListener(), true);
+                case ITEM -> {
+                    listen(new CastItemListener(), true);
+                    listen(new CastOffhandListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
+                }
+                case BARS -> {
+                    listen(new CastBarsListener(), true);
+                    listen(new CastOffhandListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
+                }
+                case COMBAT -> {
+                    listen(new CastCombatListener(), true);
+                    listen(new CastOffhandListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
+                }
                 case ACTION_BAR, TITLE, SUBTITLE, CHAT -> listen(new CastTextListener(settings.getCastMode()), true);
             }
-            listen(new CastOffhandListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
         }
         listen(new DeathListener(), !VersionManager.isVersionAtLeast(11000));
         listen(new CombatProtectionListener(), VersionManager.isVersionAtLeast(11000));
         listen(new LingeringPotionListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
         listen(new ExperienceListener(), settings.isYieldsEnabled());
         listen(new PluginChecker(), true);
-        listen(new RPGAttributeListener(), getServer().getPluginManager().isPluginEnabled("ProRPGItems"));
-
 
         // Set up tasks
         if (settings.isManaEnabled()) {

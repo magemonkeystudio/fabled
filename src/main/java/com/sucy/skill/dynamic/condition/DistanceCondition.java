@@ -1,10 +1,10 @@
 /**
- * SkillAPI
- * com.sucy.skill.dynamic.target.SelfTarget
+ * ProSkillAPI
+ * com.sucy.skill.dynamic.condition.DistanceCondition
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2014 Steven Sucy
+ * Copyright (c) 2023 ProMCTeam
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -24,29 +24,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.target;
+package com.sucy.skill.dynamic.condition;
 
-import com.google.common.collect.ImmutableList;
 import org.bukkit.entity.LivingEntity;
 
-import java.util.List;
-
 /**
- * Applies child components to the caster
+ * A condition for dynamic skills that requires the target to fit the distance requirement
  */
-public class SelfTarget extends TargetComponent {
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    List<LivingEntity> getTargets(
-            final LivingEntity caster, final int level, final List<LivingEntity> targets) {
-        return ImmutableList.of(caster);
-    }
+public class DistanceCondition extends ConditionComponent {
+    private static final String MIN = "min-value";
+    private static final String MAX = "max-value";
 
     @Override
     public String getKey() {
-        return "self";
+        return "distance";
+    }
+
+    @Override
+    boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
+        double min = parseValues(caster, MIN, level, 0);
+        double max = parseValues(caster, MAX, level, 50);
+        // Square values, so distanceSquared can be used to decrease load
+        min = min * min;
+        max = max * max;
+
+        double value = target.getLocation().distanceSquared(caster.getLocation());
+        return value >= min && value <= max;
     }
 }

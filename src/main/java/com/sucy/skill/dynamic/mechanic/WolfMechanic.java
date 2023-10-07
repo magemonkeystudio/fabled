@@ -82,7 +82,7 @@ public class WolfMechanic extends MechanicComponent {
         String color  = settings.getString(COLOR);
         double health = parseValues(player, HEALTH, level, 10.0);
         String name =
-                TextFormatter.colorString(settings.getString(NAME, "").replace("{player}", player.getName()));
+                TextFormatter.colorString(filter(caster, null, settings.getString(NAME, "").replace("{player}", player.getName())));
         double       damage  = parseValues(player, DAMAGE, level, 3.0);
         double       amount  = parseValues(player, AMOUNT, level, 1.0);
         boolean      sitting = settings.getString(SITTING, "false").equalsIgnoreCase("true");
@@ -91,7 +91,7 @@ public class WolfMechanic extends MechanicComponent {
         DyeColor dye = null;
         if (color != null) {
             try {
-                dye = DyeColor.valueOf(color);
+                dye = DyeColor.valueOf(color.toUpperCase());
             } catch (Exception ex) { /* Invalid color */ }
         }
 

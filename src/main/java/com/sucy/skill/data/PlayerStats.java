@@ -45,7 +45,7 @@ public class PlayerStats implements StatHolder {
     private static final String                  LEVEL   = "level";
     private static final String                  POINTS  = "points";
     private static final String                  ATTRIB  = "attrib";
-    private static final HashMap<String, String> statMap = new HashMap<String, String>();
+    private static final HashMap<String, String> statMap = new HashMap<>();
     private final        PlayerClass             player;
 
     /**
@@ -88,7 +88,7 @@ public class PlayerStats implements StatHolder {
      */
     @Override
     public List<String> getNames() {
-        List<String> stats = new ArrayList<String>();
+        List<String> stats = new ArrayList<>();
         stats.add(statMap.get(HEALTH));
         if (SkillAPI.getSettings().isManaEnabled())
             stats.add(player.getData().getManaName());
@@ -107,7 +107,7 @@ public class PlayerStats implements StatHolder {
      */
     @Override
     public ArrayList<Integer> getValues() {
-        ArrayList<Integer> values = new ArrayList<Integer>();
+        ArrayList<Integer> values = new ArrayList<>();
         values.add((int) Math.ceil(player.getPlayerData().getPlayer().getHealth()));
         if (SkillAPI.getSettings().isManaEnabled())
             values.add((int) player.getPlayerData().getMana());

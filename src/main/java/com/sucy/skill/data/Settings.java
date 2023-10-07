@@ -72,7 +72,6 @@ public class Settings {
             GUI_FOOD                     = GUI_BASE + "food-bar",
             GUI_ACTION                   = GUI_BASE + "use-action-bar",
             GUI_TEXT                     = GUI_BASE + "action-bar-text",
-            GUI_BOARD                    = GUI_BASE + "scoreboard-enabled",
             GUI_NAME                     = GUI_BASE + "show-class-name",
             GUI_LEVEL                    = GUI_BASE + "show-class-level",
             GUI_BINDS                    = GUI_BASE + "show-binds",
@@ -164,9 +163,9 @@ public class Settings {
     private final SkillAPI                       plugin;
     private final DataSection                    config;
     private final HashMap<String, Integer>       permAccounts     = new HashMap<>();
-    private final ArrayList<String>              monsterWorlds    = new ArrayList<>();
-    private final ArrayList<String>              passiveWorlds    = new ArrayList<>();
-    private final ArrayList<String>              playerWorlds     = new ArrayList<>();
+    private final List<String>                   monsterWorlds    = new ArrayList<>();
+    private final List<String>                   passiveWorlds    = new ArrayList<>();
+    private final List<String>                   playerWorlds     = new ArrayList<>();
     /**
      * Retrieves the default skill bar layout
      *
@@ -843,7 +842,9 @@ public class Settings {
         if (attacker.equals(target)) return true;
 
         if (attacker instanceof Player && target instanceof Player) {
-            return CombatProtection.canAttack(attacker, target, playerAlly, cause);
+            if (playerAlly) return false;
+            if (playerWorlds.contains(target.getWorld().getName())) return false;
+            return CombatProtection.canAttack(attacker, target, passiveAlly, cause);
         } else {
             if (attacker instanceof Tameable) {
                 Tameable tameable = (Tameable) attacker;
@@ -1171,7 +1172,7 @@ public class Settings {
         foodBar = config.getString(GUI_FOOD);
         useActionBar = config.getBoolean(GUI_ACTION);
         actionText = config.getString(GUI_TEXT);
-        showScoreboard = config.getBoolean(GUI_BOARD);
+        showScoreboard = config.getBoolean("scoreboard.enabled");
         showClassName = config.getBoolean(GUI_NAME);
         showClassLevel = config.getBoolean(GUI_LEVEL);
         showBinds = config.getBoolean(GUI_BINDS);
@@ -1425,5 +1426,12 @@ public class Settings {
         expDisabledRegions = ImmutableSet.copyOf(data.getList(WG_EXP));
     }
 
+    public List<String> getScoreboardFormat() {
+        return config.getList("scoreboard.format");
+    }
+
+    public String getScoreboardTitle() {
+        return config.getString("scoreboard.title");
+    }
 
 }

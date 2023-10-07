@@ -3,15 +3,18 @@ package com.sucy.skill.dynamic.mechanic;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.armorstand.ArmorStandInstance;
 import com.sucy.skill.api.armorstand.ArmorStandManager;
+import com.sucy.skill.dynamic.TempEntity;
 import com.sucy.skill.listener.MechanicListener;
 import com.sucy.skill.task.RemoveTask;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Summons an armor stand that can be used as a marker or for item display. Applies child components on the armor stand
@@ -35,7 +38,9 @@ public class ArmorStandMechanic extends MechanicComponent {
     private static final String RIGHT        = "right";
 
     @Override
-    public String getKey() {return "armor stand";}
+    public String getKey() {
+        return "armor stand";
+    }
 
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
@@ -61,41 +66,63 @@ public class ArmorStandMechanic extends MechanicComponent {
             Vector   side = dir.clone().crossProduct(UP);
             loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
 
-            ArmorStand armorStand = target.getWorld().spawn(loc, ArmorStand.class, as -> {
-                try { // 1.13+
-                    as.setPersistent(false);
-                } catch (NoSuchMethodError ignored) {
-                }
-                try { // 1.19+
-                    as.setMarker(marker);
-                    as.setInvulnerable(true);
-                } catch (NoSuchMethodError ignored) {
-                }
-                try { // 1.10+
-                    as.setSilent(true);
-                } catch (NoSuchMethodError ignored) {
-                }
-                as.setGravity(gravity);
-                as.setCustomName(name);
-                as.setCustomNameVisible(nameVisible);
-                as.setSmall(small);
-                as.setArms(arms);
-                as.setBasePlate(base);
-                as.setVisible(visible);
-            });
-            SkillAPI.setMeta(armorStand, MechanicListener.ARMOR_STAND, true);
-            armorStands.add(armorStand);
+            ArmorStand as = target.getWorld().spawn(loc, ArmorStand.class);
+
+            try { // 1.13+
+                as.setPersistent(false);
+            } catch (NoSuchMethodError ignored) {
+            }
+            try { // 1.19+
+                as.setMarker(marker);
+                as.setInvulnerable(true);
+            } catch (NoSuchMethodError ignored) {
+            }
+            try { // 1.10+
+                as.setSilent(true);
+            } catch (NoSuchMethodError ignored) {
+            }
+            as.setGravity(gravity);
+            as.setCustomName(name);
+            as.setCustomNameVisible(nameVisible);
+            as.setSmall(small);
+            as.setArms(arms);
+            as.setBasePlate(base);
+            as.setVisible(visible);
+
+            SkillAPI.setMeta(as, MechanicListener.ARMOR_STAND, true);
+            armorStands.add(as);
 
             ArmorStandInstance instance;
             if (follow) {
-                instance = new ArmorStandInstance(armorStand, target, forward, upward, right);
+                instance = new ArmorStandInstance(as, target, forward, upward, right);
             } else {
-                instance = new ArmorStandInstance(armorStand, target);
+                instance = new ArmorStandInstance(as, target);
             }
             ArmorStandManager.register(instance, target, key);
         }
         executeChildren(caster, level, armorStands, force);
         new RemoveTask(armorStands, duration);
         return targets.size() > 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, Supplier<List<LivingEntity>> targetSupplier) {
+        double forward = parseValues(caster, FORWARD, level, 0);
+        double upward  = parseValues(caster, UPWARD, level, 0);
+        double right   = parseValues(caster, RIGHT, level, 0);
+        super.playPreview(onPreviewStop, caster, level, () -> {
+            List<LivingEntity> newTargets = new ArrayList<>();
+            for (LivingEntity target : targetSupplier.get()) {
+                Location loc  = target.getLocation().clone();
+                Vector   dir  = loc.getDirection().setY(0).normalize();
+                Vector   side = dir.clone().crossProduct(UP);
+                loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
+                newTargets.add(new TempEntity(loc));
+            }
+            return newTargets;
+        });
     }
 }

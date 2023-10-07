@@ -77,7 +77,7 @@ public class PlayerSkillSlot {
             PlayerData playerData = SkillAPI.getPlayerData(player);
             if (skills.isEmpty()) {
                 player.getInventory()
-                        .setItem(SkillAPI.getSettings().getCastSlot(), SkillAPI.getSettings().getCastItem());
+                        .setItem(SkillAPI.getSettings().getCastSlot(), GUITool.markCastItem(SkillAPI.getSettings().getCastItem()));
                 playerData.setOnPreviewStop(null);
             } else {
                 PlayerSkill playerSkill = skills.get(index);

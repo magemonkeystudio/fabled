@@ -20,17 +20,25 @@ def get_info():
 
 
 version, name, url = get_info()
+if is_dev:
+    split = version.split('-')[0:-2]
+    version = '-'.join(split)
 if not is_dev:
     url = re.sub(
         'https:\/\/s01\.oss\.sonatype\.org:443\/service\/local\/staging\/deployByRepositoryId\/compromcteam-\d+',
         'https://s01.oss.sonatype.org/service/local/repositories/releases/content',
         url)
 embed = {
+    'username': 'Build Bot',
     'author': {
         'name': 'New ' + ('Dev ' if is_dev else '') + 'Build Available!',
         'url': 'https://github.com/promcteam/' + name
     },
+    'image': {
+        'url': 'https://promcteam.github.io/proskillapi/' + ('dev_build.gif' if is_dev else 'release_build.gif')
+    },
     'title': version,
+    'description': 'Click the link above to download the new build!',
     'url': url,
     'color': 5341129
 }

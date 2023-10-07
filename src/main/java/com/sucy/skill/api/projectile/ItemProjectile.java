@@ -219,7 +219,7 @@ public class ItemProjectile extends CustomProjectile {
 
         life--;
         if (life <= 0) {
-            if (settings.getBool("on-expire")) callback.callback(this, null);
+            if (settings.getBool("on-expire") && callback != null) callback.callback(this, null);
             cancel();
             Bukkit.getPluginManager().callEvent(new ItemProjectileExpireEvent(this));
         }

@@ -26,16 +26,21 @@
  */
 package com.sucy.skill.dynamic.target;
 
+import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.particle.ParticleSettings;
 import com.sucy.skill.api.util.Nearby;
-import com.sucy.skill.cast.Preview;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Applies child components to the closest all nearby entities around
@@ -43,9 +48,6 @@ import java.util.List;
  */
 public class NearestTarget extends TargetComponent {
     private static final String RADIUS = "radius";
-
-    private Preview preview;
-    private double  radius = 0;
 
     /**
      * {@inheritDoc}
@@ -74,17 +76,72 @@ public class NearestTarget extends TargetComponent {
     /**
      * {@inheritDoc}
      */
-    /*@Override
-    void playPreview(Player caster, final int level, final LivingEntity target, int step) {
-        double currentRadius = parseValues(caster, RADIUS, level, 3.0);
-        if (preview == null || currentRadius != radius) {
-            radius = currentRadius;
-            preview = previewType == PreviewType.DIM_2 ?
-                    new CirclePreview(radius) :
-                    new SpherePreview(radius);
+    @Override
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, Supplier<List<LivingEntity>> targetSupplier) {
+        super.playPreview(onPreviewStop, caster, level, targetSupplier);
+
+        if (preview.getBool("circle", false)) {
+            BukkitTask task = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    ParticleSettings particleSettings = new ParticleSettings(preview, "circle-");
+                    double           radius           = parseValues(caster, RADIUS, level, 3.0);
+                    double           density          = preview.getDouble("circle-density", 1);
+                    double           angle            = 1/radius/density;
+                    double           halfPi           = Math.PI/2;
+                    Vector           direction        = new Vector(radius, 0, 0);
+
+                    for (LivingEntity target : targetSupplier.get()) {
+                        Location center = target.getLocation();
+                        for (double totalAngle = 0; totalAngle <= halfPi+0.1; totalAngle += angle) {
+                            Vector dir = direction.clone().rotateAroundY(totalAngle);
+                            particleSettings.instance(caster, center.getX()+dir.getX(), center.getY()+dir.getY(), center.getZ()+dir.getZ());
+                            particleSettings.instance(caster, center.getX()+dir.getX(), center.getY()+dir.getY(), center.getZ()-dir.getZ());
+                            particleSettings.instance(caster, center.getX()-dir.getX(), center.getY()+dir.getY(), center.getZ()+dir.getZ());
+                            particleSettings.instance(caster, center.getX()-dir.getX(), center.getY()+dir.getY(), center.getZ()-dir.getZ());
+                        }
+                    }
+                }
+            }.runTaskTimer(SkillAPI.inst(),0, Math.max(1, preview.getInt("circle-"+"period", 5)));
+            onPreviewStop.add(task::cancel);
         }
-        preview.playParticles(caster, PreviewSettings.particle, target.getLocation().add(0, 0.1, 0), step);
-    }*/
+
+        if (preview.getBool("sphere", false)) {
+            BukkitTask task = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    ParticleSettings particleSettings = new ParticleSettings(preview, "sphere-");
+
+                    double radius = parseValues(caster, RADIUS, level, 3.0);
+                    double density = preview.getDouble("sphere-density", 1);
+                    double zAngle = 1/radius/density;
+                    double halfPi = Math.PI/2;
+
+                    for (LivingEntity target : targetSupplier.get()) {
+                        Location center = target.getLocation();
+                        Vector direction = new Vector(radius, 0, 0);
+                        for (double totalZAngle = 0; totalZAngle <= halfPi; totalZAngle += zAngle) {
+                            Vector dir = direction.clone().rotateAroundZ(totalZAngle);
+                            double yAngle = 1/(radius*Math.cos(totalZAngle))/density;
+                            for (double totalYAngle = 0; totalYAngle <= halfPi; totalYAngle += yAngle) {
+                                Vector loc = dir.clone().rotateAroundY(totalYAngle);
+                                particleSettings.instance(caster, center.getX()+loc.getX(), center.getY()+loc.getY(), center.getZ()+loc.getZ());
+                                particleSettings.instance(caster, center.getX()+loc.getX(), center.getY()+loc.getY(), center.getZ()-loc.getZ());
+                                particleSettings.instance(caster, center.getX()+loc.getX(), center.getY()-loc.getY(), center.getZ()+loc.getZ());
+                                particleSettings.instance(caster, center.getX()+loc.getX(), center.getY()-loc.getY(), center.getZ()-loc.getZ());
+                                particleSettings.instance(caster, center.getX()-loc.getX(), center.getY()+loc.getY(), center.getZ()+loc.getZ());
+                                particleSettings.instance(caster, center.getX()-loc.getX(), center.getY()+loc.getY(), center.getZ()-loc.getZ());
+                                particleSettings.instance(caster, center.getX()-loc.getX(), center.getY()-loc.getY(), center.getZ()+loc.getZ());
+                                particleSettings.instance(caster, center.getX()-loc.getX(), center.getY()-loc.getY(), center.getZ()-loc.getZ());
+                            }
+                        }
+                    }
+                }
+            }.runTaskTimer(SkillAPI.inst(),0, Math.max(1, preview.getInt("sphere-"+"period", 5)));
+            onPreviewStop.add(task::cancel);
+        }
+    }
+
     @Override
     public String getKey() {
         return "nearest";

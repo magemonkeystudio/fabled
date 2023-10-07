@@ -38,6 +38,7 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Applies child components to the closest all nearby entities around
@@ -63,8 +64,8 @@ public class AreaTarget extends TargetComponent {
      * {@inheritDoc}
      */
     @Override
-    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
-        super.playPreview(onPreviewStop, caster, level, targets);
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, Supplier<List<LivingEntity>> targetSupplier) {
+        super.playPreview(onPreviewStop, caster, level, targetSupplier);
 
         if (preview.getBool("circle", false)) {
             BukkitTask task = new BukkitRunnable() {
@@ -77,7 +78,7 @@ public class AreaTarget extends TargetComponent {
                     double halfPi = Math.PI/2;
                     Vector direction = new Vector(radius, 0, 0);
 
-                    for (LivingEntity target : targets) {
+                    for (LivingEntity target : targetSupplier.get()) {
                         Location center = target.getLocation();
                         for (double totalAngle = 0; totalAngle <= halfPi+0.1; totalAngle += angle) {
                             Vector dir = direction.clone().rotateAroundY(totalAngle);
@@ -103,7 +104,7 @@ public class AreaTarget extends TargetComponent {
                     double zAngle = 1/radius/density;
                     double halfPi = Math.PI/2;
 
-                    for (LivingEntity target : targets) {
+                    for (LivingEntity target : targetSupplier.get()) {
                         Location center = target.getLocation();
                         Vector direction = new Vector(radius, 0, 0);
                         for (double totalZAngle = 0; totalZAngle <= halfPi; totalZAngle += zAngle) {

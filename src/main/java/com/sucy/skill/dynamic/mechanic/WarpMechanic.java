@@ -39,6 +39,7 @@ import org.bukkit.util.Vector;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * Warps the target relative to their current location
@@ -91,12 +92,12 @@ public class WarpMechanic extends MechanicComponent {
     }
 
     @Override
-    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, Supplier<List<LivingEntity>> targetSupplier) {
         if (preview.getBool("per-target")) {
             BukkitTask task = new BukkitRunnable() {
                 @Override
                 public void run() {
-                    for (LivingEntity target : targets) {
+                    for (LivingEntity target : targetSupplier.get()) {
                         ParticleHelper.play(getLocation(caster, level, target), preview, Set.of(caster), "per-target-",
                                 preview.getBool("per-target-" + "hitbox") ? target.getBoundingBox() : null
                         );

@@ -35,8 +35,10 @@ public class ProtocolLibHook {
 
     public void broadcastToNearby(Player player, PacketContainer packet) {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (player.getLocation().distanceSquared(p.getLocation()) < Bukkit.getViewDistance() * 16 && !player.equals(
-                    p)) {
+            if (player.equals(p) || !p.getWorld().equals(player.getWorld())) continue;
+
+            double dist = player.getLocation().distanceSquared(p.getLocation());
+            if (dist < Bukkit.getViewDistance() * 16) {
                 try {
                     protocolManager.sendServerPacket(p, packet);
                 } catch (InvocationTargetException e) {
