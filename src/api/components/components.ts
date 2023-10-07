@@ -4176,7 +4176,7 @@ export const initComponents = () => {
 		VALUE_COPY:          { name: 'Value Copy', component: ValueCopyMechanic },
 		VALUE_DISTANCE:      { name: 'Value Distance', component: ValueDistanceMechanic },
 		VALUE_HEALTH:        { name: 'Value Health', component: ValueHealthMechanic },
-		VALUE_LOAD:          { name: 'Value Lore', component: ValueLoadMechanic },
+		VALUE_LOAD:          { name: 'Value Load', component: ValueLoadMechanic },
 		VALUE_LOCATION:      { name: 'Value Location', component: ValueLocationMechanic },
 		VALUE_LORE:          { name: 'Value Lore', component: ValueLoreMechanic },
 		VALUE_LORE_SLOT:     { name: 'Value Lore Slot', component: ValueLoreSlotMechanic },
