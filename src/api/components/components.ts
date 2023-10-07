@@ -3612,10 +3612,10 @@ class ValueLocationMechanic extends ProMechanic {
 class ValueLoadMechanic extends ProMechanic {
 	public constructor() {
 		super({
-			name:         'Value Location',
-			description:  'If there is a value already stored on the account, that value will be retrieved and ban be used as a normal value',
+			name:         'Value Load',
+			description:  'If there is a value already stored on the account, that value will be retrieved and then be used as a normal value.',
 			data:         [
-				new StringSelect('Key', 'key', 'location')
+				new StringSelect('Key', 'key')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value.'),
 				new BooleanSelect('Override', 'override', true)
 					.setTooltip('If false and the current value have been set, nothing will change.'),
@@ -3752,6 +3752,8 @@ class ValueRandomMechanic extends ProMechanic {
 			data:         [
 				new StringSelect('Key', 'key', 'value')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
+				new BooleanSelect('Integer', 'integer', false)
+					.setTooltip('Whether to only generate integer values'),
 				new DropdownSelect('Type', 'type', ['Normal', 'Triangular'], 'Normal')
 					.setTooltip('The type of random to use. Triangular favors numbers in the middle, similar to rolling two dice'),
 				new AttributeSelect('Min', 'min')
