@@ -227,6 +227,10 @@ public class PlaceholderUtil {
             return "0";
         }
 
+        if (identifier.startsWith("value_")) {
+            return data.getPersistentData(identifier.substring(6)).toString();
+        }
+
         if (identifier.startsWith("default_")) {
             if (identifier.equals("default_currentlevel")) {
                 return String.valueOf(data.getMainClass().getLevel());
