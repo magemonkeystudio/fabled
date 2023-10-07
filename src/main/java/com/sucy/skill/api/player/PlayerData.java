@@ -2125,7 +2125,9 @@ public class PlayerData {
     ///////////////////////////////////////////////////////
 
     /**
-     *
+     * Decrypt and return the saved values on the account.
+     * @param key The key is used to save the value.
+     * @return Decrypted value
      */
     public Object getPersistentData(String key){
         String data = persistentData.get(key);
@@ -2169,6 +2171,13 @@ public class PlayerData {
         return data;
     }
 
+
+    /**
+     * Encrypt and save values to account for long-term storage
+     * @param key The key is used to save the value.
+     * @param data The value is stored. Currently supported types are:
+     *             Number, String, Player, TempEntity, Entity
+     */
     public void setPersistentData(String key, Object data){
         if (data==null) return;
         if (data instanceof List){
@@ -2196,10 +2205,17 @@ public class PlayerData {
         persistentData.put(key,data.toString());
     }
 
+    /**
+     * Remove a value with a specific key
+     * @param key The key is used to save the value.
+     */
     public void removePersistentData(String key){
         persistentData.remove(key);
     }
 
+    /**
+     * @return original HashMap used to store persistent data
+     */
     public HashMap<String,String> getAllPersistentData(){
         return persistentData;
     }
