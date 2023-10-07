@@ -42,6 +42,7 @@ import com.sucy.skill.cast.PlayerTextCastingData;
 import com.sucy.skill.data.GroupSettings;
 import com.sucy.skill.data.PlayerEquips;
 import com.sucy.skill.dynamic.EffectComponent;
+import com.sucy.skill.dynamic.TempEntity;
 import com.sucy.skill.gui.handlers.AttributeHandler;
 import com.sucy.skill.gui.handlers.DetailsHandler;
 import com.sucy.skill.gui.handlers.ProfessHandler;
@@ -61,10 +62,7 @@ import mc.promcteam.engine.mccore.config.FilterType;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.util.VersionManager;
 import mc.promcteam.engine.utils.EntityUT;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
@@ -95,6 +93,7 @@ public class PlayerData {
     private final HashMap<Material, PlayerSkill>                 binds               = new HashMap<>();
     private final HashMap<String, List<PlayerAttributeModifier>> attributesModifiers = new HashMap<>();
     private final HashMap<String, List<PlayerStatModifier>>      statModifiers       = new HashMap<>();
+    private final HashMap<String, String>                        persistentData      = new HashMap<>();
 
     private final DataSection           extraData  = new DataSection();
     private final UUID                  playerUUID;
@@ -2106,6 +2105,75 @@ public class PlayerData {
     public boolean clearBind(Material mat) {
         return binds.remove(mat) != null;
     }
+
+
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                  Persistent data                  //
+    //                                                   //
+    ///////////////////////////////////////////////////////
+
+    /**
+     *
+     */
+    public Object getPersistentData(String key){
+        String data = persistentData.get(key);
+        if (data==null) return 0;
+        if (data.startsWith("targets")){
+            data = data.substring(8);
+            List<LivingEntity> targets = new ArrayList<>();
+            Arrays.stream(data.split(";")).forEach(target -> {
+                if (target.startsWith("loc")) {
+                    String[] loc = target.split(",");
+                    Location location = new Location(
+                            Bukkit.getWorld(loc[1]),
+                            Double.parseDouble(loc[2]),
+                            Double.parseDouble(loc[3]),
+                            Double.parseDouble(loc[4])
+                    );
+                    targets.add(new TempEntity(location));
+                } else {
+                    Player player = Bukkit.getPlayer(UUID.fromString(target));
+                    if (player==null || !player.isOnline()) return;
+                    targets.add(player);
+                }
+            });
+            return targets;
+        }
+        try {
+            return Double.parseDouble(data);
+        } catch (NumberFormatException ignored){}
+        return data;
+    }
+
+    public void setPersistentData(String key, Object data){
+        if (data instanceof List){
+            List<String> sum = new ArrayList<>();
+            ((List<?>) data).forEach(entry -> {
+                if (entry instanceof Player){
+                    sum.add(((Player) entry).getUniqueId().toString());
+                } else if (entry instanceof TempEntity) {
+                    Location loc = ((TempEntity) entry).getLocation();
+                    if (loc.getWorld()==null) return;
+                    sum.add(String.format("loc,%s,%f,%f,%f", loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ()));
+                }
+            });
+            if (sum.isEmpty()) return;
+            persistentData.put(key,"targets-"+String.join(";", sum));
+            return;
+        }
+        persistentData.put(key,data.toString());
+    }
+
+    public void removePersistentData(String key){
+        persistentData.remove(key);
+    }
+
+    public HashMap<String,String> getAllPersistentData(){
+        return persistentData;
+    }
+
+
 
     ///////////////////////////////////////////////////////
     //                                                   //

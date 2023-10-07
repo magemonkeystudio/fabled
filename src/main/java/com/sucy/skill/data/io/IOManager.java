@@ -63,6 +63,7 @@ public abstract class IOManager {
             SKILL_BAR      = "bar",
             HOVER          = "hover",
             EXTRA          = "extra",
+            PERSISTENT     = "persistent",
             INSTANT        = "instant",
             TEXT_LAYOUT    = "text-layout",
             ENABLED        = "enabled",
@@ -266,6 +267,15 @@ public abstract class IOManager {
                     acc.bind(Material.valueOf(bindKey), acc.getSkill(binds.getString(bindKey)));
                 }
             }
+
+            // Load persistent data
+            DataSection persistent = account.getSection(PERSISTENT);
+            if (persistent != null){
+                for (String key : persistent.keys()) {
+                    acc.getAllPersistentData().put(key, persistent.getString(key));
+                }
+            }
+
         }
         data.setAccount(file.getInt(ACTIVE, data.getActiveId()), false);
         data.getActiveData().setLastHealth(file.getDouble(HEALTH));
@@ -367,6 +377,10 @@ public abstract class IOManager {
                 }
 
                 account.set(HUNGER, acc.getHungerValue());
+
+                // Save persistent data
+                DataSection persistentData = account.createSection(PERSISTENT);
+                acc.getAllPersistentData().forEach(persistentData::set);
 
                 // Extra data
                 if (acc.getExtraData().size() > 0) {
