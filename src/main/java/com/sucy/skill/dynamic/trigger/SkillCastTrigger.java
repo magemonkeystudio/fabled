@@ -35,7 +35,7 @@ public class SkillCastTrigger implements Trigger<PlayerCastSkillEvent> {
                 .stream()
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.toList());
-        List<String> skills  = settings.getStringList("allowed-skills")
+        List<String> skills = settings.getStringList("allowed-skills")
                 .stream()
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.toList());

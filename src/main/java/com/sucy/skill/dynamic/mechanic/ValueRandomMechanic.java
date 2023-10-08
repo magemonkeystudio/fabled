@@ -26,6 +26,7 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
+import com.sucy.skill.SkillAPI;
 import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.entity.LivingEntity;
 
@@ -40,6 +41,7 @@ public class ValueRandomMechanic extends MechanicComponent {
     private static final String TYPE = "type";
     private static final String MIN  = "min";
     private static final String MAX  = "max";
+    private static final String INT  = "integer";
 
     @Override
     public String getKey() {
@@ -57,18 +59,29 @@ public class ValueRandomMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0 || !settings.has(KEY)) {
+        if (targets.isEmpty() || !settings.has(KEY)) {
             return false;
         }
 
         String  key        = settings.getString(KEY);
-        boolean triangular = settings.getString(TYPE).toUpperCase().equals("triangular");
-        double  min        = parseValues(caster, MIN, level, 1);
-        double  max        = parseValues(caster, MAX, level, 1);
+        boolean triangular = settings.getString(TYPE).equalsIgnoreCase("triangular");
 
         Map<String, Object> data = DynamicSkill.getCastData(caster);
-        double              rand = triangular ? 0.5 * (Math.random() + Math.random()) : Math.random();
-        data.put(key, rand * (max - min) + min);
+        if (settings.getBool(INT, false)) {
+            int  min        = (int) Math.ceil(parseValues(caster, MIN, level, 1));
+            int  max        = (int) Math.floor(parseValues(caster, MAX, level, 1));
+            if (triangular) {
+                int middle = SkillAPI.RANDOM.nextInt(max-min+1)+min+SkillAPI.RANDOM.nextInt(max-min+1)+min;
+                middle = middle/2 + (middle%2 == 1 ? (Math.random() < 0.5 ? 1 : 0) : 0);
+                data.put(key, middle);
+            } else data.put(key, SkillAPI.RANDOM.nextInt(max-min+1)+min);
+        } else {
+            double  min        = parseValues(caster, MIN, level, 1);
+            double  max        = parseValues(caster, MAX, level, 1);
+            double rand = triangular ? 0.5 * (Math.random() + Math.random()) : Math.random();
+            data.put(key, rand * (max - min) + min);
+        }
+
         return true;
     }
 }

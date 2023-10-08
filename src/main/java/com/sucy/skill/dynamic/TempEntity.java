@@ -292,6 +292,12 @@ public class TempEntity implements LivingEntity {
     @Override
     public boolean isVisibleByDefault() {return true;}
 
+    @NotNull
+    @Override
+    public Set<Player> getTrackedBy() {
+        return Set.of();
+    }
+
     public void setCustomNameVisible(boolean b) {
 
     }

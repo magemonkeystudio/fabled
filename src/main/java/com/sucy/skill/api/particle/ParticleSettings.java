@@ -26,6 +26,7 @@
  */
 package com.sucy.skill.api.particle;
 
+import com.sucy.skill.api.Settings;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -118,6 +119,28 @@ public class ParticleSettings {
                 Color.fromRGB(Integer.parseInt(config.getString(DUST_COLOR, "#FF0000").substring(1), 16)),
                 Color.fromRGB(Integer.parseInt(config.getString(FINAL_DUST_COLOR, "#FF0000").substring(1), 16)),
                 (float) config.getDouble(DUST_SIZE, 1));
+    }
+
+    /**
+     * Loads a particle setup from config data
+     *
+     * @param config config data to load from
+     * @param prefix string to look for at the beginning of each config key
+     */
+    public ParticleSettings(Settings config, String prefix) {
+        this.type = ParticleHelper.getFromKey(config.getString(prefix+PARTICLE_KEY, "Villager happy"));
+        this.dx = (float) config.getDouble(prefix+DX_KEY, 0);
+        this.dy = (float) config.getDouble(prefix+DY_KEY, 0);
+        this.dz = (float) config.getDouble(prefix+DZ_KEY, 0);
+        this.speed = (float) config.getDouble(prefix+SPEED_KEY, 1);
+        this.amount = config.getInt(prefix+AMOUNT_KEY, 1);
+        this.object = ParticleHelper.makeObject(type,
+                Material.valueOf(config.getString(prefix+MATERIAL_KEY, "Dirt").toUpperCase().replace(" ", "_")),
+                config.getInt(prefix+DATA_KEY, 0),
+                config.getInt(prefix+DURABILITY_KEY, 0),
+                Color.fromRGB(Integer.parseInt(config.getString(prefix+DUST_COLOR, "#FF0000").substring(1), 16)),
+                Color.fromRGB(Integer.parseInt(config.getString(prefix+FINAL_DUST_COLOR, "#FF0000").substring(1), 16)),
+                (float) config.getDouble(prefix+DUST_SIZE, 1));
     }
 
     /**

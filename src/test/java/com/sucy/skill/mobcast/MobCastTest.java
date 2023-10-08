@@ -4,12 +4,10 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.skills.SkillShot;
 import com.sucy.skill.testutil.MockedTest;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Zombie;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,7 +45,7 @@ public class MobCastTest extends MockedTest {
     @Test
     void passiveCanDamageHostile() {
         Zombie zombie = world.spawn(new Location(world, 0, 0, 0), Zombie.class);
-        Sheep sheep = world.spawn(new Location(world, 2, 0, 0), Sheep.class);
+        Sheep  sheep  = world.spawn(new Location(world, 2, 0, 0), Sheep.class);
 
         assertEquals(20, zombie.getHealth());
 
@@ -57,7 +55,7 @@ public class MobCastTest extends MockedTest {
 
     @Test
     void hostileCanDamagePassive() {
-        Sheep sheep = world.spawn(new Location(world, 0, 0, 0), Sheep.class);
+        Sheep  sheep  = world.spawn(new Location(world, 0, 0, 0), Sheep.class);
         Zombie zombie = world.spawn(new Location(world, 2, 0, 0), Zombie.class);
 
         assertEquals(20, sheep.getHealth());
@@ -68,7 +66,7 @@ public class MobCastTest extends MockedTest {
 
     @Test
     void hostileCanDamageHostile() {
-        Zombie zombie = world.spawn(new Location(world, 0, 0, 0), Zombie.class);
+        Zombie zombie  = world.spawn(new Location(world, 0, 0, 0), Zombie.class);
         Zombie zombie2 = world.spawn(new Location(world, 2, 0, 0), Zombie.class);
 
         assertEquals(20, zombie2.getHealth());
@@ -81,7 +79,7 @@ public class MobCastTest extends MockedTest {
     void passiveCantBeDamagedWhenPassiveAllyTrue() {
         SkillAPI.getSettings().setPassiveAlly(true);
 
-        Sheep sheep = world.spawn(new Location(world, 0, 0, 0), Sheep.class);
+        Sheep  sheep  = world.spawn(new Location(world, 0, 0, 0), Sheep.class);
         Zombie zombie = world.spawn(new Location(world, 2, 0, 0), Zombie.class);
 
         skill.cast(zombie, 1, true);

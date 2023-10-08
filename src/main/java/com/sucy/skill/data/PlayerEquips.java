@@ -347,7 +347,7 @@ public class PlayerEquips {
 
                                 String normalized = SkillAPI.getAttributeManager().normalize(attr);
                                 int    current    = attribs.containsKey(attr) ? attribs.get(attr) : 0;
-                                int    extra      =
+                                int extra =
                                         NumberParser.parseInt(lower.substring(text.length()).replace("%", ""));
                                 attribs.put(normalized, current + extra);
                                 break;

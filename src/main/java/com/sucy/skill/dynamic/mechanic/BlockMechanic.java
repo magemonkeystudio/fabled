@@ -41,6 +41,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Mechanic that changes blocks for a duration before
@@ -97,10 +98,10 @@ public class BlockMechanic extends MechanicComponent {
     private Location getLocation(LivingEntity caster, int level, LivingEntity target) {
         // Get the location with offsets included
 
-        double forward = parseValues(caster, FORWARD, level, 0);
-        double upward  = parseValues(caster, UPWARD, level, 0);
-        double right   = parseValues(caster, RIGHT, level, 0);
-        boolean  resetYaw = settings.getBool(RESET_YAW, false);
+        double  forward  = parseValues(caster, FORWARD, level, 0);
+        double  upward   = parseValues(caster, UPWARD, level, 0);
+        double  right    = parseValues(caster, RIGHT, level, 0);
+        boolean resetYaw = settings.getBool(RESET_YAW, false);
 
         Location loc    = target.getLocation();
         Location dirLoc = target.getLocation().clone();
@@ -115,12 +116,12 @@ public class BlockMechanic extends MechanicComponent {
     private List<Block> getAffectedBlocks(LivingEntity caster, int level, List<LivingEntity> targets) {
         boolean sphere = settings.getString(SHAPE, "sphere").equalsIgnoreCase("sphere");
 
-        String   type     = settings.getString(TYPE, "solid").toLowerCase();
-        boolean  solid    = type.equals("solid");
-        boolean  air      = type.equals("air");
-        Material matType  =
+        String  type  = settings.getString(TYPE, "solid").toLowerCase();
+        boolean solid = type.equals("solid");
+        boolean air   = type.equals("air");
+        Material matType =
                 !solid && !air && !type.equals("any") ? Material.valueOf(type.toUpperCase().replace(' ', '_')) : null;
-        boolean  resetYaw = settings.getBool(RESET_YAW, false);
+        boolean resetYaw = settings.getBool(RESET_YAW, false);
 
         List<Block> blocks = new ArrayList<>();
         World       w      = caster.getWorld();
@@ -131,7 +132,7 @@ public class BlockMechanic extends MechanicComponent {
             double x, y, z, dx, dy, dz;
             double rSq    = radius * radius;
             for (LivingEntity t : targets) {
-                Location loc    = getLocation(caster, level, t);
+                Location loc = getLocation(caster, level, t);
                 x = loc.getBlockX();
                 y = loc.getBlockY();
                 z = loc.getBlockZ();
@@ -167,7 +168,7 @@ public class BlockMechanic extends MechanicComponent {
             double x, y, z;
 
             for (LivingEntity t : targets) {
-                Location loc    = getLocation(caster, level, t);
+                Location loc = getLocation(caster, level, t);
                 x = loc.getX();
                 y = loc.getY();
                 z = loc.getZ();
@@ -219,8 +220,8 @@ public class BlockMechanic extends MechanicComponent {
         } catch (Exception ex) {
             // Use default
         }
-        int     ticks  = (int) (20 * parseValues(caster, SECONDS, level, 5));
-        byte    data   = (byte) settings.getInt(DATA, 0);
+        int  ticks = (int) (20 * parseValues(caster, SECONDS, level, 5));
+        byte data  = (byte) settings.getInt(DATA, 0);
 
         // Change blocks
         ArrayList<Location> states = new ArrayList<>();
@@ -251,21 +252,25 @@ public class BlockMechanic extends MechanicComponent {
     }
 
     @Override
-    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, Supplier<List<LivingEntity>> targetSupplier) {
         if (preview.getBool("per-target")) {
             BukkitTask task = new BukkitRunnable() {
                 @Override
                 public void run() {
                     if (preview.getBool("per-target-center-only", true))
-                        for (LivingEntity t : targets)
-                            ParticleHelper.play(getLocation(caster, level, t), preview, Set.of(caster), "per-target-", null);
+                        for (LivingEntity t : targetSupplier.get())
+                            ParticleHelper.play(getLocation(caster, level, t),
+                                    preview,
+                                    Set.of(caster),
+                                    "per-target-",
+                                    null);
                     else
-                        for (Block block : getAffectedBlocks(caster, level, targets))
+                        for (Block block : getAffectedBlocks(caster, level, targetSupplier.get()))
                             ParticleHelper.play(block.getLocation(), preview, Set.of(caster), "per-target-",
-                                    preview.getBool("per-target-"+"hitbox") ? block.getBoundingBox() : null
+                                    preview.getBool("per-target-" + "hitbox") ? block.getBoundingBox() : null
                             );
                 }
-            }.runTaskTimer(SkillAPI.inst(),0, Math.max(1, preview.getInt("per-target-"+"period", 5)));
+            }.runTaskTimer(SkillAPI.inst(), 0, Math.max(1, preview.getInt("per-target-" + "period", 5)));
             onPreviewStop.add(task::cancel);
         }
     }

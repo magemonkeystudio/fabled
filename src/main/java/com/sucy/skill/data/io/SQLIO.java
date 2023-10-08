@@ -122,8 +122,8 @@ public class SQLIO extends IOManager {
 
     private PlayerAccounts load(SQLConnection connection, OfflinePlayer player) {
         try {
-            String      playerKey = player.getUniqueId().toString().toLowerCase();
-            DataSection file      =
+            String playerKey = player.getUniqueId().toString().toLowerCase();
+            DataSection file =
                     new YAMLParser().parseText(connection.table.createEntry(playerKey).getString(DATA), STRING);
             return load(player, file);
         } catch (Exception ex) {

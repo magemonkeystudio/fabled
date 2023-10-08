@@ -24,14 +24,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PacketListener extends SkillAPIListener {
-    private ProtocolLibHook protocolLib;
+    private ProtocolLibHook     protocolLib;
     private List<PacketAdapter> packetListeners = new ArrayList<>();
+
     @Override
     public void init() {
         protocolLib = new ProtocolLibHook(SkillAPI.inst());
-        addListener(new EntityEquipmentPacketAdapter(ListenerPriority.HIGH,PacketType.Play.Server.ENTITY_EQUIPMENT));
+        addListener(new EntityEquipmentPacketAdapter(ListenerPriority.HIGH, PacketType.Play.Server.ENTITY_EQUIPMENT));
     }
-    private void addListener(PacketAdapter listener){
+
+    private void addListener(PacketAdapter listener) {
         packetListeners.add(listener);
         protocolLib.register(listener);
     }
@@ -41,20 +43,21 @@ public class PacketListener extends SkillAPIListener {
      *
      * @param owner
      */
-    public static void updateEquipment(Player owner){
+    public static void updateEquipment(Player owner) {
         ProtocolLibHook protocolLib = new ProtocolLibHook(SkillAPI.inst());
-        PacketContainer packet = protocolLib.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_EQUIPMENT);
-        PlayerInventory inv = owner.getInventory();
+        PacketContainer packet      =
+                protocolLib.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_EQUIPMENT);
+        PlayerInventory inv         = owner.getInventory();
         packet.getIntegers().write(0, owner.getEntityId());
         List<Pair<EnumWrappers.ItemSlot, ItemStack>> pairList = packet.getSlotStackPairLists().read(0);
-        pairList.add(new Pair<>(EnumWrappers.ItemSlot.HEAD, inv.getHelmet() ));
-        pairList.add(new Pair<>(EnumWrappers.ItemSlot.CHEST, inv.getChestplate() ));
-        pairList.add(new Pair<>(EnumWrappers.ItemSlot.LEGS, inv.getLeggings() ));
-        pairList.add(new Pair<>(EnumWrappers.ItemSlot.FEET, inv.getBoots() ));
-        pairList.add(new Pair<>(EnumWrappers.ItemSlot.MAINHAND, inv.getItemInMainHand() ));
-        pairList.add(new Pair<>(EnumWrappers.ItemSlot.OFFHAND, inv.getItemInOffHand() ));
-        packet.getSlotStackPairLists().write(0,pairList);
-        protocolLib.broadcastToNearby(owner,packet);
+        pairList.add(new Pair<>(EnumWrappers.ItemSlot.HEAD, inv.getHelmet()));
+        pairList.add(new Pair<>(EnumWrappers.ItemSlot.CHEST, inv.getChestplate()));
+        pairList.add(new Pair<>(EnumWrappers.ItemSlot.LEGS, inv.getLeggings()));
+        pairList.add(new Pair<>(EnumWrappers.ItemSlot.FEET, inv.getBoots()));
+        pairList.add(new Pair<>(EnumWrappers.ItemSlot.MAINHAND, inv.getItemInMainHand()));
+        pairList.add(new Pair<>(EnumWrappers.ItemSlot.OFFHAND, inv.getItemInOffHand()));
+        packet.getSlotStackPairLists().write(0, pairList);
+        protocolLib.broadcastToNearby(owner, packet);
     }
 
     @Override
@@ -65,22 +68,24 @@ public class PacketListener extends SkillAPIListener {
     /**
      * Used for true invisibility mechanic
      */
-    private class EntityEquipmentPacketAdapter extends PacketAdapter{
+    private class EntityEquipmentPacketAdapter extends PacketAdapter {
 
-        public EntityEquipmentPacketAdapter(ListenerPriority listenerPriority, PacketType ...types) {
+        public EntityEquipmentPacketAdapter(ListenerPriority listenerPriority, PacketType... types) {
             super(SkillAPI.inst(), listenerPriority, types);
         }
 
         @Override
         public void onPacketSending(PacketEvent event) {
-            Entity entity = protocolLib.getProtocolManager().getEntityFromID(event.getPlayer().getWorld(), event.getPacket().getIntegers().read(0));
-            if(!(entity instanceof LivingEntity)) return;
+            Entity entity = protocolLib.getProtocolManager()
+                    .getEntityFromID(event.getPlayer().getWorld(), event.getPacket().getIntegers().read(0));
+            if (!(entity instanceof LivingEntity)) return;
 
-            BuffData data = BuffManager.getBuffData((LivingEntity) entity,false);
-            if(data == null || !data.isActive(BuffType.INVISIBILITY) || !((LivingEntity) entity).hasPotionEffect(PotionEffectType.INVISIBILITY)) return;
+            BuffData data = BuffManager.getBuffData((LivingEntity) entity, false);
+            if (data == null || !data.isActive(BuffType.INVISIBILITY) || !((LivingEntity) entity).hasPotionEffect(
+                    PotionEffectType.INVISIBILITY)) return;
 
-            PacketContainer packet = event.getPacket();
-            ItemStack air = new ItemStack(Material.AIR);
+            PacketContainer                              packet   = event.getPacket();
+            ItemStack                                    air      = new ItemStack(Material.AIR);
             List<Pair<EnumWrappers.ItemSlot, ItemStack>> pairList = packet.getSlotStackPairLists().read(0);
             pairList.add(new Pair<>(EnumWrappers.ItemSlot.HEAD, air));
             pairList.add(new Pair<>(EnumWrappers.ItemSlot.CHEST, air));
@@ -88,7 +93,7 @@ public class PacketListener extends SkillAPIListener {
             pairList.add(new Pair<>(EnumWrappers.ItemSlot.FEET, air));
             pairList.add(new Pair<>(EnumWrappers.ItemSlot.MAINHAND, air));
             pairList.add(new Pair<>(EnumWrappers.ItemSlot.OFFHAND, air));
-            packet.getSlotStackPairLists().write(0,pairList);
+            packet.getSlotStackPairLists().write(0, pairList);
         }
     }
 }

@@ -1,12 +1,10 @@
-# ---------------------------------------------- #
-#              General Configuration             #
-# ---------------------------------------------- #
-# If you are unsure of how to use this file,     #
-# but would like to change how the plugin shows  #
-# text, visit the BukkitDev page at:             #
-# http://dev.bukkit.org/bukkit-plugins/skillapi/ #
-# and look at the default configuration section  #
-# ---------------------------------------------- #
+# -------------------------------------------------------------------------------------------------------------------------- #
+#                                              General Configuration                                                         #
+# -------------------------------------------------------------------------------------------------------------------------- #
+# If you are unsure of how to use this file but would like to change how the plugin shows text, visit the BukkitDev page at: #
+# https://www.spigotmc.org/resources/proskillapi-create-custom-races-classes-skills-spells-with-an-easy-online-editor.91913/ #
+# and look at the default configuration section                                                                              #
+# -------------------------------------------------------------------------------------------------------------------------- #
 Accounts:
   #
   # The main class group used for GUI displays
@@ -285,9 +283,6 @@ GUI:
   title-messages:
   - level_up
   - exp_lost
-  #
-  # Whether to display class information on a scoreboard
-  scoreboard-enabled: true
   #
   # Whether to add a prefix to players with their class name
   show-class-name: true
@@ -628,3 +623,15 @@ Worlds:
   # The worlds to include in the enable/disable list
   worlds:
   - world
+#
+# Customize the scoreboard here
+scoreboard:
+  enabled: true
+  title: '&6&l%sapi_default_currentgroupname%'
+  format:
+  - '&2Health &c%sapi_default_scurrenthealth%'
+  - '&2%sapi_default_currentmananame% &b%sapi_default_scurrentmana%'
+  - '&2Level &a%sapi_default_currentlevel%'
+  - '&2Exp &a%sapi_default_scurrentexp%'
+  - '&2AP &a%sapi_default_attributepoints%'
+  - '&2SP &a%sapi_default_skillpoints%'

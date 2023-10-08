@@ -2,3 +2,6 @@
 *.iml
 /*target
 gh-pages/
+settings.xml
+toolchains.xml
+log.txt

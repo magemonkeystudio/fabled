@@ -36,8 +36,8 @@ import java.util.ArrayList;
  * Handles the skill slot for casting when bars are disabled
  */
 public class PlayerSkillSlot {
-    private final ArrayList<PlayerSkill> skills = new ArrayList<PlayerSkill>();
-    private       int                    index  = 0;
+    private final ArrayList<PlayerSkill> skills   = new ArrayList<PlayerSkill>();
+    private       int                    index    = 0;
     private       PlayerData             player;
     private       boolean                hovering = false;
 
@@ -76,7 +76,8 @@ public class PlayerSkillSlot {
         if (player != null) {
             PlayerData playerData = SkillAPI.getPlayerData(player);
             if (skills.isEmpty()) {
-                player.getInventory().setItem(SkillAPI.getSettings().getCastSlot(), SkillAPI.getSettings().getCastItem());
+                player.getInventory()
+                        .setItem(SkillAPI.getSettings().getCastSlot(), GUITool.markCastItem(SkillAPI.getSettings().getCastItem()));
                 playerData.setOnPreviewStop(null);
             } else {
                 PlayerSkill playerSkill = skills.get(index);

@@ -222,10 +222,10 @@ public class ItemSerializer {
         try {
             ByteArrayInputStream inputStream     = new ByteArrayInputStream(new BigInteger(data, 32).toByteArray());
             DataInputStream      dataInputStream = new DataInputStream(inputStream);
-            Object               wrapper         =
+            Object wrapper =
                     Reflex.invokeMethod(nbtCompressedStreamTools_read, null, dataInputStream);
-            Object               itemList        = Reflex.invokeMethod(nbtTagCompound_getList, wrapper, "i", 10);
-            ItemStack[]          items           =
+            Object itemList = Reflex.invokeMethod(nbtTagCompound_getList, wrapper, "i", 10);
+            ItemStack[] items =
                     new ItemStack[(Integer) Reflex.invokeMethod(nbtTagList_size, itemList)];
 
             for (int i = 0; i < items.length; i++) {

@@ -8,16 +8,17 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: github.event.commits[0].author.name != 'Auto Bot'
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.ACTIONS_PAT }}
       - name: Configure git
         run: |
           git config user.name "Auto Bot"
           git config user.email "<>"
       - name: Set up JDK 17
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: 17
@@ -39,21 +40,27 @@ jobs:
           mvn clean deploy -P gpg,publish -DcreateChecksum=true 2>&1 | tee log.txt
           result_code=${PIPESTATUS[0]}
           exit $result_code
+      - name: Update README
+        run: python ./.github/update_readme.py
+      - name: Tag release version
+        run: |
+          git add .
+          git commit -m "[ci skip] Update release version"
+          version=$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout)
+          git tag -a $version -m "Release $version"
+          git push
+          git push --tags
+          git fetch --unshallow --all
+          git checkout dev
+          git merge -X theirs --no-edit main
       - name: Update version
         run: python ./.github/update_version.py
       - name: Update version
         run: python ./.github/update_version.py true
-      - name: Update README
-        run: python ./.github/update_readme.py
       - name: Push to git
         run: |
           git add .
-          git reset settings.xml log.txt
-          git commit -m "Update release version"
-          git push
-          git fetch --unshallow --all
-          git checkout dev
-          git merge -X theirs --no-edit main
+          git commit -m "[ci skip] Update version for development"
           git push
       - name: Notify Discord
         run: pip install simplejson && python ./.github/notify_published.py ${{ secrets.WEBHOOK_URL }}

@@ -13,9 +13,9 @@ import java.util.Collections;
 
 public class PlayerTextCastingData {
     private final PlayerData player;
-    private final String[]   skills = new String[9];
-    private boolean          casting = false;
-    private int oldSlot;
+    private final String[]   skills  = new String[9];
+    private       boolean    casting = false;
+    private       int        oldSlot;
 
     public PlayerTextCastingData(PlayerData data) {
         this.player = data;
@@ -110,17 +110,17 @@ public class PlayerTextCastingData {
 
     public String getMessage() {
         StringBuilder stringBuilder = new StringBuilder();
-        String skillFormat = StringUT.color(SkillAPI.getSettings().getMessageFormatSkill());
-        String separator = StringUT.color(SkillAPI.getSettings().getMessageFormatSeparator());
-        boolean first = true;
-        int i = 0;
+        String        skillFormat   = StringUT.color(SkillAPI.getSettings().getMessageFormatSkill());
+        String        separator     = StringUT.color(SkillAPI.getSettings().getMessageFormatSeparator());
+        boolean       first         = true;
+        int           i             = 0;
         for (; i < 9; i++) {
             String skill = getSkill(i);
             if (skill != null) {
                 if (first) first = false;
                 else stringBuilder.append(separator);
                 stringBuilder.append(skillFormat
-                        .replace("%number%", String.valueOf(i+1))
+                        .replace("%number%", String.valueOf(i + 1))
                         .replace("%skill%", skill));
             }
         }

@@ -118,7 +118,6 @@ public class PlayerCastBars implements InventoryHolder {
     /**
      * Restores the players inventory after
      * viewing one of the related views
-     *
      */
     public void restore() {
         if (view == PlayerView.INVENTORY) {
@@ -161,10 +160,10 @@ public class PlayerCastBars implements InventoryHolder {
         fill(playerContents, instantBar, 27);
         int castSlot = SkillAPI.getSettings().getCastSlot();
         playerContents[castSlot] = SkillAPI.getSettings().getHoverItem();
-        playerContents[castSlot+27] = SkillAPI.getSettings().getInstantItem();
+        playerContents[castSlot + 27] = SkillAPI.getSettings().getInstantItem();
 
         // Make the inventory for unused skills
-        Set<String> unused = getUnused();
+        Set<String> unused   = getUnused();
         Inventory   inv      = player.getServer().createInventory(this, 54);
         ItemStack[] contents = new ItemStack[54];
         int         i        = 0;
@@ -226,8 +225,8 @@ public class PlayerCastBars implements InventoryHolder {
             if (lore == null) {
                 continue;
             }
-            String skillName = lore.get(lore.size() - 1);
-            PlayerSkill skill = this.player.getSkill(skillName);
+            String      skillName = lore.get(lore.size() - 1);
+            PlayerSkill skill     = this.player.getSkill(skillName);
             if (skill != null) {
                 bar.put(i, skillName);
             }

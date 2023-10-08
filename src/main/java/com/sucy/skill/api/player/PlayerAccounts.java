@@ -218,7 +218,9 @@ public class PlayerAccounts {
                 active = event.getNewID();
                 getActiveData().startPassives(player);
                 getActiveData().updateScoreboard();
-                if (getActiveData().hasClass() && SkillAPI.getSettings().isSkillBarEnabled() && !SkillAPI.getSettings().getCastMode().equals(CastMode.COMBAT)) {
+                if (getActiveData().hasClass() && SkillAPI.getSettings().isSkillBarEnabled() && !SkillAPI.getSettings()
+                        .getCastMode()
+                        .equals(CastMode.COMBAT)) {
                     getActiveData().getSkillBar().setup(player);
                 }
                 getActiveData().getEquips().update(player);

@@ -32,6 +32,7 @@ import com.sucy.skill.api.event.TrueDamageEvent;
 import com.sucy.skill.api.particle.EffectManager;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -63,10 +64,11 @@ public class DeathListener extends SkillAPIListener {
         SkillAPI.setMeta(entity, KILLER, damager);
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDeath(EntityDeathEvent event) {
         EffectManager.clear(event.getEntity());
         Object killer = SkillAPI.getMeta(event.getEntity(), KILLER);
+
         if (killer != null && event.getEntity().getKiller() == null) {
             applyDeath(event.getEntity(), (LivingEntity) killer, event.getDroppedExp());
         }

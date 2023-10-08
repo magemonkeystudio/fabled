@@ -39,6 +39,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * Warps the target to a location
@@ -100,8 +101,8 @@ public class WarpLocMechanic extends MechanicComponent {
     }
 
     @Override
-    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
-        if (preview.getBool("per-target") && !targets.isEmpty()) {
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, Supplier<List<LivingEntity>> targetSupplier) {
+        if (preview.getBool("per-target") && !targetSupplier.get().isEmpty()) {
             BukkitTask task = new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -109,7 +110,7 @@ public class WarpLocMechanic extends MechanicComponent {
                     if (loc == null) return;
                     ParticleHelper.play(loc, preview, Set.of(caster), "per-target-", null);
                 }
-            }.runTaskTimer(SkillAPI.inst(),0, Math.max(1, preview.getInt("per-target-"+"period", 5)));
+            }.runTaskTimer(SkillAPI.inst(), 0, Math.max(1, preview.getInt("per-target-" + "period", 5)));
             onPreviewStop.add(task::cancel);
         }
     }

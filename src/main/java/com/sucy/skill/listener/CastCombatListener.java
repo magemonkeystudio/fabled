@@ -39,6 +39,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -49,6 +50,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.*;
 
@@ -74,7 +76,8 @@ public class CastCombatListener extends SkillAPIListener {
 
     @Override
     public void cleanup() {
-        Bukkit.getOnlinePlayers().stream()
+        Bukkit.getOnlinePlayers()
+                .stream()
                 .filter(player -> SkillAPI.getSettings().isWorldEnabled(player.getWorld()))
                 .forEach(this::cleanup);
     }
@@ -91,15 +94,13 @@ public class CastCombatListener extends SkillAPIListener {
                 items = ItemUT.fromBase64(data.getExtraData().getList(ITEM_SAVE_KEY));
                 for (int i = 0; i < items.length; i++) {
                     ItemStack item = items[i];
-                    if (item.getType() == Material.AIR)
-                        items[i] = null;
+                    if (item.getType() == Material.AIR) items[i] = null;
                 }
             }
 
             if (items != null) backup.put(player.getUniqueId(), items);
             else backup.put(player.getUniqueId(), new ItemStack[9]);
-        } else
-            backup.put(player.getUniqueId(), new ItemStack[9]);
+        } else backup.put(player.getUniqueId(), new ItemStack[9]);
 
         if (SkillAPI.getSettings().isWorldEnabled(player.getWorld())) {
             PlayerInventory inv  = player.getInventory();
@@ -150,8 +151,7 @@ public class CastCombatListener extends SkillAPIListener {
         ItemStack[] temp = new ItemStack[9];
         PlayerData  data = SkillAPI.getPlayerData(player);
         for (int i = 0; i < items.length; i++) {
-            if (i == slot
-                    || (data.getSkillBar().isSetup() && !data.getSkillBar().isWeaponSlot(i))) continue;
+            if (i == slot || (data.getSkillBar().isSetup() && !data.getSkillBar().isWeaponSlot(i))) continue;
 
             temp[i] = player.getInventory().getItem(i);
             player.getInventory().setItem(i, null);
@@ -174,8 +174,7 @@ public class CastCombatListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(PlayerQuitEvent event) {
-        if (SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld()))
-            cleanup(event.getPlayer());
+        if (SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld())) cleanup(event.getPlayer());
     }
 
     /**
@@ -201,8 +200,7 @@ public class CastCombatListener extends SkillAPIListener {
      */
     @EventHandler
     public void onUnlock(PlayerSkillUnlockEvent event) {
-        if (!event.getUnlockedSkill().getData().canCast() || event.getPlayerData().getPlayer() == null)
-            return;
+        if (!event.getUnlockedSkill().getData().canCast() || event.getPlayerData().getPlayer() == null) return;
 
         event.getPlayerData().getSkillBar().unlock(event.getUnlockedSkill());
     }
@@ -257,27 +255,56 @@ public class CastCombatListener extends SkillAPIListener {
      *
      * @param event event details
      */
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onDeath(PlayerDeathEvent event) {
-        if (CitizensHook.isNPC(event.getEntity())
-                || !SkillAPI.getSettings().isWorldEnabled(event.getEntity().getWorld())
-                || event.getEntity().getWorld().getGameRuleValue("keepInventory").equals("true"))
-            return;
+        if (event instanceof Cancellable && ((Cancellable) event).isCancelled()) return;
+        if (CitizensHook.isNPC(event.getEntity()) || !SkillAPI.getSettings()
+                .isWorldEnabled(event.getEntity().getWorld()) || event.getEntity()
+                .getWorld()
+                .getGameRuleValue("keepInventory")
+                .equals("true")) return;
 
-        PlayerData data = SkillAPI.getPlayerData(event.getEntity());
+        // This is important because if other plugins are using the death event, they may
+        // be modifying drops, or doing something with the items the player has in their inventory
+        Player     player = event.getEntity();
+        PlayerData data   = SkillAPI.getPlayerData(player);
         if (data.getSkillBar().isSetup()) {
+            player.setMetadata("skill-bar-setup", new FixedMetadataValue(SkillAPI.inst(), true));
             for (int i = 0; i < 9; i++) {
-                if (!data.getSkillBar().isWeaponSlot(i))
-                    event.getDrops().remove(event.getEntity().getInventory().getItem(i));
+                if (!data.getSkillBar().isWeaponSlot(i)) event.getDrops().remove(player.getInventory().getItem(i));
             }
-            data.getSkillBar().clear(event.getEntity());
+            data.getSkillBar().clear(player);
         }
-        event.getDrops().remove(event.getEntity().getInventory().getItem(slot));
-        event.getEntity().getInventory().setItem(slot, null);
+        event.getDrops().remove(player.getInventory().getItem(slot));
+        player.getInventory().setItem(slot, null);
 
-        ItemStack[] hidden = backup.get(event.getEntity().getUniqueId());
-        Arrays.stream(hidden).filter(Objects::nonNull).forEach(item -> event.getDrops().add(item));
-        backup.put(event.getEntity().getUniqueId(), new ItemStack[9]);
+        ItemStack[] hidden = backup.get(player.getUniqueId());
+        if (hidden != null) {
+            Arrays.stream(hidden).filter(Objects::nonNull).forEach(item -> event.getDrops().add(item));
+            backup.put(player.getUniqueId(), new ItemStack[9]);
+        }
+    }
+
+    /**
+     * If the DeathEvent was cancelled, we should re-init the skill bar back
+     * into their inventory if it was previously set up.
+     *
+     * @param event
+     */
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void postDeath(PlayerDeathEvent event) {
+        if (CitizensHook.isNPC(event.getEntity())
+                || event instanceof Cancellable && !((Cancellable) event).isCancelled()) return;
+
+        Player player = event.getEntity();
+        boolean wasSetup =
+                player.hasMetadata("skill-bar-setup") && player.getMetadata("skill-bar-setup").get(0).asBoolean();
+        if (!wasSetup) return;
+
+        player.removeMetadata("skill-bar-setup", SkillAPI.inst());
+        PlayerData data = SkillAPI.getPlayerData(player);
+        player.getInventory().setItem(slot, SkillAPI.getSettings().getCastItem());
+        data.getSkillBar().setup(player);
     }
 
     /**
@@ -287,19 +314,17 @@ public class CastCombatListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.MONITOR)
     public void onRespawn(PlayerRespawnEvent event) {
-        if (!event.getPlayer().getWorld().getGameRuleValue("keepInventory").equals("true"))
-            init(event.getPlayer());
+        if (!event.getPlayer().getWorld().getGameRuleValue("keepInventory").equals("true")) init(event.getPlayer());
     }
 
     @EventHandler
     public void onDupe(InventoryClickEvent event) {
-        if (!SkillAPI.getSettings().isWorldEnabled(event.getWhoClicked().getWorld()))
-            return;
+        if (!SkillAPI.getSettings().isWorldEnabled(event.getWhoClicked().getWorld())) return;
 
-        if (event.getSlot() == slot && event.getSlotType() == InventoryType.SlotType.QUICKBAR
-                || ((event.getAction() == InventoryAction.HOTBAR_SWAP
-                || event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD)
-                && event.getHotbarButton() == slot)) {
+        if (event.getSlot() == slot && event.getSlotType() == InventoryType.SlotType.QUICKBAR || (
+                (event.getAction() == InventoryAction.HOTBAR_SWAP
+                        || event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD)
+                        && event.getHotbarButton() == slot)) {
             event.setCancelled(true);
         }
     }
@@ -317,8 +342,8 @@ public class CastCombatListener extends SkillAPIListener {
         if (!skillBar.isSetup()) return;
 
         if ((event.getAction() == InventoryAction.HOTBAR_SWAP
-                || event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD)
-                && (!skillBar.isWeaponSlot(event.getHotbarButton()) || !skillBar.isWeaponSlot(event.getSlot()))) {
+                || event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD) && (
+                !skillBar.isWeaponSlot(event.getHotbarButton()) || !skillBar.isWeaponSlot(event.getSlot()))) {
             event.setCancelled(true);
             return;
         }
@@ -327,17 +352,15 @@ public class CastCombatListener extends SkillAPIListener {
         // Prevent moving skill icons
         int slot = event.getSlot();
         if (event.getSlot() < 9 && event.getRawSlot() > event.getView().getTopInventory().getSize()) {
-            if (event.getSlot() == this.slot)
-                event.setCancelled(true);
+            if (event.getSlot() == this.slot) event.setCancelled(true);
             else if (event.getClick() == ClickType.LEFT || event.getClick() == ClickType.SHIFT_LEFT)
                 event.setCancelled(!skillBar.isWeaponSlot(slot));
-            else if ((event.getClick() == ClickType.RIGHT || event.getClick() == ClickType.SHIFT_RIGHT)
-                    && (!skillBar.isWeaponSlot(slot) || (skillBar.isWeaponSlot(slot) && (event.getCurrentItem() == null
-                    || event.getCurrentItem().getType() == Material.AIR)))) {
+            else if ((event.getClick() == ClickType.RIGHT || event.getClick() == ClickType.SHIFT_RIGHT) && (
+                    !skillBar.isWeaponSlot(slot) || (skillBar.isWeaponSlot(slot) && (event.getCurrentItem() == null
+                            || event.getCurrentItem().getType() == Material.AIR)))) {
                 event.setCancelled(true);
                 skillBar.toggleSlot(slot);
-            } else if (event.getAction().name().startsWith("DROP"))
-                event.setCancelled(!skillBar.isWeaponSlot(slot));
+            } else if (event.getAction().name().startsWith("DROP")) event.setCancelled(!skillBar.isWeaponSlot(slot));
         }
     }
 
@@ -351,10 +374,8 @@ public class CastCombatListener extends SkillAPIListener {
         PlayerData data       = SkillAPI.getPlayerData(event.getPlayer());
         boolean    enabled    = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
         boolean    wasEnabled = SkillAPI.getSettings().isWorldEnabled(event.getFrom());
-        if (data.hasClass() && data.getSkillBar().isSetup() && enabled)
-            ignored.add(event.getPlayer().getUniqueId());
-        if (!enabled && wasEnabled)
-            cleanup(event.getPlayer());
+        if (data.hasClass() && data.getSkillBar().isSetup() && enabled) ignored.add(event.getPlayer().getUniqueId());
+        if (!enabled && wasEnabled) cleanup(event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -379,13 +400,11 @@ public class CastCombatListener extends SkillAPIListener {
      */
     @EventHandler
     public void onCast(PlayerItemHeldEvent event) {
-        if (!SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld()))
-            return;
+        if (!SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld())) return;
 
         if (event.getNewSlot() == slot) {
             event.setCancelled(true);
-            if (event.getPlayer().getGameMode() != GameMode.CREATIVE)
-                toggle(event.getPlayer());
+            if (event.getPlayer().getGameMode() != GameMode.CREATIVE) toggle(event.getPlayer());
             return;
         }
 
@@ -394,8 +413,7 @@ public class CastCombatListener extends SkillAPIListener {
         PlayerSkillBar bar  = data.getSkillBar();
         if (!bar.isWeaponSlot(event.getNewSlot()) && bar.isSetup()) {
             event.setCancelled(true);
-            if (ignored.remove(event.getPlayer().getUniqueId()))
-                return;
+            if (ignored.remove(event.getPlayer().getUniqueId())) return;
             bar.apply(event.getNewSlot());
         }
     }
@@ -409,15 +427,13 @@ public class CastCombatListener extends SkillAPIListener {
     public void onChangeMode(PlayerGameModeChangeEvent event) {
         // Clear on entering creative mode
         final PlayerData data = SkillAPI.getPlayerData(event.getPlayer());
-        if (event.getNewGameMode() == GameMode.CREATIVE && data.getSkillBar().isSetup())
-            toggle(data.getPlayer());
+        if (event.getNewGameMode() == GameMode.CREATIVE && data.getSkillBar().isSetup()) toggle(data.getPlayer());
     }
 
     private void handleClear(final Player player) {
         backup.put(player.getUniqueId(), new ItemStack[9]);
         PlayerSkillBar skillBar = SkillAPI.getPlayerData(player).getSkillBar();
-        if (skillBar.isSetup())
-            skillBar.update(player);
+        if (skillBar.isSetup()) skillBar.update(player);
         player.getInventory().setItem(slot, SkillAPI.getSettings().getCastItem());
     }
 }

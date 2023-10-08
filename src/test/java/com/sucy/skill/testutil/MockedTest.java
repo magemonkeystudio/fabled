@@ -22,7 +22,6 @@ import mc.promcteam.engine.utils.reflection.ReflectionUtil;
 import mc.promcteam.engine.utils.reflection.Reflection_1_17;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
@@ -48,7 +47,7 @@ public abstract class MockedTest {
     private   Set<String>           classesToLoad    = new HashSet<>();
     private   Set<String>           skillsToLoad     = new HashSet<>();
     protected boolean               loadClasses      = false;
-    protected boolean loadSkills = false;
+    protected boolean               loadSkills       = false;
 
     protected ServerMock server;
     protected WorldMock  world;
@@ -85,7 +84,7 @@ public abstract class MockedTest {
         preInit();
 
         server = spy(MockBukkit.mock());
-        world       = server.addSimpleWorld("test");
+        world = server.addSimpleWorld("test");
         String coreVersion = System.getProperty("PROMCCORE_VERSION");
 
         try {

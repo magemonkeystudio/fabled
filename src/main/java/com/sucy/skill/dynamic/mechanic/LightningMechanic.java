@@ -31,11 +31,12 @@ import com.sucy.skill.listener.MechanicListener;
 import org.bukkit.Location;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Strikes lightning about each target with an offset
@@ -84,6 +85,26 @@ public class LightningMechanic extends MechanicComponent {
             }
         }
         return targets.size() > 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, Supplier<List<LivingEntity>> targetSupplier) {
+        super.playPreview(onPreviewStop, caster, level, () -> {
+            Set<LivingEntity> newTargets = new HashSet<>();
+            for (LivingEntity target : targetSupplier.get()) {
+                Location location = target.getLocation();
+                location = new Location(null, location.getBlockX(), location.getBlockY(), location.getBlockZ());
+                // Lightning hitbox from the wiki: https://minecraft.fandom.com/wiki/Thunderstorm#Lightning_mechanics
+                BoundingBox boundingBox = BoundingBox.of(location, 3, 6, 3);
+                for (LivingEntity livingEntity : target.getWorld().getLivingEntities()) {
+                    if (boundingBox.overlaps(livingEntity.getBoundingBox())) newTargets.add(livingEntity);
+                }
+            }
+            return new ArrayList<>(newTargets);
+        });
     }
 
     public class Callback {

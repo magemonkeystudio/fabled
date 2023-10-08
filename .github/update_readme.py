@@ -1,4 +1,3 @@
-import re
 import sys
 
 is_dev = len(sys.argv) >= 2 and bool(sys.argv[1])

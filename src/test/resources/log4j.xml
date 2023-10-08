@@ -6,13 +6,13 @@
     <appender name="console" class="org.apache.log4j.ConsoleAppender">
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern"
-                   value="[~%p %c] %m%n" />
+                   value="[~%p %c] %m%n"/>
         </layout>
     </appender>
 
     <root>
-        <level value="INFO" />
-        <appender-ref ref="console" />
+        <level value="INFO"/>
+        <appender-ref ref="console"/>
     </root>
 
 </log4j:configuration>

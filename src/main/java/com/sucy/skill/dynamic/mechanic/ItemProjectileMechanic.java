@@ -117,7 +117,6 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
             });
         }
     }*/
-
     @Override
     public String getKey() {
         return "item projectile";
@@ -158,7 +157,17 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
             if (spread.equals("rain")) {
                 double radius = parseValues(caster, RADIUS, level, 2.0);
                 double height = parseValues(caster, HEIGHT, level, 8.0);
-                list = ItemProjectile.rain(caster, loc, copy, item, radius, height, speed, amount, this, lifespan, walls);
+                list = ItemProjectile.rain(caster,
+                        loc,
+                        copy,
+                        item,
+                        radius,
+                        height,
+                        speed,
+                        amount,
+                        this,
+                        lifespan,
+                        walls);
             } else {
                 Vector dir = target.getLocation().getDirection();
 

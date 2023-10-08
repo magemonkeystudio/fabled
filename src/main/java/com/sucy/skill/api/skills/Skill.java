@@ -534,9 +534,9 @@ public abstract class Skill implements IconHolder {
             meta.setCustomModelData(iconMeta.getCustomModelData());
         }
 
-        ArrayList<String> lore = new ArrayList<>();
+        List<String> lore = new ArrayList<>();
 
-        String MET     = SkillAPI.getLanguage().getMessage(SkillNodes.REQUIREMENT_MET, true, FilterType.COLOR).get(0);
+        String MET = SkillAPI.getLanguage().getMessage(SkillNodes.REQUIREMENT_MET, true, FilterType.COLOR).get(0);
         String NOT_MET =
                 SkillAPI.getLanguage().getMessage(SkillNodes.REQUIREMENT_NOT_MET, true, FilterType.COLOR).get(0);
         MET = MET.substring(0, MET.length() - 2);
@@ -550,7 +550,7 @@ public abstract class Skill implements IconHolder {
 
         String attrChanging =
                 SkillAPI.getLanguage().getMessage(SkillNodes.ATTRIBUTE_CHANGING, true, FilterType.COLOR).get(0);
-        String attrStatic   =
+        String attrStatic =
                 SkillAPI.getLanguage().getMessage(SkillNodes.ATTRIBUTE_NOT_CHANGING, true, FilterType.COLOR).get(0);
 
         for (String line : iconLore) {

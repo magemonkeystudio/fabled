@@ -162,10 +162,11 @@ public class CastBarsListener extends SkillAPIListener {
             int slot = SkillAPI.getSettings().getCastSlot();
             if ((event.getView().getTopInventory().getHolder() instanceof PlayerCastBars // Organizer menu
                     && event.getClickedInventory() instanceof PlayerInventory
-                    && event.getSlot() == slot+27)
+                    && event.getSlot() == slot + 27)
                     || (event.getSlot() == slot
                     && event.getSlotType() == InventoryType.SlotType.QUICKBAR)
-                    || ((event.getAction() == InventoryAction.HOTBAR_SWAP || event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD)
+                    || ((event.getAction() == InventoryAction.HOTBAR_SWAP
+                    || event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD)
                     && event.getHotbarButton() == slot)) {
                 event.setCancelled(true);
             }
@@ -218,8 +219,7 @@ public class CastBarsListener extends SkillAPIListener {
                 }
                 SkillAPI.getPlayerData(event.getPlayer()).getCastBars().restore();
                 bars.showHoverBar(event.getPlayer());
-            }
-            else if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
+            } else if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
                 bars.showInstantBar(event.getPlayer());
         }
     }

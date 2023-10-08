@@ -43,7 +43,8 @@ public class SkillHandler extends GUIHolder<Skill> {
 
     @Override
     public void onHotBar(Skill type, int from, int to) {
-        if (SkillAPI.getSettings().isSkillBarEnabled() && player.getSkillBar().isSetup() && type.canCast() && player.hasSkill(type.getName())) {
+        if (SkillAPI.getSettings().isSkillBarEnabled() && player.getSkillBar().isSetup() && type.canCast()
+                && player.hasSkill(type.getName())) {
             player.getSkillBar().assign(player.getSkill(type.getName()), to);
         }
     }

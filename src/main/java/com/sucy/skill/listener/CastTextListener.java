@@ -18,7 +18,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.*;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -29,13 +32,14 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class CastTextListener extends SkillAPIListener {
-    private final CastMode castMode;
-    private final HashMap<UUID, ItemStack[]> backup = new HashMap<>();
-    private boolean enabled = true;
+    private final CastMode                   castMode;
+    private final HashMap<UUID, ItemStack[]> backup  = new HashMap<>();
+    private       boolean                    enabled = true;
 
     public CastTextListener(CastMode castMode) {
         switch (castMode) {
-            case ACTION_BAR, TITLE, SUBTITLE, CHAT -> {}
+            case ACTION_BAR, TITLE, SUBTITLE, CHAT -> {
+            }
             default -> throw new IllegalArgumentException(castMode.name());
         }
         this.castMode = castMode;
@@ -56,7 +60,9 @@ public class CastTextListener extends SkillAPIListener {
     }
 
     private void init(Player player) {
-        if (player.getOpenInventory().getTopInventory() != null && player.getOpenInventory().getTopInventory().getHolder() instanceof SkillHandler) player.closeInventory();
+        if (player.getOpenInventory().getTopInventory() != null && player.getOpenInventory()
+                .getTopInventory()
+                .getHolder() instanceof SkillHandler) player.closeInventory();
         SkillAPI.getPlayerData(player).getTextCastingData().validate();
     }
 
@@ -77,7 +83,7 @@ public class CastTextListener extends SkillAPIListener {
 
         if (event.getInventory().getHolder() instanceof SkillHandler) {
             PlayerInventory inventory = player.getInventory();
-            ItemStack[] items = new ItemStack[9];
+            ItemStack[]     items     = new ItemStack[9];
             for (int i = 0; i < items.length; i++) {
                 ItemStack item = inventory.getItem(i);
                 if (item != null && item.getType() != Material.AIR) {
@@ -94,12 +100,13 @@ public class CastTextListener extends SkillAPIListener {
         PlayerData            playerData = SkillAPI.getPlayerData(player);
         PlayerTextCastingData layout     = playerData.getTextCastingData();
         PlayerInventory       inventory  = player.getInventory();
-        ItemStack unassigned = GUITool.markCastItem(SkillAPI.getSettings().getUnassigned());
+        ItemStack             unassigned = GUITool.markCastItem(SkillAPI.getSettings().getUnassigned());
         for (int i = 0; i < 9; i++) {
             if (i == SkillAPI.getSettings().getCastSlot()) inventory.setItem(i, null);
             else {
                 PlayerSkill skill = playerData.getSkill(layout.getSkill(i));
-                inventory.setItem(i, skill == null ? unassigned : GUITool.markCastItem(skill.getData().getIndicator(skill, true)));
+                inventory.setItem(i,
+                        skill == null ? unassigned : GUITool.markCastItem(skill.getData().getIndicator(skill, true)));
             }
         }
     }
@@ -110,18 +117,21 @@ public class CastTextListener extends SkillAPIListener {
         Player player = ((Player) event.getWhoClicked());
         if (!isWorldEnabled(player)) return;
 
-        InventoryView view = event.getView();
-        Inventory topInventory = view.getTopInventory();
-        Inventory clickedInventory = event.getClickedInventory();
+        InventoryView view             = event.getView();
+        Inventory     topInventory     = view.getTopInventory();
+        Inventory     clickedInventory = event.getClickedInventory();
 
         if (topInventory.getHolder() instanceof SkillHandler) {
             if (clickedInventory == topInventory && event.getClick() == ClickType.NUMBER_KEY) {
                 Skill skill = ((SkillHandler) topInventory.getHolder()).get(event.getSlot());
                 if (skill != null) {
-                    SkillAPI.getPlayerData(player).getTextCastingData().assign(skill.getName(), event.getHotbarButton());
+                    SkillAPI.getPlayerData(player)
+                            .getTextCastingData()
+                            .assign(skill.getName(), event.getHotbarButton());
                     refresh(player);
                 }
-            } else if (clickedInventory == view.getBottomInventory() && event.getSlotType() == InventoryType.SlotType.QUICKBAR) {
+            } else if (clickedInventory == view.getBottomInventory()
+                    && event.getSlotType() == InventoryType.SlotType.QUICKBAR) {
                 SkillAPI.getPlayerData(player).getTextCastingData().assign(null, event.getSlot());
                 refresh(player);
             }
@@ -154,7 +164,8 @@ public class CastTextListener extends SkillAPIListener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChangeWorldPre(PlayerChangedWorldEvent event) {
-        if (!SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld()) && SkillAPI.getSettings().isWorldEnabled(event.getFrom()))
+        if (!SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld()) && SkillAPI.getSettings()
+                .isWorldEnabled(event.getFrom()))
             init(event.getPlayer());
     }
 
@@ -183,7 +194,8 @@ public class CastTextListener extends SkillAPIListener {
         @Override
         public void run() {
             Player player = playerData.getPlayer();
-            if (!enabled || player == null || !player.isOnline() || !isWorldEnabled(player) || !playerData.getTextCastingData().isCasting()) {
+            if (!enabled || player == null || !player.isOnline() || !isWorldEnabled(player)
+                    || !playerData.getTextCastingData().isCasting()) {
                 this.cancel();
                 return;
             }
@@ -208,7 +220,7 @@ public class CastTextListener extends SkillAPIListener {
     @EventHandler
     public void onHandSwap(PlayerSwapHandItemsEvent event) {
         event.setCancelled(true);
-        Player player = event.getPlayer();
+        Player                player     = event.getPlayer();
         PlayerData            playerData = SkillAPI.getPlayerData(player);
         PlayerTextCastingData castData   = playerData.getTextCastingData();
         if (castData.isCasting()) {

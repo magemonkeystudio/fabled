@@ -1,4 +1,4 @@
-Honor Guard: 
+Honor Guard:
   name: 'Honor Guard'
   action-bar: ''
   prefix: '&3&lHonor Guard'
@@ -7,7 +7,7 @@ Honor Guard:
   max-level: 50
   parent: ''
   needs-permission: 'false'
-  attributes: 
+  attributes:
     health-base: '330'
     health-scale: '95'
     mana-base: '160'

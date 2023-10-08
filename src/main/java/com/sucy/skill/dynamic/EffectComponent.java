@@ -28,6 +28,7 @@ package com.sucy.skill.dynamic;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.Settings;
+import com.sucy.skill.api.particle.ParticleHelper;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkill;
 import com.sucy.skill.log.Logger;
@@ -35,36 +36,40 @@ import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.util.MobManager;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * A component for dynamic skills which takes care of one effect
  */
 public abstract class EffectComponent {
-    private static final String                     ICON_KEY   = "icon-key";
-    private static final String                     COUNTS_KEY = "counts";
-    private static final String                     TYPE       = "type";
-    private static final String                     PREVIEW    = "preview";
+    private static final String                     ICON_KEY         = "icon-key";
+    private static final String                     COUNTS_KEY       = "counts";
+    private static final String                     TYPE             = "type";
+    private static final String                     PREVIEW          = "preview";
     private static       boolean                    passed;
     /**
      * Child components
      */
-    public final         ArrayList<EffectComponent> children   = new ArrayList<>();
+    public final         ArrayList<EffectComponent> children         = new ArrayList<>();
     /**
      * The settings for the component
      */
-    protected final      Settings settings   = new Settings();
+    protected final      Settings                   settings         = new Settings();
     /**
      * Whether the component should display preview effects
      */
-    private boolean  isPreviewEnabled        = false;
+    private              boolean                    isPreviewEnabled = false;
     /**
      * The preview settings for the component
      */
-    protected final      Settings preview    = new Settings();
+    protected final      Settings                   preview          = new Settings();
     /**
      * Parent class of the component
      */
@@ -323,26 +328,44 @@ public abstract class EffectComponent {
      * temporary effects should be included in a {@link Runnable} added
      * to the provided {@link List}.
      *
-     * @param onPreviewStop {@link List} of {@link Runnable}s to add to
-     * @param caster  caster reference
-     * @param level   the level of the skill to preview for
-     * @param targets targets to preview on
+     * @param onPreviewStop  {@link List} of {@link Runnable}s to add to
+     * @param caster         caster reference
+     * @param level          the level of the skill to preview for
+     * @param targetSupplier targets to preview on
      */
-    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {}
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, Supplier<List<LivingEntity>> targetSupplier) {
+        if (preview.getBool("per-target")) {
+            BukkitTask task = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    for (LivingEntity target : targetSupplier.get()) {
+                        ParticleHelper.play(target.getLocation(), preview, Set.of(caster), "per-target-",
+                                preview.getBool("per-target-" + "hitbox") ? target.getBoundingBox() : null
+                        );
+                    }
+                }
+            }.runTaskTimer(SkillAPI.inst(), 0, Math.max(1, preview.getInt("per-target-" + "period", 5)));
+            onPreviewStop.add(task::cancel);
+        }
+        playChildrenPreviews(onPreviewStop, caster, level, targetSupplier);
+    }
 
     /**
      * Starts the preview effects of children components
      * with previews enabled (see {@link #isPreviewEnabled()}),
      * and adds their onPreviewStop {@link Runnable}s to the provided {@link List}.
      *
-     * @param onPreviewStop {@link List} of {@link Runnable}s to add to
-     * @param caster  caster reference
-     * @param level   the level of the skill to preview for
-     * @param targets targets to preview on
+     * @param onPreviewStop  {@link List} of {@link Runnable}s to add to
+     * @param caster         caster reference
+     * @param level          the level of the skill to preview for
+     * @param targetSupplier targets to preview on
      */
-    public void playChildrenPreviews(List<Runnable> onPreviewStop, Player caster, int level, List<LivingEntity> targets) {
+    public void playChildrenPreviews(List<Runnable> onPreviewStop,
+                                     Player caster,
+                                     int level,
+                                     Supplier<List<LivingEntity>> targetSupplier) {
         for (EffectComponent child : children) {
-            if (child.isPreviewEnabled) child.playPreview(onPreviewStop, caster, level, targets);
+            child.playPreview(onPreviewStop, caster, level, targetSupplier);
         }
     }
 
