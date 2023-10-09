@@ -1635,14 +1635,40 @@ public class PlayerData {
     /**
      * Gives skill points to the player for all classes matching the experience source
      *
+     * @deprecated See {@link PlayerData#givePoints(int, PointSource)} instead
+     *
      * @param amount amount of levels to give
      * @param source source of the levels
      */
+    @Deprecated
     public void givePoints(int amount, ExpSource source) {
         for (PlayerClass playerClass : classes.values()) {
             if (playerClass.getData().receivesExp(source)) {
                 playerClass.givePoints(amount);
             }
+        }
+    }
+
+    /**
+     * Gives skill points to the player for all classes matching the experience source
+     *
+     * @param amount amount of levels to give
+     * @param source source of the levels
+     */
+    public void givePoints(int amount, PointSource source) {
+        for (PlayerClass playerClass : classes.values()) {
+            playerClass.givePoints(amount, source);
+        }
+    }
+
+    /**
+     * Sets the skill point amount to the player for all classes
+     *
+     * @param amount amount of levels to set to
+     */
+    public void setPoints(int amount) {
+        for (PlayerClass playerClass : classes.values()) {
+            playerClass.setPoints(amount);
         }
     }
 

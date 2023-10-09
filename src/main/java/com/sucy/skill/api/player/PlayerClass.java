@@ -192,9 +192,9 @@ public class PlayerClass {
      */
     public void setPoints(int amount) {
         // Cannot have a negative amount of points
-        if (amount < 0) {
+        /*if (amount < 0) {
             throw new IllegalArgumentException("Invalid point amount - cannot be less than 1");
-        }
+        }*/
 
         // Set the points
         points = amount;
@@ -259,9 +259,9 @@ public class PlayerClass {
      */
     public void givePoints(int amount, PointSource source) {
         // Cannot give a non-positive amount of points
-        if (amount < 1) {
+        /*if (amount < 1) {
             throw new IllegalArgumentException("Invalid point amount - cannot be less than 1");
-        }
+        }*/
 
         // Call the event
         PlayerGainSkillPointsEvent event = new PlayerGainSkillPointsEvent(this, amount, source);
