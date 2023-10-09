@@ -3045,22 +3045,24 @@ class ParticleProjectileMechanic extends ProMechanic {
 			name:         'Particle Projectile',
 			description:  'Launches a projectile using particles as its visual that applies child components upon landing. The target passed on will be the collided target or the location where it landed if it missed',
 			data:         [
-				new DoubleSelect('Gravity', 'gravity')
-					.setTooltip('How much gravity to apply each tick. Negative values make it fall while positive values make it rise'),
 				new BooleanSelect('Pierce', 'pierce')
 					.setTooltip('Whether this projectile should pierce through initial targets and continue hitting those behind them'),
 				new DropdownSelect('Group', 'group', ['Ally', 'Enemy'], 'Enemy')
 					.setTooltip('The alignment of targets to hit'),
-
+				new IntSelect('Steps', 'steps', 2)
+					.setTooltip('Amount of collision steps to run per meter travelled.'),
+				new AttributeSelect('Gravity', 'gravity', -0.04)
+					.setTooltip('Vertical acceleration the projectile is subjected to, in meters per squared tick. Negative values make it fall while positive values make it rise.'),
+				new AttributeSelect('Drag', 'drag', 0.02)
+					.setTooltip('Air resistance of the projectile, in inverse seconds. Greater values mean the projectile will slow down more over time, and reach a lower terminal velocity.'),
+				new IntSelect('Particle period', 'period', 2)
+					.setTooltip('How often to play a particle effect where the projectile is.'),
 				...projectileOptions(),
 				...particleOptions(),
 
-				new DoubleSelect('Frequency', 'frequency', 0.05)
-					.setTooltip('How often to play a particle effect where the projectile is. It is recommended not to change this value unless there are too many particles playing'),
-
 				...effectOptions(true)
 			],
-			summaryItems: ['gravity', 'pierce', 'group', 'particle', 'amount', 'spread', 'frequency', 'dust-color']
+			summaryItems: ['steps', 'gravity', 'drag', 'frequency', 'pierce', 'group', 'particle', 'amount', 'spread', 'dust-color']
 		}, true);
 	}
 
