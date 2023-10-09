@@ -49,31 +49,43 @@ public class ParticleProjectile extends CustomProjectile {
      * Settings key for the projectile speed
      */
     public static final String SPEED = "velocity";
-
     /**
-     * Settings key for the projectile lifespan
+     * Settings key for the minimum projectile steps per meter
      */
-    private static final String LIFESPAN = "lifespan";
-
+    public static final String STEPS = "steps";
+    /**
+     * Settings key for the gravity the projectile is subjected to
+     */
+    public static final String GRAVITY = "gravity";
+    /**
+     * Settings key for the drag rate the projectile is subjected to
+     */
+    public static final String DRAG = "drag";
+    /**
+     * Settings key for the projectile's period for playing particles
+     */
+    public static final String PERIOD = "period";
     /**
      * Settings key for the projectile's frequency of playing particles
+     * @deprecated unintuitively named, now PERIOD is used instead
      */
-    private static final String FREQUENCY = "frequency";
+    @Deprecated
+    public static final String LEGACY_FREQUENCY = "frequency";
 
     /**
      * Settings key for the projectile's effective gravity
      */
-    private static final String GRAVITY = "gravity";
 
     private static final String PIERCE = "pierce";
 
     private       Location loc;
     private       Vector   vel;
-    private final int      steps;
-    private       int      count;
-    private final int      freq;
     private       int      life;
-    private final Vector   gravity;
+    private final int      steps;
+    private final double   gravity;
+    private final double   drag;
+    private final int      particlePeriod;
+    private       int      count;
     private final boolean  pierce;
 
     /**
@@ -89,14 +101,13 @@ public class ParticleProjectile extends CustomProjectile {
 
         this.loc = loc;
         this.vel = loc.getDirection().multiply(settings.getAttr(SPEED, level, 1.0));
-        this.freq = (int) (20 * settings.getDouble(FREQUENCY, 0.5));
         this.life = lifespan;
-        this.gravity = new Vector(0, settings.getDouble(GRAVITY, 0), 0);
-        this.pierce = settings.getBool(PIERCE, false);
+        this.steps = settings.getInt(STEPS, 2);
+        this.gravity = settings.getAttr(GRAVITY, 0, -0.04);
+        this.drag = settings.getAttr(DRAG, 0, 0.02);
 
-        steps = (int) Math.ceil(vel.length() * 2);
-        vel.multiply(1.0 / steps);
-        gravity.multiply(1.0 / steps);
+        this.particlePeriod = settings.getInt(PERIOD, (int) (40 * settings.getDouble(LEGACY_FREQUENCY, 0.05)));
+        this.pierce = settings.getBool(PIERCE, false);
         Bukkit.getPluginManager().callEvent(new ParticleProjectileLaunchEvent(this));
     }
 
@@ -184,23 +195,28 @@ public class ParticleProjectile extends CustomProjectile {
      */
     @Override
     public void run() {
+        vel.setX(vel.getX()-drag*vel.getX());
+        vel.setY(vel.getY()-drag*vel.getY()+gravity);
+        vel.setZ(vel.getZ()-drag*vel.getZ());
         // Go through multiple steps to avoid tunneling
+        double speed = vel.length();
+        int steps = (int) Math.round(speed * this.steps);
+        Vector stepVector = vel.clone().multiply(1.0/steps);
         for (int i = 0; i < steps; i++) {
-            loc.add(vel);
-            vel.add(gravity);
+            loc.add(stepVector);
 
-            if (!isTraveling())
-                return;
+            // Particle along path
+            count++;
+            if (count >= particlePeriod) {
+                count = 0;
+                ParticleHelper.play(loc, settings);
+            }
+
+            if (!isTraveling()) return;
 
             if (!checkCollision(pierce)) break;
         }
 
-        // Particle along path
-        count++;
-        if (count >= freq) {
-            count = 0;
-            ParticleHelper.play(loc, settings);
-        }
 
         // Lifespan
         life--;
