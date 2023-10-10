@@ -227,9 +227,6 @@ public class PlaceholderUtil {
             return "0";
         }
 
-        if (identifier.startsWith("value_")) {
-            return data.getPersistentData(identifier.substring(6)).toString();
-        }
 
         if (identifier.startsWith("default_")) {
             if (identifier.equals("default_currentlevel")) {
@@ -307,6 +304,9 @@ public class PlaceholderUtil {
             }
             if (identifier.equals("default_scurrentrequiredexp")) {
                 return String.valueOf(data.getMainClass().getRequiredExp());
+            }
+            if (identifier.startsWith("default_value_")) {
+                return data.getPersistentData(identifier.substring(14)).toString();
             }
         }
 
