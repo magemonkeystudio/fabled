@@ -5,6 +5,7 @@ import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.player.PlayerAccounts;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.player.PlayerData;
+import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.hook.PlaceholderAPIHook;
 import com.sucy.skill.hook.PluginChecker;
 import mc.promcteam.engine.utils.StringUT;
@@ -12,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -227,10 +229,6 @@ public class PlaceholderUtil {
             return "0";
         }
 
-        if (identifier.startsWith("value_")) {
-            return data.getPersistentData(identifier.substring(6)).toString();
-        }
-
         if (identifier.startsWith("default_")) {
             if (identifier.equals("default_currentlevel")) {
                 return String.valueOf(data.getMainClass().getLevel());
@@ -307,6 +305,9 @@ public class PlaceholderUtil {
             }
             if (identifier.equals("default_scurrentrequiredexp")) {
                 return String.valueOf(data.getMainClass().getRequiredExp());
+            }
+            if (identifier.startsWith("default_value_")) {
+                return data.getPersistentData(identifier.substring(14)).toString();
             }
         }
 
