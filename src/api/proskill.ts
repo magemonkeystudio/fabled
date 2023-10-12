@@ -4,9 +4,9 @@ import { ProAttribute }                          from './proattribute';
 import { toEditorCase }                          from './api';
 import { getSkill }                              from '../data/skill-store';
 import ProTrigger                                from './components/triggers';
-import type ProComponent                         from '$api/components/procomponent';
-import Registry                                  from '$api/components/registry';
-import type { Unsubscriber }                     from 'svelte/types/runtime/store';
+import type ProComponent         from '$api/components/procomponent';
+import Registry, { initialized } from '$api/components/registry';
+import type { Unsubscriber }     from 'svelte/types/runtime/store';
 
 export default class ProSkill implements Serializable {
 	isSkill                  = true;
@@ -147,7 +147,7 @@ export default class ProSkill implements Serializable {
 
 		let unsub: Unsubscriber | undefined = undefined;
 
-		unsub = Registry.initialized.subscribe(init => {
+		unsub = initialized.subscribe(init => {
 			if (!init) return;
 			this.triggers = yaml.get<YAMLObject, ProTrigger[]>('components', this.triggers, (list: YAMLObject) => Registry.deserializeComponents(list));
 

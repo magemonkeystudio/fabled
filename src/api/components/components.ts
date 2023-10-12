@@ -1,10 +1,10 @@
-import ProMechanic                            from '$api/components/mechanics';
-import BlockSelect                            from '$api/options/blockselect';
-import ProCondition                           from '$api/components/conditions';
-import DropdownSelect                         from '$api/options/dropdownselect';
-import ProTrigger                             from '$api/components/triggers';
-import ProTarget                              from '$api/components/targets';
-import MaterialSelect                         from '$api/options/materialselect';
+import ProMechanic                                               from '$api/components/mechanics';
+import BlockSelect                                               from '$api/options/blockselect';
+import ProCondition                                              from '$api/components/conditions';
+import DropdownSelect                                            from '$api/options/dropdownselect';
+import ProTrigger                                                from '$api/components/triggers';
+import ProTarget                                                 from '$api/components/targets';
+import MaterialSelect                                            from '$api/options/materialselect';
 import {
 	getAnyConsumable,
 	getAnyEntities,
@@ -26,20 +26,21 @@ import {
 	getPotionTypes,
 	getProjectiles,
 	getSounds
-}                                             from '../../version/data';
-import BooleanSelect                          from '$api/options/booleanselect';
-import DoubleSelect                           from '$api/options/doubleselect';
-import Registry                               from '$api/components/registry';
-import StringListSelect                       from '$api/options/stringlistselect';
-import type { ComponentOption, Requirements } from '$api/options/options';
-import AttributeSelect                        from '$api/options/attributeselect';
-import SectionMarker                          from '$api/options/sectionmarker';
-import StringSelect                           from '$api/options/stringselect';
-import ClassSelect                            from '$api/options/classselect';
-import SkillSelect                            from '$api/options/skillselect';
-import IntSelect                              from '$api/options/intselect';
-import ColorSelect                            from '$api/options/colorselect';
-import { get }                                from 'svelte/store';
+}                                                                from '../../version/data';
+import BooleanSelect                                             from '$api/options/booleanselect';
+import DoubleSelect                                              from '$api/options/doubleselect';
+import { conditions, initialized, mechanics, targets, triggers } from '$api/components/registry';
+import StringListSelect                                          from '$api/options/stringlistselect';
+import type { ComponentOption, Requirements }                    from '$api/options/options';
+import AttributeSelect                                           from '$api/options/attributeselect';
+import SectionMarker                                             from '$api/options/sectionmarker';
+import StringSelect                                              from '$api/options/stringselect';
+import ClassSelect                                               from '$api/options/classselect';
+import SkillSelect                                               from '$api/options/skillselect';
+import IntSelect                                                 from '$api/options/intselect';
+import ColorSelect                                               from '$api/options/colorselect';
+import { get }                                                   from 'svelte/store';
+import type ProComponent                                         from '$api/components/procomponent';
 
 // TRIGGERS
 
@@ -3401,9 +3402,9 @@ class TriggerMechanic extends ProMechanic {
 			name:         'Trigger',
 			description:  'Listens for a trigger on the current targets for a duration',
 			data:         [
-				new DropdownSelect('Trigger', 'trigger', () => Object.values(get(Registry.triggers)).map((trigger: {
+				new DropdownSelect('Trigger', 'trigger', () => Object.values(get(triggers)).map((trigger: {
 					name: string,
-					component: typeof ProTrigger
+					component: typeof ProComponent
 				}) => trigger.name), 'Death')
 					.setTooltip('The trigger to listen for'),
 				new AttributeSelect('Duration', 'duration', 5)
@@ -3962,7 +3963,7 @@ const particlePreviewOptions = (key: string): ComponentOption[] => {
 };
 
 export const initComponents = () => {
-	Registry.triggers.set({
+	triggers.set({
 		ARMOR_EQUIP:    { name: 'Armor Equip', component: ArmorEquipTrigger },
 		BLOCK_BREAK:    { name: 'Block Break', component: BlockBreakTrigger },
 		BLOCK_PLACE:    { name: 'Block Place', component: BlockPlaceTrigger },
@@ -3999,7 +4000,7 @@ export const initComponents = () => {
 		TOOK_PHYS:      { name: 'Took Physical Damage', component: TookPhysicalTrigger },
 		TOOK_SKILL:     { name: 'Took Skill Damage', component: TookSkillTrigger }
 	});
-	Registry.targets.set({
+	targets.set({
 		AREA:     { name: 'Area', component: AreaTarget },
 		CONE:     { name: 'Cone', component: ConeTarget },
 		LINEAR:   { name: 'Linear', component: LinearTarget },
@@ -4010,7 +4011,7 @@ export const initComponents = () => {
 		SELF:     { name: 'Self', component: SelfTarget },
 		SINGLE:   { name: 'Single', component: SingleTarget }
 	});
-	Registry.conditions.set({
+	conditions.set({
 		ALTITUDE:       { name: 'Altitude', component: AltitudeCondition },
 		ARMOR:          { name: 'Armor', component: ArmorCondition },
 		ATTRIBUTE:      { name: 'Attribute', component: AttributeCondition },
@@ -4056,7 +4057,7 @@ export const initComponents = () => {
 		WEATHER:        { name: 'Weather', component: WeatherCondition },
 		WORLD:          { name: 'World', component: WorldCondition }
 	});
-	Registry.mechanics.set({
+	mechanics.set({
 		ARMOR:               { name: 'Armor', component: ArmorMechanic },
 		ARMOR_STAND:         { name: 'Armor Stand', component: ArmorStandMechanic },
 		ARMOR_STAND_POSE:    { name: 'Armor Stand Pose', component: ArmorStandPoseMechanic },
@@ -4120,26 +4121,28 @@ export const initComponents = () => {
 		STATUS:              { name: 'Status', component: StatusMechanic },
 		TAUNT:               { name: 'Taunt', component: TauntMechanic },
 		TRIGGER:             { name: 'Trigger', component: TriggerMechanic },
-		VALUE_ADD:           { name: 'Value Add', component: ValueAddMechanic },
-		VALUE_ATTRIBUTE:     { name: 'Value Attribute', component: ValueAttributeMechanic },
-		VALUE_COPY:          { name: 'Value Copy', component: ValueCopyMechanic },
-		VALUE_DISTANCE:      { name: 'Value Distance', component: ValueDistanceMechanic },
-		VALUE_HEALTH:        { name: 'Value Health', component: ValueHealthMechanic },
-		VALUE_LOCATION:      { name: 'Value Location', component: ValueLocationMechanic },
-		VALUE_LORE:          { name: 'Value Lore', component: ValueLoreMechanic },
-		VALUE_LORE_SLOT:     { name: 'Value Lore Slot', component: ValueLoreSlotMechanic },
-		VALUE_MANA:          { name: 'Value Mana', component: ValueManaMechanic },
-		VALUE_MULTIPLY:      { name: 'Value Multiply', component: ValueMultiplyMechanic },
-		VALUE_PLACEHOLDER:   { name: 'Value Placeholder', component: ValuePlaceholderMechanic },
-		VALUE_RANDOM:        { name: 'Value Random', component: ValueRandomMechanic },
-		VALUE_SET:           { name: 'Value Set', component: ValueSetMechanic },
-		WARP:                { name: 'Warp', component: WarpMechanic },
-		WARP_LOC:            { name: 'Warp Location', component: WarpLocMechanic },
-		WARP_RANDOM:         { name: 'Warp Random', component: WarpRandomMechanic },
-		WARP_SWAP:           { name: 'Warp Swap', component: WarpSwapMechanic },
-		WARP_TARGET:         { name: 'Warp Target', component: WarpTargetMechanic },
-		WARP_VALUE:          { name: 'Warp Value', component: WarpValueMechanic },
-		WOLF:                { name: 'Wolf', component: WolfMechanic }
+		WOLF:                { name: 'Wolf', component: WolfMechanic },
+
+		VALUE_ADD:         { name: 'Value Add', component: ValueAddMechanic, section: 'Value' },
+		VALUE_ATTRIBUTE:   { name: 'Value Attribute', component: ValueAttributeMechanic, section: 'Value' },
+		VALUE_COPY:        { name: 'Value Copy', component: ValueCopyMechanic, section: 'Value' },
+		VALUE_DISTANCE:    { name: 'Value Distance', component: ValueDistanceMechanic, section: 'Value' },
+		VALUE_HEALTH:      { name: 'Value Health', component: ValueHealthMechanic, section: 'Value' },
+		VALUE_LOCATION:    { name: 'Value Location', component: ValueLocationMechanic, section: 'Value' },
+		VALUE_LORE:        { name: 'Value Lore', component: ValueLoreMechanic, section: 'Value' },
+		VALUE_LORE_SLOT:   { name: 'Value Lore Slot', component: ValueLoreSlotMechanic, section: 'Value' },
+		VALUE_MANA:        { name: 'Value Mana', component: ValueManaMechanic, section: 'Value' },
+		VALUE_MULTIPLY:    { name: 'Value Multiply', component: ValueMultiplyMechanic, section: 'Value' },
+		VALUE_PLACEHOLDER: { name: 'Value Placeholder', component: ValuePlaceholderMechanic, section: 'Value' },
+		VALUE_RANDOM:      { name: 'Value Random', component: ValueRandomMechanic, section: 'Value' },
+		VALUE_SET:         { name: 'Value Set', component: ValueSetMechanic, section: 'Value' },
+
+		WARP:        { name: 'Warp', component: WarpMechanic, section: 'Warp' },
+		WARP_LOC:    { name: 'Warp Location', component: WarpLocMechanic, section: 'Warp' },
+		WARP_RANDOM: { name: 'Warp Random', component: WarpRandomMechanic, section: 'Warp' },
+		WARP_SWAP:   { name: 'Warp Swap', component: WarpSwapMechanic, section: 'Warp' },
+		WARP_TARGET: { name: 'Warp Target', component: WarpTargetMechanic, section: 'Warp' },
+		WARP_VALUE:  { name: 'Warp Value', component: WarpValueMechanic, section: 'Warp' }
 	});
-	Registry.initialized.set(true);
+	initialized.set(true);
 };
