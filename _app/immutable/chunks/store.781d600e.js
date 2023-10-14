@@ -1,4 +1,4 @@
-var fe=Object.defineProperty;var ue=(n,e,t)=>e in n?fe(n,e,{enumerable:!0,configurable:!0,writable:!0,value:t}):n[e]=t;var o=(n,e,t)=>(ue(n,typeof e!="symbol"?e+"":e,t),t);import{w as f,j as I,k as ge,e as E}from"./singletons.75fe12d4.js";import{I as a}from"./index.e9b9921d.js";const ee={INT:/^-?[0-9]+$/,FLOAT:/^-?[0-9]+\.[0-9]+$/,SPACE:/^( +)/},L=n=>{n=n.replace(/\r\n/g,`
+var fe=Object.defineProperty;var ue=(n,e,t)=>e in n?fe(n,e,{enumerable:!0,configurable:!0,writable:!0,value:t}):n[e]=t;var o=(n,e,t)=>(ue(n,typeof e!="symbol"?e+"":e,t),t);import{w as f,j as I,k as ge,e as E}from"./singletons.3ce10157.js";import{I as a}from"./index.e9b9921d.js";const ee={INT:/^-?[0-9]+$/,FLOAT:/^-?[0-9]+\.[0-9]+$/,SPACE:/^( +)/},L=n=>{n=n.replace(/\r\n/g,`
 `).replace(/\n *\n/g,`
 `).replace(/ +\n/g,`
 `);const e=new m,t=0,s=n.split(`
