@@ -5,6 +5,9 @@ import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.player.PlayerAccounts;
 import com.sucy.skill.api.player.PlayerClass;
 import com.sucy.skill.api.player.PlayerData;
+import com.sucy.skill.api.player.PlayerSkill;
+import com.sucy.skill.api.util.FlagData;
+import com.sucy.skill.api.util.FlagManager;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.hook.PlaceholderAPIHook;
 import com.sucy.skill.hook.PluginChecker;
@@ -18,10 +21,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PlaceholderUtil {
     private static Pattern regex = Pattern.compile("%sapi_(.*?)%");
@@ -336,6 +341,40 @@ public class PlaceholderUtil {
                 }
             }
         }
+
+        if (identifier.startsWith("dynamic_")) {
+            if (!player.isOnline()) return "0";
+            LivingEntity caster = player.getPlayer();
+            String[] ident = identifier.split("_", 3);
+            switch (ident[1]) {
+                case "value" -> {
+                    Map<String, Object> castData = DynamicSkill.getCastData(caster);
+                    if (ident.length<3) return "0";
+                    if (castData == null) return "0";
+                    return String.valueOf(castData.getOrDefault(ident[2], 0));
+                }
+                case "flags" -> {
+                    FlagData flagData = FlagManager.getFlagData(caster);
+                    if (flagData==null) return "0";
+                    Stream<String> stream = flagData.flagList().stream();
+                    if (ident.length>2) stream = stream
+                        .filter(f->f.startsWith(ident[2]))
+                        .map(f-> f.replaceFirst(ident[2],""));
+                    return stream.collect(Collectors.joining(" "));
+                }
+                case "flagremain" -> {
+                    if (ident.length<3) return "0";
+                    return String.valueOf(FlagManager.getTimeLeft(caster, ident[2]));
+                }
+                case "cooldown" -> {
+                    if (ident.length<3) return "0";
+                    PlayerSkill skill = data.getSkill(ident[2]);
+                    if (skill==null) return "0";
+                    return String.valueOf(skill.getCooldown());
+                }
+            }
+        }
+
         return null;
     }
 

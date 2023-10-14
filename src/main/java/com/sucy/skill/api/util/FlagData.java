@@ -37,6 +37,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Represents flags set on an entity
@@ -169,6 +170,15 @@ public class FlagData {
         return flags.containsKey(flag);
     }
 
+    /**
+     * Check the list of all active flags
+     *
+     * @return Set name of all active flag.
+     */
+    public Set<String> flagList(){
+        return flags.keySet();
+    }
+
     private class FlagTask extends BukkitRunnable {
         private final String flag;
 
@@ -185,4 +195,6 @@ public class FlagData {
             removeFlag(flag, FlagExpireEvent.ExpireReason.TIME);
         }
     }
+
+
 }
