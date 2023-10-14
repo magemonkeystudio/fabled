@@ -1,10 +1,10 @@
-import ProMechanic                            from '$api/components/mechanics';
-import BlockSelect                            from '$api/options/blockselect';
-import ProCondition                           from '$api/components/conditions';
-import DropdownSelect                         from '$api/options/dropdownselect';
-import ProTrigger                             from '$api/components/triggers';
-import ProTarget                              from '$api/components/targets';
-import MaterialSelect                         from '$api/options/materialselect';
+import ProMechanic                                               from '$api/components/mechanics';
+import BlockSelect                                               from '$api/options/blockselect';
+import ProCondition                                              from '$api/components/conditions';
+import DropdownSelect                                            from '$api/options/dropdownselect';
+import ProTrigger                                                from '$api/components/triggers';
+import ProTarget                                                 from '$api/components/targets';
+import MaterialSelect                                            from '$api/options/materialselect';
 import {
 	getAnyConsumable,
 	getAnyEntities,
@@ -26,20 +26,21 @@ import {
 	getPotionTypes,
 	getProjectiles,
 	getSounds
-}                                             from '../../version/data';
-import BooleanSelect                          from '$api/options/booleanselect';
-import DoubleSelect                           from '$api/options/doubleselect';
-import Registry                               from '$api/components/registry';
-import StringListSelect                       from '$api/options/stringlistselect';
-import type { ComponentOption, Requirements } from '$api/options/options';
-import AttributeSelect                        from '$api/options/attributeselect';
-import SectionMarker                          from '$api/options/sectionmarker';
-import StringSelect                           from '$api/options/stringselect';
-import ClassSelect                            from '$api/options/classselect';
-import SkillSelect                            from '$api/options/skillselect';
-import IntSelect                              from '$api/options/intselect';
-import ColorSelect                            from '$api/options/colorselect';
-import { get }                                from 'svelte/store';
+}                                                                from '../../version/data';
+import BooleanSelect                                             from '$api/options/booleanselect';
+import DoubleSelect                                              from '$api/options/doubleselect';
+import { conditions, initialized, mechanics, targets, triggers } from '$api/components/registry';
+import StringListSelect                                          from '$api/options/stringlistselect';
+import type { ComponentOption, Requirements }                    from '$api/options/options';
+import AttributeSelect                                           from '$api/options/attributeselect';
+import SectionMarker                                             from '$api/options/sectionmarker';
+import StringSelect                                              from '$api/options/stringselect';
+import ClassSelect                                               from '$api/options/classselect';
+import SkillSelect                                               from '$api/options/skillselect';
+import IntSelect                                                 from '$api/options/intselect';
+import ColorSelect                                               from '$api/options/colorselect';
+import { get }                                                   from 'svelte/store';
+import type ProComponent                                         from '$api/components/procomponent';
 
 // TRIGGERS
 
@@ -2779,6 +2780,163 @@ class ItemProjectileMechanic extends ProMechanic {
 				...projectileOptions(),
 				...effectOptions(true)
 			],
+			preview: [
+				new IntSelect('Refresh period', 'period', 5)
+					.setTooltip('How many ticks to wait before refreshing the preview, recalculating targets and the location of the particle effects'),
+
+				new SectionMarker('Particles at target'),
+				new BooleanSelect('Particles at target', 'per-target', false)
+					.setTooltip('Displays particles at the location of the current targets'),
+				new DropdownSelect('Particle', 'per-target-particle', getParticles, 'Crit')
+					.setTooltip('The type of particle to display')
+					.requireValue('per-target', [true]),
+				new DropdownSelect('Material', 'per-target-material', (() => [...getMaterials()]), 'Arrow')
+					.requireValue('per-target-particle', ['Item crack'])
+					.requireValue('per-target', [true])
+					.setTooltip('The material to use for the particles'),
+				new DropdownSelect('Material', 'per-target-material', (() => [...getBlocks()]), 'Dirt')
+					.requireValue('per-target-particle', [
+						'Block crack',
+						'Block dust',
+						'Falling dust',
+						'Block marker'])
+					.requireValue('per-target', [true])
+					.setTooltip('The block to use for the particles'),
+				new IntSelect('Durability', 'per-target-durability', 0)
+					.requireValue('per-target-particle', ['Item crack'])
+					.requireValue('per-target', [true])
+					.setTooltip('The durability to be reduced from the item used to make the particles'),
+				new IntSelect('CustomModelData', 'per-target-type', 0)
+					.requireValue('per-target-particle', ['Item crack'])
+					.requireValue('per-target', [true])
+					.setTooltip('The CustomModelData of the item used to make the particles'),
+				new ColorSelect('Dust Color', 'per-target-dust-color', '#FF0000')
+					.requireValue('per-target-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('per-target', [true])
+					.setTooltip('The color of the dust particles in hex RGB'),
+				new ColorSelect('Final Dust Color', 'per-target-final-dust-color', '#FF0000')
+					.requireValue('per-target-particle', ['Dust color transition'])
+					.requireValue('per-target', [true])
+					.setTooltip('The color to transition to, in hex RGB'),
+				new DoubleSelect('Dust Size', 'per-target-dust-size', 1)
+					.requireValue('per-target-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('per-target', [true])
+					.setTooltip('The size of the dust particles'),
+
+				// Bukkit particle data value
+				new IntSelect('Effect Data', 'per-target-data')
+					.requireValue('per-target-particle',
+						[
+							'Smoke',
+							'Ender Signal',
+							'Mobspawner Flames',
+							'Potion Break',
+							'Sculk charge'
+						])
+					.requireValue('per-target', [true])
+					.setTooltip('The data value to use for the particle. The effect changes between particles such as the orientation for smoke particles or the color for potion break'),
+				new DoubleSelect('DX', 'per-target-dx')
+					.requireValue('per-target', [true])
+					.setTooltip('Offset in the X direction, used as the Red value for some particles'),
+				new DoubleSelect('DY', 'per-target-dy')
+					.requireValue('per-target', [true])
+					.setTooltip('Offset in the Y direction, used as the Green value for some particles'),
+				new DoubleSelect('DZ', 'per-target-dz')
+					.requireValue('per-target', [true])
+					.setTooltip('Offset in the Z direction, used as the Blue value for some particles'),
+				new DoubleSelect('Amount', 'per-target-amount', 1)
+					.requireValue('per-target', [true])
+					.setTooltip('Number of particles to play per point. For "Spell mob" and "Spell mob ambient" particles, set to 0 to control the particle color'),
+				new DoubleSelect('Speed', 'per-target-speed', 0.1)
+					.requireValue('per-target', [true])
+					.setTooltip('Speed of the particle. For some particles controls other parameters, such as size'),
+				new DropdownSelect('Arrangement', 'per-target-arrangement', ['Sphere', 'Circle', 'Hemisphere'], 'Sphere')
+					.requireValue('per-target', [true])
+					.setTooltip('The arrangement to use for the particles. Circle is a 2D circle, Hemisphere is half a 3D sphere, and Sphere is a 3D sphere'),
+				new DropdownSelect('Circle Direction', 'per-target-direction', ['XY', 'XZ', 'YZ'], 'XZ')
+					.requireValue('per-target' + '-arrangement', ['Circle'])
+					.requireValue('per-target', [true])
+					.setTooltip('The orientation of the circle. XY and YZ are vertical circles while XZ is a horizontal circle'),
+				new AttributeSelect('Radius', 'per-target-radius', 0.5)
+					.requireValue('per-target', [true])
+					.setTooltip('The radius of the arrangement in blocks'),
+				new BooleanSelect('Increase size by hitbox', 'per-target-hitbox', true)
+					.requireValue('per-target', [true])
+					.setTooltip('Increases the \'radius\' parameter by the size of the target\'s hitbox'),
+				new AttributeSelect('Points', 'per-target-particles', 20)
+					.requireValue('per-target', [true])
+					.setTooltip('The amount of points that conform the chosen arrangement'),
+
+				new SectionMarker('Path Preview'),
+				new BooleanSelect('Path Preview', 'path', false)
+					.setTooltip('Displays particles through the paths of the projectiles'),
+				new DoubleSelect('Steps per particle', 'path-steps', 2)
+					.setTooltip('How many collision steps to run between each particle display')
+					.requireValue('path', [true]),
+				new DropdownSelect('Particle', 'path-particle', getParticles, 'Crit')
+					.setTooltip('The type of particle to display')
+					.requireValue('path', [true]),
+				new DropdownSelect('Material', 'path-material', (() => [...getMaterials()]), 'Arrow')
+					.requireValue('path-particle', ['Item crack'])
+					.requireValue('path', [true])
+					.setTooltip('The material to use for the particles'),
+				new DropdownSelect('Material', 'path-material', (() => [...getBlocks()]), 'Dirt')
+					.requireValue('path-particle', [
+						'Block crack',
+						'Block dust',
+						'Falling dust',
+						'Block marker'])
+					.requireValue('path', [true])
+					.setTooltip('The block to use for the particles'),
+				new IntSelect('Durability', 'path-durability', 0)
+					.requireValue('path-particle', ['Item crack'])
+					.requireValue('path', [true])
+					.setTooltip('The durability to be reduced from the item used to make the particles'),
+				new IntSelect('CustomModelData', 'path-type', 0)
+					.requireValue('path-particle', ['Item crack'])
+					.requireValue('path', [true])
+					.setTooltip('The CustomModelData of the item used to make the particles'),
+				new ColorSelect('Dust Color', 'path-dust-color', '#FF0000')
+					.requireValue('path-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('path', [true])
+					.setTooltip('The color of the dust particles in hex RGB'),
+				new ColorSelect('Final Dust Color', 'path-final-dust-color', '#FF0000')
+					.requireValue('path-particle', ['Dust color transition'])
+					.requireValue('path', [true])
+					.setTooltip('The color to transition to, in hex RGB'),
+				new DoubleSelect('Dust Size', 'path-dust-size', 1)
+					.requireValue('path-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('path', [true])
+					.setTooltip('The size of the dust particles'),
+
+				// Bukkit particle data value
+				new IntSelect('Effect Data', 'path-data')
+					.requireValue('path-particle',
+						[
+							'Smoke',
+							'Ender Signal',
+							'Mobspawner Flames',
+							'Potion Break',
+							'Sculk charge'
+						])
+					.requireValue('path', [true])
+					.setTooltip('The data value to use for the particle. The effect changes between particles such as the orientation for smoke particles or the color for potion break'),
+				new DoubleSelect('DX', 'path-dx')
+					.requireValue('path', [true])
+					.setTooltip('Offset in the X direction, used as the Red value for some particles'),
+				new DoubleSelect('DY', 'path-dy')
+					.requireValue('path', [true])
+					.setTooltip('Offset in the Y direction, used as the Green value for some particles'),
+				new DoubleSelect('DZ', 'path-dz')
+					.requireValue('path', [true])
+					.setTooltip('Offset in the Z direction, used as the Blue value for some particles'),
+				new DoubleSelect('Amount', 'path-amount', 1)
+					.requireValue('path', [true])
+					.setTooltip('Number of particles to play per point. For "Spell mob" and "Spell mob ambient" particles, set to 0 to control the particle color'),
+				new DoubleSelect('Speed', 'path-speed', 0.1)
+					.requireValue('path', [true])
+					.setTooltip('Speed of the particle. For some particles controls other parameters, such as size')
+			],
 			summaryItems: ['group', 'material', 'velocity', 'spread', 'angle']
 		}, true);
 	}
@@ -3045,22 +3203,181 @@ class ParticleProjectileMechanic extends ProMechanic {
 			name:         'Particle Projectile',
 			description:  'Launches a projectile using particles as its visual that applies child components upon landing. The target passed on will be the collided target or the location where it landed if it missed',
 			data:         [
-				new DoubleSelect('Gravity', 'gravity')
-					.setTooltip('How much gravity to apply each tick. Negative values make it fall while positive values make it rise'),
 				new BooleanSelect('Pierce', 'pierce')
 					.setTooltip('Whether this projectile should pierce through initial targets and continue hitting those behind them'),
 				new DropdownSelect('Group', 'group', ['Ally', 'Enemy'], 'Enemy')
 					.setTooltip('The alignment of targets to hit'),
-
+				new IntSelect('Steps', 'steps', 2)
+					.setTooltip('Amount of collision steps to run per meter travelled.'),
+				new AttributeSelect('Gravity', 'gravity', -0.04)
+					.setTooltip('Vertical acceleration the projectile is subjected to, in meters per squared tick. Negative values make it fall while positive values make it rise.'),
+				new AttributeSelect('Drag', 'drag', 0.02)
+					.setTooltip('Air resistance of the projectile, in inverse seconds. Greater values mean the projectile will slow down more over time, and reach a lower terminal velocity.'),
+				new IntSelect('Particle period', 'period', 2)
+					.setTooltip('How often to play a particle effect where the projectile is.'),
 				...projectileOptions(),
 				...particleOptions(),
 
-				new DoubleSelect('Frequency', 'frequency', 0.05)
-					.setTooltip('How often to play a particle effect where the projectile is. It is recommended not to change this value unless there are too many particles playing'),
-
 				...effectOptions(true)
 			],
-			summaryItems: ['gravity', 'pierce', 'group', 'particle', 'amount', 'spread', 'frequency', 'dust-color']
+			preview: [
+				new IntSelect('Refresh period', 'period', 5)
+					.setTooltip('How many ticks to wait before refreshing the preview, recalculating targets and the location of the particle effects'),
+
+				new SectionMarker('Particles at target'),
+				new BooleanSelect('Particles at target', 'per-target', false)
+					.setTooltip('Displays particles at the location of the current targets'),
+				new DropdownSelect('Particle', 'per-target-particle', getParticles, 'Crit')
+					.setTooltip('The type of particle to display')
+					.requireValue('per-target', [true]),
+				new DropdownSelect('Material', 'per-target-material', (() => [...getMaterials()]), 'Arrow')
+					.requireValue('per-target-particle', ['Item crack'])
+					.requireValue('per-target', [true])
+					.setTooltip('The material to use for the particles'),
+				new DropdownSelect('Material', 'per-target-material', (() => [...getBlocks()]), 'Dirt')
+					.requireValue('per-target-particle', [
+						'Block crack',
+						'Block dust',
+						'Falling dust',
+						'Block marker'])
+					.requireValue('per-target', [true])
+					.setTooltip('The block to use for the particles'),
+				new IntSelect('Durability', 'per-target-durability', 0)
+					.requireValue('per-target-particle', ['Item crack'])
+					.requireValue('per-target', [true])
+					.setTooltip('The durability to be reduced from the item used to make the particles'),
+				new IntSelect('CustomModelData', 'per-target-type', 0)
+					.requireValue('per-target-particle', ['Item crack'])
+					.requireValue('per-target', [true])
+					.setTooltip('The CustomModelData of the item used to make the particles'),
+				new ColorSelect('Dust Color', 'per-target-dust-color', '#FF0000')
+					.requireValue('per-target-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('per-target', [true])
+					.setTooltip('The color of the dust particles in hex RGB'),
+				new ColorSelect('Final Dust Color', 'per-target-final-dust-color', '#FF0000')
+					.requireValue('per-target-particle', ['Dust color transition'])
+					.requireValue('per-target', [true])
+					.setTooltip('The color to transition to, in hex RGB'),
+				new DoubleSelect('Dust Size', 'per-target-dust-size', 1)
+					.requireValue('per-target-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('per-target', [true])
+					.setTooltip('The size of the dust particles'),
+
+				// Bukkit particle data value
+				new IntSelect('Effect Data', 'per-target-data')
+					.requireValue('per-target-particle',
+						[
+							'Smoke',
+							'Ender Signal',
+							'Mobspawner Flames',
+							'Potion Break',
+							'Sculk charge'
+						])
+					.requireValue('per-target', [true])
+					.setTooltip('The data value to use for the particle. The effect changes between particles such as the orientation for smoke particles or the color for potion break'),
+				new DoubleSelect('DX', 'per-target-dx')
+					.requireValue('per-target', [true])
+					.setTooltip('Offset in the X direction, used as the Red value for some particles'),
+				new DoubleSelect('DY', 'per-target-dy')
+					.requireValue('per-target', [true])
+					.setTooltip('Offset in the Y direction, used as the Green value for some particles'),
+				new DoubleSelect('DZ', 'per-target-dz')
+					.requireValue('per-target', [true])
+					.setTooltip('Offset in the Z direction, used as the Blue value for some particles'),
+				new DoubleSelect('Amount', 'per-target-amount', 1)
+					.requireValue('per-target', [true])
+					.setTooltip('Number of particles to play per point. For "Spell mob" and "Spell mob ambient" particles, set to 0 to control the particle color'),
+				new DoubleSelect('Speed', 'per-target-speed', 0.1)
+					.requireValue('per-target', [true])
+					.setTooltip('Speed of the particle. For some particles controls other parameters, such as size'),
+				new DropdownSelect('Arrangement', 'per-target-arrangement', ['Sphere', 'Circle', 'Hemisphere'], 'Sphere')
+					.requireValue('per-target', [true])
+					.setTooltip('The arrangement to use for the particles. Circle is a 2D circle, Hemisphere is half a 3D sphere, and Sphere is a 3D sphere'),
+				new DropdownSelect('Circle Direction', 'per-target-direction', ['XY', 'XZ', 'YZ'], 'XZ')
+					.requireValue('per-target' + '-arrangement', ['Circle'])
+					.requireValue('per-target', [true])
+					.setTooltip('The orientation of the circle. XY and YZ are vertical circles while XZ is a horizontal circle'),
+				new AttributeSelect('Radius', 'per-target-radius', 0.5)
+					.requireValue('per-target', [true])
+					.setTooltip('The radius of the arrangement in blocks'),
+				new BooleanSelect('Increase size by hitbox', 'per-target-hitbox', true)
+					.requireValue('per-target', [true])
+					.setTooltip('Increases the \'radius\' parameter by the size of the target\'s hitbox'),
+				new AttributeSelect('Points', 'per-target-particles', 20)
+					.requireValue('per-target', [true])
+					.setTooltip('The amount of points that conform the chosen arrangement'),
+
+				new SectionMarker('Path Preview'),
+				new BooleanSelect('Path Preview', 'path', false)
+					.setTooltip('Displays particles through the paths of the projectiles'),
+				new DoubleSelect('Steps per particle', 'path-steps', 2)
+					.setTooltip('How many collision steps to run between each particle display')
+					.requireValue('path', [true]),
+				new DropdownSelect('Particle', 'path-particle', getParticles, 'Crit')
+					.setTooltip('The type of particle to display')
+					.requireValue('path', [true]),
+				new DropdownSelect('Material', 'path-material', (() => [...getMaterials()]), 'Arrow')
+					.requireValue('path-particle', ['Item crack'])
+					.requireValue('path', [true])
+					.setTooltip('The material to use for the particles'),
+				new DropdownSelect('Material', 'path-material', (() => [...getBlocks()]), 'Dirt')
+					.requireValue('path-particle', [
+						'Block crack',
+						'Block dust',
+						'Falling dust',
+						'Block marker'])
+					.requireValue('path', [true])
+					.setTooltip('The block to use for the particles'),
+				new IntSelect('Durability', 'path-durability', 0)
+					.requireValue('path-particle', ['Item crack'])
+					.requireValue('path', [true])
+					.setTooltip('The durability to be reduced from the item used to make the particles'),
+				new IntSelect('CustomModelData', 'path-type', 0)
+					.requireValue('path-particle', ['Item crack'])
+					.requireValue('path', [true])
+					.setTooltip('The CustomModelData of the item used to make the particles'),
+				new ColorSelect('Dust Color', 'path-dust-color', '#FF0000')
+					.requireValue('path-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('path', [true])
+					.setTooltip('The color of the dust particles in hex RGB'),
+				new ColorSelect('Final Dust Color', 'path-final-dust-color', '#FF0000')
+					.requireValue('path-particle', ['Dust color transition'])
+					.requireValue('path', [true])
+					.setTooltip('The color to transition to, in hex RGB'),
+				new DoubleSelect('Dust Size', 'path-dust-size', 1)
+					.requireValue('path-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('path', [true])
+					.setTooltip('The size of the dust particles'),
+
+				// Bukkit particle data value
+				new IntSelect('Effect Data', 'path-data')
+					.requireValue('path-particle',
+						[
+							'Smoke',
+							'Ender Signal',
+							'Mobspawner Flames',
+							'Potion Break',
+							'Sculk charge'
+						])
+					.requireValue('path', [true])
+					.setTooltip('The data value to use for the particle. The effect changes between particles such as the orientation for smoke particles or the color for potion break'),
+				new DoubleSelect('DX', 'path-dx')
+					.requireValue('path', [true])
+					.setTooltip('Offset in the X direction, used as the Red value for some particles'),
+				new DoubleSelect('DY', 'path-dy')
+					.requireValue('path', [true])
+					.setTooltip('Offset in the Y direction, used as the Green value for some particles'),
+				new DoubleSelect('DZ', 'path-dz')
+					.requireValue('path', [true])
+					.setTooltip('Offset in the Z direction, used as the Blue value for some particles'),
+				new DoubleSelect('Amount', 'path-amount', 1)
+					.requireValue('path', [true])
+					.setTooltip('Number of particles to play per point. For "Spell mob" and "Spell mob ambient" particles, set to 0 to control the particle color'),
+				new DoubleSelect('Speed', 'path-speed', 0.1)
+					.requireValue('path', [true])
+					.setTooltip('Speed of the particle. For some particles controls other parameters, such as size')
+			],
+			summaryItems: ['steps', 'gravity', 'drag', 'frequency', 'pierce', 'group', 'particle', 'amount', 'spread', 'dust-color']
 		}, true);
 	}
 
@@ -3159,6 +3476,163 @@ class ProjectileMechanic extends ProMechanic {
 				...projectileOptions(),
 				...particleOptions(),
 				...effectOptions(true)
+			],
+			preview: [
+				new IntSelect('Refresh period', 'period', 5)
+					.setTooltip('How many ticks to wait before refreshing the preview, recalculating targets and the location of the particle effects'),
+
+				new SectionMarker('Particles at target'),
+				new BooleanSelect('Particles at target', 'per-target', false)
+					.setTooltip('Displays particles at the location of the current targets'),
+				new DropdownSelect('Particle', 'per-target-particle', getParticles, 'Crit')
+					.setTooltip('The type of particle to display')
+					.requireValue('per-target', [true]),
+				new DropdownSelect('Material', 'per-target-material', (() => [...getMaterials()]), 'Arrow')
+					.requireValue('per-target-particle', ['Item crack'])
+					.requireValue('per-target', [true])
+					.setTooltip('The material to use for the particles'),
+				new DropdownSelect('Material', 'per-target-material', (() => [...getBlocks()]), 'Dirt')
+					.requireValue('per-target-particle', [
+						'Block crack',
+						'Block dust',
+						'Falling dust',
+						'Block marker'])
+					.requireValue('per-target', [true])
+					.setTooltip('The block to use for the particles'),
+				new IntSelect('Durability', 'per-target-durability', 0)
+					.requireValue('per-target-particle', ['Item crack'])
+					.requireValue('per-target', [true])
+					.setTooltip('The durability to be reduced from the item used to make the particles'),
+				new IntSelect('CustomModelData', 'per-target-type', 0)
+					.requireValue('per-target-particle', ['Item crack'])
+					.requireValue('per-target', [true])
+					.setTooltip('The CustomModelData of the item used to make the particles'),
+				new ColorSelect('Dust Color', 'per-target-dust-color', '#FF0000')
+					.requireValue('per-target-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('per-target', [true])
+					.setTooltip('The color of the dust particles in hex RGB'),
+				new ColorSelect('Final Dust Color', 'per-target-final-dust-color', '#FF0000')
+					.requireValue('per-target-particle', ['Dust color transition'])
+					.requireValue('per-target', [true])
+					.setTooltip('The color to transition to, in hex RGB'),
+				new DoubleSelect('Dust Size', 'per-target-dust-size', 1)
+					.requireValue('per-target-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('per-target', [true])
+					.setTooltip('The size of the dust particles'),
+
+				// Bukkit particle data value
+				new IntSelect('Effect Data', 'per-target-data')
+					.requireValue('per-target-particle',
+						[
+							'Smoke',
+							'Ender Signal',
+							'Mobspawner Flames',
+							'Potion Break',
+							'Sculk charge'
+						])
+					.requireValue('per-target', [true])
+					.setTooltip('The data value to use for the particle. The effect changes between particles such as the orientation for smoke particles or the color for potion break'),
+				new DoubleSelect('DX', 'per-target-dx')
+					.requireValue('per-target', [true])
+					.setTooltip('Offset in the X direction, used as the Red value for some particles'),
+				new DoubleSelect('DY', 'per-target-dy')
+					.requireValue('per-target', [true])
+					.setTooltip('Offset in the Y direction, used as the Green value for some particles'),
+				new DoubleSelect('DZ', 'per-target-dz')
+					.requireValue('per-target', [true])
+					.setTooltip('Offset in the Z direction, used as the Blue value for some particles'),
+				new DoubleSelect('Amount', 'per-target-amount', 1)
+					.requireValue('per-target', [true])
+					.setTooltip('Number of particles to play per point. For "Spell mob" and "Spell mob ambient" particles, set to 0 to control the particle color'),
+				new DoubleSelect('Speed', 'per-target-speed', 0.1)
+					.requireValue('per-target', [true])
+					.setTooltip('Speed of the particle. For some particles controls other parameters, such as size'),
+				new DropdownSelect('Arrangement', 'per-target-arrangement', ['Sphere', 'Circle', 'Hemisphere'], 'Sphere')
+					.requireValue('per-target', [true])
+					.setTooltip('The arrangement to use for the particles. Circle is a 2D circle, Hemisphere is half a 3D sphere, and Sphere is a 3D sphere'),
+				new DropdownSelect('Circle Direction', 'per-target-direction', ['XY', 'XZ', 'YZ'], 'XZ')
+					.requireValue('per-target' + '-arrangement', ['Circle'])
+					.requireValue('per-target', [true])
+					.setTooltip('The orientation of the circle. XY and YZ are vertical circles while XZ is a horizontal circle'),
+				new AttributeSelect('Radius', 'per-target-radius', 0.5)
+					.requireValue('per-target', [true])
+					.setTooltip('The radius of the arrangement in blocks'),
+				new BooleanSelect('Increase size by hitbox', 'per-target-hitbox', true)
+					.requireValue('per-target', [true])
+					.setTooltip('Increases the \'radius\' parameter by the size of the target\'s hitbox'),
+				new AttributeSelect('Points', 'per-target-particles', 20)
+					.requireValue('per-target', [true])
+					.setTooltip('The amount of points that conform the chosen arrangement'),
+
+				new SectionMarker('Path Preview'),
+				new BooleanSelect('Path Preview', 'path', false)
+					.setTooltip('Displays particles through the paths of the projectiles'),
+				new DoubleSelect('Steps per particle', 'path-steps', 2)
+					.setTooltip('How many collision steps to run between each particle display')
+					.requireValue('path', [true]),
+				new DropdownSelect('Particle', 'path-particle', getParticles, 'Crit')
+					.setTooltip('The type of particle to display')
+					.requireValue('path', [true]),
+				new DropdownSelect('Material', 'path-material', (() => [...getMaterials()]), 'Arrow')
+					.requireValue('path-particle', ['Item crack'])
+					.requireValue('path', [true])
+					.setTooltip('The material to use for the particles'),
+				new DropdownSelect('Material', 'path-material', (() => [...getBlocks()]), 'Dirt')
+					.requireValue('path-particle', [
+						'Block crack',
+						'Block dust',
+						'Falling dust',
+						'Block marker'])
+					.requireValue('path', [true])
+					.setTooltip('The block to use for the particles'),
+				new IntSelect('Durability', 'path-durability', 0)
+					.requireValue('path-particle', ['Item crack'])
+					.requireValue('path', [true])
+					.setTooltip('The durability to be reduced from the item used to make the particles'),
+				new IntSelect('CustomModelData', 'path-type', 0)
+					.requireValue('path-particle', ['Item crack'])
+					.requireValue('path', [true])
+					.setTooltip('The CustomModelData of the item used to make the particles'),
+				new ColorSelect('Dust Color', 'path-dust-color', '#FF0000')
+					.requireValue('path-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('path', [true])
+					.setTooltip('The color of the dust particles in hex RGB'),
+				new ColorSelect('Final Dust Color', 'path-final-dust-color', '#FF0000')
+					.requireValue('path-particle', ['Dust color transition'])
+					.requireValue('path', [true])
+					.setTooltip('The color to transition to, in hex RGB'),
+				new DoubleSelect('Dust Size', 'path-dust-size', 1)
+					.requireValue('path-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('path', [true])
+					.setTooltip('The size of the dust particles'),
+
+				// Bukkit particle data value
+				new IntSelect('Effect Data', 'path-data')
+					.requireValue('path-particle',
+						[
+							'Smoke',
+							'Ender Signal',
+							'Mobspawner Flames',
+							'Potion Break',
+							'Sculk charge'
+						])
+					.requireValue('path', [true])
+					.setTooltip('The data value to use for the particle. The effect changes between particles such as the orientation for smoke particles or the color for potion break'),
+				new DoubleSelect('DX', 'path-dx')
+					.requireValue('path', [true])
+					.setTooltip('Offset in the X direction, used as the Red value for some particles'),
+				new DoubleSelect('DY', 'path-dy')
+					.requireValue('path', [true])
+					.setTooltip('Offset in the Y direction, used as the Green value for some particles'),
+				new DoubleSelect('DZ', 'path-dz')
+					.requireValue('path', [true])
+					.setTooltip('Offset in the Z direction, used as the Blue value for some particles'),
+				new DoubleSelect('Amount', 'path-amount', 1)
+					.requireValue('path', [true])
+					.setTooltip('Number of particles to play per point. For "Spell mob" and "Spell mob ambient" particles, set to 0 to control the particle color'),
+				new DoubleSelect('Speed', 'path-speed', 0.1)
+					.requireValue('path', [true])
+					.setTooltip('Speed of the particle. For some particles controls other parameters, such as size')
 			],
 			summaryItems: ['projectile', 'flaming', 'cost', 'particle', 'amount', 'spread', 'dust-color', 'effect-key']
 		}, true);
@@ -3399,9 +3873,9 @@ class TriggerMechanic extends ProMechanic {
 			name:         'Trigger',
 			description:  'Listens for a trigger on the current targets for a duration',
 			data:         [
-				new DropdownSelect('Trigger', 'trigger', () => Object.values(get(Registry.triggers)).map((trigger: {
+				new DropdownSelect('Trigger', 'trigger', () => Object.values(get(triggers)).map((trigger: {
 					name: string,
-					component: typeof ProTrigger
+					component: typeof ProComponent
 				}) => trigger.name), 'Death')
 					.setTooltip('The trigger to listen for'),
 				new AttributeSelect('Duration', 'duration', 5)
@@ -4015,7 +4489,7 @@ const particlePreviewOptions = (key: string): ComponentOption[] => {
 };
 
 export const initComponents = () => {
-	Registry.triggers.set({
+	triggers.set({
 		ARMOR_EQUIP:    { name: 'Armor Equip', component: ArmorEquipTrigger },
 		BLOCK_BREAK:    { name: 'Block Break', component: BlockBreakTrigger },
 		BLOCK_PLACE:    { name: 'Block Place', component: BlockPlaceTrigger },
@@ -4052,7 +4526,7 @@ export const initComponents = () => {
 		TOOK_PHYS:      { name: 'Took Physical Damage', component: TookPhysicalTrigger },
 		TOOK_SKILL:     { name: 'Took Skill Damage', component: TookSkillTrigger }
 	});
-	Registry.targets.set({
+	targets.set({
 		AREA:     { name: 'Area', component: AreaTarget },
 		CONE:     { name: 'Cone', component: ConeTarget },
 		LINEAR:   { name: 'Linear', component: LinearTarget },
@@ -4063,7 +4537,7 @@ export const initComponents = () => {
 		SELF:     { name: 'Self', component: SelfTarget },
 		SINGLE:   { name: 'Single', component: SingleTarget }
 	});
-	Registry.conditions.set({
+	conditions.set({
 		ALTITUDE:       { name: 'Altitude', component: AltitudeCondition },
 		ARMOR:          { name: 'Armor', component: ArmorCondition },
 		ATTRIBUTE:      { name: 'Attribute', component: AttributeCondition },
@@ -4109,7 +4583,7 @@ export const initComponents = () => {
 		WEATHER:        { name: 'Weather', component: WeatherCondition },
 		WORLD:          { name: 'World', component: WorldCondition }
 	});
-	Registry.mechanics.set({
+	mechanics.set({
 		ARMOR:               { name: 'Armor', component: ArmorMechanic },
 		ARMOR_STAND:         { name: 'Armor Stand', component: ArmorStandMechanic },
 		ARMOR_STAND_POSE:    { name: 'Armor Stand Pose', component: ArmorStandPoseMechanic },
@@ -4173,27 +4647,29 @@ export const initComponents = () => {
 		STATUS:              { name: 'Status', component: StatusMechanic },
 		TAUNT:               { name: 'Taunt', component: TauntMechanic },
 		TRIGGER:             { name: 'Trigger', component: TriggerMechanic },
-		VALUE_ADD:           { name: 'Value Add', component: ValueAddMechanic },
-		VALUE_ATTRIBUTE:     { name: 'Value Attribute', component: ValueAttributeMechanic },
-		VALUE_COPY:          { name: 'Value Copy', component: ValueCopyMechanic },
-		VALUE_DISTANCE:      { name: 'Value Distance', component: ValueDistanceMechanic },
-		VALUE_HEALTH:        { name: 'Value Health', component: ValueHealthMechanic },
-		VALUE_LOAD:          { name: 'Value Load', component: ValueLoadMechanic },
-		VALUE_LOCATION:      { name: 'Value Location', component: ValueLocationMechanic },
-		VALUE_LORE:          { name: 'Value Lore', component: ValueLoreMechanic },
-		VALUE_LORE_SLOT:     { name: 'Value Lore Slot', component: ValueLoreSlotMechanic },
-		VALUE_MANA:          { name: 'Value Mana', component: ValueManaMechanic },
-		VALUE_MULTIPLY:      { name: 'Value Multiply', component: ValueMultiplyMechanic },
-		VALUE_PLACEHOLDER:   { name: 'Value Placeholder', component: ValuePlaceholderMechanic },
-		VALUE_RANDOM:        { name: 'Value Random', component: ValueRandomMechanic },
-		VALUE_SET:           { name: 'Value Set', component: ValueSetMechanic },
-		WARP:                { name: 'Warp', component: WarpMechanic },
-		WARP_LOC:            { name: 'Warp Location', component: WarpLocMechanic },
-		WARP_RANDOM:         { name: 'Warp Random', component: WarpRandomMechanic },
-		WARP_SWAP:           { name: 'Warp Swap', component: WarpSwapMechanic },
-		WARP_TARGET:         { name: 'Warp Target', component: WarpTargetMechanic },
-		WARP_VALUE:          { name: 'Warp Value', component: WarpValueMechanic },
-		WOLF:                { name: 'Wolf', component: WolfMechanic }
+		WOLF:                { name: 'Wolf', component: WolfMechanic },
+
+		VALUE_ADD:         { name: 'Value Add', component: ValueAddMechanic, section: 'Value' },
+		VALUE_ATTRIBUTE:   { name: 'Value Attribute', component: ValueAttributeMechanic, section: 'Value' },
+		VALUE_COPY:        { name: 'Value Copy', component: ValueCopyMechanic, section: 'Value' },
+		VALUE_DISTANCE:    { name: 'Value Distance', component: ValueDistanceMechanic, section: 'Value' },
+		VALUE_HEALTH:      { name: 'Value Health', component: ValueHealthMechanic, section: 'Value' },
+		VALUE_LOAD:        { name: 'Value Load', component: ValueLoadMechanic, section: 'Value' },
+		VALUE_LOCATION:    { name: 'Value Location', component: ValueLocationMechanic, section: 'Value' },
+		VALUE_LORE:        { name: 'Value Lore', component: ValueLoreMechanic, section: 'Value' },
+		VALUE_LORE_SLOT:   { name: 'Value Lore Slot', component: ValueLoreSlotMechanic, section: 'Value' },
+		VALUE_MANA:        { name: 'Value Mana', component: ValueManaMechanic, section: 'Value' },
+		VALUE_MULTIPLY:    { name: 'Value Multiply', component: ValueMultiplyMechanic, section: 'Value' },
+		VALUE_PLACEHOLDER: { name: 'Value Placeholder', component: ValuePlaceholderMechanic, section: 'Value' },
+		VALUE_RANDOM:      { name: 'Value Random', component: ValueRandomMechanic, section: 'Value' },
+		VALUE_SET:         { name: 'Value Set', component: ValueSetMechanic, section: 'Value' },
+
+		WARP:        { name: 'Warp', component: WarpMechanic, section: 'Warp' },
+		WARP_LOC:    { name: 'Warp Location', component: WarpLocMechanic, section: 'Warp' },
+		WARP_RANDOM: { name: 'Warp Random', component: WarpRandomMechanic, section: 'Warp' },
+		WARP_SWAP:   { name: 'Warp Swap', component: WarpSwapMechanic, section: 'Warp' },
+		WARP_TARGET: { name: 'Warp Target', component: WarpTargetMechanic, section: 'Warp' },
+		WARP_VALUE:  { name: 'Warp Value', component: WarpValueMechanic, section: 'Warp' }
 	});
-	Registry.initialized.set(true);
+	initialized.set(true);
 };

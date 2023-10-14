@@ -1,61 +1,36 @@
 <script lang='ts'>
-	import type ProSkill          from '$api/proskill';
-	import ComponentWidget        from '$components/ComponentWidget.svelte';
-	import Modal                  from '$components/Modal.svelte';
-	import { draggingComponent }  from '../../../../data/store';
-	import { get }                from 'svelte/store';
-	import ProInput               from '$input/ProInput.svelte';
-	import { skills }             from '../../../../data/skill-store';
-	import Registry               from '$api/components/registry';
-	import { onDestroy, onMount } from 'svelte';
-	import type { Unsubscriber }  from 'svelte/types/runtime/store';
-	import type ProTrigger        from '$api/components/triggers';
-	import { base }               from '$app/paths';
+	import type ProSkill                                   from '$api/proskill';
+	import ComponentWidget                                 from '$components/ComponentWidget.svelte';
+	import Modal                                           from '$components/Modal.svelte';
+	import { get }                                         from 'svelte/store';
+	import ProInput                                        from '$input/ProInput.svelte';
+	import { skills }                                      from '../../../../data/skill-store';
+	import { filteredTriggers, filterParams, initialized } from '$api/components/registry';
+	import { onMount }                                     from 'svelte';
+	import type { Unsubscriber }                           from 'svelte/types/runtime/store';
+	import type ProTrigger                                 from '$api/components/triggers';
+	import { base }                                        from '$app/paths';
 
 	export let data: { data: ProSkill };
 	let skill: ProSkill;
 	$: if (data) skill = data.data;
-	let triggerModal                                                                = false;
-	let hovered                                                                     = false;
-	let searchParams                                                                = '';
-	let sortedTriggers: ProTrigger[]                                                = [];
-	let unsub: Unsubscriber;
-	let triggers: { [key: string]: { name: string, component: typeof ProTrigger } } = {};
+	let triggerModal = false;
 
 	onMount(() => {
-		unsub = Registry.triggers.subscribe(tri => triggers = tri);
 		// This is by far my least favorite implementation... But with enough things going on,
 		// there are circular dependencies, and this sort of resolves it.
 		let initSub: Unsubscriber | undefined = undefined;
-		initSub                               = Registry.initialized.subscribe(init => {
+		initSub                               = initialized.subscribe(init => {
 			if (!init) return;
 			if (initSub) initSub();
 			update();
 		});
 	});
 
-	onDestroy(() => {
-		if (unsub) unsub();
-	});
-
-	$: {
-		sortedTriggers = Object.keys(triggers)
-			.filter(trigger => trigger.toLowerCase().includes(searchParams.toLowerCase()))
-			.sort((a, b) => (triggers[a].component.new().isDeprecated ? 0 : -1) - (triggers[b].component.new().isDeprecated ? 0 : -1))
-			.map(key => triggers[key].component.new());
-	}
-
-	const onSelectTrigger = data => {
+	const onSelectTrigger = (data: { detail: ProTrigger }) => {
 		skill.triggers.push(data.detail);
 		update();
 		setTimeout(() => triggerModal = false);
-	};
-
-	const drop = () => {
-		const comp = get(draggingComponent);
-		hovered    = false;
-		skill.removeComponent(comp);
-		skill.triggers = [...skill.triggers];
 	};
 
 	const update = () => {
@@ -98,14 +73,16 @@
 		<div />
 		<h2 class='modal-header'>Select New Trigger</h2>
 		<div class='search-bar'>
-			<ProInput bind:value={searchParams} placeholder='Search...' />
+			<ProInput bind:value={$filterParams} placeholder='Search...' autofocus />
 		</div>
 	</div>
 	<hr />
-	<div class='triggers'>
-		{#each sortedTriggers as trigger}
-			<div class='comp-select' on:click={() => onSelectTrigger({detail: trigger.clone()})}>
-				{#if trigger.isDeprecated}<s>{trigger.name}</s>{:else}{trigger.name}{/if}
+	<div class='component-section'>
+		{#each $filteredTriggers as trigger}
+			<div class='comp-select'
+					 class:deprecated={trigger.component.new().isDeprecated}
+					 on:click={() => onSelectTrigger({detail: trigger.component.new()})}>
+				{trigger.name}
 			</div>
 		{/each}
 	</div>
