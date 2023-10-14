@@ -27,8 +27,12 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.particle.ParticleHelper;
+import com.sucy.skill.api.particle.ParticleSettings;
 import com.sucy.skill.api.projectile.CustomProjectile;
+import com.sucy.skill.api.projectile.ParticleProjectile;
+import com.sucy.skill.api.projectile.ProjectileCallback;
 import com.sucy.skill.dynamic.TempEntity;
 import com.sucy.skill.listener.MechanicListener;
 import com.sucy.skill.task.RemoveTask;
@@ -38,12 +42,17 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Heals each target
@@ -272,5 +281,126 @@ public class ProjectileMechanic extends MechanicComponent {
             SkillAPI.removeMeta(projectile, MechanicListener.P_CALL);
             projectile.remove();
         }, 1L);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, Supplier<List<LivingEntity>> targetSupplier) {
+        List<LivingEntity> targets = new ArrayList<>();
+
+        BukkitTask task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                targets.clear();
+
+                int     amount = (int) parseValues(caster, AMOUNT, level, 1.0);
+                String  spread = settings.getString(SPREAD, "cone").toLowerCase();
+                int     lifespan = (int) (parseValues(caster, LIFESPAN, level, 9999) * 20);
+                String  type = settings.getString(PROJECTILE, "arrow").toLowerCase();
+                double gravity;
+                double drag;
+                switch (type) {
+                    // https://minecraft.fandom.com/wiki/Entity#Motion_of_entities
+                    case "egg", "snowball", "splash potion", "ender pearl", "thrown exp bottle" -> {
+                        gravity = -0.03;
+                        drag = 0.01;
+                    }
+                    case "arrow", "spectral arrow", "trident" -> {
+                        gravity = -0.05;
+                        drag = 0.01;
+                    }
+                    case "llama spit" -> {
+                        gravity = -0.06;
+                        drag = 0.01;
+                    }
+                    case "fishing hook" -> {
+                        gravity = -0.03;
+                        drag = 0.08;
+                    }
+                    default -> {
+                        gravity = 0;
+                        drag = 0;
+                    }
+                }
+
+                final Settings copy = new Settings(settings);
+                copy.set(ParticleProjectile.SPEED, parseValues(caster, ParticleProjectile.SPEED, level, 1), 0);
+                copy.set(ParticleHelper.POINTS_KEY, parseValues(caster, ParticleHelper.POINTS_KEY, level, 1), 0);
+                copy.set(ParticleHelper.RADIUS_KEY, parseValues(caster, ParticleHelper.RADIUS_KEY, level, 0), 0);
+                copy.set(ParticleProjectile.GRAVITY, gravity, 0);
+                copy.set(ParticleProjectile.DRAG, drag, 0);
+                copy.set(ParticleProjectile.PERIOD, preview.getInt("path-steps", 2));
+
+                ProjectileCallback callback = (projectile, hit) -> {
+                    if (hit == null) hit = new TempEntity(projectile.getLocation());
+                    targets.add(hit);
+                    if (preview.getBool("per-target")) {
+                        ParticleHelper.play(hit.getLocation(), preview, Set.of(caster), "per-target-",
+                                preview.getBool("per-target-" + "hitbox") ? hit.getBoundingBox() : null);
+                    }
+                };
+
+                List<ParticleProjectile> list = new ArrayList<>();
+                // Fire from each target
+                for (LivingEntity target : targetSupplier.get()) {
+                    Location loc = target.getLocation();
+
+                    // Apply the spread type
+                    if (spread.equals("rain")) {
+                        double radius = parseValues(caster, RADIUS, level, 2.0);
+                        double height = parseValues(caster, HEIGHT, level, 8.0);
+                        list.addAll(ParticleProjectile.rain(caster, level, loc, copy, radius, height, amount, callback, lifespan));
+                    } else {
+                        Vector dir = target.getLocation().getDirection();
+
+                        double right   = parseValues(caster, RIGHT, level, 0);
+                        double upward  = parseValues(caster, UPWARD, level, 0);
+                        double forward = parseValues(caster, FORWARD, level, 0);
+
+                        Vector looking = dir.clone().setY(0).normalize();
+                        Vector normal  = looking.clone().crossProduct(UP);
+                        looking.multiply(forward).add(normal.multiply(right));
+
+                        if (spread.equals("horizontal cone")) {
+                            dir.setY(0);
+                            dir.normalize();
+                        }
+                        double angle = parseValues(caster, ANGLE, level, 30.0);
+                        list.addAll(ParticleProjectile.spread(
+                                caster,
+                                level,
+                                dir,
+                                type.contains("arrow") ? target.getEyeLocation() : loc.add(looking).add(0, upward + 0.5, 0),
+                                copy,
+                                angle,
+                                amount,
+                                callback,
+                                lifespan
+                        ));
+                    }
+
+                    for (ParticleProjectile p : list) {
+                        SkillAPI.setMeta(p, LEVEL, level);
+                        p.setAllyEnemy(true, true);
+                    }
+
+                    Consumer<Location> onStep = preview.getBool("path")
+                            ? location -> new ParticleSettings(preview, "path-").instance(caster, location.getX(), location.getY(), location.getZ())
+                            : location -> {};
+                    for (ParticleProjectile p : list) p.setOnStep(onStep);
+
+                    for (ParticleProjectile p : list) {
+                        while (p.isValid()) {
+                            p.run();
+                        }
+                    }
+                }
+            }
+        }.runTaskTimer(SkillAPI.inst(),0, Math.max(1, preview.getInt("period", 5)));
+        onPreviewStop.add(task::cancel);
+
+        playChildrenPreviews(onPreviewStop, caster, level, () -> targets);
     }
 }
