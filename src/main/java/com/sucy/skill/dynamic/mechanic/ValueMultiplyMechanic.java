@@ -26,7 +26,9 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
+import com.sucy.skill.SkillAPI;
 import com.sucy.skill.dynamic.DynamicSkill;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
@@ -38,6 +40,7 @@ import java.util.Map;
 public class ValueMultiplyMechanic extends MechanicComponent {
     private static final String KEY        = "key";
     private static final String MULTIPLIER = "multiplier";
+    private static final String SAVE   = "save";
 
     @Override
     public String getKey() {
@@ -65,6 +68,8 @@ public class ValueMultiplyMechanic extends MechanicComponent {
         if (data.containsKey(key)) {
             data.put(key, multiplier * (Double) data.get(key));
         }
+        if (settings.getBool(SAVE, false))
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.get(key));
         return true;
     }
 }

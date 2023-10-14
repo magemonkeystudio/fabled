@@ -42,6 +42,7 @@ import com.sucy.skill.cast.PlayerTextCastingData;
 import com.sucy.skill.data.GroupSettings;
 import com.sucy.skill.data.PlayerEquips;
 import com.sucy.skill.dynamic.EffectComponent;
+import com.sucy.skill.dynamic.TempEntity;
 import com.sucy.skill.gui.handlers.AttributeHandler;
 import com.sucy.skill.gui.handlers.DetailsHandler;
 import com.sucy.skill.gui.handlers.ProfessHandler;
@@ -61,13 +62,11 @@ import mc.promcteam.engine.mccore.config.FilterType;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.util.VersionManager;
 import mc.promcteam.engine.utils.EntityUT;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -95,6 +94,7 @@ public class PlayerData {
     private final HashMap<Material, PlayerSkill>                 binds               = new HashMap<>();
     private final HashMap<String, List<PlayerAttributeModifier>> attributesModifiers = new HashMap<>();
     private final HashMap<String, List<PlayerStatModifier>>      statModifiers       = new HashMap<>();
+    private final HashMap<String, String>                        persistentData      = new HashMap<>();
 
     private final DataSection           extraData  = new DataSection();
     private final UUID                  playerUUID;
@@ -2142,6 +2142,114 @@ public class PlayerData {
     public boolean clearBind(Material mat) {
         return binds.remove(mat) != null;
     }
+
+
+    ///////////////////////////////////////////////////////
+    //                                                   //
+    //                  Persistent data                  //
+    //                                                   //
+    ///////////////////////////////////////////////////////
+
+    /**
+     * Decrypt and return the saved values on the account.
+     * @param key The key is used to save the value.
+     * @return Decrypted value
+     */
+    public Object getPersistentData(String key){
+        String data = persistentData.get(key);
+        if (data==null) return 0;
+        if (data.startsWith("targets")){
+            data = data.substring(8);
+            List<LivingEntity> targets = new ArrayList<>();
+            Arrays.stream(data.split(";")).forEach(target -> {
+                if (target.startsWith("loc")) {
+                    String[] loc = target.split(",");
+                    Location location = new Location(
+                            Bukkit.getWorld(loc[1]),
+                            Double.parseDouble(loc[2]),
+                            Double.parseDouble(loc[3]),
+                            Double.parseDouble(loc[4])
+                    );
+                    targets.add(new TempEntity(location));
+                } else if (target.startsWith("entity-")) {
+                    Entity entity = Bukkit.getEntity(UUID.fromString(target.substring(7)));
+                    if (entity!=null) targets.add((LivingEntity) entity);
+                } else {
+                    Player player = Bukkit.getPlayer(UUID.fromString(target));
+                    if (player==null || !player.isOnline()) return;
+                    targets.add(player);
+                }
+            });
+            return targets;
+        }
+        if (data.startsWith("loc")) {
+            String[] loc = data.split(",");
+            return new Location(
+                    Bukkit.getWorld(loc[1]),
+                    Double.parseDouble(loc[2]),
+                    Double.parseDouble(loc[3]),
+                    Double.parseDouble(loc[4])
+            );
+        }
+        try {
+            return Double.parseDouble(data);
+        } catch (NumberFormatException ignored){}
+        return data;
+    }
+
+
+    /**
+     * Encrypt and save values to account for long-term storage
+     * @param key The key is used to save the value.
+     * @param data The value is stored. Currently supported types are:
+     *             Number, String, Player, TempEntity, Entity
+     */
+    public void setPersistentData(String key, Object data){
+        if (data==null || Objects.equals(data, 0)) {
+            removePersistentData(key);
+            return;
+        }
+        if (data instanceof List){
+            List<String> sum = new ArrayList<>();
+            ((List<?>) data).forEach(entry -> {
+                if (entry instanceof Player){
+                    sum.add(((Player) entry).getUniqueId().toString());
+                } else if (entry instanceof TempEntity) {
+                    Location loc = ((TempEntity) entry).getLocation();
+                    if (loc.getWorld()==null) return;
+                    sum.add(String.format("loc,%s,%f,%f,%f", loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ()));
+                } else if (entry instanceof Entity){
+                    sum.add("entity-"+((Entity) entry).getUniqueId());
+                }
+            });
+            if (sum.isEmpty()) return;
+            persistentData.put(key,"targets-"+String.join(";", sum));
+            return;
+        }
+        if (data instanceof Location){
+            Location loc = (Location) data;
+            persistentData.put(key, String.format("loc,%s,%f,%f,%f", loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ()));
+            return;
+        }
+        persistentData.put(key,data.toString());
+    }
+
+    /**
+     * Remove a value with a specific key
+     * @param key The key is used to save the value.
+     */
+    public void removePersistentData(String key){
+        persistentData.remove(key);
+    }
+
+    /**
+     * @return original HashMap used to store persistent data
+     */
+    public HashMap<String,String> getAllPersistentData(){
+        return persistentData;
+    }
+
+
 
     ///////////////////////////////////////////////////////
     //                                                   //

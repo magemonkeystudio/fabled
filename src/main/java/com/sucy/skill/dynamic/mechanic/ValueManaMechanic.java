@@ -29,6 +29,7 @@ package com.sucy.skill.dynamic.mechanic;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.dynamic.DynamicSkill;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -38,6 +39,7 @@ import java.util.Map;
 public class ValueManaMechanic extends MechanicComponent {
     private static final String KEY  = "key";
     private static final String TYPE = "type";
+    private static final String SAVE   = "save";
 
     @Override
     public String getKey() {
@@ -72,6 +74,9 @@ public class ValueManaMechanic extends MechanicComponent {
             default: // current
                 data.put(key, player.getMana());
         }
+
+        if (settings.getBool(SAVE, false))
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.get(key));
         return true;
     }
 }

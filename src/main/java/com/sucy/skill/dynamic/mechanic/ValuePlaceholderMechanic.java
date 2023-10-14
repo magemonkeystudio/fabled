@@ -1,9 +1,11 @@
 package com.sucy.skill.dynamic.mechanic;
 
+import com.sucy.skill.SkillAPI;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.hook.PlaceholderAPIHook;
 import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.log.Logger;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -17,6 +19,7 @@ public class ValuePlaceholderMechanic extends MechanicComponent {
     private static final String KEY         = "key";
     private static final String TYPE        = "type";
     private static final String PLACEHOLDER = "placeholder";
+    private static final String SAVE   = "save";
 
     @Override
     public String getKey() {
@@ -56,6 +59,8 @@ public class ValuePlaceholderMechanic extends MechanicComponent {
                     return false;
                 }
         }
+        if (settings.getBool(SAVE, false))
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,DynamicSkill.getCastData(caster).get(key));
         return true;
     }
 }
