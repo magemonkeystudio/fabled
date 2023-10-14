@@ -3990,9 +3990,11 @@ class ValueAttributeMechanic extends ProMechanic {
 				new StringSelect('Key', 'key', 'attribute')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
 				new StringSelect('Attribute', 'attribute', 'Vitality')
-					.setTooltip('The name of the attribute you are loading the value of')
+					.setTooltip('The name of the attribute you are loading the value of'),
+				new BooleanSelect("Save", "save", false)
+					.setTooltip("If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account")
 			],
-			summaryItems: ['key', 'attribute']
+			summaryItems: ['key', 'attribute', "save"]
 		}, false);
 	}
 
@@ -4010,9 +4012,12 @@ class ValueCopyMechanic extends ProMechanic {
 				new StringSelect('Destination', 'destination', 'value')
 					.setTooltip('The key to copy the original value to'),
 				new BooleanSelect('To target', 'to-target', true)
-					.setTooltip('The amount to add to the value')
+					.setTooltip('The amount to add to the value'),
+				new BooleanSelect("Save", "save", false)
+					.setTooltip("If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account")
+	
 			],
-			summaryItems: ['key', 'destination', 'to-target']
+			summaryItems: ['key', 'destination', 'to-target', "save"]
 		}, false);
 	}
 
@@ -4026,9 +4031,12 @@ class ValueDistanceMechanic extends ProMechanic {
 			description:  'Stores the distance between the target and the caster into a value',
 			data:         [
 				new StringSelect('Key', 'key', 'attribute')
-					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value')
+					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
+				new BooleanSelect("Save", "save", false)
+					.setTooltip("If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account")
+
 			],
-			summaryItems: ['key']
+			summaryItems: ['key', 'save']
 		}, false);
 	}
 
@@ -4044,9 +4052,12 @@ class ValueHealthMechanic extends ProMechanic {
 				new StringSelect('Key', 'key', 'value')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
 				new DropdownSelect('Type', 'type', ['Current', 'Max', 'Missing', 'Percent'], 'Current')
-					.setTooltip('Current provides the health the target has, max provides their total health, missing provides how much health they have lost, and percent is the ratio of health to total health')
+					.setTooltip('Current provides the health the target has, max provides their total health, missing provides how much health they have lost, and percent is the ratio of health to total health'),
+				new BooleanSelect("Save", "save", false)
+					.setTooltip("If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account")
+
 			],
-			summaryItems: ['key', 'type']
+			summaryItems: ['key', 'type', 'save']
 		}, false);
 	}
 
@@ -4060,9 +4071,32 @@ class ValueLocationMechanic extends ProMechanic {
 			description:  'Loads the first target\'s current location into a stored value for use at a later time',
 			data:         [
 				new StringSelect('Key', 'key', 'location')
-					.setTooltip('The unique key to store the location under. This key can be used in place of attribute values to use the stored value')
+					.setTooltip('The unique key to store the location under. This key can be used in place of attribute values to use the stored value'),
+				new BooleanSelect("Save", "save", false)
+					.setTooltip("If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account")
+
 			],
-			summaryItems: ['key']
+			summaryItems: ['key', 'save']
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
+class ValueLoadMechanic extends ProMechanic {
+	public constructor() {
+		super({
+			name:         'Value Load',
+			description:  'If there is a value already stored on the account, that value will be retrieved and then be used as a normal value.',
+			data:         [
+				new StringSelect('Key', 'key')
+					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value.'),
+				new BooleanSelect('Override', 'override', true)
+					.setTooltip('If false and the current value have been set, nothing will change.'),
+				new BooleanSelect("Save", "save", false)
+					.setTooltip("If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account")
+			],
+			summaryItems: ['key', 'override', 'save']
 		}, false);
 	}
 
@@ -4082,9 +4116,12 @@ class ValueLoreMechanic extends ProMechanic {
 				new StringSelect('Regex', 'regex', 'Damage: {value}')
 					.setTooltip('The regex string to look for, using {value} as the number to store. If you do not know about regex, consider looking it up on Wikipedia or avoid using major characters such as [ ] { } ( ) . + ? * ^ \\ |'),
 				new AttributeSelect('Multiplier', 'multiplier', 1)
-					.setTooltip('The multiplier for the acquired value. If you want the value to remain unchanged, leave this value at 1')
+					.setTooltip('The multiplier for the acquired value. If you want the value to remain unchanged, leave this value at 1'),
+				new BooleanSelect("Save", "save", false)
+					.setTooltip("If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account")
+
 			],
-			summaryItems: ['key', 'hand', 'regex', 'multiplier']
+			summaryItems: ['key', 'hand', 'regex', 'multiplier', 'save']
 		}, false);
 	}
 
@@ -4104,9 +4141,12 @@ class ValueLoreSlotMechanic extends ProMechanic {
 				new StringSelect('Regex', 'regex', 'Damage: {value}')
 					.setTooltip('The regex string to look for, using {value} as the number to store. If you do not know about regex, consider looking it up on Wikipedia or avoid using major characters such as [ ] { } ( ) . + ? * ^ \\ |'),
 				new AttributeSelect('Multiplier', 'multiplier', 1)
-					.setTooltip('The multiplier for the acquired value. If you want the value to remain unchanged, leave this value at 1')
+					.setTooltip('The multiplier for the acquired value. If you want the value to remain unchanged, leave this value at 1'),
+				new BooleanSelect("Save", "save", false)
+					.setTooltip("If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account")
+
 			],
-			summaryItems: ['key', 'slot', 'regex', 'multiplier']
+			summaryItems: ['key', 'slot', 'regex', 'multiplier', 'save']
 		}, false);
 	}
 
@@ -4122,9 +4162,12 @@ class ValueManaMechanic extends ProMechanic {
 				new StringSelect('Key', 'key', 'value')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
 				new DropdownSelect('Type', 'type', ['Current', 'Max', 'Missing', 'Percent'], 'Current')
-					.setTooltip('Current provides the mana the target has, max provides their total mana, missing provides how much mana they have lost, and percent is the ratio of health to total mana')
+					.setTooltip('Current provides the mana the target has, max provides their total mana, missing provides how much mana they have lost, and percent is the ratio of health to total mana'),
+				new BooleanSelect("Save", "save", false)
+					.setTooltip("If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account")
+
 			],
-			summaryItems: ['key', 'type']
+			summaryItems: ['key', 'type', 'save']
 		}, false);
 	}
 
@@ -4140,9 +4183,12 @@ class ValueMultiplyMechanic extends ProMechanic {
 				new StringSelect('Key', 'key', 'value')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
 				new AttributeSelect('Multiplier', 'multiplier', 1)
-					.setTooltip('The amount to multiply the value by')
+					.setTooltip('The amount to multiply the value by'),
+				new BooleanSelect("Save", "save", false)
+					.setTooltip("If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account")
+
 			],
-			summaryItems: ['key', 'multiplier']
+			summaryItems: ['key', 'multiplier', 'save']
 		}, false);
 	}
 
@@ -4160,9 +4206,12 @@ class ValuePlaceholderMechanic extends ProMechanic {
 				new DropdownSelect('Type', 'type', ['Number', 'String'], 'Number')
 					.setTooltip('The type of value to store. Number values require numeric placeholders. String values can be used in messages or commands'),
 				new StringSelect('Placeholder', 'placeholder', '{value}')
-					.setTooltip('The placeholder string to use. Can contain multiple placeholders if using the String type')
+					.setTooltip('The placeholder string to use. Can contain multiple placeholders if using the String type'),
+				new BooleanSelect("Save", "save", false)
+					.setTooltip("If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account")
+
 			],
-			summaryItems: ['key', 'type', 'placeholder']
+			summaryItems: ['key', 'type', 'placeholder', 'save']
 		}, false);
 	}
 
@@ -4184,9 +4233,12 @@ class ValueRandomMechanic extends ProMechanic {
 				new AttributeSelect('Min', 'min')
 					.setTooltip('The minimum value it can be'),
 				new AttributeSelect('Max', 'max')
-					.setTooltip('The maximum value it can be')
+					.setTooltip('The maximum value it can be'),
+				new BooleanSelect("Save", "save", false)
+					.setTooltip("If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account")
+
 			],
-			summaryItems: ['key', 'type', 'min', 'max']
+			summaryItems: ['key', 'type', 'min', 'max', 'save']
 		}, false);
 	}
 
@@ -4202,9 +4254,12 @@ class ValueSetMechanic extends ProMechanic {
 				new StringSelect('Key', 'key', 'value')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
 				new AttributeSelect('Value', 'value', 1)
-					.setTooltip('The value to store under the key')
+					.setTooltip('The value to store under the key'),
+				new BooleanSelect("Save", "save", false)
+					.setTooltip("If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account")
+
 			],
-			summaryItems: ['key', 'value']
+			summaryItems: ['key', 'value', 'save']
 		}, false);
 	}
 
@@ -4599,6 +4654,7 @@ export const initComponents = () => {
 		VALUE_COPY:        { name: 'Value Copy', component: ValueCopyMechanic, section: 'Value' },
 		VALUE_DISTANCE:    { name: 'Value Distance', component: ValueDistanceMechanic, section: 'Value' },
 		VALUE_HEALTH:      { name: 'Value Health', component: ValueHealthMechanic, section: 'Value' },
+		VALUE_LOAD:        { name: 'Value Load', component: ValueLoadMechanic, section: 'Value' },
 		VALUE_LOCATION:    { name: 'Value Location', component: ValueLocationMechanic, section: 'Value' },
 		VALUE_LORE:        { name: 'Value Lore', component: ValueLoreMechanic, section: 'Value' },
 		VALUE_LORE_SLOT:   { name: 'Value Lore Slot', component: ValueLoreSlotMechanic, section: 'Value' },
