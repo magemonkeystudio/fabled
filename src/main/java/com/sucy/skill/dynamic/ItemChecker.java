@@ -26,9 +26,11 @@
  */
 package com.sucy.skill.dynamic;
 
+import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.Settings;
 import mc.promcteam.engine.mccore.config.parse.NumberParser;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -191,7 +193,7 @@ public class ItemChecker {
         return false;
     }
 
-    public static boolean findLore(LivingEntity caster, ItemStack item, String regex, String key, double multiplier) {
+    public static boolean findLore(LivingEntity caster, ItemStack item, String regex, String key, double multiplier, boolean save) {
         Pattern pattern = Pattern.compile(regex.replace("{value}", "([+-]?[0-9]+([.,][0-9]+)?)"));
 
         if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasLore())
@@ -206,6 +208,7 @@ public class ItemChecker {
                 try {
                     double base = NumberParser.parseDouble(value);
                     DynamicSkill.getCastData(caster).put(key, base * multiplier);
+                    if (save) SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,DynamicSkill.getCastData(caster).get(key));
                     break;
                 } catch (Exception ex) {
                     // Not a valid value

@@ -28,6 +28,7 @@ package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.dynamic.DynamicSkill;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
@@ -42,6 +43,7 @@ public class ValueRandomMechanic extends MechanicComponent {
     private static final String MIN  = "min";
     private static final String MAX  = "max";
     private static final String INT  = "integer";
+    private static final String SAVE   = "save";
 
     @Override
     public String getKey() {
@@ -82,6 +84,8 @@ public class ValueRandomMechanic extends MechanicComponent {
             data.put(key, rand * (max - min) + min);
         }
 
+        if (settings.getBool(SAVE, false))
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.get(key));
         return true;
     }
 }

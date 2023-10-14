@@ -26,7 +26,9 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
+import com.sucy.skill.SkillAPI;
 import com.sucy.skill.dynamic.DynamicSkill;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
@@ -35,6 +37,7 @@ import java.util.Map;
 public class ValueHealthMechanic extends MechanicComponent {
     private static final String KEY  = "key";
     private static final String TYPE = "type";
+    private static final String SAVE   = "save";
 
     @Override
     public String getKey() {
@@ -70,6 +73,8 @@ public class ValueHealthMechanic extends MechanicComponent {
             default: // current
                 data.put(key, target.getHealth());
         }
+        if (settings.getBool(SAVE, false))
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.get(key));
         return true;
     }
 }

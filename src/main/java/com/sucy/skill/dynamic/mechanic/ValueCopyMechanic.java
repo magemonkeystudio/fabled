@@ -1,6 +1,8 @@
 package com.sucy.skill.dynamic.mechanic;
 
+import com.sucy.skill.SkillAPI;
 import com.sucy.skill.dynamic.DynamicSkill;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
@@ -13,6 +15,7 @@ public class ValueCopyMechanic extends MechanicComponent {
     private static final String KEY       = "key";
     private static final String TARGET    = "destination";
     private static final String TO_TARGET = "to-target";
+    private static final String SAVE   = "save";
 
     @Override
     public String getKey() {
@@ -37,6 +40,8 @@ public class ValueCopyMechanic extends MechanicComponent {
             apply(targets.get(0), caster, key, destination);
         }
 
+        if (settings.getBool(SAVE, false))
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,DynamicSkill.getCastData(caster).get(key));
         return true;
     }
 

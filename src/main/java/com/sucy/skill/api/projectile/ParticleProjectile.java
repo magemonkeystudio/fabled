@@ -40,6 +40,7 @@ import org.bukkit.event.Event;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 /**
  * A fake projectile that plays particles along its path
@@ -78,15 +79,16 @@ public class ParticleProjectile extends CustomProjectile {
 
     private static final String PIERCE = "pierce";
 
-    private       Location loc;
-    private       Vector   vel;
-    private       int      life;
-    private final int      steps;
-    private final double   gravity;
-    private final double   drag;
-    private final int      particlePeriod;
-    private       int      count;
-    private final boolean  pierce;
+    private       Location           loc;
+    private       Vector             vel;
+    private       int                life;
+    private final int                steps;
+    private final double             gravity;
+    private final double             drag;
+    private final int                particlePeriod;
+    private       int                count;
+    private final boolean            pierce;
+    protected     Consumer<Location> onStep;
 
     /**
      * Constructor
@@ -191,6 +193,14 @@ public class ParticleProjectile extends CustomProjectile {
     }
 
     /**
+     * Passes the current projectile's location to the consumer every step of the way
+     * @param onStep the consumer the location is passed to
+     */
+    public void setOnStep(Consumer<Location> onStep) {
+        this.onStep = onStep;
+    }
+
+    /**
      * Updates the projectiles position and checks for collisions
      */
     @Override
@@ -209,7 +219,8 @@ public class ParticleProjectile extends CustomProjectile {
             count++;
             if (count >= particlePeriod) {
                 count = 0;
-                ParticleHelper.play(loc, settings);
+                if (onStep == null) ParticleHelper.play(loc, settings);
+                else onStep.accept(loc);
             }
 
             if (!isTraveling()) return;

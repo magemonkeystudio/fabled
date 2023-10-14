@@ -1,6 +1,8 @@
 package com.sucy.skill.dynamic.mechanic;
 
+import com.sucy.skill.SkillAPI;
 import com.sucy.skill.dynamic.DynamicSkill;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -13,6 +15,7 @@ import java.util.Map;
  */
 public class ValueDistanceMechanic extends MechanicComponent {
     private static final String KEY = "key";
+    private static final String SAVE   = "save";
 
     @Override
     public String getKey() {
@@ -40,6 +43,8 @@ public class ValueDistanceMechanic extends MechanicComponent {
         final String              key  = settings.getString(KEY);
         final Map<String, Object> data = DynamicSkill.getCastData(caster);
         data.put(key, targets.get(0).getLocation().distance(caster.getLocation()));
+        if (settings.getBool(SAVE, false))
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.get(key));
         return true;
     }
 }

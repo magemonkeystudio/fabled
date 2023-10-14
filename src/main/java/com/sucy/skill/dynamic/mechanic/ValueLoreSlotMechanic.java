@@ -38,6 +38,7 @@ public class ValueLoreSlotMechanic extends MechanicComponent {
     private static final String REGEX      = "regex";
     private static final String MULTIPLIER = "multiplier";
     private static final String SLOT       = "slot";
+    private static final String SAVE   = "save";
 
     @Override
     public String getKey() {
@@ -66,6 +67,6 @@ public class ValueLoreSlotMechanic extends MechanicComponent {
 
         ItemStack item = ((Player) caster).getInventory().getItem(slot);
 
-        return ItemChecker.findLore(caster, item, regex, key, multiplier);
+        return ItemChecker.findLore(caster, item, regex, key, multiplier, settings.getBool(SAVE, false));
     }
 }

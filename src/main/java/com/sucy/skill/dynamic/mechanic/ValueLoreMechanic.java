@@ -41,6 +41,7 @@ public class ValueLoreMechanic extends MechanicComponent {
     private static final String REGEX      = "regex";
     private static final String MULTIPLIER = "multiplier";
     private static final String HAND       = "hand";
+    private static final String SAVE   = "save";
 
     @Override
     public String getKey() {
@@ -78,6 +79,6 @@ public class ValueLoreMechanic extends MechanicComponent {
             hand = caster.getEquipment().getItemInHand();
         }
 
-        return ItemChecker.findLore(caster, hand, regex, key, multiplier);
+        return ItemChecker.findLore(caster, hand, regex, key, multiplier, settings.getBool(SAVE, false));
     }
 }

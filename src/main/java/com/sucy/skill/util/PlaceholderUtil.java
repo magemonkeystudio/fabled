@@ -311,6 +311,9 @@ public class PlaceholderUtil {
             if (identifier.equals("default_scurrentrequiredexp")) {
                 return String.valueOf(data.getMainClass().getRequiredExp());
             }
+            if (identifier.startsWith("default_value_")) {
+                return data.getPersistentData(identifier.substring(14)).toString();
+            }
         }
 
         if (identifier.startsWith("player_")) {
