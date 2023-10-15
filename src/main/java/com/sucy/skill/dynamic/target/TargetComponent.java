@@ -23,10 +23,10 @@ import java.util.function.Supplier;
  */
 public abstract class TargetComponent extends EffectComponent {
 
-    private static final String ALLY   = "group";
-    private static final String WALL   = "wall";
-    private static final String CASTER = "caster";
-    private static final String MAX    = "max";
+    private static final   String ALLY   = "group";
+    private static final   String WALL   = "wall";
+    private static final   String CASTER = "caster";
+    protected static final String MAX    = "max";
 
     boolean       everyone;
     boolean       allies;
@@ -64,26 +64,27 @@ public abstract class TargetComponent extends EffectComponent {
         self = IncludeCaster.valueOf(settings.getString(CASTER, "false").toUpperCase().replace(' ', '_'));
     }
 
-    abstract List<LivingEntity> getTargets(
-            final LivingEntity caster,
-            final int level,
-            final List<LivingEntity> targets);
+    abstract List<LivingEntity> getTargets(final LivingEntity caster,
+                                           final int level,
+                                           final List<LivingEntity> targets);
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, Supplier<List<LivingEntity>> targetSupplier) {
+    public void playPreview(List<Runnable> onPreviewStop,
+                            Player caster,
+                            int level,
+                            Supplier<List<LivingEntity>> targetSupplier) {
         Supplier<List<LivingEntity>> supplier = () -> getTargets(caster, level, targetSupplier.get());
         super.playPreview(onPreviewStop, caster, level, supplier);
         playChildrenPreviews(onPreviewStop, caster, level, supplier);
     }
 
-    List<LivingEntity> determineTargets(
-            final LivingEntity caster,
-            final int level,
-            final List<LivingEntity> from,
-            final Function<LivingEntity, List<LivingEntity>> conversion) {
+    List<LivingEntity> determineTargets(final LivingEntity caster,
+                                        final int level,
+                                        final List<LivingEntity> from,
+                                        final Function<LivingEntity, List<LivingEntity>> conversion) {
 
         final double max = parseValues(caster, MAX, level, 99);
 
@@ -107,13 +108,11 @@ public abstract class TargetComponent extends EffectComponent {
     boolean isValidTarget(final LivingEntity caster, final LivingEntity from, final LivingEntity target) {
         if (SkillAPI.getMeta(target, MechanicListener.ARMOR_STAND) != null) return false;
         if (target instanceof TempEntity) return true;
-        if (target instanceof Player && (
-                ((Player) target).getGameMode() == GameMode.SPECTATOR
-                        || ((Player) target).getGameMode() == GameMode.CREATIVE
-        )) return false;
+        if (target instanceof Player && (((Player) target).getGameMode() == GameMode.SPECTATOR
+                || ((Player) target).getGameMode() == GameMode.CREATIVE)) return false;
 
-        return target != caster && SkillAPI.getSettings().isValidTarget(target)
-                && (throughWall || !TargetHelper.isObstructed(from.getEyeLocation(), target.getEyeLocation()))
+        return target != caster && SkillAPI.getSettings().isValidTarget(target) && (throughWall
+                || !TargetHelper.isObstructed(from.getEyeLocation(), target.getEyeLocation()))
                 && (everyone || allies == SkillAPI.getSettings().isAlly(caster, target));
     }
 

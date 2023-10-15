@@ -26,9 +26,7 @@
  */
 package com.sucy.skill.dynamic.target;
 
-import org.bukkit.GameMode;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,13 +46,10 @@ public class WorldTarget extends TargetComponent {
     @Override
     List<LivingEntity> getTargets(
             final LivingEntity caster, final int level, final List<LivingEntity> targets) {
+        final int max = (int) parseValues(caster, MAX, level, 99);
         return caster.getWorld().getLivingEntities().stream()
-                .filter(e -> {
-                    GameMode gm = e instanceof Player ? ((Player) e).getGameMode() : GameMode.SURVIVAL;
-                    if (gm == GameMode.SPECTATOR || gm == GameMode.CREATIVE) return false;
-
-                    return true;
-                })
+                .filter(e -> isValidTarget(caster, caster, e) || (self.equals(IncludeCaster.IN_AREA) && caster == e))
+                .limit(max)
                 .collect(Collectors.toList());
     }
 }
