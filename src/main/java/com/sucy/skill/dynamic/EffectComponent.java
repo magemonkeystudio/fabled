@@ -98,6 +98,9 @@ public abstract class EffectComponent {
                     builder.append('\'');
                     i = j + 3;
                     break;
+                default:
+                    i++;
+                    break;
             }
             j = string.indexOf('&', i);
         }
@@ -333,7 +336,10 @@ public abstract class EffectComponent {
      * @param level          the level of the skill to preview for
      * @param targetSupplier targets to preview on
      */
-    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, Supplier<List<LivingEntity>> targetSupplier) {
+    public void playPreview(List<Runnable> onPreviewStop,
+                            Player caster,
+                            int level,
+                            Supplier<List<LivingEntity>> targetSupplier) {
         if (preview.getBool("per-target")) {
             BukkitTask task = new BukkitRunnable() {
                 @Override
