@@ -33,6 +33,19 @@ export const filteredTriggers: Readable<Array<RegistryEntry>>   = derived([trigg
 
 	return filtered;
 });
+
+export const triggerSections = derived(filteredTriggers, (triggers) => {
+	const sections: { [key: string]: RegistryEntry[] } = {};
+	triggers.forEach(trigger => {
+		let section = 'misc';
+		if (trigger.section) section = trigger.section;
+		if (!sections[section]) sections[section] = [];
+		sections[section].push(trigger);
+	});
+
+	return sections;
+});
+
 export const filteredTargets: Readable<Array<RegistryEntry>>    = derived([targets, filterParams], ([targets, filterParams]) => {
 	const filtered = Object.keys(targets)
 		.filter(key => key.toLowerCase().replace('_', ' ').includes(filterParams.toLowerCase()))

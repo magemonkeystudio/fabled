@@ -34,7 +34,7 @@
 <style>
     .comp-subsection {
         flex-basis: 100%;
-        margin: 0.5rem;
+        margin-top: 0.5rem;
         padding: 0.25rem;
         background: rgba(56, 89, 138, 0.5);
         border-radius: 0.25rem;

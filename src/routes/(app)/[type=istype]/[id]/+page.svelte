@@ -1,15 +1,17 @@
 <script lang='ts'>
-	import type ProSkill                                   from '$api/proskill';
-	import ComponentWidget                                 from '$components/ComponentWidget.svelte';
-	import Modal                                           from '$components/Modal.svelte';
-	import { get }                                         from 'svelte/store';
-	import ProInput                                        from '$input/ProInput.svelte';
-	import { skills }                                      from '../../../../data/skill-store';
-	import { filteredTriggers, filterParams, initialized } from '$api/components/registry';
-	import { onMount }                                     from 'svelte';
-	import type { Unsubscriber }                           from 'svelte/types/runtime/store';
-	import type ProTrigger                                 from '$api/components/triggers';
-	import { base }                                        from '$app/paths';
+	import type ProSkill                                  from '$api/proskill';
+	import ComponentWidget                                from '$components/ComponentWidget.svelte';
+	import Modal                                          from '$components/Modal.svelte';
+	import { get }                                        from 'svelte/store';
+	import ProInput                                       from '$input/ProInput.svelte';
+	import { skills }                                     from '../../../../data/skill-store';
+	import { filterParams, initialized, triggerSections } from '$api/components/registry';
+	import { onMount }                                    from 'svelte';
+	import type { Unsubscriber }                          from 'svelte/types/runtime/store';
+	import type ProTrigger                                from '$api/components/triggers';
+	import { base }                                       from '$app/paths';
+	import ComponentSection                               from '$components/modal/component/ComponentSection.svelte';
+	import ProComponent                                   from '$api/components/procomponent';
 
 	export let data: { data: ProSkill };
 	let skill: ProSkill;
@@ -27,8 +29,8 @@
 		});
 	});
 
-	const onSelectTrigger = (data: { detail: ProTrigger }) => {
-		skill.triggers.push(data.detail);
+	const onSelectTrigger = (comp: { new: () => { defaultOpen: () => ProComponent } }) => {
+		skill.triggers.push(<ProTrigger>comp.new().defaultOpen());
 		update();
 		setTimeout(() => triggerModal = false);
 	};
@@ -78,12 +80,20 @@
 	</div>
 	<hr />
 	<div class='component-section'>
-		{#each $filteredTriggers as trigger}
+		{#each $triggerSections.misc as trigger}
 			<div class='comp-select'
 					 class:deprecated={trigger.component.new().isDeprecated}
-					 on:click={() => onSelectTrigger({detail: trigger.component.new()})}>
+					 on:click={() => onSelectTrigger(trigger.component)}>
 				{trigger.name}
 			</div>
+		{/each}
+		{#each Object.keys($triggerSections) as sectionName}
+			{#if sectionName != 'misc'}
+				<ComponentSection sectionName={sectionName}
+													components={$triggerSections[sectionName]}
+													addComponent={onSelectTrigger}
+				/>
+			{/if}
 		{/each}
 	</div>
 	<hr />
