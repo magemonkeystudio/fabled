@@ -912,6 +912,21 @@ class SingleTarget extends ProTarget {
 	public static override new = () => new this();
 }
 
+class WorldTarget extends ProTarget {
+	public constructor() {
+		super({
+			name:         'World',
+			description:  'Targets all entities in the caster\'s world',
+			data:         [
+				...targetOptions()
+			],
+			summaryItems: ['group', 'wall', 'caster', 'max']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 // CONDITIONS
 
 /**
@@ -2780,7 +2795,7 @@ class ItemProjectileMechanic extends ProMechanic {
 				...projectileOptions(),
 				...effectOptions(true)
 			],
-			preview: [
+			preview:      [
 				new IntSelect('Refresh period', 'period', 5)
 					.setTooltip('How many ticks to wait before refreshing the preview, recalculating targets and the location of the particle effects'),
 
@@ -3220,7 +3235,7 @@ class ParticleProjectileMechanic extends ProMechanic {
 
 				...effectOptions(true)
 			],
-			preview: [
+			preview:      [
 				new IntSelect('Refresh period', 'period', 5)
 					.setTooltip('How many ticks to wait before refreshing the preview, recalculating targets and the location of the particle effects'),
 
@@ -3477,7 +3492,7 @@ class ProjectileMechanic extends ProMechanic {
 				...particleOptions(),
 				...effectOptions(true)
 			],
-			preview: [
+			preview:      [
 				new IntSelect('Refresh period', 'period', 5)
 					.setTooltip('How many ticks to wait before refreshing the preview, recalculating targets and the location of the particle effects'),
 
@@ -4535,7 +4550,8 @@ export const initComponents = () => {
 		OFFSET:   { name: 'Offset', component: OffsetTarget },
 		REMEMBER: { name: 'Remember', component: RememberTarget },
 		SELF:     { name: 'Self', component: SelfTarget },
-		SINGLE:   { name: 'Single', component: SingleTarget }
+		SINGLE:   { name: 'Single', component: SingleTarget },
+		WORLD:    { name: 'World', component: WorldTarget }
 	});
 	conditions.set({
 		ALTITUDE:       { name: 'Altitude', component: AltitudeCondition },
