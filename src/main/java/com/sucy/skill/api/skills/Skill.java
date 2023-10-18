@@ -74,6 +74,7 @@ import java.util.List;
  * Represents a template for a skill used in the RPG system. This is
  * the class to extend when creating your own custom skills.
  */
+@SuppressWarnings("LombokGetterMayBeUsed")
 public abstract class Skill implements IconHolder {
     private static final DecimalFormat     FORMAT           = new DecimalFormat("#########0.0#");
     private static final String            NAME             = "name";
@@ -88,6 +89,8 @@ public abstract class Skill implements IconHolder {
     private static final String            DESC             = "desc";
     private static final String            ATTR             = "attributes";
     private static final String            COMBO            = "combo";
+    private static final String            GLOBAL           = "global";
+    private static final String            HIDDEN           = "hidden";
     private static       boolean           skillDamage      = false;
     /**
      * The settings for the skill which include configurable stats
@@ -109,6 +112,8 @@ public abstract class Skill implements IconHolder {
     private              boolean           needsPermission;
     private              boolean           cooldownMessage;
     private              int               combo;
+    private      boolean           global;
+    private      boolean           hidden;
 
     /**
      * Initializes a new skill that doesn't require any other skill.
@@ -434,6 +439,24 @@ public abstract class Skill implements IconHolder {
      */
     public boolean canCast() {
         return this instanceof SkillShot || this instanceof TargetSkill;
+    }
+
+    /**
+     * Check if this skill is available for every class
+     *
+     * @return true if is global skill, false otherwise
+     */
+    public boolean isGlobal(){
+        return global;
+    }
+
+    /**
+     * Check if this skill won't be added to the skill tree
+     *
+     * @return true if is hidden skill, false otherwise
+     */
+    public boolean isHidden(){
+        return hidden;
     }
 
     /**
@@ -900,7 +923,8 @@ public abstract class Skill implements IconHolder {
         needsPermission = config.getString(PERM, needsPermission + "").equalsIgnoreCase("true");
         cooldownMessage = config.getBoolean(COOLDOWN_MESSAGE, true);
         combo = SkillAPI.getComboManager().parseCombo(config.getString(COMBO));
-
+        global = config.getBoolean(GLOBAL, false);
+        hidden = config.getBoolean(HIDDEN, false);
         if (config.isList(DESC)) {
             description.clear();
             description.addAll(config.getList(DESC));

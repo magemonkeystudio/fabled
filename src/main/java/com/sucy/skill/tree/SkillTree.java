@@ -81,6 +81,7 @@ public abstract class SkillTree {
                 Logger.invalid("Failed to add skill to tree - " + skill + ": Skill does not exist");
                 continue;
             }
+            if (skill.isHidden()) continue;
             if (SkillAPI.getSettings().isShowingAutoSkills() || skill.canCast() || !(skill.canAutoLevel(0)
                     && skill.canAutoLevel(1))) {
                 skills.add(skill);
