@@ -54,7 +54,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Represents a template for a class used in the RPG system. This is
@@ -697,7 +696,6 @@ public abstract class RPGClass implements IconHolder {
                 } else Logger.invalid("Invalid skill for class " + this.name + " - " + name);
             }
         }
-        skills.addAll(SkillAPI.getSkills().values().stream().filter(Skill::isGlobal).collect(Collectors.toList()));
 
         this.skillTree = this.tree.getTree(SkillAPI.inst(), this);
     }
