@@ -28,8 +28,10 @@ package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.Settings;
+import com.sucy.skill.api.particle.EffectPlayer;
 import com.sucy.skill.api.particle.ParticleHelper;
 import com.sucy.skill.api.particle.ParticleSettings;
+import com.sucy.skill.api.particle.target.EntityTarget;
 import com.sucy.skill.api.projectile.CustomProjectile;
 import com.sucy.skill.api.projectile.ParticleProjectile;
 import com.sucy.skill.api.projectile.ProjectileCallback;
@@ -73,6 +75,8 @@ public class ProjectileMechanic extends MechanicComponent {
     private static final String                                       FORWARD            = "forward";
     private static final String                                       UPWARD             = "upward";
     private static final String                                       RIGHT              = "right";
+    private static final String                                       USE_EFFECT         = "use-effect";
+    private static final String                                       EFFECT_KEY         = "effect-key";
     private static final HashMap<String, Class<? extends Projectile>> PROJECTILES        =
             new HashMap<String, Class<? extends Projectile>>() {{
                 put("arrow", Arrow.class);
@@ -242,6 +246,18 @@ public class ProjectileMechanic extends MechanicComponent {
                     if (flaming) p.setFireTicks(9999);
                     projectiles.add(p);
                 }
+            }
+        }
+
+        if (settings.getBool(USE_EFFECT, false)) {
+            EffectPlayer player = new EffectPlayer(settings);
+            for (Projectile p : projectiles) {
+                player.start(
+                        new EntityTarget(p),
+                        settings.getString(EFFECT_KEY, skill.getName()),
+                        Integer.MAX_VALUE,
+                        level,
+                        true);
             }
         }
 
