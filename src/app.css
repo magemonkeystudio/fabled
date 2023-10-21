@@ -178,28 +178,15 @@ select, input, textarea {
     justify-content: center !important;
 }
 
-.component-section {
-    flex-grow: 1;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-
-    width: 100%;
-    overflow-y: hidden;
-    user-select: none;
-}
-
 .comp-select, .cancel {
-    flex-grow: 1;
     width: max-content;
     text-align: center;
 
     display: inline-block;
     padding: 0.5rem;
     background-color: #333;
-    border: 1px solid #222;
+    border: 1px solid #666;
+    border-radius: 0 0.5rem;
     margin: 0.1rem;
     transition: background-color 250ms ease;
     user-select: none;
@@ -225,7 +212,7 @@ select, input, textarea {
     cursor: pointer;
 }
 
-@media screen and (min-width: 500px) {
+@media screen and (max-width: 500px) {
     body {
         font-size: 1.2rem;
     }

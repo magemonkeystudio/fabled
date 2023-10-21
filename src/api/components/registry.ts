@@ -37,7 +37,7 @@ export const filteredTriggers: Readable<Array<RegistryEntry>>   = derived([trigg
 export const triggerSections = derived(filteredTriggers, (triggers) => {
 	const sections: { [key: string]: RegistryEntry[] } = {};
 	triggers.forEach(trigger => {
-		let section = 'misc';
+		let section = 'General';
 		if (trigger.section) section = trigger.section;
 		if (!sections[section]) sections[section] = [];
 		sections[section].push(trigger);
@@ -74,7 +74,7 @@ export const filteredMechanics: Readable<Array<RegistryEntry>>  = derived([mecha
 export const mechanicSections = derived(filteredMechanics, (mechanics) => {
 	const sections: { [key: string]: RegistryEntry[] } = {};
 	mechanics.forEach(mechanic => {
-		let section = 'misc';
+		let section = 'General';
 		if (mechanic.section) section = mechanic.section;
 		if (!sections[section]) sections[section] = [];
 		sections[section].push(mechanic);

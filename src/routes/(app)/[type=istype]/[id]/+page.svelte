@@ -80,20 +80,11 @@
 	</div>
 	<hr />
 	<div class='component-section'>
-		{#each $triggerSections.misc as trigger}
-			<div class='comp-select'
-					 class:deprecated={trigger.component.new().isDeprecated}
-					 on:click={() => onSelectTrigger(trigger.component)}>
-				{trigger.name}
-			</div>
-		{/each}
 		{#each Object.keys($triggerSections) as sectionName}
-			{#if sectionName != 'misc'}
-				<ComponentSection sectionName={sectionName}
-													components={$triggerSections[sectionName]}
-													addComponent={onSelectTrigger}
-				/>
-			{/if}
+			<ComponentSection sectionName={sectionName}
+												components={$triggerSections[sectionName]}
+												addComponent={onSelectTrigger}
+			/>
 		{/each}
 	</div>
 	<hr />
@@ -166,5 +157,15 @@
     .edit-skill:active {
         background-color: #157e2b;
         box-shadow: inset 0 0 5px #333;
+    }
+
+    .component-section {
+        flex-direction: column;
+        flex-grow: 1;
+        flex-shrink: 0;
+
+        width: 100%;
+        overflow-y: hidden;
+        user-select: none;
     }
 </style>

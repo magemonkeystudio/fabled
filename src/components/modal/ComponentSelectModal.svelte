@@ -113,17 +113,8 @@
 		</div>
 		{#if mechanicsShown}
 			<div class='component-section' transition:squash={{duration: 200}}>
-				{#each $mechanicSections.misc || [] as mechanic}
-					<div class='comp-select' on:click={() => addComponent(mechanic.component)}
-							 on:keypress={(e) => {
-											 if (e.key === 'Enter') addComponent(mechanic.component);
-										 }}
-					>
-						{#if mechanic.component.new().isDeprecated}<s>{mechanic.name}</s>{:else}{mechanic.name}{/if}
-					</div>
-				{/each}
 				{#each Object.keys($mechanicSections) as sectionName}
-					{#if $mechanicSections[sectionName].length > 0 && sectionName !== 'misc'}
+					{#if $mechanicSections[sectionName].length > 0}
 						<ComponentSection sectionName={sectionName}
 															components={$mechanicSections[sectionName]}
 															addComponent={addComponent} />
@@ -142,6 +133,19 @@
 </Modal>
 
 <style>
+    .component-section {
+        flex-grow: 1;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+
+        width: 100%;
+        overflow-y: hidden;
+        user-select: none;
+    }
+
     .comp-modal-header {
         display: flex;
         justify-content: space-between;

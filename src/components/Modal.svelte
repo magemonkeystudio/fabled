@@ -1,43 +1,43 @@
 <!--suppress CssUnresolvedCustomProperty -->
-<script lang="ts">
-  import { fade, fly }             from "svelte/transition";
-  import { clickOutside }          from "$api/clickoutside";
-  import { createEventDispatcher } from "svelte";
+<script lang='ts'>
+	import { fade, fly }             from 'svelte/transition';
+	import { clickOutside }          from '$api/clickoutside';
+	import { createEventDispatcher } from 'svelte';
 
-  export let width = "auto";
-  export let open  = false;
+	export let width = 'auto';
+	export let open  = false;
 
-  const dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher();
 
-  const closeModal = (e?: CustomEvent) => {
-    open = false;
-    dispatch("close");
-    e?.detail?.stopPropagation();
-  };
+	const closeModal = (e?: CustomEvent) => {
+		open = false;
+		dispatch('close');
+		e?.detail?.stopPropagation();
+	};
 
-  const checkClose = (e: KeyboardEvent) => {
-    if (e.key == "Escape") {
-      e.preventDefault();
-      e.stopPropagation();
-      closeModal();
-    }
-  };
+	const checkClose = (e: KeyboardEvent) => {
+		if (e.key == 'Escape') {
+			e.preventDefault();
+			e.stopPropagation();
+			closeModal();
+		}
+	};
 </script>
 
 <svelte:window on:keyup={checkClose} />
 {#if open}
-  <div class="backdrop" transition:fade>
-    <div class="modal-content"
-         use:clickOutside
-         on:outclick={closeModal}
-         on:click|stopPropagation
-         transition:fly={{y: -200}}
-         style:--width={width}>
-      <div class="wrapper">
-        <slot />
-      </div>
-    </div>
-  </div>
+	<div class='backdrop' transition:fade>
+		<div class='modal-content'
+				 use:clickOutside
+				 on:outclick={closeModal}
+				 on:click|stopPropagation
+				 transition:fly={{y: -200}}
+				 style:--width={width}>
+			<div class='wrapper'>
+				<slot />
+			</div>
+		</div>
+	</div>
 {/if}
 
 <style>
@@ -57,7 +57,6 @@
         display: flex;
         justify-content: center;
         background-color: var(--color-bg);
-        padding: 1rem;
         border: 2px solid #444;
         border-radius: 0 1.5rem 0 1.5rem;
         box-shadow: 0 0 1rem #222;
@@ -67,18 +66,21 @@
         width: var(--width);
         max-height: 85vh;
         max-width: 90%;
-        overflow-y: auto;
+				overflow-y: auto;
     }
 
     .wrapper {
         display: flex;
         flex-direction: column;
         align-items: center;
+        margin: 1rem;
         width: 100%;
+        height: 100%;
     }
 
-    @media screen and (min-width: 500px) {
+    @media screen and (max-width: 500px) {
         .modal-content {
+            width: unset;
             min-width: var(--width);
         }
     }

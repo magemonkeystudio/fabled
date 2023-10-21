@@ -37,7 +37,8 @@
         margin-top: 0.5rem;
         padding: 0.25rem;
         background: rgba(56, 89, 138, 0.5);
-        border-radius: 0.25rem;
+        border-left: 0.5rem solid #006c91;
+        border-radius: 0 0.5rem 0.5rem 0;
     }
 
     .comp-subsection-header {
@@ -51,6 +52,8 @@
     .component-section {
         display: flex;
         flex-wrap: wrap;
+				align-items: center;
+				justify-content: center;
     }
 
     .deprecated {
