@@ -26,6 +26,7 @@
  */
 package com.sucy.skill.api.projectile;
 
+import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.event.ParticleProjectileExpireEvent;
 import com.sucy.skill.api.event.ParticleProjectileHitEvent;
@@ -33,6 +34,8 @@ import com.sucy.skill.api.event.ParticleProjectileLandEvent;
 import com.sucy.skill.api.event.ParticleProjectileLaunchEvent;
 import com.sucy.skill.api.particle.ParticleHelper;
 import com.sucy.skill.api.target.TargetHelper;
+import com.sucy.skill.api.util.Nearby;
+import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
@@ -40,7 +43,10 @@ import org.bukkit.event.Event;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * A fake projectile that plays particles along its path
@@ -66,6 +72,12 @@ public class ParticleProjectile extends CustomProjectile {
      * Settings key for the projectile's period for playing particles
      */
     public static final String PERIOD = "period";
+    public static final String HOMING             = "homing";
+    public static final String HOMING_TARGET      = "target";
+    public static final String HOMING_DIST        = "homing-distance";
+    public static final String REMEMBER           = "remember-key";
+    public static final String CORRECTION         = "correction";
+    public static final String WALL               = "wall";
     /**
      * Settings key for the projectile's frequency of playing particles
      * @deprecated unintuitively named, now PERIOD is used instead
@@ -79,16 +91,18 @@ public class ParticleProjectile extends CustomProjectile {
 
     private static final String PIERCE = "pierce";
 
-    private       Location           loc;
-    private       Vector             vel;
-    private       int                life;
-    private final int                steps;
-    private final double             gravity;
-    private final double             drag;
-    private final int                particlePeriod;
-    private       int                count;
-    private final boolean            pierce;
-    protected     Consumer<Location> onStep;
+    private       Location               loc;
+    private       Vector                 vel;
+    private       int                    life;
+    private final int                    steps;
+    private final double                 gravity;
+    private final double                 drag;
+    private final int                    particlePeriod;
+    private       int                    count;
+    private final boolean                pierce;
+    protected     Consumer<Location>     onStep;
+    protected     Supplier<LivingEntity> homing;
+    protected     double                 correction;
 
     /**
      * Constructor
@@ -110,6 +124,40 @@ public class ParticleProjectile extends CustomProjectile {
 
         this.particlePeriod = settings.getInt(PERIOD, (int) (40 * settings.getDouble(LEGACY_FREQUENCY, 0.05)));
         this.pierce = settings.getBool(PIERCE, false);
+
+        if (settings.getBool(HOMING, false)) {
+            String target = settings.getString(HOMING_TARGET, "nearest");
+            final Comparator<LivingEntity> comparator = Comparator.comparingDouble(o -> o.getLocation().distanceSquared(getLocation()));
+            if (target.equalsIgnoreCase("remember target")) {
+                homing = () -> {
+                    Object data = DynamicSkill.getCastData(getShooter()).get(ParticleProjectile.this.settings.getString(REMEMBER, "target"));
+                    if (data == null) return null;
+                    try {
+                        return ((List<LivingEntity>) data).stream()
+                                .filter(tar -> ParticleProjectile.this.settings.getBool(WALL, false) || !TargetHelper.isObstructed(getLocation(), tar.getEyeLocation()))
+                                .min(comparator)
+                                .orElse(null);
+                    } catch (ClassCastException e) {
+                        return null;
+                    }
+                };
+            } else {
+                homing = () -> Nearby.getLivingNearby(getLocation(), ParticleProjectile.this.settings.getAttr(HOMING_DIST, 0, 20)).stream()
+                        .filter(tar -> {
+                            if (tar == getShooter()) return false;
+                            if (!SkillAPI.getSettings().isValidTarget(tar)) return false;
+                            boolean ally = SkillAPI.getSettings().isAlly(getShooter(), tar);
+                            if (ally && !ParticleProjectile.this.ally) return false;
+                            if (!ally && !ParticleProjectile.this.enemy) return false;
+                            return true;
+                        })
+                        .filter(tar -> ParticleProjectile.this.settings.getBool(WALL, false) || !TargetHelper.isObstructed(getLocation(), tar.getEyeLocation()))
+                        .min(comparator)
+                        .orElse(null);
+            }
+            this.correction = settings.getAttr(CORRECTION, 0, 0.2);
+        }
+
         Bukkit.getPluginManager().callEvent(new ParticleProjectileLaunchEvent(this));
     }
 
@@ -208,6 +256,18 @@ public class ParticleProjectile extends CustomProjectile {
         vel.setX(vel.getX()-drag*vel.getX());
         vel.setY(vel.getY()-drag*vel.getY()+gravity);
         vel.setZ(vel.getZ()-drag*vel.getZ());
+
+        if (homing != null) {
+            LivingEntity target = homing.get();
+            if (target != null) {
+                Vector acceleration = target.getLocation().clone().toVector().subtract(getLocation().toVector())
+                        .normalize().multiply(settings.getAttr(SPEED, 0, 1.0)).subtract(vel);
+                double length = acceleration.length();
+                acceleration.multiply(1.0/length).multiply(Math.min(length, correction));
+                vel.add(acceleration);
+            }
+        }
+
         // Go through multiple steps to avoid tunneling
         double speed = vel.length();
         int steps = (int) Math.round(speed * this.steps);

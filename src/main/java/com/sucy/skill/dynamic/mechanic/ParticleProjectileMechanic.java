@@ -97,6 +97,8 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
         copy.set(ParticleProjectile.GRAVITY, parseValues(caster, ParticleProjectile.GRAVITY, level, -0.04), 0);
         copy.set(ParticleProjectile.DRAG, parseValues(caster, ParticleProjectile.DRAG, level, 0.02), 0);
         copy.set(ParticleProjectile.SPEED, parseValues(caster, ParticleProjectile.SPEED, level, 1), 0);
+        copy.set(ParticleProjectile.HOMING_DIST, parseValues(caster, ParticleProjectile.HOMING_DIST, level, 20), 0);
+        copy.set(ParticleProjectile.CORRECTION, parseValues(caster, ParticleProjectile.CORRECTION, level, 0.2), 0);
         copy.set(ParticleHelper.POINTS_KEY, parseValues(caster, ParticleHelper.POINTS_KEY, level, 1), 0);
         copy.set(ParticleHelper.RADIUS_KEY, parseValues(caster, ParticleHelper.RADIUS_KEY, level, 0), 0);
 
@@ -202,6 +204,8 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                 copy.set(ParticleProjectile.DRAG, parseValues(caster, ParticleProjectile.DRAG, level, 0.02), 0);
                 copy.set(ParticleProjectile.SPEED, parseValues(caster, ParticleProjectile.SPEED, level, 1), 0);
                 copy.set(ParticleProjectile.PERIOD, preview.getInt("path-steps", 2));
+                copy.set(ParticleProjectile.HOMING_DIST, parseValues(caster, ParticleProjectile.HOMING_DIST, level, 20), 0);
+                copy.set(ParticleProjectile.CORRECTION, parseValues(caster, ParticleProjectile.CORRECTION, level, 0.2), 0);
 
                 ProjectileCallback callback = (projectile, hit) -> {
                     if (hit == null) hit = new TempEntity(projectile.getLocation());
