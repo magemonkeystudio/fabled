@@ -1881,7 +1881,7 @@ const projectileOptions = (): ComponentOption[] => {
 
 		// General data
 		new AttributeSelect('Velocity', 'velocity', 3)
-			.setTooltip('How fast the projectile is launched. A negative value fires it in the opposite direction.'),
+			.setTooltip('How fast the projectile is launched, in meters per second. A negative value fires it in the opposite direction.'),
 		new AttributeSelect('Lifespan', 'lifespan', 5)
 			.setTooltip('How long in secods before the projectile will expire in case it doesn\'t hit anything.'),
 		new BooleanSelect('On Expire', 'on-expire', false)
@@ -3230,6 +3230,27 @@ class ParticleProjectileMechanic extends ProMechanic {
 					.setTooltip('Air resistance of the projectile, in inverse seconds. Greater values mean the projectile will slow down more over time, and reach a lower terminal velocity.'),
 				new IntSelect('Particle period', 'period', 2)
 					.setTooltip('How often to play a particle effect where the projectile is.'),
+					
+				new SectionMarker('Homing'),
+				new BooleanSelect('Homing', 'homing', false)
+					.setTooltip('Whether to make this a homing projectile'),
+				new DropdownSelect('Target', 'target', ['Nearest', 'Remember Target'], 'Nearest')
+					.setTooltip('What target to home into. "Nearest" will track the nearest valid target each tick. "Remember Target" tracks a target saved through a Remember Targets Mechanic.')
+					.requireValue('homing', [true]),
+				new AttributeSelect('Homing distance', 'homing-distance', 10)
+				    .setTooltip('Maximum distance at which the projectile can target an entity, in meters.')
+					.requireValue('homing', [true])
+					.requireValue('target', ['Nearest']),
+				new StringSelect('Remember key', 'remember-key', 'target')
+					.requireValue('homing', [true])
+					.requireValue('target', ['Remember Target']),
+				new AttributeSelect('Correction', 'correction', 0.5)
+				    .setTooltip('Maximum corrective acceleration of the projectile, in meters per squared tick. Higher values mean the projectile can make more tight turns.')
+					.requireValue('homing', [true]),
+				new BooleanSelect('Through Wall', 'wall', false)
+					.setTooltip('Whether to allow targets to be on the other side of a wall')
+					.requireValue('homing', [true]),
+
 				...projectileOptions(),
 				...particleOptions(),
 
