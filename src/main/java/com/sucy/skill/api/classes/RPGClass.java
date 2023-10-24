@@ -653,6 +653,13 @@ public abstract class RPGClass implements IconHolder {
         parent = config.getString(PARENT);
         icon = Data.parseIcon(config);
         name = config.getString(NAME, name);
+
+        ItemMeta iconMeta = icon.getItemMeta();
+        if (iconMeta != null && !iconMeta.hasDisplayName()) {
+            iconMeta.setDisplayName(name);
+            icon.setItemMeta(iconMeta);
+        }
+
         actionBar = TextFormatter.colorString(config.getString(ACTION_BAR, ""));
         prefix = TextFormatter.colorString(config.getString(PREFIX, prefix));
         group = config.getString(GROUP, "class");

@@ -101,8 +101,8 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
     private final   LivingEntity                         thrower;
     protected       ProjectileCallback                   callback;
     protected final Settings                             settings;
-    private         boolean                              enemy    = true;
-    private         boolean                              ally     = false;
+    protected       boolean                              enemy    = true;
+    protected       boolean                              ally     = false;
     private         boolean                              valid    = true;
 
     /**
