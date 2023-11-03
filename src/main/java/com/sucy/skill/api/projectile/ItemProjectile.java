@@ -46,6 +46,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.sucy.skill.listener.MechanicListener.ITEM_PROJECTILE;
 
@@ -87,8 +88,9 @@ public class ItemProjectile extends CustomProjectile {
         }
         DamageLoreRemover.removeAttackDmg(item);
 
-        this.item = thrower.getWorld().dropItem(loc.add(0, 1, 0), item);
+        this.item = thrower.getWorld().dropItem(loc, item);
         this.item.setVelocity(vel);
+        this.speed = vel.length();
         this.item.setPickupDelay(Integer.MAX_VALUE);
         this.walls = collideWalls;
         halfHeight = this.item.getHeight() / 2;
@@ -98,6 +100,8 @@ public class ItemProjectile extends CustomProjectile {
 
         Bukkit.getPluginManager().callEvent(new ItemProjectileLaunchEvent(this));
     }
+
+    public Item getItem() {return item;}
 
     /**
      * Retrieves the location of the projectile
@@ -238,7 +242,7 @@ public class ItemProjectile extends CustomProjectile {
      * Fires a spread of projectiles from the location.
      *
      * @param shooter      entity shooting the projectiles
-     * @param center       the center velocity of the spread
+     * @param direction    the center velocity of the spread
      * @param loc          location to shoot from
      * @param item         the item to use for the projectile
      * @param angle        angle of the spread
@@ -248,8 +252,8 @@ public class ItemProjectile extends CustomProjectile {
      * @param collideWalls whether to consider wall collisions as the projectiles landing
      * @return list of fired projectiles
      */
-    public static ArrayList<ItemProjectile> spread(LivingEntity shooter,
-                                                   Vector center,
+    public static List<ItemProjectile> spread(LivingEntity shooter,
+                                                   Vector direction,
                                                    Location loc,
                                                    Settings settings,
                                                    ItemStack item,
@@ -258,13 +262,13 @@ public class ItemProjectile extends CustomProjectile {
                                                    ProjectileCallback callback,
                                                    int lifespan,
                                                    boolean collideWalls) {
-        double speed = center.length();
-        center.normalize();
-        ArrayList<Vector>         dirs = calcSpread(shooter.getLocation().getDirection(), angle, amount);
-        ArrayList<ItemProjectile> list = new ArrayList<ItemProjectile>();
+        double speed = direction.length();
+        direction.normalize();
+        List<Vector>         dirs = calcSpread(shooter.getLocation().getDirection(), angle, amount);
+        List<ItemProjectile> list = new ArrayList<>();
         for (Vector dir : dirs) {
             Vector         vel = dir.multiply(speed);
-            ItemProjectile p   = new ItemProjectile(shooter, loc.clone(), settings, item, vel, lifespan, collideWalls);
+            ItemProjectile p   = new ItemProjectile(shooter, loc, settings, item, vel, lifespan, collideWalls);
             p.setCallback(callback);
             list.add(p);
         }
@@ -286,7 +290,7 @@ public class ItemProjectile extends CustomProjectile {
      * @param collideWalls whether to consider wall collisions as the projectiles landing
      * @return list of fired projectiles
      */
-    public static ArrayList<ItemProjectile> rain(LivingEntity shooter,
+    public static List<ItemProjectile> rain(LivingEntity shooter,
                                                  Location center,
                                                  Settings settings,
                                                  ItemStack item,
@@ -298,11 +302,8 @@ public class ItemProjectile extends CustomProjectile {
                                                  int lifespan,
                                                  boolean collideWalls) {
         Vector vel = new Vector(0, speed, 0);
-        if (vel.getY() == 0) {
-            vel.setY(1);
-        }
-        ArrayList<Location>       locs = calcRain(center, radius, height, amount);
-        ArrayList<ItemProjectile> list = new ArrayList<ItemProjectile>();
+        List<Location>       locs = calcRain(center, radius, height, amount);
+        List<ItemProjectile> list = new ArrayList<>();
         for (Location l : locs) {
             l.setDirection(vel);
             ItemProjectile p = new ItemProjectile(shooter, l, settings, item, vel, lifespan, collideWalls);

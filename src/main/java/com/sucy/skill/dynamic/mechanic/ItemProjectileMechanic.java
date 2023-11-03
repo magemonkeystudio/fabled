@@ -107,35 +107,28 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
 
         // Fire from each target
         for (LivingEntity target : targets) {
-            Location loc = target.getLocation();
+            Location location = target.getEyeLocation();
+            Vector offset = location.getDirection().setY(0).normalize();
+            offset.multiply(parseValues(caster, FORWARD, level, 0))
+                    .add(offset.clone().crossProduct(UP).multiply(parseValues(caster, RIGHT, level, 0)));
+            location.add(offset).add(0, parseValues(caster, UPWARD, level, 0), 0);
 
             // Apply the spread type
-            ArrayList<ItemProjectile> list;
+            List<ItemProjectile> list;
             if (spread.equals("rain")) {
-                double radius = parseValues(caster, RADIUS, level, 2.0);
-                double height = parseValues(caster, HEIGHT, level, 8.0);
                 list = ItemProjectile.rain(caster,
-                        loc,
+                        location,
                         copy,
                         item,
-                        radius,
-                        height,
+                        parseValues(caster, RADIUS, level, 2.0),
+                        parseValues(caster, HEIGHT, level, 8.0),
                         speed,
                         amount,
                         this,
                         lifespan,
                         walls);
             } else {
-                Vector dir = target.getLocation().getDirection();
-
-                double right   = parseValues(caster, RIGHT, level, 0);
-                double upward  = parseValues(caster, UPWARD, level, 0);
-                double forward = parseValues(caster, FORWARD, level, 0);
-
-                Vector looking = dir.clone().setY(0).normalize();
-                Vector normal  = looking.clone().crossProduct(UP);
-                looking.multiply(forward).add(normal.multiply(right));
-
+                Vector dir = location.getDirection();
                 if (spread.equals("horizontal cone")) {
                     dir.setY(0);
                     dir.normalize();
@@ -145,7 +138,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
                 list = ItemProjectile.spread(
                         caster,
                         dir,
-                        loc.add(looking).add(0, 0.5 + upward, 0),
+                        location,
                         copy,
                         item,
                         angle,
@@ -175,7 +168,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
             }
         }
 
-        return targets.size() > 0;
+        return !targets.isEmpty();
     }
 
     /**
@@ -235,36 +228,36 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
                 List<ParticleProjectile> list = new ArrayList<>();
                 // Fire from each target
                 for (LivingEntity target : targetSupplier.get()) {
-                    Location loc = target.getLocation().add(0, 1, 0);
+                    Location location = target.getEyeLocation();
+                    Vector offset = location.getDirection().setY(0).normalize();
+                    offset.multiply(parseValues(caster, FORWARD, level, 0))
+                            .add(offset.clone().crossProduct(UP).multiply(parseValues(caster, RIGHT, level, 0)));
+                    location.add(offset).add(0, parseValues(caster, UPWARD, level, 0), 0);
 
                     // Apply the spread type
                     if (spread.equals("rain")) {
-                        double radius = parseValues(caster, RADIUS, level, 2.0);
-                        double height = parseValues(caster, HEIGHT, level, 8.0);
-                        list.addAll(ParticleProjectile.rain(caster, level, loc, copy, radius, height, amount, callback, lifespan));
+                        list.addAll(ParticleProjectile.rain(caster,
+                                level,
+                                location,
+                                copy,
+                                parseValues(caster, RADIUS, level, 2.0),
+                                parseValues(caster, HEIGHT, level, 8.0),
+                                amount,
+                                callback,
+                                lifespan));
                     } else {
-                        Vector dir = target.getLocation().getDirection();
-
-                        double right   = parseValues(caster, RIGHT, level, 0);
-                        double upward  = parseValues(caster, UPWARD, level, 0);
-                        double forward = parseValues(caster, FORWARD, level, 0);
-
-                        Vector looking = dir.clone().setY(0).normalize();
-                        Vector normal  = looking.clone().crossProduct(UP);
-                        looking.multiply(forward).add(normal.multiply(right));
-
+                        Vector dir = location.getDirection();
                         if (spread.equals("horizontal cone")) {
                             dir.setY(0);
                             dir.normalize();
                         }
-                        double angle = parseValues(caster, ANGLE, level, 30.0);
                         list.addAll(ParticleProjectile.spread(
                                 caster,
                                 level,
                                 dir,
-                                loc.add(looking).add(0, upward + 0.5, 0),
+                                location,
                                 copy,
-                                angle,
+                                parseValues(caster, ANGLE, level, 30.0),
                                 amount,
                                 callback,
                                 lifespan
@@ -277,8 +270,8 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
                     }
 
                     Consumer<Location> onStep = preview.getBool("path")
-                            ? location -> new ParticleSettings(preview, "path-").instance(caster, location.getX(), location.getY(), location.getZ())
-                            : location -> {};
+                            ? loc -> new ParticleSettings(preview, "path-").instance(caster, loc.getX(), loc.getY(), loc.getZ())
+                            : loc -> {};
                     for (ParticleProjectile p : list) p.setOnStep(onStep);
 
                     for (ParticleProjectile p : list) {

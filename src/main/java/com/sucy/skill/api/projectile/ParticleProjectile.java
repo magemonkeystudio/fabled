@@ -301,27 +301,27 @@ public class ParticleProjectile extends CustomProjectile {
     /**
      * Fires a spread of projectiles from the location.
      *
-     * @param shooter  entity shooting the projectiles
-     * @param level    level to use for scaling the speed
-     * @param center   the center direction of the spread
-     * @param loc      location to shoot from
-     * @param settings settings to use when firing
-     * @param angle    angle of the spread
-     * @param amount   number of projectiles to fire
-     * @param callback optional callback for when projectiles hit
+     * @param shooter   entity shooting the projectiles
+     * @param level     level to use for scaling the speed
+     * @param direction the center direction of the spread
+     * @param loc       location to shoot from
+     * @param settings  settings to use when firing
+     * @param angle     angle of the spread
+     * @param amount    number of projectiles to fire
+     * @param callback  optional callback for when projectiles hit
      * @return list of fired projectiles
      */
-    public static ArrayList<ParticleProjectile> spread(LivingEntity shooter,
+    public static List<ParticleProjectile> spread(LivingEntity shooter,
                                                        int level,
-                                                       Vector center,
+                                                       Vector direction,
                                                        Location loc,
                                                        Settings settings,
                                                        double angle,
                                                        int amount,
                                                        ProjectileCallback callback,
                                                        int lifespan) {
-        ArrayList<Vector>             dirs = calcSpread(center, angle, amount);
-        ArrayList<ParticleProjectile> list = new ArrayList<ParticleProjectile>();
+        List<Vector>             dirs = calcSpread(direction, angle, amount);
+        List<ParticleProjectile> list = new ArrayList<>();
         for (Vector dir : dirs) {
             Location l = loc.clone();
             l.setDirection(dir);
@@ -345,7 +345,7 @@ public class ParticleProjectile extends CustomProjectile {
      * @param callback optional callback for when projectiles hit
      * @return list of fired projectiles
      */
-    public static ArrayList<ParticleProjectile> rain(LivingEntity shooter,
+    public static List<ParticleProjectile> rain(LivingEntity shooter,
                                                      int level,
                                                      Location center,
                                                      Settings settings,
@@ -355,8 +355,8 @@ public class ParticleProjectile extends CustomProjectile {
                                                      ProjectileCallback callback,
                                                      int lifespan) {
         Vector                        vel  = new Vector(0, 1, 0);
-        ArrayList<Location>           locs = calcRain(center, radius, height, amount);
-        ArrayList<ParticleProjectile> list = new ArrayList<ParticleProjectile>();
+        List<Location>           locs = calcRain(center, radius, height, amount);
+        List<ParticleProjectile> list = new ArrayList<>();
         for (Location l : locs) {
             l.setDirection(vel);
             ParticleProjectile p = new ParticleProjectile(shooter, level, l, settings, lifespan);
