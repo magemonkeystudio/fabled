@@ -1915,6 +1915,30 @@ const projectileOptions = (): ComponentOption[] => {
 	];
 };
 
+const homingOptions = (): ComponentOption[] => {
+	return [
+		new SectionMarker('Homing'),
+		new BooleanSelect('Homing', 'homing', false)
+			.setTooltip('Whether to make this a homing projectile'),
+		new DropdownSelect('Target', 'target', ['Nearest', 'Remember Target'], 'Nearest')
+			.setTooltip('What target to home into. "Nearest" will track the nearest valid target each tick. "Remember Target" tracks a target saved through a Remember Targets Mechanic.')
+			.requireValue('homing', [true]),
+		new AttributeSelect('Homing distance', 'homing-distance', 10)
+			.setTooltip('Maximum distance at which the projectile can target an entity, in meters.')
+			.requireValue('homing', [true])
+			.requireValue('target', ['Nearest']),
+		new StringSelect('Remember key', 'remember-key', 'target')
+			.requireValue('homing', [true])
+			.requireValue('target', ['Remember Target']),
+		new AttributeSelect('Correction', 'correction', 0.5)
+			.setTooltip('Maximum corrective acceleration of the projectile, in meters per squared tick. Higher values mean the projectile can make more tight turns.')
+			.requireValue('homing', [true]),
+		new BooleanSelect('Through Wall', 'wall', false)
+			.setTooltip('Whether to allow targets to be on the other side of a wall')
+			.requireValue('homing', [true]),
+	];
+};
+
 const appendOptional = (value: ComponentOption & Requirements) => {
 	value.requireValue('use-effect', [true]);
 	return value;
@@ -2792,6 +2816,7 @@ class ItemProjectileMechanic extends ProMechanic {
 					.setTooltip('The alignment of targets to hit'),
 
 				...itemOptions(),
+				...homingOptions(),
 				...projectileOptions(),
 				...effectOptions(true)
 			],
@@ -2952,7 +2977,7 @@ class ItemProjectileMechanic extends ProMechanic {
 					.requireValue('path', [true])
 					.setTooltip('Speed of the particle. For some particles controls other parameters, such as size')
 			],
-			summaryItems: ['group', 'material', 'velocity', 'spread', 'angle']
+			summaryItems: ['group', 'material', 'velocity', 'spread', 'angle', 'correction']
 		}, true);
 	}
 
@@ -3230,27 +3255,7 @@ class ParticleProjectileMechanic extends ProMechanic {
 					.setTooltip('Air resistance of the projectile, in inverse seconds. Greater values mean the projectile will slow down more over time, and reach a lower terminal velocity.'),
 				new IntSelect('Particle period', 'period', 2)
 					.setTooltip('How often to play a particle effect where the projectile is.'),
-					
-				new SectionMarker('Homing'),
-				new BooleanSelect('Homing', 'homing', false)
-					.setTooltip('Whether to make this a homing projectile'),
-				new DropdownSelect('Target', 'target', ['Nearest', 'Remember Target'], 'Nearest')
-					.setTooltip('What target to home into. "Nearest" will track the nearest valid target each tick. "Remember Target" tracks a target saved through a Remember Targets Mechanic.')
-					.requireValue('homing', [true]),
-				new AttributeSelect('Homing distance', 'homing-distance', 10)
-				    .setTooltip('Maximum distance at which the projectile can target an entity, in meters.')
-					.requireValue('homing', [true])
-					.requireValue('target', ['Nearest']),
-				new StringSelect('Remember key', 'remember-key', 'target')
-					.requireValue('homing', [true])
-					.requireValue('target', ['Remember Target']),
-				new AttributeSelect('Correction', 'correction', 0.5)
-				    .setTooltip('Maximum corrective acceleration of the projectile, in meters per squared tick. Higher values mean the projectile can make more tight turns.')
-					.requireValue('homing', [true]),
-				new BooleanSelect('Through Wall', 'wall', false)
-					.setTooltip('Whether to allow targets to be on the other side of a wall')
-					.requireValue('homing', [true]),
-
+				...homingOptions(),
 				...projectileOptions(),
 				...particleOptions(),
 
@@ -3413,7 +3418,7 @@ class ParticleProjectileMechanic extends ProMechanic {
 					.requireValue('path', [true])
 					.setTooltip('Speed of the particle. For some particles controls other parameters, such as size')
 			],
-			summaryItems: ['steps', 'gravity', 'drag', 'frequency', 'pierce', 'group', 'particle', 'amount', 'spread', 'dust-color']
+			summaryItems: ['steps', 'gravity', 'drag', 'frequency', 'pierce', 'group', 'particle', 'amount', 'spread', 'dust-color', 'correction']
 		}, true);
 	}
 
@@ -3489,7 +3494,7 @@ class PotionProjectileMechanic extends ProMechanic {
 				new BooleanSelect('Linger', 'linger', false)
 					.setTooltip('Whether the potion should be a lingering potion (for 1.9+ only)')
 			],
-			summaryItems: ['color', 'group', 'linger']
+			summaryItems: ['group', 'color', 'linger', 'velocity', 'spread', 'angle', 'amount', 'correction']
 		}, true);
 	}
 
@@ -3509,6 +3514,7 @@ class ProjectileMechanic extends ProMechanic {
 				new DropdownSelect('Cost', 'cost', ['None', 'All', 'One'], 'None')
 					.setTooltip('The item cost of the skill. "One" will only charge the player 1 item of it\'s type, whereas "All" will charge 1 for each fired projectile'),
 
+				...homingOptions(),
 				...projectileOptions(),
 				...particleOptions(),
 				...effectOptions(true)
@@ -3670,7 +3676,7 @@ class ProjectileMechanic extends ProMechanic {
 					.requireValue('path', [true])
 					.setTooltip('Speed of the particle. For some particles controls other parameters, such as size')
 			],
-			summaryItems: ['projectile', 'flaming', 'cost', 'particle', 'amount', 'spread', 'dust-color', 'effect-key']
+			summaryItems: ['projectile', 'flaming', 'cost', 'particle', 'amount', 'spread', 'dust-color', 'effect-key', 'correction']
 		}, true);
 	}
 
