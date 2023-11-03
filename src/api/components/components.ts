@@ -3249,6 +3249,8 @@ class ParticleProjectileMechanic extends ProMechanic {
 					.setTooltip('The alignment of targets to hit'),
 				new IntSelect('Steps', 'steps', 2)
 					.setTooltip('Amount of collision steps to run per meter travelled.'),
+				new AttributeSelect('Collision Radius', 'collision-radius', 1.5)
+					.setTooltip('The radius of the projectile considered when calculating collisions.'),
 				new AttributeSelect('Gravity', 'gravity', -0.04)
 					.setTooltip('Vertical acceleration the projectile is subjected to, in meters per squared tick. Negative values make it fall while positive values make it rise.'),
 				new AttributeSelect('Drag', 'drag', 0.02)
