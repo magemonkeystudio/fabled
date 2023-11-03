@@ -263,7 +263,7 @@ public class ParticleProjectile extends CustomProjectile {
         if (homing != null) {
             LivingEntity target = homing.get();
             if (target != null) {
-                Vector acceleration = target.getLocation().clone().toVector().subtract(getLocation().toVector())
+                Vector acceleration = target.getBoundingBox().getCenter().subtract(getLocation().toVector())
                         .normalize().multiply(settings.getAttr(SPEED, 0, 1.0)).subtract(vel);
                 double length = acceleration.length();
                 acceleration.multiply(1.0/length).multiply(Math.min(length, correction));

@@ -32,7 +32,10 @@ import com.sucy.skill.api.event.ItemProjectileExpireEvent;
 import com.sucy.skill.api.event.ItemProjectileHitEvent;
 import com.sucy.skill.api.event.ItemProjectileLandEvent;
 import com.sucy.skill.api.event.ItemProjectileLaunchEvent;
+import com.sucy.skill.api.target.TargetHelper;
 import com.sucy.skill.api.util.DamageLoreRemover;
+import com.sucy.skill.api.util.Nearby;
+import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
@@ -46,7 +49,9 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static com.sucy.skill.listener.MechanicListener.ITEM_PROJECTILE;
 
@@ -55,13 +60,22 @@ import static com.sucy.skill.listener.MechanicListener.ITEM_PROJECTILE;
  */
 public class ItemProjectile extends CustomProjectile {
     private static final String NAME = "SkillAPI#";
+    public static final  String HOMING             = "homing";
+    public static final  String HOMING_TARGET      = "target";
+    public static final  String HOMING_DIST        = "homing-distance";
+    public static final  String REMEMBER           = "remember-key";
+    public static final  String CORRECTION         = "correction";
+    public static final  String WALL               = "wall";
     private static       int    NEXT = 0;
 
-    private final Item    item;
-    private       int     life;
-    private final boolean walls;
-    private final double  halfHeight;
-    private final double  halfWidth;
+    private final Item                   item;
+    private       int                    life;
+    private final boolean                walls;
+    private final double                 halfHeight;
+    private final double                 halfWidth;
+    private final double                 speed;
+    protected     Supplier<LivingEntity> homing;
+    protected     double                 correction;
 
     /**
      * <p>Constructs a new item projectile.</p>
@@ -97,6 +111,39 @@ public class ItemProjectile extends CustomProjectile {
         halfWidth = this.item.getWidth() / 2;
         this.life = lifespan;
         SkillAPI.setMeta(this.item, ITEM_PROJECTILE, this);
+
+        if (settings.getBool(HOMING, false)) {
+            String                         target     = settings.getString(HOMING_TARGET, "nearest");
+            final Comparator<LivingEntity> comparator = Comparator.comparingDouble(o -> o.getLocation().distanceSquared(getLocation()));
+            if (target.equalsIgnoreCase("remember target")) {
+                homing = () -> {
+                    Object data = DynamicSkill.getCastData(getShooter()).get(ItemProjectile.this.settings.getString(REMEMBER, "target"));
+                    if (data == null) return null;
+                    try {
+                        return ((List<LivingEntity>) data).stream()
+                                .filter(tar -> ItemProjectile.this.settings.getBool(WALL, false) || !TargetHelper.isObstructed(getLocation(), tar.getEyeLocation()))
+                                .min(comparator)
+                                .orElse(null);
+                    } catch (ClassCastException e) {
+                        return null;
+                    }
+                };
+            } else {
+                homing = () -> Nearby.getLivingNearby(getLocation(), ItemProjectile.this.settings.getAttr(HOMING_DIST, 0, 20)).stream()
+                        .filter(tar -> {
+                            if (tar == getShooter()) return false;
+                            if (!SkillAPI.getSettings().isValidTarget(tar)) return false;
+                            boolean ally = SkillAPI.getSettings().isAlly(getShooter(), tar);
+                            if (ally && !ItemProjectile.this.ally) return false;
+                            if (!ally && !ItemProjectile.this.enemy) return false;
+                            return true;
+                        })
+                        .filter(tar -> ItemProjectile.this.settings.getBool(WALL, false) || !TargetHelper.isObstructed(getLocation(), tar.getEyeLocation()))
+                        .min(comparator)
+                        .orElse(null);
+            }
+            this.correction = settings.getAttr(CORRECTION, 0, 0.2);
+        }
 
         Bukkit.getPluginManager().callEvent(new ItemProjectileLaunchEvent(this));
     }
@@ -218,6 +265,17 @@ public class ItemProjectile extends CustomProjectile {
      */
     @Override
     public void run() {
+        if (homing != null) {
+            LivingEntity target = homing.get();
+            if (target != null) {
+                Vector acceleration = target.getBoundingBox().getCenter().subtract(this.item.getBoundingBox().getCenter())
+                        .normalize().multiply(speed).subtract(item.getVelocity());
+                double length = acceleration.length();
+                acceleration.multiply(1.0/length).multiply(Math.min(length, correction));
+                item.setVelocity(item.getVelocity().add(acceleration));
+            }
+        }
+
         if (isTraveling())
             checkCollision(false);
 

@@ -35,6 +35,9 @@ import com.sucy.skill.api.particle.target.EntityTarget;
 import com.sucy.skill.api.projectile.CustomProjectile;
 import com.sucy.skill.api.projectile.ParticleProjectile;
 import com.sucy.skill.api.projectile.ProjectileCallback;
+import com.sucy.skill.api.target.TargetHelper;
+import com.sucy.skill.api.util.Nearby;
+import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.dynamic.TempEntity;
 import com.sucy.skill.listener.MechanicListener;
 import com.sucy.skill.task.RemoveTask;
@@ -51,6 +54,7 @@ import org.bukkit.util.Vector;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -73,6 +77,12 @@ public class ProjectileMechanic extends MechanicComponent {
     private static final String                                       RIGHT              = "right";
     private static final String                                       USE_EFFECT         = "use-effect";
     private static final String                                       EFFECT_KEY         = "effect-key";
+    public static final  String                                       HOMING             = "homing";
+    public static final  String                                       HOMING_TARGET      = "target";
+    public static final  String                                       HOMING_DIST        = "homing-distance";
+    public static final  String                                       REMEMBER           = "remember-key";
+    public static final  String                                       CORRECTION         = "correction";
+    public static final  String                                       WALL               = "wall";
     private static final HashMap<String, Class<? extends Projectile>> PROJECTILES        =
             new HashMap<String, Class<? extends Projectile>>() {{
                 put("arrow", Arrow.class);
@@ -229,6 +239,46 @@ public class ProjectileMechanic extends MechanicComponent {
                         level,
                         true);
             }
+        }
+
+        if (settings.getBool(HOMING, false)) {
+            String target = settings.getString(HOMING_TARGET, "nearest");
+            Function<Projectile,LivingEntity> homing;
+            if (target.equalsIgnoreCase("remember target")) {
+                homing = (proj) -> {
+                    Object data = Objects.requireNonNull(DynamicSkill.getCastData((LivingEntity) proj.getShooter())).get(settings.getString(REMEMBER, "target"));
+                    if (data == null) return null;
+                    try {
+                        return ((List<LivingEntity>) data).stream()
+                                .filter(tar -> settings.getBool(WALL, false) || !TargetHelper.isObstructed(proj.getLocation(), tar.getEyeLocation()))
+                                .min(Comparator.comparingDouble(o -> o.getLocation().distanceSquared(proj.getLocation())))
+                                .orElse(null);
+                    } catch (ClassCastException e) {
+                        return null;
+                    }
+                };
+            } else {
+                homing = (proj) -> Nearby.getLivingNearby(proj.getLocation(), settings.getAttr(HOMING_DIST, 0, 20)).stream()
+                        .filter(tar -> {
+                            if (tar == proj.getShooter()) return false;
+                            return SkillAPI.getSettings().isValidTarget(tar);
+                        })
+                        .filter(tar -> settings.getBool(WALL, false) || !TargetHelper.isObstructed(proj.getLocation(), tar.getEyeLocation()))
+                        .min(Comparator.comparingDouble(o -> o.getLocation().distanceSquared(proj.getLocation())))
+                        .orElse(null);
+            }
+            double correction = settings.getAttr(CORRECTION, 0, 0.2);
+
+            new RepeatingEntityTask<>(projectiles, proj -> {
+                LivingEntity tar = homing.apply(proj);
+                if (tar != null) {
+                    Vector acceleration = tar.getBoundingBox().getCenter().subtract(proj.getBoundingBox().getCenter())
+                            .normalize().multiply(speed).subtract(proj.getVelocity());
+                    double length = acceleration.length();
+                    acceleration.multiply(1.0/length).multiply(Math.min(length, correction));
+                    proj.setVelocity(proj.getVelocity().add(acceleration));
+                }
+            });
         }
 
         new RepeatingEntityTask<>(projectiles, proj -> ParticleHelper.play(proj.getLocation(), settings));

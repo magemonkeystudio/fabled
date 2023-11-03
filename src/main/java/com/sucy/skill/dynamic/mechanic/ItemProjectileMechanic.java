@@ -104,6 +104,8 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
         copy.set(ParticleProjectile.SPEED, parseValues(caster, ParticleProjectile.SPEED, level, 1), 0);
         copy.set(ParticleHelper.POINTS_KEY, parseValues(caster, ParticleHelper.POINTS_KEY, level, 1), 0);
         copy.set(ParticleHelper.RADIUS_KEY, parseValues(caster, ParticleHelper.RADIUS_KEY, level, 0), 0);
+        copy.set(ItemProjectile.HOMING_DIST, parseValues(caster, ItemProjectile.HOMING_DIST, level, 20), 0);
+        copy.set(ItemProjectile.CORRECTION, parseValues(caster, ItemProjectile.CORRECTION, level, 0.2), 0);
 
         // Fire from each target
         for (LivingEntity target : targets) {
@@ -216,6 +218,8 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
                 copy.set(ParticleProjectile.GRAVITY, -0.04, 0);
                 copy.set(ParticleProjectile.DRAG, 0.02, 0);
                 copy.set(ParticleProjectile.PERIOD, preview.getInt("path-steps", 2));
+                copy.set(ItemProjectile.HOMING_DIST, parseValues(caster, ItemProjectile.HOMING_DIST, level, 20), 0);
+                copy.set(ItemProjectile.CORRECTION, parseValues(caster, ItemProjectile.CORRECTION, level, 0.2), 0);
 
                 ProjectileCallback callback = (projectile, hit) -> {
                     if (hit == null) hit = new TempEntity(projectile.getLocation());
