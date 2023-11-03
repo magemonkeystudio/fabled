@@ -212,6 +212,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
                 copy.set(ParticleProjectile.SPEED, parseValues(caster, ParticleProjectile.SPEED, level, 1), 0);
                 copy.set(ParticleHelper.POINTS_KEY, parseValues(caster, ParticleHelper.POINTS_KEY, level, 1), 0);
                 copy.set(ParticleHelper.RADIUS_KEY, parseValues(caster, ParticleHelper.RADIUS_KEY, level, 0), 0);
+                copy.set(ParticleProjectile.RADIUS, 0.125, 0);
                 copy.set(ParticleProjectile.GRAVITY, -0.04, 0);
                 copy.set(ParticleProjectile.DRAG, 0.02, 0);
                 copy.set(ParticleProjectile.PERIOD, preview.getInt("path-steps", 2));

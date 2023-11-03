@@ -79,6 +79,7 @@ public class ProjectileMechanic extends MechanicComponent {
                 put("egg", Egg.class);
                 put("ghast fireball", LargeFireball.class);
                 put("snowball", Snowball.class);
+                put("fishing hook", FishHook.class);
             }};
     private static final HashMap<String, Material>                    MATERIALS          =
             new HashMap<String, Material>() {{
@@ -314,6 +315,12 @@ public class ProjectileMechanic extends MechanicComponent {
                 copy.set(ParticleProjectile.SPEED, parseValues(caster, ParticleProjectile.SPEED, level, 1), 0);
                 copy.set(ParticleHelper.POINTS_KEY, parseValues(caster, ParticleHelper.POINTS_KEY, level, 1), 0);
                 copy.set(ParticleHelper.RADIUS_KEY, parseValues(caster, ParticleHelper.RADIUS_KEY, level, 0), 0);
+                copy.set(ParticleProjectile.RADIUS, switch (type) {
+                    case "arrow", "spectral arrow", "trident" -> 0.25;
+                    case "dragon fireball", "fireball" -> 0.5;
+                    case "shulker bullet", "small fireball", "wither skull" -> 0.15625;
+                    default -> 0.125;
+                }, 0);
                 copy.set(ParticleProjectile.GRAVITY, gravity, 0);
                 copy.set(ParticleProjectile.DRAG, drag, 0);
                 copy.set(ParticleProjectile.PERIOD, preview.getInt("path-steps", 2));

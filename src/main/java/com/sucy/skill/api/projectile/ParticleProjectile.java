@@ -78,6 +78,7 @@ public class ParticleProjectile extends CustomProjectile {
     public static final String REMEMBER           = "remember-key";
     public static final String CORRECTION         = "correction";
     public static final String WALL               = "wall";
+    public static final String RADIUS             = "collision-radius";
     /**
      * Settings key for the projectile's frequency of playing particles
      * @deprecated unintuitively named, now PERIOD is used instead
@@ -95,6 +96,7 @@ public class ParticleProjectile extends CustomProjectile {
     private       Vector                 vel;
     private       int                    life;
     private final int                    steps;
+    private final double                 radius;
     private final double                 gravity;
     private final double                 drag;
     private final int                    particlePeriod;
@@ -119,7 +121,8 @@ public class ParticleProjectile extends CustomProjectile {
         this.vel = loc.getDirection().multiply(settings.getAttr(SPEED, level, 1.0));
         this.life = lifespan;
         this.steps = settings.getInt(STEPS, 2);
-        this.gravity = settings.getAttr(GRAVITY, 0, -0.04);
+        this.radius = settings.getAttr(RADIUS, level, 1.5);
+        this.gravity = settings.getAttr(GRAVITY, level, -0.04);
         this.drag = settings.getAttr(DRAG, 0, 0.02);
 
         this.particlePeriod = settings.getInt(PERIOD, (int) (40 * settings.getDouble(LEGACY_FREQUENCY, 0.05)));
@@ -210,7 +213,7 @@ public class ParticleProjectile extends CustomProjectile {
      */
     @Override
     protected double getCollisionRadius() {
-        return 1.5;
+        return radius;
     }
 
     /**
