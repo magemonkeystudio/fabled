@@ -2814,6 +2814,8 @@ class ItemProjectileMechanic extends ProMechanic {
 			data:         [
 				new DropdownSelect('Group', 'group', ['Ally', 'Enemy'], 'Enemy')
 					.setTooltip('The alignment of targets to hit'),
+				new BooleanSelect('Wall Collisions', 'walls', true)
+					.setTooltip('Wheter to account for wall collisions. If false, the item will just slide through them.'),
 
 				...itemOptions(),
 				...homingOptions(),
