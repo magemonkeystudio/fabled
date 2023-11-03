@@ -97,7 +97,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
         int     amount   = (int) parseValues(caster, AMOUNT, level, 1.0);
         String  spread   = settings.getString(SPREAD, "cone").toLowerCase();
         boolean ally     = settings.getString(ALLY, "enemy").equalsIgnoreCase("ally");
-        boolean walls    = settings.getBool(WALLS, false);
+        boolean walls    = settings.getBool(WALLS, true);
         int     lifespan = (int) (parseValues(caster, LIFESPAN, level, 9999) * 20);
 
         final Settings copy = new Settings(settings);

@@ -71,8 +71,6 @@ public class ItemProjectile extends CustomProjectile {
     private final Item                   item;
     private       int                    life;
     private final boolean                walls;
-    private final double                 halfHeight;
-    private final double                 halfWidth;
     private final double                 speed;
     protected     Supplier<LivingEntity> homing;
     protected     double                 correction;
@@ -107,8 +105,6 @@ public class ItemProjectile extends CustomProjectile {
         this.speed = vel.length();
         this.item.setPickupDelay(Integer.MAX_VALUE);
         this.walls = collideWalls;
-        halfHeight = this.item.getHeight() / 2;
-        halfWidth = this.item.getWidth() / 2;
         this.life = lifespan;
         SkillAPI.setMeta(this.item, ITEM_PROJECTILE, this);
 
@@ -233,9 +229,9 @@ public class ItemProjectile extends CustomProjectile {
             }
             return result;
         }
-        return item.getWorld().rayTraceBlocks(item.getLocation().add(0, halfHeight, 0),
+        return item.getWorld().rayTraceBlocks(item.getLocation().add(0, 0.125, 0),
                 direction,
-                halfWidth + 0.1,
+                0.225,
                 FluidCollisionMode.NEVER,
                 true);
     }
@@ -245,7 +241,7 @@ public class ItemProjectile extends CustomProjectile {
      */
     @Override
     protected double getCollisionRadius() {
-        return item.getVelocity().length() / 2;
+        return 0.125;
     }
 
     @Override
