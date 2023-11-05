@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { numberOnly }   from "$api/number-only";
-  import { ProAttribute } from "$api/proattribute";
+  import type { ProAttribute } from "$api/proattribute";
 
   export let value: ProAttribute;
 </script>

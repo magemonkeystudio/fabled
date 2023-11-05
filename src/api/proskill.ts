@@ -4,28 +4,29 @@ import { ProAttribute }                          from './proattribute';
 import { toEditorCase }                          from './api';
 import { getSkill }                              from '../data/skill-store';
 import ProTrigger                                from './components/triggers';
-import type ProComponent         from '$api/components/procomponent';
-import Registry, { initialized } from '$api/components/registry';
-import type { Unsubscriber }     from 'svelte/types/runtime/store';
+import type ProComponent                         from '$api/components/procomponent';
+import Registry, { initialized }                 from '$api/components/registry';
+import type { Unsubscriber }                     from 'svelte/types/runtime/store';
 
 export default class ProSkill implements Serializable {
-	isSkill                  = true;
-	public key               = {};
+	isSkill                               = true;
+	public key                            = {};
 	name: string;
-	type                     = 'Dynamic';
-	maxLevel                 = 5;
+	type                                  = 'Dynamic';
+	maxLevel                              = 5;
 	skillReq?: ProSkill;
-	skillReqLevel            = 0;
-	permission: boolean      = false;
-	levelReq: ProAttribute   = new ProAttribute('level', 1, 0);
-	cost: ProAttribute       = new ProAttribute('cost', 1, 0);
-	cooldown: ProAttribute   = new ProAttribute('cooldown', 0, 0);
-	cooldownMessage: boolean = true;
-	mana: ProAttribute       = new ProAttribute('mana', 0, 0);
-	minSpent: ProAttribute   = new ProAttribute('points-spent-req', 0, 0);
-	castMessage              = '&6{player} &2has cast &6{skill}';
-	combo                    = '';
-	icon: Icon               = {
+	skillReqLevel                         = 0;
+	attributeRequirements: ProAttribute[] = [];
+	permission: boolean                   = false;
+	levelReq: ProAttribute                = new ProAttribute('level', 1, 0);
+	cost: ProAttribute                    = new ProAttribute('cost', 1, 0);
+	cooldown: ProAttribute                = new ProAttribute('cooldown', 0, 0);
+	cooldownMessage: boolean              = true;
+	mana: ProAttribute                    = new ProAttribute('mana', 0, 0);
+	minSpent: ProAttribute                = new ProAttribute('points-spent-req', 0, 0);
+	castMessage                           = '&6{player} &2has cast &6{skill}';
+	combo                                 = '';
+	icon: Icon                            = {
 		material:        'Pumpkin',
 		customModelData: 0,
 		lore:            [
@@ -39,30 +40,32 @@ export default class ProSkill implements Serializable {
 			'&2Cooldown: {attr:cooldown}'
 		]
 	};
-	incompatible: ProSkill[] = [];
-	triggers: ProTrigger[]   = [];
+	incompatible: ProSkill[]              = [];
+	triggers: ProTrigger[]                = [];
 
 	private skillReqStr         = '';
 	private incompStr: string[] = [];
 
 	constructor(data?: ProSkillData) {
-		this.name = data ? data.name : 'Skill';
-		if (data?.type) this.type = data.type;
-		if (data?.maxLevel) this.maxLevel = data.maxLevel;
-		if (data?.skillReq) this.skillReq = data.skillReq;
-		if (data?.skillReqLevel) this.skillReqLevel = data.skillReqLevel;
-		if (data?.permission) this.permission = data.permission;
-		if (data?.levelReq) this.levelReq = data.levelReq;
-		if (data?.cost) this.cost = data.cost;
-		if (data?.cooldown) this.cooldown = data.cooldown;
-		if (data?.cooldownMessage) this.cooldownMessage = data.cooldownMessage;
-		if (data?.mana) this.mana = data.mana;
-		if (data?.minSpent) this.minSpent = data.minSpent;
-		if (data?.castMessage) this.castMessage = data.castMessage;
-		if (data?.combo) this.combo = data.combo;
-		if (data?.icon) this.icon = data.icon;
-		if (data?.incompatible) this.incompatible = data.incompatible;
-		if (data?.triggers) this.triggers = data.triggers;
+		this.name = data?.name || 'Skill';
+		if (!data) return;
+		if (data.type) this.type = data.type;
+		if (data.maxLevel) this.maxLevel = data.maxLevel;
+		if (data.skillReq) this.skillReq = data.skillReq;
+		if (data.skillReqLevel) this.skillReqLevel = data.skillReqLevel;
+		if (data.attributeRequirements) this.attributeRequirements = data.attributeRequirements.map(a => new ProAttribute(a.name, a.base, a.scale));
+		if (data.permission) this.permission = data.permission;
+		if (data.levelReq) this.levelReq = data.levelReq;
+		if (data.cost) this.cost = data.cost;
+		if (data.cooldown) this.cooldown = data.cooldown;
+		if (data.cooldownMessage) this.cooldownMessage = data.cooldownMessage;
+		if (data.mana) this.mana = data.mana;
+		if (data.minSpent) this.minSpent = data.minSpent;
+		if (data.castMessage) this.castMessage = data.castMessage;
+		if (data.combo) this.combo = data.combo;
+		if (data.icon) this.icon = data.icon;
+		if (data.incompatible) this.incompatible = data.incompatible;
+		if (data.triggers) this.triggers = data.triggers;
 	}
 
 	public addComponent = (comp: ProComponent) => {
@@ -101,6 +104,11 @@ export default class ProSkill implements Serializable {
 		data.put('max-level', this.maxLevel);
 		data.put('skill-req', this.skillReq?.name);
 		data.put('skill-req-lvl', this.skillReqLevel);
+
+		const attrReqs = new YAMLObject('attribute-requirements');
+		this.attributeRequirements.forEach(attr => attrReqs.put(attr.name.toLowerCase(), attr));
+		data.put('attribute-requirements', attrReqs);
+
 		data.put('needs-permission', this.permission);
 		data.put('cooldown-message', this.cooldownMessage);
 		data.put('msg', this.castMessage);
@@ -123,11 +131,18 @@ export default class ProSkill implements Serializable {
 	};
 
 	public load = (yaml: YAMLObject) => {
-		this.name            = yaml.get('name', this.name);
-		this.type            = yaml.get('type', this.type);
-		this.maxLevel        = yaml.get('max-level', this.maxLevel);
-		this.skillReqStr     = yaml.get('skill-req', this.skillReqStr);
-		this.skillReqLevel   = yaml.get('skill-req-lvl', this.skillReqLevel);
+		this.name          = yaml.get('name', this.name);
+		this.type          = yaml.get('type', this.type);
+		this.maxLevel      = yaml.get('max-level', this.maxLevel);
+		this.skillReqStr   = yaml.get('skill-req', this.skillReqStr);
+		this.skillReqLevel = yaml.get('skill-req-lvl', this.skillReqLevel);
+
+		const attrReqs: YAMLObject = yaml.get('attribute-requirements');
+		if (attrReqs) {
+			const names                = new Set(attrReqs.getKeys().map(k => k.replace('(-base|-scale)', '')));
+			this.attributeRequirements = [...names].map(name => new ProAttribute(name, attrReqs.get(name + '-base'), attrReqs.get(name + '-scale')));
+		}
+
 		this.permission      = yaml.get('needs-permission', this.permission);
 		this.cooldownMessage = yaml.get('cooldown-message', this.cooldownMessage);
 		this.castMessage     = yaml.get('msg', this.castMessage);
