@@ -104,11 +104,6 @@ export default class ProSkill implements Serializable {
 		data.put('max-level', this.maxLevel);
 		data.put('skill-req', this.skillReq?.name);
 		data.put('skill-req-lvl', this.skillReqLevel);
-
-		const attrReqs = new YAMLObject('attribute-requirements');
-		this.attributeRequirements.forEach(attr => attrReqs.put(attr.name.toLowerCase(), attr));
-		data.put('attribute-requirements', attrReqs);
-
 		data.put('needs-permission', this.permission);
 		data.put('cooldown-message', this.cooldownMessage);
 		data.put('msg', this.castMessage);
@@ -116,6 +111,7 @@ export default class ProSkill implements Serializable {
 		data.put('icon', this.icon.material);
 		data.put('icon-data', this.icon.customModelData);
 		data.put('icon-lore', this.icon.lore);
+
 		const attributes = new YAMLObject('attributes');
 		attributes.put('level', this.levelReq);
 		attributes.put('cost', this.cost);
@@ -123,7 +119,9 @@ export default class ProSkill implements Serializable {
 		attributes.put('mana', this.mana);
 		attributes.put('points-spent-req', this.minSpent);
 		attributes.put('incompatible', this.incompatible.map(s => s.name));
+		this.attributeRequirements.forEach(attr => attributes.put(attr.name.toLowerCase(), attr));
 		data.put('attributes', attributes);
+
 		data.put('components', this.triggers);
 
 		yaml.data = data.data;
@@ -131,18 +129,11 @@ export default class ProSkill implements Serializable {
 	};
 
 	public load = (yaml: YAMLObject) => {
-		this.name          = yaml.get('name', this.name);
-		this.type          = yaml.get('type', this.type);
-		this.maxLevel      = yaml.get('max-level', this.maxLevel);
-		this.skillReqStr   = yaml.get('skill-req', this.skillReqStr);
-		this.skillReqLevel = yaml.get('skill-req-lvl', this.skillReqLevel);
-
-		const attrReqs: YAMLObject = yaml.get('attribute-requirements');
-		if (attrReqs) {
-			const names                = new Set(attrReqs.getKeys().map(k => k.replace('(-base|-scale)', '')));
-			this.attributeRequirements = [...names].map(name => new ProAttribute(name, attrReqs.get(name + '-base'), attrReqs.get(name + '-scale')));
-		}
-
+		this.name            = yaml.get('name', this.name);
+		this.type            = yaml.get('type', this.type);
+		this.maxLevel        = yaml.get('max-level', this.maxLevel);
+		this.skillReqStr     = yaml.get('skill-req', this.skillReqStr);
+		this.skillReqLevel   = yaml.get('skill-req-lvl', this.skillReqLevel);
 		this.permission      = yaml.get('needs-permission', this.permission);
 		this.cooldownMessage = yaml.get('cooldown-message', this.cooldownMessage);
 		this.castMessage     = yaml.get('msg', this.castMessage);
@@ -155,6 +146,18 @@ export default class ProSkill implements Serializable {
 		this.mana                    = new ProAttribute('mana', attributes.get('mana-base'), attributes.get('mana-scale'));
 		this.minSpent                = new ProAttribute('points-spent-req', attributes.get('points-spent-req-base'), attributes.get('points-spent-req-scale'));
 		this.incompStr               = attributes.get('incompatible', this.incompStr);
+
+		// Attribute requirements
+		const reserved = ['level', 'cost', 'cooldown', 'mana', 'points-spent-req', 'incompatible'];
+		console.log('attributes', attributes.getKeys());
+		const names =
+						new Set(
+							attributes.getKeys()
+								.map(k => k.replace(/-(base|scale)/i, ''))
+								.filter(name => !reserved.includes(name))
+						);
+		console.log(names);
+		this.attributeRequirements = [...names].map(name => new ProAttribute(name, attributes.get(name + '-base'), attributes.get(name + '-scale')));
 
 		this.icon.material        = yaml.get<string, string>('icon', this.icon.material, toEditorCase);
 		this.icon.customModelData = yaml.get('icon-data', this.icon.customModelData);

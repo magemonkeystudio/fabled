@@ -1,57 +1,57 @@
 <script lang='ts'>
 
-    import ProInput         from '$input/ProInput.svelte';
-    import AttributeInput   from '$input/AttributeInput.svelte';
-    import { ProAttribute } from '$api/proattribute';
+	import ProInput         from '$input/ProInput.svelte';
+	import AttributeInput   from '$input/AttributeInput.svelte';
+	import { ProAttribute } from '$api/proattribute';
 
-    export let value: ProAttribute[] = [];
+	export let value: ProAttribute[] = [];
 
-    let name = '';
-    $: attribute = new ProAttribute(name, 0, 0);
+	let name = '';
+	$: attribute = new ProAttribute(name, 0, 0);
 
-    const addAttribute = (e?: Event) => {
-        if (!name) return;
-        if (e && e.type === 'keypress' && (e as KeyboardEvent).key !== 'Enter') return;
-        value = [...value, attribute];
-        name  = '';
-    };
+	const addAttribute = (e?: Event) => {
+		if (!name) return;
+		if (e && e.type === 'keypress' && (e as KeyboardEvent).key !== 'Enter') return;
+		value = [...value, attribute];
+		name  = '';
+	};
 
-    const removeAttribute = (attribute: ProAttribute) => {
-        value = value.filter(a => a !== attribute);
-    };
+	const removeAttribute = (attribute: ProAttribute) => {
+		value = value.filter(a => a !== attribute);
+	};
 </script>
 
 {#if value.length > 0}
-    <div class='wrapper'>
-        {#each value as attribute}
-            <div class='attr'
-                 on:click={() => removeAttribute(attribute)}
-                 on:keypress={() => removeAttribute(attribute)}
-                 tabindex='0'
-                 role='button'
-                 aria-label='Remove Attribute'
-                 title='Remove Attribute'
-            >
-                <div class='name'>{attribute.name}</div>
-                <div class='value'>{attribute.base}+({attribute.scale})</div>
-            </div>
-        {/each}
-    </div>
+	<div class='wrapper'>
+		{#each value as attribute}
+			<div class='attr'
+					 on:click={() => removeAttribute(attribute)}
+					 on:keypress={() => removeAttribute(attribute)}
+					 tabindex='0'
+					 role='button'
+					 aria-label='Remove Attribute'
+					 title='Remove Attribute'
+			>
+				<div class='name'>{attribute.name}</div>
+				<div class='value'>{attribute.base}+({attribute.scale})</div>
+			</div>
+		{/each}
+	</div>
 {/if}
 
 <ProInput label='Attribute Name' placeholder='Attribute Name' bind:value={name} />
 <ProInput label='{name} Value'>
-    <AttributeInput bind:value={attribute} />
+	<AttributeInput bind:value={attribute} />
 </ProInput>
 
 <div class='btn'
-     class:disabled={!name}
-     on:click={addAttribute}
-     on:keypress={addAttribute}
-     tabindex='0'
-     role='button'
-     aria-label='Add Attribute'
-     title='Add Attribute'>Add Attribute
+		 class:disabled={!name}
+		 on:click={addAttribute}
+		 on:keypress={addAttribute}
+		 tabindex='0'
+		 role='button'
+		 aria-label='Add Attribute'
+		 title='Add Attribute'>Add Attribute
 </div>
 
 
@@ -86,6 +86,7 @@
         background-color: #0083ef;
         color: #fff;
         cursor: pointer;
+        user-select: none;
     }
 
     .name {
