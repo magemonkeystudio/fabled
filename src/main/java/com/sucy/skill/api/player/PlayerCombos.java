@@ -28,6 +28,7 @@ package com.sucy.skill.api.player;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.event.PlayerComboFinishEvent;
+import com.sucy.skill.api.event.PlayerComboStepEvent;
 import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.data.Click;
 import com.sucy.skill.log.Logger;
@@ -128,15 +129,18 @@ public class PlayerCombos {
         // Add the click to the current combo
         clicks[clickIndex++] = click;
         clickTime = System.currentTimeMillis();
+        Bukkit.getPluginManager().callEvent(new PlayerComboStepEvent(this));
 
         // Cast skill when combo is completed
-        int id = SkillAPI.getComboManager().convertCombo(clicks, clickIndex);
-        if (clickIndex == clicks.length || skills.containsKey(id)) {
-            PlayerComboFinishEvent event = new PlayerComboFinishEvent(player, id, skills.get(id));
-            Bukkit.getPluginManager().callEvent(event);
+        if (clickIndex == clicks.length) {
+            int id = SkillAPI.getComboManager().convertCombo(clicks, clickIndex);
+            if (skills.containsKey(id)) {
+                PlayerComboFinishEvent event = new PlayerComboFinishEvent(player, id, skills.get(id));
+                Bukkit.getPluginManager().callEvent(event);
 
-            if (skills.containsKey(id) && !event.isCancelled()) {
-                player.cast(skills.get(id));
+                if (skills.containsKey(id) && !event.isCancelled()) {
+                    player.cast(skills.get(id));
+                }
             }
         }
     }

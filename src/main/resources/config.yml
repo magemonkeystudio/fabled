@@ -280,6 +280,7 @@ GUI:
   #   exp_gained
   #   exp_lost
   #   status
+  #   combo
   title-messages:
   - level_up
   - exp_lost

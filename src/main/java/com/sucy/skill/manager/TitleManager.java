@@ -65,7 +65,7 @@ public class TitleManager {
     public static void show(Player player, TitleType type, String msgKey, CustomFilter... filters) {
         if (SkillAPI.getSettings().useTitle(type) && msgKey != null) {
             List<String> message = SkillAPI.getLanguage().getMessage(msgKey, true, FilterType.COLOR, filters);
-            if (message != null && message.size() > 0) {
+            if (message != null && !message.isEmpty()) {
                 init();
                 String title    = message.get(0);
                 String subtitle = message.size() > 1 ? message.get(1) : null;
