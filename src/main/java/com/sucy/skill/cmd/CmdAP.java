@@ -84,15 +84,7 @@ public class CmdAP implements IFunction {
                 cmd.sendMessage(sender, NOT_NUMBER, ChatColor.RED + "That is not a valid skill point amount");
                 return;
             }
-
-            // Invalid amount of skill points
-            if (amount <= 0) {
-                cmd.sendMessage(sender,
-                        NOT_POSITIVE,
-                        ChatColor.RED + "You must give a positive amount of skill points");
-                return;
-            }
-
+            
             // Give skill points
             PlayerData data = SkillAPI.getPlayerData(target);
             data.giveAttribPoints(amount);
