@@ -91,7 +91,6 @@ public class PlayerData {
     private final HashMap<String, PlayerClass>                   classes             = new HashMap<>();
     private final HashMap<String, PlayerSkill>                   skills              = new HashMap<>();
     private final HashSet<ExternallyAddedSkill>                  extSkills           = new HashSet<>();
-    private final HashMap<Material, PlayerSkill>                 binds               = new HashMap<>();
     private final HashMap<String, List<PlayerAttributeModifier>> attributesModifiers = new HashMap<>();
     private final HashMap<String, List<PlayerStatModifier>>      statModifiers       = new HashMap<>();
     private final HashMap<String, String>                        persistentData      = new HashMap<>();
@@ -1054,11 +1053,6 @@ public class PlayerData {
                 ((PassiveSkill) skill.getData()).update(player, skill.getLevel() + amount, skill.getLevel());
             }
         }
-
-        // Clear bindings
-        if (skill.getLevel() == 0) {
-            clearBinds(skill.getData());
-        }
     }
 
     /**
@@ -1089,8 +1083,6 @@ public class PlayerData {
         for (PlayerSkill skill : skills.values()) {
             refundSkill(skill);
         }
-
-        clearAllBinds();
     }
 
     /**
@@ -1450,7 +1442,6 @@ public class PlayerData {
         if (rpgClass != null && settings.getPermission() == null) {
             setClass(null, rpgClass, true);
         }
-        binds.clear();
 
         int aPoints = 0;
         if (settings.isProfessRefundAttributes() && toSubclass) {
@@ -2066,8 +2057,9 @@ public class PlayerData {
      * @param mat material to get the bind for
      * @return skill bound to the material or null if none are bound
      */
+    @Deprecated
     public PlayerSkill getBoundSkill(Material mat) {
-        return binds.get(mat);
+        return null;
     }
 
     /**
@@ -2076,8 +2068,9 @@ public class PlayerData {
      *
      * @return the skill binds data for the player
      */
+    @Deprecated
     public HashMap<Material, PlayerSkill> getBinds() {
-        return binds;
+        return new HashMap<>();
     }
 
     /**
@@ -2086,8 +2079,9 @@ public class PlayerData {
      * @param mat material to check
      * @return true if a skill is bound to it, false otherwise
      */
+    @Deprecated
     public boolean isBound(Material mat) {
-        return binds.containsKey(mat);
+        return false;
     }
 
     /**
@@ -2098,38 +2092,9 @@ public class PlayerData {
      * @param skill skill to bind to the material
      * @return true if was able to bind the skill, false otherwise
      */
+    @Deprecated
     public boolean bind(Material mat, PlayerSkill skill) {
-        // Special cases
-        if (mat == null || (skill != null && skill.getPlayerData() != this)) {
-            return false;
-        }
-
-        PlayerSkill bound = getBoundSkill(mat);
-        if (bound != skill) {
-            // Apply the binding
-            if (skill == null) {
-                binds.remove(mat);
-            } else {
-                binds.put(mat, skill);
-            }
-
-            // Update the old skill's bind
-            if (bound != null) {
-                bound.setBind(null);
-            }
-
-            // Update the new skill's bind
-            if (skill != null) {
-                skill.setBind(mat);
-            }
-
-            return true;
-        }
-
-        // The skill was already bound
-        else {
-            return false;
-        }
+        return false;
     }
 
     /**
@@ -2139,8 +2104,9 @@ public class PlayerData {
      * @param mat material to clear bindings from
      * @return true if a binding was cleared, false otherwise
      */
+    @Deprecated
     public boolean clearBind(Material mat) {
-        return binds.remove(mat) != null;
+        return false;
     }
 
 
@@ -2263,22 +2229,14 @@ public class PlayerData {
      *
      * @param skill skill to unbind
      */
-    public void clearBinds(Skill skill) {
-        ArrayList<Material> keys = new ArrayList<>(binds.keySet());
-        for (Material key : keys) {
-            PlayerSkill bound = binds.get(key);
-            if (bound.getData() == skill) {
-                binds.remove(key);
-            }
-        }
-    }
+    @Deprecated
+    public void clearBinds(Skill skill) {}
 
     /**
      * Clears all binds the player currently has
      */
-    public void clearAllBinds() {
-        binds.clear();
-    }
+    @Deprecated
+    public void clearAllBinds() {}
 
     /**
      * Records any data to save with class data

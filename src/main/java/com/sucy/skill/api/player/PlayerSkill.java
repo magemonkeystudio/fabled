@@ -41,7 +41,6 @@ public final class PlayerSkill {
     private Skill       skill;
     private PlayerData  player;
     private PlayerClass parent;
-    private Material    bind;
     private long        cooldown;
     private int         level;
     private boolean     external;
@@ -123,7 +122,7 @@ public final class PlayerSkill {
      * @return the current material bound to or null if not bound
      */
     public Material getBind() {
-        return bind;
+        return null;
     }
 
     /**
@@ -265,10 +264,8 @@ public final class PlayerSkill {
      *
      * @param mat new bind material
      */
-    public void setBind(Material mat) {
-        this.bind = mat;
-        getPlayerData().bind(mat, this);
-    }
+    @Deprecated
+    public void setBind(Material mat) {}
 
     /**
      * Reverts the skill back to level 0, locking it from
