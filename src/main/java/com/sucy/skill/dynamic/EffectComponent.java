@@ -292,6 +292,11 @@ public abstract class EffectComponent {
                 builder.append(caster.getName());
 
                 k = j + 1;
+            } else if (key.equals("playerUUID")) {
+                builder.append(text, k, i);
+                builder.append(caster.getUniqueId());
+
+                k = j + 1;
             } else if (key.equals("target")) {
                 builder.append(text, k, i);
                 builder.append(target.getName());
