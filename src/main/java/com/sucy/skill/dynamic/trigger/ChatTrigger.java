@@ -17,7 +17,7 @@ public class ChatTrigger implements Trigger<AsyncPlayerChatEvent> {
      */
     @Override
     public String getKey() {
-        return "CHAT";
+        return "CHATx";
     }
 
     /**
