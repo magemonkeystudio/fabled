@@ -797,6 +797,29 @@ public class TempEntity implements LivingEntity {
     @Override
     public SpawnCategory getSpawnCategory() {return SpawnCategory.MISC;}
 
+    @Override
+    public boolean isInWorld() {
+        return false;
+    }
+
+    @Nullable
+    @Override
+    public EntitySnapshot createSnapshot() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Entity copy() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Entity copy(@NotNull Location location) {
+        return null;
+    }
+
     public void playEffect(EntityEffect entityEffect) {
     }
 
