@@ -4538,6 +4538,8 @@ class WarpMechanic extends ProMechanic {
             data:         [
                 new BooleanSelect('Through Walls', 'walls')
                     .setTooltip('Whether to allow the target to teleport through walls'),
+              new BooleanSelect('Open Spaces Only', 'open', true)
+                    .setTooltip('Whether to only allow teleporting to open spaces. The side-effect of open spaces is the warp position is set to the middle of the block instead of the complete relative position'),
                 new SectionMarker('Position'),
                 new AttributeSelect('Forward', 'forward', 3, 1)
                     .setTooltip('How far forward in blocks to teleport. A negative value teleports backwards'),
