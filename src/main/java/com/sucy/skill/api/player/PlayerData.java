@@ -1263,10 +1263,8 @@ public class PlayerData {
         String main = SkillAPI.getSettings().getMainGroup();
         if (classes.containsKey(main)) {
             return classes.get(main);
-        } else if (classes.size() > 0) {
-            return classes.values().toArray(new PlayerClass[classes.size()])[0];
         } else {
-            return null;
+            return classes.values().stream().findFirst().orElse(null);
         }
     }
 

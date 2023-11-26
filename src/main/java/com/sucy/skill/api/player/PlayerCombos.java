@@ -126,6 +126,10 @@ public class PlayerCombos {
 
         checkExpired();
 
+        PlayerClass clazz = player.getMainClass();
+        if (clazz != null && !clazz.getData().canStartCombo(click, player.getPlayer().getInventory().getItemInMainHand()))
+            return;
+
         // Add the click to the current combo
         clicks[clickIndex++] = click;
         clickTime = System.currentTimeMillis();
