@@ -14,6 +14,7 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -66,29 +67,35 @@ public class ArmorStandMechanic extends MechanicComponent {
             Vector   side = dir.clone().crossProduct(UP);
             loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
 
-            ArmorStand as = target.getWorld().spawn(loc, ArmorStand.class);
-
-            try { // 1.13+
-                as.setPersistent(false);
-            } catch (NoSuchMethodError ignored) {
+            Consumer<ArmorStand> onSpawn = as -> {
+                try { // 1.13+
+                    as.setPersistent(false);
+                } catch (NoSuchMethodError ignored) {
+                }
+                try { // 1.19+
+                    as.setMarker(marker);
+                    as.setInvulnerable(true);
+                } catch (NoSuchMethodError ignored) {
+                }
+                try { // 1.10+
+                    as.setSilent(true);
+                } catch (NoSuchMethodError ignored) {
+                }
+                as.setGravity(gravity);
+                as.setCustomName(name);
+                as.setCustomNameVisible(nameVisible);
+                as.setSmall(small);
+                as.setArms(arms);
+                as.setBasePlate(base);
+                as.setVisible(visible);
+            };
+            ArmorStand as;
+            try {
+                as = target.getWorld().spawn(loc, ArmorStand.class, onSpawn);
+            } catch (NoSuchMethodError e) {
+                as = target.getWorld().spawn(loc, ArmorStand.class);
+                onSpawn.accept(as);
             }
-            try { // 1.19+
-                as.setMarker(marker);
-                as.setInvulnerable(true);
-            } catch (NoSuchMethodError ignored) {
-            }
-            try { // 1.10+
-                as.setSilent(true);
-            } catch (NoSuchMethodError ignored) {
-            }
-            as.setGravity(gravity);
-            as.setCustomName(name);
-            as.setCustomNameVisible(nameVisible);
-            as.setSmall(small);
-            as.setArms(arms);
-            as.setBasePlate(base);
-            as.setVisible(visible);
-
             SkillAPI.setMeta(as, MechanicListener.ARMOR_STAND, true);
             armorStands.add(as);
 
