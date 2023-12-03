@@ -36,7 +36,7 @@ public class PhysicalDamageListenerTest extends MockedTest {
                         EntityDamageEvent.DamageCause.CUSTOM,
                         0D);
 
-        mainListener.onPhysicalDamage(event);
+        mainListener.onPhysicalDamage_allyCheck(event);
 
         server.getPluginManager().assertEventNotFired(PhysicalDamageEvent.class);
     }
@@ -46,7 +46,7 @@ public class PhysicalDamageListenerTest extends MockedTest {
         EntityDamageByEntityEvent event =
                 new EntityDamageByEntityEvent(attacker, damager, EntityDamageEvent.DamageCause.ENTITY_ATTACK, 5D);
 
-        mainListener.onPhysicalDamage(event);
+        mainListener.onPhysicalDamage_allyCheck(event);
 
         server.getPluginManager().assertEventFired(DefaultCombatProtection.FakeEntityDamageByEntityEvent.class);
     }
