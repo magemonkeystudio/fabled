@@ -284,6 +284,9 @@ public class PlaceholderUtil {
             if (identifier.equals("default_currentgroupname")) {
                 return String.valueOf(data.getMainClass().getData().getGroup());
             }
+            if (identifier.equals("default_currentclassname")) {
+                return String.valueOf(data.getMainClass().getData().getName());
+            }
             if (identifier.equals("default_currentavailableattributepoints")
                     || identifier.equals("default_attributepoints")) {
                 return String.valueOf(data.getMainClass().getPlayerData().getAttributePoints());
