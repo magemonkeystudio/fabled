@@ -234,14 +234,15 @@ public class ComponentRegistry {
 
     @SuppressWarnings("unchecked")
     public static <T extends Event> void register(final Trigger<T> trigger) {
+        String key = trigger.getKey().toUpperCase().replace(' ', '_');
 
-        if (getTrigger(trigger.getKey()) != null) {
-            throw new IllegalArgumentException("Trigger with key " + trigger.getKey() + " already exists");
-        } else if (trigger.getKey().contains("-")) {
-            throw new IllegalArgumentException(trigger.getKey() + " is not a valid key: must not contain dashes");
+        if (getTrigger(key) != null) {
+            throw new IllegalArgumentException("Trigger with key " + key + " already exists");
+        } else if (key.contains("-")) {
+            throw new IllegalArgumentException(key + " is not a valid key: must not contain dashes");
         }
 
-        TRIGGERS.put(trigger.getKey(), trigger);
+        TRIGGERS.put(key, trigger);
         EXECUTORS.put(trigger, (listener, event) -> {
             if (!trigger.getEvent().isInstance(event)) return;
             ((TriggerHandler) listener).apply((T) event, trigger);
