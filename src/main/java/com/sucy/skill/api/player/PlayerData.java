@@ -393,15 +393,19 @@ public class PlayerData {
         key = key.toLowerCase();
         int current = getInvestedAttribute(key);
         int max     = SkillAPI.getAttributeManager().getAttribute(key).getMax();
-        if (attribPoints > 0 && current < max) {
+
+        // iomatix Logic behind: costBase+floor(current*costMod) -> is new cost so...
+        int cost = SkillAPI.getAttributeManager().getAttribute(key).getCostBase() + (int) Math.floor(current*SkillAPI.getAttributeManager().getAttribute(key).getCostMod());
+        // iomatix apply the new logic below:
+        if (attribPoints >= cost && current < max) {
             attributes.put(key, current + 1);
-            attribPoints--;
+            attribPoints -= cost; // iomatix new cost has been applied
 
             PlayerUpAttributeEvent event = new PlayerUpAttributeEvent(this, key);
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) {
                 attributes.put(key, current);
-                attribPoints++;
+                attribPoints += cost; // iomatix get the cost back
             } else {
                 return true;
             }
