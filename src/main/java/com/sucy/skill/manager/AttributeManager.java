@@ -204,7 +204,7 @@ public class AttributeManager {
         private static final String STATS     = "stats";
         private static final String MAX       = "max";
 
-        // iomatix: base_cost and the modifier
+        // iomatix: cost and the modifier
         private static final String COSTBASE = "cost_base";
         private static final String COSTMOD = "cost_modifier";
 
@@ -214,10 +214,10 @@ public class AttributeManager {
         private ItemStack icon;
         private int       max;
 
-        // iomatix: base_cost and the modifier
+        // iomatix: cost and the modifier
 
-        private int cost_base;
-        private double cost_modifier;
+        private int costBase;
+        private double costModifier;
 
         // Dynamic global modifiers
         private Map<ComponentType, Map<String, AttributeValue[]>> dynamicModifiers = new EnumMap<>(ComponentType.class);
@@ -238,9 +238,9 @@ public class AttributeManager {
             this.icon = Data.parseIcon(data);
             this.max = data.getInt(MAX, 999);
             // iomatix: base_cost and the modifier
-                // e.g. per 0.3 increase -> 0.3=>0, 0.6=>0, 0.9=>0, 1.2=>1 (first additional cost point) etc.
-            this.cost_base = data.getInt(COSTBASE, 1);
-            this.cost_modifier = data.getDouble(COSTMOD, 0.3);
+                // e.g. per 0.3 increase -> 0.3=>0, 0.6=>0, 0.9=>0, 1.2=>1 (the first additional cost point) etc.
+            this.costBase = data.getInt(COSTBASE, 1);
+            this.costModifier = data.getDouble(COSTMOD, 0.0);
 
             // Load dynamic global settings
             DataSection globals = data.getSection(GLOBAL);
@@ -364,19 +364,19 @@ public class AttributeManager {
         /**
          * Retrieves the starting cost of the attribute upgrade.
          *
-         * @return cost_base amount
+         * @return costBase amount
          */
         public int getCostBase(){
-            return cost_base;
+            return costBase;
         }
         /**
          * Retrieves the raw additional cost of the attribute upgrade.
          * It should be converted to int e.g. using (int) Math.floor function.
          *
-         * @return cost_modifier
+         * @return costModifier
          */
         public double getCostMod(){
-            return cost_modifier;
+            return costModifier;
         }
 
         /**
