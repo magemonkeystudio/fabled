@@ -238,7 +238,7 @@ public class AttributeManager {
             this.icon = Data.parseIcon(data);
             this.max = data.getInt(MAX, 999);
             // iomatix: base_cost and the modifier
-                // eg. per 0.3 increase -> 0.3=>0, 0.6=>0, 0.9=>0, 1.2=>1 (first additional cost point) etc.
+                // e.g. per 0.3 increase -> 0.3=>0, 0.6=>0, 0.9=>0, 1.2=>1 (first additional cost point) etc.
             this.cost_base = data.getInt(COSTBASE, 1);
             this.cost_modifier = data.getDouble(COSTMOD, 0.3);
 
