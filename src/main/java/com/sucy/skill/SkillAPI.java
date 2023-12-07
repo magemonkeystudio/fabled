@@ -53,6 +53,7 @@ import com.sucy.skill.task.ManaTask;
 import com.sucy.skill.task.SaveTask;
 import com.sucy.skill.thread.MainThread;
 import mc.promcteam.engine.NexEngine;
+import mc.promcteam.engine.manager.api.menu.YAMLMenu;
 import mc.promcteam.engine.mccore.config.CommentedConfig;
 import mc.promcteam.engine.mccore.config.CommentedLanguageConfig;
 import mc.promcteam.engine.mccore.util.VersionManager;
@@ -550,6 +551,7 @@ public class SkillAPI extends JavaPlugin {
         SkillAPI inst = inst();
         inst.onDisable();
         inst.onEnable();
+        YAMLMenu.reloadMenus(inst);
     }
 
     @Override

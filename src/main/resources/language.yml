@@ -70,3 +70,4 @@ Combo:
   space: '&6Jump'
   q: '&6Drop'
   f: '&6Swap'
+  gui-display: '{combo}'

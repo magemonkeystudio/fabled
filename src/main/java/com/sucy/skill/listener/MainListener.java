@@ -49,7 +49,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -375,12 +374,14 @@ public class MainListener extends SkillAPIListener {
     }
 
     /**
-     * Launches physical damage events to differentiate skill damage from physical damage
+     * Cancels EntityDamageByEntity events when the attacker and defender
+     * are not allowed to attack each other. This prevents the following method
+     * to trigger a PhysicalDamageEvent
      *
      * @param event event details
      */
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onPhysicalDamage(EntityDamageByEntityEvent event) {
+    public void onPhysicalDamage_allyCheck(EntityDamageByEntityEvent event) {
         if (event instanceof DefaultCombatProtection.FakeEntityDamageByEntityEvent) {
             return;
         }
@@ -389,6 +390,15 @@ public class MainListener extends SkillAPIListener {
                         .canAttack((Player) event.getDamager(), (Player) event.getEntity(), event.getCause())) {
             event.setCancelled(true);
         }
+    }
+
+    /**
+     * Launches physical damage events to differentiate skill damage from physical damage
+     *
+     * @param event event details
+     */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPhysicalDamage(EntityDamageByEntityEvent event) {
         if (Skill.isSkillDamage()
                 || event.getCause() == EntityDamageEvent.DamageCause.CUSTOM
                 || !(event.getEntity() instanceof LivingEntity)

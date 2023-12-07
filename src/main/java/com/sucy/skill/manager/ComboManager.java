@@ -40,6 +40,8 @@ import java.util.List;
  * what skills result from various combinations
  */
 public class ComboManager {
+    public static final String DISPLAY_KEY = "Combo.gui-display";
+
     private int       comboSize;
     private boolean[] clicks;
 

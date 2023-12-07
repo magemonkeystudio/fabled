@@ -48,6 +48,7 @@ public class WarpMechanic extends MechanicComponent {
     private static final Vector UP = new Vector(0, 1, 0);
 
     private static final String WALL    = "walls";
+    private static final String OPEN    = "open";
     private static final String FORWARD = "forward";
     private static final String UPWARD  = "upward";
     private static final String RIGHT   = "right";
@@ -58,19 +59,26 @@ public class WarpMechanic extends MechanicComponent {
     }
 
     private Location getLocation(LivingEntity caster, int level, LivingEntity target) {
-        boolean throughWalls = settings.getString(WALL, "false").toLowerCase().equals("true");
+        boolean throughWalls = settings.getBool(WALL, false);
+        boolean openOnly     = settings.getBool(OPEN, true);
         double  forward      = parseValues(caster, FORWARD, level, 0.0);
         double  upward       = parseValues(caster, UPWARD, level, 0.0);
         double  right        = parseValues(caster, RIGHT, level, 0.0);
 
         Vector   dir  = target.getLocation().getDirection();
         Vector   side = dir.clone().crossProduct(UP).multiply(right);
-        Location loc  = target.getLocation().add(dir.multiply(forward)).add(side).add(0, upward, 0).add(0, 1, 0);
-        loc = TargetHelper.getOpenLocation(target.getLocation().add(0, 1, 0), loc, throughWalls);
-        if (!loc.getBlock().getType().isSolid() && loc.getBlock().getRelative(BlockFace.DOWN).getType().isSolid()) {
+        Location loc  = target.getLocation().add(dir.multiply(forward)).add(side).add(0, upward, 0);
+
+        if (openOnly) {
             loc.add(0, 1, 0);
+            loc = TargetHelper.getOpenLocation(target.getLocation().add(0, 1, 0), loc, throughWalls);
+            if (!loc.getBlock().getType().isSolid() && loc.getBlock().getRelative(BlockFace.DOWN).getType().isSolid()) {
+                loc.add(0, 1, 0);
+            }
+            return loc.subtract(0, 1, 0);
         }
-        return loc.subtract(0, 1, 0);
+
+        return loc;
     }
 
     /**

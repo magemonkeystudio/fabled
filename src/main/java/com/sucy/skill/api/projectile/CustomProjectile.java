@@ -134,7 +134,7 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
      * @param amount amount of directions to calculate
      * @return the list of calculated directions
      */
-    public static ArrayList<Vector> calcSpread(Vector dir, double angle, int amount) {
+    public static List<Vector> calcSpread(Vector dir, double angle, int amount) {
         // Special cases
         if (amount <= 0) {
             return new ArrayList<>();
@@ -203,8 +203,8 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
      * @param amount amount of locations to calculate
      * @return list of locations to spawn projectiles
      */
-    public static ArrayList<Location> calcRain(Location loc, double radius, double height, int amount) {
-        ArrayList<Location> list = new ArrayList<Location>();
+    public static List<Location> calcRain(Location loc, double radius, double height, int amount) {
+        List<Location> list = new ArrayList<>();
         if (amount <= 0) {
             return list;
         }
@@ -219,7 +219,7 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
         for (int i = 0; i < tiers; i++) {
             double rad       = radius * (tiers - i) / tiers;
             int    tierNum   = Math.min(amount, 8);
-            double increment = 360 / tierNum;
+            double increment = 360d / tierNum;
             double angle     = (i % 2) * 22.5;
             for (int j = 0; j < tierNum; j++) {
                 double   dx = Math.cos(angle) * rad;

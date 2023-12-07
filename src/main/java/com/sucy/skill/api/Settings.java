@@ -241,6 +241,8 @@ public class Settings {
             final Object value = settings.get(key);
             if (value instanceof List<?>) {
                 return (List<String>) settings.get(key);
+            } else if (value.toString().equals("[]")) {
+                return new ArrayList<>();
             } else {
                 return ImmutableList.of(value.toString());
             }

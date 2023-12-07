@@ -78,6 +78,7 @@ public class ParticleProjectile extends CustomProjectile {
     public static final String REMEMBER           = "remember-key";
     public static final String CORRECTION         = "correction";
     public static final String WALL               = "wall";
+    public static final String RADIUS             = "collision-radius";
     /**
      * Settings key for the projectile's frequency of playing particles
      * @deprecated unintuitively named, now PERIOD is used instead
@@ -95,6 +96,7 @@ public class ParticleProjectile extends CustomProjectile {
     private       Vector                 vel;
     private       int                    life;
     private final int                    steps;
+    private final double                 radius;
     private final double                 gravity;
     private final double                 drag;
     private final int                    particlePeriod;
@@ -119,7 +121,8 @@ public class ParticleProjectile extends CustomProjectile {
         this.vel = loc.getDirection().multiply(settings.getAttr(SPEED, level, 1.0));
         this.life = lifespan;
         this.steps = settings.getInt(STEPS, 2);
-        this.gravity = settings.getAttr(GRAVITY, 0, -0.04);
+        this.radius = settings.getAttr(RADIUS, level, 1.5);
+        this.gravity = settings.getAttr(GRAVITY, level, -0.04);
         this.drag = settings.getAttr(DRAG, 0, 0.02);
 
         this.particlePeriod = settings.getInt(PERIOD, (int) (40 * settings.getDouble(LEGACY_FREQUENCY, 0.05)));
@@ -210,7 +213,7 @@ public class ParticleProjectile extends CustomProjectile {
      */
     @Override
     protected double getCollisionRadius() {
-        return 1.5;
+        return radius;
     }
 
     /**
@@ -260,7 +263,7 @@ public class ParticleProjectile extends CustomProjectile {
         if (homing != null) {
             LivingEntity target = homing.get();
             if (target != null) {
-                Vector acceleration = target.getLocation().clone().toVector().subtract(getLocation().toVector())
+                Vector acceleration = target.getBoundingBox().getCenter().subtract(getLocation().toVector())
                         .normalize().multiply(settings.getAttr(SPEED, 0, 1.0)).subtract(vel);
                 double length = acceleration.length();
                 acceleration.multiply(1.0/length).multiply(Math.min(length, correction));
@@ -301,27 +304,27 @@ public class ParticleProjectile extends CustomProjectile {
     /**
      * Fires a spread of projectiles from the location.
      *
-     * @param shooter  entity shooting the projectiles
-     * @param level    level to use for scaling the speed
-     * @param center   the center direction of the spread
-     * @param loc      location to shoot from
-     * @param settings settings to use when firing
-     * @param angle    angle of the spread
-     * @param amount   number of projectiles to fire
-     * @param callback optional callback for when projectiles hit
+     * @param shooter   entity shooting the projectiles
+     * @param level     level to use for scaling the speed
+     * @param direction the center direction of the spread
+     * @param loc       location to shoot from
+     * @param settings  settings to use when firing
+     * @param angle     angle of the spread
+     * @param amount    number of projectiles to fire
+     * @param callback  optional callback for when projectiles hit
      * @return list of fired projectiles
      */
-    public static ArrayList<ParticleProjectile> spread(LivingEntity shooter,
+    public static List<ParticleProjectile> spread(LivingEntity shooter,
                                                        int level,
-                                                       Vector center,
+                                                       Vector direction,
                                                        Location loc,
                                                        Settings settings,
                                                        double angle,
                                                        int amount,
                                                        ProjectileCallback callback,
                                                        int lifespan) {
-        ArrayList<Vector>             dirs = calcSpread(center, angle, amount);
-        ArrayList<ParticleProjectile> list = new ArrayList<ParticleProjectile>();
+        List<Vector>             dirs = calcSpread(direction, angle, amount);
+        List<ParticleProjectile> list = new ArrayList<>();
         for (Vector dir : dirs) {
             Location l = loc.clone();
             l.setDirection(dir);
@@ -345,7 +348,7 @@ public class ParticleProjectile extends CustomProjectile {
      * @param callback optional callback for when projectiles hit
      * @return list of fired projectiles
      */
-    public static ArrayList<ParticleProjectile> rain(LivingEntity shooter,
+    public static List<ParticleProjectile> rain(LivingEntity shooter,
                                                      int level,
                                                      Location center,
                                                      Settings settings,
@@ -355,8 +358,8 @@ public class ParticleProjectile extends CustomProjectile {
                                                      ProjectileCallback callback,
                                                      int lifespan) {
         Vector                        vel  = new Vector(0, 1, 0);
-        ArrayList<Location>           locs = calcRain(center, radius, height, amount);
-        ArrayList<ParticleProjectile> list = new ArrayList<ParticleProjectile>();
+        List<Location>           locs = calcRain(center, radius, height, amount);
+        List<ParticleProjectile> list = new ArrayList<>();
         for (Location l : locs) {
             l.setDirection(vel);
             ParticleProjectile p = new ParticleProjectile(shooter, level, l, settings, lifespan);

@@ -114,9 +114,9 @@ public class ParticleAnimationMechanic extends MechanicComponent {
             this.targets = targets;
             this.settings = settings;
 
-            this.forward = settings.getDouble(FORWARD, 0);
-            this.upward = settings.getDouble(UPWARD, 0);
-            this.right = settings.getDouble(RIGHT, 0);
+            this.forward = getNum(caster, FORWARD, 0);
+            this.upward = getNum(caster, UPWARD, 0);
+            this.right = getNum(caster, RIGHT, 0);
 
             this.steps = settings.getInt(STEPS, 1);
             this.freq = (int) (settings.getDouble(FREQ, 1.0) * 20);

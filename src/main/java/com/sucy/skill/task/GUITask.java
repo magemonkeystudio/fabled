@@ -32,9 +32,12 @@ import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.hook.PlaceholderAPIHook;
 import com.sucy.skill.hook.PluginChecker;
+import com.sucy.skill.language.RPGFilter;
 import com.sucy.skill.log.LogType;
 import com.sucy.skill.log.Logger;
+import com.sucy.skill.manager.ComboManager;
 import com.sucy.skill.thread.RepeatThreadTask;
+import mc.promcteam.engine.mccore.config.FilterType;
 import mc.promcteam.engine.mccore.util.TextFormatter;
 import mc.promcteam.engine.mccore.util.VersionManager;
 import mc.promcteam.engine.utils.MsgUT;
@@ -159,7 +162,7 @@ public class GUITask extends RepeatThreadTask {
                 Logger.log(LogType.GUI, 2, "Updating action bar");
                 PlayerClass main = data.getMainClass();
                 String filtered = (main.getData().hasActionBarText() ? main.getData().getActionBarText() : actionText)
-                        .replace("{combo}", data.getComboData().getCurrentComboString())
+                        .replace("{combo}", SkillAPI.getLanguage().getMessage(ComboManager.DISPLAY_KEY, true, FilterType.COLOR, RPGFilter.COMBO.setReplacement(data.getComboData().getCurrentComboString())).get(0))
                         .replace("{class}", main.getData().getPrefix())
                         .replace("{level}", "" + main.getLevel())
                         .replace("{exp}", "" + (int) main.getExp())

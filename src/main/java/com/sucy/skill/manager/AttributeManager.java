@@ -326,6 +326,7 @@ public class AttributeManager {
                     .replace("{total}", "" + data.getAttribute(key))
                     .replace("{cost}", "" + data.getAttributeUpCost(key))
                     .replace("{invested}", "" + data.getInvestedAttribute(key));
+
         }
 
         /**
