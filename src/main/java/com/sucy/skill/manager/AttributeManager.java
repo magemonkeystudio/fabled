@@ -204,11 +204,20 @@ public class AttributeManager {
         private static final String STATS     = "stats";
         private static final String MAX       = "max";
 
+        // iomatix: base_cost and the modifier
+        private static final String COSTBASE = "cost_base";
+        private static final String COSTMOD = "cost_modifier";
+
         // Attribute description
         private String    key;
         private String    display;
         private ItemStack icon;
         private int       max;
+
+        // iomatix: base_cost and the modifier
+
+        private int cost_base;
+        private double cost_modifier;
 
         // Dynamic global modifiers
         private Map<ComponentType, Map<String, AttributeValue[]>> dynamicModifiers = new EnumMap<>(ComponentType.class);
@@ -228,6 +237,10 @@ public class AttributeManager {
             this.display = data.getString(DISPLAY, key);
             this.icon = Data.parseIcon(data);
             this.max = data.getInt(MAX, 999);
+            // iomatix: base_cost and the modifier
+                // eg. per 0.3 increase -> 0.3=>0, 0.6=>0, 0.9=>0, 1.2=>1 (first additional cost point) etc.
+            this.cost_base = data.getInt(COSTBASE, 1);
+            this.cost_modifier = data.getDouble(COSTMOD, 0.3);
 
             // Load dynamic global settings
             DataSection globals = data.getSection(GLOBAL);
@@ -310,7 +323,8 @@ public class AttributeManager {
         private String filter(PlayerData data, String text) {
             return text
                     .replace("{amount}", "" + data.getInvestedAttribute(key))
-                    .replace("{total}", "" + data.getAttribute(key));
+                    .replace("{total}", "" + data.getAttribute(key))
+                    ;
         }
 
         /**
@@ -344,6 +358,25 @@ public class AttributeManager {
          */
         public int getMax() {
             return max;
+        }
+
+        // iomatix: base_cost and the modifier
+        /**
+         * Retrieves the starting cost of the attribute upgrade.
+         *
+         * @return cost_base amount
+         */
+        public int getCostBase(){
+            return cost_base;
+        }
+        /**
+         * Retrieves the raw additional cost of the attribute upgrade.
+         * It should be converted to int e.g. using (int) Math.floor function.
+         *
+         * @return cost_modifier
+         */
+        public double getCostMod(){
+            return cost_modifier;
         }
 
         /**
