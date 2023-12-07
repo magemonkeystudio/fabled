@@ -396,7 +396,7 @@ public class PlayerData {
         int max     = SkillAPI.getAttributeManager().getAttribute(key).getMax();
 
         // iomatix Logic behind: costBase+floor(current*costMod) -> is new cost so...
-        int cost = SkillAPI.getAttributeManager().getAttribute(key).getCostBase() + (int) Math.floor(current*SkillAPI.getAttributeManager().getAttribute(key).getCostMod());
+        int cost = getAttributeUpCost(key);
         // iomatix apply the new logic below:
         if (attribPoints >= cost && current < max) {
             attributes.put(key, current + 1);
@@ -413,7 +413,16 @@ public class PlayerData {
         }
         return false;
     }
-
+    /**
+     * Calculating cost using the formula:
+     * costBase + (int) Math.floor(investedAttrPoints*costModifier)
+     *
+     * @param key attribute key
+     * @return calculated cost of single attribute upgrade
+     */
+    public int getAttributeUpCost(String key){
+        return SkillAPI.getAttributeManager().getAttribute(key).getCostBase() + (int) Math.floor(getInvestedAttribute(key)*SkillAPI.getAttributeManager().getAttribute(key).getCostMod());
+    }
     /**
      * Gives the player attribute points without costing
      * attribute points.
