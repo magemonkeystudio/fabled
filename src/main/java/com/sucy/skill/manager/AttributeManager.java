@@ -323,8 +323,8 @@ public class AttributeManager {
         private String filter(PlayerData data, String text) {
             return text
                     .replace("{amount}", "" + data.getInvestedAttribute(key))
-                    .replace("{total}", "" + data.getAttribute(key))
-                    ;
+                    .replace("{total}", "" + data.getAttribute(key));
+
         }
 
         /**
