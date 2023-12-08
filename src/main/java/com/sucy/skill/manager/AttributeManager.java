@@ -322,10 +322,11 @@ public class AttributeManager {
          */
         private String filter(PlayerData data, String text) {
             return text
-                    .replace("{amount}", "" + data.getInvestedAttribute(key))
+                    .replace("{amount}", "" + data.getInvestedAttributeStage(key)) // iomatix: it's a stage now.
+                    .replace("{max}", "" + SkillAPI.getAttributeManager().getAttribute(key).getMax()) // iomatix: the limit, to verify: is it conflicting with skills' {max} ?
                     .replace("{total}", "" + data.getAttribute(key))
                     .replace("{cost}", "" + data.getAttributeUpCost(key))
-                    .replace("{invested}", "" + data.getInvestedAttribute(key));
+                    .replace("{invested}", "" + data.getInvestedAttribute(key)); // iomatix: it's an old {amount}
 
         }
 
