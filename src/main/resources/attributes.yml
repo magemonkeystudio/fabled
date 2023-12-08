@@ -91,8 +91,8 @@ intelligence:
 dexterity:
   display: 'Dexterity'
   max: 999
-  cost_base: 1     # base attr points cost (starting value)
-  cost_modifier: 0.0 # increase attr points cost by
+  cost_base: 1
+  cost_modifier: 0.0
   icon: 'ink sack'
   icon-data: 10
   icon-lore:
