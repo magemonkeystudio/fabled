@@ -35,8 +35,8 @@
 vitality:
   display: 'Vitality'
   max: 999
-  cost_base: 1     # base attr points cost (starting value)
-  cost_modifier: 0.0 # increase attr points cost by
+  cost_base: 1
+  cost_modifier: 0.0
   icon: 'ink sack'
   icon-data: 1
   icon-lore:
@@ -53,8 +53,8 @@ vitality:
 spirit:
   display: 'Spirit'
   max: 999
-  cost_base: 1     # base attr points cost (starting value)
-  cost_modifier: 0.0 # increase attr points cost by
+  cost_base: 1
+  cost_modifier: 0.0
   icon: 'ink sack'
   icon-data: 6
   icon-lore:
@@ -73,8 +73,8 @@ spirit:
 intelligence:
   display: 'Intelligence'
   max: 999
-  cost_base: 1     # base attr points cost (starting value)
-  cost_modifier: 0.0 # increase attr points cost by
+  cost_base: 1
+  cost_modifier: 0.0
   icon: 'ink sack'
   icon-data: 5
   icon-lore:
@@ -112,8 +112,8 @@ dexterity:
 strength:
   display: 'Strength'
   max: 999
-  cost_base: 1     # base attr points cost (starting value)
-  cost_modifier: 0.0 # increase attr points cost by
+  cost_base: 1
+  cost_modifier: 0.0
   icon: 'ink sack'
   icon-data: 14
   icon-lore:
