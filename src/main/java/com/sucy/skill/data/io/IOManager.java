@@ -260,14 +260,6 @@ public abstract class IOManager {
 
             acc.endInit();
 
-            // Load binds
-            DataSection binds = account.getSection(BINDS);
-            if (binds != null) {
-                for (String bindKey : binds.keys()) {
-                    acc.bind(Material.valueOf(bindKey), acc.getSkill(binds.getString(bindKey)));
-                }
-            }
-
             // Load persistent data
             DataSection persistent = account.getSection(PERSISTENT);
             if (persistent != null){

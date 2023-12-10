@@ -37,7 +37,7 @@ import org.bukkit.entity.Player;
  * Settings for playing a particle
  */
 public class ParticleSettings {
-    private static final String
+    public static final String
             PARTICLE_KEY     = "particle",
             MATERIAL_KEY     = "material",
             DURABILITY_KEY   = "durability",

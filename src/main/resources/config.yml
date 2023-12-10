@@ -280,6 +280,7 @@ GUI:
   #   exp_gained
   #   exp_lost
   #   status
+  #   combo
   title-messages:
   - level_up
   - exp_lost
@@ -627,7 +628,7 @@ Worlds:
 # Customize the scoreboard here
 scoreboard:
   enabled: true
-  title: '&6&l%sapi_default_currentgroupname%'
+  title: '&6&l%sapi_default_currentclassname%'
   format:
   - '&2Health &c%sapi_default_scurrenthealth%'
   - '&2%sapi_default_currentmananame% &b%sapi_default_scurrentmana%'

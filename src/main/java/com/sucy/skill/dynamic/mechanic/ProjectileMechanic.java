@@ -35,6 +35,9 @@ import com.sucy.skill.api.particle.target.EntityTarget;
 import com.sucy.skill.api.projectile.CustomProjectile;
 import com.sucy.skill.api.projectile.ParticleProjectile;
 import com.sucy.skill.api.projectile.ProjectileCallback;
+import com.sucy.skill.api.target.TargetHelper;
+import com.sucy.skill.api.util.Nearby;
+import com.sucy.skill.dynamic.DynamicSkill;
 import com.sucy.skill.dynamic.TempEntity;
 import com.sucy.skill.listener.MechanicListener;
 import com.sucy.skill.task.RemoveTask;
@@ -49,11 +52,9 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -71,18 +72,24 @@ public class ProjectileMechanic extends MechanicComponent {
     private static final String                                       ANGLE              = "angle";
     private static final String                                       HEIGHT             = "height";
     private static final String                                       RADIUS             = "rain-radius";
-    private static final String                                       LEVEL              = "skill_level";
     private static final String                                       FORWARD            = "forward";
     private static final String                                       UPWARD             = "upward";
     private static final String                                       RIGHT              = "right";
     private static final String                                       USE_EFFECT         = "use-effect";
     private static final String                                       EFFECT_KEY         = "effect-key";
+    public static final  String                                       HOMING             = "homing";
+    public static final  String                                       HOMING_TARGET      = "target";
+    public static final  String                                       HOMING_DIST        = "homing-distance";
+    public static final  String                                       REMEMBER           = "remember-key";
+    public static final  String                                       CORRECTION         = "correction";
+    public static final  String                                       WALL               = "wall";
     private static final HashMap<String, Class<? extends Projectile>> PROJECTILES        =
             new HashMap<String, Class<? extends Projectile>>() {{
                 put("arrow", Arrow.class);
                 put("egg", Egg.class);
                 put("ghast fireball", LargeFireball.class);
                 put("snowball", Snowball.class);
+                put("fishing hook", FishHook.class);
             }};
     private static final HashMap<String, Material>                    MATERIALS          =
             new HashMap<String, Material>() {{
@@ -160,93 +167,66 @@ public class ProjectileMechanic extends MechanicComponent {
         // Fire from each target
         List<Projectile> projectiles = new ArrayList<>();
         for (LivingEntity target : targets) {
+            Location location = target.getEyeLocation();
+            Vector offset = location.getDirection().setY(0).normalize();
+            offset.multiply(parseValues(caster, FORWARD, level, 0))
+                    .add(offset.clone().crossProduct(UP).multiply(parseValues(caster, RIGHT, level, 0)));
+            location.add(offset).add(0, parseValues(caster, UPWARD, level, 0), 0);
+
             // Apply the spread type
             if (spread.equals("rain")) {
-                double radius = parseValues(caster, RADIUS, level, 2.0);
-                double height = parseValues(caster, HEIGHT, level, 8.0);
-
-                ArrayList<Location> locs = CustomProjectile.calcRain(target.getLocation(), radius, height, amount);
-                for (Location loc : locs) {
+                Vector vel = new Vector(0, speed, 0);
+                for (Location loc : CustomProjectile.calcRain(
+                        location,
+                        parseValues(caster, RADIUS, level, 2.0),
+                        parseValues(caster, HEIGHT, level, 8.0),
+                        amount)) {
                     Projectile p = caster.launchProjectile(type);
-                    p.setTicksLived(1180);
-                    if (type.getName().contains("Arrow")) {
-                        try {
-                            // Will fail under 1.12
-                            try {
-                                //1.14+
-                                AbstractArrow arrow = (AbstractArrow) p;
-                                arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
-                            } catch (NoClassDefFoundError e) {
-                                //1.12+
-                                Arrow    arrow             = (Arrow) p;
-                                Class<?> pickupStatusClass = Class.forName("org.bukkit.Arrow$PickupStatus");
-                                Arrow.class.getMethod("setPickupStatus", pickupStatusClass)
-                                        .invoke(arrow,
-                                                pickupStatusClass.getMethod("valueOf", String.class)
-                                                        .invoke(null, "DISALLOWED"));
-                            }
-                        } catch (NoSuchMethodError | ClassNotFoundException | NoSuchMethodException |
-                                 IllegalAccessException | InvocationTargetException ignored) {
-                        }
-                    }
-                    p.setVelocity(new Vector(0, speed, 0));
                     p.teleport(loc);
-                    SkillAPI.setMeta(p, LEVEL, level);
-                    if (flaming) p.setFireTicks(Integer.MAX_VALUE);
+                    p.setVelocity(vel);
                     projectiles.add(p);
                 }
             } else {
-                Vector dir = target.getLocation().getDirection();
+                Vector dir = location.getDirection();
                 if (spread.equals("horizontal cone")) {
                     dir.setY(0);
                     dir.normalize();
                 }
-                double angle   = parseValues(caster, ANGLE, level, 30.0);
-                double right   = parseValues(caster, RIGHT, level, 0);
-                double upward  = parseValues(caster, UPWARD, level, 0);
-                double forward = parseValues(caster, FORWARD, level, 0);
-
-                Vector looking = target.getLocation().getDirection().setY(0).normalize();
-                Vector normal  = looking.clone().crossProduct(UP);
-                looking.multiply(forward).add(normal.multiply(right));
-
-                ArrayList<Vector> dirs = CustomProjectile.calcSpread(dir, angle, amount);
+                List<Vector> dirs = CustomProjectile.calcSpread(dir, parseValues(caster, ANGLE, level, 30.0), amount);
                 for (Vector d : dirs) {
                     Projectile p = caster.launchProjectile(type);
-                    //p.setTicksLived(1180);
-                    if (type.getName().contains("Arrow")) {
-                        try {
-                            // Will fail under 1.12
-                            try {
-                                //1.14+
-                                AbstractArrow arrow = (AbstractArrow) p;
-                                arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
-                            } catch (NoClassDefFoundError e) {
-                                //1.12+
-                                Arrow    arrow             = (Arrow) p;
-                                Class<?> pickupStatusClass = Class.forName("org.bukkit.Arrow$PickupStatus");
-                                Arrow.class.getMethod("setPickupStatus", pickupStatusClass)
-                                        .invoke(arrow,
-                                                pickupStatusClass.getMethod("valueOf", String.class)
-                                                        .invoke(null, "DISALLOWED"));
-                            }
-                        } catch (NoSuchMethodError | ClassNotFoundException | NoSuchMethodException |
-                                 IllegalAccessException | InvocationTargetException ignored) {
-                        }
-                    } else {
-                        p.teleport(target.getLocation()
-                                .add(looking)
-                                .add(0, upward + 0.5, 0)
-                                .add(p.getVelocity())
-                                .setDirection(d));
-                    }
+                    p.teleport(location);
                     p.setVelocity(d.multiply(speed));
-                    SkillAPI.setMeta(p, MechanicListener.P_CALL, this);
-                    SkillAPI.setMeta(p, LEVEL, level);
-                    if (flaming) p.setFireTicks(9999);
                     projectiles.add(p);
                 }
             }
+        }
+
+        for (Projectile p : projectiles) {
+            if (flaming) p.setFireTicks(Integer.MAX_VALUE);
+            if (type.getName().contains("Arrow")) {
+                p.setTicksLived(1180);
+                try {
+                    // Will fail under 1.12
+                    try {
+                        //1.14+
+                        AbstractArrow arrow = (AbstractArrow) p;
+                        arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+                    } catch (NoClassDefFoundError e) {
+                        //1.12+
+                        Arrow    arrow             = (Arrow) p;
+                        Class<?> pickupStatusClass = Class.forName("org.bukkit.Arrow$PickupStatus");
+                        Arrow.class.getMethod("setPickupStatus", pickupStatusClass)
+                                .invoke(arrow,
+                                        pickupStatusClass.getMethod("valueOf", String.class)
+                                                .invoke(null, "DISALLOWED"));
+                    }
+                } catch (NoSuchMethodError | ClassNotFoundException | NoSuchMethodException |
+                         IllegalAccessException | InvocationTargetException ignored) {
+                }
+            }
+            SkillAPI.setMeta(p, MechanicListener.SKILL_LEVEL, level);
+            SkillAPI.setMeta(p, MechanicListener.P_CALL, this);
         }
 
         if (settings.getBool(USE_EFFECT, false)) {
@@ -259,6 +239,46 @@ public class ProjectileMechanic extends MechanicComponent {
                         level,
                         true);
             }
+        }
+
+        if (settings.getBool(HOMING, false)) {
+            String target = settings.getString(HOMING_TARGET, "nearest");
+            Function<Projectile,LivingEntity> homing;
+            if (target.equalsIgnoreCase("remember target")) {
+                homing = (proj) -> {
+                    Object data = Objects.requireNonNull(DynamicSkill.getCastData((LivingEntity) proj.getShooter())).get(settings.getString(REMEMBER, "target"));
+                    if (data == null) return null;
+                    try {
+                        return ((List<LivingEntity>) data).stream()
+                                .filter(tar -> settings.getBool(WALL, false) || !TargetHelper.isObstructed(proj.getLocation(), tar.getEyeLocation()))
+                                .min(Comparator.comparingDouble(o -> o.getLocation().distanceSquared(proj.getLocation())))
+                                .orElse(null);
+                    } catch (ClassCastException e) {
+                        return null;
+                    }
+                };
+            } else {
+                homing = (proj) -> Nearby.getLivingNearby(proj.getLocation(), settings.getAttr(HOMING_DIST, 0, 20)).stream()
+                        .filter(tar -> {
+                            if (tar == proj.getShooter()) return false;
+                            return SkillAPI.getSettings().isValidTarget(tar);
+                        })
+                        .filter(tar -> settings.getBool(WALL, false) || !TargetHelper.isObstructed(proj.getLocation(), tar.getEyeLocation()))
+                        .min(Comparator.comparingDouble(o -> o.getLocation().distanceSquared(proj.getLocation())))
+                        .orElse(null);
+            }
+            double correction = settings.getAttr(CORRECTION, 0, 0.2);
+
+            new RepeatingEntityTask<>(projectiles, proj -> {
+                LivingEntity tar = homing.apply(proj);
+                if (tar != null) {
+                    Vector acceleration = tar.getBoundingBox().getCenter().subtract(proj.getBoundingBox().getCenter())
+                            .normalize().multiply(speed).subtract(proj.getVelocity());
+                    double length = acceleration.length();
+                    acceleration.multiply(1.0/length).multiply(Math.min(length, correction));
+                    proj.setVelocity(proj.getVelocity().add(acceleration));
+                }
+            });
         }
 
         new RepeatingEntityTask<>(projectiles, proj -> ParticleHelper.play(proj.getLocation(), settings));
@@ -274,7 +294,7 @@ public class ProjectileMechanic extends MechanicComponent {
             }
         };
 
-        return targets.size() > 0;
+        return !targets.isEmpty();
     }
 
     /**
@@ -291,7 +311,7 @@ public class ProjectileMechanic extends MechanicComponent {
             ArrayList<LivingEntity> targets = new ArrayList<>();
             targets.add(finalHit);
             executeChildren((LivingEntity) projectile.getShooter(),
-                    SkillAPI.getMetaInt(projectile, LEVEL),
+                    SkillAPI.getMetaInt(projectile, MechanicListener.SKILL_LEVEL),
                     targets,
                     skill.isForced((LivingEntity) projectile.getShooter()));
             SkillAPI.removeMeta(projectile, MechanicListener.P_CALL);
@@ -345,6 +365,12 @@ public class ProjectileMechanic extends MechanicComponent {
                 copy.set(ParticleProjectile.SPEED, parseValues(caster, ParticleProjectile.SPEED, level, 1), 0);
                 copy.set(ParticleHelper.POINTS_KEY, parseValues(caster, ParticleHelper.POINTS_KEY, level, 1), 0);
                 copy.set(ParticleHelper.RADIUS_KEY, parseValues(caster, ParticleHelper.RADIUS_KEY, level, 0), 0);
+                copy.set(ParticleProjectile.RADIUS, switch (type) {
+                    case "arrow", "spectral arrow", "trident" -> 0.25;
+                    case "dragon fireball", "fireball" -> 0.5;
+                    case "shulker bullet", "small fireball", "wither skull" -> 0.15625;
+                    default -> 0.125;
+                }, 0);
                 copy.set(ParticleProjectile.GRAVITY, gravity, 0);
                 copy.set(ParticleProjectile.DRAG, drag, 0);
                 copy.set(ParticleProjectile.PERIOD, preview.getInt("path-steps", 2));
@@ -361,36 +387,28 @@ public class ProjectileMechanic extends MechanicComponent {
                 List<ParticleProjectile> list = new ArrayList<>();
                 // Fire from each target
                 for (LivingEntity target : targetSupplier.get()) {
-                    Location loc = target.getLocation();
+                    Location location = target.getEyeLocation();
+                    Vector offset = location.getDirection().setY(0).normalize();
+                    offset.multiply(parseValues(caster, FORWARD, level, 0))
+                            .add(offset.clone().crossProduct(UP).multiply(parseValues(caster, RIGHT, level, 0)));
+                    location.add(offset).add(0, parseValues(caster, UPWARD, level, 0), 0);
 
                     // Apply the spread type
                     if (spread.equals("rain")) {
-                        double radius = parseValues(caster, RADIUS, level, 2.0);
-                        double height = parseValues(caster, HEIGHT, level, 8.0);
-                        list.addAll(ParticleProjectile.rain(caster, level, loc, copy, radius, height, amount, callback, lifespan));
+                        list.addAll(ParticleProjectile.rain(caster, level, location, copy, parseValues(caster, RADIUS, level, 2.0), parseValues(caster, HEIGHT, level, 8.0), amount, callback, lifespan));
                     } else {
-                        Vector dir = target.getLocation().getDirection();
-
-                        double right   = parseValues(caster, RIGHT, level, 0);
-                        double upward  = parseValues(caster, UPWARD, level, 0);
-                        double forward = parseValues(caster, FORWARD, level, 0);
-
-                        Vector looking = dir.clone().setY(0).normalize();
-                        Vector normal  = looking.clone().crossProduct(UP);
-                        looking.multiply(forward).add(normal.multiply(right));
-
+                        Vector dir = location.getDirection();
                         if (spread.equals("horizontal cone")) {
                             dir.setY(0);
                             dir.normalize();
                         }
-                        double angle = parseValues(caster, ANGLE, level, 30.0);
                         list.addAll(ParticleProjectile.spread(
                                 caster,
                                 level,
                                 dir,
-                                type.contains("arrow") ? target.getEyeLocation() : loc.add(looking).add(0, upward + 0.5, 0),
+                                location,
                                 copy,
-                                angle,
+                                parseValues(caster, ANGLE, level, 30.0),
                                 amount,
                                 callback,
                                 lifespan
@@ -398,13 +416,13 @@ public class ProjectileMechanic extends MechanicComponent {
                     }
 
                     for (ParticleProjectile p : list) {
-                        SkillAPI.setMeta(p, LEVEL, level);
+                        SkillAPI.setMeta(p, MechanicListener.SKILL_LEVEL, level);
                         p.setAllyEnemy(true, true);
                     }
 
                     Consumer<Location> onStep = preview.getBool("path")
-                            ? location -> new ParticleSettings(preview, "path-").instance(caster, location.getX(), location.getY(), location.getZ())
-                            : location -> {};
+                            ? loc -> new ParticleSettings(preview, "path-").instance(caster, loc.getX(), loc.getY(), loc.getZ())
+                            : loc -> {};
                     for (ParticleProjectile p : list) p.setOnStep(onStep);
 
                     for (ParticleProjectile p : list) {

@@ -27,8 +27,10 @@
 package com.sucy.skill.api.util;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.util.BoundingBox;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -79,6 +81,14 @@ public class Nearby {
         return getLivingNearby(null, loc, radius, includeCaster);
     }
 
+    public static List<LivingEntity> getLivingNearby(World world, BoundingBox boundingBox) {
+        return getLivingNearby(null, world, boundingBox, false);
+    }
+
+    public static List<LivingEntity> getLivingNearby(World world, BoundingBox boundingBox, boolean includeCaster) {
+        return getLivingNearby(null, world, boundingBox, includeCaster);
+    }
+
     private static List<LivingEntity> getLivingNearby(Entity source,
                                                       Location loc,
                                                       double radius,
@@ -92,16 +102,47 @@ public class Nearby {
         int maxZ = (int) (loc.getZ() + radius) >> 4;
 
         radius *= radius;
+        World world = Objects.requireNonNull(loc.getWorld());
 
         for (int i = minX; i <= maxX; i++)
             for (int j = minZ; j <= maxZ; j++)
-                for (Entity entity : loc.getWorld().getChunkAt(i, j).getEntities())
+                for (Entity entity : world.getChunkAt(i, j).getEntities())
                     if ((includeCaster || entity != source)
                             && entity instanceof LivingEntity
                             && entity.getWorld() == loc.getWorld()
                             && entity.getLocation().distanceSquared(loc) < radius) {
                         result.add((LivingEntity) entity);
-                        distances.put(entity.getUniqueId(), entity.getLocation().distance(loc));
+                        distances.put(entity.getUniqueId(), entity.getLocation().distanceSquared(loc));
+                    }
+
+        return result.stream().sorted(
+                Comparator.comparingDouble(entity -> distances.get(entity.getUniqueId()))
+        ).collect(Collectors.toList());
+    }
+
+    private static List<LivingEntity> getLivingNearby(Entity source,
+                                                      World world,
+                                                      BoundingBox boundingBox,
+                                                      boolean includeCaster) {
+        List<LivingEntity> result    = new ArrayList<>();
+        Map<UUID, Double>  distances = new HashMap<>();
+
+        int minX = (int) (boundingBox.getMinX()) >> 4;
+        int maxX = (int) (boundingBox.getMaxX()) >> 4;
+        int minZ = (int) (boundingBox.getMinZ()) >> 4;
+        int maxZ = (int) (boundingBox.getMaxZ()) >> 4;
+
+        Location loc = boundingBox.getCenter().toLocation(world);
+
+        for (int i = minX; i <= maxX; i++)
+            for (int j = minZ; j <= maxZ; j++)
+                for (Entity entity : world.getChunkAt(i, j).getEntities())
+                    if ((includeCaster || entity != source)
+                            && entity instanceof LivingEntity
+                            && entity.getWorld() == world
+                            && entity.getBoundingBox().overlaps(boundingBox)) {
+                        result.add((LivingEntity) entity);
+                        distances.put(entity.getUniqueId(), entity.getLocation().distanceSquared(loc));
                     }
 
         return result.stream().sorted(

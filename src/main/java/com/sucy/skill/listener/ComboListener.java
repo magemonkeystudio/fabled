@@ -28,8 +28,13 @@ package com.sucy.skill.listener;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.event.KeyPressEvent;
+import com.sucy.skill.api.event.PlayerComboStepEvent;
 import com.sucy.skill.api.player.PlayerCombos;
 import com.sucy.skill.data.Click;
+import com.sucy.skill.data.TitleType;
+import com.sucy.skill.language.RPGFilter;
+import com.sucy.skill.manager.ComboManager;
+import com.sucy.skill.manager.TitleManager;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.*;
@@ -137,6 +142,20 @@ public class ComboListener extends SkillAPIListener {
 
         if (SkillAPI.getComboManager().isClickEnabled(Click.F.getId())) {
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onComboStep(PlayerComboStepEvent event) {
+        if (SkillAPI.getSettings().useTitle(TitleType.COMBO)) {
+            PlayerCombos playerCombos = event.getPlayerCombos();
+
+            TitleManager.show(
+                    playerCombos.getPlayerData().getPlayer(),
+                    TitleType.COMBO,
+                    ComboManager.DISPLAY_KEY,
+                    RPGFilter.COMBO.setReplacement(playerCombos.getCurrentComboString())
+            );
         }
     }
 

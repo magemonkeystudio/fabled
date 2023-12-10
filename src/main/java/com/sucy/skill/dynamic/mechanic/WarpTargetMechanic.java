@@ -52,7 +52,7 @@ public class WarpTargetMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0) {
+        if (targets.isEmpty()) {
             return false;
         }
 
@@ -64,6 +64,6 @@ public class WarpTargetMechanic extends MechanicComponent {
                 caster.teleport(target);
             }
         }
-        return targets.size() > 0;
+        return !targets.isEmpty();
     }
 }

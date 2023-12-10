@@ -1,0 +1,117 @@
+title: "%item% &2skill binding"
+rows: 6
+items:
+  empty:
+    display-name: ""
+    lore: []
+    material: "air"
+    amount: 1
+    custom-model-data: 0
+  clear:
+    display-name: "&cClear"
+    lore: []
+    material: "barrier"
+    amount: 1
+    custom-model-data: 0
+  bound-title:
+    display-name: "&3Bound Skills"
+    lore: []
+    material: "enchanted_book"
+    amount: 1
+    custom-model-data: 0
+  bound-prev-page:
+    display-name: "&3Previous Bound Page"
+    lore: []
+    material: "player_head"
+    skull-texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWE0YTliNzBhMjVhMjdkODE4OWU2MGQyN2VhOGNjOTYzMmMzNmI0NjkyODE1NWRlNzc1NWYzNjZlZjA0Yzg3NyJ9fX0="
+    amount: 1
+    custom-model-data: 0
+  bound-next-page:
+    display-name: "&3Next Bound Page"
+    lore: []
+    material: "player_head"
+    skull-texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTkxNTJjMmU5MWY0NzA0ODViZTIyMmRiNWQyYTg5NWNhZGM5MDMzMjZmNWM2NzFiZjhhNTU5MTQ5NjczYmU4MCJ9fX0="
+    amount: 1
+    custom-model-data: 0
+  bound:
+    display-name: "%display-name%"
+    lore:
+      - "&6Left-Click: &eMove left"
+      - "&6Right-Click: &eMove right"
+      - "&6Drop: &cUnbind"
+      - "%lore%"
+    material: "jack_o_lantern"
+    amount: "%level%"
+    custom-model-data: "%custom-model-data%"
+  not-bound-title:
+    display-name: "&3Not Bound Skills"
+    lore: []
+    material: "book"
+    amount: 1
+    custom-model-data: 0
+  not-bound-prev-page:
+    display-name: "&3Previous Not Bound Page"
+    lore: []
+    material: "player_head"
+    skull-texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWE0YTliNzBhMjVhMjdkODE4OWU2MGQyN2VhOGNjOTYzMmMzNmI0NjkyODE1NWRlNzc1NWYzNjZlZjA0Yzg3NyJ9fX0="
+    amount: 1
+    custom-model-data: 0
+  not-bound-next-page:
+    display-name: "&3Next Not Bound Page"
+    lore: []
+    material: "player_head"
+    skull-texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTkxNTJjMmU5MWY0NzA0ODViZTIyMmRiNWQyYTg5NWNhZGM5MDMzMjZmNWM2NzFiZjhhNTU5MTQ5NjczYmU4MCJ9fX0="
+    amount: 1
+    custom-model-data: 0
+  not-bound:
+    display-name: "%display-name%"
+    lore:
+      - "&6Left-Click: &eBind"
+      - "%lore%"
+    material: "jack_o_lantern"
+    amount: "%level%"
+    custom-model-data: "%custom-model-data%"
+slots:
+  0: "bound-prev-page"
+  1: "clear"
+  4: "bound-title"
+  8: "bound-next-page"
+  9: "bound"
+  10: "bound"
+  11: "bound"
+  12: "bound"
+  13: "bound"
+  14: "bound"
+  15: "bound"
+  16: "bound"
+  17: "bound"
+  18: "bound"
+  19: "bound"
+  20: "bound"
+  21: "bound"
+  22: "bound"
+  23: "bound"
+  24: "bound"
+  25: "bound"
+  26: "bound"
+  27: "not-bound-prev-page"
+  31: "not-bound-title"
+  35: "not-bound-next-page"
+  36: "not-bound"
+  37: "not-bound"
+  38: "not-bound"
+  39: "not-bound"
+  40: "not-bound"
+  41: "not-bound"
+  42: "not-bound"
+  43: "not-bound"
+  44: "not-bound"
+  45: "not-bound"
+  46: "not-bound"
+  47: "not-bound"
+  48: "not-bound"
+  49: "not-bound"
+  50: "not-bound"
+  51: "not-bound"
+  52: "not-bound"
+  53: "not-bound"

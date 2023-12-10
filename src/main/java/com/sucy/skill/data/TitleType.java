@@ -35,4 +35,5 @@ public enum TitleType {
     LEVEL_UP,
     LEVEL_DOWN,
     STATUS,
+    COMBO,
 }

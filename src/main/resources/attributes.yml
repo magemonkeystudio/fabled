@@ -27,9 +27,16 @@
 
 #   skill-damage-<classification>  | [PREM] The amount of damage done by skills with the specified classification
 #   skill-defense-<classification> | [PREM] The amount of damage taken by skills with the specified classification
+
+# iomatix proposes
+# 1. optional increase of attribute price in attr points
+#   so we'd need 2 more variables: cost_base (starting value) and cost_modifier (increases cost by floor((double)))
+
 vitality:
   display: 'Vitality'
   max: 999
+  cost_base: 1     # base attr points cost (starting value)
+  cost_modifier: 0.0 # increase attr points cost by
   icon: 'ink sack'
   icon-data: 1
   icon-lore:
@@ -46,6 +53,8 @@ vitality:
 spirit:
   display: 'Spirit'
   max: 999
+  cost_base: 1     # base attr points cost (starting value)
+  cost_modifier: 0.0 # increase attr points cost by
   icon: 'ink sack'
   icon-data: 6
   icon-lore:
@@ -64,6 +73,8 @@ spirit:
 intelligence:
   display: 'Intelligence'
   max: 999
+  cost_base: 1     # base attr points cost (starting value)
+  cost_modifier: 0.0 # increase attr points cost by
   icon: 'ink sack'
   icon-data: 5
   icon-lore:
@@ -80,6 +91,8 @@ intelligence:
 dexterity:
   display: 'Dexterity'
   max: 999
+  cost_base: 1     # base attr points cost (starting value)
+  cost_modifier: 0.0 # increase attr points cost by
   icon: 'ink sack'
   icon-data: 10
   icon-lore:
@@ -99,6 +112,8 @@ dexterity:
 strength:
   display: 'Strength'
   max: 999
+  cost_base: 1     # base attr points cost (starting value)
+  cost_modifier: 0.0 # increase attr points cost by
   icon: 'ink sack'
   icon-data: 14
   icon-lore:
