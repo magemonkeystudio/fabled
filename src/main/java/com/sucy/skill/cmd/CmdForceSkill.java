@@ -33,13 +33,21 @@ import mc.promcteam.engine.mccore.commands.ConfigurableCommand;
 import mc.promcteam.engine.mccore.commands.IFunction;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Command to forcefully modify a skill's level
  */
-public class CmdForceSkill implements IFunction {
+public class CmdForceSkill implements IFunction, TabCompleter {
     private static final String NOT_PLAYER   = "not-player";
     private static final String NOT_SKILL    = "not-skill";
     private static final String NOT_FUNCTION = "not-function";
@@ -99,5 +107,22 @@ public class CmdForceSkill implements IFunction {
             } else
                 command.sendMessage(sender, NOT_FUNCTION, "&4That is not a valid function. Use up, down, or reset.");
         }
+    }
+
+    @Override
+    @Nullable
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        if (args.length == 1) {
+            return ConfigurableCommand.getPlayerTabCompletions(commandSender, args[0]);
+        } else if (args.length == 2) {
+            return ConfigurableCommand.getTabCompletions(List.of("up", "down", "reset"), new String[]{args[1]});
+        } else if (args.length > 2) {
+            PlayerData playerData = SkillAPI.getPlayerData(Bukkit.getPlayer(args[0]));
+            if (playerData == null) return null;
+            return ConfigurableCommand.getTabCompletions(playerData.getSkills().stream()
+                    .map(playerSkill -> playerSkill.getData().getName())
+                    .collect(Collectors.toList()), Arrays.copyOfRange(args, 2, args.length));
+        }
+        return null;
     }
 }

@@ -35,18 +35,23 @@ import com.sucy.skill.listener.BindListener;
 import mc.promcteam.engine.mccore.commands.ConfigurableCommand;
 import mc.promcteam.engine.mccore.commands.IFunction;
 import mc.promcteam.engine.mccore.util.TextFormatter;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Command to bind a skill to an item
  */
-public class CmdBind implements IFunction {
+public class CmdBind implements IFunction, TabCompleter {
     private static final String NOT_PLAYER   = "not-player";
     private static final String NOT_SKILL    = "not-skill";
     private static final String NOT_UNLOCKED = "not-unlocked";
@@ -111,5 +116,14 @@ public class CmdBind implements IFunction {
         } else {
             new BindingMenu(player, item).open();
         }
+    }
+
+    @Override
+    @Nullable
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        if (!(commandSender instanceof Player)) return null;
+        return ConfigurableCommand.getTabCompletions(SkillAPI.getPlayerData((Player) commandSender).getSkills().stream()
+                .map(playerSkill -> playerSkill.getData().getName())
+                .collect(Collectors.toList()), args);
     }
 }

@@ -16,15 +16,24 @@ import mc.promcteam.engine.mccore.commands.IFunction;
 import mc.promcteam.engine.mccore.config.Filter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * ProSkillAPI © 2023
  * com.sucy.skill.cmd.CmdChangeClass
  */
-public class CmdChangeClass implements IFunction {
+public class CmdChangeClass implements IFunction, TabCompleter {
     private static final String INVALID_GROUP  = "invalid-group";
     private static final String INVALID_PLAYER = "invalid-player";
     private static final String INVALID_TARGET = "invalid-class";
@@ -121,5 +130,34 @@ public class CmdChangeClass implements IFunction {
         } else {
             cmd.displayHelp(sender);
         }
+    }
+
+    @Override
+    @Nullable
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        if (args.length == 1) {
+            return ConfigurableCommand.getPlayerTabCompletions(commandSender, args[0]);
+        } else if (args.length > 1) {
+            String[] group = Arrays.copyOfRange(args, 1, 2);
+            int i = 3;
+            while (i <= args.length) {
+                String[] concat = Arrays.copyOfRange(args, 1, i);
+                String g = String.join(" ", concat);
+                if (SkillAPI.getGroups().stream().noneMatch(g1 -> StringUtil.startsWithIgnoreCase(g1, g))) {
+                    // Assume latest concatenation was right, let's do the class
+                    String finalGroup = String.join(" ", group);
+                    return ConfigurableCommand.getTabCompletions(SkillAPI.getClasses().values().stream()
+                            .filter(rpgClass -> rpgClass.getGroup().equalsIgnoreCase(finalGroup))
+                            .map(RPGClass::getName)
+                            .collect(Collectors.toList()), Arrays.copyOfRange(args, i-1, args.length));
+                }
+                group = concat;
+                i++;
+            }
+
+            // There's still valid groups available, let's suggest those
+            return ConfigurableCommand.getTabCompletions(SkillAPI.getGroups(), group);
+        }
+        return null;
     }
 }

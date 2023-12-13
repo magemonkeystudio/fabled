@@ -36,14 +36,20 @@ import mc.promcteam.engine.mccore.config.Filter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * A command that gives a player class experience
  */
-public class CmdAP implements IFunction {
+public class CmdAP implements IFunction, TabCompleter {
     private static final String NOT_PLAYER   = "not-player";
     private static final String NOT_NUMBER   = "not-number";
     private static final String NOT_POSITIVE = "not-positive";
@@ -112,5 +118,14 @@ public class CmdAP implements IFunction {
         else {
             CommandManager.displayUsage(cmd, sender);
         }
+    }
+
+    @Override
+    @Nullable
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        if (args.length == 1) {
+            return ConfigurableCommand.getPlayerTabCompletions(commandSender, args[0]);
+        }
+        return null;
     }
 }

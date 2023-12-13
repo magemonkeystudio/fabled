@@ -40,16 +40,22 @@ import mc.promcteam.engine.mccore.config.parse.NumberParser;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
  * A command that gives a player class levels
  */
-public class CmdLevel implements IFunction {
+public class CmdLevel implements IFunction, TabCompleter {
     private static final Pattern IS_NUMBER = Pattern.compile("-?[0-9]+");
     private static final Pattern IS_BOOL   = Pattern.compile("(true)|(false)");
 
@@ -164,5 +170,18 @@ public class CmdLevel implements IFunction {
         else {
             CommandManager.displayUsage(cmd, sender);
         }
+    }
+
+    @Override
+    @Nullable
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        if (args.length == 1) {
+            return ConfigurableCommand.getPlayerTabCompletions(commandSender, args[0]);
+        } else if (args.length > 1 && !args[1].isBlank()) {
+            int i = CmdExp.IS_NUMBER.matcher(args[1]).matches() ? 2 : 1;
+            if (i >= args.length) return null;
+            return ConfigurableCommand.getTabCompletions(SkillAPI.getGroups(), Arrays.copyOfRange(args, i, args.length));
+        }
+        return null;
     }
 }

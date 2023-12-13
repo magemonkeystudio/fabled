@@ -37,14 +37,20 @@ import mc.promcteam.engine.mccore.util.TextFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * A command that displays a player's current class information
  */
-public class CmdInfo implements IFunction {
+public class CmdInfo implements IFunction, TabCompleter {
     private static final String NEEDS_ARGS = "needs-player";
     private static final String TITLE      = "title";
     private static final String CATEGORY   = "category";
@@ -128,5 +134,14 @@ public class CmdInfo implements IFunction {
         else {
             cmd.sendMessage(sender, NEEDS_ARGS, ChatColor.RED + "A player name is required from the console");
         }
+    }
+
+    @Override
+    @Nullable
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        if (args.length == 1) {
+            return ConfigurableCommand.getPlayerTabCompletions(commandSender, args[0]);
+        }
+        return null;
     }
 }
