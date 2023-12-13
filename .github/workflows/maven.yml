@@ -1,8 +1,18 @@
-name: Build Artifacts
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Java CI with Maven
 
 on:
+  push:
+    branches: [ "main" ]
   pull_request:
-    branches: [ main, dev ]
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -12,20 +22,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 17
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
+          java-version: '17'
           distribution: 'zulu'
-          java-version: 17
-          server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
-          settings-path: ${{ github.workspace }} # location for the settings.xml file
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
-      - name: 'Create settings.xml'
-        uses: s4u/maven-settings-action@v2.8.0
-        with:
-          githubServer: false
-          servers: '[{"id": "promcteam", "username": "Travja", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
+          cache: maven
       - name: Build with Maven
-        run: mvn clean package -e
-        env:
-          GITHUB_TOKEN_REF: ${{ secrets.GH_PAT_FOR_ACTIONS_TOKEN }}
+        run: mvn -B package --file pom.xml
+
+      # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
+      - name: Update dependency graph
+        uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
