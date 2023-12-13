@@ -44,7 +44,6 @@
             <version>4.8.0</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
