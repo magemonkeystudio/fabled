@@ -35,14 +35,20 @@ import mc.promcteam.engine.mccore.config.parse.NumberParser;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * Command to clear all bound skills
  */
-public class CmdForceReset implements IFunction {
+public class CmdForceReset implements IFunction, TabCompleter {
     private static final String NOT_PLAYER  = "not-player";
     private static final String NOT_ACCOUNT = "not-account";
     private static final String RESET       = "account-reset";
@@ -95,5 +101,14 @@ public class CmdForceReset implements IFunction {
 
             command.sendMessage(sender, NOT_ACCOUNT, ChatColor.RED + "That is not a valid account ID");
         }
+    }
+
+    @Override
+    @Nullable
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        if (args.length == 1) {
+            return ConfigurableCommand.getPlayerTabCompletions(commandSender, args[0]);
+        }
+        return null;
     }
 }

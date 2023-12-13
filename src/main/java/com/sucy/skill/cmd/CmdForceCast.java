@@ -34,17 +34,24 @@ import mc.promcteam.engine.mccore.commands.ConfigurableCommand;
 import mc.promcteam.engine.mccore.commands.IFunction;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * A command that makes a player cast a skill regardless
  * of them owning it or not and also ignores cooldown/mana costs.
  */
-public class CmdForceCast implements IFunction {
+public class CmdForceCast implements IFunction, TabCompleter {
     private static final Pattern INTEGER = Pattern.compile("-?[0-9]+");
 
     private static final String NOT_PLAYER    = "not-player";
@@ -98,5 +105,19 @@ public class CmdForceCast implements IFunction {
                         ChatColor.RED + "Skills must be skill shot skills or dynamic skills to be cast this way.");
             }
         }
+    }
+
+    @Override
+    @Nullable
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        if (args.length == 1) {
+            return ConfigurableCommand.getPlayerTabCompletions(commandSender, args[0]);
+        } else if (args.length > 1) {
+            return ConfigurableCommand.getTabCompletions(SkillAPI.getSkills().values().stream()
+                    .filter(skill -> skill instanceof SkillShot)
+                    .map(Skill::getKey)
+                    .collect(Collectors.toList()), Arrays.copyOfRange(args, 1, args.length));
+        }
+        return null;
     }
 }

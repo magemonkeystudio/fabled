@@ -34,13 +34,19 @@ import com.sucy.skill.api.player.PlayerData;
 import mc.promcteam.engine.mccore.commands.ConfigurableCommand;
 import mc.promcteam.engine.mccore.commands.IFunction;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-public class CmdSwitch implements IFunction {
+public class CmdSwitch implements IFunction, TabCompleter {
 
     private static final String NOT_PLAYER = "not-player";
     private static final String NOT_CLASS  = "not-class";
@@ -109,5 +115,16 @@ public class CmdSwitch implements IFunction {
         while (rpgClass.getParent() != null)
             rpgClass = rpgClass.getParent();
         return rpgClass;
+    }
+
+    @Override
+    @Nullable
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if (sender instanceof Player) {
+            return ConfigurableCommand.getTabCompletions(SkillAPI.getClasses().values().stream()
+                    .map(RPGClass::getName)
+                    .collect(Collectors.toList()), args);
+        }
+        return null;
     }
 }

@@ -32,11 +32,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.generator.WorldInfo;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class CmdWorld implements IFunction {
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class CmdWorld implements IFunction, TabCompleter {
 
     private static final String PLAYER_ONLY = "must-be-player";
 
@@ -63,5 +71,13 @@ public class CmdWorld implements IFunction {
         }
 
         ((Player) sender).teleport(world.getSpawnLocation());
+    }
+
+    @Override
+    @Nullable
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        return ConfigurableCommand.getTabCompletions(Bukkit.getWorlds().stream()
+                .map(WorldInfo::getName)
+                .collect(Collectors.toList()), args);
     }
 }

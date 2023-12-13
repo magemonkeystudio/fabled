@@ -29,6 +29,7 @@ package com.sucy.skill.cmd;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.player.PlayerData;
+import com.sucy.skill.data.Click;
 import com.sucy.skill.language.RPGFilter;
 import mc.promcteam.engine.mccore.commands.CommandManager;
 import mc.promcteam.engine.mccore.commands.ConfigurableCommand;
@@ -37,17 +38,23 @@ import mc.promcteam.engine.mccore.config.Filter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * A command that allows a player to profess through classes
  */
-public class CmdForceProfess implements IFunction {
+public class CmdForceProfess implements IFunction, TabCompleter {
     private static final String NOT_PLAYER     = "not-player";
     private static final String CANNOT_USE     = "cannot-use";
     private static final String INVALID_CLASS  = "invalid-class";
@@ -116,5 +123,29 @@ public class CmdForceProfess implements IFunction {
                 cmd.sendMessage(sender, CANNOT_PROFESS, ChatColor.RED + "They cannot profess to this class currently");
             }
         }
+    }
+
+    @Override
+    @Nullable
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        if (args.length == 1) {
+            return ConfigurableCommand.getPlayerTabCompletions(commandSender, args[0]);
+        } else if (args.length >= 2) {
+            // Tab-complete skill until nothing matches
+            List<String> tabCompletions = ConfigurableCommand.getTabCompletions(SkillAPI.getClasses().keySet(), Arrays.copyOfRange(args, 1, args.length));
+            if (!tabCompletions.isEmpty()) return tabCompletions;
+
+            // Then tab-complete hyphen args
+            List<String> hyphenArgs = new ArrayList<>();
+            hyphenArgs.add("-s");
+            int i = 1 + (Click.getByName(args[args.length-1]) == null ? 1 : 0);
+            while (args.length > i) {
+                if (!hyphenArgs.remove(args[args.length-i])) break;
+                i++;
+            }
+
+            return ConfigurableCommand.getTabCompletions(hyphenArgs, new String[]{args[args.length-1]});
+        }
+        return null;
     }
 }

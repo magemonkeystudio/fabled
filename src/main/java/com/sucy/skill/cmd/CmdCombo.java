@@ -29,19 +29,28 @@ package com.sucy.skill.cmd;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkill;
+import com.sucy.skill.api.skills.SkillShot;
 import com.sucy.skill.data.Click;
 import com.sucy.skill.language.RPGFilter;
 import mc.promcteam.engine.mccore.commands.CommandManager;
 import mc.promcteam.engine.mccore.commands.ConfigurableCommand;
 import mc.promcteam.engine.mccore.commands.IFunction;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Command to bind a skill to an item
  */
-public class CmdCombo implements IFunction {
+public class CmdCombo implements IFunction, TabCompleter {
     private static final String NOT_PLAYER   = "not-player";
     private static final String NOT_SKILL    = "not-skill";
     private static final String NOT_CASTABLE = "not-unlocked";
@@ -111,5 +120,32 @@ public class CmdCombo implements IFunction {
         } else {
             CommandManager.displayUsage(command, sender);
         }
+    }
+
+    @Override
+    @Nullable
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        if (!(commandSender instanceof Player)) return null;
+        Player player = (Player) commandSender;
+
+        // Tab-complete skill until nothing matches
+        List<String> tabCompletions = ConfigurableCommand.getTabCompletions(SkillAPI.getPlayerData(player).getSkills().stream()
+                .filter(playerSkill -> playerSkill.getData() instanceof SkillShot)
+                .map(playerSkill -> playerSkill.getData().getKey())
+                .collect(Collectors.toList()), args);
+        if (!tabCompletions.isEmpty() || args.length < 1) return tabCompletions;
+
+        // Then tab-complete skill until the correct amount of valid keys is there
+        int comboSize = SkillAPI.getComboManager().getComboSize();
+        int diff = Click.getByName(args[args.length-1]) == null ? 1 : 0;
+        for (int i = 1+diff; i <= comboSize+diff; i++) {
+            if (args.length < i || Click.getByName(args[args.length-i]) == null) {
+                // Prompt another Click
+                return ConfigurableCommand.getTabCompletions(Arrays.stream(Click.values())
+                        .map(click -> click.name().toLowerCase())
+                        .collect(Collectors.toList()), new String[]{args[args.length-1]});
+            }
+        }
+        return null;
     }
 }
