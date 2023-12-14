@@ -14,6 +14,7 @@
     <artifactId>proskillapi</artifactId>
     <version>1.1.13-R0.13-SNAPSHOT</version>
 
+
     <name>ProSkillAPI</name>
     <description>A Minecraft Bukkit plugin aiming to provide an easy code API and skill editor for all server owners to
         create unique and fully custom classes and skills.
@@ -23,7 +24,7 @@
     </url>
 
     <properties>
-        <promccore.version>1.1.0-R0.5-SNAPSHOT</promccore.version>
+        <promccore.version>1.1.1-R0.1-SNAPSHOT</promccore.version>
     </properties>
 
     <repositories>
@@ -194,11 +195,16 @@
             <organization>ProMCTeam</organization>
             <organizationUrl>https://promcteam.com</organizationUrl>
         </developer>
+        <developer>
+            <name>iomatix</name>
+            <organization>iomatix</organization>
+            <organizationUrl>https://github.com/iomatix</organizationUrl>
+        </developer>
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/promcteam/${project.artifactId}.git</connection>
-        <developerConnection>scm:git:ssh://github.com:promcteam/${project.artifactId}.git</developerConnection>
-        <url>https://github.com/promcteam/${project.artifactId}</url>
+        <connection>scm:git:git://github.com/iomatix/${project.artifactId}.git</connection>
+        <developerConnection>scm:git:ssh://github.com:iomatix/${project.artifactId}.git</developerConnection>
+        <url>https://github.com/iomatix/${project.artifactId}</url>
     </scm>
 </project>
