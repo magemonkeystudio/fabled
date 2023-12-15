@@ -71,6 +71,7 @@ public abstract class IOManager {
             UNASSIGNED     = "e",
             COMBOS         = "combos",
             ATTRIBS        = "attribs",
+            ATTRSTAGES        = "attrstages",
             COOLDOWN       = "cd",
             HUNGER         = "hunger",
             ATTRIB_POINTS  = "attrib-points";
@@ -232,9 +233,16 @@ public abstract class IOManager {
             if (SkillAPI.getSettings().isAttributesEnabled()) {
                 acc.setAttribPoints(account.getInt(ATTRIB_POINTS, 0));
                 DataSection attribs = account.getSection(ATTRIBS);
+                DataSection attrstages = account.getSection(ATTRSTAGES);
                 if (attribs != null) {
                     for (String key : attribs.keys()) {
                         acc.getAttributeData().put(key, attribs.getInt(key));
+                    }
+                }
+                // iomatix: load attrUpStages
+                if (attrstages != null) {
+                    for (String key : attrstages.keys()) {
+                        acc.getAttributeStageData().put(key, attrstages.getInt(key));
                     }
                 }
             }
@@ -351,8 +359,13 @@ public abstract class IOManager {
                 if (SkillAPI.getSettings().isAttributesEnabled()) {
                     account.set(ATTRIB_POINTS, acc.getAttributePoints());
                     DataSection attribs = account.createSection(ATTRIBS);
+                    DataSection attrstages = account.createSection(ATTRSTAGES);
                     for (String key : acc.getAttributeData().keySet()) {
                         attribs.set(key, acc.getAttributeData().get(key));
+                    }
+                    // iomatix Save attrUpStages
+                    for (String key : acc.getAttributeStageData().keySet()){
+                        attrstages.set(key, acc.getAttributeStageData().get(key));
                     }
                 }
 

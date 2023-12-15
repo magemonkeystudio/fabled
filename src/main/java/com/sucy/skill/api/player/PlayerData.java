@@ -84,7 +84,7 @@ import java.util.Map.Entry;
  * yourself and instead get it from the SkillAPI static methods.
  * <p>
  * In order to get a player's data, use "SkillAPI.getPlayerData(...)". Do NOT
- * try to instantaite your own PlayerData object.
+ * try to instantiate your own PlayerData object.
  */
 public class PlayerData {
     public final  HashMap<String, Integer>                       attributes          = new HashMap<>(); // iomatix: It's an attr total like described
@@ -104,6 +104,7 @@ public class PlayerData {
     private final PlayerCombos          combos;
     private final PlayerEquips          equips;
     private final List<UUID>            onCooldown = new ArrayList<>();
+
     public        int                   attribPoints;
     private       String                scheme;
     private       String                menuClass;
@@ -341,6 +342,7 @@ public class PlayerData {
         // Attribute points comes with class level
         for (PlayerClass playerClass : this.classes.values()) {
             total += playerClass.getData().getAttribute(key, playerClass.getLevel());
+
         }
 
         // Attribute points come with invested attributes
