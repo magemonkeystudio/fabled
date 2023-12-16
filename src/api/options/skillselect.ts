@@ -6,7 +6,7 @@ import SkillSelectOption        from '$components/options/SkillSelectOption.svel
 import ProSkill                 from '$api/proskill';
 
 export default class SkillSelect extends Requirements implements ComponentOption {
-	component: typeof SvelteComponent               = SkillSelectOption;
+	component: typeof SvelteComponent<any>               = SkillSelectOption;
 	name: string;
 	key: string;
 	data: ProSkill[] | string[] | ProSkill | string = [];

@@ -5,7 +5,7 @@ import StringSelectOption       from "$components/options/StringSelectOption.sve
 import { Requirements }         from "$api/options/options";
 
 export default class StringSelect extends Requirements implements ComponentOption {
-  component: typeof SvelteComponent = StringSelectOption;
+  component: typeof SvelteComponent<any> = StringSelectOption;
   name: string;
   key: string;
   data: string;

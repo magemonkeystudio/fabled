@@ -5,7 +5,7 @@ import type { YAMLObject }      from '$api/yaml';
 import ColorSelectOption        from '$components/options/ColorSelectOption.svelte';
 
 export default class ColorSelect extends Requirements implements ComponentOption {
-	component: typeof SvelteComponent = ColorSelectOption;
+	component: typeof SvelteComponent<any> = ColorSelectOption;
 	name: string;
 	key: string;
 	data: string;

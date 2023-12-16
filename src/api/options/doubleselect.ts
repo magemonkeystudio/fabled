@@ -5,7 +5,7 @@ import type { YAMLObject }      from '$api/yaml';
 import DoubleSelectOption       from '$components/options/DoubleSelectOption.svelte';
 
 export default class DoubleSelect extends Requirements implements ComponentOption {
-	component: typeof SvelteComponent = DoubleSelectOption;
+	component: typeof SvelteComponent<any> = DoubleSelectOption;
 	name: string;
 	key: string;
 	data: number;

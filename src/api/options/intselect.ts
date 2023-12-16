@@ -5,7 +5,7 @@ import IntSelectOption          from "$components/options/IntSelectOption.svelte
 import { Requirements }         from "$api/options/options";
 
 export default class IntSelect extends Requirements implements ComponentOption {
-  component: typeof SvelteComponent = IntSelectOption;
+  component: typeof SvelteComponent<any> = IntSelectOption;
   name: string;
   key: string;
   data: number;

@@ -7,7 +7,7 @@ import { Requirements }         from "$api/options/options";
 import ProSkill                 from "$api/proskill";
 
 export default class ClassSelect extends Requirements implements ComponentOption {
-  component: typeof SvelteComponent = ClassSelectOption;
+  component: typeof SvelteComponent<any> = ClassSelectOption;
   name: string;
   key: string;
   data: ProClass[] | string[] | ProClass | string       = [];

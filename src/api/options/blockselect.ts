@@ -6,7 +6,7 @@ import { Requirements }         from "$api/options/options";
 
 export default class BlockSelect extends Requirements implements ComponentOption {
   key = 'block';
-  component: typeof SvelteComponent                                                        = BlockSelectOption;
+  component: typeof SvelteComponent<any>                                                        = BlockSelectOption;
   data: { material: string[], data: number, materialTooltip: string, dataTooltip: string } = {
     material:        ["Any"],
     data:            -1,

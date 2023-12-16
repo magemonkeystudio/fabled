@@ -6,7 +6,7 @@ import { Requirements }         from "$api/options/options";
 
 export default class SectionMarker extends Requirements implements ComponentOption {
   key = "section-marker";
-  component: typeof SvelteComponent = SectionMarkerComponent;
+  component: typeof SvelteComponent<any> = SectionMarkerComponent;
   data: string;
 
   constructor(name: string) {
