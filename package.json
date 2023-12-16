@@ -12,23 +12,26 @@
     "format": "prettier --plugin-search-dir . --write ."
   },
   "devDependencies": {
-    "@sveltejs/adapter-auto": "next",
-    "@sveltejs/adapter-static": "^2.0.3",
-    "@sveltejs/kit": "^1.27.6",
+    "@sveltejs/adapter-auto": "^3.0.0",
+    "@sveltejs/adapter-static": "^3.0.0",
+    "@sveltejs/kit": "^2.0.0",
+    "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "@types/uuid": "^9.0.7",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
     "eslint": "^8.55.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-svelte3": "^4.0.0",
     "prettier": "^3.1.1",
-    "prettier-plugin-svelte": "^2.10.1",
+    "prettier-plugin-svelte": "^3.1.2",
     "svelte": "^4.0.0",
     "svelte-check": "^3.6.2",
     "svelte-preprocess": "^5.1.1",
     "tslib": "^2.6.2",
     "typescript": "^5.3.3",
-    "vite": "^4.5.0"
+    "vite": "^5.0.0"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "eslint-plugin-svelte": "^2.35.1"
+  }
 }

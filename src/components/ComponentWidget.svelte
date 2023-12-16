@@ -21,7 +21,7 @@
 	import Registry                                      from '$api/components/registry';
 	import Control                                       from '$components/control/Control.svelte';
 	import { skills }                                    from '../data/skill-store';
-	import { showSummaryItems }                          from '../data/settings.js';
+	import { showSummaryItems }                          from '../data/settings';
 
 	export let skill: ProSkill;
 	export let component: ProComponent;
