@@ -12,8 +12,7 @@
 
     <groupId>com.promcteam</groupId>
     <artifactId>proskillapi</artifactId>
-    <version>1.1.13-R0.13-SNAPSHOT</version>
-
+    <version>1.1.14-R0.2-SNAPSHOT</version>
 
     <name>ProSkillAPI</name>
     <description>A Minecraft Bukkit plugin aiming to provide an easy code API and skill editor for all server owners to
@@ -194,11 +193,6 @@
             <name>ProMCTeam</name>
             <organization>ProMCTeam</organization>
             <organizationUrl>https://promcteam.com</organizationUrl>
-        </developer>
-        <developer>
-            <name>iomatix</name>
-            <organization>iomatix</organization>
-            <organizationUrl>https://github.com/iomatix</organizationUrl>
         </developer>
     </developers>
 

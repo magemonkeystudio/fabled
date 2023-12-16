@@ -23,7 +23,7 @@ jobs:
       - name: 'Create settings.xml'
         uses: s4u/maven-settings-action@v2.8.0
         with:
-          githubServer: true
+          githubServer: false
           servers: '[{"id": "promcteam", "username": "Travja", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
       - name: Build with Maven
         run: mvn clean package -e
