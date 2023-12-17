@@ -28,6 +28,7 @@ package com.sucy.skill.manager;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerData;
+import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.api.util.DamageLoreRemover;
 import com.sucy.skill.api.util.Data;
 import com.sucy.skill.data.formula.Formula;
@@ -322,9 +323,13 @@ public class AttributeManager {
          */
         private String filter(PlayerData data, String text) {
             return text
-                    .replace("{amount}", "" + data.getInvestedAttribute(key))
+                    .replace("{amount}", "" + data.getInvestedAttributeStage(key)) // iomatix: it's a stage now.
+                    .replace("{max}", "" + SkillAPI.getAttributeManager().getAttribute(key).getMax()) // iomatix: the limit, to verify: is it conflicting with skills' {max} ?
                     .replace("{total}", "" + data.getAttribute(key))
-                    ;
+                    .replace("{cost}", "" + data.getAttributeUpCost(key))
+                    .replace("{invested}", "" + data.getInvestedAttribute(key)) // iomatix: it's an old {amount}
+                    .replace("{ap}", "" + data.getAttributePoints()); // iomatix: current value of last attr points
+
         }
 
         /**

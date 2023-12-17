@@ -36,8 +36,8 @@ or snapshots through Sonatype.
 </repository>
 ...
 <dependency>
-    <groupId>com.promcteam</groupId>
+    <groupId>com.iomatix</groupId>
     <artifactId>proskillapi</artifactId>
-    <version>1.1.14-R0.1-SNAPSHOT</version>
+    <version>1.1.13-R0.13-SNAPSHOT</version>
 </dependency>
 ```
