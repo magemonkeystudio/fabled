@@ -149,14 +149,12 @@ export default class ProSkill implements Serializable {
 
 		// Attribute requirements
 		const reserved = ['level', 'cost', 'cooldown', 'mana', 'points-spent-req', 'incompatible'];
-		console.log('attributes', attributes.getKeys());
 		const names =
 						new Set(
 							attributes.getKeys()
 								.map(k => k.replace(/-(base|scale)/i, ''))
 								.filter(name => !reserved.includes(name))
 						);
-		console.log(names);
 		this.attributeRequirements = [...names].map(name => new ProAttribute(name, attributes.get(name + '-base'), attributes.get(name + '-scale')));
 
 		this.icon.material        = yaml.get<string, string>('icon', this.icon.material, toEditorCase);
