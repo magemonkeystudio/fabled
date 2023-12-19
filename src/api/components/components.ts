@@ -3734,6 +3734,27 @@ class ProjectileMechanic extends ProMechanic {
                 new DropdownSelect('Cost', 'cost', ['None', 'All', 'One'], 'None')
                     .setTooltip('The item cost of the skill. "One" will only charge the player 1 item of it\'s type, whereas "All" will charge 1 for each fired projectile'),
 
+                new SectionMarker('Item Override')
+                    .requireValue('projectile', ["Egg", "Ender pearl", "Snowball", "Splash potion", "Thrown exp bottle", "Trident"]),
+                new BooleanSelect('Override item', 'override-item', false)
+                    .setTooltip('Whether to override the item display of the projectile'),
+                new DropdownSelect('Material', 'material', (() => [...getMaterials()]), 'Snowball')
+                    .requireValue('projectile', ["Egg", "Ender pearl", "Snowball", "Splash potion", "Thrown exp bottle", "Trident"])
+                    .requireValue('override-item', [true])
+                    .setTooltip('The material to use for the projectile'),
+                new BooleanSelect('Enchanted', 'enchanted', false)
+                    .requireValue('projectile', ["Egg", "Ender pearl", "Snowball", "Splash potion", "Thrown exp bottle", "Trident"])
+                    .requireValue('override-item', [true])
+                    .setTooltip('Whether to apply the enchanted glint in the item'),
+                new IntSelect('Durability', 'durability', 0)
+                    .requireValue('projectile', ["Egg", "Ender pearl", "Snowball", "Splash potion", "Thrown exp bottle", "Trident"])
+                    .requireValue('override-item', [true])
+                    .setTooltip('The durability to be reduced from the item used for the projectile'),
+                new IntSelect('CustomModelData', 'custom-model-data', 0)
+                    .requireValue('projectile', ["Egg", "Ender pearl", "Snowball", "Splash potion", "Thrown exp bottle", "Trident"])
+                    .requireValue('override-item', [true])
+                    .setTooltip('The CustomModelData of the item used for the projectile'),
+
                 ...homingOptions(),
                 ...projectileOptions(),
                 ...particleOptions(),
