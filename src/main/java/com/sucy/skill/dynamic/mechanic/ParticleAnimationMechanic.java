@@ -118,16 +118,16 @@ public class ParticleAnimationMechanic extends MechanicComponent {
             this.upward = getNum(caster, UPWARD, 0);
             this.right = getNum(caster, RIGHT, 0);
 
-            this.steps = settings.getInt(STEPS, 1);
-            this.freq = (int) (settings.getDouble(FREQ, 1.0) * 20);
-            this.angle = settings.getInt(ANGLE, 0);
-            this.startAngle = settings.getInt(START, 0);
+            this.steps = (int) getNum(caster, STEPS, 1);
+            this.freq = (int) (getNum(caster, FREQ, 1.0) * 20);
+            this.angle = (int) getNum(caster, ANGLE, 0);
+            this.startAngle = (int) getNum(caster, START, 0);
             this.duration = steps * (int) (20 * parseValues(caster, DURATION, level, 3.0));
             this.life = 0;
             this.ht = parseValues(caster, H_TRANS, level, 0);
             this.vt = parseValues(caster, V_TRANS, level, 0);
-            this.hc = settings.getInt(H_CYCLES, 1);
-            this.vc = settings.getInt(V_CYCLES, 1);
+            this.hc = (int) getNum(caster, H_CYCLES, 1);
+            this.vc = (int) getNum(caster, V_CYCLES, 1);
             this.hl = duration / hc;
             this.vl = duration / vc;
             this.withRotation = settings.getBool(WITH_ROTATION);
