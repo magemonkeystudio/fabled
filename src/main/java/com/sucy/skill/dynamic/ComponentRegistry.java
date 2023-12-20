@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -210,6 +211,18 @@ public class ComponentRegistry {
         register(new WarpTargetMechanic());
         register(new WarpValueMechanic());
         register(new WolfMechanic());
+    }
+
+    public static Map<ComponentType, Map<String, Class<?>>> getComponents() {
+        return Collections.unmodifiableMap(COMPONENTS);
+    }
+
+    public static Map<String, Trigger<?>> getTriggers() {
+        return Collections.unmodifiableMap(TRIGGERS);
+    }
+
+    public static Map<Trigger<?>, EventExecutor> getExecutors() {
+        return Collections.unmodifiableMap(EXECUTORS);
     }
 
     public static Trigger<?> getTrigger(final String key) {
