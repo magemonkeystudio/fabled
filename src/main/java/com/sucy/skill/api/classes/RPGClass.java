@@ -61,6 +61,7 @@ import java.util.List;
  */
 public abstract class RPGClass implements IconHolder {
     private static final String                 SKILLS     = "skills";
+    private static final String                 DEFAULT_SKILLS     = "default-skills"; // iomatix: default skills (Lev 1 by default)
     private static final String                 PARENT     = "parent";
     private static final String                 NAME       = "name";
     private static final String                 PREFIX     = "prefix";
@@ -82,6 +83,7 @@ public abstract class RPGClass implements IconHolder {
     protected final      Settings               settings   = new Settings();
     private final        HashMap<String, Skill> skillMap   = new HashMap<>();
     private final        ArrayList<Skill>       skills     = new ArrayList<>();
+    private final        ArrayList<Skill>       defaultSkills     = new ArrayList<>(); // skills on Lv 1 stage by default (QoL update)
     private final        HashSet<Material>      blacklist  = new HashSet<>();
 
     ///////////////////////////////////////////////////////
@@ -487,6 +489,15 @@ public abstract class RPGClass implements IconHolder {
     }
 
     /**
+     * Retrieves the list of default skills this class provides
+     *
+     * @return list of default skills
+     */
+    public List<Skill> getDefaultSkills() {
+        return getDefaultSkills(true);
+    } // iomatix: Default skill is Lv 1 instead of Lv 0 by default
+
+    /**
      * Retrieves the list of skills this class provides a player
      *
      * @param includeParent Whether to include the parent skills or not
@@ -498,6 +509,19 @@ public abstract class RPGClass implements IconHolder {
         if (hasParent() && includeParent) skills.addAll(getParent().getSkills());
         return skills;
     }
+
+    /**
+     * Retrieves the list of default skills this class provides a player
+     *
+     * @param includeParent Whether to include the parent skills or not
+     * @return list of skills provided by the class
+     */
+    public List<Skill> getDefaultSkills(boolean includeParent) {
+        List<Skill> skills = new ArrayList<>();
+        skills.addAll(this.defaultSkills);
+        if (hasParent() && includeParent) skills.addAll(getParent().getDefaultSkills());
+        return skills;
+    } // iomatix: Default skill is Lv 1 instead of Lv 0 by default
 
     /**
      * Checks whether this class has mana regeneration
@@ -627,6 +651,13 @@ public abstract class RPGClass implements IconHolder {
         }
         config.set(SKILLS, skillNames);
 
+        // iomatix: serialize defaults
+        skillNames = new ArrayList<String>();
+        for (Skill skill : defaultSkills) {
+            skillNames.add(skill.getName());
+        }
+        config.set( DEFAULT_SKILLS, skillNames);
+
         Data.serializeIcon(icon, config);
         config.set(EXP, expSources);
     }
@@ -694,6 +725,17 @@ public abstract class RPGClass implements IconHolder {
                 if (skill != null) {
                     skills.add(skill);
                 } else Logger.invalid("Invalid skill for class " + this.name + " - " + name);
+            }
+        }
+
+        // iomatix default skills:
+        if (config.isList(DEFAULT_SKILLS)) {
+            defaultSkills.clear();
+            for (String name : config.getList(DEFAULT_SKILLS)) {
+                Skill skill = SkillAPI.getSkill(name);
+                if (skill != null) {
+                    defaultSkills.add(skill);
+                } else Logger.invalid("Invalid default skill for class " + this.name + " - " + name);
             }
         }
 

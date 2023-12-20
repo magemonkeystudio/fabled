@@ -1634,6 +1634,11 @@ public class PlayerData {
                 if (!skills.containsKey(skill.getKey())) {
                     skills.put(skill.getKey(), new PlayerSkill(this, skill, current));
                     combos.addSkill(skill);
+
+                    // iomatix: check default skills and upgrade to 1 if any (Upgraded to 1 by default)
+                    if (rpgClass.getDefaultSkills(!isResetting).contains(skill)){
+                        if (getSkillLevel(skill.getName()) < 1)  forceUpSkill(skills.get(skill.getKey()), 1);
+                    }
                 }
             }
 
