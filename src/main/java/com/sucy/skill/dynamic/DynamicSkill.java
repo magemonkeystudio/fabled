@@ -28,6 +28,7 @@ package com.sucy.skill.dynamic;
 
 import com.google.common.collect.ImmutableList;
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.event.DynamicTriggerEvent;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.skills.PassiveSkill;
 import com.sucy.skill.api.skills.Skill;
@@ -36,6 +37,7 @@ import com.sucy.skill.dynamic.trigger.TriggerComponent;
 import com.sucy.skill.log.Logger;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.util.TextFormatter;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Cancellable;
@@ -211,6 +213,7 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
     @Override
     public void initialize(final LivingEntity user, final int level) {
         trigger(user, user, level, initializeTrigger);
+        Bukkit.getPluginManager().callEvent(new DynamicTriggerEvent(user, this, null, "initialize"));
         active.put(user.getEntityId(), level);
         for (final TriggerHandler triggerHandler : triggers) {
             triggerHandler.init(user, level);
@@ -234,6 +237,7 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
         cleanup(user, initializeTrigger);
 
         trigger(user, user, 1, cleanupTrigger);
+        Bukkit.getPluginManager().callEvent(new DynamicTriggerEvent(user, this, null, "cleanup"));
     }
 
     private void cleanup(final LivingEntity user, final TriggerComponent component) {
@@ -256,7 +260,11 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
     public boolean cast(final LivingEntity user, final int level, boolean force) {
         if (!force && !SkillAPI.getSettings().isWorldEnabled(user.getWorld())) return false;
         if (force && !isForced(user)) forced.add(user.getEntityId());
-        return trigger(user, user, level, castTrigger, force);
+        if (trigger(user, user, level, castTrigger, force)) {
+            Bukkit.getPluginManager().callEvent(new DynamicTriggerEvent(user, this, null, "cast"));
+            return true;
+        } return false;
+
     }
 
     @Override

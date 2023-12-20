@@ -2,10 +2,12 @@ package com.sucy.skill.dynamic;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.enums.ManaCost;
+import com.sucy.skill.api.event.DynamicTriggerEvent;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkill;
 import com.sucy.skill.dynamic.trigger.Trigger;
 import com.sucy.skill.dynamic.trigger.TriggerComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -98,6 +100,8 @@ public class TriggerHandler implements Listener {
         if (!trigger.shouldTrigger(event, level, component.settings)) {
             return;
         }
+
+        Bukkit.getPluginManager().callEvent(new DynamicTriggerEvent(caster, this.skill, event, trigger.getKey()));
 
         final LivingEntity target = trigger.getTarget(event, component.settings);
         trigger.setValues(event, DynamicSkill.getCastData(caster));
