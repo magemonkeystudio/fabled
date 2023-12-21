@@ -5,7 +5,7 @@ import type { YAMLObject }      from "$api/yaml";
 import BooleanSelectOption      from "$components/options/BooleanSelectOption.svelte";
 
 export default class BooleanSelect extends Requirements implements ComponentOption {
-  component: typeof SvelteComponent = BooleanSelectOption;
+  component: typeof SvelteComponent<any> = BooleanSelectOption;
   name: string;
   key: string;
   data: boolean;

@@ -5,7 +5,7 @@ import type { YAMLObject }      from "$api/yaml";
 import { Requirements }         from "$api/options/options";
 
 export default class DropdownSelect extends Requirements implements ComponentOption {
-  component: typeof SvelteComponent = DropdownOption;
+  component: typeof SvelteComponent<any> = DropdownOption;
   dataSource: (() => string[]) | undefined;
   data: {
     selected: string | string[],

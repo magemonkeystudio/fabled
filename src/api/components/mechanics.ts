@@ -11,8 +11,8 @@ export default class ProMechanic extends ProComponent {
 
   public constructor(data: ComponentData, isParent = false, isDeprecated = false) {
     super("mechanic", data);
-    super.isParent = isParent; // This should be false unless for specific mechanics like projectiles
-    super.isDeprecated = isDeprecated;
+    this.isParent = isParent; // This should be false unless for specific mechanics like projectiles
+    this.isDeprecated = isDeprecated;
   }
 
   public override toYamlObj(): YAMLObject {

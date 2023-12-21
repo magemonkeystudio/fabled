@@ -6,7 +6,7 @@ import { ProAttribute }    from "$api/proattribute";
 import { Requirements }         from "$api/options/options";
 
 export default class AttributeSelect extends Requirements implements ComponentOption {
-  component: typeof SvelteComponent     = AttributeSelectOption;
+  component: typeof SvelteComponent<any>     = AttributeSelectOption;
   name: string;
   key: string;
   data: ProAttribute;

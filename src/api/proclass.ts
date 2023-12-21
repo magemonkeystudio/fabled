@@ -7,15 +7,24 @@ import { toEditorCase, toProperCase }            from './api';
 import type { SkillTree }                        from '$api/SkillTree';
 
 export default class ProClass implements Serializable {
-	isClass                    = true;
-	public key                 = {};
+	isClass    = true;
+	public key = {};
 	name: string;
-	prefix                     = '';
-	group                      = 'class';
-	manaName                   = '&2Mana';
-	maxLevel                   = 40;
-	parentStr                  = '';
-	parent?: ProClass;
+	prefix     = '';
+	group      = 'class';
+	manaName   = '&2Mana';
+	maxLevel   = 40;
+	parentStr  = '';
+	_parent?: ProClass;
+	get parent() {
+		return this._parent;
+	}
+
+	set parent(parent: ProClass | undefined) {
+		this._parent   = parent;
+		this.parentStr = parent ? parent.name : '';
+	}
+
 	permission                 = false;
 	expSources                 = 273;
 	manaRegen                  = 1;

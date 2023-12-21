@@ -14,7 +14,7 @@ export async function load({ params }: any) {
   let data: ProClass | ProSkill | undefined;
   let fallback: ProClass | ProSkill | undefined;
   if (params.type == "class") {
-    throw redirect(302, `/${params.type}/${params.id}/edit`);
+    redirect(302, `/${params.type}/${params.id}/edit`);
   } else if (params.type == "skill") {
     for (const c of get(skills)) {
       if (!fallback) fallback = c;
@@ -32,9 +32,9 @@ export async function load({ params }: any) {
     return { data };
   } else {
     if (fallback) {
-      throw redirect(302, `/${params.type}/${fallback.name}`);
+      redirect(302, `/${params.type}/${fallback.name}`);
     } else {
-      throw redirect(302, "/");
+      redirect(302, "/");
     }
   }
 }

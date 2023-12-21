@@ -21,7 +21,7 @@
 	import Registry                                      from '$api/components/registry';
 	import Control                                       from '$components/control/Control.svelte';
 	import { skills }                                    from '../data/skill-store';
-	import { showSummaryItems }                          from '../data/settings.js';
+	import { showSummaryItems }                          from '../data/settings';
 
 	export let skill: ProSkill;
 	export let component: ProComponent;
@@ -187,9 +187,9 @@
 			 class:dragging={$draggingComponent === component}
 			 style:--comp-color={getColor()}>
 		{#if collapsed}
-			<span class='material-symbols-rounded' in:spin|local={{duration: 400}}>expand_more</span>
+			<span class='material-symbols-rounded' in:spin={{duration: 400}}>expand_more</span>
 		{:else}
-			<span class='material-symbols-rounded' in:spin|local={{duration: 400}}>expand_less</span>
+			<span class='material-symbols-rounded' in:spin={{duration: 400}}>expand_less</span>
 		{/if}
 		<div class='corner' on:click|stopPropagation={() => collapsed = !collapsed}
 				 on:keypress|stopPropagation={(e) => {
@@ -259,7 +259,7 @@
 									 dispatch("update");
 								 }} />
 			</div>
-			<div class='children' transition:slide|local>
+			<div class='children' transition:slide>
 				{#if childrenList.length === 0}
 					{#if component.isParent && (over || overChildren)}
 						<div class='filler'
@@ -284,7 +284,7 @@
 				{:else}
 					<div class='child-wrapper' bind:this={children}>
 						{#each childrenList as child (child.id)}
-            <span transition:slide|local>
+            <span transition:slide>
               <svelte:self {skill} bind:component={child} on:update on:save on:addskill={addSkill} />
             </span>
 						{/each}

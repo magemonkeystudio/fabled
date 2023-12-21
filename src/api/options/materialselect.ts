@@ -6,7 +6,7 @@ import type { YAMLObject }      from '$api/yaml';
 
 export default class MaterialSelect extends Requirements implements ComponentOption {
 	key                               = 'material';
-	component: typeof SvelteComponent = MaterialSelectOption;
+	component: typeof SvelteComponent<any> = MaterialSelectOption;
 	data                              = { material: 'Dirt', any: false };
 	tooltip: string | undefined       = undefined;
 

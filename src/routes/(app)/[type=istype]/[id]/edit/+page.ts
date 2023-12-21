@@ -40,9 +40,9 @@ export async function load({ params }: any) {
     return { data };
   } else {
     if (fallback) {
-      throw redirect(302, `/${params.type}/${fallback.name}`);
+      redirect(302, `/${params.type}/${fallback.name}`);
     } else {
-      throw redirect(302, "/");
+      redirect(302, "/");
     }
   }
 }

@@ -5,7 +5,7 @@ import StringListOption         from "$components/options/StringListOption.svelt
 import { Requirements }         from "$api/options/options";
 
 export default class StringListSelect extends Requirements implements ComponentOption {
-  component: typeof SvelteComponent = StringListOption;
+  component: typeof SvelteComponent<any> = StringListOption;
   data: { value: string[] }         = { value: [] };
   name                              = "";
   key                               = "";
