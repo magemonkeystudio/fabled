@@ -601,6 +601,8 @@ const targetOptions = (): ComponentOption[] => {
 		.setTooltip('The alignment of targets to get'),
 		new BooleanSelect('Through Wall', 'wall', false)
 			.setTooltip('Whether to allow targets to be on the other side of a wall'),
+		new BooleanSelect('Include Invulnerable', 'invulnerable', false)
+			.setTooltip('Whether to target on invulnerable entities'),
 		new DropdownSelect('Include Caster', 'caster', ['True', 'False', 'In area'], 'False')
 			.setTooltip('Whether to include the caster in the target list. "True" will always include them, "False" will never, and "In area" will only if they are within the targeted area'),
 		new AttributeSelect('Max Targets', 'max', 99)
