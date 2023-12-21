@@ -4123,8 +4123,9 @@ class StatusMechanic extends ProMechanic {
                     'Disarm',
                     'Invincible',
                     'Root',
-                    'Silence',
-                    'Stun'], 'Stun')
+                    'Silence',					
+		    'Stun',
+		    'Invulnerable'], 'Stun')
                     .setTooltip('The status to apply'),
                 new AttributeSelect('Duration', 'duration', 3, 1)
                     .setTooltip('How long in seconds to apply the status')
