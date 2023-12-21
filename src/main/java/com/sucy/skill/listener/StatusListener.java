@@ -26,10 +26,7 @@
  */
 package com.sucy.skill.listener;
 
-import com.sucy.skill.api.event.FlagApplyEvent;
-import com.sucy.skill.api.event.PhysicalDamageEvent;
-import com.sucy.skill.api.event.PlayerCastSkillEvent;
-import com.sucy.skill.api.event.TrueDamageEvent;
+import com.sucy.skill.api.event.*;
 import com.sucy.skill.api.util.FlagManager;
 import com.sucy.skill.api.util.StatusFlag;
 import com.sucy.skill.data.TitleType;
@@ -143,6 +140,28 @@ public class StatusListener extends SkillAPIListener {
         }
     }
 
+    /**
+     * Apply invulnerable effect when flag apply
+     *
+     * @param event event details
+     */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onInvulnerable(FlagApplyEvent event) {
+        if (event.getFlag().equals(StatusFlag.INVULNERABLE)){
+            event.getEntity().setInvulnerable(true);
+        }
+    }
+    /**
+     * Cancel invulnerable effect when flag is expire;
+     *
+     * @param event event details
+     */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void offInvulnerable(FlagExpireEvent event) {
+        if (event.getFlag().equals(StatusFlag.INVULNERABLE)){
+            event.getEntity().setInvulnerable(false);
+        }
+    }
     /**
      * Cancels damage when an attacker is disarmed.
      *

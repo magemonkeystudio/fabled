@@ -31,6 +31,7 @@ public abstract class TargetComponent extends EffectComponent {
     boolean       everyone;
     boolean       allies;
     boolean       throughWall;
+    boolean       invulnerable;
     IncludeCaster self;
 
     @Override
@@ -95,6 +96,7 @@ public abstract class TargetComponent extends EffectComponent {
 
             for (LivingEntity entity : found) {
                 if (count >= max) break;
+                if (invulnerable || entity.isInvulnerable()) continue;
                 if (isValidTarget(caster, target, entity) || (self.equals(IncludeCaster.IN_AREA) && caster == entity)) {
                     list.add(entity);
                     count++;
