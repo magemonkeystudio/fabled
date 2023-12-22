@@ -63,7 +63,7 @@ public abstract class TargetComponent extends EffectComponent {
         everyone = group.equals("both");
         allies = group.equals("ally");
         throughWall = settings.getString(WALL, "false").equalsIgnoreCase("true");
-        throughWall = settings.getString(INVULNERABLE, "false").equalsIgnoreCase("true");
+        invulnerable = settings.getString(INVULNERABLE, "false").equalsIgnoreCase("true");
         self = IncludeCaster.valueOf(settings.getString(CASTER, "false").toUpperCase().replace(' ', '_'));
     }
 
@@ -110,7 +110,7 @@ public abstract class TargetComponent extends EffectComponent {
     boolean isValidTarget(final LivingEntity caster, final LivingEntity from, final LivingEntity target) {
         if (SkillAPI.getMeta(target, MechanicListener.ARMOR_STAND) != null) return false;
         if (target instanceof TempEntity) return true;
-        if (invulnerable || target.isInvulnerable()) return false;
+        if (target.isInvulnerable() && !invulnerable) return false;
         if (target instanceof Player && (((Player) target).getGameMode() == GameMode.SPECTATOR
                 || ((Player) target).getGameMode() == GameMode.CREATIVE)) return false;
 
