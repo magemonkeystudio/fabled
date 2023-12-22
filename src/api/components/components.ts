@@ -1614,7 +1614,8 @@ class StatusCondition extends ProCondition {
                         'Invincible',
                         'Root',
                         'Silence',
-                        'Stun'
+                        'Stun',
+                        'Invulnerable'
                     ])
                     .setTooltip('The status to look for')
             ],
