@@ -41,3 +41,7 @@ or snapshots through Sonatype.
     <version>${project.version}</version>
 </dependency>
 ```
+### A huge thanks to our contributors
+<a href="https://github.com/promcteam/proskillapi/graphs/contributors">
+<img src="https://contrib.rocks/image?repo=promcteam/proskillapi" />
+</a>
