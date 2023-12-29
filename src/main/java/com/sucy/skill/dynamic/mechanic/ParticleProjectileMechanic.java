@@ -94,7 +94,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
         int life = (int) (parseValues(caster, LIFESPAN, level, settings.getDouble(LIFESPAN, 2)) * 20);
 
         final Settings copy = new Settings(settings);
-        copy.set(ParticleProjectile.RADIUS, parseValues(caster, ParticleProjectile.RADIUS, level, 1.5));
+        copy.set(ParticleProjectile.RADIUS, parseValues(caster, ParticleProjectile.RADIUS, level, 1.5), 0);
         copy.set(ParticleProjectile.GRAVITY, parseValues(caster, ParticleProjectile.GRAVITY, level, -0.04), 0);
         copy.set(ParticleProjectile.DRAG, parseValues(caster, ParticleProjectile.DRAG, level, 0.02), 0);
         copy.set(ParticleProjectile.SPEED, parseValues(caster, ParticleProjectile.SPEED, level, 1), 0);
