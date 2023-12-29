@@ -4,6 +4,7 @@ import org.bukkit.entity.LivingEntity;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class ArmorStandData {
     private final HashMap<String, ArmorStandInstance> armorStands = new HashMap<>();
@@ -54,11 +55,32 @@ public class ArmorStandData {
         }
     }
 
+    public String getKey(ArmorStandInstance armorStand) {
+        for (Map.Entry<String, ArmorStandInstance> entry : armorStands.entrySet()) {
+            String             key   = entry.getKey();
+            ArmorStandInstance value = entry.getValue();
+            if (value == armorStand) return key;
+        }
+        return null;
+    }
+
     /**
      * Removes and unregisters all armor stands for this target
      */
     public void remove() {
         armorStands.values().forEach(ArmorStandInstance::remove);
         armorStands.clear();
+    }
+
+    public void remove(String key) {
+        ArmorStandInstance armorStand = armorStands.get(key);
+        if (armorStand != null) armorStand.remove();
+        armorStands.remove(key);
+    }
+
+    public void remove(ArmorStandInstance armorStand) {
+        armorStand.remove();
+        String key = getKey(armorStand);
+        if (key != null) armorStands.remove(key);
     }
 }
