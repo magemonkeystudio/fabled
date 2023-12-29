@@ -24,6 +24,20 @@ export interface ProClassData {
 	icon?: Icon;
 	unusableItems?: string[];
 	actionBar?: string;
+	lInverted?: boolean;
+	rInverted?: boolean;
+	lsInverted?: boolean;
+	rsInverted?: boolean;
+	pInverted?: boolean;
+	qInverted?: boolean;
+	fInverted?: boolean;
+	lWhitelist?: string[];
+	rWhitelist?: string[];
+	lsWhitelist?: string[];
+	rsWhitelist?: string[];
+	pWhitelist?: string[];
+	qWhitelist?: string[];
+	fWhitelist?: string[];
 }
 
 export interface ProSkillData {
