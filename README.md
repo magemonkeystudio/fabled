@@ -38,6 +38,10 @@ or snapshots through Sonatype.
 <dependency>
     <groupId>com.promcteam</groupId>
     <artifactId>proskillapi</artifactId>
-    <version>1.2.0-R0.3-SNAPSHOT</version>
+    <version>1.2.0-R0.4-SNAPSHOT</version>
 </dependency>
 ```
+### A huge thanks to our contributors
+<a href="https://github.com/promcteam/proskillapi/graphs/contributors">
+<img src="https://contrib.rocks/image?repo=promcteam/proskillapi" />
+</a>
