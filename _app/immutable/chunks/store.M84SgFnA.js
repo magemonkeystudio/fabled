@@ -1,4 +1,4 @@
-import{w as u,k as O,l as ce,e as F}from"./singletons.6wPDAOPW.js";import{A as r}from"./scheduler.094yGyYV.js";const X={INT:/^-?[0-9]+$/,FLOAT:/^-?[0-9]+\.[0-9]+$/,SPACE:/^( +)/},L=n=>{n=n.replace(/\r\n/g,`
+import{w as u,k as O,l as ce,e as F}from"./singletons.xBDtRdjO.js";import{A as r}from"./scheduler.094yGyYV.js";const X={INT:/^-?[0-9]+$/,FLOAT:/^-?[0-9]+\.[0-9]+$/,SPACE:/^( +)/},L=n=>{n=n.replace(/\r\n/g,`
 `).replace(/\n *\n/g,`
 `).replace(/ +\n/g,`
 `);const e=new h,t=0,s=n.split(`
