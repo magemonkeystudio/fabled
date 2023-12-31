@@ -84,10 +84,11 @@ import java.util.Map.Entry;
  * yourself and instead get it from the SkillAPI static methods.
  * <p>
  * In order to get a player's data, use "SkillAPI.getPlayerData(...)". Do NOT
- * try to instantaite your own PlayerData object.
+ * try to instantiate your own PlayerData object.
  */
 public class PlayerData {
-    public final  HashMap<String, Integer>                       attributes          = new HashMap<>();
+    public final  HashMap<String, Integer>                       attributes          = new HashMap<>(); // iomatix: It's an attr total like described
+    public final  HashMap<String, Integer>                       attrUpStages         = new HashMap<>(); // iomatix: distinguish attr total from attrUpStage (it's an attr upgrade level/stage)
     private final HashMap<String, PlayerClass>                   classes             = new HashMap<>();
     private final HashMap<String, PlayerSkill>                   skills              = new HashMap<>();
     private final HashSet<ExternallyAddedSkill>                  extSkills           = new HashSet<>();
@@ -103,6 +104,7 @@ public class PlayerData {
     private final PlayerCombos          combos;
     private final PlayerEquips          equips;
     private final List<UUID>            onCooldown = new ArrayList<>();
+
     public        int                   attribPoints;
     private       String                scheme;
     private       String                menuClass;
@@ -315,8 +317,20 @@ public class PlayerData {
     }
 
     /**
+     * Retrieves a map of all attributes upgrade stages.
+     * This doesn't count base attributes from classes or
+     * bonus attributes from effects. Modifying the map will
+     * not change actual player attributes.
+     *
+     * @return attribute upgrade stages
+     */
+    public HashMap<String, Integer> getInvestedAttributesStages() {
+        return new HashMap<>(attrUpStages);
+    }
+
+    /**
      * Gets the number of attribute points the player has
-     * between invested and bonus sources.
+     * from invested and bonus sources.
      *
      * @param key attribute key
      * @return number of total points
@@ -328,11 +342,12 @@ public class PlayerData {
         // Attribute points comes with class level
         for (PlayerClass playerClass : this.classes.values()) {
             total += playerClass.getData().getAttribute(key, playerClass.getLevel());
+
         }
 
         // Attribute points come with invested attributes
-        if (this.attributes.containsKey(key)) {
-            total += this.attributes.get(key);
+        if (this.attrUpStages.containsKey(key)) {
+            total += this.attrUpStages.get(key); // iomatix: please verify safety of this change, done because attributes cost != attribute stage
         }
 
         // Attribute points come with modifier api
@@ -359,6 +374,7 @@ public class PlayerData {
         return Math.max(0, (int) Math.round(total));
     }
 
+
     /**
      * Gets the number of attribute points invested in the
      * given attribute
@@ -368,6 +384,17 @@ public class PlayerData {
      */
     public int getInvestedAttribute(String key) {
         return attributes.getOrDefault(key.toLowerCase(), 0);
+    }
+
+    /**
+     * Gets the upgrade stage of the
+     * given attribute
+     *
+     * @param key attribute key
+     * @return the stage of the attribute
+     */
+    public int getInvestedAttributeStage(String key) {
+        return attrUpStages.getOrDefault(key.toLowerCase(), 0); // iomatix: attributes -> attrUpStages
     }
 
     /**
@@ -381,9 +408,10 @@ public class PlayerData {
         return getAttribute(key) > 0;
     }
 
+
     /**
      * Invests a point in the attribute if the player
-     * has any remaining attribute points. If the player
+     * has enough remaining attribute points. If the player
      * has no remaining points, this will do nothing.
      *
      * @param key attribute key
@@ -391,42 +419,97 @@ public class PlayerData {
      */
     public boolean upAttribute(String key) {
         key = key.toLowerCase();
-        int current = getInvestedAttribute(key);
+        int currentStage = getInvestedAttributeStage(key); // iomatix: the current upgrade stage, not the invested attributes
+        int currentInvested = getInvestedAttribute(key); // iomatix: the invested attributes
         int max     = SkillAPI.getAttributeManager().getAttribute(key).getMax();
+        int cost = getAttributeUpCost(key);
 
-        // iomatix Logic behind: costBase+floor(current*costMod) -> is new cost so...
-        int cost = SkillAPI.getAttributeManager().getAttribute(key).getCostBase() + (int) Math.floor(current*SkillAPI.getAttributeManager().getAttribute(key).getCostMod());
         // iomatix apply the new logic below:
-        if (attribPoints >= cost && current < max) {
-            attributes.put(key, current + 1);
+        if (attribPoints >= cost && currentStage < max) {
+            attributes.put(key, currentInvested + cost); // iomatix: total spent goes by the cost
+            attrUpStages.put(key, currentStage + 1); // iomatix: upgrade stage goes by 1
             attribPoints -= cost; // iomatix new cost has been applied
 
             PlayerUpAttributeEvent event = new PlayerUpAttributeEvent(this, key);
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) {
-                attributes.put(key, current);
-                attribPoints += cost; // iomatix get the cost back
+                // iomatix: roll back the cost and previous stage
+                attributes.put(key, currentInvested);
+                attrUpStages.put(key, currentStage);
+                attribPoints += cost;
             } else {
                 return true;
             }
         }
         return false;
     }
+    /**
+     * Calculating cost using the formula:
+     * costBase + (int) Math.floor(attrStage*costModifier).
+     *
+     * @param key attribute key
+     * @return calculated cost of single attribute upgrade
+     */
+    public int getAttributeUpCost(String key){
+        return Math.max(0,SkillAPI.getAttributeManager().getAttribute(key).getCostBase() + (int) Math.floor((getInvestedAttributeStage(key)+1)*SkillAPI.getAttributeManager().getAttribute(key).getCostMod()));
+    }
+    /**
+     * Calculating cost using the formula:
+     * costBase + (int) Math.floor(attrStage*costModifier).
+     *
+     * OVERLOAD to check cost of certain stage:
+     * mod = -1 is e.g. of previous stage,
+     * mod = 0 is e.g. of current stage,
+     * mod = 1 is e.g. default cost of next stage.
+     *
+     * @param key attribute key
+     * @param modifier stage number modifier
+     * @return calculated cost of single attribute upgrade
+     */
+    public int getAttributeUpCost(String key, Integer modifier){
+        int selectedStage = getInvestedAttributeStage(key)+modifier;
+        return Math.max(0,SkillAPI.getAttributeManager().getAttribute(key).getCostBase() + (int) Math.floor(selectedStage*SkillAPI.getAttributeManager().getAttribute(key).getCostMod()));
+    }
+    /**
+     * Calculating cost using the formula:
+     * costBase + (int) Math.floor(attrStage*costModifier).
+     *
+     * OVERLOAD to check total cost of upgrading
+     * [from] stage --> [to] stage
+     * where [from] is starting stage
+     * and where [to] is target stage
+     *
+     * @param key attribute key
+     * @param from starting stage
+     * @param to target stage
+     * @return calculated cost of single attribute upgrade
+     */
+    public int getAttributeUpCost(String key, Integer from, Integer to){
+        int totalCost = 0;
+        for (int i = from+1; i <= to; i++){ // iomatix: so if from = 2 then first upgrade is from 2 to 3 (from+1)
+            totalCost += Math.max(0,SkillAPI.getAttributeManager().getAttribute(key).getCostBase()+ (int) Math.floor(i*SkillAPI.getAttributeManager().getAttribute(key).getCostMod()));
+        }
+        return totalCost;
+    }
 
     /**
-     * Gives the player attribute points without costing
+     * Upgrades the player attribute stage without costing
      * attribute points.
      *
      * @param key    attribute to give points for
      * @param amount amount to give
      */
     public void giveAttribute(String key, int amount) {
-        key = key.toLowerCase();
-        int current = getInvestedAttribute(key);
+        key = key.toLowerCase(); // iomatix: is it necessary?
+        int currentStage = getInvestedAttributeStage(key);
+        int invested = getInvestedAttribute(key);
         int max     = SkillAPI.getAttributeManager().getAttribute(key).getMax();
-        amount = Math.min(amount + current, max);
-        if (amount > current) {
-            attributes.put(key, amount);
+
+        amount = Math.min(amount + currentStage, max);
+        if (amount > currentStage) {
+            attrUpStages.put(key, amount); // iomatix: attr stage goes up by the given value
+            attributes.put(key,invested+getAttributeUpCost(key, currentStage, currentStage+amount)); // let's increase totals value for now <- it's just one line!
+
             this.updatePlayerStat(getPlayer());
         }
     }
@@ -504,8 +587,11 @@ public class PlayerData {
      * @param key attribute key
      */
     public boolean refundAttribute(String key) {
-        key = key.toLowerCase();
-        int current = getInvestedAttribute(key);
+        key = key.toLowerCase(); // iomatix: is this line necessary ? if yes there should be method getKey which returns key.toLowerCase(); and applied everywhere
+        int current = getInvestedAttributeStage(key); // iomatix: get current stage
+        int invested = getInvestedAttribute(key); // iomatix: the total invested
+        int currentCost = getAttributeUpCost(key, 0); // iomatix: the cost [from] previous --> [to] current stage
+
         if (current > 0) {
             PlayerRefundAttributeEvent event = new PlayerRefundAttributeEvent(this, key);
             Bukkit.getPluginManager().callEvent(event);
@@ -513,10 +599,12 @@ public class PlayerData {
                 return false;
             }
 
-            attribPoints += 1;
-            attributes.put(key, current - 1);
+            attribPoints += currentCost; // iomatix: get the current stage cost back
+            attributes.put(key, invested - currentCost); // iomatix: the fix for total spent attributes
+            attrUpStages.put(key, current - 1); // iomatix: single step back to previous stage
             if (current - 1 <= 0) {
                 attributes.remove(key);
+                attrUpStages.remove(key);
             }
             this.updatePlayerStat(getPlayer());
 
@@ -527,11 +615,14 @@ public class PlayerData {
 
     /**
      * Refunds all spent attribute points for a specific attribute
+     *
+     * @param key attribute key
      */
     public void refundAttributes(String key) {
-        key = key.toLowerCase();
-        attribPoints += getInvestedAttribute(key);
+        key = key.toLowerCase(); // iomatix: is it necessary ? it's not applied everywhere, there should be method getKey() implemented if necessary
+        attribPoints += getInvestedAttribute(key); // alternative totalCost==>getAttributeUpCost(key, 0, getInvestedAttributeStage(key)); // iomatix: alternative calculate total cost in points
         attributes.remove(key);
+        attrUpStages.remove(key); // iomatix: reset to stage 0 by removing the mapping
         this.updatePlayerStat(getPlayer());
     }
 
@@ -701,7 +792,7 @@ public class PlayerData {
     }
 
     /**
-     * Retrieves the player's attribute data.
+     * Retrieves the player's attribute data regarding total amounts spent.
      * Modifying this will modify the player's
      * actual data.
      *
@@ -710,6 +801,18 @@ public class PlayerData {
     public HashMap<String, Integer> getAttributeData() {
         return attributes;
     }
+
+    /**
+     * Retrieves the player's attribute data regarding current stages.
+     * Modifying this will modify the player's
+     * actual data.
+     *
+     * @return the player's attribute data
+     */
+    public HashMap<String, Integer> getAttributeStageData() {
+        return attrUpStages;
+    }
+
 
     /**
      * Checks if the owner has a skill by name. This is not case-sensitive
@@ -1474,6 +1577,7 @@ public class PlayerData {
      */
     public void resetAttribs() {
         attributes.clear();
+        attrUpStages.clear();
         attribPoints = 0;
         for (PlayerClass c : classes.values()) {
             GroupSettings s = c.getData().getGroupSettings();

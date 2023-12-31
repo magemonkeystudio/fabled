@@ -37,14 +37,21 @@ import mc.promcteam.engine.mccore.commands.IFunction;
 import mc.promcteam.engine.mccore.config.Filter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A command that gives a player class experience
  */
-public class CmdForcePoints implements IFunction {
+public class CmdForcePoints implements IFunction, TabCompleter {
     private static final String NOT_PLAYER   = "not-player";
     private static final String NOT_GROUP   = "not-group";
     private static final String NOT_NUMBER   = "not-number";
@@ -182,5 +189,20 @@ public class CmdForcePoints implements IFunction {
             }
             default -> CommandManager.displayUsage(cmd, sender);
         }
+    }
+
+    @Override
+    @Nullable
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        if (args.length == 1) {
+            return ConfigurableCommand.getTabCompletions(List.of("add", "set"), new String[]{args[0]});
+        } else if (args.length == 2) {
+            return ConfigurableCommand.getPlayerTabCompletions(commandSender, args[1]);
+        } else if (args.length > 2 && !args[2].isBlank()) {
+            int i = CmdExp.IS_NUMBER.matcher(args[2]).matches() ? 3 : 2;
+            if (i >= args.length) return null;
+            return ConfigurableCommand.getTabCompletions(SkillAPI.getGroups(), Arrays.copyOfRange(args, i, args.length));
+        }
+        return null;
     }
 }

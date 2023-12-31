@@ -28,18 +28,26 @@ package com.sucy.skill.cmd;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerData;
+import com.sucy.skill.api.skills.SkillShot;
 import mc.promcteam.engine.mccore.commands.CommandManager;
 import mc.promcteam.engine.mccore.commands.ConfigurableCommand;
 import mc.promcteam.engine.mccore.commands.IFunction;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Command to bind a skill to an item
  */
-public class CmdCast implements IFunction {
+public class CmdCast implements IFunction, TabCompleter {
     private static final String NOT_SKILL     = "not-skill";
     private static final String NOT_AVAILABLE = "not-available";
     private static final String NOT_UNLOCKED  = "not-unlocked";
@@ -69,9 +77,7 @@ public class CmdCast implements IFunction {
             PlayerData player = SkillAPI.getPlayerData((Player) sender);
 
             // Get the skill name
-            String skill = args[0];
-            for (int i = 1; i < args.length; i++)
-                skill += " " + args[i];
+            String skill = String.join(" ", args);
 
             // Invalid skill
             if (!SkillAPI.isSkillRegistered(skill))
@@ -96,5 +102,15 @@ public class CmdCast implements IFunction {
         // Invalid arguments
         else
             CommandManager.displayUsage(command, sender, 1);
+    }
+
+    @Override
+    @Nullable
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        if (!(commandSender instanceof Player)) return null;
+        return ConfigurableCommand.getTabCompletions(SkillAPI.getPlayerData((Player) commandSender).getSkills().stream()
+                .filter(playerSkill -> playerSkill.getData() instanceof SkillShot)
+                .map(playerSkill -> playerSkill.getData().getKey())
+                .collect(Collectors.toList()), args);
     }
 }

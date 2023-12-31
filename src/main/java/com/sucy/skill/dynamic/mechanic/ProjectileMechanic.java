@@ -45,8 +45,11 @@ import com.sucy.skill.task.RepeatingEntityTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
@@ -63,6 +66,11 @@ import java.util.function.Supplier;
 public class ProjectileMechanic extends MechanicComponent {
     private static final Vector                                       UP                 = new Vector(0, 1, 0);
     private static final String                                       PROJECTILE         = "projectile";
+    private static final String                                       OVERRIDE_ITEM      = "override-item";
+    private static final String                                       MATERIAL           = "material";
+    private static final String                                       ENCHANTED          = "enchanted";
+    private static final String                                       DURABILITY         = "durability";
+    private static final String                                       CMD                = "custom-model-data";
     private static final String                                       FLAMING            = "flaming";
     private static final String                                       COST               = "cost";
     private static final String                                       VELOCITY           = "velocity";
@@ -227,6 +235,28 @@ public class ProjectileMechanic extends MechanicComponent {
             }
             SkillAPI.setMeta(p, MechanicListener.SKILL_LEVEL, level);
             SkillAPI.setMeta(p, MechanicListener.P_CALL, this);
+        }
+
+        if (settings.getBool(OVERRIDE_ITEM)) {
+            ItemStack itemStack = new ItemStack(Material.valueOf(settings.getString(MATERIAL, "Snowball")
+                    .toUpperCase()
+                    .replace(" ", "_")));
+            ItemMeta meta = itemStack.getItemMeta();
+            if (meta != null) {
+                if (settings.getBool(ENCHANTED, false)) {
+                    meta.addEnchant(Enchantment.DURABILITY, 1, false);
+                }
+                meta.setCustomModelData(settings.getInt(CMD, 0));
+                if (meta instanceof Damageable) {
+                    ((Damageable) meta).setDamage(settings.getInt(DURABILITY));
+                }
+                itemStack.setItemMeta(meta);
+            }
+            for (Projectile p : projectiles) {
+                if (p instanceof ThrowableProjectile) {
+                    ((ThrowableProjectile) p).setItem(itemStack);
+                }
+            }
         }
 
         if (settings.getBool(USE_EFFECT, false)) {

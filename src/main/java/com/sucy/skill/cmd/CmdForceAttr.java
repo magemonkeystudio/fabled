@@ -36,13 +36,20 @@ import mc.promcteam.engine.mccore.config.Filter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A command that resets the attributes of a player
  */
-public class CmdForceAttr implements IFunction {
+public class CmdForceAttr implements IFunction, TabCompleter {
     private static final String NOT_PLAYER = "not-player";
     private static final String RESET      = "reset";
     private static final String RESET_ONE  = "reset-one";
@@ -122,5 +129,16 @@ public class CmdForceAttr implements IFunction {
                         Filter.AMOUNT.setReplacement(args[2]));
             }
         }
+    }
+
+    @Override
+    @Nullable
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        if (args.length == 1) {
+            return ConfigurableCommand.getPlayerTabCompletions(commandSender, args[0]);
+        } else if (args.length > 1) {
+            return ConfigurableCommand.getTabCompletions(SkillAPI.getAttributeManager().getKeys(), Arrays.copyOfRange(args, 1, args.length));
+        }
+        return null;
     }
 }

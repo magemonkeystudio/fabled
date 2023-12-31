@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -129,6 +130,7 @@ public class ComponentRegistry {
         register(new ArmorMechanic());
         register(new ArmorStandMechanic());
         register(new ArmorStandPoseMechanic());
+        register(new ArmorStandRemoveMechanic());
         register(new AttributeMechanic());
         register(new BlockMechanic());
         register(new BuffMechanic());
@@ -212,6 +214,18 @@ public class ComponentRegistry {
         register(new WolfMechanic());
     }
 
+    public static Map<ComponentType, Map<String, Class<?>>> getComponents() {
+        return Collections.unmodifiableMap(COMPONENTS);
+    }
+
+    public static Map<String, Trigger<?>> getTriggers() {
+        return Collections.unmodifiableMap(TRIGGERS);
+    }
+
+    public static Map<Trigger<?>, EventExecutor> getExecutors() {
+        return Collections.unmodifiableMap(EXECUTORS);
+    }
+
     public static Trigger<?> getTrigger(final String key) {
         return TRIGGERS.get(key.toUpperCase().replace(' ', '_'));
     }
@@ -279,11 +293,16 @@ public class ComponentRegistry {
         }
 
         final CustomComponent component = (CustomComponent) obj;
-        builder.append("{\"type\":\"").append(component.getType().name())
-                .append("\",\"key\":\"").append(component.getKey())
-                .append("\",\"display\":\"").append(component.getDisplayName())
-                .append("\",\"container\":\"").append(component.isContainer())
-                .append("\",\"description\":\"").append(component.getDescription())
+        builder.append("{\"type\":\"")
+                .append(component.getType().name())
+                .append("\",\"key\":\"")
+                .append(component.getKey())
+                .append("\",\"display\":\"")
+                .append(component.getDisplayName())
+                .append("\",\"container\":\"")
+                .append(component.isContainer())
+                .append("\",\"description\":\"")
+                .append(component.getDescription())
                 .append("\",\"options\":[");
 
         boolean first = true;
@@ -293,10 +312,14 @@ public class ComponentRegistry {
             }
             first = false;
 
-            builder.append("{\"type\":\"").append(option.type)
-                    .append("\",\"key\":\"").append(option.key)
-                    .append("\",\"display\":\"").append(option.name)
-                    .append("\",\"description\":\"").append(option.description)
+            builder.append("{\"type\":\"")
+                    .append(option.type)
+                    .append("\",\"key\":\"")
+                    .append(option.key)
+                    .append("\",\"display\":\"")
+                    .append(option.name)
+                    .append("\",\"description\":\"")
+                    .append(option.description)
                     .append("\"");
             option.extra.forEach((key, value) -> builder.append(",\"").append(key).append("\":").append(value));
             builder.append("}");

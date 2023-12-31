@@ -10,6 +10,7 @@ import org.bukkit.entity.LivingEntity;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ArmorStandManager {
@@ -59,11 +60,11 @@ public class ArmorStandManager {
      * @param key    armor stand key
      * @return active armor stand or null if not found
      */
-    public static ArmorStandInstance getArmorStand(LivingEntity target, String key) {
+    public static Optional<ArmorStandInstance> getArmorStand(LivingEntity target, String key) {
         if (!instances.containsKey(target)) {
-            return null;
+            return Optional.empty();
         }
-        return instances.get(target).getArmorStands(key);
+        return Optional.ofNullable(instances.get(target).getArmorStands(key));
     }
 
     /**
