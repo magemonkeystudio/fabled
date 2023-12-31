@@ -601,6 +601,8 @@ const targetOptions = (): ComponentOption[] => {
 		.setTooltip('The alignment of targets to get'),
 		new BooleanSelect('Through Wall', 'wall', false)
 			.setTooltip('Whether to allow targets to be on the other side of a wall'),
+		new BooleanSelect('Include Invulnerable', 'invulnerable', false)
+			.setTooltip('Whether to target on invulnerable entities'),
 		new DropdownSelect('Include Caster', 'caster', ['True', 'False', 'In area'], 'False')
 			.setTooltip('Whether to include the caster in the target list. "True" will always include them, "False" will never, and "In area" will only if they are within the targeted area'),
 		new AttributeSelect('Max Targets', 'max', 99)
@@ -1596,31 +1598,32 @@ class SlotCondition extends ProCondition {
 }
 
 class StatusCondition extends ProCondition {
-	public constructor() {
-		super({
-			name:         'Status',
-			description:  'Applies child components when the target has the status condition',
-			data:         [
-				new DropdownSelect('Type', 'type', ['Active', 'Not Active'])
-					.setTooltip('Whether the status should be active'),
-				new DropdownSelect('Status', 'status',
-					[
-						'Any',
-						'Absorb',
-						'Curse',
-						'Disarm',
-						'Invincible',
-						'Root',
-						'Silence',
-						'Stun'
-					])
-					.setTooltip('The status to look for')
-			],
-			summaryItems: ['type', 'status']
-		});
-	}
+    public constructor() {
+        super({
+            name:         'Status',
+            description:  'Applies child components when the target has the status condition',
+            data:         [
+                new DropdownSelect('Type', 'type', ['Active', 'Not Active'])
+                    .setTooltip('Whether the status should be active'),
+                new DropdownSelect('Status', 'status',
+                    [
+                        'Any',
+                        'Absorb',
+                        'Curse',
+                        'Disarm',
+                        'Invincible',
+                        'Invulnerable',
+                        'Root',
+                        'Silence',
+                        'Stun'
+                    ])
+                    .setTooltip('The status to look for')
+            ],
+            summaryItems: ['type', 'status']
+        });
+    }
 
-	public static override new = () => new this();
+    public static override new = () => new this();
 }
 
 class TimeCondition extends ProCondition {
@@ -4127,27 +4130,28 @@ class StatMechanic extends ProMechanic {
 }
 
 class StatusMechanic extends ProMechanic {
-	public constructor() {
-		super({
-			name:         'Status',
-			description:  'Applies a status effect to the target for a duration',
-			data:         [
-				new DropdownSelect('Status', 'status', ['Absorb',
-					'Curse',
-					'Disarm',
-					'Invincible',
-					'Root',
-					'Silence',
-					'Stun'], 'Stun')
-					.setTooltip('The status to apply'),
-				new AttributeSelect('Duration', 'duration', 3, 1)
-					.setTooltip('How long in seconds to apply the status')
-			],
-			summaryItems: ['status', 'duration']
-		});
-	}
+    public constructor() {
+        super({
+            name:         'Status',
+            description:  'Applies a status effect to the target for a duration',
+            data:         [
+                new DropdownSelect('Status', 'status', ['Absorb',
+                    'Curse',
+                    'Disarm',
+                    'Invincible',
+                    'Invulnerable',
+                    'Root',
+                    'Silence',					
+                    'Stun',], 'Stun')
+                    .setTooltip('The status to apply'),
+                new AttributeSelect('Duration', 'duration', 3, 1)
+                    .setTooltip('How long in seconds to apply the status')
+            ],
+            summaryItems: ['status', 'duration']
+        });
+    }
 
-	public static override new = () => new this();
+    public static override new = () => new this();
 }
 
 class TauntMechanic extends ProMechanic {
