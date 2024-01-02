@@ -1598,32 +1598,32 @@ class SlotCondition extends ProCondition {
 }
 
 class StatusCondition extends ProCondition {
-    public constructor() {
-        super({
-            name:         'Status',
-            description:  'Applies child components when the target has the status condition',
-            data:         [
-                new DropdownSelect('Type', 'type', ['Active', 'Not Active'])
-                    .setTooltip('Whether the status should be active'),
-                new DropdownSelect('Status', 'status',
-                    [
-                        'Any',
-                        'Absorb',
-                        'Curse',
-                        'Disarm',
-                        'Invincible',
-                        'Invulnerable',
-                        'Root',
-                        'Silence',
-                        'Stun'
-                    ])
-                    .setTooltip('The status to look for')
-            ],
-            summaryItems: ['type', 'status']
-        });
-    }
+	public constructor() {
+		super({
+			name:         'Status',
+			description:  'Applies child components when the target has the status condition',
+			data:         [
+				new DropdownSelect('Type', 'type', ['Active', 'Not Active'])
+					.setTooltip('Whether the status should be active'),
+				new DropdownSelect('Status', 'status',
+					[
+						'Any',
+						'Absorb',
+						'Curse',
+						'Disarm',
+						'Invincible',
+						'Invulnerable',
+						'Root',
+						'Silence',
+						'Stun'
+					])
+					.setTooltip('The status to look for')
+			],
+			summaryItems: ['type', 'status']
+		});
+	}
 
-    public static override new = () => new this();
+	public static override new = () => new this();
 }
 
 class TimeCondition extends ProCondition {
@@ -4130,28 +4130,28 @@ class StatMechanic extends ProMechanic {
 }
 
 class StatusMechanic extends ProMechanic {
-    public constructor() {
-        super({
-            name:         'Status',
-            description:  'Applies a status effect to the target for a duration',
-            data:         [
-                new DropdownSelect('Status', 'status', ['Absorb',
-                    'Curse',
-                    'Disarm',
-                    'Invincible',
-                    'Invulnerable',
-                    'Root',
-                    'Silence',					
-                    'Stun',], 'Stun')
-                    .setTooltip('The status to apply'),
-                new AttributeSelect('Duration', 'duration', 3, 1)
-                    .setTooltip('How long in seconds to apply the status')
-            ],
-            summaryItems: ['status', 'duration']
-        });
-    }
+	public constructor() {
+		super({
+			name:         'Status',
+			description:  'Applies a status effect to the target for a duration',
+			data:         [
+				new DropdownSelect('Status', 'status', ['Absorb',
+					'Curse',
+					'Disarm',
+					'Invincible',
+					'Invulnerable',
+					'Root',
+					'Silence',
+					'Stun'], 'Stun')
+					.setTooltip('The status to apply'),
+				new AttributeSelect('Duration', 'duration', 3, 1)
+					.setTooltip('How long in seconds to apply the status')
+			],
+			summaryItems: ['status', 'duration']
+		});
+	}
 
-    public static override new = () => new this();
+	public static override new = () => new this();
 }
 
 class TauntMechanic extends ProMechanic {
@@ -4808,12 +4808,12 @@ export const initComponents = () => {
 		INIT:        { name: 'Initialize', component: InitializeTrigger },
 		KILL:        { name: 'Kill', component: KillTrigger },
 		LAND:        { name: 'Land', component: LandTrigger },
-		LAUNCH:      { name: 'Launch', component: LaunchTrigger },
 		LEFT_CLICK:  { name: 'Left Click', component: LeftClickTrigger },
 		RIGHT_CLICK: { name: 'Right Click', component: RightClickTrigger },
 		MOVE:        { name: 'Move', component: MoveTrigger },
 		PROJ_HIT:    { name: 'Projectile Hit', component: ProjectileHitTrigger },
-		PROJ_TICK:   { name: 'Projectile Launch', component: ProjectileTickTrigger },
+		PROJ_LAUNCH: { name: 'Projectile Launch', component: LaunchTrigger },
+		PROJ_TICK:   { name: 'Projectile Tick', component: ProjectileTickTrigger },
 		SIGNAL:      { name: 'Signal', component: SignalTrigger },
 		SHIELD:      { name: 'Shield', component: ShieldTrigger },
 		SKILL_CAST:  { name: 'Skill Cast', component: SkillCastTrigger },
