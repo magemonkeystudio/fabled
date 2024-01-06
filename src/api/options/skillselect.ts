@@ -1,4 +1,3 @@
-import type { SvelteComponent } from 'svelte';
 import type { ComponentOption } from '$api/options/options';
 import { Requirements }         from '$api/options/options';
 import type { YAMLObject }      from '$api/yaml';
@@ -6,10 +5,10 @@ import SkillSelectOption        from '$components/options/SkillSelectOption.svel
 import ProSkill                 from '$api/proskill';
 
 export default class SkillSelect extends Requirements implements ComponentOption {
-	component: typeof SvelteComponent<any>               = SkillSelectOption;
+	component                                       = SkillSelectOption;
 	name: string;
 	key: string;
-	data: ProSkill[] | string[] | ProSkill | string = [];
+	data: ProSkill[] | ProSkill | string[] | string = [];
 	tooltip: string | undefined                     = undefined;
 	multiple                                        = true;
 
@@ -31,8 +30,8 @@ export default class SkillSelect extends Requirements implements ComponentOption
 		return select;
 	};
 
-	getData = (): { [key: string]: any } => {
-		const data: { [key: string]: any } = {};
+	getData = (): { [key: string]: ProSkill[] | ProSkill | string[] | string } => {
+		const data: { [key: string]: ProSkill[] | ProSkill | string[] | string } = {};
 
 		if (this.data instanceof Array)
 			data[this.key] = this.data.map(skill => skill instanceof ProSkill ? skill.name : skill);

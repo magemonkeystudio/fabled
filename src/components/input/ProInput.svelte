@@ -1,11 +1,9 @@
 <script lang='ts'>
-	import { fly, slide } from 'svelte/transition';
-	import { onMount }    from 'svelte';
+	import { fly, slide, type TransitionConfig } from 'svelte/transition';
+	import { onMount }                           from 'svelte';
 
 	export let tooltip: string | undefined        = undefined;
 	export let label: string | undefined          = undefined;
-	export let type: 'string' | 'number'          = 'string';
-	export let intMode                            = false;
 	export let value: string | number | undefined = undefined;
 	export let placeholder: string | undefined    = undefined;
 	export let nowrap                             = false;
@@ -22,11 +20,19 @@
 		}
 	});
 
-	const maybe = (node: Element, options: unknown) => {
+	const maybe = (node: Element, options: {
+		fn: (node: Element, options: object) => TransitionConfig
+	} & TransitionConfig & { x?: number }) => {
 		if (disableAnimation) {
 			options.duration = 0;
 		}
 		return options.fn(node, options);
+	};
+
+	const handleMouseEnter = (e: MouseEvent) => {
+		if (!e.target) return;
+		ypos    = (<HTMLElement>e.target).getBoundingClientRect().top;
+		hovered = true;
 	};
 </script>
 
@@ -41,13 +47,11 @@
 			</div>
 		{/if}
 		<span class='display'
+					role='definition'
 					class:nowrap
 					in:maybe={{fn: slide}}
 					out:slide
-					on:mouseenter={(e) => {
-          ypos = e.target.getBoundingClientRect().top;
-          hovered = true;
-        }}
+					on:mouseenter={handleMouseEnter}
 					on:mouseleave={() => hovered = false}>
     {label || ''}
 			<slot name='label' />

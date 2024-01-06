@@ -19,13 +19,16 @@
 	import { addSkillFolder, cloneSkill } from '../../data/skill-store';
 	import { animationEnabled }           from '../../data/settings';
 	import { base }                       from '$app/paths';
+	import { createEventDispatcher }      from 'svelte';
 
-	export let delay                                 = 0;
-	export let direction: 'right' | 'left'           = 'left';
-	export let data: ProSkill | ProClass | undefined = undefined;
+	export let delay                       = 0;
+	export let direction: 'right' | 'left' = 'left';
+	export let data: ProSkill | ProClass;
 
 	let over     = false;
 	let deleting = false;
+
+	const dispatch = createEventDispatcher();
 
 	const startDrag = (e: DragEvent) => {
 		if (!data) {
@@ -97,7 +100,9 @@
 		 on:dragover|preventDefault={dragOver}
 		 on:dragleave={() => over = false}
 		 on:click
-		 on:keypress
+		 on:keypress={(e) => {
+			 if (e.key === 'Enter') dispatch('click');
+		 }}
 		 tabindex='0'
 		 role='menuitem'
 		 in:maybe={{fn: fly, x: (direction === "left" ? -100 : 100), duration: 500, delay: $sidebarOpen ? 0 : delay}}

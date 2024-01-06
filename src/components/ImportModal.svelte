@@ -44,6 +44,8 @@
 			<div>Import from URL</div>
 			<input bind:value={importUrl} />
 			<div class='button'
+					 tabindex='0'
+					 role='button'
 					 on:click={importFromUrl}
 					 on:keypress={e => e.key === "Enter" && importFromUrl()}
 			>Import

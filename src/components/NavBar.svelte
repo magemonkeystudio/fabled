@@ -1,57 +1,78 @@
-<script lang="ts">
-  import { active, activeType, setImporting, toggleSidebar } from "../data/store";
-  import { get }                                             from "svelte/store";
-  import { createPaste }                                     from "$api/hastebin";
-  import ProClass                                            from "$api/proclass";
-  import ProSkill                                            from "$api/proskill";
+<script lang='ts'>
+	import { active, activeType, setImporting, toggleSidebar } from '../data/store';
+	import { get }                                             from 'svelte/store';
+	import { createPaste }                                     from '$api/hastebin';
+	import ProClass                                            from '$api/proclass';
+	import ProSkill                                            from '$api/proskill';
 
-  const haste = () => {
-    let act: ProClass | ProSkill | undefined = get(active);
-    if (!act) return;
+	const haste = () => {
+		let act: ProClass | ProSkill | undefined = get(active);
+		if (!act) return;
 
-    let data = act.serializeYaml().toString();
-    createPaste(data)
-      .then((urlToPaste) => {
-        navigator?.clipboard?.writeText(urlToPaste);
-        window.open(urlToPaste);
-      })
-      .catch((requestError) => console.error(requestError));
-  };
+		let data = act.serializeYaml().toString();
+		createPaste(data)
+			.then((urlToPaste) => {
+				navigator?.clipboard?.writeText(urlToPaste);
+				window.open(urlToPaste);
+			})
+			.catch((requestError) => console.error(requestError));
+	};
 
-  const openImport = () => {
-    setImporting(true);
-  };
-
-  const toggle = (e: MouseEvent) => {
-    e.stopPropagation();
-    toggleSidebar();
-  };
+	const openImport = () => {
+		setImporting(true);
+	};
 </script>
 
-<div class="nav-wrap">
-  <nav>
-    <div class="chip hamburger" on:click={toggle}>
-      <span class="material-symbols-rounded">menu</span>
-    </div>
+<div class='nav-wrap'>
+	<nav>
+		<div class='chip hamburger'
+				 tabindex='0'
+				 role='button'
+				 on:click|stopPropagation={toggleSidebar}
+				 on:keypress={(e) => {
+					 if (e.key === 'Enter') {
+             e.stopPropagation();
+             toggleSidebar();
+           }
+         }}
+		>
+			<span class='material-symbols-rounded'>menu</span>
+		</div>
 
-    <div/>
+		<div />
 
-    <div class="transfer">
-      <div class="chip import"
-           on:click={openImport}
-           title="Import Data">
-        Import
-      </div>
+		<div class='transfer'>
+			<div class='chip import'
+					 tabindex='0'
+					 role='button'
+					 on:click|stopPropagation={openImport}
+					 on:keypress={(e) => {
+						 if (e.key === 'Enter') {
+							 e.stopPropagation();
+							 openImport();
+						 }
+					 }}
+					 title='Import Data'>
+				Import
+			</div>
 
-      {#if $activeType}
-        <div class="chip share"
-             on:click={haste}
-             title="Share {$activeType === 'class' ? 'Class' : 'Skill'}">
-          Share {$activeType === 'class' ? 'Class' : 'Skill'}
-        </div>
-      {/if}
-    </div>
-  </nav>
+			{#if $activeType}
+				<div class='chip share'
+						 tabindex='0'
+						 role='button'
+						 on:click|stopPropagation={haste}
+						 on:keypress={(e) => {
+							 if (e.key === 'Enter') {
+								 e.stopPropagation();
+								 haste();
+							 }
+						 }}
+						 title="Share {$activeType === 'class' ? 'Class' : 'Skill'}">
+					Share {$activeType === 'class' ? 'Class' : 'Skill'}
+				</div>
+			{/if}
+		</div>
+	</nav>
 </div>
 
 <style>
@@ -59,22 +80,6 @@
         position: sticky;
         top: 0;
         z-index: 25;
-    }
-
-    label {
-        display: flex;
-        font-size: 1.5rem;
-        font-weight: bold;
-        align-items: center;
-        justify-content: center;
-    }
-
-    select {
-        margin-left: 1rem;
-        font-family: inherit;
-        font-weight: inherit;
-        font-size: 1rem;
-        border-radius: 0.5rem;
     }
 
     nav {

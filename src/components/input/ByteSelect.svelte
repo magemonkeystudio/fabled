@@ -8,7 +8,14 @@
 <div class="input">
   {#each data as entry, i}
     <div class="entry"
+         tabindex='0'
+         role='menuitem'
          on:click={() => value = value ^ Math.pow(2, i)}
+         on:keypress={(e) => {
+           if (e.key === 'Enter') {
+             value = value ^ Math.pow(2, i);
+           }
+         }}
          class:selected={value & Math.pow(2, i)}>
       {entry}
     </div>

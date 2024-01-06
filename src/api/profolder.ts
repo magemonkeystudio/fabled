@@ -3,8 +3,8 @@ import type ProClass from "./proclass";
 import { removeFolder, rename, updateFolders } from "../data/store";
 
 export default class ProFolder {
+  public dataType = 'folder';
   public key = {};
-  public isFolder = true;
   public open = false;
   public name = "Folder";
   public data: Array<ProFolder | ProClass | ProSkill> = [];
@@ -14,7 +14,7 @@ export default class ProFolder {
     if (data) {
       this.data = data;
       data.forEach(d => {
-        if (d instanceof ProFolder && d.isFolder) d.updateParent(this);
+        if (d instanceof ProFolder && d.dataType === 'folder') d.updateParent(this);
       });
     }
   }
