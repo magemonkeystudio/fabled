@@ -17,6 +17,8 @@
 	import { activeModal, closeModal, modalData, openModal }                          from '../data/modal-service';
 	import SettingsModal
 																																										from '$components/modal/SettingsModal.svelte';
+	import SocketPanel
+																																										from '$components/SocketPanel.svelte';
 
 	let dragging    = false;
 	let displaySave = false;
@@ -93,6 +95,7 @@
 		<slot />
 	</div>
 </div>
+<SocketPanel />
 <div id='floating-buttons'>
 	<div class='button backup' title='Backup All Data'
 			 tabindex='0'

@@ -1,14 +1,35 @@
-import { parseYAML, YAMLObject }       from '$api/yaml';
-import type { Unsubscriber, Writable } from 'svelte/store';
-import { get, writable }               from 'svelte/store';
-import ProFolder                       from '$api/profolder';
-import { sort }                        from '$api/api';
-import { browser }                     from '$app/environment';
-import ProSkill                        from '$api/proskill';
-import { active, rename }              from './store';
-import { goto }                        from '$app/navigation';
-import { base }                        from '$app/paths';
-import { initialized }                 from '$api/components/registry';
+import { parseYAML, YAMLObject } from '$api/yaml';
+import type { Writable }         from 'svelte/store';
+import { get, writable }         from 'svelte/store';
+import ProFolder                 from '$api/profolder';
+import { sort }                  from '$api/api';
+import { browser }               from '$app/environment';
+import ProSkill                  from '$api/proskill';
+import { active, rename }        from './store';
+import { goto }                  from '$app/navigation';
+import { base }                  from '$app/paths';
+import { initialized }           from '$api/components/registry';
+import { socketService }         from '$api/socket/socket-connector';
+
+const loadSkillsFromServer = async () => {
+	const serverSkills: string[] = await socketService.getSkills();
+	if (!serverSkills) return;
+
+	const tempSkills = get(skills);
+	serverSkills.forEach(c => {
+		const skill = new ProSkill({ name: c, location: 'server' });
+		tempSkills.push(skill);
+	});
+	skills.set(tempSkills);
+};
+
+const removeServerSkills = () => {
+	const tempSkills = get(skills);
+	skills.set(tempSkills.filter(c => c.location !== 'server'));
+};
+
+socketService.onConnect(loadSkillsFromServer);
+socketService.onDisconnect(removeServerSkills);
 
 let isLegacy = false;
 

@@ -1,10 +1,11 @@
-import type ProClass                  from '$api/proclass';
+import type ProClass             from '$api/proclass';
 import type ProSkill             from '$api/proskill';
 import { active, isShowClasses } from '../../../../../data/store';
 import { get }                   from 'svelte/store';
 import { redirect }              from '@sveltejs/kit';
 import { classes }               from '../../../../../data/class-store';
 import { skills }                from '../../../../../data/skill-store';
+import { socketService }         from '$api/socket/socket-connector';
 import { parseYAML }             from '$api/yaml';
 import { ProAttribute }          from '$api/proattribute';
 import { attributes }            from '../../../../../data/attribute-store';
@@ -43,7 +44,12 @@ export async function load({ params }: any) {
 			if (data.location === 'local') {
 				data.load(parseYAML(localStorage.getItem(`sapi.${isSkill ? 'skill' : 'class'}.${data.name}`) || ''));
 			} else {
-				// TODO Load data from server
+				let yaml: string;
+				if (params.type == 'class') yaml = await socketService.getClassYaml(data.name);
+				else yaml = await socketService.getSkillYaml(data.name);
+
+				const parsedYaml = parseYAML(yaml);
+				data.load(parsedYaml);
 			}
 			if (isSkill) (<ProSkill>data).postLoad();
 		}

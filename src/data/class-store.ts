@@ -9,6 +9,27 @@ import ProClass                  from '$api/proclass';
 import ProSkill                  from '$api/proskill';
 import { goto }                  from '$app/navigation';
 import { base }                  from '$app/paths';
+import { socketService }         from '$api/socket/socket-connector';
+
+const loadClassesFromServer = async () => {
+	const serverClasses: string[] = await socketService.getClasses();
+	if (!serverClasses) return;
+
+	const tempClasses = get(classes);
+	serverClasses.forEach(c => {
+		const clazz = new ProClass({ name: c, location: 'server' });
+		tempClasses.push(clazz);
+	});
+	classes.set(tempClasses);
+};
+
+const removeServerClasses = () => {
+	const tempClasses = get(classes);
+	classes.set(tempClasses.filter(c => c.location !== 'server'));
+};
+
+socketService.onConnect(loadClassesFromServer);
+socketService.onDisconnect(removeServerClasses);
 
 let isLegacy = false;
 

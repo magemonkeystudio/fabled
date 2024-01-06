@@ -4,6 +4,7 @@ import { redirect }              from '@sveltejs/kit';
 import { skills }                from '../../../../data/skill-store';
 import type ProClass             from '$api/proclass';
 import type ProSkill             from '$api/proskill';
+import { socketService }         from '$api/socket/socket-connector';
 import { parseYAML }             from '$api/yaml';
 
 export const ssr = false;
@@ -33,7 +34,12 @@ export async function load({ params }: any) {
 			if (data.location === 'local') {
 				data.load(parseYAML(localStorage.getItem(`sapi.skill.${data.name}`) || ''));
 			} else {
-				// TODO Load data from server
+				let yaml: string;
+				if (params.type == 'class') yaml = await socketService.getClassYaml(data.name);
+				else yaml = await socketService.getSkillYaml(data.name);
+
+				const parsedYaml = parseYAML(yaml);
+				data.load(parsedYaml);
 			}
 			(<ProSkill>data).postLoad();
 		}

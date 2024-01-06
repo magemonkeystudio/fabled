@@ -18,6 +18,7 @@
 	import Toggle                                              from '../input/Toggle.svelte';
 	import { addSkill, addSkillFolder, skillFolders, skills }  from '../../data/skill-store';
 	import { base }                                            from '$app/paths';
+	import { socketService }                                   from '$api/socket/socket-connector';
 
 	let folders: ProFolder[]                      = [];
 	let classSub: Unsubscriber;
@@ -68,7 +69,8 @@
 	};
 </script>
 
-<svelte:window bind:innerWidth={width} bind:innerHeight={height} bind:scrollY={scrollY} />
+<svelte:window bind:innerWidth={width} bind:innerHeight={height} bind:scrollY={scrollY}
+							 on:beforeunload={() => socketService.disconnect()} />
 
 <div id='sidebar'
 		 transition:squish
