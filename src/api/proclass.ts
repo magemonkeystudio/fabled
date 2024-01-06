@@ -7,9 +7,14 @@ import { toEditorCase, toProperCase }            from './api';
 import type { SkillTree }                        from '$api/SkillTree';
 
 export default class ProClass implements Serializable {
+	dataType = 'class';
+	location: 'local' | 'server' = 'local';
+	loaded                       = false;
+
 	isClass    = true;
 	public key = {};
 	name: string;
+	previousName: string = '';
 	prefix     = '';
 	group      = 'class';
 	manaName   = '&2Mana';
@@ -43,6 +48,8 @@ export default class ProClass implements Serializable {
 	constructor(data?: ProClassData) {
 		this.name   = data ? data.name : 'Class';
 		this.prefix = data?.prefix ? data.prefix : '&6' + this.name;
+		if (!data) return;
+		if (data?.location) this.location = data.location;
 		if (data?.group) this.group = data.group;
 		if (data?.manaName) this.manaName = data.manaName;
 		if (data?.maxLevel) this.maxLevel = data.maxLevel;
@@ -155,5 +162,24 @@ export default class ProClass implements Serializable {
 		this.icon.customModelData = yaml.get('icon-data', this.icon.customModelData);
 		this.icon.lore            = yaml.get('icon-lore', this.icon.lore);
 		this.expSources           = yaml.get('exp-source', this.expSources);
+
+		this.loaded = true;
+	};
+
+	public save = () => {
+		if (!this.name) return;
+
+		if (this.location === 'server') {
+
+			return;
+		}
+
+		const yaml = this.serializeYaml();
+
+		if (this.previousName && this.previousName !== this.name) {
+			localStorage.removeItem('sapi.class.' + this.previousName);
+		}
+		this.previousName = this.name;
+		localStorage.setItem('sapi.class.' + this.name, yaml.toString());
 	};
 }

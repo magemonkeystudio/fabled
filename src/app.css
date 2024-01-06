@@ -101,9 +101,6 @@ hr {
     border-radius: 0.4rem;
     background-color: #0083ef;
     font-weight: bold;
-}
-
-.button:hover {
     cursor: pointer;
 }
 

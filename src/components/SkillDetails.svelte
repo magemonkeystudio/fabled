@@ -1,5 +1,5 @@
 <script lang='ts'>
-    import { saveDataInternal, updateSidebar } from '../data/store';
+    import { updateSidebar } from '../data/store';
     import ProInput                            from './input/ProInput.svelte';
     import type ProSkill                       from '$api/proskill';
     import SearchableSelect                    from './input/SearchableSelect.svelte';
@@ -13,7 +13,7 @@
 
     $: {
         if (data?.name) updateSidebar();
-        saveDataInternal();
+        data.save();
     }
 </script>
 

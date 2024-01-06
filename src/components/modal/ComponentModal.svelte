@@ -3,13 +3,12 @@
 	import ProTarget                from '$api/components/targets';
 	import ProCondition             from '$api/components/conditions';
 	import ProMechanic              from '$api/components/mechanics';
-	import Toggle                   from '$input/Toggle.svelte';
 	import ProInput                 from '$input/ProInput.svelte';
 	import Modal                    from '$components/Modal.svelte';
 	import type ProComponent        from '$api/components/procomponent';
 	import type DropdownSelect      from '$api/options/dropdownselect';
 	import type { ComponentOption } from '$api/options/options';
-	import StringSelectOption       from '$components/options/StringSelectOption.svelte';
+	import BooleanSelectOption      from '$components/options/BooleanSelectOption.svelte';
 
 	export let data: ProComponent | undefined = undefined;
 	let modalOpen                             = true;
@@ -26,27 +25,26 @@
 	{/if}
 	<hr />
 	<div class='component-entry'>
-		<StringSelectOption name='Comment'
-												tooltip='[comment] A comment that will be displayed in the skill editor'
-												bind:data={data.comment}
-												on:save />
+		<ProInput label='Comment'
+							tooltip='[comment] A comment that will be displayed in the skill editor'
+							bind:value={data.comment} />
 		{#if data instanceof ProTrigger && data.name != 'Cast' && data.name != 'Initialize' && data.name != 'Cleanup'}
-			<ProInput label='Mana' tooltip='[mana] Whether this trigger requires the mana cost to activate'>
-				<Toggle bind:data={data.mana} />
-			</ProInput>
-			<ProInput label='Cooldown'
-								tooltip='[cooldown] Whether this trigger requires to be off cooldown to activate'>
-				<Toggle bind:data={data.cooldown} />
-			</ProInput>
+			<BooleanSelectOption name='Mana' tooltip='[mana] Whether this trigger requires the mana cost to activate'
+													 bind:data={data.mana}
+													 on:save />
+			<BooleanSelectOption name='Cooldown'
+													 tooltip='[cooldown] Whether this trigger requires to be off cooldown to activate'
+													 bind:data={data.cooldown}
+													 on:save />
 		{:else if data instanceof ProTarget || data instanceof ProCondition || data instanceof ProMechanic}
 			<ProInput label='Icon Key' bind:value={data.iconKey}
 								tooltip={'[icon-key] The key used by the component in the Icon Lore. If this is set to "example" and has a value name of "value", it can be referenced using the string "{attr:example.value}"'} />
 		{/if}
 		{#if data instanceof ProMechanic}
-			<ProInput label='Counts as Cast'
-								tooltip={'[counts] Whether this mechanic running treats the skill as "casted" and will consume mana and start the cooldown. Set to false if it is a mechanic applled when the skill fails such as cleanup or an error message"'}>
-				<Toggle bind:data={data.countsAsCast} />
-			</ProInput>
+			<BooleanSelectOption name='Counts as Cast'
+													 tooltip='[counts] Whether this mechanic running treats the skill as "casted" and will consume mana and start the cooldown. Set to false if it is a mechanic applled when the skill fails such as cleanup or an error message"'
+													 bind:data={data.countsAsCast}
+													 on:save />
 		{/if}
 
 		{#each data.data as datum}

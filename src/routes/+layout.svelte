@@ -9,10 +9,10 @@
 	import { initComponents }                                              from '$api/components/components';
 	import { isSaving, skills }                                            from '../data/skill-store';
 	import { fly }                                                         from 'svelte/transition';
-	import type { Unsubscriber }                                           from 'svelte/types/runtime/store';
+	import type { Unsubscriber }                                           from 'svelte/store';
+	import { get }                                                         from 'svelte/store';
 	import Sidebar                                                         from '$components/sidebar/Sidebar.svelte';
 	import { activeModal, closeModal, modalData, openModal }               from '../data/modal-service';
-	import { get }                                                         from 'svelte/store';
 	import SettingsModal                                                   from '$components/modal/SettingsModal.svelte';
 
 	let dragging    = false;
@@ -50,7 +50,8 @@
 	});
 
 	const dragover = (e: DragEvent) => {
-		if (!(e.dataTransfer?.types?.length > 0 && e.dataTransfer?.types[0] == 'Files')) return;
+		if (!e?.dataTransfer?.types || !(e.dataTransfer.types.length > 0 && e.dataTransfer?.types[0] == 'Files')) return;
+
 		e.dataTransfer.dropEffect = 'copy';
 		e.stopPropagation();
 		e.preventDefault();
@@ -62,6 +63,8 @@
 	};
 
 	const loadFiles = (e: DragEvent) => {
+		if (!e?.dataTransfer?.files || e.dataTransfer.files.length == 0) return;
+
 		dragging = false;
 		for (let i = 0; i < e.dataTransfer.files.length; i++) {
 			const file = e.dataTransfer.files[i];
@@ -73,7 +76,10 @@
 		e.preventDefault();
 	};
 
-	const save = () => skills.set([...get(skills)]);
+	const save = () => {
+		skills.set([...get(skills)]);
+		get(active)?.save();
+	};
 </script>
 
 <HeaderBar />
@@ -87,13 +93,28 @@
 	</div>
 </div>
 <div id='floating-buttons'>
-	<div class='button backup' title='Backup All Data' on:click={saveAll}>
+	<div class='button backup' title='Backup All Data'
+			 tabindex='0'
+			 role='button'
+			 on:click={saveAll}
+			 on:keypress={(e) => e.key === 'Enter' && saveAll()}
+	>
 		<span class='material-symbols-rounded'>cloud_download</span>
 	</div>
-	<div class='button settings' title='Change Settings' on:click={() => openModal(SettingsModal)}>
+	<div class='button settings' title='Change Settings'
+			 tabindex='0'
+			 role='button'
+			 on:click={() => openModal(SettingsModal)}
+			 on:keypress={(e) => e.key === 'Enter' && openModal(SettingsModal)}
+	>
 		<span class='material-symbols-rounded'>settings</span>
 	</div>
-	<div class='button save' title='Save' on:click={() => saveData()}>
+	<div class='button save' title='Save'
+			 tabindex='0'
+			 role='button'
+			 on:click={() => saveData()}
+			 on:keypress={(e) => e.key === 'Enter' && saveData()}
+	>
 		<span class='material-symbols-rounded'>save</span>
 	</div>
 </div>
@@ -114,7 +135,7 @@
 {/if}
 
 {#if dragging}
-	<div class='dragging' on:dragleave={dragleave}>
+	<div class='dragging' role='form' on:dragleave={dragleave}>
 		Drop to Import
 	</div>
 {/if}

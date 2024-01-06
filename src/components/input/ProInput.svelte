@@ -10,6 +10,8 @@
 	export let placeholder: string | undefined    = undefined;
 	export let nowrap                             = false;
 	export let autofocus                          = false;
+	export let disabled                           = false;
+	export let disableAnimation                   = false;
 	let input: HTMLElement;
 	let hovered                                   = false;
 	let ypos                                      = 0;
@@ -19,34 +21,48 @@
 			input.focus();
 		}
 	});
+
+	const maybe = (node: Element, options: unknown) => {
+		if (disableAnimation) {
+			options.duration = 0;
+		}
+		return options.fn(node, options);
+	};
 </script>
 
-<div class='label'
-		 transition:slide>
-	{#if tooltip && tooltip.length > 0 && hovered}
-		<div class='tooltip' class:top={ypos < window.innerHeight / 2.5}
-				 transition:fly={{x: -20, duration: 100}}>
-			{tooltip}
-		</div>
-	{/if}
-	<span class='display'
-				class:nowrap
-				on:mouseenter={(e) => {
+{#if $$slots.label || label}
+	<div class='label'
+			 in:maybe={{fn: slide}}
+			 out:maybe={{fn: slide}}>
+		{#if tooltip && tooltip.length > 0 && hovered}
+			<div class='tooltip' class:top={ypos < window.innerHeight / 2.5}
+					 transition:fly={{x: -20, duration: 100}}>
+				{tooltip}
+			</div>
+		{/if}
+		<span class='display'
+					class:nowrap
+					in:maybe={{fn: slide}}
+					out:slide
+					on:mouseenter={(e) => {
           ypos = e.target.getBoundingClientRect().top;
           hovered = true;
         }}
-				on:mouseleave={() => hovered = false}>
+					on:mouseleave={() => hovered = false}>
     {label || ''}
-		<slot name='label' />
+			<slot name='label' />
   </span>
-</div>
-<div transition:slide class='input-wrapper' class:labeled={!!label}>
+	</div>
+{/if}
+<div in:maybe={{fn: slide}}
+		 out:maybe={{fn: slide}}
+		 class='input-wrapper' class:labeled={!!label}>
 	<!--{#if type === "number"}-->
 	<!--    <input type="number" bind:value use:numberOnly={{intMode, enabled: type === "number"}}-->
 	<!--           {placeholder} />-->
 	<!--  {:else}-->
 	{#if !!value || value === "" || value === 0}
-		<input bind:this={input} bind:value {placeholder} />
+		<input bind:this={input} bind:value {disabled} {placeholder} />
 	{/if}
 	<!--{/if}-->
 	<slot />

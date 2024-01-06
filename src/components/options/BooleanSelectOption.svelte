@@ -4,7 +4,6 @@
 	import Toggle                    from '$input/Toggle.svelte';
 
 	export let data: boolean;
-	export let any: boolean;
 	export let name: string | undefined    = '';
 	export let tooltip: string | undefined = undefined;
 

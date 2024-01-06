@@ -60,9 +60,9 @@
 		if (skillSub) skillSub();
 	});
 
-	const clickOut = (e: any) => {
+	const clickOut = (e: MouseEvent) => {
 		if (width < 500) {
-			e.detail.stopPropagation();
+			e.stopPropagation();
 			closeSidebar();
 		}
 	};
@@ -74,8 +74,7 @@
 		 transition:squish
 		 on:introend={() => sidebarOpen.set(true)}
 		 on:outroend={() => sidebarOpen.set(false)}
-		 use:clickOutside
-		 on:outclick={clickOut}
+		 use:clickOutside={clickOut}
 		 style:--height='calc({height}px - 6rem + min(3rem, {scrollY}px))'>
 	<div class='type-wrap'>
 		<Toggle bind:data={$isShowClasses} left='Classes' right='Skills' color='#111' inline={false} />
@@ -93,15 +92,21 @@
 					data={cl}
 					delay={200 + 100*i}
 					on:click={() => goto(`${base}/class/${cl.name}/edit`)}>
-					{cl.name}
+					{cl.name}{cl.location === 'server' ? '*' : ''}
 				</SidebarEntry>
 			{/each}
 			<SidebarEntry
 				delay={200 + 100*($classes.length+1)}>
 				<div class='new'>
-					<span on:click={() => addClass()}>New Class</span>
+					<span tabindex='0'
+								role='button'
+								on:click={() => addClass()}
+								on:keypress={(e) => e.key === 'Enter' && addClass()}>New Class</span>
 					<span class='new-folder'
-								on:click={() => addClassFolder(new ProFolder())}>New Folder</span>
+								tabindex='0'
+								role='button'
+								on:click={() => addClassFolder(new ProFolder())}
+								on:keypress={(e) => e.key === 'Enter' && addClassFolder(new ProFolder())}>New Folder</span>
 				</div>
 			</SidebarEntry>
 		</div>
@@ -118,16 +123,22 @@
 					direction='right'
 					delay={200 + 100*i}
 					on:click={() => goto(`${base}/skill/${sk.name}`)}>
-					{sk.name}
+					{sk.name}{sk.location === 'server' ? '*' : ''}
 				</SidebarEntry>
 			{/each}
 			<SidebarEntry
 				delay={200 + 100*($skills.length+1)}
 				direction='right'>
 				<div class='new'>
-					<span on:click={() => addSkill()}>New Skill</span>
+					<span tabindex='0'
+								role='button'
+								on:click={() => addSkill()}
+								on:keypress={(e) => e.key === 'Enter' && addSkill()}>New Skill</span>
 					<span class='new-folder'
-								on:click={() => addSkillFolder(new ProFolder())}>New Folder</span>
+								tabindex='0'
+								role='button'
+								on:click={() => addSkillFolder(new ProFolder())}
+								on:keypress={(e) => e.key === 'Enter' && addSkillFolder(new ProFolder())}>New Folder</span>
 				</div>
 			</SidebarEntry>
 		</div>
@@ -159,38 +170,6 @@
         padding: 0.4rem;
         user-select: none;
         -webkit-user-select: none;
-    }
-
-    #type-selector {
-        overflow: hidden;
-        display: flex;
-        text-align: center;
-        background-color: #111;
-        border-radius: 0.4rem;
-    }
-
-    #type-selector:before {
-        content: '';
-        height: 100%;
-        width: 50%;
-        border-radius: 0.4rem;
-        background-color: #0083ef;
-        position: absolute;
-        left: 0;
-        transition: left 350ms ease-in-out;
-    }
-
-    #type-selector:not(.c-selected):before {
-        left: 50%;
-    }
-
-    #type-selector > div {
-        flex: 1;
-        padding: 0.2rem;
-    }
-
-    #type-selector > div:hover {
-        cursor: pointer;
     }
 
     .items {

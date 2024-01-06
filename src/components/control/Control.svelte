@@ -11,7 +11,8 @@
 <div class='control'
      style:--color={color}
      {title}
-     transition:slide
+     tabindex='0'
+     role='button'
      on:click|stopPropagation
      on:keypress|stopPropagation={keypress}
 >
