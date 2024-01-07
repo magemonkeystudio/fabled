@@ -30,6 +30,7 @@ import {
 }                                  from './skill-store';
 import type ProComponent           from '$api/components/procomponent';
 import { YAMLObject }              from '$api/yaml';
+import { socketService }           from '$api/socket/socket-connector';
 
 export const active: Writable<ProClass | ProSkill | undefined>     = writable(undefined);
 export const activeType: Readable<'class' | 'skill'>               = derived(
@@ -157,6 +158,24 @@ export const saveData = (data?: ProSkill | ProClass) => {
 	if (!act) return;
 
 	saveToFile(act.name + '.yml', act.serializeYaml().toString());
+};
+
+export const saveDataToServer = (data?: ProSkill | ProClass) => {
+	const act = data || get(active);
+	if (!act) return;
+
+	const isSkill = act instanceof ProSkill;
+	const yaml    = act.serializeYaml().toString();
+
+
+	if (isSkill) {
+		const folder = getFolder(act);
+		let path = '';
+		if (folder) {
+			path = folder.name + '/';
+		}
+		socketService.saveSkillToServer(path + act.name, yaml);
+	}
 };
 
 export const getAllSkillYaml = async (): Promise<YAMLObject> => {

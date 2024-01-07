@@ -12,8 +12,12 @@ import { initialized }           from '$api/components/registry';
 import { socketService }         from '$api/socket/socket-connector';
 
 const loadSkillsFromServer = async () => {
-	const serverSkills: string[] = await socketService.getSkills();
-	if (!serverSkills) return;
+	let serverSkills: string[];
+	try {
+		serverSkills = await socketService.getSkills();
+	} catch (_) {
+		return;
+	}
 
 	const tempFolders = get(skillFolders);
 	const tempSkills  = get(skills);

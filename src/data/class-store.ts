@@ -12,8 +12,12 @@ import { base }                  from '$app/paths';
 import { socketService }         from '$api/socket/socket-connector';
 
 const loadClassesFromServer = async () => {
-	const serverClasses: string[] = await socketService.getClasses();
-	if (!serverClasses) return;
+	let serverClasses: string[];
+	try {
+		serverClasses = await socketService.getClasses();
+	} catch (_) {
+		return;
+	}
 
 	const tempFoldes  = get(classFolders);
 	const tempClasses = get(classes);

@@ -26,7 +26,7 @@
 	let saveTask: number;
 	let saveSub: Unsubscriber;
 
-	let numButtons = derived<Writable<boolean>, number>(socketConnected, (connected, set) => set(connected ? 4 : 3));
+	let numButtons = derived<Writable<boolean>, number>(socketConnected, (connected, set) => set(connected ? 5 : 3));
 	let rotation   = derived<Readable<number>, number>(numButtons, (numButtons, set) => set(120 / ((numButtons - 1) * 2)));
 	let distance   = derived<Readable<number>, number>(numButtons, (numButtons, set) => set((4.725 * (numButtons - 1) + 1.5) / Math.PI));
 
@@ -130,6 +130,18 @@
 				 tabindex='0'
 				 role='button'
 				 style:--rotation='{$rotation * 5}deg'
+				 style:--distance='{$distance}rem'
+				 transition:fly={{x: 100, easing: quadInOut}}
+				 on:click={() => {}}
+				 on:keypress={(e) => e.key === 'Enter' && {}}
+		>
+			<span class='material-symbols-rounded'>wifi</span>
+		</div>
+		<div class='button socket'
+				 title='Load from Server'
+				 tabindex='0'
+				 role='button'
+				 style:--rotation='{$rotation * 7}deg'
 				 style:--distance='{$distance}rem'
 				 transition:fly={{x: 100, easing: quadInOut}}
 				 on:click={() => {}}

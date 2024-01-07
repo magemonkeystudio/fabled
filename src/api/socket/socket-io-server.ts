@@ -13,7 +13,13 @@ export const webSocketServer = {
 	configureServer(server: ViteDevServer) {
 		if (!server.httpServer) return;
 
-		const io = new Server(server.httpServer);
+		const io = new Server(server.httpServer,
+			{
+				// Max payload size of 50MB (default is 1MB)
+				// This will allow us to send up to 10MB of data
+				// for our skills.yml or classes.yml files
+				maxHttpBufferSize: 1e7
+			});
 
 		io
 			.use((socket: IDSocket, next) => {
@@ -35,8 +41,32 @@ export const webSocketServer = {
 
 				socket
 					.on('disconnect', () => console.log(socket.serverId || socket.clientId, 'disconnected'))
+					.on('reload', ({ to }: { to: string }) => {
+						console.log('Reloading server:', to);
+						io.to(to).timeout(10000).emitWithAck('reload', { from: socket.clientId })
+							.then((response) => {
+								console.log('Reloaded', to, response);
+								if (response[0] === true) {
+									socket.emit('reloadComplete');
+								} else {
+									socket.emit('reloadFailed', { message: response[0] });
+								}
+							})
+							.catch((err: string) => {
+								console.error(`Failed to reload ${to}`, err);
+								socket.emit('reloadFailed', { message: err });
+							});
+					})
+					.on('saveSkill', ({ to, name, yaml }: { to: string, name: string; yaml: string; }, callback) => {
+						if (socket.serverId !== to) return;
+
+						console.log('Saving skill to server:', name);
+						socket.emitWithAck('saveSkill', { name, yaml })
+							.then(() => callback(true))
+							.catch((err: string) => callback(err));
+					})
 					.onAny((event: string, args: { message: never; }) => {
-						if (event !== 'disconnect') {
+						if (event !== 'disconnect' && event !== 'reload' && event !== 'saveSkill') {
 							console.log(event, args);
 							const relay = {
 								content: args?.message || args,
