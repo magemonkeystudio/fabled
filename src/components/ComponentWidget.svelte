@@ -39,8 +39,6 @@
 
 	let childCompsSub: Unsubscriber;
 
-	$: if (component) dispatch('save');
-
 	const openCompModal       = () => openModal(ComponentModal, component);
 	const openCompSelectModal = () => openModal(ComponentSelectModal, component);
 	const openPreviewModal    = () => openModal(PreviewModal, component);

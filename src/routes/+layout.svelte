@@ -31,11 +31,9 @@
 				return;
 			}
 
-			if (saveTask) {
-				clearTimeout(saveTask);
-			}
+			if (saveTask) clearTimeout(saveTask);
 
-			saveTask = setTimeout(() => displaySave = true, 1000);
+			saveTask = <number><unknown>setTimeout(() => displaySave = true, 1000);
 		});
 
 		initComponents();
