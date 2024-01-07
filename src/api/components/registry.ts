@@ -25,7 +25,7 @@ export const initialized: Writable<boolean>     = writable(false);
 export const filterParams: Writable<string> = writable('');
 // Create a derived store that filters the registry based on the filterParams
 // The filter params should filter the entries by their name
-export const filteredTriggers: Readable<Array<RegistryEntry>>   = derived([triggers, filterParams], ([triggers, filterParams]) => {
+export const filteredTriggers: Readable<Array<RegistryEntry>> = derived([triggers, filterParams], ([triggers, filterParams]) => {
 	const filtered = Object.keys(triggers)
 		.filter(key => key.toLowerCase().replace('_', ' ').includes(filterParams.toLowerCase()))
 		.sort((a, b) => (triggers[a].component.new().isDeprecated ? 0 : -1) - (triggers[b].component.new().isDeprecated ? 0 : -1))

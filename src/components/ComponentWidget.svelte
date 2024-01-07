@@ -149,8 +149,9 @@
 	};
 
 	const clone = () => {
-		const test: YAMLObject = new YAMLObject(component.name + '-copy');
-		const testYaml: string = test.toYaml(component.name + '-copy', component.toYamlObj());
+		const test: YAMLObject = new YAMLObject('components');
+		test.put(component.name + '-copy', component.toYamlObj());
+		const testYaml: string = test.toString();
 
 		const newData: YAMLObject    = parseYAML(testYaml);
 		const cloned: ProComponent[] = Registry.deserializeComponents(newData);
