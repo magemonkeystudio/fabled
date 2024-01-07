@@ -98,6 +98,7 @@
 	<span class='name' contenteditable='false'
 				tabindex='0'
 				role='textbox'
+				class:server={folder.location === 'server'}
 				bind:this={elm}
 				on:blur={() => elm.contentEditable = "false"}
 				bind:textContent={folder.name}
@@ -156,7 +157,7 @@
 			{:else}
 				<SidebarEntry {data}
 											on:click={() => goto(`${base}/${data.dataType === 'class' ? 'class' : 'skill'}/${data.name}${data.dataType === 'class' ? '/edit' : ''}`)}>
-					{data.name}
+					{data.name}{data.location === 'server' ? '*' : ''}
 				</SidebarEntry>
 			{/if}
 		{/each}
@@ -215,6 +216,10 @@
         flex: 1;
         margin-left: 0.5rem;
     }
+
+		.name.server::after {
+				content: '*';
+		}
 
     .icon {
         display: flex;

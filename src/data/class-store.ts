@@ -15,12 +15,35 @@ const loadClassesFromServer = async () => {
 	const serverClasses: string[] = await socketService.getClasses();
 	if (!serverClasses) return;
 
+	const tempFoldes  = get(classFolders);
 	const tempClasses = get(classes);
 	serverClasses.forEach(c => {
+		const parts = c.split('/');
+		const name  = parts.pop();
+		if (!name) return;
+
+		let previous: ProFolder | undefined;
+		let folder: ProFolder | undefined;
+		parts.forEach(part => {
+			folder = previous ? previous.getSubfolder(part) : tempFoldes.find(f => f.name === part);
+			if (!folder) {
+				folder          = new ProFolder();
+				folder.name     = part;
+				folder.location = 'server';
+				if (previous) {
+					previous.add(folder);
+					folder.updateParent(previous);
+				}
+			}
+			if (!previous && !tempFoldes.includes(folder)) tempFoldes.push(folder);
+			previous = folder;
+		});
+
 		// If we already have this class, don't add it
 		if (tempClasses.find(cl => cl.name === c)) return;
 
 		const clazz = new ProClass({ name: c, location: 'server' });
+		if (folder) folder.add(clazz);
 		tempClasses.push(clazz);
 	});
 	classes.set(tempClasses);
@@ -29,6 +52,9 @@ const loadClassesFromServer = async () => {
 const removeServerClasses = () => {
 	const tempClasses = get(classes);
 	classes.set(tempClasses.filter(c => c.location !== 'server'));
+
+	const tempFolders = get(classFolders);
+	tempFolders.filter(f => f.location === 'server').forEach(f => deleteClassFolder(f, (sb) => sb.location === 'server'));
 };
 
 socketService.onConnect(loadClassesFromServer);

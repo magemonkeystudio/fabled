@@ -15,20 +15,50 @@ const loadSkillsFromServer = async () => {
 	const serverSkills: string[] = await socketService.getSkills();
 	if (!serverSkills) return;
 
-	const tempSkills = get(skills);
-	serverSkills.forEach(c => {
-		// If we already have this skill, don't add it
-		if (tempSkills.find(sk => sk.name === c)) return;
+	const tempFolders = get(skillFolders);
+	const tempSkills  = get(skills);
+	// Skills come through with some sort of path before their name A/B/C/Skill
+	// We need to create folders for each of these
+	serverSkills.forEach(sk => {
+		const parts = sk.split('/');
+		const name  = parts.pop();
+		if (!name) return;
 
-		const skill = new ProSkill({ name: c, location: 'server' });
+		let previous: ProFolder | undefined;
+		let folder: ProFolder | undefined;
+		parts.forEach(part => {
+			folder = previous ? previous.getSubfolder(part) : tempFolders.find(f => f.name === part);
+			if (!folder) {
+				folder          = new ProFolder();
+				folder.name     = part;
+				folder.location = 'server';
+				if (previous) {
+					previous.add(folder);
+					folder.updateParent(previous);
+				}
+			}
+			if (!previous && !tempFolders.includes(folder)) tempFolders.push(folder);
+			previous = folder;
+		});
+
+		// If we already have this skill, don't add it
+		if (tempSkills.find(sk => sk.name === name)) return;
+
+		const skill = new ProSkill({ name, location: 'server' });
+		if (folder) folder.add(skill);
 		tempSkills.push(skill);
 	});
+
 	skills.set(tempSkills);
+	skillFolders.set(tempFolders);
 };
 
 const removeServerSkills = () => {
 	const tempSkills = get(skills);
 	skills.set(tempSkills.filter(c => c.location !== 'server'));
+
+	const tempFolders = get(skillFolders);
+	tempFolders.filter(f => f.location === 'server').forEach(f => deleteSkillFolder(f, (sb) => sb.location === 'server'));
 };
 
 socketService.onConnect(loadSkillsFromServer);
