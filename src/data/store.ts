@@ -7,12 +7,13 @@ import {
 	classes,
 	classFolders,
 	deleteClass,
-	deleteClassFolder, loadClass,
+	deleteClassFolder,
+	loadClass,
 	loadClasses,
 	loadClassText,
 	refreshClasses,
 	refreshClassFolders
-} from './class-store';
+}                                  from './class-store';
 import { localStore }              from '$api/api';
 import { loadAttributes }          from './attribute-store';
 import {
@@ -157,7 +158,7 @@ export const saveData = (data?: ProSkill | ProClass) => {
 	saveToFile(act.name + '.yml', act.serializeYaml().toString());
 };
 
-export const getAllSkillYaml = (): YAMLObject => {
+export const getAllSkillYaml = async (): Promise<YAMLObject> => {
 	const allSkills: ProSkill[] = get(skills);
 	allSkills.sort((a, b) => {
 		if (a.name > b.name) return 1;
@@ -168,14 +169,14 @@ export const getAllSkillYaml = (): YAMLObject => {
 	const skillYaml = new YAMLObject();
 	skillYaml.put('loaded', false);
 	for (const skill of allSkills) {
-		if (!skill.loaded) loadSkill(skill);
+		if (!skill.loaded) await loadSkill(skill);
 		skillYaml.put(skill.name, skill.serializeYaml());
 	}
 
 	return skillYaml;
 };
 
-export const getAllClassYaml = (): YAMLObject => {
+export const getAllClassYaml = async (): Promise<YAMLObject> => {
 	const allClasses: ProClass[] = get(classes);
 	allClasses.sort((a, b) => {
 		if (a.name > b.name) return 1;
@@ -186,7 +187,7 @@ export const getAllClassYaml = (): YAMLObject => {
 	const classYaml = new YAMLObject();
 	classYaml.put('loaded', false);
 	for (const cls of allClasses) {
-		if (!cls.loaded) loadClass(cls);
+		if (!cls.loaded) await loadClass(cls);
 		classYaml.put(cls.name, cls.serializeYaml());
 	}
 
@@ -194,8 +195,8 @@ export const getAllClassYaml = (): YAMLObject => {
 };
 
 export const saveAll = async () => {
-	const skillYaml = getAllSkillYaml();
-	const classYaml = getAllClassYaml();
+	const skillYaml = await getAllSkillYaml();
+	const classYaml = await getAllClassYaml();
 
 	saveToFile('skills.yml', skillYaml.toString());
 	saveToFile('classes.yml', classYaml.toString());

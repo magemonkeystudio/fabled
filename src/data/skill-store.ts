@@ -17,6 +17,9 @@ const loadSkillsFromServer = async () => {
 
 	const tempSkills = get(skills);
 	serverSkills.forEach(c => {
+		// If we already have this skill, don't add it
+		if (tempSkills.find(sk => sk.name === c)) return;
+
 		const skill = new ProSkill({ name: c, location: 'server' });
 		tempSkills.push(skill);
 	});
@@ -162,13 +165,17 @@ export const addSkill = (name?: string): ProSkill => {
 	return skill;
 };
 
-export const loadSkill = (data: ProSkill) => {
+export const loadSkill = async (data: ProSkill) => {
 	if (data.loaded) return;
 
 	if (data.location === 'local') {
 		data.load(parseYAML(localStorage.getItem(`sapi.skill.${data.name}`) || ''));
 	} else {
-		// TODO Load data from server
+		const yaml = await socketService.getSkillYaml(data.name);
+		if (!yaml) return;
+
+		const parsedYaml = parseYAML(yaml);
+		data.load(parsedYaml);
 	}
 	data.postLoad();
 };

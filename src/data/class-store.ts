@@ -17,6 +17,9 @@ const loadClassesFromServer = async () => {
 
 	const tempClasses = get(classes);
 	serverClasses.forEach(c => {
+		// If we already have this class, don't add it
+		if (tempClasses.find(cl => cl.name === c)) return;
+
 		const clazz = new ProClass({ name: c, location: 'server' });
 		tempClasses.push(clazz);
 	});
@@ -153,7 +156,7 @@ export const updateAllAttributes = (attributes: string[]) =>
 export const isClassNameTaken = (name: string): boolean => !!getClass(name);
 
 export const addClass = (name?: string): ProClass => {
-	const cl    = get(classes);
+	const cl  = get(classes);
 	let index = cl.length + 1;
 	while (!name && isClassNameTaken(name || 'Class ' + index)) {
 		index++;
@@ -166,19 +169,23 @@ export const addClass = (name?: string): ProClass => {
 	return clazz;
 };
 
-export const loadClass = (data: ProClass) => {
+export const loadClass = async (data: ProClass) => {
 	if (data.loaded) return;
 	if (data.location === 'local') {
 		data.load(parseYAML(localStorage.getItem(`sapi.class.${data.name}`) || ''));
 	} else {
-		// TODO Load data from server
+		const yaml = await socketService.getClassYaml(data.name);
+		if (!yaml) return;
+
+		const parsedYaml = parseYAML(yaml);
+		data.load(parsedYaml);
 	}
 	data.updateParent(get(classes));
 	data.loaded = true;
 };
 
-export const cloneClass = (data: ProClass): ProClass => {
-	if(!data.loaded) loadClass(data);
+export const cloneClass = async (data: ProClass): Promise<ProClass> => {
+	if (!data.loaded) await loadClass(data);
 
 	const cl: ProClass[] = get(classes);
 	let name             = data.name + ' (Copy)';

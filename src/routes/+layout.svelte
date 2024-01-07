@@ -10,8 +10,7 @@
 	import { initComponents }                                                         from '$api/components/components';
 	import { isSaving, skills }                                                       from '../data/skill-store';
 	import { fly }                                                                    from 'svelte/transition';
-	import type { Unsubscriber }                                                      from 'svelte/store';
-	import { get }                                                                    from 'svelte/store';
+	import { derived, get, type Readable, type Unsubscriber, type Writable }          from 'svelte/store';
 	import Sidebar
 																																										from '$components/sidebar/Sidebar.svelte';
 	import { activeModal, closeModal, modalData, openModal }                          from '../data/modal-service';
@@ -19,11 +18,17 @@
 																																										from '$components/modal/SettingsModal.svelte';
 	import SocketPanel
 																																										from '$components/SocketPanel.svelte';
+	import { socketConnected }                                                        from '$api/socket/socket-connector';
+	import { quadInOut }                                                              from 'svelte/easing';
 
 	let dragging    = false;
 	let displaySave = false;
 	let saveTask: number;
 	let saveSub: Unsubscriber;
+
+	let numButtons = derived<Writable<boolean>, number>(socketConnected, (connected, set) => set(connected ? 4 : 3));
+	let rotation   = derived<Readable<number>, number>(numButtons, (numButtons, set) => set(120 / ((numButtons - 1) * 2)));
+	let distance   = derived<Readable<number>, number>(numButtons, (numButtons, set) => set((4.725 * (numButtons - 1) + 1.5) / Math.PI));
 
 	onMount(() => {
 		if (!browser) return;
@@ -96,30 +101,52 @@
 	</div>
 </div>
 <SocketPanel />
+
 <div id='floating-buttons'>
 	<div class='button backup' title='Backup All Data'
 			 tabindex='0'
 			 role='button'
+			 style:--rotation='{$rotation}deg'
+			 style:--distance='{$distance}rem'
 			 on:click={saveAll}
 			 on:keypress={(e) => e.key === 'Enter' && saveAll()}
 	>
 		<span class='material-symbols-rounded'>cloud_download</span>
 	</div>
-	<div class='button settings' title='Change Settings'
-			 tabindex='0'
-			 role='button'
-			 on:click={() => openModal(SettingsModal)}
-			 on:keypress={(e) => e.key === 'Enter' && openModal(SettingsModal)}
-	>
-		<span class='material-symbols-rounded'>settings</span>
-	</div>
 	<div class='button save' title='Save'
 			 tabindex='0'
 			 role='button'
+			 style:--rotation='{$rotation * 3}deg'
+			 style:--distance='{$distance}rem'
 			 on:click={() => saveData()}
 			 on:keypress={(e) => e.key === 'Enter' && saveData()}
 	>
 		<span class='material-symbols-rounded'>save</span>
+	</div>
+	{#if $socketConnected}
+		<!-- Rotation goes up by 2 for each button -->
+		<div class='button socket'
+				 title='Save to Server'
+				 tabindex='0'
+				 role='button'
+				 style:--rotation='{$rotation * 5}deg'
+				 style:--distance='{$distance}rem'
+				 transition:fly={{x: 100, easing: quadInOut}}
+				 on:click={() => {}}
+				 on:keypress={(e) => e.key === 'Enter' && {}}
+		>
+			<span class='material-symbols-rounded'>wifi</span>
+		</div>
+	{/if}
+	<div class='button settings' title='Change Settings'
+			 tabindex='0'
+			 role='button'
+			 style:--rotation='60deg'
+			 style:--distance='1rem'
+			 on:click={() => openModal(SettingsModal)}
+			 on:keypress={(e) => e.key === 'Enter' && openModal(SettingsModal)}
+	>
+		<span class='material-symbols-rounded'>settings</span>
 	</div>
 </div>
 
@@ -161,6 +188,18 @@
 {/if}
 
 <style>
+    @property --rotation {
+        syntax: "<angle>";
+        inherits: false;
+        initial-value: 0deg;
+    }
+
+    @property --distance {
+        syntax: "<length>";
+        inherits: false;
+        initial-value: 0;
+    }
+
     .dragging {
         display: flex;
         align-items: center;
@@ -200,16 +239,14 @@
         justify-content: center;
     }
 
-    #floating-buttons {
-        display: flex;
-        flex-direction: column;
-        position: fixed;
-        right: 0.5rem;
-        bottom: 0.5rem;
-        align-items: flex-end;
-    }
-
     #floating-buttons .button {
+        --rotation: 0deg;
+        --distance: 3.5rem;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        translate: calc(-1 * var(--distance) * sin(105deg - var(--rotation))) calc(-1 * var(--distance) * cos(105deg - var(--rotation)));
+
         background-color: #0083ef;
         display: flex;
         align-items: center;
@@ -217,7 +254,16 @@
         border-radius: 50%;
         padding: 0.7rem;
         box-shadow: inset 0 0 10px #222;
-        margin: 0.5rem;
+        margin: 0;
+
+        transition: --rotation 0.5s ease, --distance 0.5s ease;
+    }
+
+    #floating-buttons {
+        position: fixed;
+        right: 0.5rem;
+        bottom: 0.5rem;
+        z-index: 100;
     }
 
     #floating-buttons .button .material-symbols-rounded {
@@ -230,9 +276,10 @@
 
     #floating-buttons .settings {
         background-color: #777;
-        position: absolute;
-        top: 2.45rem;
-        left: -2rem;
+    }
+
+    #floating-buttons .socket {
+        background-color: #ff9800;
     }
 
     #floating-buttons .settings .material-symbols-rounded {

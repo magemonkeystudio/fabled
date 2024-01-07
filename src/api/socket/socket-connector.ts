@@ -104,9 +104,6 @@ class SocketService {
 		return new Promise((resolve, reject) => {
 			this.socket?.on('classes', ({ content }) => {
 				this.socket?.off('classes');
-				console.log(content);
-				// numClasses = content.length;
-				// classes    = content;
 				resolve(content);
 			});
 
@@ -121,9 +118,6 @@ class SocketService {
 		return new Promise((resolve, reject) => {
 			this.socket?.on('skills', ({ content }) => {
 				this.socket?.off('skills');
-				console.log(content);
-				// numSkills = content.length;
-				// skills    = content;
 				resolve(content);
 			});
 
@@ -138,7 +132,6 @@ class SocketService {
 		return new Promise((resolve, reject) => {
 			this.socket?.on('classYaml', ({ content }) => {
 				this.socket?.off('classYaml');
-				console.log(content);
 				resolve(content);
 			});
 
