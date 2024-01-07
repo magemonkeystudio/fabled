@@ -19,6 +19,7 @@ import { loadAttributes }          from './attribute-store';
 import {
 	deleteSkill,
 	deleteSkillFolder,
+	isSaving,
 	loadSkill,
 	loadSkills,
 	loadSkillText,
@@ -195,11 +196,13 @@ export const getAllClassYaml = async (): Promise<YAMLObject> => {
 };
 
 export const saveAll = async () => {
+	isSaving.set(true);
 	const skillYaml = await getAllSkillYaml();
 	const classYaml = await getAllClassYaml();
 
 	saveToFile('skills.yml', skillYaml.toString());
 	saveToFile('classes.yml', classYaml.toString());
+	isSaving.set(false);
 };
 
 /**
