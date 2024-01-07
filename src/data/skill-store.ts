@@ -182,8 +182,26 @@ export const addSkillFolder = (folder: ProFolder) => {
 	skillFolders.set(folders);
 };
 
-export const deleteSkillFolder = (folder: ProFolder) => {
+
+export const deleteSkillFolder = (folder: ProFolder, deleteCheck?: (subfolder: ProFolder) => boolean) => {
 	const folders = get(skillFolders).filter(f => f != folder);
+
+	// If there are any subfolders or skills, move them to the parent or root
+	folder.data.forEach(d => {
+		if (d instanceof ProFolder) {
+			if (deleteCheck && deleteCheck(d)) {
+				deleteSkillFolder(d, deleteCheck);
+				return;
+			}
+			if (folder.parent) folder.parent.add(d);
+			else {
+				d.updateParent();
+				folders.push(d);
+			}
+		} else if (folder.parent)
+			folder.parent.add(d); // Add the skill to the parent folder
+	});
+
 	skillFolders.set(folders);
 };
 

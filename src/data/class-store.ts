@@ -187,8 +187,24 @@ export const addClassFolder = (folder: ProFolder) => {
 	classFolders.set(folders);
 };
 
-export const deleteClassFolder = (folder: ProFolder) => {
+export const deleteClassFolder = (folder: ProFolder, deleteCheck?: (subfolder: ProFolder) => boolean) => {
 	const folders = get(classFolders).filter(f => f != folder);
+
+	folder.data.forEach(d => {
+		if (d instanceof ProFolder) {
+			if (deleteCheck && deleteCheck(d)) {
+				deleteClassFolder(d, deleteCheck);
+				return;
+			}
+			if (folder.parent) folder.parent.add(d);
+			else {
+				d.updateParent();
+				folders.push(d);
+			}
+		} else if (folder.parent)
+			folder.parent.add(d); // Add the class to the parent folder
+	});
+
 	classFolders.set(folders);
 };
 

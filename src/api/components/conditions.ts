@@ -10,7 +10,7 @@ export default class ProCondition extends ProComponent {
 
   public constructor(data: ComponentData, isDeprecated = false) {
     super("condition", data);
-    super.isDeprecated = isDeprecated;
+    this.isDeprecated = isDeprecated;
   }
 
   public override toYamlObj(): YAMLObject {

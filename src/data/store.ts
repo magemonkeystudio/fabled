@@ -63,8 +63,8 @@ export const deleteFolder = (folder: ProFolder) => {
 	if (folder.parent) {
 		folder.parent.deleteFolder(folder);
 		updateFolders();
-	} else if (get(isShowClasses)) deleteClassFolder(folder);
-	else deleteSkillFolder(folder);
+	} else if (get(isShowClasses)) deleteClassFolder(folder, () => false);
+	else deleteSkillFolder(folder, () => false);
 };
 
 export const deleteProData = (data: ProClass | ProSkill | undefined) => {
