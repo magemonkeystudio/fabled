@@ -639,11 +639,12 @@ public abstract class RPGClass implements IconHolder {
         Data.serializeIcon(icon, config);
         config.set(EXP, expSources);
 
+        DataSection comboStartersSection = config.createSection("combo-starters");
         for (Map.Entry<Click,ComboStarter> entry : comboStarters.entrySet()) {
-            String key = "combo-starters."+entry.getKey().getKey()+'.';
+            DataSection dataSection = comboStartersSection.createSection(entry.getKey().getKey());
             ComboStarter comboStarter = entry.getValue();
-            config.set(key+"whitelist", comboStarter.itemTypes);
-            config.set(key+"inverted", comboStarter.blacklist);
+            dataSection.set("inverted", comboStarter.blacklist);
+            dataSection.set("whitelist", comboStarter.itemTypes);
         }
     }
 
