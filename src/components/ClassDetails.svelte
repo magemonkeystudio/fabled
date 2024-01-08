@@ -15,10 +15,12 @@
 	import { attributes }         from '../data/attribute-store';
 	import Toggle                 from './input/Toggle.svelte';
 	import { skills }             from '../data/skill-store';
+	import LoreInput              from '$input/LoreInput.svelte';
 	import type { Unsubscriber }  from 'svelte/store';
 
 	export let data: ProClass;
 
+	let combosShown = false;
 	let sub: Unsubscriber;
 
 	onMount(() => {
@@ -133,6 +135,75 @@
 						tooltip='[blacklist] The types of items that the class cannot use'>
 		<MaterialSelect multiple bind:selected={data.unusableItems} />
 	</ProInput>
+
+	<div class='header combos' on:click={() => combosShown = !combosShown}
+			 on:keypress={e => {
+			 	if (e.key === 'Enter') combosShown = !combosShown;
+			 }}>
+		Combo Starters <span class='material-symbols-rounded'>{combosShown ? 'expand_less' : 'expand_more'}</span>
+	</div>
+	{#if combosShown}
+		<div class='info'>These are the materials that can be used as combo starters. If a material is not in the list, it
+			cannot be used as a combo starter. If the list is inverted, then the materials in the list cannot be used as combo
+			starters
+		</div>
+		<ProInput label='L Inverted'
+							tooltip='Whether the L list should be used as a blacklist'>
+			<Toggle bind:data={data.lInverted} />
+		</ProInput>
+		<ProInput label='L Whitelist'
+							tooltip='The materials that can be used as combo starters'>
+			<LoreInput bind:value={data.lWhitelist} />
+		</ProInput>
+		<ProInput label='R Inverted'
+							tooltip='Whether the R list should be used as a blacklist'>
+			<Toggle bind:data={data.rInverted} />
+		</ProInput>
+		<ProInput label='R Whitelist'
+							tooltip='The materials that can be used as combo starters'>
+			<LoreInput bind:value={data.rWhitelist} />
+		</ProInput>
+		<ProInput label='LS Inverted'
+							tooltip='Whether the LS list should be used as a blacklist'>
+			<Toggle bind:data={data.lsInverted} />
+		</ProInput>
+		<ProInput label='LS Whitelist'
+							tooltip='The materials that can be used as combo starters'>
+			<LoreInput bind:value={data.lsWhitelist} />
+		</ProInput>
+		<ProInput label='RS Inverted'
+							tooltip='Whether the RS list should be used as a blacklist'>
+			<Toggle bind:data={data.rsInverted} />
+		</ProInput>
+		<ProInput label='RS Whitelist'
+							tooltip='The materials that can be used as combo starters'>
+			<LoreInput bind:value={data.rsWhitelist} />
+		</ProInput>
+		<ProInput label='P Inverted'
+							tooltip='Whether the P list should be used as a blacklist'>
+			<Toggle bind:data={data.pInverted} />
+		</ProInput>
+		<ProInput label='P Whitelist'
+							tooltip='The materials that can be used as combo starters'>
+			<LoreInput bind:value={data.pWhitelist} />
+		</ProInput>
+		<ProInput label='Q Inverted'
+							tooltip='Whether the Q list should be used as a blacklist'>
+			<Toggle bind:data={data.qInverted} />
+		</ProInput>
+		<ProInput label='Q Whitelist'
+							tooltip='The materials that can be used as combo starters'>
+			<LoreInput bind:value={data.qWhitelist} />
+		</ProInput>
+		<ProInput label='F Inverted'
+							tooltip='Whether the F list should be used as a blacklist'>
+			<Toggle bind:data={data.fInverted} />
+		</ProInput>
+		<ProInput label='F Whitelist'
+							tooltip='The materials that can be used as combo starters'>
+			<LoreInput bind:value={data.fWhitelist} />
+		</ProInput>
+	{/if}
 {/if}
 
 <style>
@@ -141,5 +212,28 @@
         text-align: center;
         margin-left: 5rem;
         color: rgba(255, 255, 255, 0.7);
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .header {
+        grid-column: 1 / -1;
+        font-size: 1.2em;
+        font-weight: bold;
+        text-align: center;
+        padding-bottom: 1rem;
+    }
+
+    .header::before {
+        content: ' ';
+        display: block;
+        width: 40%;
+        height: 1px;
+        background: white;
+        margin: 1rem auto;
+    }
+
+    .combos {
+        cursor: pointer;
     }
 </style>

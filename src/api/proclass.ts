@@ -45,6 +45,22 @@ export default class ProClass implements Serializable {
 	unusableItems: string[]    = [];
 	actionBar                  = '';
 
+	lInverted = false;
+	rInverted = false;
+	lsInverted = false;
+	rsInverted = false;
+	pInverted = false;
+	qInverted = false;
+	fInverted = false;
+
+	lWhitelist: string[] = [];
+	rWhitelist: string[] = [];
+	lsWhitelist: string[] = [];
+	rsWhitelist: string[] = [];
+	pWhitelist: string[] = [];
+	qWhitelist: string[] = [];
+	fWhitelist: string[] = [];
+
 	constructor(data?: ProClassData) {
 		this.name   = data ? data.name : 'Class';
 		this.prefix = data?.prefix ? data.prefix : '&6' + this.name;
@@ -65,6 +81,22 @@ export default class ProClass implements Serializable {
 		if (data?.icon) this.icon = data.icon;
 		if (data?.unusableItems) this.unusableItems = data.unusableItems;
 		if (data?.actionBar) this.actionBar = data.actionBar;
+
+		// Combo starters
+		if (data?.lInverted) this.lInverted = data.lInverted;
+		if (data?.rInverted) this.rInverted = data.rInverted;
+		if (data?.lsInverted) this.lsInverted = data.lsInverted;
+		if (data?.rsInverted) this.rsInverted = data.rsInverted;
+		if (data?.pInverted) this.pInverted = data.pInverted;
+		if (data?.qInverted) this.qInverted = data.qInverted;
+		if (data?.fInverted) this.fInverted = data.fInverted;
+		if (data?.lWhitelist) this.lWhitelist = data.lWhitelist;
+		if (data?.rWhitelist) this.rWhitelist = data.rWhitelist;
+		if (data?.lsWhitelist) this.lsWhitelist = data.lsWhitelist;
+		if (data?.rsWhitelist) this.rsWhitelist = data.rsWhitelist;
+		if (data?.pWhitelist) this.pWhitelist = data.pWhitelist;
+		if (data?.qWhitelist) this.qWhitelist = data.qWhitelist;
+		if (data?.fWhitelist) this.fWhitelist = data.fWhitelist;
 	}
 
 	public updateAttributes = (attribs: string[]) => {
@@ -104,6 +136,38 @@ export default class ProClass implements Serializable {
 		data.put('icon-data', this.icon.customModelData);
 		data.put('icon-lore', this.icon.lore);
 		data.put('exp-source', this.expSources);
+
+		// Combo starters
+		const combos = new YAMLObject('combo-starters');
+		const l = new YAMLObject('L');
+		l.put('inverted', this.lInverted);
+		l.put('whitelist', this.lWhitelist);
+		combos.put('L', l);
+		const r = new YAMLObject('R');
+		r.put('inverted', this.rInverted);
+		r.put('whitelist', this.rWhitelist);
+		combos.put('R', r);
+		const ls = new YAMLObject('LS');
+		ls.put('inverted', this.lsInverted);
+		ls.put('whitelist', this.lsWhitelist);
+		combos.put('LS', ls);
+		const rs = new YAMLObject('RS');
+		rs.put('inverted', this.rsInverted);
+		rs.put('whitelist', this.rsWhitelist);
+		combos.put('RS', rs);
+		const p = new YAMLObject('P');
+		p.put('inverted', this.pInverted);
+		p.put('whitelist', this.pWhitelist);
+		combos.put('P', p);
+		const q = new YAMLObject('Q');
+		q.put('inverted', this.qInverted);
+		q.put('whitelist', this.qWhitelist);
+		combos.put('Q', q);
+		const f = new YAMLObject('F');
+		f.put('inverted', this.fInverted);
+		f.put('whitelist', this.fWhitelist);
+		combos.put('F', f);
+		data.put('combo-starters', combos);
 
 		yaml.data = data.data;
 		return yaml;
@@ -162,6 +226,23 @@ export default class ProClass implements Serializable {
 		this.icon.customModelData = yaml.get('icon-data', this.icon.customModelData);
 		this.icon.lore            = yaml.get('icon-lore', this.icon.lore);
 		this.expSources           = yaml.get('exp-source', this.expSources);
+
+		// Combo starters
+		const combos = yaml.get('combo-starters', new YAMLObject());
+		this.lInverted = combos.get('L', new YAMLObject()).get('inverted', this.lInverted);
+		this.rInverted = combos.get('R', new YAMLObject()).get('inverted', this.rInverted);
+		this.lsInverted = combos.get('LS', new YAMLObject()).get('inverted', this.lsInverted);
+		this.rsInverted = combos.get('RS', new YAMLObject()).get('inverted', this.rsInverted);
+		this.pInverted = combos.get('P', new YAMLObject()).get('inverted', this.pInverted);
+		this.qInverted = combos.get('Q', new YAMLObject()).get('inverted', this.qInverted);
+		this.fInverted = combos.get('F', new YAMLObject()).get('inverted', this.fInverted);
+		this.lWhitelist = combos.get('L', new YAMLObject()).get('whitelist', this.lWhitelist);
+		this.rWhitelist = combos.get('R', new YAMLObject()).get('whitelist', this.rWhitelist);
+		this.lsWhitelist = combos.get('LS', new YAMLObject()).get('whitelist', this.lsWhitelist);
+		this.rsWhitelist = combos.get('RS', new YAMLObject()).get('whitelist', this.rsWhitelist);
+		this.pWhitelist = combos.get('P', new YAMLObject()).get('whitelist', this.pWhitelist);
+		this.qWhitelist = combos.get('Q', new YAMLObject()).get('whitelist', this.qWhitelist);
+		this.fWhitelist = combos.get('F', new YAMLObject()).get('whitelist', this.fWhitelist);
 
 		this.loaded = true;
 	};
