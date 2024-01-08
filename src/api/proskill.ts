@@ -6,12 +6,17 @@ import { getSkill }                              from '../data/skill-store';
 import ProTrigger                                from './components/triggers';
 import type ProComponent                         from '$api/components/procomponent';
 import Registry, { initialized }                 from '$api/components/registry';
-import type { Unsubscriber }                     from 'svelte/types/runtime/store';
+import type { Unsubscriber }                     from 'svelte/store';
 
 export default class ProSkill implements Serializable {
+	dataType = 'skill';
+	location: 'local' | 'server' = 'local';
+	loaded                       = false;
+
 	isSkill                               = true;
 	public key                            = {};
 	name: string;
+	previousName: string                  = '';
 	type                                  = 'Dynamic';
 	maxLevel                              = 5;
 	skillReq?: ProSkill;
@@ -49,6 +54,7 @@ export default class ProSkill implements Serializable {
 	constructor(data?: ProSkillData) {
 		this.name = data?.name || 'Skill';
 		if (!data) return;
+		if (data.location) this.location = data.location;
 		if (data.type) this.type = data.type;
 		if (data.maxLevel) this.maxLevel = data.maxLevel;
 		if (data.skillReq) this.skillReq = data.skillReq;
@@ -148,8 +154,8 @@ export default class ProSkill implements Serializable {
 		this.incompStr               = attributes.get('incompatible', this.incompStr);
 
 		// Attribute requirements
-		const reserved = ['level', 'cost', 'cooldown', 'mana', 'points-spent-req', 'incompatible'];
-		const names =
+		const reserved             = ['level', 'cost', 'cooldown', 'mana', 'points-spent-req', 'incompatible'];
+		const names                =
 						new Set(
 							attributes.getKeys()
 								.map(k => k.replace(/-(base|scale)/i, ''))
@@ -171,10 +177,29 @@ export default class ProSkill implements Serializable {
 				unsub();
 			}
 		});
+
+		this.loaded = true;
 	};
 
 	public postLoad = () => {
 		this.skillReq     = getSkill(this.skillReqStr);
 		this.incompatible = <ProSkill[]>this.incompStr.map(s => getSkill(s)).filter(s => !!s);
+	};
+
+	public save = () => {
+		if (!this.name) return;
+
+		const yaml = this.serializeYaml();
+		if (this.location === 'server') {
+
+			return;
+		}
+
+		if (this.previousName && this.previousName !== this.name) {
+			localStorage.removeItem('sapi.skill.' + this.previousName);
+		}
+		this.previousName = this.name;
+
+		localStorage.setItem('sapi.skill.' + this.name, yaml.toString());
 	};
 }

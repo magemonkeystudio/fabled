@@ -3,26 +3,24 @@ import { derived, get, writable }  from 'svelte/store';
 import ProClass                    from '$api/proclass';
 import ProSkill                    from '$api/proskill';
 import ProFolder                   from '$api/profolder';
-import { browser }                 from '$app/environment';
 import {
 	classes,
 	classFolders,
 	deleteClass,
-	deleteClassFolder,
+	deleteClassFolder, loadClass,
 	loadClasses,
 	loadClassText,
-	persistClasses,
 	refreshClasses,
 	refreshClassFolders
-}                                  from './class-store';
+} from './class-store';
 import { localStore }              from '$api/api';
 import { loadAttributes }          from './attribute-store';
 import {
 	deleteSkill,
 	deleteSkillFolder,
+	loadSkill,
 	loadSkills,
 	loadSkillText,
-	persistSkills,
 	refreshSkillFolders,
 	refreshSkills,
 	skillFolders,
@@ -31,17 +29,17 @@ import {
 import type ProComponent           from '$api/components/procomponent';
 import { YAMLObject }              from '$api/yaml';
 
-export const active: Writable<ProClass | ProSkill | undefined>   = writable(undefined);
-export const activeType: Readable<'class' | 'skill'>             = derived(
+export const active: Writable<ProClass | ProSkill | undefined>     = writable(undefined);
+export const activeType: Readable<'class' | 'skill'>               = derived(
 	active,
 	$active => $active instanceof ProClass ? 'class' : 'skill'
 );
-export const dragging: Writable<ProClass | ProSkill | ProFolder> = writable();
-export const draggingComponent: Writable<ProComponent>           = writable();
-export const showSidebar: Writable<boolean>                      = localStore('sidebarOpen', true);
-export const sidebarOpen: Writable<boolean>                      = writable(true);
-export const isShowClasses: Writable<boolean>                    = writable(true);
-export const importing: Writable<boolean>                        = writable(false);
+export const dragging: Writable<ProClass | ProSkill | ProFolder>   = writable();
+export const draggingComponent: Writable<ProComponent | undefined> = writable();
+export const showSidebar: Writable<boolean>                        = localStore('sidebarOpen', true);
+export const sidebarOpen: Writable<boolean>                        = writable(true);
+export const isShowClasses: Writable<boolean>                      = writable(true);
+export const importing: Writable<boolean>                          = writable(false);
 
 export const updateSidebar = () => {
 	if (!get(showSidebar)) return;
@@ -65,8 +63,8 @@ export const deleteFolder = (folder: ProFolder) => {
 	if (folder.parent) {
 		folder.parent.deleteFolder(folder);
 		updateFolders();
-	} else if (get(isShowClasses)) deleteClassFolder(folder);
-	else deleteSkillFolder(folder);
+	} else if (get(isShowClasses)) deleteClassFolder(folder, () => false);
+	else deleteSkillFolder(folder, () => false);
 };
 
 export const deleteProData = (data: ProClass | ProSkill | undefined) => {
@@ -74,7 +72,7 @@ export const deleteProData = (data: ProClass | ProSkill | undefined) => {
 
 	getFolder(data)?.remove(data);
 	if (data instanceof ProClass) deleteClass(data);
-	else if (data instanceof ProSkill) deleteSkill(data);
+	else deleteSkill(data);
 	updateFolders();
 };
 
@@ -84,12 +82,6 @@ export const updateFolders = () => {
 	else refreshSkillFolders();
 };
 
-export const saveDataInternal = () => {
-	if (!browser) return;
-	persistClasses();
-	persistSkills();
-};
-
 export const removeFolder = (folder: ProFolder) => {
 	const classF = get(classFolders);
 	const skillF = get(skillFolders);
@@ -97,7 +89,9 @@ export const removeFolder = (folder: ProFolder) => {
 	if (skillF.includes(folder)) skillFolders.set(skillF.filter(f => f != folder));
 };
 
-export const getFolder = (data: ProFolder | ProClass | ProSkill): (ProFolder | undefined) => {
+export const getFolder = (data?: ProFolder | ProClass | ProSkill): (ProFolder | undefined) => {
+	if (!data) return undefined;
+
 	if (data instanceof ProFolder) return data.parent;
 	const folders: ProFolder[] = data instanceof ProClass ? get(classFolders) : get(skillFolders);
 
@@ -129,18 +123,18 @@ export const loadIndividual = (e: ProgressEvent<FileReader>) => {
 	(<HTMLElement>document.activeElement).blur();
 };
 
-export const loadRaw = (text: string) => {
+export const loadRaw = (text: string, fromServer: boolean = false) => {
 	if (!text) return;
 
 	if (text.indexOf('global:') >= 0) {
 		loadAttributes(text);
 	} else if (text.indexOf('components:') >= 0
 		|| (text.indexOf('group:') == -1 && text.indexOf('combo:') == -1 && text.indexOf('skills:') == -1)) {
-		console.log("loading skills");
-		loadSkillText(text.replace('loaded: false\n', ''));
+		console.log('loading skills');
+		loadSkillText(text.replace('loaded: false\n', ''), fromServer);
 	} else {
-		console.log("loading classes");
-		loadClassText(text.replace('loaded: false\n', ''));
+		console.log('loading classes');
+		loadClassText(text.replace('loaded: false\n', ''), fromServer);
 	}
 };
 
@@ -174,6 +168,7 @@ export const getAllSkillYaml = (): YAMLObject => {
 	const skillYaml = new YAMLObject();
 	skillYaml.put('loaded', false);
 	for (const skill of allSkills) {
+		if (!skill.loaded) loadSkill(skill);
 		skillYaml.put(skill.name, skill.serializeYaml());
 	}
 
@@ -191,13 +186,14 @@ export const getAllClassYaml = (): YAMLObject => {
 	const classYaml = new YAMLObject();
 	classYaml.put('loaded', false);
 	for (const cls of allClasses) {
+		if (!cls.loaded) loadClass(cls);
 		classYaml.put(cls.name, cls.serializeYaml());
 	}
 
 	return classYaml;
 };
 
-export const saveAll = () => {
+export const saveAll = async () => {
 	const skillYaml = getAllSkillYaml();
 	const classYaml = getAllClassYaml();
 

@@ -13,19 +13,22 @@
 	import ProClass                       from '$api/proclass';
 	import { get }                        from 'svelte/store';
 	import ProFolder                      from '$api/profolder';
-	import { fly }                        from 'svelte/transition';
+	import { fly, type TransitionConfig } from 'svelte/transition';
 	import Modal                          from '../Modal.svelte';
 	import { addClassFolder, cloneClass } from '../../data/class-store';
 	import { addSkillFolder, cloneSkill } from '../../data/skill-store';
 	import { animationEnabled }           from '../../data/settings';
 	import { base }                       from '$app/paths';
+	import { createEventDispatcher }      from 'svelte';
 
-	export let delay                                 = 0;
-	export let direction: 'right' | 'left'           = 'left';
-	export let data: ProSkill | ProClass | undefined = undefined;
+	export let delay                       = 0;
+	export let direction: 'right' | 'left' = 'left';
+	export let data: ProSkill | ProClass;
 
 	let over     = false;
 	let deleting = false;
+
+	const dispatch = createEventDispatcher();
 
 	const startDrag = (e: DragEvent) => {
 		if (!data) {
@@ -66,14 +69,18 @@
 	};
 
 
-	const maybe = (node: Element, options: unknown) => {
+	const maybe = (node: Element, options: {
+		fn: (node: Element, options: object) => TransitionConfig
+	} & TransitionConfig & { x?: number }) => {
 		if (!get(animationEnabled)) {
 			options.delay = 0;
 		}
 		return options.fn(node, options);
 	};
 
-	const cloneData = (data: ProClass | ProSkill) => {
+	const cloneData = (data?: ProClass | ProSkill) => {
+		if (!data) return;
+
 		if (data instanceof ProClass) {
 			cloneClass(data);
 		} else {
@@ -93,6 +100,11 @@
 		 on:dragover|preventDefault={dragOver}
 		 on:dragleave={() => over = false}
 		 on:click
+		 on:keypress={(e) => {
+			 if (e.key === 'Enter') dispatch('click');
+		 }}
+		 tabindex='0'
+		 role='menuitem'
 		 in:maybe={{fn: fly, x: (direction === "left" ? -100 : 100), duration: 500, delay: $sidebarOpen ? 0 : delay}}
 		 out:fly={{x: (direction === "left" ? -100 : 100), duration: 500}}>
 	<slot />
@@ -108,29 +120,47 @@
 				</a>
 			{/if}
 			<div on:click|preventDefault|stopPropagation={() => saveData(data)}
+					 on:keypress|preventDefault|stopPropagation={(event) => { if (event?.key === 'Enter') saveData(data); }}
+					 tabindex='0'
+					 role='button'
 					 class='download'
-					 title="Save {data.triggers ? 'Skill' : 'Class'}">
+					 title="Save {data.dataType === 'skill' ? 'Skill' : 'Class'}">
         <span class='material-symbols-rounded'>
           save
         </span>
 			</div>
 			<div on:click|preventDefault|stopPropagation={() => cloneData(data)}
+					 on:keypress|preventDefault|stopPropagation={(event) => { if (event?.key === 'Enter') cloneData(data); }}
+					 tabindex='0'
+					 role='button'
 					 class='clone'
-					 title="Clone {data.triggers ? 'Skill' : 'Class'}">
+					 title="Clone {data.dataType === 'skill' ? 'Skill' : 'Class'}">
         <span class='material-symbols-rounded'>
           content_copy
         </span>
 			</div>
-			<div on:click|preventDefault|stopPropagation={() => {
-				// If holding shift, delete without confirmation
-				if (window.event?.shiftKey) {
-					deleteProData(data);
-					return;
-				}
-				deleting = true
-			}}
+			<div on:click|preventDefault|stopPropagation={(event) => {
+						// If holding shift, delete without confirmation
+						if (event?.shiftKey) {
+							deleteProData(data);
+							return;
+						}
+						deleting = true
+					}}
+					 on:keypress|preventDefault|stopPropagation={(event) => {
+						 if (event?.key === 'Enter') {
+							 // If holding shift, delete without confirmation
+							 if (event?.shiftKey) {
+								 deleteProData(data);
+								 return;
+							 }
+							 deleting = true;
+						 }
+					 }}
+					 tabindex='0'
+					 role='button'
 					 class='delete'
-					 title="Delete {data.triggers ? 'Skill' : 'Class'}">
+					 title="Delete {data.dataType === 'skill' ? 'Skill' : 'Class'}">
         <span class='material-symbols-rounded'>
           delete
         </span>
@@ -140,10 +170,20 @@
 </div>
 
 <Modal bind:open={deleting}>
-	<h3>Do you really want to delete {data.name}?</h3>
+	<h3>Do you really want to delete {data?.name}?</h3>
 	<div class='modal-buttons'>
-		<div class='button' on:click={() => deleting = false}>Cancel</div>
-		<div class='button modal-delete' on:click={() => deleteProData(data)}>Delete</div>
+		<div class='button' on:click={() => deleting = false}
+				 on:keypress={(event) => { if (event?.key === 'Enter') deleting = false; }}
+				 tabindex='0'
+				 role='button'
+		>Cancel
+		</div>
+		<div class='button modal-delete' on:click={() => deleteProData(data)}
+				 on:keypress={(event) => { if (event?.key === 'Enter') deleteProData(data); }}
+				 tabindex='0'
+				 role='button'
+		>Delete
+		</div>
 	</div>
 </Modal>
 

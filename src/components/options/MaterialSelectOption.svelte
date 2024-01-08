@@ -4,7 +4,6 @@
   import { createEventDispatcher } from 'svelte';
 
   export let data: { material: string, any?: boolean };
-	export let any: boolean;
 	export let tooltip: string | undefined = undefined;
 
 	const dispatch = createEventDispatcher();

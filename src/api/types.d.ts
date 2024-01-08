@@ -8,6 +8,7 @@ import ComponentOption  from './options/options';
 
 export interface ProClassData {
 	name: string;
+	location?: 'local' | 'server';
 	prefix?: string;
 	group?: string;
 	manaName?: string;
@@ -42,6 +43,7 @@ export interface ProClassData {
 
 export interface ProSkillData {
 	name: string;
+	location?: 'local' | 'server';
 	type?: string;
 	maxLevel?: number;
 	skillReq?: ProSkill;

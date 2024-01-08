@@ -9,10 +9,10 @@
 
 	const dispatch = createEventDispatcher();
 
-	const closeModal = (e?: CustomEvent) => {
+	const closeModal = (e?: MouseEvent) => {
 		open = false;
 		dispatch('close');
-		e?.detail?.stopPropagation();
+		e?.stopPropagation();
 	};
 
 	const checkClose = (e: KeyboardEvent) => {
@@ -28,9 +28,7 @@
 {#if open}
 	<div class='backdrop' transition:fade>
 		<div class='modal-content'
-				 use:clickOutside
-				 on:outclick={closeModal}
-				 on:click|stopPropagation
+				 use:clickOutside={closeModal}
 				 transition:fly={{y: -200}}
 				 style:--width={width}>
 			<div class='wrapper'>
@@ -66,7 +64,7 @@
         width: var(--width);
         max-height: 85vh;
         max-width: 90%;
-				overflow-y: auto;
+        overflow-y: auto;
     }
 
     .wrapper {

@@ -1,22 +1,22 @@
 <script lang='ts'>
-	import type { Unsubscriber }               from 'svelte/types/runtime/store';
-	import type ProClass                       from '$api/proclass';
-	import IconInput                           from './input/IconInput.svelte';
-	import MaterialSelect                      from './input/MaterialSelect.svelte';
-	import SearchableSelect                    from './input/SearchableSelect.svelte';
-	import { saveDataInternal, updateSidebar } from '../data/store';
-	import AttributeInput                      from './input/AttributeInput.svelte';
-	import ByteSelect                          from './input/ByteSelect.svelte';
-	import { expSources }                      from '../version/data';
-	import { toProperCase }                    from '$api/api';
-	import { onDestroy, onMount }              from 'svelte';
-	import { ProAttribute }                    from '$api/proattribute';
-	import ProInput                            from './input/ProInput.svelte';
-	import { classes }                         from '../data/class-store';
-	import { attributes }                      from '../data/attribute-store';
-	import Toggle                              from './input/Toggle.svelte';
-	import { skills }                          from '../data/skill-store';
-	import LoreInput                           from '$input/LoreInput.svelte';
+	import type ProClass          from '$api/proclass';
+	import IconInput              from './input/IconInput.svelte';
+	import MaterialSelect         from './input/MaterialSelect.svelte';
+	import SearchableSelect       from './input/SearchableSelect.svelte';
+	import { updateSidebar }      from '../data/store';
+	import AttributeInput         from './input/AttributeInput.svelte';
+	import ByteSelect             from './input/ByteSelect.svelte';
+	import { expSources }         from '../version/data';
+	import { toProperCase }       from '$api/api';
+	import { onDestroy, onMount } from 'svelte';
+	import { ProAttribute }       from '$api/proattribute';
+	import ProInput               from './input/ProInput.svelte';
+	import { classes }            from '../data/class-store';
+	import { attributes }         from '../data/attribute-store';
+	import Toggle                 from './input/Toggle.svelte';
+	import { skills }             from '../data/skill-store';
+	import LoreInput              from '$input/LoreInput.svelte';
+	import type { Unsubscriber }  from 'svelte/store';
 
 	export let data: ProClass;
 
@@ -48,7 +48,7 @@
 
 	$: {
 		if (data?.name) updateSidebar();
-		saveDataInternal();
+		data.save();
 	}
 </script>
 

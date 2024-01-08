@@ -10,9 +10,9 @@
 	import { draggingComponent }                         from '../data/store';
 	import type ProSkill                                 from '$api/proskill';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
-	import type { Unsubscriber }                         from 'svelte/types/runtime/store';
-	import { useSymbols }                                from '../data/settings';
+	import type { Unsubscriber }                         from 'svelte/store';
 	import { get }                                       from 'svelte/store';
+	import { showSummaryItems, useSymbols }              from '../data/settings';
 	import { openModal }                                 from '../data/modal-service';
 	import ComponentModal                                from '$components/modal/ComponentModal.svelte';
 	import ComponentSelectModal                          from '$components/modal/ComponentSelectModal.svelte';
@@ -21,7 +21,6 @@
 	import Registry                                      from '$api/components/registry';
 	import Control                                       from '$components/control/Control.svelte';
 	import { skills }                                    from '../data/skill-store';
-	import { showSummaryItems }                          from '../data/settings';
 
 	export let skill: ProSkill;
 	export let component: ProComponent;
@@ -39,8 +38,6 @@
 	let commentOpen  = false;
 
 	let childCompsSub: Unsubscriber;
-
-	$: if (component) dispatch('save');
 
 	const openCompModal       = () => openModal(ComponentModal, component);
 	const openCompSelectModal = () => openModal(ComponentSelectModal, component);
@@ -152,8 +149,9 @@
 	};
 
 	const clone = () => {
-		const test: YAMLObject = new YAMLObject(component.name + '-copy');
-		const testYaml: string = test.toYaml(component.name + '-copy', component.toYamlObj());
+		const test: YAMLObject = new YAMLObject('components');
+		test.put(component.name + '-copy', component.toYamlObj());
+		const testYaml: string = test.toString();
 
 		const newData: YAMLObject    = parseYAML(testYaml);
 		const cloned: ProComponent[] = Registry.deserializeComponents(newData);
@@ -171,6 +169,9 @@
 	<div out:slide
 			 bind:this={wrapper}
 			 draggable='true'
+			 tabindex='0'
+			 role='treeitem'
+			 aria-selected='{$draggingComponent === component}'
 			 on:dragstart|stopPropagation={() => draggingComponent.set(component)}
 			 on:dragend={() => draggingComponent.set(undefined)}
 			 on:drop|stopPropagation={drop}
@@ -191,7 +192,10 @@
 		{:else}
 			<span class='material-symbols-rounded' in:spin={{duration: 400}}>expand_less</span>
 		{/if}
-		<div class='corner' on:click|stopPropagation={() => collapsed = !collapsed}
+		<div class='corner'
+				 tabindex='0'
+				 role='button'
+				 on:click|stopPropagation={() => collapsed = !collapsed}
 				 on:keypress|stopPropagation={(e) => {
             if (e.key === 'Enter') collapsed = !collapsed;
         }}
@@ -233,7 +237,7 @@
 		{/key}
 
 		{#if !collapsed}
-			<div class='controls'>
+			<div class='controls' transition:slide>
 				{#if component.isParent}
 					<Control title='Add Component'
 									 icon='add'
@@ -263,6 +267,7 @@
 				{#if childrenList.length === 0}
 					{#if component.isParent && (over || overChildren)}
 						<div class='filler'
+								 role='none'
 								 transition:slide
 								 class:overChildren
 								 on:dragenter|stopPropagation={() => {
@@ -277,6 +282,7 @@
                    overChildren = false;
 
                    let comp = get(draggingComponent);
+									 if (!comp) return;
                    skill.removeComponent(comp);
                    component.addComponent(comp);
                  }} />
@@ -401,7 +407,7 @@
         color: #ccc;
         font-size: 0.9rem;
         font-style: italic;
-				white-space: break-spaces;
+        white-space: break-spaces;
     }
 
     .summary {

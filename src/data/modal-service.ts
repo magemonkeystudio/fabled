@@ -5,11 +5,11 @@ import type ComponentSelectModal from '$components/modal/ComponentSelectModal.sv
 import type SettingsModal        from '$components/modal/SettingsModal.svelte';
 import type ProComponent         from '$api/components/procomponent';
 
-export const activeModal = writable<Modal | ComponentModal
-	| ComponentSelectModal | SettingsModal | undefined>(undefined);
-export const modalData   = writable<any>(undefined);
+export const activeModal = writable<typeof Modal | typeof ComponentModal
+	| typeof ComponentSelectModal | typeof SettingsModal | undefined>(undefined);
+export const modalData   = writable<unknown>(undefined);
 
-export const openModal = (modal: Modal | ComponentModal | ComponentSelectModal | SettingsModal,
+export const openModal = (modal: typeof Modal | typeof ComponentModal | typeof ComponentSelectModal | typeof SettingsModal,
 													data?: ProComponent) => {
 	activeModal.set(modal);
 	if (data) modalData.set(data);

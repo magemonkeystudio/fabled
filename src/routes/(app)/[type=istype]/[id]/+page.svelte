@@ -2,12 +2,12 @@
 	import type ProSkill                                  from '$api/proskill';
 	import ComponentWidget                                from '$components/ComponentWidget.svelte';
 	import Modal                                          from '$components/Modal.svelte';
+	import type { Unsubscriber }                          from 'svelte/store';
 	import { get }                                        from 'svelte/store';
 	import ProInput                                       from '$input/ProInput.svelte';
 	import { skills }                                     from '../../../../data/skill-store';
 	import { filterParams, initialized, triggerSections } from '$api/components/registry';
 	import { onMount }                                    from 'svelte';
-	import type { Unsubscriber }                          from 'svelte/types/runtime/store';
 	import type ProTrigger                                from '$api/components/triggers';
 	import { base }                                       from '$app/paths';
 	import ComponentSection                               from '$components/modal/component/ComponentSection.svelte';
@@ -40,7 +40,10 @@
 		save();
 	};
 
-	const save = () => skills.set([...get(skills)]);
+	const save = () => {
+		skills.set([...get(skills)]);
+		skill.save();
+	}
 </script>
 
 <svelte:head>
@@ -51,11 +54,16 @@
 		{skill.name}
 		<a class='material-symbols-rounded edit-skill chip' title='Edit'
 			 href='{base}/skill/{skill.name}/edit'>edit</a>
-		<div class='add-trigger chip' title='Add Trigger' on:click={() => triggerModal = true}>
+		<span class='add-trigger chip'
+					title='Add Trigger'
+					tabindex='0'
+					role='button'
+					on:click={() => triggerModal = true}
+					on:keypress={(e) => e.key === 'Enter' && (triggerModal = true)}>
 			<span class='material-symbols-rounded'>
 				new_label
 			</span>
-		</div>
+		</span>
 	</h2>
 	<hr />
 </div>
@@ -65,7 +73,7 @@
 			<ComponentWidget {skill} component={comp} on:update={update} on:save={save} />
 		</div>
 	{/each}
-	{#if skill.triggers.length == 0}
+	{#if skill.triggers.length === 0}
 		<div>No triggers added yet.</div>
 	{/if}
 </div>
@@ -88,7 +96,12 @@
 		{/each}
 	</div>
 	<hr />
-	<div class='cancel' on:click={() => triggerModal = false}>Cancel</div>
+	<div class='cancel' on:click={() => triggerModal = false}
+			 on:keypress={(e) => e.key === 'Enter' && (triggerModal = false)}
+			 tabindex='0'
+			 role='button'
+	>Cancel
+	</div>
 </Modal>
 
 <style>
@@ -117,7 +130,6 @@
         max-width: 100%;
         overflow-x: auto;
         padding-inline: 2rem;
-        overflow-x: auto;
         flex-grow: 1;
     }
 

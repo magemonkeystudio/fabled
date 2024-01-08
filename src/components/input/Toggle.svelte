@@ -1,16 +1,26 @@
 <!--suppress CssUnresolvedCustomProperty -->
-<script lang="ts">
-  export let data: boolean;
-  export let left   = "True";
-  export let right  = "False";
-  export let color  = "#222";
-  export let inline = true;
+<script lang='ts'>
+	export let data: boolean;
+	export let left   = 'True';
+	export let right  = 'False';
+	export let color  = '#222';
+	export let inline = true;
 </script>
 
-<input type="checkbox" class="hidden" id="permission" bind:checked={data} />
-<div class="toggle" class:selected={data} style:--color={color} class:inline>
-  <div on:click={() => data = true}>{left}</div>
-  <div on:click={() => data = false}>{right}</div>
+<input type='checkbox' class='hidden' id='permission' bind:checked={data} />
+<div class='toggle' class:selected={data} style:--color={color} class:inline>
+	<div on:click={() => data = true}
+			 on:keypress={(e) => { if(e.key === 'Enter') data = true }}
+			 tabindex='0'
+			 role='radio'
+			 aria-checked='{data}'
+	>{left}</div>
+	<div on:click={() => data = false}
+			 on:keypress={(e) => { if(e.key === 'Enter') data = false }}
+			 tabindex='0'
+			 role='radio'
+			 aria-checked='{!data}'
+	>{right}</div>
 </div>
 
 <style>
