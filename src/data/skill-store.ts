@@ -1,13 +1,14 @@
-import { parseYAML, YAMLObject } from '$api/yaml';
-import type { Writable }         from 'svelte/store';
-import { get, writable }         from 'svelte/store';
-import ProFolder                 from '$api/profolder';
-import { sort }                  from '$api/api';
-import { browser }               from '$app/environment';
-import ProSkill                  from '$api/proskill';
-import { active, rename }        from './store';
-import { goto }                  from '$app/navigation';
-import { base }                  from '$app/paths';
+import { parseYAML, YAMLObject }       from '$api/yaml';
+import type { Unsubscriber, Writable } from 'svelte/store';
+import { get, writable }               from 'svelte/store';
+import ProFolder                       from '$api/profolder';
+import { sort }                        from '$api/api';
+import { browser }                     from '$app/environment';
+import ProSkill                        from '$api/proskill';
+import { active, rename }              from './store';
+import { goto }                        from '$app/navigation';
+import { base }                        from '$app/paths';
+import { initialized }                 from '$api/components/registry';
 
 let isLegacy = false;
 
@@ -289,8 +290,12 @@ get(skills).forEach(sk => {
 });
 
 if (isLegacy) {
-	get(skills).forEach(sk => {
-		if (sk.location === 'local') sk.save();
+	const sub = initialized.subscribe(init => {
+		if (!init) return;
+		get(skills).forEach(sk => {
+			if (sk.location === 'local') sk.save();
+		});
+		persistSkills();
+		if (sub) sub();
 	});
-	persistSkills();
 }
