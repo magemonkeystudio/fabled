@@ -4,6 +4,7 @@ import com.sucy.skill.dynamic.DynamicSkill;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.entity.LivingEntity;
 
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ public class MountingCondition extends ConditionComponent {
     public void load(DynamicSkill skill, DataSection config) {
         super.load(skill, config);
         types = settings.getStringList(TYPE).stream()
-                .map(s -> s.toUpperCase().replace(' ', '_'))
+                .map(s -> s.toUpperCase(Locale.US).replace(' ', '_'))
                 .collect(Collectors.toSet());
     }
 

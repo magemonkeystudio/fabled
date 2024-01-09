@@ -110,7 +110,7 @@ public class ProjectileMechanic extends MechanicComponent {
     private static Class<? extends Projectile> getProjectileClass(String projectileName) {
         StringBuilder conditionedName = new StringBuilder();
         for (String word : projectileName.split(" ")) {
-            conditionedName.append(word.substring(0, 1).toUpperCase()).append(word.substring(1).toLowerCase());
+            conditionedName.append(word.substring(0, 1).toUpperCase(Locale.US)).append(word.substring(1).toLowerCase());
         }
         try {
             return (Class<? extends Projectile>) Class.forName("org.bukkit.entity." + conditionedName);
@@ -239,7 +239,7 @@ public class ProjectileMechanic extends MechanicComponent {
 
         if (settings.getBool(OVERRIDE_ITEM)) {
             ItemStack itemStack = new ItemStack(Material.valueOf(settings.getString(MATERIAL, "Snowball")
-                    .toUpperCase()
+                    .toUpperCase(Locale.US)
                     .replace(" ", "_")));
             ItemMeta meta = itemStack.getItemMeta();
             if (meta != null) {

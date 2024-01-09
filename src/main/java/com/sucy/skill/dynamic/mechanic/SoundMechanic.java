@@ -31,6 +31,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Plays a particle effect
@@ -62,7 +63,7 @@ public class SoundMechanic extends MechanicComponent {
             return false;
         }
 
-        String type = settings.getString(SOUND, settings.getString(SOUND2, "")).toUpperCase().replace(" ", "_");
+        String type = settings.getString(SOUND, settings.getString(SOUND2, "")).toUpperCase(Locale.US).replace(" ", "_");
         try {
             String sound =
                     type.equals("CUSTOM") ? settings.getString(CUSTOM, "") : Sound.valueOf(type).getKey().toString();

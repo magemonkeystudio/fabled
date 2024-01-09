@@ -30,6 +30,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Deals damage to each target
@@ -91,7 +92,7 @@ public class DamageMechanic extends MechanicComponent {
                         classification,
                         knockback,
                         EntityDamageEvent.DamageCause.valueOf(settings.getString(CAUSE, "Entity Attack")
-                                .toUpperCase()
+                                .toUpperCase(Locale.US)
                                 .replace(' ', '_')));
             }
         }

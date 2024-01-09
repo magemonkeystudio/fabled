@@ -67,7 +67,7 @@ public final class ParticleHelper {
     private ParticleHelper() {}
 
     public static Particle getFromKey(String particleKey) {
-        return Particle.valueOf(particleKey.toUpperCase().replace(' ', '_'));
+        return Particle.valueOf(particleKey.toUpperCase(Locale.US).replace(' ', '_'));
     }
 
     /**
@@ -316,7 +316,7 @@ public final class ParticleHelper {
             case SCULK_CHARGE -> Float.parseFloat(settings.getString(particleKey + DATA_KEY, "0"));
             default -> makeObject(particle,
                     Material.valueOf(settings.getString(particleKey + MATERIAL_KEY, "DIRT")
-                            .toUpperCase()
+                            .toUpperCase(Locale.US)
                             .replace(" ", "_")),
                     settings.getInt(particleKey + CMD_KEY, 0),
                     settings.getInt(particleKey + DURABILITY_KEY, 0),

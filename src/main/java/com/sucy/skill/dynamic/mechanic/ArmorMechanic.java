@@ -8,6 +8,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -35,7 +36,7 @@ public class ArmorMechanic extends MechanicComponent {
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         EquipmentSlot slot;
         try {
-            slot = EquipmentSlot.valueOf(settings.getString(SLOT, "HAND").toUpperCase().replace(" ", "_"));
+            slot = EquipmentSlot.valueOf(settings.getString(SLOT, "HAND").toUpperCase(Locale.US).replace(" ", "_"));
         } catch (IllegalArgumentException exception) {
             return false;
         }

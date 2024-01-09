@@ -38,10 +38,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Applies a flag to each target
@@ -91,7 +88,7 @@ public class WolfMechanic extends MechanicComponent {
         DyeColor dye = null;
         if (color != null) {
             try {
-                dye = DyeColor.valueOf(color.toUpperCase());
+                dye = DyeColor.valueOf(color.toUpperCase(Locale.US));
             } catch (Exception ex) { /* Invalid color */ }
         }
 

@@ -159,7 +159,7 @@ public class GUITool implements ToolMenu {
         for (String key : custom.keys()) {
             try {
                 ItemStack item = parseItem(custom.getSection(key));
-                items.put(key.toUpperCase(), item);
+                items.put(key.toUpperCase(Locale.US), item);
             } catch (Exception ex) {
                 Logger.invalid("Bad custom tool item: " + key);
             }
@@ -167,7 +167,7 @@ public class GUITool implements ToolMenu {
     }
 
     public static ItemStack parseItem(DataSection data) {
-        Material  material = Material.valueOf(data.getString("type").toUpperCase().replace(" ", "_"));
+        Material  material = Material.valueOf(data.getString("type").toUpperCase(Locale.US).replace(" ", "_"));
         ItemStack item     = new ItemStack(material);
         ItemMeta  meta     = item.getItemMeta();
         if (meta != null) {
@@ -248,7 +248,7 @@ public class GUITool implements ToolMenu {
     }
 
     public static ItemStack getIcon(final String key) {
-        return items.get(key.toUpperCase());
+        return items.get(key.toUpperCase(Locale.US));
     }
 
     public static boolean hasData(String key) {

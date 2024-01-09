@@ -29,6 +29,8 @@ package com.sucy.skill.dynamic.condition;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EntityEquipment;
 
+import java.util.Locale;
+
 /**
  * A condition for dynamic skills that requires the target to have a specified potion effect
  */
@@ -38,8 +40,8 @@ public class ToolCondition extends ConditionComponent {
 
     @Override
     boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        final String material = settings.getString(MATERIAL, "").toUpperCase();
-        final String tool     = "_" + settings.getString(TOOL, "").toUpperCase().replace("SHOVEL", "SPADE");
+        final String material = settings.getString(MATERIAL, "").toUpperCase(Locale.US);
+        final String tool     = "_" + settings.getString(TOOL, "").toUpperCase(Locale.US).replace("SHOVEL", "SPADE");
 
         final EntityEquipment equipment = target.getEquipment();
         if (equipment == null || equipment.getItemInMainHand() == null) return false;

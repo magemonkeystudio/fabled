@@ -94,7 +94,7 @@ public class MineMechanic extends MechanicComponent {
             if (!any) {
                 origin = materialList.stream().anyMatch(material -> material.equalsIgnoreCase("origin"));
                 for (String material : materialList) {
-                    materials.add(material.toUpperCase().replace(' ', '_'));
+                    materials.add(material.toUpperCase(Locale.US).replace(' ', '_'));
                 }
             }
         }
@@ -188,7 +188,7 @@ public class MineMechanic extends MechanicComponent {
         // Mine blocks
         boolean success = false;
         if (drop) {
-            String    toolString = settings.getString(TOOL, "CASTER").toUpperCase().replace(' ', '_');
+            String    toolString = settings.getString(TOOL, "CASTER").toUpperCase(Locale.US).replace(' ', '_');
             boolean   targetTool = toolString.equals("TARGET");
             ItemStack tool       = null;
             if (toolString.equals("CASTER")) {

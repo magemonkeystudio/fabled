@@ -31,6 +31,7 @@ import com.sucy.skill.api.util.FlagManager;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Applies a damage immunity flag to each target
@@ -67,7 +68,7 @@ public class ImmunityMechanic extends MechanicComponent {
         double multiplier = parseValues(caster, MULTIPLIER, level, 0);
         int    ticks      = (int) (seconds * 20);
         for (LivingEntity target : targets) {
-            FlagManager.addFlag(target, "immune:" + key.toUpperCase().replace(" ", "_"), ticks);
+            FlagManager.addFlag(target, "immune:" + key.toUpperCase(Locale.US).replace(" ", "_"), ticks);
             SkillAPI.setMeta(target, META_KEY, multiplier);
         }
         return targets.size() > 0;

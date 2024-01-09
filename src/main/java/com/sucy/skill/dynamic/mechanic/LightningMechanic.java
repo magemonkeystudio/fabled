@@ -125,7 +125,7 @@ public class LightningMechanic extends MechanicComponent {
             }
             boolean canTarget = false;
             if (SkillAPI.getSettings().isValidTarget(entity)) {
-                String group = settings.getString(GROUP, "ENEMY").toUpperCase();
+                String group = settings.getString(GROUP, "ENEMY").toUpperCase(Locale.US);
                 if (caster != entity) {
                     canTarget = group.equals("BOTH") || group.equals("ALLY") == SkillAPI.getSettings()
                             .isAlly(caster, entity);

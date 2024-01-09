@@ -34,6 +34,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -113,7 +114,7 @@ public class DamageLoreMechanic extends MechanicComponent {
                                         classification,
                                         settings.getBool(KNOCKBACK, true),
                                         EntityDamageEvent.DamageCause.valueOf(settings.getString(CAUSE, "Entity Attack")
-                                                .toUpperCase()
+                                                .toUpperCase(Locale.US)
                                                 .replace(' ', '_')));
                             }
                         }

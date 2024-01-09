@@ -37,6 +37,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -77,7 +78,7 @@ public class ItemChecker {
         boolean regex = settings.getBool(REGEX, false);
 
         // Values to compare to
-        String material = settings.getString(MATERIAL, "ARROW").toUpperCase().replace(" ", "_");
+        String material = settings.getString(MATERIAL, "ARROW").toUpperCase(Locale.US).replace(" ", "_");
         int    dur      = settings.getInt(DATA, 0);
         String text     = settings.getString(LORE, "");
         String display  = settings.getString(NAME, "");
@@ -128,7 +129,7 @@ public class ItemChecker {
         boolean regex = settings.getBool(REGEX, false);
 
         // Values to compare to
-        String material = settings.getString(MATERIAL, "ARROW").toUpperCase().replace(" ", "_");
+        String material = settings.getString(MATERIAL, "ARROW").toUpperCase(Locale.US).replace(" ", "_");
         int    dur      = settings.getInt(DATA, 0);
         String text     = settings.getString(LORE, "");
         String display  = settings.getString(NAME, "");

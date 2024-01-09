@@ -32,6 +32,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
 
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -55,7 +56,7 @@ public class BlockCondition extends ConditionComponent {
         negated = type.startsWith("not");
         in = type.endsWith("in block");
         types = settings.getStringList(MATERIAL).stream()
-                .map(s -> s.toUpperCase().replace(' ', '_'))
+                .map(s -> s.toUpperCase(Locale.US).replace(' ', '_'))
                 .collect(Collectors.toSet());
     }
 

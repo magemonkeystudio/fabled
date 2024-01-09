@@ -16,10 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * ProSkillAPI © 2023
@@ -227,7 +224,7 @@ public class ComponentRegistry {
     }
 
     public static Trigger<?> getTrigger(final String key) {
-        return TRIGGERS.get(key.toUpperCase().replace(' ', '_'));
+        return TRIGGERS.get(key.toUpperCase(Locale.US).replace(' ', '_'));
     }
 
     static EffectComponent getComponent(final ComponentType type, final String key) {
@@ -248,7 +245,7 @@ public class ComponentRegistry {
 
     @SuppressWarnings("unchecked")
     public static <T extends Event> void register(final Trigger<T> trigger) {
-        String key = trigger.getKey().toUpperCase().replace(' ', '_');
+        String key = trigger.getKey().toUpperCase(Locale.US).replace(' ', '_');
 
         if (getTrigger(key) != null) {
             throw new IllegalArgumentException("Trigger with key " + key + " already exists");

@@ -29,6 +29,8 @@ package com.sucy.skill.api.classes;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.tree.basic.*;
 
+import java.util.Locale;
+
 /**
  * Types of SkillTrees that are available for classes/skills to use
  */
@@ -76,7 +78,7 @@ public enum DefaultTreeType implements TreeType {
      */
     public static DefaultTreeType getByName(String name) {
         try {
-            return Enum.valueOf(DefaultTreeType.class, name.toUpperCase().replace(' ', '_'));
+            return Enum.valueOf(DefaultTreeType.class, name.toUpperCase(Locale.US).replace(' ', '_'));
         } catch (Exception ex) {
             return REQUIREMENT;
         }

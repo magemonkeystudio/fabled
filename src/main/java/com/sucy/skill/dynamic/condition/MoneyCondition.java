@@ -30,6 +30,8 @@ import com.sucy.skill.hook.VaultHook;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import java.util.Locale;
+
 /**
  * Checks if the player's balance is within a range, using Vault
  */
@@ -50,7 +52,7 @@ public class MoneyCondition extends ConditionComponent {
 
         CompareType type = CompareType.BETWEEN;
         try {
-            type = CompareType.valueOf(settings.getString(TYPE, "between").toUpperCase());
+            type = CompareType.valueOf(settings.getString(TYPE, "between").toUpperCase(Locale.US));
         } catch (IllegalArgumentException ignored) {
         }
 

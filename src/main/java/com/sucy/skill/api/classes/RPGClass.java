@@ -694,7 +694,7 @@ public abstract class RPGClass implements IconHolder {
         }
         for (final String type : config.getList(BLACKLIST)) {
             if (type.isEmpty()) continue;
-            final Material mat = Material.matchMaterial(type.toUpperCase().replace(' ', '_'));
+            final Material mat = Material.matchMaterial(type.toUpperCase(Locale.US).replace(' ', '_'));
             if (mat != null) {
                 blacklist.add(mat);
             } else {
@@ -814,7 +814,7 @@ public abstract class RPGClass implements IconHolder {
                     try {
                         Material material = Material.valueOf(itemType
                                 .trim()
-                                .toUpperCase()
+                                .toUpperCase(Locale.US)
                                 .replace(' ', '_')
                                 .replace('-', '_'));
                         if (material == (itemStack == null ? Material.AIR : itemStack.getType())) {
