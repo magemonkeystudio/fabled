@@ -4812,7 +4812,7 @@ export const initComponents = () => {
 		RIGHT_CLICK: { name: 'Right Click', component: RightClickTrigger },
 		MOVE:        { name: 'Move', component: MoveTrigger },
 		PROJ_HIT:    { name: 'Projectile Hit', component: ProjectileHitTrigger },
-		PROJ_LAUNCH: { name: 'Projectile Launch', component: LaunchTrigger },
+		PROJ_LAUNCH: { name: 'Projectile Launch', alias: 'Launch', component: LaunchTrigger },
 		PROJ_TICK:   { name: 'Projectile Tick', component: ProjectileTickTrigger },
 		SIGNAL:      { name: 'Signal', component: SignalTrigger },
 		SHIELD:      { name: 'Shield', component: ShieldTrigger },

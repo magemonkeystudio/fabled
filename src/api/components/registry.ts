@@ -9,6 +9,7 @@ import type ProMechanic            from '$api/components/mechanics';
 
 export type RegistryEntry = {
 	name: string,
+	alias?: string,
 	component: typeof ProComponent,
 	section?: string
 };
@@ -86,25 +87,25 @@ export const mechanicSections = derived(filteredMechanics, (mechanics) => {
 export default class Registry {
 	public static getTriggerByName = (name: string): typeof ProTrigger | undefined => {
 		const val = Object.values(get(triggers))
-			.find(trig => trig.name.toLowerCase() === name.toLowerCase())?.component;
+			.find(trig => trig.name.toLowerCase() === name.toLowerCase() || trig.alias?.toLowerCase() === name.toLowerCase())?.component;
 		return <typeof ProTrigger><unknown>val;
 	};
 
 	public static getTargetByName = (name: string): typeof ProTarget | undefined => {
 		const val = Object.values(get(targets))
-			.find(target => target.name.toLowerCase() === name.toLowerCase())?.component;
+			.find(target => target.name.toLowerCase() === name.toLowerCase() || target.alias?.toLowerCase() === name.toLowerCase())?.component;
 		return <typeof ProTarget><unknown>val;
 	};
 
 	public static getConditionByName = (name: string): typeof ProCondition | undefined => {
 		const val = Object.values(get(conditions))
-			.find(condition => condition.name.toLowerCase() === name.toLowerCase())?.component;
+			.find(condition => condition.name.toLowerCase() === name.toLowerCase() || condition.alias?.toLowerCase() === name.toLowerCase())?.component;
 		return <typeof ProCondition><unknown>val;
 	};
 
 	public static getMechanicByName = (name: string): typeof ProMechanic | undefined => {
 		const val = Object.values(get(mechanics))
-			.find(mechanic => mechanic.name.toLowerCase() === name.toLowerCase())?.component;
+			.find(mechanic => mechanic.name.toLowerCase() === name.toLowerCase() || mechanic.alias?.toLowerCase() === name.toLowerCase())?.component;
 		return <typeof ProMechanic><unknown>val;
 	};
 
