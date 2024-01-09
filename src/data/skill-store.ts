@@ -241,6 +241,7 @@ export const loadSkillText = (text: string, fromServer: boolean = false) => {
 			: addSkill(key)));
 		if (fromServer) skill.location = 'server';
 		skill.load(data);
+		skill.save();
 		refreshSkills();
 		return;
 	}
@@ -251,6 +252,7 @@ export const loadSkillText = (text: string, fromServer: boolean = false) => {
 				? getSkill(key)
 				: addSkill(key)));
 			skill.load(data.data[key]);
+			skill.save();
 		}
 	}
 	refreshSkills();
