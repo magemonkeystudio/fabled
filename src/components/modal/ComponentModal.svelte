@@ -6,59 +6,64 @@
 	import ProInput                 from '$input/ProInput.svelte';
 	import Modal                    from '$components/Modal.svelte';
 	import type ProComponent        from '$api/components/procomponent';
-	import type DropdownSelect      from '$api/options/dropdownselect';
+	import DropdownSelect           from '$api/options/dropdownselect';
 	import type { ComponentOption } from '$api/options/options';
 	import BooleanSelectOption      from '$components/options/BooleanSelectOption.svelte';
+	import { beforeUpdate }         from 'svelte';
 
 	export let data: ProComponent | undefined = undefined;
 	let modalOpen                             = true;
 
-	$: if (modalOpen && data) {
-		data.data.filter((dat: ComponentOption) => (dat['dataSource'])).forEach((dat: DropdownSelect) => dat.init());
-	}
+	beforeUpdate(() => {
+		if (!modalOpen || !data) return;
+
+		data.data.filter((dat: ComponentOption) => (dat instanceof DropdownSelect)).forEach((dat: ComponentOption) => (<DropdownSelect>dat).init());
+	});
 </script>
 
 <Modal bind:open={modalOpen} on:close width='70%'>
-	<h2 class:deprecated={data.isDeprecated}><span>{data.name}</span></h2>
-	{#if data.description}
-		<div class='modal-desc'>{data.description}</div>
-	{/if}
-	<hr />
-	<div class='component-entry'>
-		<ProInput label='Comment'
-							tooltip='[comment] A comment that will be displayed in the skill editor'
-							bind:value={data.comment} />
-		{#if data instanceof ProTrigger && data.name != 'Cast' && data.name != 'Initialize' && data.name != 'Cleanup'}
-			<BooleanSelectOption name='Mana' tooltip='[mana] Whether this trigger requires the mana cost to activate'
-													 bind:data={data.mana}
-													 on:save />
-			<BooleanSelectOption name='Cooldown'
-													 tooltip='[cooldown] Whether this trigger requires to be off cooldown to activate'
-													 bind:data={data.cooldown}
-													 on:save />
-		{:else if data instanceof ProTarget || data instanceof ProCondition || data instanceof ProMechanic}
-			<ProInput label='Icon Key' bind:value={data.iconKey}
-								tooltip={'[icon-key] The key used by the component in the Icon Lore. If this is set to "example" and has a value name of "value", it can be referenced using the string "{attr:example.value}"'} />
+	{#if data}
+		<h2 class:deprecated={data.isDeprecated}><span>{data.name}</span></h2>
+		{#if data.description}
+			<div class='modal-desc'>{data.description}</div>
 		{/if}
-		{#if data instanceof ProMechanic}
-			<BooleanSelectOption name='Counts as Cast'
-													 tooltip='[counts] Whether this mechanic running treats the skill as "casted" and will consume mana and start the cooldown. Set to false if it is a mechanic applled when the skill fails such as cleanup or an error message"'
-													 bind:data={data.countsAsCast}
-													 on:save />
-		{/if}
-
-		{#each data.data as datum}
-			{#if datum.meetsRequirements(data)}
-				<svelte:component
-					this={datum.component}
-					bind:data={datum.data}
-					name={datum.name}
-					tooltip="{datum.key ? '[' + datum.key + '] ' : ''}{datum.tooltip}"
-					multiple={datum.multiple}
-					on:save />
+		<hr />
+		<div class='component-entry'>
+			<ProInput label='Comment'
+								tooltip='[comment] A comment that will be displayed in the skill editor'
+								bind:value={data.comment} />
+			{#if data instanceof ProTrigger && data.name !== 'Cast' && data.name !== 'Initialize' && data.name !== 'Cleanup'}
+				<BooleanSelectOption name='Mana' tooltip='[mana] Whether this trigger requires the mana cost to activate'
+														 bind:data={data.mana}
+														 on:save />
+				<BooleanSelectOption name='Cooldown'
+														 tooltip='[cooldown] Whether this trigger requires to be off cooldown to activate'
+														 bind:data={data.cooldown}
+														 on:save />
+			{:else if data instanceof ProTarget || data instanceof ProCondition || data instanceof ProMechanic}
+				<ProInput label='Icon Key' bind:value={data.iconKey}
+									tooltip={'[icon-key] The key used by the component in the Icon Lore. If this is set to "example" and has a value name of "value", it can be referenced using the string "{attr:example.value}"'} />
 			{/if}
-		{/each}
-	</div>
+			{#if data instanceof ProMechanic}
+				<BooleanSelectOption name='Counts as Cast'
+														 tooltip='[counts] Whether this mechanic running treats the skill as "casted" and will consume mana and start the cooldown. Set to false if it is a mechanic applled when the skill fails such as cleanup or an error message"'
+														 bind:data={data.countsAsCast}
+														 on:save />
+			{/if}
+
+			{#each data.data as datum}
+				{#if datum.meetsRequirements(data)}
+					<svelte:component
+						this={datum.component}
+						bind:data={datum.data}
+						name={datum.name}
+						tooltip="{datum.key ? '[' + datum.key + '] ' : ''}{datum.tooltip}"
+						multiple={datum.multiple}
+						on:save />
+				{/if}
+			{/each}
+		</div>
+	{/if}
 </Modal>
 
 <style>

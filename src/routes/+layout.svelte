@@ -1,19 +1,22 @@
 <script lang='ts'>
 	import '../app.css';
-	import { active, importing, loadFile, saveAll, saveData, showSidebar } from '../data/store';
-	import { onDestroy, onMount }                                          from 'svelte';
-	import { browser }                                                     from '$app/environment';
-	import ImportModal                                                     from '$components/ImportModal.svelte';
-	import NavBar                                                          from '$components/NavBar.svelte';
-	import HeaderBar                                                       from '$components/HeaderBar.svelte';
-	import { initComponents }                                              from '$api/components/components';
-	import { isSaving, skills }                                            from '../data/skill-store';
-	import { fly }                                                         from 'svelte/transition';
-	import type { Unsubscriber }                                           from 'svelte/store';
-	import { get }                                                         from 'svelte/store';
-	import Sidebar                                                         from '$components/sidebar/Sidebar.svelte';
-	import { activeModal, closeModal, modalData, openModal }               from '../data/modal-service';
-	import SettingsModal                                                   from '$components/modal/SettingsModal.svelte';
+	import { active, importing, loadFile, saveAll, saveData, saveError, showSidebar } from '../data/store';
+	import { onDestroy, onMount }                                                     from 'svelte';
+	import { browser }                                                                from '$app/environment';
+	import ImportModal
+																																										from '$components/ImportModal.svelte';
+	import NavBar                                                                     from '$components/NavBar.svelte';
+	import HeaderBar                                                                  from '$components/HeaderBar.svelte';
+	import { initComponents }                                                         from '$api/components/components';
+	import { isSaving, skills }                                                       from '../data/skill-store';
+	import { fly }                                                                    from 'svelte/transition';
+	import type { Unsubscriber }                                                      from 'svelte/store';
+	import { get }                                                                    from 'svelte/store';
+	import Sidebar
+																																										from '$components/sidebar/Sidebar.svelte';
+	import { activeModal, closeModal, modalData, openModal }                          from '../data/modal-service';
+	import SettingsModal
+																																										from '$components/modal/SettingsModal.svelte';
 
 	let dragging    = false;
 	let displaySave = false;
@@ -119,6 +122,22 @@
 
 {#if $importing}
 	<ImportModal />
+{/if}
+
+{#if $saveError}
+	<div class='save-error' transition:fly={{y: -20}}>
+		<strong>Failed to save {$saveError.name} - Data is too large.</strong>
+		<div>We can keep it in memory for you to use, but will be unable to persist it to your browser's storage.</div>
+		<div>Closing/Refreshing the page will cause you to lose this data.</div>
+		<div>You'll need to export it and re-import later if you want to keep working with this.</div>
+		<div class='acknowledge button'
+				 tabindex='0'
+				 role='button'
+				 on:click={() => { get(saveError).acknowledged = true; saveError.set(null); }}
+				 on:keypress={(e) => { if (e.key === 'Enter') { get(saveError).acknowledged = true; saveError.set(null); }}}
+		>I Understand
+		</div>
+	</div>
 {/if}
 
 <!-- Display our active modal -->
@@ -234,5 +253,23 @@
         border-radius: 0.75rem;
         padding: 0.75rem;
         box-shadow: inset 0 0 5px #222;
+    }
+
+    .save-error {
+        position: fixed;
+        z-index: 100;
+        top: 0.75rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(255, 29, 29, 0.6);
+        backdrop-filter: blur(5px);
+        border-radius: 0.75rem;
+        padding: 0.75rem;
+        box-shadow: inset 0 0 5px #222;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
     }
 </style>

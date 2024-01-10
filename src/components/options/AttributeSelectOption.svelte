@@ -9,7 +9,7 @@
   export let tooltip: string | undefined = undefined;
 
   const dispatch = createEventDispatcher();
-  $: if (data || !data) dispatch("save");
+  $: if (data) dispatch("save");
 </script>
 
 <ProInput label={name} {tooltip}>

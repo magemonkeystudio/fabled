@@ -109,14 +109,14 @@ export const getFolder = (data?: ProFolder | ProClass | ProSkill): (ProFolder | 
  * Loads an individual skill or class file
  * @param e ProgressEvent
  */
-export const loadIndividual = (e: ProgressEvent<FileReader>) => {
+export const loadIndividual = async (e: ProgressEvent<FileReader>) => {
 	const text: string = <string>e.target?.result;
 	if (!text) return;
 
 	if (text.indexOf('global:') >= 0) {
 		loadAttributes(text);
 	} else if (text.indexOf('components:') >= 0 || (text.indexOf('group:') == -1 && text.indexOf('combo:') == -1 && text.indexOf('skills:') == -1)) {
-		loadSkillText(text);
+		await loadSkillText(text);
 	} else {
 		loadClassText(text);
 	}
@@ -216,3 +216,5 @@ const saveToFile = (file: string, data: string) => {
 	element.click();
 	document.body.removeChild(element);
 };
+
+export const saveError: Writable<ProSkill> = writable();

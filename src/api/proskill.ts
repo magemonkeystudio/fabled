@@ -1,17 +1,20 @@
 import type { Icon, ProSkillData, Serializable } from './types';
 import { YAMLObject }                            from './yaml';
 import { ProAttribute }                          from './proattribute';
-import { toEditorCase }                          from './api';
-import { getSkill }                              from '../data/skill-store';
-import ProTrigger                                from './components/triggers';
+import { toEditorCase }       from './api';
+import { getSkill, isSaving } from '../data/skill-store';
+import ProTrigger             from './components/triggers';
 import type ProComponent                         from '$api/components/procomponent';
 import Registry, { initialized }                 from '$api/components/registry';
 import type { Unsubscriber }                     from 'svelte/store';
+import { saveError }                             from '../data/store';
 
 export default class ProSkill implements Serializable {
 	dataType = 'skill';
 	location: 'local' | 'server' = 'local';
 	loaded                       = false;
+	tooBig = false;
+	acknowledged = false;
 
 	isSkill                               = true;
 	public key                            = {};
@@ -187,7 +190,14 @@ export default class ProSkill implements Serializable {
 	};
 
 	public save = () => {
-		if (!this.name) return;
+		if (!this.name || this.tooBig) return;
+
+		if (this.tooBig && !this.acknowledged) {
+			saveError.set(this);
+			return;
+		}
+
+		isSaving.set(true);
 
 		const yaml = this.serializeYaml();
 		if (this.location === 'server') {
@@ -200,6 +210,20 @@ export default class ProSkill implements Serializable {
 		}
 		this.previousName = this.name;
 
-		localStorage.setItem('sapi.skill.' + this.name, yaml.toString());
+		try {
+			localStorage.setItem('sapi.skill.' + this.name, yaml.toString());
+			this.tooBig = false;
+		} catch (e: any) {
+			// If the data is too big
+			if (!e?.message?.includes('quota')) {
+				console.error(this.name + ' Save error', e);
+			} else {
+				localStorage.removeItem('sapi.skill.' + this.name);
+				this.tooBig = true;
+				saveError.set(this);
+			}
+		}
+
+		isSaving.set(false);
 	};
 }

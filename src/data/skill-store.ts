@@ -228,7 +228,7 @@ export const refreshSkillFolders = () => {
 /**
  *  Loads skill data from a string
  */
-export const loadSkillText = (text: string, fromServer: boolean = false) => {
+export const loadSkillText = async (text: string, fromServer: boolean = false) => {
 	// Load new skills
 	const data: YAMLObject = parseYAML(text);
 	console.log(data);
@@ -259,11 +259,11 @@ export const loadSkillText = (text: string, fromServer: boolean = false) => {
 	refreshSkills();
 };
 
-export const loadSkills = (e: ProgressEvent<FileReader>) => {
+export const loadSkills = async (e: ProgressEvent<FileReader>) => {
 	const text: string = <string>e.target?.result;
 	if (!text) return;
 
-	loadSkillText(text);
+	await loadSkillText(text);
 };
 
 export const isSaving: Writable<boolean> = writable(false);

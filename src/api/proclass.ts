@@ -7,19 +7,19 @@ import { toEditorCase, toProperCase }            from './api';
 import type { SkillTree }                        from '$api/SkillTree';
 
 export default class ProClass implements Serializable {
-	dataType = 'class';
+	dataType                     = 'class';
 	location: 'local' | 'server' = 'local';
 	loaded                       = false;
 
-	isClass    = true;
-	public key = {};
+	isClass              = true;
+	public key           = {};
 	name: string;
 	previousName: string = '';
-	prefix     = '';
-	group      = 'class';
-	manaName   = '&2Mana';
-	maxLevel   = 40;
-	parentStr  = '';
+	prefix               = '';
+	group                = 'class';
+	manaName             = '&2Mana';
+	maxLevel             = 40;
+	parentStr            = '';
 	_parent?: ProClass;
 	get parent() {
 		return this._parent;
@@ -45,21 +45,21 @@ export default class ProClass implements Serializable {
 	unusableItems: string[]    = [];
 	actionBar                  = '';
 
-	lInverted = false;
-	rInverted = false;
+	lInverted  = false;
+	rInverted  = false;
 	lsInverted = false;
 	rsInverted = false;
-	pInverted = false;
-	qInverted = false;
-	fInverted = false;
+	pInverted  = false;
+	qInverted  = false;
+	fInverted  = false;
 
-	lWhitelist: string[] = [];
-	rWhitelist: string[] = [];
+	lWhitelist: string[]  = [];
+	rWhitelist: string[]  = [];
 	lsWhitelist: string[] = [];
 	rsWhitelist: string[] = [];
-	pWhitelist: string[] = [];
-	qWhitelist: string[] = [];
-	fWhitelist: string[] = [];
+	pWhitelist: string[]  = [];
+	qWhitelist: string[]  = [];
+	fWhitelist: string[]  = [];
 
 	constructor(data?: ProClassData) {
 		this.name   = data ? data.name : 'Class';
@@ -139,7 +139,7 @@ export default class ProClass implements Serializable {
 
 		// Combo starters
 		const combos = new YAMLObject('combo-starters');
-		const l = new YAMLObject('L');
+		const l      = new YAMLObject('L');
 		l.put('inverted', this.lInverted);
 		l.put('whitelist', this.lWhitelist);
 		combos.put('L', l);
@@ -228,21 +228,21 @@ export default class ProClass implements Serializable {
 		this.expSources           = yaml.get('exp-source', this.expSources);
 
 		// Combo starters
-		const combos = yaml.get('combo-starters', new YAMLObject());
-		this.lInverted = combos.get('L', new YAMLObject()).get('inverted', this.lInverted);
-		this.rInverted = combos.get('R', new YAMLObject()).get('inverted', this.rInverted);
-		this.lsInverted = combos.get('LS', new YAMLObject()).get('inverted', this.lsInverted);
-		this.rsInverted = combos.get('RS', new YAMLObject()).get('inverted', this.rsInverted);
-		this.pInverted = combos.get('P', new YAMLObject()).get('inverted', this.pInverted);
-		this.qInverted = combos.get('Q', new YAMLObject()).get('inverted', this.qInverted);
-		this.fInverted = combos.get('F', new YAMLObject()).get('inverted', this.fInverted);
-		this.lWhitelist = combos.get('L', new YAMLObject()).get('whitelist', this.lWhitelist);
-		this.rWhitelist = combos.get('R', new YAMLObject()).get('whitelist', this.rWhitelist);
+		const combos     = yaml.get('combo-starters', new YAMLObject());
+		this.lInverted   = combos.get('L', new YAMLObject()).get('inverted', this.lInverted);
+		this.rInverted   = combos.get('R', new YAMLObject()).get('inverted', this.rInverted);
+		this.lsInverted  = combos.get('LS', new YAMLObject()).get('inverted', this.lsInverted);
+		this.rsInverted  = combos.get('RS', new YAMLObject()).get('inverted', this.rsInverted);
+		this.pInverted   = combos.get('P', new YAMLObject()).get('inverted', this.pInverted);
+		this.qInverted   = combos.get('Q', new YAMLObject()).get('inverted', this.qInverted);
+		this.fInverted   = combos.get('F', new YAMLObject()).get('inverted', this.fInverted);
+		this.lWhitelist  = combos.get('L', new YAMLObject()).get('whitelist', this.lWhitelist);
+		this.rWhitelist  = combos.get('R', new YAMLObject()).get('whitelist', this.rWhitelist);
 		this.lsWhitelist = combos.get('LS', new YAMLObject()).get('whitelist', this.lsWhitelist);
 		this.rsWhitelist = combos.get('RS', new YAMLObject()).get('whitelist', this.rsWhitelist);
-		this.pWhitelist = combos.get('P', new YAMLObject()).get('whitelist', this.pWhitelist);
-		this.qWhitelist = combos.get('Q', new YAMLObject()).get('whitelist', this.qWhitelist);
-		this.fWhitelist = combos.get('F', new YAMLObject()).get('whitelist', this.fWhitelist);
+		this.pWhitelist  = combos.get('P', new YAMLObject()).get('whitelist', this.pWhitelist);
+		this.qWhitelist  = combos.get('Q', new YAMLObject()).get('whitelist', this.qWhitelist);
+		this.fWhitelist  = combos.get('F', new YAMLObject()).get('whitelist', this.fWhitelist);
 
 		this.loaded = true;
 	};
