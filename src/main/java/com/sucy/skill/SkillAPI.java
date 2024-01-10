@@ -660,7 +660,8 @@ public class SkillAPI extends JavaPlugin {
         PlayerStats.init();
         ClassBoardManager.registerText();
         if (settings.isAttributesEnabled()) {
-            attributeManager = new AttributeManager(this);
+            attributeManager = new AttributeManager();
+            ((AttributeManager) attributeManager).load(this);
         }
 
         // Load classes and skills

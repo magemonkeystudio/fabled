@@ -80,18 +80,6 @@ public class AttributeManager implements IAttributeManager {
     private final Map<String, List<ProAttribute>> byComponent = new HashMap<>();
 
     /**
-     * Sets up the attribute manager, loading the attribute
-     * data from the configuration. This is handled by SkillAPI
-     * automatically so other plugins should not instantiate
-     * this class.
-     *
-     * @param api SkillAPI reference
-     */
-    public AttributeManager(SkillAPI api) {
-        load(api);
-    }
-
-    /**
      * Retrieves an attribute template
      *
      * @param key attribute key
@@ -128,7 +116,7 @@ public class AttributeManager implements IAttributeManager {
      *
      * @param api SkillAPI reference
      */
-    private void load(SkillAPI api) {
+    public void load(SkillAPI api) {
         CommentedConfig config = new CommentedConfig(api, "attributes");
         config.saveDefaultConfig();
 
