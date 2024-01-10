@@ -30,12 +30,13 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.gui.tool.GUIHolder;
 import com.sucy.skill.hook.VaultHook;
 import com.sucy.skill.manager.AttributeManager;
+import com.sucy.skill.manager.ProAttribute;
 
-public class AttributeHandler extends GUIHolder<AttributeManager.Attribute> {
+public class AttributeHandler extends GUIHolder<ProAttribute> {
     private static final String NO_MONEY = "attribute-no-money";
 
     @Override
-    public void onClick(AttributeManager.Attribute type, int slot, boolean left, boolean shift) {
+    public void onClick(ProAttribute type, int slot, boolean left, boolean shift) {
         if (left) {
             if (player.upAttribute(type.getKey())) setPage(page);
         } else if (SkillAPI.getSettings().isAttributesDowngrade() && player.getAttribute(type.getKey()) > 0) {

@@ -54,6 +54,8 @@ import com.sucy.skill.language.RPGFilter;
 import com.sucy.skill.log.LogType;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.manager.AttributeManager;
+import com.sucy.skill.manager.IAttributeManager;
+import com.sucy.skill.manager.ProAttribute;
 import com.sucy.skill.task.ScoreboardTask;
 import mc.promcteam.engine.NexEngine;
 import mc.promcteam.engine.api.meta.NBTAttribute;
@@ -87,14 +89,16 @@ import java.util.Map.Entry;
  * try to instantiate your own PlayerData object.
  */
 public class PlayerData {
-    public final  HashMap<String, Integer>                       attributes          = new HashMap<>(); // iomatix: It's an attr total like described
-    public final  HashMap<String, Integer>                       attrUpStages         = new HashMap<>(); // iomatix: distinguish attr total from attrUpStage (it's an attr upgrade level/stage)
-    private final HashMap<String, PlayerClass>                   classes             = new HashMap<>();
-    private final HashMap<String, PlayerSkill>                   skills              = new HashMap<>();
-    private final HashSet<ExternallyAddedSkill>                  extSkills           = new HashSet<>();
-    private final HashMap<String, List<PlayerAttributeModifier>> attributesModifiers = new HashMap<>();
-    private final HashMap<String, List<PlayerStatModifier>>      statModifiers       = new HashMap<>();
-    private final HashMap<String, String>                        persistentData      = new HashMap<>();
+    public final  Map<String, Integer>                       attributes          = new HashMap<>();
+    // iomatix: It's an attr total like described
+    public final  Map<String, Integer>                       attrUpStages        = new HashMap<>();
+    // iomatix: distinguish attr total from attrUpStage (it's an attr upgrade level/stage)
+    private final Map<String, PlayerClass>                   classes             = new HashMap<>();
+    private final Map<String, PlayerSkill>                   skills              = new HashMap<>();
+    private final Set<ExternallyAddedSkill>                  extSkills           = new HashSet<>();
+    private final Map<String, List<PlayerAttributeModifier>> attributesModifiers = new HashMap<>();
+    private final Map<String, List<PlayerStatModifier>>      statModifiers       = new HashMap<>();
+    private final Map<String, String>                        persistentData      = new HashMap<>();
 
     private final DataSection           extraData  = new DataSection();
     private final UUID                  playerUUID;
@@ -105,20 +109,20 @@ public class PlayerData {
     private final PlayerEquips          equips;
     private final List<UUID>            onCooldown = new ArrayList<>();
 
-    public        int                   attribPoints;
-    private       String                scheme;
-    private       String                menuClass;
-    private       double                mana;
-    private       double                maxMana;
-    private       double                lastHealth;
-    private       double                health;
-    private       double                maxHealth;
-    private       double                hunger;
-    private       boolean               init;
-    private       boolean               passive;
-    private       long                  skillTimer;
-    private       BukkitTask            removeTimer;
-    private       Runnable              onPreviewStop;
+    public  int        attribPoints;
+    private String     scheme;
+    private String     menuClass;
+    private double     mana;
+    private double     maxMana;
+    private double     lastHealth;
+    private double     health;
+    private double     maxHealth;
+    private double     hunger;
+    private boolean    init;
+    private boolean    passive;
+    private long       skillTimer;
+    private BukkitTask removeTimer;
+    private Runnable   onPreviewStop;
 
     /**
      * Initializes a new account data representation for a player.
@@ -347,7 +351,8 @@ public class PlayerData {
 
         // Attribute points come with invested attributes
         if (this.attrUpStages.containsKey(key)) {
-            total += this.attrUpStages.get(key); // iomatix: please verify safety of this change, done because attributes cost != attribute stage
+            total +=
+                    this.attrUpStages.get(key); // iomatix: please verify safety of this change, done because attributes cost != attribute stage
         }
 
         // Attribute points come with modifier api
@@ -419,10 +424,14 @@ public class PlayerData {
      */
     public boolean upAttribute(String key) {
         key = key.toLowerCase();
-        int currentStage = getInvestedAttributeStage(key); // iomatix: the current upgrade stage, not the invested attributes
+        ProAttribute proAttribute = SkillAPI.getAttributeManager().getAttribute(key);
+        if (proAttribute == null) return false;
+
+        int max = proAttribute.getMax();
+        int currentStage =
+                getInvestedAttributeStage(key); // iomatix: the current upgrade stage, not the invested attributes
         int currentInvested = getInvestedAttribute(key); // iomatix: the invested attributes
-        int max     = SkillAPI.getAttributeManager().getAttribute(key).getMax();
-        int cost = getAttributeUpCost(key);
+        int cost            = getAttributeUpCost(key);
 
         // iomatix apply the new logic below:
         if (attribPoints >= cost && currentStage < max) {
@@ -443,6 +452,7 @@ public class PlayerData {
         }
         return false;
     }
+
     /**
      * Calculating cost using the formula:
      * costBase + (int) Math.floor(attrStage*costModifier).
@@ -450,44 +460,58 @@ public class PlayerData {
      * @param key attribute key
      * @return calculated cost of single attribute upgrade
      */
-    public int getAttributeUpCost(String key){
-        return Math.max(0,SkillAPI.getAttributeManager().getAttribute(key).getCostBase() + (int) Math.floor((getInvestedAttributeStage(key)+1)*SkillAPI.getAttributeManager().getAttribute(key).getCostMod()));
+    public int getAttributeUpCost(String key) {
+        ProAttribute proAttribute = SkillAPI.getAttributeManager().getAttribute(key);
+        if (proAttribute == null) return 0;
+
+        return Math.max(0,
+                proAttribute.getCostBase() + (int) Math.floor(
+                        (getInvestedAttributeStage(key) + 1) * proAttribute.getCostModifier()));
     }
+
     /**
      * Calculating cost using the formula:
      * costBase + (int) Math.floor(attrStage*costModifier).
-     *
+     * <p>
      * OVERLOAD to check cost of certain stage:
      * mod = -1 is e.g. of previous stage,
      * mod = 0 is e.g. of current stage,
      * mod = 1 is e.g. default cost of next stage.
      *
-     * @param key attribute key
+     * @param key      attribute key
      * @param modifier stage number modifier
      * @return calculated cost of single attribute upgrade
      */
-    public int getAttributeUpCost(String key, Integer modifier){
-        int selectedStage = getInvestedAttributeStage(key)+modifier;
-        return Math.max(0,SkillAPI.getAttributeManager().getAttribute(key).getCostBase() + (int) Math.floor(selectedStage*SkillAPI.getAttributeManager().getAttribute(key).getCostMod()));
+    public int getAttributeUpCost(String key, Integer modifier) {
+        ProAttribute proAttribute = SkillAPI.getAttributeManager().getAttribute(key);
+        if (proAttribute == null) return 0;
+
+        int selectedStage = getInvestedAttributeStage(key) + modifier;
+        return Math.max(0,
+                proAttribute.getCostBase() + (int) Math.floor(selectedStage * proAttribute.getCostModifier()));
     }
+
     /**
      * Calculating cost using the formula:
      * costBase + (int) Math.floor(attrStage*costModifier).
-     *
+     * <p>
      * OVERLOAD to check total cost of upgrading
      * [from] stage --> [to] stage
      * where [from] is starting stage
      * and where [to] is target stage
      *
-     * @param key attribute key
+     * @param key  attribute key
      * @param from starting stage
-     * @param to target stage
+     * @param to   target stage
      * @return calculated cost of single attribute upgrade
      */
-    public int getAttributeUpCost(String key, Integer from, Integer to){
+    public int getAttributeUpCost(String key, Integer from, Integer to) {
+        ProAttribute proAttribute = SkillAPI.getAttributeManager().getAttribute(key);
+        if (proAttribute == null) return 0;
+
         int totalCost = 0;
-        for (int i = from+1; i <= to; i++){ // iomatix: so if from = 2 then first upgrade is from 2 to 3 (from+1)
-            totalCost += Math.max(0,SkillAPI.getAttributeManager().getAttribute(key).getCostBase()+ (int) Math.floor(i*SkillAPI.getAttributeManager().getAttribute(key).getCostMod()));
+        for (int i = from + 1; i <= to; i++) { // iomatix: so if from = 2 then first upgrade is from 2 to 3 (from+1)
+            totalCost += Math.max(0, proAttribute.getCostBase() + (int) Math.floor(i * proAttribute.getCostModifier()));
         }
         return totalCost;
     }
@@ -501,14 +525,20 @@ public class PlayerData {
      */
     public void giveAttribute(String key, int amount) {
         key = key.toLowerCase(); // iomatix: is it necessary?
+        ProAttribute proAttribute = SkillAPI.getAttributeManager().getAttribute(key);
+        if (proAttribute == null) return;
+
         int currentStage = getInvestedAttributeStage(key);
-        int invested = getInvestedAttribute(key);
-        int max     = SkillAPI.getAttributeManager().getAttribute(key).getMax();
+        int invested     = getInvestedAttribute(key);
+        int max          = proAttribute.getMax();
 
         amount = Math.min(amount + currentStage, max);
         if (amount > currentStage) {
             attrUpStages.put(key, amount); // iomatix: attr stage goes up by the given value
-            attributes.put(key,invested+getAttributeUpCost(key, currentStage, currentStage+amount)); // let's increase totals value for now <- it's just one line!
+            attributes.put(key,
+                    invested + getAttributeUpCost(key,
+                            currentStage,
+                            currentStage + amount)); // let's increase totals value for now <- it's just one line!
 
             this.updatePlayerStat(getPlayer());
         }
@@ -587,9 +617,10 @@ public class PlayerData {
      * @param key attribute key
      */
     public boolean refundAttribute(String key) {
-        key = key.toLowerCase(); // iomatix: is this line necessary ? if yes there should be method getKey which returns key.toLowerCase(); and applied everywhere
-        int current = getInvestedAttributeStage(key); // iomatix: get current stage
-        int invested = getInvestedAttribute(key); // iomatix: the total invested
+        key =
+                key.toLowerCase(); // iomatix: is this line necessary ? if yes there should be method getKey which returns key.toLowerCase(); and applied everywhere
+        int current     = getInvestedAttributeStage(key); // iomatix: get current stage
+        int invested    = getInvestedAttribute(key); // iomatix: the total invested
         int currentCost = getAttributeUpCost(key, 0); // iomatix: the cost [from] previous --> [to] current stage
 
         if (current > 0) {
@@ -619,8 +650,10 @@ public class PlayerData {
      * @param key attribute key
      */
     public void refundAttributes(String key) {
-        key = key.toLowerCase(); // iomatix: is it necessary ? it's not applied everywhere, there should be method getKey() implemented if necessary
-        attribPoints += getInvestedAttribute(key); // alternative totalCost==>getAttributeUpCost(key, 0, getInvestedAttributeStage(key)); // iomatix: alternative calculate total cost in points
+        key =
+                key.toLowerCase(); // iomatix: is it necessary ? it's not applied everywhere, there should be method getKey() implemented if necessary
+        attribPoints +=
+                getInvestedAttribute(key); // alternative totalCost==>getAttributeUpCost(key, 0, getInvestedAttributeStage(key)); // iomatix: alternative calculate total cost in points
         attributes.remove(key);
         attrUpStages.remove(key); // iomatix: reset to stage 0 by removing the mapping
         this.updatePlayerStat(getPlayer());
@@ -692,20 +725,20 @@ public class PlayerData {
             }
         }
 
-        final AttributeManager manager = SkillAPI.getAttributeManager();
+        final IAttributeManager manager = SkillAPI.getAttributeManager();
         if (manager == null) {
             return defaultValue;
         }
 
         double modified = defaultValue;
 
-        final List<AttributeManager.Attribute> matches = manager.forStat(stat);
+        final List<ProAttribute> matches = manager.forStat(stat);
         if (matches != null) {
 
-            for (final AttributeManager.Attribute attribute : matches) {
-                int amount = this.getAttribute(attribute.getKey());
+            for (final ProAttribute proAttribute : matches) {
+                int amount = this.getAttribute(proAttribute.getKey());
                 if (amount > 0) {
-                    modified = attribute.modifyStat(stat, modified, amount);
+                    modified = proAttribute.modifyStat(stat, modified, amount);
                 }
             }
 
@@ -744,20 +777,20 @@ public class PlayerData {
      * @return the modified value
      */
     public double scaleDynamic(EffectComponent component, String key, double value) {
-        final AttributeManager manager = SkillAPI.getAttributeManager();
+        final IAttributeManager manager = SkillAPI.getAttributeManager();
         if (manager == null) {
             return value;
         }
 
-        final List<AttributeManager.Attribute> matches = manager.forComponent(component, key);
+        final List<ProAttribute> matches = manager.forComponent(component, key);
         if (matches == null) {
             return value;
         }
 
-        for (final AttributeManager.Attribute attribute : matches) {
-            int amount = getAttribute(attribute.getKey());
+        for (final ProAttribute proAttribute : matches) {
+            int amount = getAttribute(proAttribute.getKey());
             if (amount > 0) {
-                value = attribute.modify(component, key, value, amount);
+                value = proAttribute.modify(component, key, value, amount);
             }
         }
         return value;
@@ -798,7 +831,7 @@ public class PlayerData {
      *
      * @return the player's attribute data
      */
-    public HashMap<String, Integer> getAttributeData() {
+    public Map<String, Integer> getAttributeData() {
         return attributes;
     }
 
@@ -809,7 +842,7 @@ public class PlayerData {
      *
      * @return the player's attribute data
      */
-    public HashMap<String, Integer> getAttributeStageData() {
+    public Map<String, Integer> getAttributeStageData() {
         return attrUpStages;
     }
 
@@ -1020,7 +1053,8 @@ public class PlayerData {
         }
 
         // Must meet any skill requirements
-        if (!skill.isCompatible(this) || !skill.hasInvestedEnough(this) || !skill.hasEnoughAttributes(this) || !skill.hasDependency(this)) {
+        if (!skill.isCompatible(this) || !skill.hasInvestedEnough(this) || !skill.hasEnoughAttributes(this)
+                || !skill.hasDependency(this)) {
             return false;
         }
 
@@ -1732,10 +1766,9 @@ public class PlayerData {
     /**
      * Gives skill points to the player for all classes matching the experience source
      *
-     * @deprecated See {@link PlayerData#givePoints(int, PointSource)} instead
-     *
      * @param amount amount of levels to give
      * @param source source of the levels
+     * @deprecated See {@link PlayerData#givePoints(int, PointSource)} instead
      */
     @Deprecated
     public void givePoints(int amount, ExpSource source) {
@@ -1868,13 +1901,11 @@ public class PlayerData {
                     || meta.getAttributeModifiers(NBTAttribute.MAX_HEALTH.getAttribute()) == null)
                 continue;
 
-            for (AttributeModifier modifier : meta.getAttributeModifiers(NBTAttribute.MAX_HEALTH.getAttribute())) {
-                switch (modifier.getOperation()) {
-                    case MULTIPLY_SCALAR_1:
-                        modifiedMax += baseMaxHealth * modifier.getAmount();
-                        break;
-                    default:
-                        modifiedMax += modifier.getAmount();
+            for (AttributeModifier modifier : Objects.requireNonNull(meta.getAttributeModifiers(NBTAttribute.MAX_HEALTH.getAttribute()))) {
+                if (modifier.getOperation() == AttributeModifier.Operation.MULTIPLY_SCALAR_1) {
+                    modifiedMax += baseMaxHealth * modifier.getAmount();
+                } else {
+                    modifiedMax += modifier.getAmount();
                 }
             }
         }
@@ -2224,13 +2255,14 @@ public class PlayerData {
 
     /**
      * Decrypt and return the saved values on the account.
+     *
      * @param key The key is used to save the value.
      * @return Decrypted value
      */
-    public Object getPersistentData(String key){
+    public Object getPersistentData(String key) {
         String data = persistentData.get(key);
-        if (data==null) return 0;
-        if (data.startsWith("targets")){
+        if (data == null) return 0;
+        if (data.startsWith("targets")) {
             data = data.substring(8);
             List<LivingEntity> targets = new ArrayList<>();
             Arrays.stream(data.split(";")).forEach(target -> {
@@ -2245,10 +2277,10 @@ public class PlayerData {
                     targets.add(new TempEntity(location));
                 } else if (target.startsWith("entity-")) {
                     Entity entity = Bukkit.getEntity(UUID.fromString(target.substring(7)));
-                    if (entity!=null) targets.add((LivingEntity) entity);
+                    if (entity != null) targets.add((LivingEntity) entity);
                 } else {
                     Player player = Bukkit.getPlayer(UUID.fromString(target));
-                    if (player==null || !player.isOnline()) return;
+                    if (player == null || !player.isOnline()) return;
                     targets.add(player);
                 }
             });
@@ -2265,62 +2297,69 @@ public class PlayerData {
         }
         try {
             return Double.parseDouble(data);
-        } catch (NumberFormatException ignored){}
+        } catch (NumberFormatException ignored) {
+        }
         return data;
     }
 
 
     /**
      * Encrypt and save values to account for long-term storage
-     * @param key The key is used to save the value.
+     *
+     * @param key  The key is used to save the value.
      * @param data The value is stored. Currently supported types are:
      *             Number, String, Player, TempEntity, Entity
      */
-    public void setPersistentData(String key, Object data){
-        if (data==null || Objects.equals(data, 0)) {
+    public void setPersistentData(String key, Object data) {
+        if (data == null || Objects.equals(data, 0)) {
             removePersistentData(key);
             return;
         }
-        if (data instanceof List){
+        if (data instanceof List) {
             List<String> sum = new ArrayList<>();
             ((List<?>) data).forEach(entry -> {
-                if (entry instanceof Player){
+                if (entry instanceof Player) {
                     sum.add(((Player) entry).getUniqueId().toString());
                 } else if (entry instanceof TempEntity) {
                     Location loc = ((TempEntity) entry).getLocation();
-                    if (loc.getWorld()==null) return;
-                    sum.add(String.format("loc,%s,%f,%f,%f", loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ()));
-                } else if (entry instanceof Entity){
-                    sum.add("entity-"+((Entity) entry).getUniqueId());
+                    if (loc.getWorld() == null) return;
+                    sum.add(String.format("loc,%s,%f,%f,%f",
+                            loc.getWorld().getName(),
+                            loc.getX(),
+                            loc.getY(),
+                            loc.getZ()));
+                } else if (entry instanceof Entity) {
+                    sum.add("entity-" + ((Entity) entry).getUniqueId());
                 }
             });
             if (sum.isEmpty()) return;
-            persistentData.put(key,"targets-"+String.join(";", sum));
+            persistentData.put(key, "targets-" + String.join(";", sum));
             return;
         }
-        if (data instanceof Location){
+        if (data instanceof Location) {
             Location loc = (Location) data;
-            persistentData.put(key, String.format("loc,%s,%f,%f,%f", loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ()));
+            persistentData.put(key,
+                    String.format("loc,%s,%f,%f,%f", loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ()));
             return;
         }
-        persistentData.put(key,data.toString());
+        persistentData.put(key, data.toString());
     }
 
     /**
      * Remove a value with a specific key
+     *
      * @param key The key is used to save the value.
      */
-    public void removePersistentData(String key){
+    public void removePersistentData(String key) {
         persistentData.remove(key);
     }
 
     /**
      * @return original HashMap used to store persistent data
      */
-    public HashMap<String,String> getAllPersistentData(){
+    public Map<String, String> getAllPersistentData() {
         return persistentData;
     }
-
 
 
     ///////////////////////////////////////////////////////

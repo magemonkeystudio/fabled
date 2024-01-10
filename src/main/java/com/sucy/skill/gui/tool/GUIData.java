@@ -109,7 +109,7 @@ public class GUIData {
             pageMap.add(new GUIPage(this));
     }
 
-    public void show(GUIHolder handler, PlayerData player, String title, HashMap<String, ? extends IconHolder> data) {
+    public void show(GUIHolder handler, PlayerData player, String title, Map<String, ? extends IconHolder> data) {
         Inventory   inv      = Bukkit.getServer().createInventory(handler, rows * 9, title);
         ItemStack[] contents = pageMap.get(0).instance(player, data);
         if (pages > 1) GUITool.addPageButtons(contents);

@@ -81,7 +81,7 @@ import java.util.*;
  */
 public class SkillAPI extends JavaPlugin {
     private static SkillAPI singleton;
-    public  static Random   RANDOM    = new Random();
+    public static  Random   RANDOM = new Random();
 
     private final HashMap<String, com.sucy.skill.api.skills.Skill> skills  = new HashMap<>();
     private final HashMap<String, RPGClass>                        classes = new HashMap<>();
@@ -97,7 +97,7 @@ public class SkillAPI extends JavaPlugin {
     private CmdManager          cmd;
     private ComboManager        comboManager;
     private RegistrationManager registrationManager;
-    private AttributeManager    attributeManager;
+    private IAttributeManager   attributeManager = new NullAttributeManager();
 
     private MainThread mainThread;
     private BukkitTask manaTask;
@@ -167,7 +167,7 @@ public class SkillAPI extends JavaPlugin {
      *
      * @return attribute manager
      */
-    public static AttributeManager getAttributeManager() {
+    public static IAttributeManager getAttributeManager() {
         return inst().attributeManager;
     }
 

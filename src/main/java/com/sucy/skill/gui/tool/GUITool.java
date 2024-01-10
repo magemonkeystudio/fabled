@@ -32,7 +32,7 @@ import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.api.util.DamageLoreRemover;
 import com.sucy.skill.log.Logger;
-import com.sucy.skill.manager.AttributeManager;
+import com.sucy.skill.manager.ProAttribute;
 import com.sucy.skill.tree.basic.CustomTree;
 import mc.promcteam.engine.mccore.config.CommentedConfig;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
@@ -500,8 +500,8 @@ public class GUITool implements ToolMenu {
         i = 9;
         GUIPage page = guiData.getPage();
         for (String key : SkillAPI.getAttributeManager().getKeys()) {
-            AttributeManager.Attribute attr  = SkillAPI.getAttributeManager().getAttribute(key);
-            int                        index = page.getIndex(attr.getKey());
+            ProAttribute attr  = SkillAPI.getAttributeManager().getAttribute(key);
+            int          index = page.getIndex(attr.getKey());
             if (index != -1)
                 inventoryContents[index] = attr.getToolIcon();
             else if (!guiData.has(attr.getKey()) && i < playerContents.length) {
