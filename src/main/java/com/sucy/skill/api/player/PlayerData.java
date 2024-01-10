@@ -509,11 +509,19 @@ public class PlayerData {
         ProAttribute proAttribute = SkillAPI.getAttributeManager().getAttribute(key);
         if (proAttribute == null) return 0;
 
-        int totalCost = 0;
-        for (int i = from + 1; i <= to; i++) { // iomatix: so if from = 2 then first upgrade is from 2 to 3 (from+1)
-            totalCost += Math.max(0, proAttribute.getCostBase() + (int) Math.floor(i * proAttribute.getCostModifier()));
+        int     totalCost = 0;
+        boolean reverse   = false;
+        if (from > to) {
+            int temp = from;
+            from = to;
+            to = temp;
+            reverse = true;
         }
-        return totalCost;
+        for (int i = from + 1; i <= to; i++) { // iomatix: so if from = 2 then first upgrade is from 2 to 3 (from+1)
+            totalCost += Math.max(0,
+                    proAttribute.getCostBase() + (int) Math.floor((i - 1) * proAttribute.getCostModifier()));
+        }
+        return totalCost * (reverse ? -1 : 1);
     }
 
     /**
@@ -533,15 +541,11 @@ public class PlayerData {
         int max          = proAttribute.getMax();
 
         amount = Math.min(amount + currentStage, max);
-        if (amount > currentStage) {
-            attrUpStages.put(key, amount); // iomatix: attr stage goes up by the given value
-            attributes.put(key,
-                    invested + getAttributeUpCost(key,
-                            currentStage,
-                            currentStage + amount)); // let's increase totals value for now <- it's just one line!
+        attrUpStages.put(key, amount); // iomatix: attr stage goes up by the given value
+        int cost = getAttributeUpCost(key, currentStage, amount);
+        attributes.put(key, invested + cost); // let's increase totals value for now
 
-            this.updatePlayerStat(getPlayer());
-        }
+        this.updatePlayerStat(getPlayer());
     }
 
     /**

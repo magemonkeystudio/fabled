@@ -12,6 +12,7 @@ import com.sucy.skill.gui.tool.IconHolder;
 import com.sucy.skill.log.LogType;
 import com.sucy.skill.log.Logger;
 import lombok.Getter;
+import lombok.Setter;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -66,6 +67,7 @@ public class ProAttribute implements IconHolder {
      * @return costModifier
      */
     @Getter
+    @Setter
     private double    costModifier;
 
     // Dynamic global modifiers
