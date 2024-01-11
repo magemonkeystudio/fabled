@@ -1,0 +1,322 @@
+loaded: false
+Barbarian:
+  name: 'Barbarian'
+  prefix: '&4Barbarian'
+  group: 'class'
+  mana: '&2Mana'
+  max-level: 100
+  parent: ''
+  needs-permission: 'False'
+  exp-source: 305
+  mana-regen: 1
+  tree: 'Requirement'
+  skills:
+  - 'Maelstrom'
+  - 'Stomp'
+  - 'Stampede'
+  - 'Roar'
+  - 'Pulverize'
+  - 'WarpStrike'
+  icon: 'Red banner'
+  icon-data: 0
+  icon-lore:
+  - '&4Barbarian'
+  blacklist: []
+  action-bar: ''
+  attributes:
+    health-base: 60
+    health-scale: 0
+    mana-base: 60
+    mana-scale: 0
+    strength-base: 12
+    strength-scale: 0
+    dexterity-base: 6
+    dexterity-scale: 0
+    constitution-base: 0
+    constitution-scale: 0
+    intelligence-base: 5
+    intelligence-scale: 0
+    wisdom-base: 5
+    wisdom-scale: 0
+    charisma-base: 0
+    charisma-scale: 0
+BattleBrand:
+  name: 'BattleBrand'
+  prefix: '&6BattleBrand'
+  group: 'class'
+  mana: '&2Mana'
+  max-level: 100
+  parent: ''
+  needs-permission: 'False'
+  exp-source: 305
+  mana-regen: 1
+  tree: 'Requirement'
+  skills:
+  - 'Bandage'
+  - 'Needles'
+  - 'Bringforth'
+  - 'Spellbane'
+  - 'Invincible'
+  icon: 'White banner'
+  icon-data: 0
+  icon-lore:
+  - '&fBattleBrand'
+  blacklist: []
+  action-bar: ''
+  attributes:
+    health-base: 60
+    health-scale: 0
+    mana-base: 60
+    mana-scale: 0
+    strength-base: 8
+    strength-scale: 0
+    dexterity-base: 6
+    dexterity-scale: 0
+    constitution-base: 0
+    constitution-scale: 0
+    intelligence-base: 5
+    intelligence-scale: 0
+    wisdom-base: 5
+    wisdom-scale: 0
+    charisma-base: 0
+    charisma-scale: 0
+Deadeye:
+  name: 'Deadeye'
+  prefix: '&6Deadeye'
+  group: 'class'
+  mana: '&2Mana'
+  max-level: 100
+  parent: ''
+  needs-permission: 'False'
+  exp-source: 305
+  mana-regen: 1
+  tree: 'Requirement'
+  skills:
+  - 'Puncture'
+  - 'ExplosiveArrow'
+  - 'ExploitWeakness'
+  - 'TrueShot'
+  - 'Salvo'
+  icon: 'Acacia boat'
+  icon-data: 2
+  icon-lore:
+  - '&dClass 1'
+  blacklist: []
+  action-bar: ''
+  attributes:
+    health-base: 60
+    health-scale: 0
+    mana-base: 60
+    mana-scale: 0
+    strength-base: 0
+    strength-scale: 0
+    dexterity-base: 0
+    dexterity-scale: 0
+    constitution-base: 0
+    constitution-scale: 0
+    intelligence-base: 0
+    intelligence-scale: 0
+    wisdom-base: 0
+    wisdom-scale: 0
+    charisma-base: 0
+    charisma-scale: 0
+FireMage:
+  name: 'FireMage'
+  prefix: '&6Fire Mage'
+  group: 'class'
+  mana: '&2Mana'
+  max-level: 100
+  parent: ''
+  needs-permission: 'False'
+  exp-source: 305
+  mana-regen: 1
+  tree: 'Requirement'
+  skills:
+  - 'AttunementToFire'
+  - 'Fireball'
+  - 'DragonsBreath'
+  - 'MagmaBomb'
+  - 'HeatStroke'
+  icon: 'Acacia boat'
+  icon-data: 2
+  icon-lore:
+  - '&dFireMage'
+  blacklist: []
+  action-bar: ''
+  attributes:
+    health-base: 60
+    health-scale: 0
+    mana-base: 60
+    mana-scale: 0
+    strength-base: 0
+    strength-scale: 0
+    dexterity-base: 0
+    dexterity-scale: 0
+    constitution-base: 0
+    constitution-scale: 0
+    intelligence-base: 0
+    intelligence-scale: 0
+    wisdom-base: 0
+    wisdom-scale: 0
+    charisma-base: 0
+    charisma-scale: 0
+AirMage:
+  name: 'AirMage'
+  prefix: '&6AirMage'
+  group: 'class'
+  mana: '&2Mana'
+  max-level: 100
+  parent: ''
+  needs-permission: 'False'
+  exp-source: 305
+  mana-regen: 1
+  tree: 'Requirement'
+  skills:
+  - 'AttunementToAir'
+  - 'Thunderbolt'
+  - 'LightningStorm'
+  - 'Whirlwind'
+  - 'StaticField'
+  icon: 'Acacia boat'
+  icon-data: 2
+  icon-lore:
+  - '&dClass 1'
+  blacklist: []
+  action-bar: ''
+  attributes:
+    health-base: 60
+    health-scale: 0
+    mana-base: 60
+    mana-scale: 0
+    strength-base: 0
+    strength-scale: 0
+    dexterity-base: 0
+    dexterity-scale: 0
+    constitution-base: 0
+    constitution-scale: 0
+    intelligence-base: 0
+    intelligence-scale: 0
+    wisdom-base: 0
+    wisdom-scale: 0
+    charisma-base: 0
+    charisma-scale: 0
+LifeMage:
+  name: 'LifeMage'
+  prefix: '&6LifeMage'
+  group: 'class'
+  mana: '&2Mana'
+  max-level: 100
+  parent: ''
+  needs-permission: 'False'
+  exp-source: 305
+  mana-regen: 1
+  tree: 'Requirement'
+  skills:
+  - 'Sacrifice'
+  - 'Consecrate'
+  - 'HealingBlast'
+  - 'SpiritBond'
+  - 'Divinebolt'
+  icon: 'Acacia boat'
+  icon-data: 2
+  icon-lore:
+  - '&dClass 1'
+  blacklist: []
+  action-bar: ''
+  attributes:
+    health-base: 60
+    health-scale: 0
+    mana-base: 60
+    mana-scale: 0
+    strength-base: 0
+    strength-scale: 0
+    dexterity-base: 0
+    dexterity-scale: 0
+    constitution-base: 0
+    constitution-scale: 0
+    intelligence-base: 0
+    intelligence-scale: 0
+    wisdom-base: 0
+    wisdom-scale: 0
+    charisma-base: 0
+    charisma-scale: 0
+FaithMage:
+  name: 'FaithMage'
+  prefix: '&6FaithMage'
+  group: 'class'
+  mana: '&2Mana'
+  max-level: 100
+  parent: ''
+  needs-permission: 'False'
+  exp-source: 305
+  mana-regen: 1
+  tree: 'Requirement'
+  skills:
+  - 'VirtuousWrath'
+  - 'Invigoration'
+  - 'Bastion'
+  - 'PrimalSurge'
+  - 'WallOfForce'
+  icon: 'Acacia boat'
+  icon-data: 2
+  icon-lore:
+  - '&dClass 1'
+  blacklist: []
+  action-bar: ''
+  attributes:
+    health-base: 60
+    health-scale: 0
+    mana-base: 60
+    mana-scale: 0
+    strength-base: 0
+    strength-scale: 0
+    dexterity-base: 0
+    dexterity-scale: 0
+    constitution-base: 0
+    constitution-scale: 0
+    intelligence-base: 0
+    intelligence-scale: 0
+    wisdom-base: 0
+    wisdom-scale: 0
+    charisma-base: 0
+    charisma-scale: 0
+Duelist:
+  name: 'Duelist'
+  prefix: '&6Duelist'
+  group: 'class'
+  mana: '&2Mana'
+  max-level: 100
+  parent: ''
+  needs-permission: 'True'
+  exp-source: 305
+  mana-regen: 1
+  tree: 'Requirement'
+  skills:
+  - 'Flurry'
+  - 'Lacerate'
+  - 'Lunge'
+  - 'Pummel'
+  - 'ExtremeFocus'
+  icon: 'Acacia boat'
+  icon-data: 2
+  icon-lore:
+  - '&dClass 1'
+  blacklist: []
+  action-bar: ''
+  attributes:
+    health-base: 60
+    health-scale: 0
+    mana-base: 60
+    mana-scale: 0
+    strength-base: 0
+    strength-scale: 0
+    dexterity-base: 0
+    dexterity-scale: 0
+    constitution-base: 0
+    constitution-scale: 0
+    intelligence-base: 0
+    intelligence-scale: 0
+    wisdom-base: 0
+    wisdom-scale: 0
+    charisma-base: 0
+    charisma-scale: 0

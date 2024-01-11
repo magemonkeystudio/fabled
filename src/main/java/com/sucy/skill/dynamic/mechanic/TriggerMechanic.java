@@ -45,7 +45,7 @@ public class TriggerMechanic extends MechanicComponent {
 
         final Receiver receiver = new Receiver();
         triggerHandler = new TriggerHandler(skill, "fake", trigger, receiver);
-        triggerHandler.register(JavaPlugin.getPlugin(SkillAPI.class));
+        triggerHandler.register(SkillAPI.inst());
         once = settings.getBool(ONCE, true);
         stackable = settings.getBool(STACKABLE, true);
     }

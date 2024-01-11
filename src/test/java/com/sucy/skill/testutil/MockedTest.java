@@ -6,6 +6,7 @@ import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.player.PlayerData;
+import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.api.util.DamageLoreRemover;
 import lombok.extern.slf4j.Slf4j;
 import mc.promcteam.engine.NexEngine;
@@ -69,14 +70,103 @@ public abstract class MockedTest {
 
     public void preInit() {}
 
+    public void useClasses(String masterFileLoc) {
+        loadClasses = true;
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(this.getClass()
+                .getClassLoader()
+                .getResourceAsStream(masterFileLoc)))) {
+            // Copy to ProSkillAPI/dynamic/classes.yml
+            File classDir = new File(
+                    server.getPluginsFolder().getAbsolutePath() + File.separator + "ProSkillAPI-" + System
+                            .getProperty("PROSKILLAPI_VERSION")
+                            + File.separator + "dynamic" + File.separator + "class");
+            if (!classDir.exists()) classDir.mkdirs();
+
+            File classFile = new File(
+                    server.getPluginsFolder().getAbsolutePath() + File.separator + "ProSkillAPI-" + System
+                            .getProperty("PROSKILLAPI_VERSION")
+                            + File.separator + "dynamic", "classes.yml");
+            if (!classFile.exists()) {
+                classFile.createNewFile();
+            }
+            try (FileWriter writer = new FileWriter(classFile);) {
+                String str;
+                while ((str = in.readLine()) != null) {
+                    writer.write(str + "\n");
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void loadClasses(String... classes) {
         loadClasses = true;
         Collections.addAll(classesToLoad, classes);
     }
 
+    public void unloadClasses(String... classes) {
+        loadClasses = false;
+        classesToLoad.removeAll(Arrays.asList(classes));
+        for (String clazz : classes) {
+            // Remove from class folder
+            File classFile = new File(
+                    server.getPluginsFolder().getAbsolutePath() + File.separator + "ProSkillAPI-" + System
+                            .getProperty("PROSKILLAPI_VERSION")
+                            + File.separator + "dynamic" + File.separator + "class", clazz + ".yml");
+            if (classFile.exists()) {
+                classFile.delete();
+            }
+        }
+    }
+
+    public void useSkills(String masterFileLoc) {
+        loadSkills = true;
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(this.getClass()
+                .getClassLoader()
+                .getResourceAsStream(masterFileLoc)))) {
+            // Copy to ProSkillAPI/dynamic/skills.yml
+            File skillDir = new File(
+                    server.getPluginsFolder().getAbsolutePath() + File.separator + "ProSkillAPI-" + System
+                            .getProperty("PROSKILLAPI_VERSION")
+                            + File.separator + "dynamic" + File.separator + "skill");
+            if (!skillDir.exists()) skillDir.mkdirs();
+
+            File skillFile = new File(
+                    server.getPluginsFolder().getAbsolutePath() + File.separator + "ProSkillAPI-" + System
+                            .getProperty("PROSKILLAPI_VERSION")
+                            + File.separator + "dynamic", "skills.yml");
+            if (!skillFile.exists()) {
+                skillFile.createNewFile();
+            }
+            try (FileWriter writer = new FileWriter(skillFile)) {
+                String str;
+                while ((str = in.readLine()) != null) {
+                    writer.write(str + "\n");
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void loadSkills(String... skills) {
         loadSkills = true;
         Collections.addAll(skillsToLoad, skills);
+    }
+
+    public void unloadSkills(String... skills) {
+        for (String skill : skills) {
+            // Remove from skill folder
+            File skillFile = new File(
+                    server.getPluginsFolder().getAbsolutePath() + File.separator + "ProSkillAPI-" + System
+                            .getProperty("PROSKILLAPI_VERSION")
+                            + File.separator + "dynamic" + File.separator + "skill", skill + ".yml");
+            if (skillFile.exists()) {
+                skillFile.delete();
+            }
+        }
+        skillsToLoad.removeAll(Arrays.asList(skills));
     }
 
     @BeforeAll
@@ -229,6 +319,10 @@ public abstract class MockedTest {
             }
         });
 
+        reload();
+    }
+
+    public void reload() {
         plugin.reload();
     }
 
