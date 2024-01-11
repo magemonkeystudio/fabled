@@ -174,6 +174,25 @@ class DropItemTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
+class EntityTargetTrigger extends ProTrigger {
+	public constructor() {
+		super({
+			name:        'Entity Target',
+			description: 'Applies skill effects when an entity targets the caster',
+			data:        [
+				new BooleanSelect('Target Caster', 'target', true)
+					.setTooltip('True makes children target the caster. False makes children target the attacking entity'),
+				new DropdownSelect('Types', 'types', ['Any', ...getEntities()], ['Any'], true)
+					.setTooltip('The entity types to target'),
+				new BooleanSelect('Blacklist', 'blacklist', false)
+					.setTooltip('Whether to consider the listed types as a blacklist, meaning only entities that do NOT match one of them will trigger.')
+			]
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class EnvironmentDamageTrigger extends ProTrigger {
 	public constructor() {
 		super({
@@ -4797,26 +4816,27 @@ const particlePreviewOptions = (key: string): ComponentOption[] => {
 
 export const initComponents = () => {
 	triggers.set({
-		BLOCK_BREAK: { name: 'Block Break', component: BlockBreakTrigger },
-		BLOCK_PLACE: { name: 'Block Place', component: BlockPlaceTrigger },
-		CAST:        { name: 'Cast', component: CastTrigger },
-		CHAT:        { name: 'Chat', component: ChatTrigger },
-		CLEANUP:     { name: 'Cleanup', component: CleanupTrigger },
-		CROUCH:      { name: 'Crouch', component: CrouchTrigger },
-		DEATH:       { name: 'Death', component: DeathTrigger },
-		HEAL:        { name: 'Heal', component: HealTrigger },
-		INIT:        { name: 'Initialize', component: InitializeTrigger },
-		KILL:        { name: 'Kill', component: KillTrigger },
-		LAND:        { name: 'Land', component: LandTrigger },
-		LEFT_CLICK:  { name: 'Left Click', component: LeftClickTrigger },
-		RIGHT_CLICK: { name: 'Right Click', component: RightClickTrigger },
-		MOVE:        { name: 'Move', component: MoveTrigger },
-		PROJ_HIT:    { name: 'Projectile Hit', component: ProjectileHitTrigger },
-		PROJ_LAUNCH: { name: 'Projectile Launch', alias: 'Launch', component: LaunchTrigger },
-		PROJ_TICK:   { name: 'Projectile Tick', component: ProjectileTickTrigger },
-		SIGNAL:      { name: 'Signal', component: SignalTrigger },
-		SHIELD:      { name: 'Shield', component: ShieldTrigger },
-		SKILL_CAST:  { name: 'Skill Cast', component: SkillCastTrigger },
+		BLOCK_BREAK:   { name: 'Block Break', component: BlockBreakTrigger },
+		BLOCK_PLACE:   { name: 'Block Place', component: BlockPlaceTrigger },
+		CAST:          { name: 'Cast', component: CastTrigger },
+		CHAT:          { name: 'Chat', component: ChatTrigger },
+		CLEANUP:       { name: 'Cleanup', component: CleanupTrigger },
+		CROUCH:        { name: 'Crouch', component: CrouchTrigger },
+		DEATH:         { name: 'Death', component: DeathTrigger },
+		ENTITY_TARGET: { name: 'Entity Target', component: EntityTargetTrigger },
+		HEAL:          { name: 'Heal', component: HealTrigger },
+		INIT:          { name: 'Initialize', component: InitializeTrigger },
+		KILL:          { name: 'Kill', component: KillTrigger },
+		LAND:          { name: 'Land', component: LandTrigger },
+		LEFT_CLICK:    { name: 'Left Click', component: LeftClickTrigger },
+		RIGHT_CLICK:   { name: 'Right Click', component: RightClickTrigger },
+		MOVE:          { name: 'Move', component: MoveTrigger },
+		PROJ_HIT:      { name: 'Projectile Hit', component: ProjectileHitTrigger },
+		PROJ_LAUNCH:   { name: 'Projectile Launch', alias: 'Launch', component: LaunchTrigger },
+		PROJ_TICK:     { name: 'Projectile Tick', component: ProjectileTickTrigger },
+		SIGNAL:        { name: 'Signal', component: SignalTrigger },
+		SHIELD:        { name: 'Shield', component: ShieldTrigger },
+		SKILL_CAST:    { name: 'Skill Cast', component: SkillCastTrigger },
 
 		ARMOR_EQUIP: { name: 'Armor Equip', component: ArmorEquipTrigger, section: 'Item' },
 		CONSUME:     { name: 'Consume', component: ConsumeTrigger, section: 'Item' },
