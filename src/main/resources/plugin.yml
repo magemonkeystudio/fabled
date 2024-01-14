@@ -14,10 +14,6 @@ softdepend:
   - WorldEdit
   - Mimic
   - ProtocolLib
-  - ProMCUtilities
-  - Oraxen
-  - ItemsAdder
-  - ProRPGItems
 loadbefore: [ ProRPGItems, Quests, TAB ]
 provides: [ SkillAPI ]
 api-version: 1.14

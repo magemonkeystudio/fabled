@@ -26,7 +26,6 @@
  */
 package com.sucy.skill.api.classes;
 
-import com.gotofinal.darkrise.economy.DarkRiseEconomy;
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.ReadOnlySettings;
 import com.sucy.skill.api.Settings;
@@ -41,13 +40,10 @@ import com.sucy.skill.gui.tool.IconHolder;
 import com.sucy.skill.log.LogType;
 import com.sucy.skill.log.Logger;
 import com.sucy.skill.tree.basic.InventoryTree;
-import dev.lone.itemsadder.api.CustomStack;
-import io.th0rgal.oraxen.api.OraxenItems;
 import lombok.Getter;
+import mc.promcteam.engine.NexEngine;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.util.TextFormatter;
-import mc.promcteam.engine.modules.IModule;
-import me.travja.darkrise.core.item.DarkRiseItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -56,10 +52,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Nullable;
-import su.nightexpress.quantumrpg.QuantumRPG;
-import su.nightexpress.quantumrpg.modules.ModuleItem;
-import su.nightexpress.quantumrpg.modules.api.QModuleDrop;
-import su.nightexpress.quantumrpg.stats.items.ItemStats;
 
 import java.util.*;
 
@@ -68,30 +60,30 @@ import java.util.*;
  * the class to extend when creating your own classes.
  */
 public abstract class RPGClass implements IconHolder {
-    private static final String                 SKILLS     = "skills";
-    private static final String                 PARENT     = "parent";
-    private static final String                 NAME       = "name";
-    private static final String                 PREFIX     = "prefix";
-    private static final String                 ACTION_BAR = "action-bar";
-    private static final String                 GROUP      = "group";
-    private static final String                 MANA       = "mana";
-    private static final String                 MAX        = "max-level";
-    private static final String                 EXP        = "exp-source";
-    private static final String                 REGEN      = "mana-regen";
-    private static final String                 PERM       = "needs-permission";
-    private static final String                 ATTR       = "attributes";
-    private static final String                 OLD_TREE   = "tree";
-    private static final String                 TREE       = "skill-tree";
-    private static final String                 BLACKLIST  = "blacklist";
+    private static final String                   SKILLS        = "skills";
+    private static final String                   PARENT        = "parent";
+    private static final String                   NAME          = "name";
+    private static final String                   PREFIX        = "prefix";
+    private static final String                   ACTION_BAR    = "action-bar";
+    private static final String                   GROUP         = "group";
+    private static final String                   MANA          = "mana";
+    private static final String                   MAX           = "max-level";
+    private static final String                   EXP           = "exp-source";
+    private static final String                   REGEN         = "mana-regen";
+    private static final String                   PERM          = "needs-permission";
+    private static final String                   ATTR          = "attributes";
+    private static final String                   OLD_TREE      = "tree";
+    private static final String                   TREE          = "skill-tree";
+    private static final String                   BLACKLIST     = "blacklist";
     /**
      * The settings for your class. This will include the
      * health and mana scaling for the class.
      */
-    protected final Settings                settings      = new Settings();
-    private   final HashMap<String,Skill>   skillMap      = new HashMap<>();
-    private   final List<Skill>             skills        = new ArrayList<>();
-    private   final Set<Material>           blacklist     = new HashSet<>();
-    private   final Map<Click,ComboStarter> comboStarters = new HashMap<>();
+    protected final      Settings                 settings      = new Settings();
+    private final        HashMap<String, Skill>   skillMap      = new HashMap<>();
+    private final        List<Skill>              skills        = new ArrayList<>();
+    private final        Set<Material>            blacklist     = new HashSet<>();
+    private final        Map<Click, ComboStarter> comboStarters = new HashMap<>();
 
     ///////////////////////////////////////////////////////
     //                                                   //
@@ -640,8 +632,8 @@ public abstract class RPGClass implements IconHolder {
         config.set(EXP, expSources);
 
         DataSection comboStartersSection = config.createSection("combo-starters");
-        for (Map.Entry<Click,ComboStarter> entry : comboStarters.entrySet()) {
-            DataSection dataSection = comboStartersSection.createSection(entry.getKey().getKey());
+        for (Map.Entry<Click, ComboStarter> entry : comboStarters.entrySet()) {
+            DataSection  dataSection  = comboStartersSection.createSection(entry.getKey().getKey());
             ComboStarter comboStarter = entry.getValue();
             dataSection.set("inverted", comboStarter.blacklist);
             dataSection.set("whitelist", comboStarter.itemTypes);
@@ -767,61 +759,9 @@ public abstract class RPGClass implements IconHolder {
         public boolean isAllowed(@Nullable ItemStack itemStack) {
             boolean contains = false;
             for (String itemType : this.itemTypes) {
-                if (itemType.startsWith("PROMCU_")) {
-                    if (!Bukkit.getPluginManager().isPluginEnabled("ProMCUtilities")) continue;
-                    String substring = itemType.substring("PROMCU_".length());
-                    if (DarkRiseEconomy.getItemsRegistry().getItemById(substring) == null) continue;
-                    DarkRiseItem riseItem = DarkRiseEconomy.getItemsRegistry().getItemByStack(itemStack);
-                    if (riseItem != null && riseItem.getId().equals(substring)) {
-                        contains = true;
-                        break;
-                    }
-                } else if (itemType.startsWith("ORAXEN_")) {
-                    if (!Bukkit.getPluginManager().isPluginEnabled("Oraxen")) continue;
-                    String substring = itemType.substring("ORAXEN_".length());
-                    if (!OraxenItems.exists(substring)) continue;
-                    String itemId = OraxenItems.getIdByItem(itemStack);
-                    if (itemId != null && itemId.equals(substring)) {
-                        contains = true;
-                        break;
-                    }
-                } else if (itemType.startsWith("ITEMSADDER_")) {
-                    if (!Bukkit.getPluginManager().isPluginEnabled("ItemsAdder")) continue;
-                    String substring = itemType.substring("ITEMSADDER_".length());
-                    if (!CustomStack.isInRegistry(substring)) continue;
-                    CustomStack customStack = CustomStack.byItemStack(itemStack);
-                    if (customStack != null && customStack.getNamespacedID().equals(substring)) {
-                        contains = true;
-                        break;
-                    }
-                } else if (itemType.startsWith("PRORPGITEMS_") && itemStack != null) {
-                    if (!Bukkit.getPluginManager().isPluginEnabled("ProRPGItems")) continue;
-                    String substring = itemType.substring("PRORPGITEMS_".length());
-                    boolean found = false;
-                    for (IModule<?> module : QuantumRPG.getInstance().getModuleManager().getModules()) {
-                        if (module instanceof QModuleDrop && ((QModuleDrop<? extends ModuleItem>) module).getItemById(substring) != null) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) continue;
-                    String itemId = ItemStats.getId(itemStack);
-                    if (itemId != null && itemId.equals(substring)) {
-                        contains = true;
-                        break;
-                    }
-                } else {
-                    try {
-                        Material material = Material.valueOf(itemType
-                                .trim()
-                                .toUpperCase(Locale.US)
-                                .replace(' ', '_')
-                                .replace('-', '_'));
-                        if (material == (itemStack == null ? Material.AIR : itemStack.getType())) {
-                            contains = true;
-                            break;
-                        }
-                    } catch (IllegalArgumentException ignored) {}
+                if (NexEngine.getEngine().getItemManager().isCustomItemOfId(itemStack, itemType)) {
+                    contains = true;
+                    break;
                 }
             }
             return contains != this.blacklist;
