@@ -120,7 +120,7 @@ public class BlockMechanic extends MechanicComponent {
         boolean solid = type.equals("solid");
         boolean air   = type.equals("air");
         Material matType =
-                !solid && !air && !type.equals("any") ? Material.valueOf(type.toUpperCase().replace(' ', '_')) : null;
+                !solid && !air && !type.equals("any") ? Material.valueOf(type.toUpperCase(Locale.US).replace(' ', '_')) : null;
         boolean resetYaw = settings.getBool(RESET_YAW, false);
 
         List<Block> blocks = new ArrayList<>();
@@ -216,7 +216,7 @@ public class BlockMechanic extends MechanicComponent {
 
         Material block = Material.ICE;
         try {
-            block = Material.valueOf(settings.getString(BLOCK, "ICE").toUpperCase().replace(' ', '_'));
+            block = Material.valueOf(settings.getString(BLOCK, "ICE").toUpperCase(Locale.US).replace(' ', '_'));
         } catch (Exception ex) {
             // Use default
         }

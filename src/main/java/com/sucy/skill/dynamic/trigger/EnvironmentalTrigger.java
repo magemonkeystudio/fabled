@@ -5,6 +5,7 @@ import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
 
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -34,7 +35,7 @@ public class EnvironmentalTrigger implements Trigger<EntityDamageEvent> {
      */
     @Override
     public boolean shouldTrigger(final EntityDamageEvent event, final int level, final Settings settings) {
-        final String type = settings.getString("type", "any").replace(' ', '_').toUpperCase();
+        final String type = settings.getString("type", "any").replace(' ', '_').toUpperCase(Locale.US);
         return type.equalsIgnoreCase("ANY") || type.equalsIgnoreCase(event.getCause().name());
     }
 

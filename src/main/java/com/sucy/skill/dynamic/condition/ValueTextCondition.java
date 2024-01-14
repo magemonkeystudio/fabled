@@ -4,6 +4,7 @@ import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.regex.Pattern;
@@ -29,7 +30,7 @@ public class ValueTextCondition extends ConditionComponent {
 
     @Override
     boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        final CompareMode mode   = CompareMode.valueOf(settings.getString(MODE).toUpperCase());
+        final CompareMode mode   = CompareMode.valueOf(settings.getString(MODE).toUpperCase(Locale.US));
         final Object      value  = DynamicSkill.getCastData(caster).get(settings.getString(VALUE));
         final String      expect = settings.getString(EXPECT);
         if (value == null || expect == null) return false;

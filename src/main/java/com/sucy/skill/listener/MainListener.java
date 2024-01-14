@@ -471,12 +471,16 @@ public class MainListener extends SkillAPIListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onWorldChange(PlayerChangedWorldEvent event) {
-        if (event.getPlayer().hasMetadata("NPC")) return;
+        Player player = event.getPlayer();
+        if (player.hasMetadata("NPC")) return;
 
         boolean oldEnabled = SkillAPI.getSettings().isWorldEnabled(event.getFrom());
-        boolean newEnabled = SkillAPI.getSettings().isWorldEnabled(event.getPlayer().getWorld());
+        boolean newEnabled = SkillAPI.getSettings().isWorldEnabled(player.getWorld());
 
-        if (!oldEnabled && newEnabled) init(event.getPlayer());
+        if (newEnabled) {
+            if (oldEnabled) SkillAPI.getPlayerData(player).updateHealth(player); // Fixes some hybrid servers resetting max health to 20 after world change
+            else init(player);
+        }
     }
 
     @EventHandler(ignoreCancelled = true)

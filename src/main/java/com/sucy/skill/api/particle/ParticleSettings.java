@@ -33,6 +33,8 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
+import java.util.Locale;
+
 /**
  * Settings for playing a particle
  */
@@ -113,7 +115,7 @@ public class ParticleSettings {
         this.speed = config.getFloat(SPEED_KEY, 1);
         this.amount = config.getInt(AMOUNT_KEY, 1);
         this.object = ParticleHelper.makeObject(type,
-                Material.valueOf(config.getString(MATERIAL_KEY, "Dirt").toUpperCase().replace(" ", "_")),
+                Material.valueOf(config.getString(MATERIAL_KEY, "Dirt").toUpperCase(Locale.US).replace(" ", "_")),
                 config.getInt(DATA_KEY, 0),
                 config.getInt(DURABILITY_KEY, 0),
                 Color.fromRGB(Integer.parseInt(config.getString(DUST_COLOR, "#FF0000").substring(1), 16)),
@@ -135,7 +137,7 @@ public class ParticleSettings {
         this.speed = (float) config.getDouble(prefix+SPEED_KEY, 1);
         this.amount = config.getInt(prefix+AMOUNT_KEY, 1);
         this.object = ParticleHelper.makeObject(type,
-                Material.valueOf(config.getString(prefix+MATERIAL_KEY, "Dirt").toUpperCase().replace(" ", "_")),
+                Material.valueOf(config.getString(prefix+MATERIAL_KEY, "Dirt").toUpperCase(Locale.US).replace(" ", "_")),
                 config.getInt(prefix+DATA_KEY, 0),
                 config.getInt(prefix+DURABILITY_KEY, 0),
                 Color.fromRGB(Integer.parseInt(config.getString(prefix+DUST_COLOR, "#FF0000").substring(1), 16)),

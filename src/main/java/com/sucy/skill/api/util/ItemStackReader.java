@@ -14,6 +14,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
+import java.util.Locale;
 
 public final class ItemStackReader {
     private static final String MATERIAL    = "material";
@@ -50,7 +51,7 @@ public final class ItemStackReader {
         }
 
         try {
-            return Material.valueOf(string.toUpperCase().replace(" ", "_"));
+            return Material.valueOf(string.toUpperCase(Locale.US).replace(" ", "_"));
         } catch (NullPointerException |
                  IllegalArgumentException e) {
             return Material.ARROW;
@@ -91,7 +92,7 @@ public final class ItemStackReader {
 
         for (String hideFlag : settings.getStringList(HIDE_FLAGS)) {
             try {
-                meta.addItemFlags(ItemFlag.valueOf("HIDE_" + hideFlag.toUpperCase().replace(' ', '_')));
+                meta.addItemFlags(ItemFlag.valueOf("HIDE_" + hideFlag.toUpperCase(Locale.US).replace(' ', '_')));
             } catch (IllegalArgumentException ignored) {
             }
         }

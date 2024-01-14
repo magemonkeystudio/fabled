@@ -35,18 +35,20 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public abstract class GUIHolder<T extends IconHolder> implements InventoryHolder {
-    protected HashMap<String, T> data = new HashMap<>();
+    protected Map<String, T> data = new HashMap<>();
 
     protected GUIData    gui;
     protected PlayerData player;
     protected Inventory  inventory;
     protected int        page;
 
-    public void set(GUIData gui, PlayerData player, Inventory inv, HashMap<String, T> data) {
+    public void set(GUIData gui, PlayerData player, Inventory inv, Map<String, T> data) {
         this.gui = gui;
         this.player = player;
         this.inventory = inv;
@@ -117,7 +119,7 @@ public abstract class GUIHolder<T extends IconHolder> implements InventoryHolder
     protected void onClose(Player player) {}
 
     @Override
-    public Inventory getInventory() {
+    public @NotNull Inventory getInventory() {
         return inventory;
     }
 }

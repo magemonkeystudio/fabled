@@ -695,12 +695,12 @@ public class Settings {
     }
 
     private Map<String, Map<String, Double>> loadYields(DataSection config) {
-        Map<String, Map<String, Double>> yields = new HashMap<String, Map<String, Double>>();
+        Map<String, Map<String, Double>> yields = new HashMap<>();
         for (String className : config.keys()) {
-            HashMap<String, Double> map         = new HashMap<String, Double>();
+            HashMap<String, Double> map         = new HashMap<>();
             DataSection             classYields = config.getSection(className);
             for (String type : classYields.keys()) {
-                map.put(type.toUpperCase().replace(" ", "_"), classYields.getDouble(type));
+                map.put(type.toUpperCase(Locale.US).replace(" ", "_"), classYields.getDouble(type));
             }
             yields.put(className, map);
         }
@@ -1076,7 +1076,7 @@ public class Settings {
         filteredBlocks = new ArrayList<>();
         List<String> list = config.getList(SKILL_BLOCKS);
         for (String item : list) {
-            item = item.toUpperCase().replace(' ', '_');
+            item = item.toUpperCase(Locale.US).replace(' ', '_');
             if (item.endsWith("*")) {
                 item = item.substring(0, item.length() - 1);
                 for (Material mat : Material.values()) {
@@ -1204,7 +1204,7 @@ public class Settings {
     private void loadCastSettings() {
         castEnabled = config.getBoolean(CAST_ENABLED);
         try {
-            castMode = CastMode.valueOf(config.getString(CAST_MODE).toUpperCase().replace('-', '_'));
+            castMode = CastMode.valueOf(config.getString(CAST_MODE).toUpperCase(Locale.US).replace('-', '_'));
         } catch (IllegalArgumentException e) {
             castMode = CastMode.BARS;
             config.set(CAST_MODE, CastMode.BARS.name().toLowerCase());

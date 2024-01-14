@@ -39,10 +39,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -415,7 +412,7 @@ public abstract class EffectComponent {
         DataSection children = config.getSection("children");
         if (children != null) {
             for (String key : children.keys()) {
-                final String        typeName = children.getSection(key).getString(TYPE, "missing").toUpperCase();
+                final String        typeName = children.getSection(key).getString(TYPE, "missing").toUpperCase(Locale.US);
                 final ComponentType type     = ComponentType.valueOf(typeName);
                 final String        mkey     = key.replaceAll("-.+", "");
                 try {

@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -64,7 +65,7 @@ public abstract class TargetComponent extends EffectComponent {
         allies = group.equals("ally");
         throughWall = settings.getString(WALL, "false").equalsIgnoreCase("true");
         invulnerable = settings.getString(INVULNERABLE, "false").equalsIgnoreCase("true");
-        self = IncludeCaster.valueOf(settings.getString(CASTER, "false").toUpperCase().replace(' ', '_'));
+        self = IncludeCaster.valueOf(settings.getString(CASTER, "false").toUpperCase(Locale.US).replace(' ', '_'));
     }
 
     abstract List<LivingEntity> getTargets(final LivingEntity caster,

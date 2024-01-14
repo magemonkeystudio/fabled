@@ -31,6 +31,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Executes child components after a delay
@@ -63,7 +64,7 @@ public class PotionMechanic extends MechanicComponent {
 
         try {
             PotionEffectType potion = PotionEffectType.getByName(settings.getString(POTION, "Absorption")
-                    .toUpperCase()
+                    .toUpperCase(Locale.US)
                     .replace(' ', '_'));
             int     tier    = (int) parseValues(caster, TIER, level, 1) - 1;
             double  seconds = parseValues(caster, SECONDS, level, 3.0);

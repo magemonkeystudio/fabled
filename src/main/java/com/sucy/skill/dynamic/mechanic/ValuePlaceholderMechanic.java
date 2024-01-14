@@ -10,6 +10,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * ProSkillAPI © 2023
@@ -39,7 +40,7 @@ public class ValuePlaceholderMechanic extends MechanicComponent {
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         final String key         = settings.getString(KEY);
         final String placeholder = settings.getString(PLACEHOLDER);
-        final String type        = settings.getString(TYPE).toUpperCase();
+        final String type        = settings.getString(TYPE).toUpperCase(Locale.US);
 
         String value = placeholder;
         if (PluginChecker.isPlaceholderAPIActive() && targets.get(0) instanceof Player) {

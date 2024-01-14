@@ -32,6 +32,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.Collection;
+import java.util.Locale;
 
 /**
  * A condition for dynamic skills that requires the target to have a specified potion effect
@@ -48,7 +49,7 @@ public class PotionCondition extends ConditionComponent {
         final Collection<PotionEffect> effects = target.getActivePotionEffects();
         if (effects.isEmpty()) return !active;
 
-        final String potion  = settings.getString(POTION, "").toUpperCase().replace(' ', '_');
+        final String potion  = settings.getString(POTION, "").toUpperCase(Locale.US).replace(' ', '_');
         final int    minRank = (int) parseValues(caster, MIN_RANK, level, 0);
         final int    maxRank = (int) parseValues(caster, MAX_RANK, level, 999);
         try {

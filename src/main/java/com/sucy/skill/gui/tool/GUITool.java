@@ -32,7 +32,7 @@ import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.api.util.DamageLoreRemover;
 import com.sucy.skill.log.Logger;
-import com.sucy.skill.manager.AttributeManager;
+import com.sucy.skill.manager.ProAttribute;
 import com.sucy.skill.tree.basic.CustomTree;
 import mc.promcteam.engine.mccore.config.CommentedConfig;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
@@ -159,7 +159,7 @@ public class GUITool implements ToolMenu {
         for (String key : custom.keys()) {
             try {
                 ItemStack item = parseItem(custom.getSection(key));
-                items.put(key.toUpperCase(), item);
+                items.put(key.toUpperCase(Locale.US), item);
             } catch (Exception ex) {
                 Logger.invalid("Bad custom tool item: " + key);
             }
@@ -167,7 +167,7 @@ public class GUITool implements ToolMenu {
     }
 
     public static ItemStack parseItem(DataSection data) {
-        Material  material = Material.valueOf(data.getString("type").toUpperCase().replace(" ", "_"));
+        Material  material = Material.valueOf(data.getString("type").toUpperCase(Locale.US).replace(" ", "_"));
         ItemStack item     = new ItemStack(material);
         ItemMeta  meta     = item.getItemMeta();
         if (meta != null) {
@@ -248,7 +248,7 @@ public class GUITool implements ToolMenu {
     }
 
     public static ItemStack getIcon(final String key) {
-        return items.get(key.toUpperCase());
+        return items.get(key.toUpperCase(Locale.US));
     }
 
     public static boolean hasData(String key) {
@@ -500,8 +500,8 @@ public class GUITool implements ToolMenu {
         i = 9;
         GUIPage page = guiData.getPage();
         for (String key : SkillAPI.getAttributeManager().getKeys()) {
-            AttributeManager.Attribute attr  = SkillAPI.getAttributeManager().getAttribute(key);
-            int                        index = page.getIndex(attr.getKey());
+            ProAttribute attr  = SkillAPI.getAttributeManager().getAttribute(key);
+            int          index = page.getIndex(attr.getKey());
             if (index != -1)
                 inventoryContents[index] = attr.getToolIcon();
             else if (!guiData.has(attr.getKey()) && i < playerContents.length) {

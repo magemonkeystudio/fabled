@@ -134,7 +134,7 @@ public class GUIPage {
         }
     }
 
-    public ItemStack[] instance(PlayerData player, HashMap<String, ? extends IconHolder> data) {
+    public ItemStack[] instance(PlayerData player, Map<String, ? extends IconHolder> data) {
         ItemStack[] contents = new ItemStack[parent.getSize()];
 
         Player bukkitPlayer = player.getPlayer();

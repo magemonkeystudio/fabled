@@ -1,0 +1,4780 @@
+loaded: false
+AttunementToAir:
+  name: 'AttunementToAir'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 2
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Area-b:
+          type: 'target'
+          data:
+            icon-key: ''
+            radius-base: 5
+            radius-scale: 0
+            group: 'Ally'
+            wall: 'False'
+            caster: 'True'
+            max-base: 99
+            max-scale: 0
+            random: 'False'
+          children:
+            Buff-c:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                immediate: 'False'
+                type: 'SKILL_DEFENSE'
+                modifier: 'Multiplier'
+                category: 'air'
+                value-base: 15
+                value-scale: 0.25
+                seconds-base: 60
+                seconds-scale: 0.6
+AttunementToFire:
+  name: 'AttunementToFire'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 0
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Buff-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            immediate: 'False'
+            type: 'SKILL_DAMAGE'
+            modifier: 'Flat'
+            category: ''
+            value-base: 10
+            value-scale: 5
+            seconds-base: 15
+            seconds-scale: 5
+        Particle-c:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            particle: 'Drip lava'
+            arrangement: 'Sphere'
+            radius-base: 2
+            radius-scale: 1
+            particles-base: 10
+            particles-scale: 1
+            visible-radius: 20
+            dx: 0
+            dy: 0
+            dz: 0
+            amount: 1
+            speed: 0.1
+            forward: 0
+            upward: 0
+            right: 0
+        Immunity-d:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            type: 'Fire tick'
+            seconds-base: 15
+            seconds-scale: 5
+            multiplier-base: 0
+            multiplier-scale: 0
+        Immunity-e:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            type: 'Fire'
+            seconds-base: 15
+            seconds-scale: 5
+            multiplier-base: 0
+            multiplier-scale: 0
+        Immunity-f:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            type: 'Hot floor'
+            seconds-base: 15
+            seconds-scale: 5
+            multiplier-base: 0
+            multiplier-scale: 0
+        Immunity-g:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            type: 'Lava'
+            seconds-base: 15
+            seconds-scale: 5
+            multiplier-base: 0
+            multiplier-scale: 0
+Bandage:
+  name: 'Bandage'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Paper'
+  icon-data: 15
+  icon-lore:
+  - '&f{name} &e({level}/{max})'
+  - '&7Recover health to repair'
+  - '&7your wounds.'
+  - ''
+  - '&3Mana: {attr:mana}'
+  - '&3Cooldown: {attr:cooldown}'
+  - ''
+  - '&2Unlock this skill at {req:level}level {attr:level}'
+  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+  attributes:
+    level-base: 5
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 24
+    cooldown-scale: 0.08
+    mana-base: 70
+    mana-scale: 0.2
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity player levelup'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 1
+            pitch-scale: 0
+        Heal-c:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            type: 'Percent'
+            value-base: 20
+            value-scale: 0.2
+Bastion:
+  name: 'Bastion'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 0
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Self-b:
+          type: 'target'
+          data:
+            icon-key: ''
+          children:
+            Buff-c:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                immediate: 'False'
+                type: 'SKILL_DEFENSE'
+                modifier: 'Multiplier'
+                category: ''
+                value-base: 0.7
+                value-scale: 0
+                seconds-base: 20
+                seconds-scale: 0
+            Buff-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                immediate: 'False'
+                type: 'DEFENSE'
+                modifier: 'Multiplier'
+                value-base: 0.7
+                value-scale: 0
+                seconds-base: 20
+                seconds-scale: 0
+Bringforth:
+  name: 'Bringforth'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 1
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Paper'
+  icon-data: 14
+  icon-lore:
+  - '&f{name} &e({level}/{max})'
+  - '&7Pull your enemies towards'
+  - '&7you.'
+  - ''
+  - '&3Mana: {attr:mana}'
+  - '&3Cooldown: {attr:cooldown}'
+  - ''
+  - '&2Unlock this skill at {req:level}level {attr:level}'
+  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+  attributes:
+    level-base: 25
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 24
+    cooldown-scale: -0.06
+    mana-base: 45
+    mana-scale: 0.2
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity blaze shoot'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 1
+            pitch-scale: 0
+        Cone-c:
+          type: 'target'
+          data:
+            icon-key: ''
+            range-base: 3
+            range-scale: 0
+            angle-base: 90
+            angle-scale: 0
+            group: 'Enemy'
+            wall: 'False'
+            caster: 'False'
+            max-base: 99
+            max-scale: 0
+          children:
+            Launch-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                relative: 'Caster'
+                forward-base: -1.5
+                forward-scale: 0
+                upward-base: 0
+                upward-scale: 0
+                right-base: 0
+                right-scale: 0
+Consecrate:
+  name: 'Consecrate'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 0
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Area-b:
+          type: 'target'
+          data:
+            icon-key: ''
+            radius-base: 3
+            radius-scale: 0
+            group: 'Ally'
+            wall: 'False'
+            caster: 'True'
+            max-base: 99
+            max-scale: 0
+            random: 'False'
+          children:
+            Defense Buff-c:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                type: 'Multiplier'
+                skill: 'True'
+                value-base: 0.85
+                value-scale: 0
+                seconds-base: 30
+                seconds-scale: 0
+            Defense Buff-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                type: 'Multiplier'
+                skill: 'False'
+                value-base: 0.85
+                value-scale: 0
+                seconds-base: 30
+                seconds-scale: 0
+        Repeat-e:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            repetitions-base: 7
+            repetitions-scale: 0
+            period: 1
+            delay: 0
+            stop-on-fail: 'False'
+          children:
+            Repeat-f:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                repetitions-base: 1
+                repetitions-scale: 0
+                period: 0
+                delay: 0
+                stop-on-fail: 'False'
+              children:
+                Area-g:
+                  type: 'target'
+                  data:
+                    icon-key: ''
+                    radius-base: 3
+                    radius-scale: 0
+                    group: 'Enemy'
+                    wall: 'False'
+                    caster: 'True'
+                    max-base: 99
+                    max-scale: 0
+                    random: 'False'
+                  children:
+                    Heal-h:
+                      type: 'mechanic'
+                      data:
+                        icon-key: ''
+                        counts: 'True'
+                        type: 'Percent'
+                        value-base: 5
+                        value-scale:  {}
+Divinebolt:
+  name: 'Divinebolt'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 0
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Particle Projectile-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            gravity: 0
+            pierce: 'False'
+            group: 'Enemy'
+            velocity-base: 3
+            velocity-scale: 0
+            lifespan-base: 5
+            lifespan-scale: 0
+            spread: 'Cone'
+            amount-base: 1
+            amount-scale: 0
+            angle-base: 0
+            angle-scale: 0
+            forward-base: 0
+            forward-scale: 0
+            upward-base: 1.5
+            upward-scale: 0
+            right-base: 0
+            right-scale: 0
+            particle: 'Composter'
+            arrangement: 'Sphere'
+            radius-base: 0.1
+            radius-scale: 0
+            particles-base: 10
+            particles-scale: 0
+            visible-radius: 48
+            dx: 0
+            dy: 0
+            dz: 0
+            amount: 1
+            speed: 0.01
+            frequency: 0.05
+            use-effect: 'False'
+          children:
+            Particle-c:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                particle: 'End rod'
+                arrangement: 'Sphere'
+                radius-base: 1
+                radius-scale: 0
+                particles-base: 2
+                particles-scale: 0
+                visible-radius: 48
+                dx: 0
+                dy: 0
+                dz: 0
+                amount: 1
+                speed: 1
+                forward: 0
+                upward: 0
+                right: 0
+            Particle-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                particle: 'Block crack'
+                material: 'Obsidian'
+                arrangement: 'Sphere'
+                radius-base: 2.5
+                radius-scale: 0
+                particles-base: 10
+                particles-scale: 0
+                visible-radius: 48
+                dx: 0
+                dy: 0
+                dz: 0
+                amount: 1
+                speed: 0.1
+                forward: 0
+                upward: 0.2
+                right: 0
+            Area-e:
+              type: 'target'
+              data:
+                icon-key: ''
+                radius-base: 2
+                radius-scale: 0
+                group: 'Enemy'
+                wall: 'False'
+                caster: 'False'
+                max-base: 99
+                max-scale: 0
+                random: 'False'
+              children:
+                Damage-f:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    type: 'Damage'
+                    value-base: 25
+                    value-scale: 0.22
+                    true: 'False'
+                    classifier: 'air'
+                    knockback: 'False'
+                    cause: 'Entity Attack'
+                Launch-g:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    relative: 'Target'
+                    forward-base: 1
+                    forward-scale: 0.02
+                    upward-base: 0
+                    upward-scale: 0
+                    right-base: 0
+                    right-scale: 0
+DragonsBreath:
+  name: 'DragonsBreath'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 0
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Repeat-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            repetitions-base: 7
+            repetitions-scale: 0
+            period: 0.5
+            delay: 0
+            stop-on-fail: 'False'
+          children:
+            Particle Projectile-c:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                gravity: 0
+                pierce: 'False'
+                group: 'Enemy'
+                velocity-base: 1
+                velocity-scale: 0
+                lifespan-base: 5
+                lifespan-scale: 0
+                spread: 'Cone'
+                amount-base: 2
+                amount-scale: 0
+                angle-base: 15
+                angle-scale: 0
+                forward-base: 0
+                forward-scale: 0
+                upward-base: 1.5
+                upward-scale: 0
+                right-base: 0
+                right-scale: 0
+                particle: 'Flame'
+                arrangement: 'Sphere'
+                radius-base: 0.2
+                radius-scale: 0
+                particles-base: 20
+                particles-scale: 0
+                visible-radius: 48
+                dx: 0
+                dy: 0
+                dz: 0
+                amount: 1
+                speed: 0.1
+                frequency: 0.05
+                use-effect: 'False'
+              children:
+                Fire-d:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    damage-base: 1
+                    damage-scale: 0
+                    seconds-base: 3
+                    seconds-scale: 1
+                Damage-e:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    type: 'Damage'
+                    value-base: 3
+                    value-scale: 1
+                    true: 'False'
+                    classifier: 'fire'
+                    knockback: 'False'
+                    cause: 'Entity Attack'
+            Sound-f:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                sound: 'Entity blaze shoot'
+                volume-base: 100
+                volume-scale: 0
+                pitch-base: 1
+                pitch-scale: 0
+ExploitWeakness:
+  name: 'ExploitWeakness'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Paper'
+  icon-data: 27
+  icon-lore:
+  - '&f{name} &e({level}/{max})'
+  - '&7Magical arrow that lowers'
+  - "&7your enemy's defense."
+  - ''
+  - '&3Mana: {attr:mana}'
+  - '&3Cooldown: {attr:cooldown}'
+  - ''
+  - '&2Unlock this skill at {req:level}level {attr:level}'
+  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity arrow shoot'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 1
+            pitch-scale: 0
+        Single-c:
+          type: 'target'
+          data:
+            icon-key: ''
+            range-base: 24
+            range-scale: 0
+            tolerance-base: 0.5
+            tolerance-scale: 0
+            group: 'Enemy'
+            wall: 'False'
+          children:
+            Defense Buff-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                type: 'Multiplier'
+                skill: 'False'
+                value-base: 20
+                value-scale: 0.1
+                seconds-base: 20
+                seconds-scale: 0.1
+            Message-e:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                message: '&cYour physical defense has been reduced!'
+            Delay-f:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                delay-base: 20
+                delay-scale: 0.1
+              children:
+                Message-g:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    message: '&aYour physical defense has been restored.'
+ExplosiveArrow:
+  name: 'ExplosiveArrow'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Paper'
+  icon-data: 26
+  icon-lore:
+  - '&f{name} &e({level}/{max})'
+  - '&7Magical arrow that explodes'
+  - '&7on impact damaging anyone'
+  - '&7close by.'
+  - ''
+  - '&3Mana: {attr:mana}'
+  - '&3Cooldown: {attr:cooldown}'
+  - ''
+  - '&2Unlock this skill at {req:level}level {attr:level}'
+  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity arrow shoot'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 1
+            pitch-scale: 0
+        Location-c:
+          type: 'target'
+          data:
+            icon-key: ''
+            range-base: 24
+            range-scale: 0
+            entities: 'True'
+            fluids: 'False'
+            passable: 'True'
+            center: 'False'
+          children:
+            Explosion-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                power-base: 1
+                power-scale: 0
+                damage: 'False'
+                fire: 'False'
+            Area-e:
+              type: 'target'
+              data:
+                icon-key: ''
+                radius-base: 2
+                radius-scale: 0
+                group: 'Enemy'
+                wall: 'False'
+                caster: 'False'
+                max-base: 99
+                max-scale: 0
+                random: 'False'
+              children:
+                Damage-f:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    type: 'Multiplier'
+                    value-base: 500
+                    value-scale: 0.25
+                    true: 'False'
+                    classifier: 'piercing'
+                    knockback: 'True'
+                    cause: 'Entity Attack'
+                Sound-g:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    sound: 'Item crossbow hit'
+                    volume-base: 100
+                    volume-scale: 0
+                    pitch-base: 1
+                    pitch-scale: 0
+ExtremeFocus:
+  name: 'ExtremeFocus'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 0
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Self-b:
+          type: 'target'
+          data:
+            icon-key: ''
+          children:
+            Cooldown-c:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                skill: 'Flurry'
+                type: 'Percent'
+                value-base: -100
+                value-scale: 0
+            Cooldown-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                skill: 'Lacerate'
+                type: 'Percent'
+                value-base: -100
+                value-scale: 0
+            Cooldown-e:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                skill: 'Lunge'
+                type: 'Percent'
+                value-base: -100
+                value-scale: 0
+            Cooldown-f:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                skill: 'Pummel'
+                type: 'Percent'
+                value-base: -100
+                value-scale: 0
+            Mana-g:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                type: 'Percent'
+                value-base: 30
+                value-scale: 0.3
+            Damage Buff-h:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                type: 'Multiplier'
+                skill: 'False'
+                value-base: 25
+                value-scale: 0.2
+                seconds-base: 20
+                seconds-scale: 0
+Fireball:
+  name: 'Fireball'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 0
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 1.5
+    cooldown-scale: 0
+    mana-base: 3
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity blaze shoot'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 1
+            pitch-scale: 0
+        Particle Projectile-c:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            gravity: 0
+            pierce: 'False'
+            group: 'Enemy'
+            velocity-base: 3
+            velocity-scale: 0
+            lifespan-base: 5
+            lifespan-scale: 0
+            spread: 'Cone'
+            amount-base: 1
+            amount-scale: 0
+            angle-base: 0
+            angle-scale: 0
+            forward-base: 0
+            forward-scale: 0
+            upward-base: 1.5
+            upward-scale: 0
+            right-base: 0
+            right-scale: 0
+            particle: 'Flame'
+            arrangement: 'Sphere'
+            radius-base: 0.1
+            radius-scale: 0
+            particles-base: 10
+            particles-scale: 0
+            visible-radius: 48
+            dx: 0
+            dy: 0
+            dz: 0
+            amount: 1
+            speed: 0.01
+            frequency: 0.05
+            use-effect: 'False'
+          children:
+            Particle-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                particle: 'Ash'
+                arrangement: 'Sphere'
+                radius-base: 1
+                radius-scale: 0
+                particles-base: 2
+                particles-scale: 0
+                visible-radius: 48
+                dx: 0
+                dy: 0
+                dz: 0
+                amount: 1
+                speed: 1
+                forward: 0
+                upward: 0
+                right: 0
+            Particle-e:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                particle: 'Ash'
+                arrangement: 'Sphere'
+                radius-base: 2.5
+                radius-scale: 0
+                particles-base: 15
+                particles-scale: 0
+                visible-radius: 48
+                dx: 0
+                dy: 0
+                dz: 0
+                amount: 1
+                speed: 0.2
+                forward: 0
+                upward: 0.5
+                right: 0
+            Particle-f:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                particle: 'Flame'
+                arrangement: 'Sphere'
+                radius-base: 2.5
+                radius-scale: 0
+                particles-base: 10
+                particles-scale: 0
+                visible-radius: 48
+                dx: 0
+                dy: 0
+                dz: 0
+                amount: 1
+                speed: 0.1
+                forward: 0
+                upward: 0.2
+                right: 0
+            Sound-g:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                sound: 'Entity blaze shoot'
+                volume-base: 100
+                volume-scale: 0
+                pitch-base: 1
+                pitch-scale: 0
+            Area-h:
+              type: 'target'
+              data:
+                icon-key: ''
+                radius-base: 2
+                radius-scale: 0
+                group: 'Enemy'
+                wall: 'False'
+                caster: 'False'
+                max-base: 99
+                max-scale: 0
+                random: 'False'
+              children:
+                Fire-i:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    damage-base: 1
+                    damage-scale: 0
+                    seconds-base: 3
+                    seconds-scale: 0
+                Damage-j:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    type: 'Damage'
+                    value-base: 25
+                    value-scale: 0.22
+                    true: 'False'
+                    classifier: 'fire'
+                    knockback: 'False'
+                    cause: 'Entity Attack'
+Flurry:
+  name: 'Flurry'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 0
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Single-b:
+          type: 'target'
+          data:
+            icon-key: ''
+            range-base: 5
+            range-scale: 0
+            tolerance-base: 1
+            tolerance-scale: 0
+            group: 'Enemy'
+            wall: 'False'
+          children:
+            Buff-c:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                immediate: 'False'
+                type: 'DEFENSE'
+                modifier: 'Multiplier'
+                value-base: 0.8
+                value-scale: 0
+                seconds-base: 7
+                seconds-scale: 0
+            Potion-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                potion: 'Slow'
+                ambient: 'True'
+                tier-base: 1
+                tier-scale: 0
+                seconds-base: 3
+                seconds-scale: 0
+HealingBlast:
+  name: 'HealingBlast'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 0
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 1.5
+    cooldown-scale: 0
+    mana-base: 3
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity ghast shoot'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 1
+            pitch-scale: 0
+        Particle Projectile-c:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            gravity: -0.013
+            pierce: 'False'
+            group: 'Enemy'
+            velocity-base: 1
+            velocity-scale: 0
+            lifespan-base: 5
+            lifespan-scale: 0
+            spread: 'Cone'
+            amount-base: 1
+            amount-scale: 0
+            angle-base: 0
+            angle-scale: 0
+            forward-base: 0
+            forward-scale: 0
+            upward-base: 1.5
+            upward-scale: 0
+            right-base: 0
+            right-scale: 0
+            particle: 'Villager happy'
+            arrangement: 'Sphere'
+            radius-base: 0.5
+            radius-scale: 0
+            particles-base: 10
+            particles-scale: 0
+            visible-radius: 48
+            dx: 0
+            dy: 0
+            dz: 0
+            amount: 1
+            speed: 0.01
+            frequency: 0.05
+            use-effect: 'False'
+          children:
+            Particle-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                particle: 'Villager happy'
+                arrangement: 'Sphere'
+                radius-base: 0.5
+                radius-scale: 0
+                particles-base: 20
+                particles-scale: 0
+                visible-radius: 48
+                dx: 0
+                dy: 0
+                dz: 0
+                amount: 1
+                speed: 0.1
+                forward: 0
+                upward: 2.2
+                right: 0
+            Area-e:
+              type: 'target'
+              data:
+                icon-key: ''
+                radius-base: 2
+                radius-scale: 0
+                group: 'Enemy'
+                wall: 'False'
+                caster: 'False'
+                max-base: 99
+                max-scale: 0
+                random: 'False'
+              children:
+                Heal-f:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    type: 'Percent'
+                    value-base: 10
+                    value-scale: 0
+                Sound-g:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    sound: 'Entity player levelup'
+                    volume-base: 100
+                    volume-scale: 0
+                    pitch-base: 1
+                    pitch-scale: 0
+HeatStroke:
+  name: 'HeatStroke'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 0
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity ghast shoot'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 1
+            pitch-scale: 0
+        Particle Projectile-c:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            gravity: -0.01
+            pierce: 'False'
+            group: 'Enemy'
+            velocity-base: 1
+            velocity-scale: 0
+            lifespan-base: 5
+            lifespan-scale: 0
+            spread: 'Cone'
+            amount-base: 1
+            amount-scale: 0
+            angle-base: 30
+            angle-scale: 0
+            forward-base: 0
+            forward-scale: 0
+            upward-base: 1.5
+            upward-scale: 0
+            right-base: 0
+            right-scale: 0
+            particle: 'Flame'
+            arrangement: 'Sphere'
+            radius-base: 0.2
+            radius-scale: 0
+            particles-base: 20
+            particles-scale: 0
+            visible-radius: 48
+            dx: 0
+            dy: 0
+            dz: 0
+            amount: 1
+            speed: 0.01
+            frequency: 0.05
+            use-effect: 'False'
+          children:
+            Particle-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                particle: 'Ash'
+                arrangement: 'Sphere'
+                radius-base: 1
+                radius-scale: 0
+                particles-base: 2
+                particles-scale: 0
+                visible-radius: 48
+                dx: 0
+                dy: 0
+                dz: 0
+                amount: 1
+                speed: 1
+                forward: 0
+                upward: 0
+                right: 0
+            Particle-e:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                particle: 'Falling lava'
+                arrangement: 'Sphere'
+                radius-base: 0.25
+                radius-scale: 0
+                particles-base: 15
+                particles-scale: 0
+                visible-radius: 48
+                dx: 0
+                dy: 0
+                dz: 0
+                amount: 1
+                speed: 0.2
+                forward: 0
+                upward: 0.5
+                right: 0
+            Particle-f:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                particle: 'Flame'
+                arrangement: 'Sphere'
+                radius-base: 2.5
+                radius-scale: 0
+                particles-base: 20
+                particles-scale: 0
+                visible-radius: 48
+                dx: 0
+                dy: 0
+                dz: 0
+                amount: 1
+                speed: 0.1
+                forward: 0
+                upward: 0.2
+                right: 0
+            Explosion-g:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                power-base: 1
+                power-scale: 0
+                damage: 'False'
+                fire: 'False'
+            Repeat-h:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                repetitions-base: 7
+                repetitions-scale: 0
+                period: 0.5
+                delay: 0
+                stop-on-fail: 'False'
+              children:
+                Particle Effect-i:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    effect-key: 'heatstroke'
+                    duration-base: 1
+                    duration-scale: 0
+                    -shape: 'still'
+                    -shape-dir: 'XY'
+                    -shape-size: '.15'
+                    -animation: 'still'
+                    -anim-dir: 'XZ'
+                    -anim-size: '.15'
+                    -interval: 1
+                    -view-range: 48
+                    -particle-type: 'Campfire cosy smoke'
+                    -particle-durability: 0
+                    -particle-amount: 1
+                    -particle-dx: 0
+                    -particle-dy: 0
+                    -particle-dz: 0
+                    -particle-speed: 0.1
+                    -initial-rotation: 0
+                    -with-rotation: 'True'
+                Area-j:
+                  type: 'target'
+                  data:
+                    icon-key: ''
+                    radius-base: 3
+                    radius-scale: 0
+                    group: 'Enemy'
+                    wall: 'False'
+                    caster: 'False'
+                    max-base: 99
+                    max-scale: 0
+                    random: 'False'
+                  children:
+                    Mana-k:
+                      type: 'mechanic'
+                      data:
+                        icon-key: ''
+                        counts: 'True'
+                        type: 'Mana'
+                        value-base: -6
+                        value-scale: -0.06
+                    Fire-l:
+                      type: 'mechanic'
+                      data:
+                        icon-key: ''
+                        counts: 'True'
+                        damage-base: 1
+                        damage-scale: 0
+                        seconds-base: 3
+                        seconds-scale: 1
+Invigoration:
+  name: 'Invigoration'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 0
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Self-b:
+          type: 'target'
+          data:
+            icon-key: ''
+          children:
+            Repeat-c:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                repetitions-base: 7
+                repetitions-scale: 0
+                period: 1
+                delay: 0
+                stop-on-fail: 'False'
+              children:
+                Heal-d:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    type: 'Percent'
+                    value-base: 3
+                    value-scale: 0
+Invincible:
+  name: 'Invincible'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Paper'
+  icon-data: 17
+  icon-lore:
+  - '&f{name} &e({level}/{max})'
+  - '&7Become invincible to all'
+  - '&7damage.'
+  - ''
+  - '&3Mana: {attr:mana}'
+  - '&3Cooldown: {attr:cooldown}'
+  - ''
+  - '&2Unlock this skill at {req:level}level {attr:level}'
+  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+  attributes:
+    level-base: 75
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 130
+    cooldown-scale: -0.4
+    mana-base: 70
+    mana-scale: 0.2
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity blaze shoot'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 1
+            pitch-scale: 0
+        Self-c:
+          type: 'target'
+          data:
+            icon-key: ''
+          children:
+            Damage Buff-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                type: 'Multiplier'
+                skill: 'False'
+                value-base: 100
+                value-scale: 0
+                seconds-base: 20
+                seconds-scale: 0.1
+            Damage Buff-e:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                type: 'Multiplier'
+                skill: 'True'
+                value-base: 100
+                value-scale: 0
+                seconds-base: 20
+                seconds-scale: 0.1
+            Delay-f:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                delay-base: 20
+                delay-scale: 0.1
+              children:
+                Message-g:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    message: '&cInvincible has worn off!'
+Lacerate:
+  name: 'Lacerate'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 0
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Single-b:
+          type: 'target'
+          data:
+            icon-key: ''
+            range-base: 5
+            range-scale: 0
+            tolerance-base: 1
+            tolerance-scale: 0
+            group: 'Enemy'
+            wall: 'False'
+          children:
+            Repeat-c:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                repetitions-base: 7
+                repetitions-scale: 0
+                period: 1
+                delay: 0
+                stop-on-fail: 'False'
+              children:
+                Damage-d:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    type: 'Damage'
+                    value-base: 3
+                    value-scale: 0
+                    true: 'True'
+                    classifier: 'physical'
+                    knockback: 'False'
+LifeDrain:
+  name: 'LifeDrain'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 2
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+LightningStorm:
+  name: 'LightningStorm'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 2
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 1.5
+    cooldown-scale: 0
+    mana-base: 3
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity lightning bolt thunder'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 2
+            pitch-scale: 0
+        Particle Projectile-c:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            gravity: 0
+            pierce: 'False'
+            group: 'Enemy'
+            velocity-base: 3
+            velocity-scale: 0
+            lifespan-base: 5
+            lifespan-scale: 0
+            spread: 'Cone'
+            amount-base: 1
+            amount-scale: 0
+            angle-base: 0
+            angle-scale: 0
+            forward-base: 0
+            forward-scale: 0
+            upward-base: 1.5
+            upward-scale: 0
+            right-base: 0
+            right-scale: 0
+            particle: 'Fireworks spark'
+            arrangement: 'Sphere'
+            radius-base: 0.1
+            radius-scale: 0
+            particles-base: 10
+            particles-scale: 0
+            visible-radius: 48
+            dx: 0
+            dy: 0
+            dz: 0
+            amount: 1
+            speed: 0.01
+            frequency: 0.05
+            use-effect: 'False'
+          children:
+            Particle-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                particle: 'End rod'
+                arrangement: 'Sphere'
+                radius-base: 1
+                radius-scale: 0
+                particles-base: 2
+                particles-scale: 0
+                visible-radius: 48
+                dx: 0
+                dy: 0
+                dz: 0
+                amount: 1
+                speed: 1
+                forward: 0
+                upward: 0
+                right: 0
+            Particle-e:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                particle: 'Drip water'
+                arrangement: 'Sphere'
+                radius-base: 2.5
+                radius-scale: 0
+                particles-base: 10
+                particles-scale: 0
+                visible-radius: 48
+                dx: 0
+                dy: 0
+                dz: 0
+                amount: 1
+                speed: 0.1
+                forward: 0
+                upward: 0.2
+                right: 0
+            Sound-f:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                sound: 'Entity lightning bolt impact'
+                volume-base: 100
+                volume-scale: 0
+                pitch-base: 1
+                pitch-scale: 0
+            Area-g:
+              type: 'target'
+              data:
+                icon-key: ''
+                radius-base: 5
+                radius-scale: 0
+                group: 'Enemy'
+                wall: 'False'
+                caster: 'False'
+                max-base: 99
+                max-scale: 0
+                random: 'True'
+              children:
+                Damage-h:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    type: 'Damage'
+                    value-base: 25
+                    value-scale: 0.22
+                    true: 'False'
+                    classifier: 'air'
+                    knockback: 'False'
+                    cause: 'Entity Attack'
+                Lightning-i:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    damage-base: 5
+                    damage-scale: 0
+                    group: 'Enemy'
+                    caster: 'False'
+                    forward-base: 0
+                    forward-scale: 0
+                    right-base: 0
+                    right-scale: 0
+Lunge:
+  name: 'Lunge'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 0
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Self-b:
+          type: 'target'
+          data:
+            icon-key: ''
+          children:
+            Launch-c:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                relative: 'Target'
+                forward-base: 1.5
+                forward-scale: 0
+                upward-base: 0.5
+                upward-scale: 0
+                right-base: 0
+                right-scale: 0
+            Status-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                status: 'Invincible'
+                duration-base: 3
+                duration-scale: 0
+        Delay-e:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            delay-base: 1
+            delay-scale: 0
+          children:
+            Area-f:
+              type: 'target'
+              data:
+                icon-key: ''
+                radius-base: 5
+                radius-scale: 0
+                group: 'Enemy'
+                wall: 'False'
+                caster: 'False'
+                max-base: 99
+                max-scale: 0
+                random: 'False'
+              children:
+                Damage-g:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    type: 'Damage'
+                    value-base: 15
+                    value-scale: 0
+                    true: 'False'
+                    classifier: 'physical'
+                    knockback: 'False'
+                    cause: 'Entity Attack'
+        Delay-h:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            delay-base: 1.5
+            delay-scale: 0
+          children:
+            Launch-i:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                relative: 'Target'
+                forward-base: 2
+                forward-scale: 0
+                upward-base: 1
+                upward-scale: 0
+                right-base: 0
+                right-scale: 0
+Maelstrom:
+  name: 'Maelstrom'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Paper'
+  icon-data: 19
+  icon-lore:
+  - '&f{name} &e({level}/{max})'
+  - '&7Damage enemies in a V shape'
+  - '&7in front of you.'
+  - ''
+  - '&3Mana: {attr:mana}'
+  - '&3Cooldown: {attr:cooldown}'
+  - ''
+  - '&2Unlock this skill at {req:level}level {attr:level}'
+  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+  attributes:
+    level-base: 5
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 6
+    cooldown-scale: -0.02
+    mana-base: 50
+    mana-scale: 0.2
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity blaze shoot'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 2
+            pitch-scale: 0
+        Cone-c:
+          type: 'target'
+          data:
+            icon-key: ''
+            range-base: 3
+            range-scale: 0
+            angle-base: 90
+            angle-scale: 0
+            group: 'Enemy'
+            wall: 'False'
+            caster: 'False'
+            max-base: 99
+            max-scale: 0
+          children:
+            Damage-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                type: 'Multiplier'
+                value-base: 15
+                value-scale: 0.4
+                true: 'False'
+                classifier: 'physical'
+                knockback: 'False'
+                cause: 'Entity Attack'
+MagmaBomb:
+  name: 'MagmaBomb'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 2
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 1.5
+    cooldown-scale: 0
+    mana-base: 3
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity ghast shoot'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 1
+            pitch-scale: 0
+        Particle Projectile-c:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            gravity: -0.013
+            pierce: 'False'
+            group: 'Enemy'
+            velocity-base: 1
+            velocity-scale: 0
+            lifespan-base: 5
+            lifespan-scale: 0
+            spread: 'Cone'
+            amount-base: 1
+            amount-scale: 0
+            angle-base: 30
+            angle-scale: 0
+            forward-base: 0
+            forward-scale: 0
+            upward-base: 1.5
+            upward-scale: 0
+            right-base: 0
+            right-scale: 0
+            particle: 'Smoke large'
+            arrangement: 'Sphere'
+            radius-base: 0.5
+            radius-scale: 0
+            particles-base: 10
+            particles-scale: 0
+            visible-radius: 48
+            dx: 0
+            dy: 0
+            dz: 0
+            amount: 1
+            speed: 0.01
+            frequency: 0.05
+            use-effect: 'False'
+          children:
+            Particle-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                particle: 'Ash'
+                arrangement: 'Sphere'
+                radius-base: 1
+                radius-scale: 0
+                particles-base: 2
+                particles-scale: 0
+                visible-radius: 48
+                dx: 0
+                dy: 0
+                dz: 0
+                amount: 1
+                speed: 1
+                forward: 0
+                upward: 0
+                right: 0
+            Particle-e:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                particle: 'Falling lava'
+                arrangement: 'Sphere'
+                radius-base: 0.25
+                radius-scale: 0
+                particles-base: 15
+                particles-scale: 0
+                visible-radius: 48
+                dx: 0
+                dy: 0
+                dz: 0
+                amount: 1
+                speed: 0.2
+                forward: 0
+                upward: 0.5
+                right: 0
+            Particle-f:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                particle: 'Flame'
+                arrangement: 'Sphere'
+                radius-base: 2.5
+                radius-scale: 0
+                particles-base: 20
+                particles-scale: 0
+                visible-radius: 48
+                dx: 0
+                dy: 0
+                dz: 0
+                amount: 1
+                speed: 0.1
+                forward: 0
+                upward: 0.2
+                right: 0
+            Explosion-g:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                power-base: 1
+                power-scale: 0
+                damage: 'False'
+                fire: 'False'
+            Area-h:
+              type: 'target'
+              data:
+                icon-key: ''
+                radius-base: 5
+                radius-scale: 0
+                group: 'Enemy'
+                wall: 'False'
+                caster: 'False'
+                max-base: 99
+                max-scale: 0
+                random: 'False'
+              children:
+                Fire-i:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    damage-base: 1
+                    damage-scale: 0
+                    seconds-base: 3
+                    seconds-scale: 0
+                Damage-j:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    type: 'Damage'
+                    value-base: 25
+                    value-scale: 0.22
+                    true: 'False'
+                    classifier: 'fire'
+                    knockback: 'False'
+                    cause: 'Entity Attack'
+Needles:
+  name: 'Needles'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Paper'
+  icon-data: 18
+  icon-lore:
+  - '&f{name} &e({level}/{max})'
+  - '&7Return damage back to'
+  - '&7your attacker.'
+  - ''
+  - '&3Mana: {attr:mana}'
+  - '&3Cooldown: {attr:cooldown}'
+  - ''
+  - '&2Unlock this skill at {req:level}level {attr:level}'
+  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+  attributes:
+    level-base: 15
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 8
+    cooldown-scale: 0
+    mana-base: 40
+    mana-scale: 0.2
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity blaze shoot'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 1
+            pitch-scale: 0
+        Delay-c:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            delay-base: 20
+            delay-scale: 0.1
+          children:
+            Message-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                message: '&cNeedles has worn off!'
+        Trigger-e:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            trigger: 'Took Physical Damage'
+            duration-base: 20
+            duration-scale: 0.1
+            stackable: 'True'
+            once: 'False'
+            type: 'Both'
+            target: 'False'
+            dmg-min: 0
+            dmg-max: 999
+          children:
+            Damage-f:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                type: 'Damage'
+                value-base: 10
+                value-scale: 0.1
+                true: 'False'
+                classifier: 'physical'
+                knockback: 'False'
+                cause: 'Entity Attack'
+        Trigger-g:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            trigger: 'Took Skill Damage'
+            duration-base: 20
+            duration-scale: 0.1
+            stackable: 'True'
+            once: 'False'
+            category: ''
+            target: 'False'
+            dmg-min: 0
+            dmg-max: 999
+          children:
+            Damage-h:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                type: 'Damage'
+                value-base: 10
+                value-scale: 0.1
+                true: 'False'
+                classifier: 'default'
+                knockback: 'False'
+                cause: 'Entity Attack'
+PrimalSurge:
+  name: 'PrimalSurge'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 0
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Single-b:
+          type: 'target'
+          data:
+            icon-key: ''
+            range-base: 7
+            range-scale: 0
+            tolerance-base: 0
+            tolerance-scale: 0
+            group: 'Ally'
+            wall: 'False'
+          children:
+            Buff-c:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                immediate: 'False'
+                type: 'SKILL_DEFENSE'
+                modifier: 'Flat'
+                category: ''
+                value-base: 0.7
+                value-scale: 0
+                seconds-base: 20
+                seconds-scale: 0
+Pulverize:
+  name: 'Pulverize'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Paper'
+  icon-data: 23
+  icon-lore:
+  - '&f{name} &e({level}/{max})'
+  - '&7Damages enemies, push'
+  - '&7players back and cause'
+  - '&7blindness.'
+  - ''
+  - '&3Mana: {attr:mana}'
+  - '&3Cooldown: {attr:cooldown}'
+  - ''
+  - '&2Unlock this skill at {req:level}level {attr:level}'
+  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+  attributes:
+    level-base: 75
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 120
+    cooldown-scale: -0.3
+    mana-base: 100
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity blaze shoot'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 1
+            pitch-scale: 0
+        Cone-c:
+          type: 'target'
+          data:
+            icon-key: ''
+            range-base: 3
+            range-scale: 0
+            angle-base: 90
+            angle-scale: 0
+            group: 'Enemy'
+            wall: 'False'
+            caster: 'False'
+            max-base: 99
+            max-scale: 0
+          children:
+            Damage-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                type: 'Damage'
+                value-base: 20
+                value-scale: 0.4
+                true: 'False'
+                classifier: 'physical'
+                knockback: 'False'
+                cause: 'Entity Attack'
+            Launch-e:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                relative: 'Caster'
+                forward-base: 1
+                forward-scale: 0.005
+                upward-base: 1
+                upward-scale: 0.005
+                right-base: 0
+                right-scale: 0
+            Potion-f:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                potion: 'Blindness'
+                ambient: 'False'
+                tier-base: 1
+                tier-scale: 0
+                seconds-base: 4
+                seconds-scale: 0.03
+Pummel:
+  name: 'Pummel'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 0
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Single-b:
+          type: 'target'
+          data:
+            icon-key: ''
+            range-base: 3
+            range-scale: 0
+            tolerance-base: 1
+            tolerance-scale: 0
+            group: 'Enemy'
+            wall: 'False'
+          children:
+            Potion-c:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                potion: 'Slow'
+                ambient: 'True'
+                tier-base: 1
+                tier-scale: 0
+                seconds-base: 4
+                seconds-scale: 1
+            Potion-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                potion: 'Blindness'
+                ambient: 'True'
+                tier-base: 1
+                tier-scale: 0
+                seconds-base: 4
+                seconds-scale: 1
+Puncture:
+  name: 'Puncture'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Paper'
+  icon-data: 25
+  icon-lore:
+  - '&f{name} &e({level}/{max})'
+  - '&7Magical arrow that peirces'
+  - '&7through all enemies in a'
+  - '&7line.'
+  - ''
+  - '&3Mana: {attr:mana}'
+  - '&3Cooldown: {attr:cooldown}'
+  - ''
+  - '&2Unlock this skill at {req:level}level {attr:level}'
+  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity arrow shoot'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 1
+            pitch-scale: 0
+        Linear-c:
+          type: 'target'
+          data:
+            icon-key: ''
+            range-base: 24
+            range-scale: 0
+            tolerance-base: 0.5
+            tolerance-scale: 0
+            group: 'Enemy'
+            wall: 'False'
+            caster: 'False'
+            max-base: 99
+            max-scale: 0
+          children:
+            Damage-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                type: 'Damage'
+                value-base: 15
+                value-scale: 0.3
+                true: 'False'
+                classifier: 'piercing'
+                knockback: 'False'
+                cause: 'Entity Attack'
+            Sound-e:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                sound: 'Item crossbow hit'
+                volume-base: 100
+                volume-scale: 0
+                pitch-base: 1
+                pitch-scale: 0
+Roar:
+  name: 'Roar'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Paper'
+  icon-data: 22
+  icon-lore:
+  - '&f{name} &e({level}/{max})'
+  - '&7Debuff enemies attributes.'
+  - ''
+  - '&3Mana: {attr:mana}'
+  - '&3Cooldown: {attr:cooldown}'
+  - ''
+  - '&2Unlock this skill at {req:level}level {attr:level}'
+  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+  attributes:
+    level-base: 50
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 80
+    cooldown-scale: -0.2
+    mana-base: 70
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity ravager roar'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 1
+            pitch-scale: 0
+        Cone-c:
+          type: 'target'
+          data:
+            icon-key: ''
+            range-base: 3
+            range-scale: 0
+            angle-base: 90
+            angle-scale: 0
+            group: 'Enemy'
+            wall: 'False'
+            caster: 'False'
+            max-base: 99
+            max-scale: 0
+          children:
+            Attribute-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                key: 'Strength'
+                operation: 'ADD_NUMBER'
+                amount-base: -10
+                amount-scale: -0.1
+                seconds-base: 20
+                seconds-scale: 0.1
+                stackable: 'False'
+            Attribute-e:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                key: 'Vitality'
+                operation: 'ADD_NUMBER'
+                amount-base: -10
+                amount-scale: -0.1
+                seconds-base: 20
+                seconds-scale: 0.1
+                stackable: 'False'
+            Attribute-f:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                key: 'Dexterity'
+                operation: 'ADD_NUMBER'
+                amount-base: -10
+                amount-scale: -0.1
+                seconds-base: 20
+                seconds-scale: 0.1
+                stackable: 'False'
+            Attribute-g:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                key: 'Intelligence'
+                operation: 'ADD_NUMBER'
+                amount-base: -10
+                amount-scale: -0.1
+                seconds-base: 20
+                seconds-scale: 0.1
+                stackable: 'False'
+Sacrifice:
+  name: 'Sacrifice'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 0
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity blaze shoot'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 1
+            pitch-scale: 0
+        Delay-c:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            delay-base: 2.2
+            delay-scale: 0
+          children:
+            Self-d:
+              type: 'target'
+              data:
+                icon-key: ''
+              children:
+                Damage-e:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    type: 'Multiplier'
+                    value-base: 10
+                    value-scale: 0.3
+                    true: 'False'
+                    classifier: 'physical'
+                    knockback: 'False'
+                    cause: 'Entity Attack'
+                Sound-f:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    sound: 'Entity blaze death'
+                    volume-base: 100
+                    volume-scale: 0
+                    pitch-base: 1
+                    pitch-scale: 0
+        Particle Projectile-g:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            gravity: 0
+            pierce: 'False'
+            group: 'Ally'
+            velocity-base: 3
+            velocity-scale: 0
+            lifespan-base: 5
+            lifespan-scale: 0
+            spread: 'Cone'
+            amount-base: 1
+            amount-scale: 0
+            angle-base: 0
+            angle-scale: 0
+            forward-base: 0
+            forward-scale: 0
+            upward-base: 1.5
+            upward-scale: 0
+            right-base: 0
+            right-scale: 0
+            particle: 'Villager happy'
+            arrangement: 'Circle'
+            direction: 'XZ'
+            radius-base: 0.25
+            radius-scale: 0
+            particles-base: 20
+            particles-scale: 0
+            visible-radius: 48
+            dx: 0
+            dy: 0
+            dz: 0
+            amount: 1
+            speed: 0.01
+            frequency: 0.05
+            use-effect: 'False'
+          children:
+            Sound-h:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                sound: 'Entity player levelup'
+                volume-base: 100
+                volume-scale: 0
+                pitch-base: 1
+                pitch-scale: 0
+            Heal-i:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                type: 'Percent'
+                value-base: 10
+                value-scale: 0.3
+Salvo:
+  name: 'Salvo'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Paper'
+  icon-data: 29
+  icon-lore:
+  - '&f{name} &e({level}/{max})'
+  - '&7Launch a salvo of magical'
+  - '&7arrows that rain from above'
+  - '&7causing damage and slow'
+  - '&7speed.'
+  - ''
+  - '&3Mana: {attr:mana}'
+  - '&3Cooldown: {attr:cooldown}'
+  - ''
+  - '&2Unlock this skill at {req:level}level {attr:level}'
+  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity arrow shoot'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 1
+            pitch-scale: 0
+        Single-c:
+          type: 'target'
+          data:
+            icon-key: ''
+            range-base: 24
+            range-scale: 0
+            tolerance-base: 0
+            tolerance-scale: 0
+            group: 'Enemy'
+            wall: 'False'
+          children:
+            Repeat-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                repetitions-base: 14
+                repetitions-scale: 0
+                period: 0.05
+                delay: 0
+                stop-on-fail: 'False'
+              children:
+                Repeat-e:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    repetitions-base: 1
+                    repetitions-scale: 0
+                    period: 0
+                    delay: 0
+                    stop-on-fail: 'True'
+                  children:
+                    Area-f:
+                      type: 'target'
+                      data:
+                        icon-key: ''
+                        radius-base: 4
+                        radius-scale: 0
+                        group: 'Enemy'
+                        wall: 'False'
+                        caster: 'False'
+                        max-base: 99
+                        max-scale: 0
+                        random: 'False'
+                      children:
+                        Damage-g:
+                          type: 'mechanic'
+                          data:
+                            icon-key: ''
+                            counts: 'True'
+                            type: 'Damage'
+                            value-base: 2
+                            value-scale: 0.09
+                            true: 'False'
+                            classifier: 'piercing'
+                            knockback: 'False'
+                            cause: 'Entity Attack'
+                        Potion-h:
+                          type: 'mechanic'
+                          data:
+                            icon-key: ''
+                            counts: 'True'
+                            potion: 'Slow'
+                            ambient: 'False'
+                            tier-base: 3
+                            tier-scale: 0
+                            seconds-base: 3
+                            seconds-scale: 0
+                        Sound-i:
+                          type: 'mechanic'
+                          data:
+                            icon-key: ''
+                            counts: 'True'
+                            sound: 'Item crossbow hit'
+                            volume-base: 100
+                            volume-scale: 0
+                            pitch-base: 1
+                            pitch-scale: 0
+Spellbane:
+  name: 'Spellbane'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Paper'
+  icon-data: 16
+  icon-lore:
+  - '&f{name} &e({level}/{max})'
+  - '&7Give yourself resistance'
+  - '&7to all magic.'
+  - ''
+  - '&3Mana: {attr:mana}'
+  - '&3Cooldown: {attr:cooldown}'
+  - ''
+  - '&2Unlock this skill at {req:level}level {attr:level}'
+  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+  attributes:
+    level-base: 50
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 24
+    cooldown-scale: -0.06
+    mana-base: 60
+    mana-scale: 0.2
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity blaze shoot'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 1
+            pitch-scale: 0
+        Delay-c:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            delay-base: 20
+            delay-scale: 0.1
+          children:
+            Message-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                message: '&cYour magic resistance has worn off!'
+        Self-e:
+          type: 'target'
+          data:
+            icon-key: ''
+          children:
+            Buff-f:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                immediate: 'False'
+                type: 'SKILL_DEFENSE'
+                modifier: 'Multiplier'
+                category: ''
+                value-base: 20
+                value-scale: 0.1
+                seconds-base: 20
+                seconds-scale: 0.1
+SpiritBond:
+  name: 'SpiritBond'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 0
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity ghast shoot'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 1
+            pitch-scale: 0
+        Particle Projectile-c:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            gravity: -0.01
+            pierce: 'False'
+            group: 'Enemy'
+            velocity-base: 1
+            velocity-scale: 0
+            lifespan-base: 5
+            lifespan-scale: 0
+            spread: 'Cone'
+            amount-base: 1
+            amount-scale: 0
+            angle-base: 30
+            angle-scale: 0
+            forward-base: 0
+            forward-scale: 0
+            upward-base: 1.5
+            upward-scale: 0
+            right-base: 0
+            right-scale: 0
+            particle: 'White ash'
+            arrangement: 'Sphere'
+            radius-base: 0.2
+            radius-scale: 0
+            particles-base: 20
+            particles-scale: 0
+            visible-radius: 48
+            dx: 0
+            dy: 0
+            dz: 0
+            amount: 1
+            speed: 0.01
+            frequency: 0.05
+            use-effect: 'False'
+          children:
+            Area-d:
+              type: 'target'
+              data:
+                icon-key: ''
+                radius-base: 3
+                radius-scale: 0
+                group: 'Ally'
+                wall: 'False'
+                caster: 'False'
+                max-base: 99
+                max-scale: 0
+                random: 'False'
+              children:
+                Status-e:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    status: 'Absorb'
+                    duration-base: 7
+                    duration-scale: 0
+                Particle-f:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    particle: 'Flash'
+                    arrangement: 'Sphere'
+                    radius-base: 0.1
+                    radius-scale: 0
+                    particles-base: 1
+                    particles-scale: 0
+                    visible-radius: 48
+                    dx: 0
+                    dy: 0
+                    dz: 0
+                    amount: 1
+                    speed: 0.1
+                    forward: 0
+                    upward: 0.2
+                    right: 0
+            Area-g:
+              type: 'target'
+              data:
+                icon-key: ''
+                radius-base: 5
+                radius-scale: 0
+                group: 'Enemy'
+                wall: 'False'
+                caster: 'False'
+                max-base: 99
+                max-scale: 0
+                random: 'False'
+              children:
+                Potion-h:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    potion: 'Blindness'
+                    ambient: 'True'
+                    tier-base: 1
+                    tier-scale: 0
+                    seconds-base: 3
+                    seconds-scale: 0
+Stampede:
+  name: 'Stampede'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Paper'
+  icon-data: 21
+  icon-lore:
+  - '&f{name} &e({level}/{max})'
+  - '&7Increases your speed, push'
+  - '&7players back and cause'
+  - '&7damage to enemies.'
+  - ''
+  - '&3Mana: {attr:mana}'
+  - '&3Cooldown: {attr:cooldown}'
+  - ''
+  - '&2Unlock this skill at {req:level}level {attr:level}'
+  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+  attributes:
+    level-base: 25
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 20
+    cooldown-scale: -0.6
+    mana-base: 65
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity blaze shoot'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 2
+            pitch-scale: 0
+        Self-c:
+          type: 'target'
+          data:
+            icon-key: ''
+          children:
+            Repeat-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                repetitions-base: 8
+                repetitions-scale: 0.08
+                period: 0.05
+                delay: 0
+                stop-on-fail: 'False'
+              children:
+                Repeat-e:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    repetitions-base: 1
+                    repetitions-scale: 0
+                    period: 0
+                    delay: 0
+                    stop-on-fail: 'False'
+            Warp-f:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                walls: 'False'
+                forward-base: 4
+                forward-scale: 1
+                upward-base: 0
+                upward-scale: 0
+                right-base: 0
+                right-scale: 0
+        Area-g:
+          type: 'target'
+          data:
+            icon-key: ''
+            radius-base: 6
+            radius-scale: 0
+            group: 'Enemy'
+            wall: 'True'
+            caster: 'False'
+            max-base: 99
+            max-scale: 0
+            random: 'False'
+          children:
+            Damage-h:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                type: 'Damage'
+                value-base: 20
+                value-scale: 5
+                true: 'True'
+                classifier: 'AOE'
+                knockback: 'True'
+            Push-i:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                type: 'Fixed'
+                speed-base: 5
+                speed-scale: 2
+                source: 'none'
+StaticField:
+  name: 'StaticField'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 0
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity lightning bolt thunder'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 1
+            pitch-scale: 0
+        Particle Animation-c:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            steps: 1
+            frequency: 0.05
+            angle: 0
+            start: 0
+            duration-base: 7
+            duration-scale: 0
+            h-translation-base: 0
+            h-translation-scale: 0
+            v-translation-base: 0
+            v-translation-scale: 0
+            h-cycles: 1
+            v-cycles: 1
+            particle: 'Crimson spore'
+            arrangement: 'Circle'
+            direction: 'XZ'
+            radius-base: 2
+            radius-scale: 0
+            particles-base: 10
+            particles-scale: 0
+            visible-radius: 25
+            dx: 0
+            dy: 0
+            dz: 0
+            amount: 1
+            speed: 0.05
+            forward: 0
+            upward: 0
+            right: 0
+            -with-rotation: 'False'
+        Trigger-d:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            trigger: 'Took Physical Damage'
+            duration-base: 7
+            duration-scale: 0
+            stackable: 'True'
+            once: 'False'
+            type: 'Both'
+            target: 'False'
+            dmg-min: 0
+            dmg-max: 999
+          children:
+            Damage-e:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                type: 'Damage'
+                value-base: 10
+                value-scale: 0
+                true: 'False'
+                classifier: 'physical'
+                knockback: 'True'
+                cause: 'Entity Attack'
+        Repeat-f:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            repetitions-base: 14
+            repetitions-scale: NaN
+            period: 0.5
+            delay: 0
+            stop-on-fail: 'False'
+          children:
+            Repeat-g:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                repetitions-base: 1
+                repetitions-scale: 0
+                period: 0
+                delay: 0
+                stop-on-fail: 'False'
+              children:
+                Area-h:
+                  type: 'target'
+                  data:
+                    icon-key: ''
+                    radius-base: 2
+                    radius-scale: 0
+                    group: 'Enemy'
+                    wall: 'False'
+                    caster: 'False'
+                    max-base: 99
+                    max-scale: 0
+                    random: 'False'
+                  children:
+                    Lightning-i:
+                      type: 'mechanic'
+                      data:
+                        icon-key: ''
+                        counts: 'True'
+                        damage-base: 5
+                        damage-scale: 0
+                        group: 'Enemy'
+                        caster: 'False'
+                        forward-base: 0
+                        forward-scale: 0
+                        right-base: 0
+                        right-scale: 0
+                    Damage-j:
+                      type: 'mechanic'
+                      data:
+                        icon-key: ''
+                        counts: 'True'
+                        type: 'Multiplier'
+                        value-base: 5
+                        value-scale: 0.1
+                        true: 'False'
+                        classifier: 'air'
+                        knockback: 'True'
+                        cause: 'Entity Attack'
+                    Sound-k:
+                      type: 'mechanic'
+                      data:
+                        icon-key: ''
+                        counts: 'True'
+                        sound: 'Entity bee hurt'
+                        volume-base: 100
+                        volume-scale: 0
+                        pitch-base: 1
+                        pitch-scale: 0
+Stomp:
+  name: 'Stomp'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Paper'
+  icon-data: 20
+  icon-lore:
+  - '&f{name} &e({level}/{max})'
+  - '&7Push players back and cause'
+  - '&7damage to enemies in a V'
+  - '&7shape in front of you.'
+  - ''
+  - '&3Mana: {attr:mana}'
+  - '&3Cooldown: {attr:cooldown}'
+  - ''
+  - '&2Unlock this skill at {req:level}level {attr:level}'
+  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+  attributes:
+    level-base: 15
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 20
+    cooldown-scale: -0.08
+    mana-base: 65
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity blaze shoot'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 2
+            pitch-scale: 0
+        Area-c:
+          type: 'target'
+          data:
+            icon-key: ''
+            radius-base: 3
+            radius-scale: 0
+            group: 'Enemy'
+            wall: 'False'
+            caster: 'False'
+            max-base: 99
+            max-scale: 0
+            random: 'False'
+          children:
+            Launch-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                relative: 'Target'
+                forward-base: 1
+                forward-scale: 0
+                upward-base: 1.5
+                upward-scale: 0.005
+                right-base: 0
+                right-scale: 0
+            Damage-e:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                type: 'Damage'
+                value-base: 15
+                value-scale: 0.4
+                true: 'False'
+                classifier: 'physical'
+                knockback: 'False'
+                cause: 'Entity Attack'
+Thunderbolt:
+  name: 'Thunderbolt'
+  type: ''
+  max-level: 100
+  skill-req: ''
+  skill-req-lvl: 0
+  needs-permission: 'False'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'Acacia boat'
+  icon-data: 2
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 1.5
+    cooldown-scale: 0
+    mana-base: 3
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity lightning bolt thunder'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 2
+            pitch-scale: 0
+        Particle Projectile-c:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            gravity: 0
+            pierce: 'False'
+            group: 'Enemy'
+            velocity-base: 3
+            velocity-scale: 0
+            lifespan-base: 5
+            lifespan-scale: 0
+            spread: 'Cone'
+            amount-base: 1
+            amount-scale: 0
+            angle-base: 0
+            angle-scale: 0
+            forward-base: 0
+            forward-scale: 0
+            upward-base: 1.5
+            upward-scale: 0
+            right-base: 0
+            right-scale: 0
+            particle: 'Squid ink'
+            arrangement: 'Sphere'
+            radius-base: 0.1
+            radius-scale: 0
+            particles-base: 10
+            particles-scale: 0
+            visible-radius: 48
+            dx: 0
+            dy: 0
+            dz: 0
+            amount: 1
+            speed: 0.01
+            frequency: 0.05
+            use-effect: 'False'
+          children:
+            Particle-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                particle: 'End rod'
+                arrangement: 'Sphere'
+                radius-base: 1
+                radius-scale: 0
+                particles-base: 2
+                particles-scale: 0
+                visible-radius: 48
+                dx: 0
+                dy: 0
+                dz: 0
+                amount: 1
+                speed: 1
+                forward: 0
+                upward: 0
+                right: 0
+            Particle-e:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                particle: 'Block crack'
+                material: 'Obsidian'
+                arrangement: 'Sphere'
+                radius-base: 2.5
+                radius-scale: 0
+                particles-base: 10
+                particles-scale: 0
+                visible-radius: 48
+                dx: 0
+                dy: 0
+                dz: 0
+                amount: 1
+                speed: 0.1
+                forward: 0
+                upward: 0.2
+                right: 0
+            Sound-f:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                sound: 'Entity lightning bolt impact'
+                volume-base: 100
+                volume-scale: 0
+                pitch-base: 1
+                pitch-scale: 0
+            Area-g:
+              type: 'target'
+              data:
+                icon-key: ''
+                radius-base: 2
+                radius-scale: 0
+                group: 'Enemy'
+                wall: 'False'
+                caster: 'False'
+                max-base: 99
+                max-scale: 0
+                random: 'False'
+              children:
+                Damage-h:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    type: 'Damage'
+                    value-base: 25
+                    value-scale: 0.22
+                    true: 'False'
+                    classifier: 'air'
+                    knockback: 'False'
+                    cause: 'Entity Attack'
+                Launch-i:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    relative: 'Target'
+                    forward-base: 1
+                    forward-scale: 0.02
+                    upward-base: 0
+                    upward-scale: 0
+                    right-base: 0
+                    right-scale: 0
+TrueShot:
+  name: 'TrueShot'
+  type: ''
+  max-level: 100
+  skill-req: 'None'
+  skill-req-lvl: 0
+  needs-permission: 'false'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'PAPER'
+  icon-data: 28
+  icon-lore:
+  - '&f&f{name} &e({level}/{max})'
+  - '&f&7Magical arrow that pierces'
+  - '&f&7your enemies armor.'
+  - '&f'
+  - '&f&3Mana: {attr:mana}'
+  - '&f&3Cooldown: {attr:cooldown}'
+  - '&f'
+  - '&f&2Unlock this skill at {req:level}level {attr:level}'
+  - '&f&2Each point {req:cost}costs {attr:cost} &2SP'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Entity arrow shoot'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 1
+            pitch-scale: 0
+        Single-c:
+          type: 'target'
+          data:
+            icon-key: ''
+            range-base: 24
+            range-scale: 0
+            tolerance-base: 0.5
+            tolerance-scale: 0
+            group: 'Enemy'
+            wall: 'False'
+          children:
+            Damage-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                type: 'Damage'
+                value-base: 15
+                value-scale: 0.4
+                true: 'True'
+                classifier: 'piercing'
+                knockback: 'False'
+            Sound-e:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                sound: 'Item crossbow hit'
+                volume-base: 100
+                volume-scale: 0
+                pitch-base: 1
+                pitch-scale: 0
+VirtuousWrath:
+  name: 'VirtuousWrath'
+  type: ''
+  max-level: 100
+  skill-req: 'None'
+  skill-req-lvl: 0
+  needs-permission: 'false'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'JACK_O_LANTERN'
+  icon-data: 0
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Sound-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Item trident riptide 1'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 1
+            pitch-scale: 0
+        Particle Projectile-c:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            gravity: 0
+            pierce: 'False'
+            group: 'Enemy'
+            velocity-base: 3
+            velocity-scale: 0
+            lifespan-base: 5
+            lifespan-scale: 0
+            spread: 'Cone'
+            amount-base: 1
+            amount-scale: 0
+            angle-base: 0
+            angle-scale: 0
+            forward-base: 0
+            forward-scale: 0
+            upward-base: 1.5
+            upward-scale: 0
+            right-base: 0
+            right-scale: 0
+            particle: 'Soul fire flame'
+            arrangement: 'Sphere'
+            radius-base: 0.1
+            radius-scale: 0
+            particles-base: 10
+            particles-scale: 0
+            visible-radius: 48
+            dx: 0
+            dy: 0
+            dz: 0
+            amount: 1
+            speed: 0.05
+            frequency: 0.05
+            use-effect: 'False'
+          children:
+            Particle-d:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                particle: 'End rod'
+                arrangement: 'Sphere'
+                radius-base: 1
+                radius-scale: 0
+                particles-base: 2
+                particles-scale: 0
+                visible-radius: 48
+                dx: 0
+                dy: 0
+                dz: 0
+                amount: 1
+                speed: 1
+                forward: 0
+                upward: 0
+                right: 0
+            Particle-e:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                particle: 'Block crack'
+                material: 'Obsidian'
+                arrangement: 'Sphere'
+                radius-base: 2.5
+                radius-scale: 0
+                particles-base: 10
+                particles-scale: 0
+                visible-radius: 48
+                dx: 0
+                dy: 0
+                dz: 0
+                amount: 1
+                speed: 0.1
+                forward: 0
+                upward: 0.2
+                right: 0
+            Sound-f:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                sound: 'Entity iron golem death'
+                volume-base: 100
+                volume-scale: 0
+                pitch-base: 1
+                pitch-scale: 0
+            Area-g:
+              type: 'target'
+              data:
+                icon-key: ''
+                radius-base: 2
+                radius-scale: 0
+                group: 'Enemy'
+                wall: 'False'
+                caster: 'False'
+                max-base: 99
+                max-scale: 0
+                random: 'False'
+              children:
+                Damage-h:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    type: 'Damage'
+                    value-base: 25
+                    value-scale: 0.22
+                    true: 'False'
+                    classifier: 'holy'
+                    knockback: 'False'
+                    cause: 'Entity Attack'
+                Launch-i:
+                  type: 'mechanic'
+                  data:
+                    icon-key: ''
+                    counts: 'True'
+                    relative: 'Target'
+                    forward-base: 1
+                    forward-scale: 0.02
+                    upward-base: 0
+                    upward-scale: 0
+                    right-base: 0
+                    right-scale: 0
+WallOfForce:
+  name: 'WallOfForce'
+  type: ''
+  max-level: 100
+  skill-req: 'None'
+  skill-req-lvl: 0
+  needs-permission: 'false'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'JACK_O_LANTERN'
+  icon-data: 0
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Particle Animation-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            steps: 1
+            frequency: 0.05
+            angle: 0
+            start: 0
+            duration-base: 12
+            duration-scale: 0
+            h-translation-base: 0
+            h-translation-scale: 0
+            v-translation-base: 3
+            v-translation-scale: 0
+            h-cycles: 1
+            v-cycles: 1
+            particle: 'Soul fire flame'
+            arrangement: 'Circle'
+            direction: 'XZ'
+            radius-base: 5
+            radius-scale: 0
+            particles-base: 5
+            particles-scale: 0
+            visible-radius: 48
+            dx: 0
+            dy: 0
+            dz: 0
+            amount: 1
+            speed: 0.05
+            forward: 0
+            upward: 0
+            right: 0
+            -with-rotation: 'False'
+        Particle Animation-c:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            steps: 1
+            frequency: 0.05
+            angle: 0
+            start: 0
+            duration-base: 12
+            duration-scale: 0
+            h-translation-base: 0
+            h-translation-scale: 0
+            v-translation-base: 0
+            v-translation-scale: 0
+            h-cycles: 1
+            v-cycles: 1
+            particle: 'Soul fire flame'
+            arrangement: 'Circle'
+            direction: 'XZ'
+            radius-base: 5
+            radius-scale: 0
+            particles-base: 5
+            particles-scale: 0
+            visible-radius: 48
+            dx: 0
+            dy: 0
+            dz: 0
+            amount: 1
+            speed: 0.05
+            forward: 0
+            upward: 2
+            right: 0
+            -with-rotation: 'False'
+        Particle Animation-d:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            steps: 1
+            frequency: 0.05
+            angle: 0
+            start: 0
+            duration-base: 12
+            duration-scale: 0
+            h-translation-base: 0
+            h-translation-scale: 0
+            v-translation-base: -3
+            v-translation-scale: 0
+            h-cycles: 1
+            v-cycles: 1
+            particle: 'Soul fire flame'
+            arrangement: 'Circle'
+            direction: 'XZ'
+            radius-base: 5
+            radius-scale: 0
+            particles-base: 5
+            particles-scale: 0
+            visible-radius: 48
+            dx: 0
+            dy: 0
+            dz: 0
+            amount: 1
+            speed: 0.05
+            forward: 0
+            upward: 3
+            right: 0
+            -with-rotation: 'False'
+        Area-e:
+          type: 'target'
+          data:
+            icon-key: ''
+            radius-base: 5
+            radius-scale: 0
+            group: 'Ally'
+            wall: 'False'
+            caster: 'False'
+            max-base: 99
+            max-scale: 0
+            random: 'False'
+          children:
+            Buff-f:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                immediate: 'False'
+                type: 'DEFENSE'
+                modifier: 'Multiplier'
+                value-base: 0.1
+                value-scale: 0
+                seconds-base: 12
+                seconds-scale: 0
+            Buff-g:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                immediate: 'False'
+                type: 'SKILL_DEFENSE'
+                modifier: 'Multiplier'
+                category: ''
+                value-base: 0.1
+                value-scale: 0
+                seconds-base: 12
+                seconds-scale: 0
+Whirlwind:
+  name: 'Whirlwind'
+  type: ''
+  max-level: 100
+  skill-req: 'None'
+  skill-req-lvl: 0
+  needs-permission: 'false'
+  cooldown-message: 'True'
+  msg: '&6{player} &2has cast &6{skill}'
+  combo: ''
+  indicator: '2D'
+  icon: 'ACACIA_BOAT'
+  icon-data: 0
+  icon-lore:
+  - '&d{name} &7({level}/{max})'
+  - '&2Type: &6{type}'
+  - ''
+  - '{req:level}Level: {attr:level}'
+  - '{req:cost}Cost: {attr:cost}'
+  - ''
+  - '&2Mana: {attr:mana}'
+  - '&2Cooldown: {attr:cooldown}'
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible:
+    - ''
+  components:
+    Cast-a:
+      type: 'trigger'
+      data:
+        icon-key: ''
+      children:
+        Particle Animation-b:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            steps: 1
+            frequency: 0.05
+            angle: 0
+            start: 0
+            duration-base: 10
+            duration-scale: 0
+            h-translation-base: 0
+            h-translation-scale: 0
+            v-translation-base: 0
+            v-translation-scale: 0
+            h-cycles: 1
+            v-cycles: 1
+            particle: 'Cloud'
+            arrangement: 'Circle'
+            direction: 'XZ'
+            radius-base: 3
+            radius-scale: 0
+            particles-base: 10
+            particles-scale: 0
+            visible-radius: 25
+            dx: 0
+            dy: 0
+            dz: 0
+            amount: 1
+            speed: 0.05
+            forward: 0
+            upward: 1
+            right: 0
+            -with-rotation: 'False'
+        Sound-c:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            sound: 'Item elytra flying'
+            volume-base: 100
+            volume-scale: 0
+            pitch-base: 1
+            pitch-scale: 0
+        Repeat-d:
+          type: 'mechanic'
+          data:
+            icon-key: ''
+            counts: 'True'
+            repetitions-base: 20
+            repetitions-scale:  {}
+            period: 0.05
+            delay: 0
+            stop-on-fail: 'False'
+          children:
+            Repeat-e:
+              type: 'mechanic'
+              data:
+                icon-key: ''
+                counts: 'True'
+                repetitions-base: 1
+                repetitions-scale:  {}
+                period: 1
+                delay: 0
+                stop-on-fail: 'False'
+              children:
+                Area-f:
+                  type: 'target'
+                  data:
+                    icon-key: ''
+                    radius-base: 3
+                    radius-scale: 0
+                    group: 'Enemy'
+                    wall: 'False'
+                    caster: 'False'
+                    max-base: 99
+                    max-scale: 0
+                    random: 'False'
+                  children:
+                    Launch-g:
+                      type: 'mechanic'
+                      data:
+                        icon-key: ''
+                        counts: 'True'
+                        relative: 'Target'
+                        forward-base: 1
+                        forward-scale: 0.02
+                        upward-base: 1
+                        upward-scale: 0
+                        right-base: 0
+                        right-scale: 0

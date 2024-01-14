@@ -35,6 +35,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Disguises each target
@@ -100,7 +101,7 @@ public class DisguiseMechanic extends MechanicComponent {
                         DisguiseHook.disguiseMisc(target,
                                 dataType,
                                 Material.valueOf(settings.getString(MATERIAL, "Anvil")
-                                        .toUpperCase()
+                                        .toUpperCase(Locale.US)
                                         .replace(" ", "_")));
                     } else
                         DisguiseHook.disguiseMisc(target, dataType, settings.getInt(DATA, 0));
