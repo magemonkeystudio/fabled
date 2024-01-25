@@ -824,8 +824,9 @@ public abstract class Skill implements IconHolder {
 
         SkillDamageEvent event = new SkillDamageEvent(this, source, target, damage, classification, knockback);
         Bukkit.getPluginManager().callEvent(event);
-        damage = event.getDamage();
         if (!event.isCancelled()) {
+            damage = event.getDamage();
+            knockback = event.isKnockback();
             target.setMetadata(MechanicListener.DAMAGE_CAUSE, new FixedMetadataValue(SkillAPI.inst(), cause));
             if (source instanceof Player) {
                 Player player = (Player) source;
