@@ -4569,6 +4569,27 @@ class ValueRandomMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
+class ValueRoundMechanic extends ProMechanic {
+	public constructor() {
+		super({
+			name:         'Value Round',
+			description:  'Rounds a stored value under a unique key for the caster. If the value wasn\'t set before, this will not do anything',
+			data:         [
+				new StringSelect('Key', 'key', 'value')
+					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
+				new DropdownSelect('Type', 'type', ['Round', 'Ceiling', 'Floor'], 'Round')
+					.setTooltip('The type of rounding to use. Round rounds to the nearest integer, ceiling rounds up, and floor rounds down'),
+				new BooleanSelect('Save', 'save', false)
+					.setTooltip('If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account')
+
+			],
+			summaryItems: ['key', 'type', 'save']
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
 class ValueSetMechanic extends ProMechanic {
 	public constructor() {
 		super({
@@ -4995,6 +5016,7 @@ export const initComponents = () => {
 		VALUE_MULTIPLY:    { name: 'Value Multiply', component: ValueMultiplyMechanic, section: 'Value' },
 		VALUE_PLACEHOLDER: { name: 'Value Placeholder', component: ValuePlaceholderMechanic, section: 'Value' },
 		VALUE_RANDOM:      { name: 'Value Random', component: ValueRandomMechanic, section: 'Value' },
+		VALUE_ROUND:       { name: 'Value Round', component: ValueRoundMechanic, section: 'Value' },
 		VALUE_SET:         { name: 'Value Set', component: ValueSetMechanic, section: 'Value' },
 
 		WARP:        { name: 'Warp', component: WarpMechanic, section: 'Warp' },
