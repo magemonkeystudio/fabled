@@ -1,13 +1,13 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.ValueMana
+ * com.sucy.skill.dynamic.mechanic.value.ValueAddMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2016 Steven Sucy
+ * Copyright (c) 2014 Steven Sucy
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
+ * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
@@ -24,27 +24,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.value;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.CastData;
-import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.dynamic.mechanic.MechanicComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.Map;
 
-public class ValueManaMechanic extends MechanicComponent {
-    private static final String KEY  = "key";
-    private static final String TYPE = "type";
+/**
+ * Adds to a cast data value
+ */
+public class ValueAddMechanic extends MechanicComponent {
+    private static final String KEY    = "key";
+    private static final String AMOUNT = "amount";
     private static final String SAVE   = "save";
 
     @Override
     public String getKey() {
-        return "value mana";
+        return "value add";
     }
 
     /**
@@ -58,26 +59,20 @@ public class ValueManaMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (!(targets.get(0) instanceof Player)) return false;
-
-        final PlayerData          player = SkillAPI.getPlayerData((Player) targets.get(0));
-        final String              key    = settings.getString(KEY);
-        final String   type = settings.getString(TYPE, "current").toLowerCase();
-        final CastData data = DynamicSkill.getCastData(caster);
-
-        switch (type) {
-            case "max":
-                data.put(key, player.getMaxMana());
-            case "percent":
-                data.put(key, player.getMana() / player.getMaxMana());
-            case "missing":
-                data.put(key, player.getMaxMana() - player.getMana());
-            default: // current
-                data.put(key, player.getMana());
+        if (targets.isEmpty() || !settings.has(KEY)) {
+            return false;
         }
 
+        String   key    = settings.getString(KEY);
+        double   amount = parseValues(caster, AMOUNT, level, 1) * targets.size();
+        CastData data   = DynamicSkill.getCastData(caster);
+        if (!data.contains(key)) {
+            data.put(key, amount);
+        } else {
+            data.put(key, amount + data.getDouble(key));
+        }
         if (settings.getBool(SAVE, false))
-            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.getRaw(key));
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;
     }
 }

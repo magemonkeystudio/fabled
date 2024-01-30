@@ -1,7 +1,8 @@
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.value;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.dynamic.mechanic.MechanicComponent;
 import com.sucy.skill.hook.PlaceholderAPIHook;
 import com.sucy.skill.hook.PluginChecker;
 import com.sucy.skill.log.Logger;
@@ -14,7 +15,7 @@ import java.util.Locale;
 
 /**
  * ProSkillAPI © 2023
- * com.sucy.skill.dynamic.mechanic.ValuePlaceholderMechanic
+ * com.sucy.skill.dynamic.mechanic.value.ValuePlaceholderMechanic
  */
 public class ValuePlaceholderMechanic extends MechanicComponent {
     private static final String KEY         = "key";

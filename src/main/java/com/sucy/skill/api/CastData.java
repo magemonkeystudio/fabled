@@ -28,11 +28,27 @@ public class CastData {
     }
 
     public boolean contains(String key) {
-        return data.containsKey(key);
+        return data.containsKey(key) && data.get(key) != null;
     }
 
     public Object getRaw(String key) {
         return data.get(key);
+    }
+
+    public double getDouble(String key) {
+        double value = 0d;
+        Object raw   = getRaw(key);
+        if (raw instanceof PlayerDataConsumer) {
+            raw = ((PlayerDataConsumer) raw).consume();
+        }
+
+        try {
+            value = Double.parseDouble(raw.toString());
+        } catch (Exception ex) {
+            SkillAPI.inst().getLogger().warning("Could not convert " + raw + " to double.");
+        }
+
+        return value;
     }
 
     public String get(String key) {

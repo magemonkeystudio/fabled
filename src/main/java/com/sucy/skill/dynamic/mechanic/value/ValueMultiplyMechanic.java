@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.ValueAddMechanic
+ * com.sucy.skill.dynamic.mechanic.value.ValueMultiplyMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,11 +24,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.value;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.CastData;
 import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.dynamic.mechanic.MechanicComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 
@@ -37,14 +38,14 @@ import java.util.List;
 /**
  * Adds to a cast data value
  */
-public class ValueAddMechanic extends MechanicComponent {
-    private static final String KEY    = "key";
-    private static final String AMOUNT = "amount";
-    private static final String SAVE   = "save";
+public class ValueMultiplyMechanic extends MechanicComponent {
+    private static final String KEY        = "key";
+    private static final String MULTIPLIER = "multiplier";
+    private static final String SAVE       = "save";
 
     @Override
     public String getKey() {
-        return "value add";
+        return "value multiply";
     }
 
     /**
@@ -62,13 +63,11 @@ public class ValueAddMechanic extends MechanicComponent {
             return false;
         }
 
-        String   key    = settings.getString(KEY);
-        double   amount = parseValues(caster, AMOUNT, level, 1) * targets.size();
-        CastData data   = DynamicSkill.getCastData(caster);
-        if (!data.contains(key)) {
-            data.put(key, amount);
-        } else {
-            data.put(key, amount + (Double) data.getRaw(key));
+        String   key        = settings.getString(KEY);
+        double   multiplier = parseValues(caster, MULTIPLIER, level, 1);
+        CastData data       = DynamicSkill.getCastData(caster);
+        if (data.contains(key)) {
+            data.put(key, multiplier * data.getDouble(key));
         }
         if (settings.getBool(SAVE, false))
             SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));

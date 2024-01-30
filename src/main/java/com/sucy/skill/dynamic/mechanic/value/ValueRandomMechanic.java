@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.ValueSetMechanic
+ * com.sucy.skill.dynamic.mechanic.value.ValueSetMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,11 +24,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.value;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.CastData;
 import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.dynamic.mechanic.MechanicComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 

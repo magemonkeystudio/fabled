@@ -1,13 +1,13 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.ValueSetMechanic
+ * com.sucy.skill.dynamic.mechanic.ValueMana
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2014 Steven Sucy
+ * Copyright (c) 2016 Steven Sucy
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software") to deal
+ * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
@@ -24,28 +24,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.value;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.CastData;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.dynamic.mechanic.MechanicComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Map;
 
-/**
- * Load data from persistent data into cast data
- */
-public class ValueLoadMechanic extends MechanicComponent {
-    private static final String KEY      = "key";
-    private static final String OVERRIDE = "override";
-    private static final String SAVE     = "save";
+public class ValueManaMechanic extends MechanicComponent {
+    private static final String KEY  = "key";
+    private static final String TYPE = "type";
+    private static final String SAVE   = "save";
 
     @Override
     public String getKey() {
-        return "value load";
+        return "value mana";
     }
 
     /**
@@ -59,16 +59,26 @@ public class ValueLoadMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        String     key        = settings.getString(KEY);
-        boolean    override   = settings.getBool(OVERRIDE);
-        CastData   data       = DynamicSkill.getCastData(caster);
-        PlayerData playerData = SkillAPI.getPlayerData((OfflinePlayer) caster);
-        if (!playerData.getAllPersistentData().containsKey(key)) return false;
-        if (!data.contains(key) || override) {
-            data.put(key, playerData.getPersistentData(key));
+        if (!(targets.get(0) instanceof Player)) return false;
+
+        final PlayerData          player = SkillAPI.getPlayerData((Player) targets.get(0));
+        final String              key    = settings.getString(KEY);
+        final String   type = settings.getString(TYPE, "current").toLowerCase();
+        final CastData data = DynamicSkill.getCastData(caster);
+
+        switch (type) {
+            case "max":
+                data.put(key, player.getMaxMana());
+            case "percent":
+                data.put(key, player.getMana() / player.getMaxMana());
+            case "missing":
+                data.put(key, player.getMaxMana() - player.getMana());
+            default: // current
+                data.put(key, player.getMana());
         }
-        if (!override && settings.getBool(SAVE, false))
-            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
+
+        if (settings.getBool(SAVE, false))
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.getRaw(key));
         return true;
     }
 }

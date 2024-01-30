@@ -1,8 +1,9 @@
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.value;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.CastData;
 import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.dynamic.mechanic.MechanicComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -11,7 +12,7 @@ import java.util.List;
 
 /**
  * ProSkillAPI © 2023
- * com.sucy.skill.dynamic.mechanic.ValueDistanceMechanic
+ * com.sucy.skill.dynamic.mechanic.value.ValueDistanceMechanic
  */
 public class ValueDistanceMechanic extends MechanicComponent {
     private static final String KEY  = "key";

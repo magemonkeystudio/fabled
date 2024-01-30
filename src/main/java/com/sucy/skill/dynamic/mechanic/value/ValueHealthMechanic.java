@@ -1,13 +1,13 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.ValueLoreMechanic
+ * com.sucy.skill.dynamic.mechanic.ValueHealth
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2014 Steven Sucy
+ * Copyright (c) 2016 Steven Sucy
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software") to deal
+ * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
@@ -24,28 +24,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.value;
 
-import com.sucy.skill.dynamic.ItemChecker;
-import mc.promcteam.engine.mccore.util.VersionManager;
+import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.CastData;
+import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.dynamic.mechanic.MechanicComponent;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-/**
- * Adds to a cast data value
- */
-public class ValueLoreMechanic extends MechanicComponent {
-    private static final String KEY        = "key";
-    private static final String REGEX      = "regex";
-    private static final String MULTIPLIER = "multiplier";
-    private static final String HAND       = "hand";
-    private static final String SAVE   = "save";
+public class ValueHealthMechanic extends MechanicComponent {
+    private static final String KEY  = "key";
+    private static final String TYPE = "type";
+    private static final String SAVE = "save";
 
     @Override
     public String getKey() {
-        return "value lore";
+        return "value health";
     }
 
     /**
@@ -59,26 +56,26 @@ public class ValueLoreMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0 || !settings.has(KEY)) {
-            return false;
+        final String   key  = settings.getString(KEY);
+        final String   type = settings.getString(TYPE, "current").toLowerCase();
+        final CastData data = DynamicSkill.getCastData(caster);
+
+        final LivingEntity target = targets.get(0);
+        switch (type) {
+            case "max":
+                data.put(key, target.getMaxHealth());
+                break;
+            case "percent":
+                data.put(key, target.getHealth() / target.getMaxHealth());
+                break;
+            case "missing":
+                data.put(key, target.getMaxHealth() - target.getHealth());
+                break;
+            default: // current
+                data.put(key, target.getHealth());
         }
-
-        String  key        = settings.getString(KEY);
-        double  multiplier = parseValues(caster, MULTIPLIER, level, 1);
-        boolean offhand    = settings.getString(HAND, "").equalsIgnoreCase("offhand");
-        String  regex      = settings.getString(REGEX, "Damage: {value}");
-
-        if (caster.getEquipment() == null) {
-            return false;
-        }
-
-        ItemStack hand;
-        if (offhand && VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
-            hand = caster.getEquipment().getItemInOffHand();
-        } else {
-            hand = caster.getEquipment().getItemInHand();
-        }
-
-        return ItemChecker.findLore(caster, hand, regex, key, multiplier, settings.getBool(SAVE, false));
+        if (settings.getBool(SAVE, false))
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
+        return true;
     }
 }

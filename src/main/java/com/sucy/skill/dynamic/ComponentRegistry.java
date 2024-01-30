@@ -6,6 +6,7 @@ import com.sucy.skill.dynamic.custom.CustomComponent;
 import com.sucy.skill.dynamic.custom.CustomEffectComponent;
 import com.sucy.skill.dynamic.custom.EditorOption;
 import com.sucy.skill.dynamic.mechanic.*;
+import com.sucy.skill.dynamic.mechanic.value.*;
 import com.sucy.skill.dynamic.target.*;
 import com.sucy.skill.dynamic.trigger.*;
 import org.bukkit.event.Event;
@@ -202,6 +203,7 @@ public class ComponentRegistry {
         register(new ValueMultiplyMechanic());
         register(new ValuePlaceholderMechanic());
         register(new ValueRandomMechanic());
+        register(new ValueRoundMechanic());
         register(new ValueSetMechanic());
         register(new WarpMechanic());
         register(new WarpLocMechanic());

@@ -1,7 +1,8 @@
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.value;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.dynamic.mechanic.MechanicComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 
@@ -9,7 +10,7 @@ import java.util.List;
 
 /**
  * ProSkillAPI © 2023
- * com.sucy.skill.dynamic.mechanic.ValueCopyMechanic
+ * com.sucy.skill.dynamic.mechanic.value.ValueCopyMechanic
  */
 public class ValueCopyMechanic extends MechanicComponent {
     private static final String KEY       = "key";

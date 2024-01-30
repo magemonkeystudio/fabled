@@ -1,10 +1,10 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.ValueAttributeMechanic
+ * com.sucy.skill.dynamic.mechanic.value.ValueRoundMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2014 Steven Sucy
+ * Copyright (c) 2024 ProMCTeam
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -24,28 +24,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.value;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.CastData;
 import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.dynamic.mechanic.MechanicComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Adds to a cast data value
  */
-public class ValueAttributeMechanic extends MechanicComponent {
+public class ValueRoundMechanic extends MechanicComponent {
     private static final String KEY  = "key";
-    private static final String ATTR = "attribute";
+    private static final String TYPE = "type";
     private static final String SAVE = "save";
 
     @Override
     public String getKey() {
-        return "value attribute";
+        return "value round";
     }
 
     /**
@@ -59,14 +60,29 @@ public class ValueAttributeMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (!settings.has(KEY) || !settings.has(ATTR) || !(targets.get(0) instanceof Player)) {
+        if (targets.isEmpty() || !settings.has(KEY)) {
             return false;
         }
 
         String   key  = settings.getString(KEY);
-        String   attr = settings.getString(ATTR);
+        String   type = settings.getString(TYPE).toUpperCase(Locale.US);
         CastData data = DynamicSkill.getCastData(caster);
-        data.put(key, (double) SkillAPI.getPlayerData((Player) targets.get(0)).getAttribute(attr));
+        if (data.contains(key)) {
+            double value = data.getDouble(key);
+            switch (type) {
+                case "ROUND":
+                    value = Math.round(value);
+                    break;
+                case "CEILING":
+                    value = Math.ceil(value);
+                    break;
+                case "FLOOR":
+                    value = Math.floor(value);
+                    break;
+            }
+
+            data.put(key, value);
+        }
         if (settings.getBool(SAVE, false))
             SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;

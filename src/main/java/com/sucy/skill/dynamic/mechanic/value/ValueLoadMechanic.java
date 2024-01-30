@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.ValueMultiplyMechanic
+ * com.sucy.skill.dynamic.mechanic.value.ValueSetMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,27 +24,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.value;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.CastData;
+import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.dynamic.mechanic.MechanicComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
 
 /**
- * Adds to a cast data value
+ * Load data from persistent data into cast data
  */
-public class ValueMultiplyMechanic extends MechanicComponent {
-    private static final String KEY        = "key";
-    private static final String MULTIPLIER = "multiplier";
-    private static final String SAVE       = "save";
+public class ValueLoadMechanic extends MechanicComponent {
+    private static final String KEY      = "key";
+    private static final String OVERRIDE = "override";
+    private static final String SAVE     = "save";
 
     @Override
     public String getKey() {
-        return "value multiply";
+        return "value load";
     }
 
     /**
@@ -58,17 +60,15 @@ public class ValueMultiplyMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0 || !settings.has(KEY)) {
-            return false;
+        String     key        = settings.getString(KEY);
+        boolean    override   = settings.getBool(OVERRIDE);
+        CastData   data       = DynamicSkill.getCastData(caster);
+        PlayerData playerData = SkillAPI.getPlayerData((OfflinePlayer) caster);
+        if (!playerData.getAllPersistentData().containsKey(key)) return false;
+        if (!data.contains(key) || override) {
+            data.put(key, playerData.getPersistentData(key));
         }
-
-        String   key        = settings.getString(KEY);
-        double   multiplier = parseValues(caster, MULTIPLIER, level, 1);
-        CastData data       = DynamicSkill.getCastData(caster);
-        if (data.contains(key)) {
-            data.put(key, multiplier * (Double) data.getRaw(key));
-        }
-        if (settings.getBool(SAVE, false))
+        if (!override && settings.getBool(SAVE, false))
             SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;
     }
