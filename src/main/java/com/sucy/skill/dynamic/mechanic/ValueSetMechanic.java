@@ -27,12 +27,12 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Adds to a cast data value
@@ -40,7 +40,7 @@ import java.util.Map;
 public class ValueSetMechanic extends MechanicComponent {
     private static final String KEY   = "key";
     private static final String VALUE = "value";
-    private static final String SAVE   = "save";
+    private static final String SAVE  = "save";
 
     @Override
     public String getKey() {
@@ -62,12 +62,12 @@ public class ValueSetMechanic extends MechanicComponent {
             return false;
         }
 
-        String              key   = settings.getString(KEY);
-        double              value = parseValues(caster, VALUE, level, 1);
-        Map<String, Object> data  = DynamicSkill.getCastData(caster);
+        String   key   = settings.getString(KEY);
+        double   value = parseValues(caster, VALUE, level, 1);
+        CastData data  = DynamicSkill.getCastData(caster);
         data.put(key, value);
         if (settings.getBool(SAVE, false))
-            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.get(key));
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;
     }
 }

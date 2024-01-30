@@ -34,7 +34,7 @@ public class SignalEmitMechanic extends MechanicComponent {
         boolean      selfHandling = settings.getBool(HANDLER);
         targets.forEach(target -> {
             List<Object> filtered = arguments.parallelStream().map(arg -> {
-                Object value = DynamicSkill.getCastData(caster).get(arg);
+                Object value = DynamicSkill.getCastData(caster).getRaw(arg);
                 return value == null ? filter(caster, target, arg) : value;
             }).collect(Collectors.toList());
             Bukkit.getPluginManager()

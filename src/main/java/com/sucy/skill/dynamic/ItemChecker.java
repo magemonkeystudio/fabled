@@ -194,7 +194,12 @@ public class ItemChecker {
         return false;
     }
 
-    public static boolean findLore(LivingEntity caster, ItemStack item, String regex, String key, double multiplier, boolean save) {
+    public static boolean findLore(LivingEntity caster,
+                                   ItemStack item,
+                                   String regex,
+                                   String key,
+                                   double multiplier,
+                                   boolean save) {
         Pattern pattern = Pattern.compile(regex.replace("{value}", "([+-]?[0-9]+([.,][0-9]+)?)"));
 
         if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasLore())
@@ -209,7 +214,8 @@ public class ItemChecker {
                 try {
                     double base = NumberParser.parseDouble(value);
                     DynamicSkill.getCastData(caster).put(key, base * multiplier);
-                    if (save) SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,DynamicSkill.getCastData(caster).get(key));
+                    if (save) SkillAPI.getPlayerData((OfflinePlayer) caster)
+                            .setPersistentData(key, DynamicSkill.getCastData(caster).getRaw(key));
                     break;
                 } catch (Exception ex) {
                     // Not a valid value

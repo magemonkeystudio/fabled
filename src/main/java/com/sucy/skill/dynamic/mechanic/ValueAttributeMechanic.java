@@ -27,13 +27,13 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Adds to a cast data value
@@ -41,7 +41,7 @@ import java.util.Map;
 public class ValueAttributeMechanic extends MechanicComponent {
     private static final String KEY  = "key";
     private static final String ATTR = "attribute";
-    private static final String SAVE   = "save";
+    private static final String SAVE = "save";
 
     @Override
     public String getKey() {
@@ -63,12 +63,12 @@ public class ValueAttributeMechanic extends MechanicComponent {
             return false;
         }
 
-        String              key  = settings.getString(KEY);
-        String              attr = settings.getString(ATTR);
-        Map<String, Object> data = DynamicSkill.getCastData(caster);
+        String   key  = settings.getString(KEY);
+        String   attr = settings.getString(ATTR);
+        CastData data = DynamicSkill.getCastData(caster);
         data.put(key, (double) SkillAPI.getPlayerData((Player) targets.get(0)).getAttribute(attr));
         if (settings.getBool(SAVE, false))
-            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.get(key));
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;
     }
 }

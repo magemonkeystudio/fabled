@@ -27,12 +27,12 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Adds to a cast data value
@@ -40,7 +40,7 @@ import java.util.Map;
 public class ValueMultiplyMechanic extends MechanicComponent {
     private static final String KEY        = "key";
     private static final String MULTIPLIER = "multiplier";
-    private static final String SAVE   = "save";
+    private static final String SAVE       = "save";
 
     @Override
     public String getKey() {
@@ -62,14 +62,14 @@ public class ValueMultiplyMechanic extends MechanicComponent {
             return false;
         }
 
-        String              key        = settings.getString(KEY);
-        double              multiplier = parseValues(caster, MULTIPLIER, level, 1);
-        Map<String, Object> data       = DynamicSkill.getCastData(caster);
-        if (data.containsKey(key)) {
-            data.put(key, multiplier * (Double) data.get(key));
+        String   key        = settings.getString(KEY);
+        double   multiplier = parseValues(caster, MULTIPLIER, level, 1);
+        CastData data       = DynamicSkill.getCastData(caster);
+        if (data.contains(key)) {
+            data.put(key, multiplier * (Double) data.getRaw(key));
         }
         if (settings.getBool(SAVE, false))
-            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.get(key));
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;
     }
 }

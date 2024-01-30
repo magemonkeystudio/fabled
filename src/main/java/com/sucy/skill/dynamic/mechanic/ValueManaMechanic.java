@@ -27,6 +27,7 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.OfflinePlayer;
@@ -61,8 +62,8 @@ public class ValueManaMechanic extends MechanicComponent {
 
         final PlayerData          player = SkillAPI.getPlayerData((Player) targets.get(0));
         final String              key    = settings.getString(KEY);
-        final String              type   = settings.getString(TYPE, "current").toLowerCase();
-        final Map<String, Object> data   = DynamicSkill.getCastData(caster);
+        final String   type = settings.getString(TYPE, "current").toLowerCase();
+        final CastData data = DynamicSkill.getCastData(caster);
 
         switch (type) {
             case "max":
@@ -76,7 +77,7 @@ public class ValueManaMechanic extends MechanicComponent {
         }
 
         if (settings.getBool(SAVE, false))
-            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.get(key));
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.getRaw(key));
         return true;
     }
 }

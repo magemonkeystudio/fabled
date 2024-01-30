@@ -1,5 +1,6 @@
 package com.sucy.skill.dynamic.trigger;
 
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.api.Settings;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -42,7 +43,7 @@ public class FishingGroundTrigger implements Trigger<ProjectileHitEvent> {
      * {@inheritDoc}
      */
     @Override
-    public void setValues(ProjectileHitEvent event, Map<String, Object> data) {}
+    public void setValues(ProjectileHitEvent event, final CastData data) {}
 
     /**
      * {@inheritDoc}

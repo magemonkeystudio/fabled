@@ -54,7 +54,7 @@ public class MessageMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0 || !settings.has(MESSAGE))
+        if (targets.isEmpty() || !settings.has(MESSAGE))
             return false;
 
         String message = TextFormatter.colorString(settings.getString(MESSAGE));

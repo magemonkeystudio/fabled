@@ -1,11 +1,11 @@
 package com.sucy.skill.dynamic.trigger;
 
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.event.PlayerCastSkillEvent;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SkillCastTrigger implements Trigger<PlayerCastSkillEvent> {
@@ -71,7 +71,7 @@ public class SkillCastTrigger implements Trigger<PlayerCastSkillEvent> {
      * {@inheritDoc}
      */
     @Override
-    public void setValues(final PlayerCastSkillEvent event, final Map<String, Object> data) {
+    public void setValues(final PlayerCastSkillEvent event, final CastData data) {
         data.put("api-skill", event.getSkill().getData().getName());
         data.put("api-mana", event.getManaCost());
     }

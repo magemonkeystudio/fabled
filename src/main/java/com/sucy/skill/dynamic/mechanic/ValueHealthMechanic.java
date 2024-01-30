@@ -27,17 +27,17 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
-import java.util.Map;
 
 public class ValueHealthMechanic extends MechanicComponent {
     private static final String KEY  = "key";
     private static final String TYPE = "type";
-    private static final String SAVE   = "save";
+    private static final String SAVE = "save";
 
     @Override
     public String getKey() {
@@ -55,9 +55,9 @@ public class ValueHealthMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        final String              key  = settings.getString(KEY);
-        final String              type = settings.getString(TYPE, "current").toLowerCase();
-        final Map<String, Object> data = DynamicSkill.getCastData(caster);
+        final String   key  = settings.getString(KEY);
+        final String   type = settings.getString(TYPE, "current").toLowerCase();
+        final CastData data = DynamicSkill.getCastData(caster);
 
         final LivingEntity target = targets.get(0);
         switch (type) {
@@ -74,7 +74,7 @@ public class ValueHealthMechanic extends MechanicComponent {
                 data.put(key, target.getHealth());
         }
         if (settings.getBool(SAVE, false))
-            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.get(key));
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;
     }
 }

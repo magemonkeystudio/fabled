@@ -1,5 +1,6 @@
 package com.sucy.skill.dynamic.trigger;
 
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.api.Settings;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -50,7 +51,7 @@ public class ChatTrigger implements Trigger<AsyncPlayerChatEvent> {
      * {@inheritDoc}
      */
     @Override
-    public void setValues(final AsyncPlayerChatEvent event, final Map<String, Object> data) {
+    public void setValues(final AsyncPlayerChatEvent event, final CastData data) {
         data.put("api-message", event.getMessage());
     }
 

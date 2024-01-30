@@ -1,10 +1,9 @@
 package com.sucy.skill.dynamic.trigger;
 
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.api.Settings;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
-
-import java.util.Map;
 
 public class HealTrigger implements Trigger<EntityRegainHealthEvent> {
     /**
@@ -35,7 +34,7 @@ public class HealTrigger implements Trigger<EntityRegainHealthEvent> {
      * {@inheritDoc}
      */
     @Override
-    public void setValues(EntityRegainHealthEvent event, Map<String, Object> data) {
+    public void setValues(EntityRegainHealthEvent event, CastData data) {
         data.put("api-heal", event.getAmount());
     }
 

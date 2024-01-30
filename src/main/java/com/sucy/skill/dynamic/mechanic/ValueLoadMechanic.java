@@ -27,21 +27,21 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Load data from persistent data into cast data
  */
 public class ValueLoadMechanic extends MechanicComponent {
-    private static final String KEY   = "key";
+    private static final String KEY      = "key";
     private static final String OVERRIDE = "override";
-    private static final String SAVE   = "save";
+    private static final String SAVE     = "save";
 
     @Override
     public String getKey() {
@@ -59,16 +59,16 @@ public class ValueLoadMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        String              key   = settings.getString(KEY);
-        boolean             override = settings.getBool(OVERRIDE);
-        Map<String, Object> data  = DynamicSkill.getCastData(caster);
+        String     key        = settings.getString(KEY);
+        boolean    override   = settings.getBool(OVERRIDE);
+        CastData   data       = DynamicSkill.getCastData(caster);
         PlayerData playerData = SkillAPI.getPlayerData((OfflinePlayer) caster);
         if (!playerData.getAllPersistentData().containsKey(key)) return false;
-        if (!data.containsKey(key) || override) {
+        if (!data.contains(key) || override) {
             data.put(key, playerData.getPersistentData(key));
         }
         if (!override && settings.getBool(SAVE, false))
-            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.get(key));
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;
     }
 }

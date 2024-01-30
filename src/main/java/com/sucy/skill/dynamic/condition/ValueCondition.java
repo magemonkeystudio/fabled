@@ -51,7 +51,7 @@ public class ValueCondition extends ConditionComponent {
         final String key  = settings.getString(KEY);
         final double min  = parseValues(caster, MIN, level, 1);
         final double max  = parseValues(caster, MAX, level, 999);
-        final Object data = DynamicSkill.getCastData(caster).get(key);
+        final Object data = DynamicSkill.getCastData(caster).getRaw(key);
 
         if (data != null) {
             double value = (Double) data;

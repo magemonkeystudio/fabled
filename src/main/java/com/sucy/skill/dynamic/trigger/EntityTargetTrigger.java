@@ -1,5 +1,6 @@
 package com.sucy.skill.dynamic.trigger;
 
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.api.Settings;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -48,7 +49,7 @@ public class EntityTargetTrigger implements Trigger<EntityTargetLivingEntityEven
     }
 
     @Override
-    public void setValues(EntityTargetLivingEntityEvent event, Map<String, Object> data) {}
+    public void setValues(EntityTargetLivingEntityEvent event, final CastData data) {}
 
     /**
      * {@inheritDoc}

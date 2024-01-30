@@ -27,6 +27,7 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.api.particle.ParticleHelper;
 import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.Location;
@@ -37,7 +38,6 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -54,11 +54,11 @@ public class WarpValueMechanic extends MechanicComponent {
 
     @Nullable
     private Location parseLocation(LivingEntity caster) {
-        Map<String, Object> data = DynamicSkill.getCastData(caster);
+        CastData data = DynamicSkill.getCastData(caster);
         if (data == null) return null;
         String key = settings.getString(KEY);
         if (key == null) return null;
-        Object obj = data.get(key);
+        Object obj = data.getRaw(key);
         if (obj instanceof Location) return (Location) obj;
         return null;
     }
@@ -85,7 +85,10 @@ public class WarpValueMechanic extends MechanicComponent {
     }
 
     @Override
-    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, Supplier<List<LivingEntity>> targetSupplier) {
+    public void playPreview(List<Runnable> onPreviewStop,
+                            Player caster,
+                            int level,
+                            Supplier<List<LivingEntity>> targetSupplier) {
         if (preview.getBool("per-target")) {
             BukkitTask task = new BukkitRunnable() {
                 @Override

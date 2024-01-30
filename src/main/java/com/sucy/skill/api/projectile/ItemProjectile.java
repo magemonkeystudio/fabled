@@ -113,7 +113,7 @@ public class ItemProjectile extends CustomProjectile {
             final Comparator<LivingEntity> comparator = Comparator.comparingDouble(o -> o.getLocation().distanceSquared(getLocation()));
             if (target.equalsIgnoreCase("remember target")) {
                 homing = () -> {
-                    Object data = DynamicSkill.getCastData(getShooter()).get(ItemProjectile.this.settings.getString(REMEMBER, "target"));
+                    Object data = DynamicSkill.getCastData(getShooter()).getRaw(ItemProjectile.this.settings.getString(REMEMBER, "target"));
                     if (data == null) return null;
                     try {
                         return ((List<LivingEntity>) data).stream()

@@ -1,5 +1,6 @@
 package com.sucy.skill.dynamic.trigger;
 
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.api.Settings;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -39,7 +40,7 @@ public class DropItemTrigger implements Trigger<PlayerDropItemEvent> {
      * {@inheritDoc}
      */
     @Override
-    public void setValues(PlayerDropItemEvent event, Map<String, Object> data) {}
+    public void setValues(PlayerDropItemEvent event, final CastData data) {}
 
     /**
      * {@inheritDoc}

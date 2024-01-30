@@ -27,13 +27,12 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.dynamic.DynamicSkill;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Adds to a cast data value
@@ -59,20 +58,20 @@ public class ValueAddMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0 || !settings.has(KEY)) {
+        if (targets.isEmpty() || !settings.has(KEY)) {
             return false;
         }
 
-        String              key    = settings.getString(KEY);
-        double              amount = parseValues(caster, AMOUNT, level, 1) * targets.size();
-        Map<String, Object> data   = DynamicSkill.getCastData(caster);
-        if (!data.containsKey(key)) {
+        String   key    = settings.getString(KEY);
+        double   amount = parseValues(caster, AMOUNT, level, 1) * targets.size();
+        CastData data   = DynamicSkill.getCastData(caster);
+        if (!data.contains(key)) {
             data.put(key, amount);
         } else {
-            data.put(key, amount + (Double) data.get(key));
+            data.put(key, amount + (Double) data.getRaw(key));
         }
         if (settings.getBool(SAVE, false))
-            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.get(key));
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;
     }
 }

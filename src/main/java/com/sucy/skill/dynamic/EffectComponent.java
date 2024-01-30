@@ -27,6 +27,8 @@
 package com.sucy.skill.dynamic;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.CastData;
+import com.sucy.skill.api.PlayerDataConsumer;
 import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.particle.ParticleHelper;
 import com.sucy.skill.api.player.PlayerData;
@@ -183,9 +185,9 @@ public abstract class EffectComponent {
             return Double.parseDouble(val);
         } catch (Exception ex) { /* Not a number */ }
 
-        final Map<String, Object> map = DynamicSkill.getCastData(caster);
-        if (map.containsKey(val)) {
-            final String mapVal = map.get(val).toString();
+        final CastData castData = DynamicSkill.getCastData(caster);
+        if (castData.contains(val)) {
+            final String mapVal = castData.get(val);
             try {
                 return Double.parseDouble(mapVal);
             } catch (Exception ex) { /* Not a number */ }
@@ -268,18 +270,13 @@ public abstract class EffectComponent {
         }
 
         StringBuilder       builder = new StringBuilder();
-        Map<String, Object> data    = DynamicSkill.getCastData(caster);
+        CastData data    = DynamicSkill.getCastData(caster);
 
         int k = 0;
         while (i >= 0 && j > i) {
             String key = text.substring(i + 1, j);
-            if (data.containsKey(key)) {
-                Object obj = data.get(key);
-                if (obj instanceof Player) {
-                    obj = ((Player) obj).getName();
-                } else if (obj instanceof LivingEntity) {
-                    obj = MobManager.getName((LivingEntity) obj);
-                }
+            if (data.contains(key)) {
+                String obj = data.get(key);
                 builder.append(text, k, i);
                 builder.append(obj);
 

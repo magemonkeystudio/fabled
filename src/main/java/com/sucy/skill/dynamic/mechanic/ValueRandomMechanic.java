@@ -27,6 +27,7 @@
 package com.sucy.skill.dynamic.mechanic;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
@@ -68,7 +69,7 @@ public class ValueRandomMechanic extends MechanicComponent {
         String  key        = settings.getString(KEY);
         boolean triangular = settings.getString(TYPE).equalsIgnoreCase("triangular");
 
-        Map<String, Object> data = DynamicSkill.getCastData(caster);
+        CastData data = DynamicSkill.getCastData(caster);
         if (settings.getBool(INT, false)) {
             int  min        = (int) Math.ceil(parseValues(caster, MIN, level, 1));
             int  max        = (int) Math.floor(parseValues(caster, MAX, level, 1));
@@ -85,7 +86,7 @@ public class ValueRandomMechanic extends MechanicComponent {
         }
 
         if (settings.getBool(SAVE, false))
-            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.get(key));
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.getRaw(key));
         return true;
     }
 }

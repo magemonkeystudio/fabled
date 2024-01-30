@@ -176,7 +176,7 @@ public class ProjectileMechanic extends MechanicComponent {
         List<Projectile> projectiles = new ArrayList<>();
         for (LivingEntity target : targets) {
             Location location = target.getEyeLocation();
-            Vector offset = location.getDirection().setY(0).normalize();
+            Vector   offset   = location.getDirection().setY(0).normalize();
             offset.multiply(parseValues(caster, FORWARD, level, 0))
                     .add(offset.clone().crossProduct(UP).multiply(parseValues(caster, RIGHT, level, 0)));
             location.add(offset).add(0, parseValues(caster, UPWARD, level, 0), 0);
@@ -272,28 +272,33 @@ public class ProjectileMechanic extends MechanicComponent {
         }
 
         if (settings.getBool(HOMING, false)) {
-            String target = settings.getString(HOMING_TARGET, "nearest");
-            Function<Projectile,LivingEntity> homing;
+            String                             target = settings.getString(HOMING_TARGET, "nearest");
+            Function<Projectile, LivingEntity> homing;
             if (target.equalsIgnoreCase("remember target")) {
                 homing = (proj) -> {
-                    Object data = Objects.requireNonNull(DynamicSkill.getCastData((LivingEntity) proj.getShooter())).get(settings.getString(REMEMBER, "target"));
+                    Object data = Objects.requireNonNull(DynamicSkill.getCastData((LivingEntity) proj.getShooter()))
+                            .getRaw(settings.getString(REMEMBER, "target"));
                     if (data == null) return null;
                     try {
                         return ((List<LivingEntity>) data).stream()
-                                .filter(tar -> settings.getBool(WALL, false) || !TargetHelper.isObstructed(proj.getLocation(), tar.getEyeLocation()))
-                                .min(Comparator.comparingDouble(o -> o.getLocation().distanceSquared(proj.getLocation())))
+                                .filter(tar -> settings.getBool(WALL, false)
+                                        || !TargetHelper.isObstructed(proj.getLocation(), tar.getEyeLocation()))
+                                .min(Comparator.comparingDouble(o -> o.getLocation()
+                                        .distanceSquared(proj.getLocation())))
                                 .orElse(null);
                     } catch (ClassCastException e) {
                         return null;
                     }
                 };
             } else {
-                homing = (proj) -> Nearby.getLivingNearby(proj.getLocation(), settings.getAttr(HOMING_DIST, 0, 20)).stream()
+                homing = (proj) -> Nearby.getLivingNearby(proj.getLocation(), settings.getAttr(HOMING_DIST, 0, 20))
+                        .stream()
                         .filter(tar -> {
                             if (tar == proj.getShooter()) return false;
                             return SkillAPI.getSettings().isValidTarget(tar);
                         })
-                        .filter(tar -> settings.getBool(WALL, false) || !TargetHelper.isObstructed(proj.getLocation(), tar.getEyeLocation()))
+                        .filter(tar -> settings.getBool(WALL, false) || !TargetHelper.isObstructed(proj.getLocation(),
+                                tar.getEyeLocation()))
                         .min(Comparator.comparingDouble(o -> o.getLocation().distanceSquared(proj.getLocation())))
                         .orElse(null);
             }
@@ -305,7 +310,7 @@ public class ProjectileMechanic extends MechanicComponent {
                     Vector acceleration = tar.getBoundingBox().getCenter().subtract(proj.getBoundingBox().getCenter())
                             .normalize().multiply(speed).subtract(proj.getVelocity());
                     double length = acceleration.length();
-                    acceleration.multiply(1.0/length).multiply(Math.min(length, correction));
+                    acceleration.multiply(1.0 / length).multiply(Math.min(length, correction));
                     proj.setVelocity(proj.getVelocity().add(acceleration));
                 }
             });
@@ -353,7 +358,10 @@ public class ProjectileMechanic extends MechanicComponent {
      * {@inheritDoc}
      */
     @Override
-    public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, Supplier<List<LivingEntity>> targetSupplier) {
+    public void playPreview(List<Runnable> onPreviewStop,
+                            Player caster,
+                            int level,
+                            Supplier<List<LivingEntity>> targetSupplier) {
         List<LivingEntity> targets = new ArrayList<>();
 
         BukkitTask task = new BukkitRunnable() {
@@ -361,10 +369,10 @@ public class ProjectileMechanic extends MechanicComponent {
             public void run() {
                 targets.clear();
 
-                int     amount = (int) parseValues(caster, AMOUNT, level, 1.0);
-                String  spread = settings.getString(SPREAD, "cone").toLowerCase();
-                int     lifespan = (int) (parseValues(caster, LIFESPAN, level, 9999) * 20);
-                String  type = settings.getString(PROJECTILE, "arrow").toLowerCase();
+                int    amount   = (int) parseValues(caster, AMOUNT, level, 1.0);
+                String spread   = settings.getString(SPREAD, "cone").toLowerCase();
+                int    lifespan = (int) (parseValues(caster, LIFESPAN, level, 9999) * 20);
+                String type     = settings.getString(PROJECTILE, "arrow").toLowerCase();
                 double gravity;
                 double drag;
                 switch (type) {
@@ -418,14 +426,22 @@ public class ProjectileMechanic extends MechanicComponent {
                 // Fire from each target
                 for (LivingEntity target : targetSupplier.get()) {
                     Location location = target.getEyeLocation();
-                    Vector offset = location.getDirection().setY(0).normalize();
+                    Vector   offset   = location.getDirection().setY(0).normalize();
                     offset.multiply(parseValues(caster, FORWARD, level, 0))
                             .add(offset.clone().crossProduct(UP).multiply(parseValues(caster, RIGHT, level, 0)));
                     location.add(offset).add(0, parseValues(caster, UPWARD, level, 0), 0);
 
                     // Apply the spread type
                     if (spread.equals("rain")) {
-                        list.addAll(ParticleProjectile.rain(caster, level, location, copy, parseValues(caster, RADIUS, level, 2.0), parseValues(caster, HEIGHT, level, 8.0), amount, callback, lifespan));
+                        list.addAll(ParticleProjectile.rain(caster,
+                                level,
+                                location,
+                                copy,
+                                parseValues(caster, RADIUS, level, 2.0),
+                                parseValues(caster, HEIGHT, level, 8.0),
+                                amount,
+                                callback,
+                                lifespan));
                     } else {
                         Vector dir = location.getDirection();
                         if (spread.equals("horizontal cone")) {
@@ -451,8 +467,12 @@ public class ProjectileMechanic extends MechanicComponent {
                     }
 
                     Consumer<Location> onStep = preview.getBool("path")
-                            ? loc -> new ParticleSettings(preview, "path-").instance(caster, loc.getX(), loc.getY(), loc.getZ())
-                            : loc -> {};
+                            ? loc -> new ParticleSettings(preview, "path-").instance(caster,
+                            loc.getX(),
+                            loc.getY(),
+                            loc.getZ())
+                            : loc -> {
+                            };
                     for (ParticleProjectile p : list) p.setOnStep(onStep);
 
                     for (ParticleProjectile p : list) {
@@ -462,7 +482,7 @@ public class ProjectileMechanic extends MechanicComponent {
                     }
                 }
             }
-        }.runTaskTimer(SkillAPI.inst(),0, Math.max(1, preview.getInt("period", 5)));
+        }.runTaskTimer(SkillAPI.inst(), 0, Math.max(1, preview.getInt("period", 5)));
         onPreviewStop.add(task::cancel);
 
         playChildrenPreviews(onPreviewStop, caster, level, () -> targets);

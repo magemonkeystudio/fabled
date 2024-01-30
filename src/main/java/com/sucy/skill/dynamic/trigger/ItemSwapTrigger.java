@@ -1,5 +1,6 @@
 package com.sucy.skill.dynamic.trigger;
 
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.api.Settings;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
@@ -41,7 +42,7 @@ public class ItemSwapTrigger implements Trigger<PlayerSwapHandItemsEvent> {
      * {@inheritDoc}
      */
     @Override
-    public void setValues(final PlayerSwapHandItemsEvent event, final Map<String, Object> data) {}
+    public void setValues(final PlayerSwapHandItemsEvent event, final CastData data) {}
 
     /**
      * {@inheritDoc}

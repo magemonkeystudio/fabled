@@ -1,5 +1,6 @@
 package com.sucy.skill.dynamic.trigger;
 
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.api.Settings;
 import mc.promcteam.engine.api.armor.ArmorEquipEvent;
 import org.bukkit.entity.LivingEntity;
@@ -24,7 +25,7 @@ public class ArmorEquipTrigger implements Trigger<ArmorEquipEvent> {
     }
 
     @Override
-    public void setValues(ArmorEquipEvent event, Map<String, Object> data) {
+    public void setValues(ArmorEquipEvent event, final CastData data) {
 
     }
 
