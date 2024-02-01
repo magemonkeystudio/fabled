@@ -177,16 +177,17 @@ class DropItemTrigger extends ProTrigger {
 class EntityTargetTrigger extends ProTrigger {
 	public constructor() {
 		super({
-			name:        'Entity Target',
-			description: 'Applies skill effects when an entity targets the caster',
-			data:        [
+			name:         'Entity Target',
+			description:  'Applies skill effects when an entity targets the caster',
+			data:         [
 				new BooleanSelect('Target Caster', 'target', true)
 					.setTooltip('True makes children target the caster. False makes children target the attacking entity'),
 				new DropdownSelect('Types', 'types', ['Any', ...getEntities()], ['Any'], true)
 					.setTooltip('The entity types to target'),
 				new BooleanSelect('Blacklist', 'blacklist', false)
 					.setTooltip('Whether to consider the listed types as a blacklist, meaning only entities that do NOT match one of them will trigger.')
-			]
+			],
+			summaryItems: ['target', 'types', 'blacklist']
 		});
 	}
 
@@ -305,12 +306,13 @@ class ItemSwapTrigger extends ProTrigger {
 class KillTrigger extends ProTrigger {
 	public constructor() {
 		super({
-			name:        'Kill',
-			description: 'Applies skill effects upon killing something',
-			data:        [
+			name:         'Kill',
+			description:  'Applies skill effects upon killing something',
+			data:         [
 				new BooleanSelect('Target Caster', 'target', true)
 					.setTooltip('True makes children target the caster. False makes children target the attacking entity')
-			]
+			],
+			summaryItems: ['target']
 		});
 	}
 
@@ -385,7 +387,7 @@ class PhysicalDamageTrigger extends ProTrigger {
 				new DoubleSelect('Max Damage', 'dmg-max', 999)
 					.setTooltip('The minimum damage that needs to be dealt')
 			],
-			summaryItems: ['type', 'dmg-min', 'dmg-max']
+			summaryItems: ['target', 'type', 'dmg-min', 'dmg-max']
 		});
 	}
 
@@ -405,7 +407,7 @@ class ProjectileHitTrigger extends ProTrigger {
 				new DropdownSelect('Projectile', 'projectile', getAnyProjectiles, ['Any'], true)
 					.setTooltip('The type of projectile shot')
 			],
-			summaryItems: ['type', 'projectile']
+			summaryItems: ['target', 'type', 'projectile']
 		});
 	}
 
@@ -427,7 +429,7 @@ class ProjectileTickTrigger extends ProTrigger {
 				new DropdownSelect('Projectile', 'projectile', getAnyProjectiles, ['Any'], true)
 					.setTooltip('The type of projectile shot')
 			],
-			summaryItems: ['interval', 'delay', 'projectile']
+			summaryItems: ['target', 'interval', 'delay', 'projectile']
 		});
 	}
 
@@ -485,7 +487,7 @@ class SkillDamageTrigger extends ProTrigger {
 				new StringListSelect('Category', 'category', ['default'])
 					.setTooltip('The type of skill damage to apply for. Leave this empty to apply to all skill damage')
 			],
-			summaryItems: ['dmg-min', 'dmg-max', 'category']
+			summaryItems: ['target', 'dmg-min', 'dmg-max', 'category']
 		});
 	}
 
@@ -507,7 +509,7 @@ class TookPhysicalTrigger extends ProTrigger {
 				new DoubleSelect('Max Damage', 'dmg-max', 999)
 					.setTooltip('The maximum damage that needs to be dealt')
 			],
-			summaryItems: ['type', 'dmg-min', 'dmg-max']
+			summaryItems: ['target', 'type', 'dmg-min', 'dmg-max']
 		});
 	}
 
@@ -529,7 +531,7 @@ class TookSkillTrigger extends ProTrigger {
 				new StringListSelect('Category', 'category', ['default'])
 					.setTooltip('The type of skill damage to apply for. Leave this empty to apply to all skill damage')
 			],
-			summaryItems: ['dmg-min', 'dmg-max', 'category']
+			summaryItems: ['target', 'dmg-min', 'dmg-max', 'category']
 		});
 	}
 
@@ -588,7 +590,7 @@ class ShieldTrigger extends ProTrigger {
 				new DoubleSelect('Damage Heal', 'dmg-max', 999)
 					.setTooltip('The maximum damage that needs to be blocked')
 			],
-			summaryItems: ['type', 'dmg-min', 'dmg-max']
+			summaryItems: ['target', 'type', 'dmg-min', 'dmg-max']
 		});
 	}
 
@@ -4569,6 +4571,27 @@ class ValueRandomMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
+class ValueRoundMechanic extends ProMechanic {
+	public constructor() {
+		super({
+			name:         'Value Round',
+			description:  'Rounds a stored value under a unique key for the caster. If the value wasn\'t set before, this will not do anything',
+			data:         [
+				new StringSelect('Key', 'key', 'value')
+					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
+				new DropdownSelect('Type', 'type', ['Round', 'Ceiling', 'Floor'], 'Round')
+					.setTooltip('The type of rounding to use. Round rounds to the nearest integer, ceiling rounds up, and floor rounds down'),
+				new BooleanSelect('Save', 'save', false)
+					.setTooltip('If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account')
+
+			],
+			summaryItems: ['key', 'type', 'save']
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
 class ValueSetMechanic extends ProMechanic {
 	public constructor() {
 		super({
@@ -4995,6 +5018,7 @@ export const initComponents = () => {
 		VALUE_MULTIPLY:    { name: 'Value Multiply', component: ValueMultiplyMechanic, section: 'Value' },
 		VALUE_PLACEHOLDER: { name: 'Value Placeholder', component: ValuePlaceholderMechanic, section: 'Value' },
 		VALUE_RANDOM:      { name: 'Value Random', component: ValueRandomMechanic, section: 'Value' },
+		VALUE_ROUND:       { name: 'Value Round', component: ValueRoundMechanic, section: 'Value' },
 		VALUE_SET:         { name: 'Value Set', component: ValueSetMechanic, section: 'Value' },
 
 		WARP:        { name: 'Warp', component: WarpMechanic, section: 'Warp' },

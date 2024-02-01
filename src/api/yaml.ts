@@ -91,6 +91,9 @@ export class YAMLObject {
 		if (this.data[key] == '[]' || this.data[key] == ' []')
 			this.data[key] = JSON.parse((<string>this.data[key]).trim());
 
+		if(key === 'caster')
+			console.log(this.data[key])
+
 		const val: V = this.has(key)
 			? (mapping ? <V>mapping(<T>this.data[key]) : <V>this.data[key])
 			: <V>value;
@@ -171,8 +174,8 @@ export class YAMLObject {
 				}
 
 				if (typeof (value) == 'string') {
-					if (value.toLowerCase() == 'false') value = false;
-					else if (value.toLowerCase() == 'true') value = true;
+					if (value == 'false') value = false;
+					else if (value == 'true') value = true;
 					else value = value.replace(/\\(['"])/, ($1: string) => $1.replace('\\', ''));
 				}
 				this.data[key] = value;
