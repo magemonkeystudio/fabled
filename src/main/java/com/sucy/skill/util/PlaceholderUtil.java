@@ -386,7 +386,7 @@ public class PlaceholderUtil {
         if (identifier.startsWith("attribute:")) {
             String[] idSplit = identifier.split(":");
             try {
-                return String.valueOf(playerClass.getPlayerData().getAttribute(idSplit[1]));
+                return String.valueOf(playerClass.getPlayerData().getInvestedAttributeStage(idSplit[1]));
             } catch (Exception e) {
                 return "0";
             }
