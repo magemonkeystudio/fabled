@@ -5,7 +5,7 @@ import { socketService }         from '$api/socket/socket-connector';
 
 export const ssr = false;
 
-const expectedHost = 'promcteam.github.io';
+const expectedHost = ['promcteam.github.io', 'synthesis.travja.dev'];
 const separator    = '\n\n\n~~~~~\n\n\n';
 
 export const load: LayoutLoad = ({ url }) => {
@@ -42,7 +42,7 @@ export const load: LayoutLoad = ({ url }) => {
 		return;
 	}
 
-	if (url.host === expectedHost || !localStorage.getItem('skillData')) return;
+	if (expectedHost.includes(url.host) || !localStorage.getItem('skillData')) return;
 
 	alert('We\'re migrating the new editor to the old URL. You\'re now going to be redirected. Your skills/classes should remain in tact.');
 
