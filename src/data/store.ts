@@ -160,22 +160,30 @@ export const saveData = (data?: ProSkill | ProClass) => {
 	saveToFile(act.name + '.yml', act.serializeYaml().toString());
 };
 
-export const saveDataToServer = (data?: ProSkill | ProClass) => {
+export const saveDataToServer = async (data?: ProSkill | ProClass) => {
 	const act = data || get(active);
-	if (!act) return;
+	if (!act) return false;
 
 	const isSkill = act instanceof ProSkill;
 	const yaml    = act.serializeYaml().toString();
 
 
-	if (isSkill) {
-		const folder = getFolder(act);
-		let path = '';
-		if (folder) {
-			path = folder.name + '/';
-		}
-		socketService.saveSkillToServer(path + act.name, yaml);
+	const folder = getFolder(act);
+	let path     = '';
+	if (folder) {
+		path = folder.name + '/';
 	}
+
+	isSaving.set(true);
+	let result = false;
+	if (isSkill) {
+		result = await socketService.saveSkillToServer(path + act.name, yaml);
+	} else {
+		result = await socketService.saveClassToServer(path + act.name, yaml);
+	}
+
+	isSaving.set(false);
+	return result;
 };
 
 export const getAllSkillYaml = async (): Promise<YAMLObject> => {
@@ -240,4 +248,4 @@ const saveToFile = (file: string, data: string) => {
 	document.body.removeChild(element);
 };
 
-export const saveError: Writable<ProSkill> = writable();
+export const saveError: Writable<ProSkill | undefined> = writable();

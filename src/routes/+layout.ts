@@ -1,6 +1,7 @@
 import type { LayoutLoad }       from './$types';
 import { createPaste, getHaste } from '$api/hastebin';
 import { base }                  from '$app/paths';
+import { socketService }         from '$api/socket/socket-connector';
 
 export const ssr = false;
 
@@ -8,6 +9,14 @@ const expectedHost = 'promcteam.github.io';
 const separator    = '\n\n\n~~~~~\n\n\n';
 
 export const load: LayoutLoad = ({ url }) => {
+	if (url.searchParams.has('session')) {
+		// Attempt to connect to the socket.io server
+		const sessionId = url.searchParams.get('session');
+		if (sessionId) {
+			socketService.connect(sessionId);
+		}
+	}
+
 	if (url.host.includes('localhost')) return;
 
 	if (url.searchParams.has('migrationData')) {

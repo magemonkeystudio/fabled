@@ -4,6 +4,7 @@ import type { ViteDevServer } from 'vite';
 interface SocketProps {
 	serverId?: string;
 	clientId?: string;
+	sessionId?: string;
 }
 
 type IDSocket = Socket & SocketProps;
@@ -24,14 +25,25 @@ export const webSocketServer = {
 		io
 			.use((socket: IDSocket, next) => {
 				const auth = socket.handshake.auth;
+				if (auth.sessionId) {
+					socket.sessionId = auth.sessionId;
+				}
+
 				if (auth.serverId) {
 					console.log('🖥️ Server connected', auth.serverId);
 					socket.serverId = auth.serverId;
-					if (socket.serverId) socket.join(socket.serverId);
+					if (socket.serverId) {
+						socket.join(socket.serverId);
+						if (socket.sessionId) socket.join(socket.sessionId);
+					}
 				} else if (auth.clientId) {
 					console.log('📱 Client connected', auth.clientId);
 					socket.clientId = auth.clientId;
-					if (socket.clientId) socket.join(socket.clientId);
+
+					if (socket.clientId) {
+						socket.join(socket.clientId);
+						if (socket.sessionId) socket.join(socket.sessionId);
+					}
 				}
 
 				next();
@@ -41,38 +53,57 @@ export const webSocketServer = {
 
 				socket
 					.on('disconnect', () => console.log(socket.serverId || socket.clientId, 'disconnected'))
-					.on('reload', ({ to }: { to: string }) => {
+					.on('reload', ({ to }: { to: string }, callback) => {
 						console.log('Reloading server:', to);
 						io.to(to).timeout(10000).emitWithAck('reload', { from: socket.clientId })
 							.then((response) => {
-								console.log('Reloaded', to, response);
-								if (response[0] === true) {
-									socket.emit('reloadComplete');
-								} else {
-									socket.emit('reloadFailed', { message: response[0] });
-								}
+								console.log('Reloaded', response);
+								callback(response);
 							})
 							.catch((err: string) => {
 								console.error(`Failed to reload ${to}`, err);
-								socket.emit('reloadFailed', { message: err });
+								callback(err);
 							});
 					})
-					.on('saveSkill', ({ to, name, yaml }: { to: string, name: string; yaml: string; }, callback) => {
-						if (socket.serverId !== to) return;
-
-						console.log('Saving skill to server:', name);
-						socket.emitWithAck('saveSkill', { name, yaml })
-							.then(() => callback(true))
+					.on('saveClass', ({ to, name, yaml }: { to: string, name: string; yaml: string; }, callback) => {
+						console.log('Saving class to server:', name);
+						socket.to(to).timeout(2500).emitWithAck('saveClass', { name, yaml, from: socket.clientId })
+							.then((args) => callback(args))
 							.catch((err: string) => callback(err));
 					})
-					.onAny((event: string, args: { message: never; }) => {
+					.on('saveSkill', ({ to, name, yaml }: { to: string, name: string; yaml: string; }, callback) => {
+						console.log('Saving skill to server:', name);
+						socket.to(to).timeout(2500).emitWithAck('saveSkill', { name, yaml, from: socket.clientId })
+							.then((args) => callback(args))
+							.catch((err: string) => callback(err));
+					})
+					.on('trust', (args: { message: never, to: string }, callback) => {
+						const relay = {
+							content: args?.message || args,
+							from:    socket.serverId || socket.clientId
+						};
+						socket.to(args?.to).timeout(2500).emitWithAck('trust', relay)
+							.then(arg => {
+								console.log('callback args', arg);
+								callback(arg);
+							})
+							.catch(err => {
+								console.error('callback error', err);
+								callback(err);
+							});
+					})
+					.onAny((event: string, args: { message: never; to: string }) => {
 						if (event !== 'disconnect' && event !== 'reload' && event !== 'saveSkill') {
 							console.log(event, args);
 							const relay = {
 								content: args?.message || args,
 								from:    socket.serverId || socket.clientId
 							};
-							socket.broadcast.emit(event, relay);
+							if (args?.to) {
+								socket.to(args?.to).emit(event, relay);
+							} else {
+								socket.broadcast.emit(event, relay);
+							}
 						}
 					});
 			});

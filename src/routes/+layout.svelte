@@ -1,34 +1,49 @@
 <script lang='ts'>
 	import '../app.css';
-	import { active, importing, loadFile, saveAll, saveData, saveError, showSidebar } from '../data/store';
-	import { onDestroy, onMount }                                                     from 'svelte';
-	import { browser }                                                                from '$app/environment';
-	import ImportModal
-																																										from '$components/ImportModal.svelte';
-	import NavBar                                                                     from '$components/NavBar.svelte';
-	import HeaderBar                                                                  from '$components/HeaderBar.svelte';
-	import { initComponents }                                                         from '$api/components/components';
-	import { isSaving, skills }                                                       from '../data/skill-store';
-	import { fly }                                                                    from 'svelte/transition';
-	import { derived, get, type Readable, type Unsubscriber, type Writable }          from 'svelte/store';
-	import Sidebar
-																																										from '$components/sidebar/Sidebar.svelte';
-	import { activeModal, closeModal, modalData, openModal }                          from '../data/modal-service';
+	import {
+		active,
+		importing,
+		loadFile,
+		saveAll,
+		saveData,
+		saveDataToServer,
+		saveError,
+		showSidebar
+	}                                                                        from '../data/store';
+	import { onDestroy, onMount }                                            from 'svelte';
+	import { browser }                                                       from '$app/environment';
+	import ImportModal                                                       from '$components/ImportModal.svelte';
+	import NavBar                                                            from '$components/NavBar.svelte';
+	import HeaderBar                                                         from '$components/HeaderBar.svelte';
+	import { initComponents }                                                from '$api/components/components';
+	import { isSaving, skills }                                              from '../data/skill-store';
+	import { fly }                                                           from 'svelte/transition';
+	import { derived, get, type Readable, type Unsubscriber, type Writable } from 'svelte/store';
+	import Sidebar                                                           from '$components/sidebar/Sidebar.svelte';
+	import { activeModal, closeModal, modalData, openModal }                 from '../data/modal-service';
 	import SettingsModal
-																																										from '$components/modal/SettingsModal.svelte';
-	import SocketPanel
-																																										from '$components/SocketPanel.svelte';
-	import { socketConnected }                                                        from '$api/socket/socket-connector';
-	import { quadInOut }                                                              from 'svelte/easing';
+																																					 from '$components/modal/SettingsModal.svelte';
+	import { socketConnected, socketService, socketTrusted }                 from '$api/socket/socket-connector';
+	import { quadInOut }                                                     from 'svelte/easing';
+	import Modal                                                             from '$components/Modal.svelte';
 
 	let dragging    = false;
 	let displaySave = false;
 	let saveTask: number;
 	let saveSub: Unsubscriber;
 
-	let numButtons = derived<Writable<boolean>, number>(socketConnected, (connected, set) => set(connected ? 5 : 3));
-	let rotation   = derived<Readable<number>, number>(numButtons, (numButtons, set) => set(120 / ((numButtons - 1) * 2)));
-	let distance   = derived<Readable<number>, number>(numButtons, (numButtons, set) => set((4.725 * (numButtons - 1) + 1.5) / Math.PI));
+	let button = '';
+	let serverSaveStatus                       = 'NONE';
+	const statusMap: { [key: string]: string } = {
+		'SAVING': 'hourglass_empty',
+		'SAVED':  'check',
+		'ERROR':  'error'
+	};
+
+	const passphrase = socketService.keyphrase;
+	let numButtons   = derived<Writable<boolean>, number>(socketConnected, (connected, set) => set(connected ? 6 : 3));
+	let rotation     = derived<Readable<number>, number>(numButtons, (numButtons, set) => set(120 / ((numButtons - 1) * 2)));
+	let distance     = derived<Readable<number>, number>(numButtons, (numButtons, set) => set((4.725 * (numButtons - 1) + 1.5) / Math.PI));
 
 	onMount(() => {
 		if (!browser) return;
@@ -88,6 +103,31 @@
 		skills.set([...get(skills)]);
 		get(active)?.save();
 	};
+
+	const acknowledgeSaveError = () => {
+		const err = get(saveError);
+		if (err) {
+			err.acknowledged = true;
+		}
+		saveError.set(undefined);
+	};
+
+	const saveServerInfo = async () => {
+		if (serverSaveStatus === 'SAVING') return;
+		button = 'save';
+		let success = await saveDataToServer();
+		if (success) serverSaveStatus = 'SAVED';
+		else serverSaveStatus = 'ERROR';
+		setTimeout(() => serverSaveStatus = 'NONE', 2000);
+	};
+
+	const reload = async () => {
+		button = 'reload';
+		let success = await socketService.reloadSapi();
+		if (success) serverSaveStatus = 'SAVED';
+		else serverSaveStatus = 'ERROR';
+		setTimeout(() => serverSaveStatus = 'NONE', 2000);
+	};
 </script>
 
 <HeaderBar />
@@ -100,7 +140,7 @@
 		<slot />
 	</div>
 </div>
-<SocketPanel />
+<!--<SocketPanel />-->
 
 <div id='floating-buttons'>
 	<div class='button backup' title='Backup All Data'
@@ -119,35 +159,55 @@
 			 style:--rotation='{$rotation * 3}deg'
 			 style:--distance='{$distance}rem'
 			 on:click={() => saveData()}
-			 on:keypress={(e) => e.key === 'Enter' && saveData()}
+			 on:keypress={(e) => { if (e.key === 'Enter') saveData() }}
 	>
 		<span class='material-symbols-rounded'>save</span>
 	</div>
 	{#if $socketConnected}
 		<!-- Rotation goes up by 2 for each button -->
-		<div class='button socket'
+		<div class='button socket-upload'
 				 title='Save to Server'
 				 tabindex='0'
 				 role='button'
 				 style:--rotation='{$rotation * 5}deg'
 				 style:--distance='{$distance}rem'
 				 transition:fly={{x: 100, easing: quadInOut}}
-				 on:click={() => {}}
-				 on:keypress={(e) => e.key === 'Enter' && {}}
+				 on:click={() => saveServerInfo()}
+				 on:keypress={(e) => { if (e.key === 'Enter') saveServerInfo() }}
 		>
-			<span class='material-symbols-rounded'>wifi</span>
+			{#if button === 'save' && serverSaveStatus !== 'NONE'}
+				<span class='material-symbols-rounded' transition:fly={{y: -20}}>{statusMap[serverSaveStatus]}</span>
+			{:else}
+				<span class='material-symbols-rounded' transition:fly={{y: 20}}>upload_file</span>
+			{/if}
 		</div>
-		<div class='button socket'
-				 title='Load from Server'
+		<div class='button socket-all'
+				 title='Upload All to Server'
 				 tabindex='0'
 				 role='button'
 				 style:--rotation='{$rotation * 7}deg'
 				 style:--distance='{$distance}rem'
 				 transition:fly={{x: 100, easing: quadInOut}}
 				 on:click={() => {}}
-				 on:keypress={(e) => e.key === 'Enter' && {}}
+				 on:keypress={(e) => { if (e.key === 'Enter') console.log('not implemented yet') }}
 		>
-			<span class='material-symbols-rounded'>wifi</span>
+			<span class='material-symbols-rounded'>cloud_upload</span>
+		</div>
+		<div class='button socket-reload'
+				 title='Reload ProSkillAPI'
+				 tabindex='0'
+				 role='button'
+				 style:--rotation='{$rotation * 9}deg'
+				 style:--distance='{$distance}rem'
+				 transition:fly={{x: 100, easing: quadInOut}}
+				 on:click={() => reload()}
+				 on:keypress={(e) => { if (e.key === 'Enter') reload() }}
+		>
+			{#if button === 'reload' && serverSaveStatus !== 'NONE'}
+				<span class='material-symbols-rounded' transition:fly={{y: -20}}>{statusMap[serverSaveStatus]}</span>
+			{:else}
+				<span class='material-symbols-rounded' transition:fly={{y: 20}}>sync</span>
+			{/if}
 		</div>
 	{/if}
 	<div class='button settings' title='Change Settings'
@@ -175,8 +235,8 @@
 		<div class='acknowledge button'
 				 tabindex='0'
 				 role='button'
-				 on:click={() => { get(saveError).acknowledged = true; saveError.set(null); }}
-				 on:keypress={(e) => { if (e.key === 'Enter') { get(saveError).acknowledged = true; saveError.set(null); }}}
+				 on:click={() => { acknowledgeSaveError() }}
+				 on:keypress={(e) => { if (e.key === 'Enter') { acknowledgeSaveError() }}}
 		>I Understand
 		</div>
 	</div>
@@ -198,6 +258,11 @@
 		Drop to Import
 	</div>
 {/if}
+
+<Modal open={!!$passphrase && !$socketTrusted}>
+	<h3>Untrusted Connection to Server</h3>
+	<p>Server is not trusted. Please run <code>/skilleditor trust {$passphrase}</code> from the server</p>
+</Modal>
 
 <style>
     @property --rotation {
@@ -260,13 +325,13 @@
         translate: calc(-1 * var(--distance) * sin(105deg - var(--rotation))) calc(-1 * var(--distance) * cos(105deg - var(--rotation)));
 
         background-color: #0083ef;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: grid;
+        place-items: center;
         border-radius: 50%;
         padding: 0.7rem;
         box-shadow: inset 0 0 10px #222;
         margin: 0;
+        overflow: hidden;
 
         transition: --rotation 0.5s ease, --distance 0.5s ease;
     }
@@ -279,7 +344,9 @@
     }
 
     #floating-buttons .button .material-symbols-rounded {
-        font-size: 1.75rem;
+        font-size: 1.75em;
+        grid-row: 1;
+        grid-column: 1;
     }
 
     #floating-buttons .save {
@@ -290,12 +357,20 @@
         background-color: #777;
     }
 
-    #floating-buttons .socket {
+    #floating-buttons .socket-upload {
         background-color: #ff9800;
     }
 
+    #floating-buttons .socket-all {
+        background-color: #c21b1b;
+    }
+
+    #floating-buttons .socket-reload {
+        background-color: #363636;
+    }
+
     #floating-buttons .settings .material-symbols-rounded {
-        font-size: 1rem;
+        font-size: 1em;
     }
 
     #body-container.empty {
@@ -333,5 +408,13 @@
         align-items: center;
         justify-content: center;
         text-align: center;
+    }
+
+    code {
+        background-color: #555;
+        padding: 0.25rem;
+        border-radius: 0.25rem;
+        font-size: 0.8em;
+        cursor: grab;
     }
 </style>
