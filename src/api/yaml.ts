@@ -91,9 +91,6 @@ export class YAMLObject {
 		if (this.data[key] == '[]' || this.data[key] == ' []')
 			this.data[key] = JSON.parse((<string>this.data[key]).trim());
 
-		if(key === 'caster')
-			console.log(this.data[key])
-
 		const val: V = this.has(key)
 			? (mapping ? <V>mapping(<T>this.data[key]) : <V>this.data[key])
 			: <V>value;

@@ -167,7 +167,6 @@ class SocketService {
 	}
 
 	public getSkills(): Promise<string[]> {
-		console.log('getSkills', this.socket, get(socketTrusted));
 		if (!this.socket || !get(socketTrusted)) return Promise.reject('No socket');
 		this.socket.emit('getSkills', { to: this.serverId });
 
@@ -228,7 +227,7 @@ class SocketService {
 		if (!this.socket || !get(socketTrusted)) return Promise.reject('No socket');
 		try {
 			const response = await this.socket.timeout(3000).emitWithAck('saveClass', { name, yaml, to: this.serverId });
-			const match    = response === name;
+			const match    = response && response[0] === name;
 			if (!match) {
 				console.log('Error saving class', response);
 			}
@@ -238,6 +237,25 @@ class SocketService {
 			console.log('Timeout saving class to server', e);
 			return false;
 		}
+	}
+
+	public async exportAll(classYaml: string, skillYaml: string): Promise<boolean> {
+		if (!this.socket || !get(socketTrusted)) return Promise.reject('No socket');
+		try {
+			const response = await this.socket.timeout(4500).emitWithAck('exportAll', {
+				to: this.serverId,
+				classYaml,
+				skillYaml
+			});
+			if (response && !!response[0]) return !!response[0];
+
+			console.log('Error exporting all', response);
+			return false;
+		} catch (e) {
+			console.log('Timeout exporting all', e);
+			return false;
+		}
+
 	}
 }
 

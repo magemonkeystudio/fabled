@@ -5,6 +5,7 @@
 		importing,
 		loadFile,
 		saveAll,
+		saveAllToServer,
 		saveData,
 		saveDataToServer,
 		saveError,
@@ -32,7 +33,7 @@
 	let saveTask: number;
 	let saveSub: Unsubscriber;
 
-	let button = '';
+	let button                                 = '';
 	let serverSaveStatus                       = 'NONE';
 	const statusMap: { [key: string]: string } = {
 		'SAVING': 'hourglass_empty',
@@ -114,15 +115,28 @@
 
 	const saveServerInfo = async () => {
 		if (serverSaveStatus === 'SAVING') return;
-		button = 'save';
+		button      = 'save';
+		serverSaveStatus = 'SAVING';
 		let success = await saveDataToServer();
 		if (success) serverSaveStatus = 'SAVED';
 		else serverSaveStatus = 'ERROR';
 		setTimeout(() => serverSaveStatus = 'NONE', 2000);
 	};
 
+	const exportAllToServer = async () => {
+		if (serverSaveStatus === 'SAVING') return;
+		button      = 'export';
+		serverSaveStatus = 'SAVING';
+		let success = await saveAllToServer();
+		if (success) serverSaveStatus = 'SAVED';
+		else serverSaveStatus = 'ERROR';
+		setTimeout(() => serverSaveStatus = 'NONE', 2000);
+	};
+
 	const reload = async () => {
-		button = 'reload';
+		if (serverSaveStatus === 'SAVING') return;
+		button      = 'reload';
+		serverSaveStatus = 'SAVING';
 		let success = await socketService.reloadSapi();
 		if (success) serverSaveStatus = 'SAVED';
 		else serverSaveStatus = 'ERROR';
@@ -188,10 +202,14 @@
 				 style:--rotation='{$rotation * 7}deg'
 				 style:--distance='{$distance}rem'
 				 transition:fly={{x: 100, easing: quadInOut}}
-				 on:click={() => {}}
-				 on:keypress={(e) => { if (e.key === 'Enter') console.log('not implemented yet') }}
+				 on:click={() => exportAllToServer()}
+				 on:keypress={(e) => { if (e.key === 'Enter') exportAllToServer() }}
 		>
-			<span class='material-symbols-rounded'>cloud_upload</span>
+			{#if button === 'export' && serverSaveStatus !== 'NONE'}
+				<span class='material-symbols-rounded' transition:fly={{y: -20}}>{statusMap[serverSaveStatus]}</span>
+			{:else}
+				<span class='material-symbols-rounded' transition:fly={{y: 20}}>cloud_upload</span>
+			{/if}
 		</div>
 		<div class='button socket-reload'
 				 title='Reload ProSkillAPI'

@@ -77,6 +77,12 @@ export const webSocketServer = {
 							.then((args) => callback(args))
 							.catch((err: string) => callback(err));
 					})
+					.on('exportAll', ({ to, classYaml, skillYaml }: { to: string, classYaml: string, skillYaml: string}, callback) => {
+						console.log('Exporting all to server:', to);
+						socket.to(to).timeout(4000).emitWithAck('exportAll', { classYaml, skillYaml, from: socket.clientId })
+							.then((args) => callback(args))
+							.catch((err: string) => callback(err));
+					})
 					.on('trust', (args: { message: never, to: string }, callback) => {
 						const relay = {
 							content: args?.message || args,
