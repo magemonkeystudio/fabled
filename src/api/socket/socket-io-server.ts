@@ -99,7 +99,7 @@ export const webSocketServer = {
 							});
 					})
 					.onAny((event: string, args: { message: never; to: string }) => {
-						if (event !== 'disconnect' && event !== 'reload' && event !== 'saveSkill') {
+						if (event !== 'disconnect' && event !== 'reload' && event !== 'saveSkill' && event !== 'saveClass' && event !== 'exportAll' && event !== 'trust') {
 							console.log(event, args);
 							const relay = {
 								content: args?.message || args,

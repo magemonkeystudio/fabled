@@ -279,7 +279,7 @@
 
 <Modal open={!!$passphrase && !$socketTrusted}>
 	<h3>Untrusted Connection to Server</h3>
-	<p>Server is not trusted. Please run <code>/skilleditor trust {$passphrase}</code> from the server</p>
+	<p>Server is not trusted. Please run <code>/synth trust {$passphrase}</code> from the server</p>
 </Modal>
 
 <style>
