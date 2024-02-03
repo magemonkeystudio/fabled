@@ -40,6 +40,7 @@
 		'SAVED':  'check',
 		'ERROR':  'error'
 	};
+	let copied                                 = false;
 
 	const passphrase = socketService.keyphrase;
 	let numButtons   = derived<Writable<boolean>, number>(socketConnected, (connected, set) => set(connected ? 6 : 3));
@@ -115,9 +116,9 @@
 
 	const saveServerInfo = async () => {
 		if (serverSaveStatus === 'SAVING') return;
-		button      = 'save';
+		button           = 'save';
 		serverSaveStatus = 'SAVING';
-		let success = await saveDataToServer();
+		let success      = await saveDataToServer();
 		if (success) serverSaveStatus = 'SAVED';
 		else serverSaveStatus = 'ERROR';
 		setTimeout(() => serverSaveStatus = 'NONE', 2000);
@@ -125,9 +126,9 @@
 
 	const exportAllToServer = async () => {
 		if (serverSaveStatus === 'SAVING') return;
-		button      = 'export';
+		button           = 'export';
 		serverSaveStatus = 'SAVING';
-		let success = await saveAllToServer();
+		let success      = await saveAllToServer();
 		if (success) serverSaveStatus = 'SAVED';
 		else serverSaveStatus = 'ERROR';
 		setTimeout(() => serverSaveStatus = 'NONE', 2000);
@@ -135,12 +136,18 @@
 
 	const reload = async () => {
 		if (serverSaveStatus === 'SAVING') return;
-		button      = 'reload';
+		button           = 'reload';
 		serverSaveStatus = 'SAVING';
-		let success = await socketService.reloadSapi();
+		let success      = await socketService.reloadSapi();
 		if (success) serverSaveStatus = 'SAVED';
 		else serverSaveStatus = 'ERROR';
 		setTimeout(() => serverSaveStatus = 'NONE', 2000);
+	};
+
+	const copyText = () => {
+		navigator.clipboard.writeText('/synth trust ' + $passphrase);
+		copied = true;
+		setTimeout(() => copied = false, 2000);
 	};
 </script>
 
@@ -279,7 +286,18 @@
 
 <Modal open={!!$passphrase && !$socketTrusted}>
 	<h3>Untrusted Connection to Server</h3>
-	<p>Server is not trusted. Please run <code>/synth trust {$passphrase}</code> from the server</p>
+	<div>Server is not trusted. Please run
+		<div class='code'
+				 class:copied
+				 tabindex='0'
+				 role='button'
+				 on:click={copyText}
+				 on:keypress={(e) => { if (e.key === 'Enter') copyText() }}
+		>
+			/synth trust {$passphrase}
+		</div>
+		from the server
+	</div>
 </Modal>
 
 <style>
@@ -428,11 +446,19 @@
         text-align: center;
     }
 
-    code {
+    .code {
+        display: inline;
         background-color: #555;
         padding: 0.25rem;
         border-radius: 0.25rem;
+        font-family: monospace;
         font-size: 0.8em;
         cursor: grab;
+
+        transition: background-color 0.5s ease;
+    }
+
+    .code.copied {
+        background-color: #36ab36;
     }
 </style>
