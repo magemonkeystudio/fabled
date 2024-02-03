@@ -2856,6 +2856,8 @@ class ItemProjectileMechanic extends ProMechanic {
 					.setTooltip('The alignment of targets to hit'),
 				new BooleanSelect('Wall Collisions', 'walls', true)
 					.setTooltip('Wheter to account for wall collisions. If false, the item will just slide through them.'),
+				new AttributeSelect('Collision Radius', 'collision-radius', 0.2)
+					.setTooltip('The radius of the projectile considered when calculating collisions.'),
 
 				...itemOptions(),
 				...homingOptions(),
@@ -3019,7 +3021,7 @@ class ItemProjectileMechanic extends ProMechanic {
 					.requireValue('path', [true])
 					.setTooltip('Speed of the particle. For some particles controls other parameters, such as size')
 			],
-			summaryItems: ['group', 'material', 'velocity', 'spread', 'angle', 'correction', 'homing']
+			summaryItems: ['group', 'material', 'velocity', 'spread', 'angle', 'correction', 'homing', 'collision-radius']
 		}, true);
 	}
 
