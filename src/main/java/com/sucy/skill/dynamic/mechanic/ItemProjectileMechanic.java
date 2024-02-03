@@ -119,6 +119,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
             List<ItemProjectile> list;
             if (spread.equals("rain")) {
                 list = ItemProjectile.rain(caster,
+                        level,
                         location,
                         copy,
                         item,
@@ -139,6 +140,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
                 double angle = parseValues(caster, ANGLE, level, 30.0);
                 list = ItemProjectile.spread(
                         caster,
+                        level,
                         dir,
                         location,
                         copy,
