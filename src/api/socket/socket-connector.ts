@@ -65,7 +65,7 @@ class SocketService {
 		this.clientId   = clientName;
 		const clientKey = Math.floor(10000 + Math.random() * 90000).toString();
 
-		this.socket = io('ws://synthesis.travja.dev', {
+		this.socket = io('wss://synthesis.travja.dev', {
 			auth: {
 				sessionId: this.sessionId,
 				clientId:  this.clientId,
