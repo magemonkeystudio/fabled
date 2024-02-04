@@ -134,7 +134,8 @@ public class ItemChecker {
         String text     = settings.getString(LORE, "");
         String display  = settings.getString(NAME, "");
 
-        return item != null
+        return (item == null && material.equals("AIR"))
+                || item != null
                 && (!mat || item.getType().name().equals(material))
                 && (!data || item.getDurability() == dur)
                 && (!lore || checkLore(item, text, regex))
