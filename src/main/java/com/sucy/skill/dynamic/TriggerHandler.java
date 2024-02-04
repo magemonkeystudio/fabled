@@ -33,11 +33,10 @@ public class TriggerHandler implements Listener {
     private final Trigger<?>       trigger;
     private final TriggerComponent component;
 
-    public TriggerHandler(
-            final DynamicSkill skill,
-            final String key,
-            final Trigger trigger,
-            final TriggerComponent component) {
+    public TriggerHandler(final DynamicSkill skill,
+                          final String key,
+                          final Trigger trigger,
+                          final TriggerComponent component) {
 
         Objects.requireNonNull(skill, "Must provide a skill");
         Objects.requireNonNull(key, "Must provide a key");
@@ -78,13 +77,21 @@ public class TriggerHandler implements Listener {
      */
     public void register(final SkillAPI plugin) {
 
-        if (trigger.getEvent().getTypeName().equals("org.bukkit.event.player.PlayerInteractEvent")
-                || trigger.getEvent().getTypeName().contains("PlayerSwapHandItemsEvent")) {
-            plugin.getServer().getPluginManager().registerEvent(
-                    trigger.getEvent(), this, EventPriority.HIGHEST, getExecutor(trigger), plugin, false);
+        if (trigger.getEvent().getTypeName().equals("org.bukkit.event.player.PlayerInteractEvent") || trigger.getEvent()
+                .getTypeName()
+                .contains("PlayerSwapHandItemsEvent")) {
+            plugin.getServer()
+                    .getPluginManager()
+                    .registerEvent(trigger.getEvent(),
+                            this,
+                            EventPriority.HIGHEST,
+                            getExecutor(trigger),
+                            plugin,
+                            false);
         } else {
-            plugin.getServer().getPluginManager().registerEvent(
-                    trigger.getEvent(), this, EventPriority.HIGHEST, getExecutor(trigger), plugin, true);
+            plugin.getServer()
+                    .getPluginManager()
+                    .registerEvent(trigger.getEvent(), this, EventPriority.HIGHEST, getExecutor(trigger), plugin, true);
         }
 
     }
@@ -101,16 +108,21 @@ public class TriggerHandler implements Listener {
             return;
         }
 
-        Bukkit.getPluginManager().callEvent(new DynamicTriggerEvent(caster, this.skill, event, trigger.getKey()));
+        Bukkit.getScheduler()
+                .runTask(SkillAPI.inst(),
+                        () -> {
+                            Bukkit.getPluginManager()
+                                    .callEvent(new DynamicTriggerEvent(caster, this.skill, event, trigger.getKey()));
 
-        final LivingEntity target = trigger.getTarget(event, component.settings);
-        trigger.setValues(event, DynamicSkill.getCastData(caster));
-        trigger(caster, target, level);
+                            final LivingEntity target = trigger.getTarget(event, component.settings);
+                            trigger.setValues(event, DynamicSkill.getCastData(caster));
+                            trigger(caster, target, level);
 
-        if (event instanceof Cancellable) {
-            skill.applyCancelled((Cancellable) event);
-        }
-        trigger.postProcess(event, skill);
+                            if (event instanceof Cancellable) {
+                                skill.applyCancelled((Cancellable) event);
+                            }
+                            trigger.postProcess(event, skill);
+                        });
     }
 
     boolean trigger(final LivingEntity user, final LivingEntity target, final int level) {
