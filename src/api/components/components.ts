@@ -3199,6 +3199,24 @@ class MoneyMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
+class MountMechanic extends ProMechanic {
+	public constructor() {
+		super({
+			name:         'Mount',
+			description:  'Mounts entities',
+			data:         [
+				new DropdownSelect('Type', 'type', ['Caster->Target', 'Target->Caster'], 'Caster->Target')
+					.setTooltip('The direction of the mounting'),
+				new AttributeSelect('Stack Size', 'max', 5)
+					.setTooltip('The maximum amount of entities to stack')
+			],
+			summaryItems: ['type']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class ParticleMechanic extends ProMechanic {
 	public constructor() {
 		super({
@@ -4177,6 +4195,27 @@ class StatusMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
+class SummonMechanic extends ProMechanic {
+	public constructor() {
+		super({
+			name:         'Summon',
+			description:  'Summons a mob on each target. Child components will start off targeting the mob so you can add effects to it. Hostile mobs may attack the caster',
+			data:         [
+				new DropdownSelect('Type', 'type', getEntities, 'Zombie'),
+				new StringSelect('Name', 'name', '{player}\'s Minion')
+					.setTooltip('The displayed name of the wolf. Use {player} to embed the caster\'s name'),
+				new AttributeSelect('Health', 'health', 10)
+					.setTooltip('The starting health of the mob'),
+				new AttributeSelect('Amount', 'amount', 1)
+					.setTooltip('How many mobs to summon')
+			],
+			summaryItems: ['type', 'name', 'amount']
+		}, true);
+	}
+
+	public static override new = () => new this();
+}
+
 class TauntMechanic extends ProMechanic {
 	public constructor() {
 		super({
@@ -4188,6 +4227,24 @@ class TauntMechanic extends ProMechanic {
 			],
 			summaryItems: ['amount']
 		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
+class ThrowMechanic extends ProMechanic {
+	public constructor() {
+		super({
+			name:         'Throw',
+			description:  'Throws entities off of the target\'s head and targets them for child components',
+			data:         [
+				new DropdownSelect('Relative', 'relative', ['Target', 'Caster', 'Thrown'], 'Caster')
+					.setTooltip('Determines what is considered "forward". Target uses the direction the target is facing, Caster uses the direction the caster is facing, Thrown uses the direction of the entity to be thrown'),
+				new AttributeSelect('Speed', 'speed', 2)
+					.setTooltip('The speed to give the target in the direction they are facing'),
+			],
+			summaryItems: ['relative', 'speed']
+		}, true);
 	}
 
 	public static override new = () => new this();
@@ -4980,6 +5037,7 @@ export const initComponents = () => {
 		MESSAGE:             { name: 'Message', component: MessageMechanic },
 		MINE:                { name: 'Mine', component: MineMechanic },
 		MONEY:               { name: 'Money', component: MoneyMechanic },
+		MOUNT:               { name: 'Mount', component: MountMechanic },
 		PARTICLE:            { name: 'Particle', component: ParticleMechanic },
 		PARTICLE_ANIMATION:  { name: 'Particle Animation', component: ParticleAnimationMechanic },
 		PARTICLE_EFFECT:     { name: 'Particle Effect', component: ParticleEffectMechanic },
@@ -4999,7 +5057,9 @@ export const initComponents = () => {
 		SOUND:               { name: 'Sound', component: SoundMechanic },
 		STAT:                { name: 'Stat', component: StatMechanic },
 		STATUS:              { name: 'Status', component: StatusMechanic },
+		SUMMON:              { name: 'Summon', component: SummonMechanic },
 		TAUNT:               { name: 'Taunt', component: TauntMechanic },
+		THROW:               { name: 'Throw', component: ThrowMechanic },
 		TRIGGER:             { name: 'Trigger', component: TriggerMechanic },
 		WOLF:                { name: 'Wolf', component: WolfMechanic },
 
