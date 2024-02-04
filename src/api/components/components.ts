@@ -4241,7 +4241,7 @@ class ThrowMechanic extends ProMechanic {
 				new DropdownSelect('Relative', 'relative', ['Target', 'Caster', 'Thrown'], 'Caster')
 					.setTooltip('Determines what is considered "forward". Target uses the direction the target is facing, Caster uses the direction the caster is facing, Thrown uses the direction of the entity to be thrown'),
 				new AttributeSelect('Speed', 'speed', 2)
-					.setTooltip('The speed to give the target in the direction they are facing'),
+					.setTooltip('The speed to give the target in the direction they are facing')
 			],
 			summaryItems: ['relative', 'speed']
 		}, true);
@@ -4688,7 +4688,9 @@ class WarpMechanic extends ProMechanic {
 				new AttributeSelect('Upward', 'upward')
 					.setTooltip('How far upward in blocks to teleport. A negative value teleports downward'),
 				new AttributeSelect('Right', 'right')
-					.setTooltip('How far to the right in blocks to teleport. A negative value teleports to the left')
+					.setTooltip('How far to the right in blocks to teleport. A negative value teleports to the left'),
+				new BooleanSelect('Preserve Velocity', 'preserve')
+					.setTooltip('Whether to preserve the target\'s velocity post-warp')
 			],
 			preview:      [
 				...particlesAtTargetPreviewOptions()
@@ -4717,7 +4719,9 @@ class WarpLocMechanic extends ProMechanic {
 				new DoubleSelect('Yaw', 'yaw', 0)
 					.setTooltip('The Yaw of the desired position (left/right orientation)'),
 				new DoubleSelect('Pitch', 'pitch', 0)
-					.setTooltip('The Pitch of the desired position (up/down orientation)')
+					.setTooltip('The Pitch of the desired position (up/down orientation)'),
+				new BooleanSelect('Preserve Velocity', 'preserve')
+					.setTooltip('Whether to preserve the target\'s velocity post-warp')
 			],
 			preview:      [
 				...particlesAtTargetPreviewOptions()
@@ -4740,7 +4744,9 @@ class WarpRandomMechanic extends ProMechanic {
 				new BooleanSelect('Through Walls', 'walls', false)
 					.setTooltip('Whether to allow the target to teleport through walls'),
 				new AttributeSelect('Distance', 'distance', 3, 1)
-					.setTooltip('The max distance in blocks to teleport')
+					.setTooltip('The max distance in blocks to teleport'),
+				new BooleanSelect('Preserve Velocity', 'preserve')
+					.setTooltip('Whether to preserve the target\'s velocity post-warp')
 			],
 			summaryItems: ['horizontal', 'walls', 'distance']
 		}, false);
@@ -4753,7 +4759,11 @@ class WarpSwapMechanic extends ProMechanic {
 	public constructor() {
 		super({
 			name:        'Warp Swap',
-			description: 'Switches the location of the caster and the target. If multiple targets are provided, this takes the first one'
+			description: 'Switches the location of the caster and the target. If multiple targets are provided, this takes the first one',
+			data:        [
+				new BooleanSelect('Preserve Velocity', 'preserve')
+					.setTooltip('Whether to preserve the target\'s velocity post-warp')
+			]
 		});
 	}
 
@@ -4767,7 +4777,9 @@ class WarpTargetMechanic extends ProMechanic {
 			description:  'Warps either the target or the caster to the other. This does nothing when the target is the caster',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Caster to Target', 'Target to Caster'], 'Caster to Target')
-					.setTooltip('The direction to warp the involved targets')
+					.setTooltip('The direction to warp the involved targets'),
+				new BooleanSelect('Preserve Velocity', 'preserve')
+					.setTooltip('Whether to preserve the target\'s velocity post-warp')
 			],
 			summaryItems: ['type']
 		});
@@ -4783,7 +4795,9 @@ class WarpValueMechanic extends ProMechanic {
 			description:  'Warps all targets to a location remembered using the Value Location mechanic',
 			data:         [
 				new StringSelect('Key', 'key', 'location')
-					.setTooltip('The unique key the location is stored under. This should be the same key used in the Value Location mechanic')
+					.setTooltip('The unique key the location is stored under. This should be the same key used in the Value Location mechanic'),
+				new BooleanSelect('Preserve Velocity', 'preserve')
+					.setTooltip('Whether to preserve the target\'s velocity post-warp')
 			],
 			preview:      [
 				...particlesAtTargetPreviewOptions()
