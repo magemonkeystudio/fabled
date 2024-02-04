@@ -44,7 +44,7 @@ import java.util.function.Supplier;
 /**
  * Warps the target relative to their current location
  */
-public class WarpMechanic extends MechanicComponent {
+public class WarpMechanic extends AbstractWarpingMechanic {
     private static final Vector UP = new Vector(0, 1, 0);
 
     private static final String WALL    = "walls";
@@ -94,7 +94,7 @@ public class WarpMechanic extends MechanicComponent {
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (targets.isEmpty()) return false;
         for (LivingEntity target : targets) {
-            target.teleport(getLocation(caster, level, target));
+            warp(target, getLocation(caster, level, target));
         }
         return true;
     }

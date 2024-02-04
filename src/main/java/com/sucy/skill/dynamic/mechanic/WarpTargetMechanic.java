@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * Warp to a target
  */
-public class WarpTargetMechanic extends MechanicComponent {
+public class WarpTargetMechanic extends AbstractWarpingMechanic {
     private static final String TYPE = "type";
 
     @Override
@@ -59,9 +59,9 @@ public class WarpTargetMechanic extends MechanicComponent {
         boolean toCaster = settings.getString(TYPE, "caster to target").toLowerCase().equals("target to caster");
         for (LivingEntity target : targets) {
             if (toCaster) {
-                target.teleport(caster);
+                warp(target, caster.getLocation());
             } else {
-                caster.teleport(target);
+                warp(caster, target.getLocation());
             }
         }
         return !targets.isEmpty();

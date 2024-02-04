@@ -1,10 +1,10 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.WarpSwapMechanic
+ * com.sucy.skill.dynamic.mechanic.AbstractWarping
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2014 Steven Sucy
+ * Copyright (c) 2024 ProMCTeam
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -28,36 +28,21 @@ package com.sucy.skill.dynamic.mechanic;
 
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.util.Vector;
 
-import java.util.List;
+abstract class AbstractWarpingMechanic extends MechanicComponent {
+    protected static final String PRESERVE = "preserve";
 
-/**
- * Swaps to entities
- */
-public class WarpSwapMechanic extends AbstractWarpingMechanic {
-    @Override
-    public String getKey() {
-        return "warp swap";
+    public boolean preserveVelocity() {
+        return settings.getBool(PRESERVE, false);
     }
 
-    /**
-     * Executes the component
-     *
-     * @param caster  caster of the skill
-     * @param level   level of the skill
-     * @param targets targets to apply to
-     * @param force
-     * @return true if applied to something, false otherwise
-     */
-    @Override
-    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (!targets.isEmpty()) {
-            Location tloc = targets.get(0).getLocation();
-            Location cloc = caster.getLocation();
-            warp(targets.get(0), cloc);
-            warp(caster, tloc);
-            return true;
+    public void warp(LivingEntity target, Location location) {
+        Vector velocity = target.getVelocity().clone();
+        target.teleport(location);
+
+        if (preserveVelocity()) {
+            target.setVelocity(velocity);
         }
-        return false;
     }
 }

@@ -37,7 +37,7 @@ import java.util.List;
 /**
  * Warps a random distance
  */
-public class WarpRandomMechanic extends MechanicComponent {
+public class WarpRandomMechanic extends AbstractWarpingMechanic {
     private static final String WALL       = "walls";
     private static final String HORIZONTAL = "horizontal";
     private static final String DISTANCE   = "distance";
@@ -58,7 +58,7 @@ public class WarpRandomMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0) {
+        if (targets.isEmpty()) {
             return false;
         }
 
@@ -81,9 +81,9 @@ public class WarpRandomMechanic extends MechanicComponent {
             if (!loc.getBlock().getType().isSolid() && loc.getBlock().getRelative(BlockFace.DOWN).getType().isSolid()) {
                 loc.add(0, 1, 0);
             }
-            target.teleport(loc.subtract(0, 1, 0));
+            warp(target, loc.subtract(0, 1, 0));
         }
-        return targets.size() > 0;
+        return !targets.isEmpty();
     }
 
     private double rand(double distance) {

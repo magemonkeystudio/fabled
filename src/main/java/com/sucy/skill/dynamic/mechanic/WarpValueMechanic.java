@@ -44,7 +44,7 @@ import java.util.function.Supplier;
 /**
  * Applies a flag to each target
  */
-public class WarpValueMechanic extends MechanicComponent {
+public class WarpValueMechanic extends AbstractWarpingMechanic {
     private static final String KEY = "key";
 
     @Override
@@ -79,7 +79,7 @@ public class WarpValueMechanic extends MechanicComponent {
         Location loc = parseLocation(caster);
         if (loc == null) return false;
         for (LivingEntity target : targets) {
-            target.teleport(loc);
+            warp(target, loc);
         }
         return true;
     }

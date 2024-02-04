@@ -44,7 +44,7 @@ import java.util.function.Supplier;
 /**
  * Warps the target to a location
  */
-public class WarpLocMechanic extends MechanicComponent {
+public class WarpLocMechanic extends AbstractWarpingMechanic {
     private static final String WORLD = "world";
     private static final String X     = "x";
     private static final String Y     = "y";
@@ -95,7 +95,7 @@ public class WarpLocMechanic extends MechanicComponent {
         if (loc == null) return false;
 
         for (LivingEntity target : targets) {
-            target.teleport(loc);
+            warp(target, loc);
         }
         return true;
     }
