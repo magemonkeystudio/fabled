@@ -170,6 +170,7 @@ public class ComponentRegistry {
         register(new MessageMechanic());
         register(new MineMechanic());
         register(new MoneyMechanic());
+        register(new MountMechanic());
         register(new ParticleMechanic());
         register(new ParticleAnimationMechanic());
         register(new ParticleEffectMechanic());
@@ -188,7 +189,9 @@ public class ComponentRegistry {
         register(new StatMechanic());
         register(new SoundMechanic());
         register(new StatusMechanic());
+        register(new SummonMechanic());
         register(new TauntMechanic());
+        register(new ThrowMechanic());
         register(new TriggerMechanic());
         register(new ValueAddMechanic());
         register(new ValueAttributeMechanic());
