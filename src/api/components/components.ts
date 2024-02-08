@@ -4074,7 +4074,7 @@ class SignalEmitMechanic extends ProMechanic {
 					.setTooltip('Arguments used for signal processing. One value per line. The value will be stored in value api-arg[<index>]. The first value will be specially stored at api-arg')
 			],
 			summaryItems: ['signal', 'handler', 'argument']
-		}, true);
+		}, false);
 	}
 
 	public static override new = () => new this();
