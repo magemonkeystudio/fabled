@@ -110,7 +110,7 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
      * @return true if can cast, false otherwise
      */
     public boolean canCast() {
-        return castTriggers != null;
+        return castTriggers != null && !castTriggers.isEmpty();
     }
 
     /**
