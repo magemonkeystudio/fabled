@@ -196,17 +196,18 @@ export class YAMLObject {
 	};
 
 	public toString =
-					 (): string => this.toYaml(this.key || this.data.name ? '\'' + (this.key || this.data.name) + '\'' : undefined, this.data);
+					 (): string => this.toYaml(this.key || this.data.name ? '"' + (this.key || this.data.name) + '"' : undefined, this.data);
 
 	/**
 	 * Creates and returns a save string for the class
 	 */
 	public toYaml = (key: string | undefined, obj: any, id: MutableString = new MutableString('a'), spaces = ''): string => {
 		if (obj instanceof YAMLObject) {
-			return obj.toYaml('\'' + (key ?? obj.key) + '\'', obj.data, id, spaces);
+			return obj.toYaml('"' + (key ?? obj.key) + '"', obj.data, id, spaces);
 		}
 
 		let saveString = '';
+		const root     = spaces === '';
 
 		if (key) {
 			saveString += spaces + key + ':\n';
@@ -219,26 +220,34 @@ export class YAMLObject {
 			if (object instanceof Object) {
 				if (Object.keys(object).includes('toYaml')) {
 					if (object instanceof YAMLObject) {
-						saveString += object.toYaml('\'' + e + '\'', object.data, id, spaces);
+						saveString += object.toYaml('"' + e + '"', object.data, id, spaces);
 						continue;
-					} else
+					} else { // Attributes
 						str = object.toYaml(spaces);
+					}
 				} else if (object instanceof Array) {
 					str = this.convertArray(e, id, spaces, object);
 				}
 			} else {
 				const ostr: string = JSON.stringify(object);
-				str                = spaces + e + ': ' + ostr + '\n';
+				str = spaces + e + ': ' + ostr + '\n';
 			}
 
 			if (str) {
-				saveString +=
-					str.replaceAll(/(\\)?'/g, '\\\'')
+				if (!root) {
+					console.log('returning', str);
+					saveString += str;
+				} else {
+					saveString += str.replaceAll(/(\\)?'/g, '\\\\\'')
 						.replaceAll(/((\\)?")/g, s => s.length == 1 ? '\'' : s)
 						.replaceAll(/\\"/g, '"')
-						.replace(/\\\\/g, '\\');
+						.replaceAll(/\\\\/g, '\\');
+					console.log(saveString);
+				}
 			}
 		}
+
+		console.log('final', saveString);
 		return saveString;
 	};
 
@@ -251,7 +260,7 @@ export class YAMLObject {
 
 	private convertArray(e: string, id: MutableString, spaces: string, object: any[]): string {
 		if (e != 'attributes') {
-			let str: string = spaces + e + ':';
+			let str: string = spaces + '"' + e + '":';
 			// If we have primitive types, we can pretty accurately parse them.
 			if (['string', 'number'].includes(typeof (object[0]))) {
 				if (object.length > 0) {
@@ -271,7 +280,7 @@ export class YAMLObject {
 						id.set(this.nextChar(id.get()));
 						str += this.toYaml(obj.name + '-' + current, obj.toYamlObj(), id, spaces + '  ');
 					});
-					return str.replaceAll(/'/g, '"');
+					return str; // 	.replaceAll(/'/g, '"');
 				}
 				// Everything else, we'll just ignore for now.
 			} else {
