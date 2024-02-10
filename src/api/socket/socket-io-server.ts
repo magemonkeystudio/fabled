@@ -5,9 +5,31 @@ interface SocketProps {
 	serverId?: string;
 	clientId?: string;
 	sessionId?: string;
+	timeoutTask?: NodeJS.Timeout;
+	warningTask?: NodeJS.Timeout;
 }
 
 type IDSocket = Socket & SocketProps;
+
+const serverTimeout = 60000 * 30; // 30 minutes
+const clientWarning = 60000 * 14; // 5 minutes
+const clientTimeout = 60000 * 15; // 15 minutes
+
+const resetTimeout = (socket: IDSocket) => {
+	if (socket.serverId) {
+		if (socket.timeoutTask) clearTimeout(socket.timeoutTask);
+		socket.timeoutTask = setTimeout(() => socket.disconnect(true), serverTimeout);
+	} else if (socket.clientId) {
+		if (socket.timeoutTask) clearTimeout(socket.timeoutTask);
+		socket.timeoutTask = setTimeout(() => socket.disconnect(true), clientTimeout);
+
+		if (socket.warningTask) clearTimeout(socket.warningTask);
+		socket.warningTask = setTimeout(() => socket.emit('warn', {
+			content: Date.now() + (clientTimeout - clientWarning),
+			from:    'server'
+		}), clientWarning);
+	}
+};
 
 export const webSocketServer = {
 	name: 'webSocketServer',
@@ -77,7 +99,11 @@ export const webSocketServer = {
 							.then((args) => callback(args))
 							.catch((err: string) => callback(err));
 					})
-					.on('exportAll', ({ to, classYaml, skillYaml }: { to: string, classYaml: string, skillYaml: string}, callback) => {
+					.on('exportAll', ({ to, classYaml, skillYaml }: {
+						to: string,
+						classYaml: string,
+						skillYaml: string
+					}, callback) => {
 						console.log('Exporting all to server:', to);
 						socket.to(to).timeout(4000).emitWithAck('exportAll', { classYaml, skillYaml, from: socket.clientId })
 							.then((args) => callback(args))
@@ -99,6 +125,7 @@ export const webSocketServer = {
 							});
 					})
 					.onAny((event: string, args: { message: never; to: string }) => {
+						resetTimeout(socket);
 						if (event !== 'disconnect' && event !== 'reload' && event !== 'saveSkill' && event !== 'saveClass' && event !== 'exportAll' && event !== 'trust') {
 							console.log(event, args);
 							const relay = {

@@ -12,14 +12,13 @@ type SocketMessage = {
 export const messages: Writable<SocketMessage[]> = writable<SocketMessage[]>([]);
 export const socketConnected: Writable<boolean>  = writable<boolean>(false);
 export const socketTrusted: Writable<boolean>    = writable<boolean>(false);
-const dcTimeout                                  = 10 * 60 * 1000;
+export const dcWarning: Writable<number>         = writable<number>(-1);
 
 class SocketService {
 	private socket: Socket | null;
 	private sessionId                     = '';
 	private clientId                      = '';
 	private serverId                      = '';
-	private _dcTask: number               = 0;
 	private _onConnect: (() => void)[]    = [];
 	private _onDisconnect: (() => void)[] = [];
 
@@ -65,7 +64,8 @@ class SocketService {
 		this.clientId   = clientName;
 		const clientKey = Math.floor(10000 + Math.random() * 90000).toString();
 
-		this.socket = io('wss://synthesis.travja.dev', {
+		this.socket = io('ws://localhost:5173', {
+			// this.socket = io('wss://synthesis.travja.dev', {
 			auth: {
 				sessionId: this.sessionId,
 				clientId:  this.clientId,
@@ -73,17 +73,14 @@ class SocketService {
 			}
 		});
 
-		this.socket.on('connect', () => {
-			this._dcTask = <number><unknown>setTimeout(() => this.disconnect(), dcTimeout);
-			this.keyphrase.set(clientKey);
-		});
+		this.socket.on('connect', () => this.keyphrase.set(clientKey));
 		this.socket.on('disconnect', () => {
-			if (this._dcTask) clearTimeout(this._dcTask);
 			socketConnected.set(false);
 			this._onDisconnect.forEach(cb => cb());
 			const disconnectMsg = { id: {}, content: 'Disconnected' };
 			messages.set([disconnectMsg, ...get(messages)]);
 			setTimeout(() => messages.set(get(messages).filter(m => m !== disconnectMsg)), 5000);
+			dcWarning.set(-1);
 		});
 
 		this.socket?.on('trust', (args, callback) => {
@@ -107,9 +104,10 @@ class SocketService {
 			.onAny((event, args) => {
 				if (!get(socketTrusted)) return;
 
-				// Disconnect the socket after inactivity
-				clearTimeout(this._dcTask);
-				this._dcTask = <number><unknown>setTimeout(() => this.disconnect(), dcTimeout);
+				if (event === 'warn') {
+					console.log(args);
+					dcWarning.set(args?.content);
+				}
 
 				const message: SocketMessage = {
 					id:      {},
@@ -126,6 +124,12 @@ class SocketService {
 		if (!this.socket) return;
 		this.socket.disconnect();
 		this.socket = null;
+	}
+
+	public ping() {
+		if (!this.socket) return;
+		this.socket.emit('ping', { to: this.serverId });
+		dcWarning.set(-1);
 	}
 
 	public emit(event: string, args?: object) {

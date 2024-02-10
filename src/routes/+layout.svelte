@@ -24,7 +24,7 @@
 	import { activeModal, closeModal, modalData, openModal }                 from '../data/modal-service';
 	import SettingsModal
 																																					 from '$components/modal/SettingsModal.svelte';
-	import { socketConnected, socketService, socketTrusted }                 from '$api/socket/socket-connector';
+	import { dcWarning, socketConnected, socketService, socketTrusted }      from '$api/socket/socket-connector';
 	import { quadInOut }                                                     from 'svelte/easing';
 	import Modal                                                             from '$components/Modal.svelte';
 
@@ -46,6 +46,22 @@
 	let numButtons   = derived<Writable<boolean>, number>(socketConnected, (connected, set) => set(connected ? 6 : 3));
 	let rotation     = derived<Readable<number>, number>(numButtons, (numButtons, set) => set(120 / ((numButtons - 1) * 2)));
 	let distance     = derived<Readable<number>, number>(numButtons, (numButtons, set) => set((4.725 * (numButtons - 1) + 1.5) / Math.PI));
+	let dcTime       = derived<Readable<number>, number>(dcWarning, (dcWarning, set) => {
+		let interval: number;
+		const setTime = () => {
+			let time = dcWarning - Date.now();
+			if (time <= 0) {
+				window.clearInterval(interval);
+				return set(0);
+			}
+			set(Math.round(time / 1000));
+		};
+
+		setTime();
+
+		interval = window.setInterval(() => setTime(), 1000);
+		return () => clearInterval(interval);
+	});
 
 	onMount(() => {
 		if (!browser) return;
@@ -300,6 +316,19 @@
 	</div>
 </Modal>
 
+{#if $dcWarning > 0}
+	<div class='dc-warning' transition:fly={{y: -20}}>
+		<strong>You will lose connection in { $dcTime } seconds</strong>
+		<div class='button'
+				 tabindex='0'
+				 role='button'
+				 on:click={() => socketService.ping()}
+				 on:keypress={(e) => { if (e.key === 'Enter') socketService.ping() }}
+		>Click to remain connected
+		</div>
+	</div>
+{/if}
+
 <style>
     @property --rotation {
         syntax: "<angle>";
@@ -460,5 +489,27 @@
 
     .code.copied {
         background-color: #36ab36;
+    }
+
+    .dc-warning {
+        position: fixed;
+        z-index: 100;
+        top: 0.75rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(255, 29, 29, 0.6);
+        backdrop-filter: blur(5px);
+        border-radius: 0.75rem;
+        padding: 0.75rem;
+        box-shadow: inset 0 0 5px #222;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .dc-warning > .button {
+        background-color: #555555;
     }
 </style>
