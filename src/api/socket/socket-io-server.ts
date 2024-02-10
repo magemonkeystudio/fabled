@@ -5,31 +5,12 @@ interface SocketProps {
 	serverId?: string;
 	clientId?: string;
 	sessionId?: string;
-	timeoutTask?: NodeJS.Timeout;
-	warningTask?: NodeJS.Timeout;
 }
 
 type IDSocket = Socket & SocketProps;
 
-const serverTimeout = 60000 * 30; // 30 minutes
-const clientWarning = 60000 * 14; // 5 minutes
-const clientTimeout = 60000 * 15; // 15 minutes
-
-const resetTimeout = (socket: IDSocket) => {
-	if (socket.serverId) {
-		if (socket.timeoutTask) clearTimeout(socket.timeoutTask);
-		socket.timeoutTask = setTimeout(() => socket.disconnect(true), serverTimeout);
-	} else if (socket.clientId) {
-		if (socket.timeoutTask) clearTimeout(socket.timeoutTask);
-		socket.timeoutTask = setTimeout(() => socket.disconnect(true), clientTimeout);
-
-		if (socket.warningTask) clearTimeout(socket.warningTask);
-		socket.warningTask = setTimeout(() => socket.emit('warn', {
-			content: Date.now() + (clientTimeout - clientWarning),
-			from:    'server'
-		}), clientWarning);
-	}
-};
+const serverTimeout = 30; // 30 minutes
+const clientTimeout = 15; // 15 minutes
 
 export const webSocketServer = {
 	name: 'webSocketServer',
@@ -72,6 +53,7 @@ export const webSocketServer = {
 			})
 			.on('connection', (socket: IDSocket) => {
 				socket.emit('message', { message: '👋 Welcome, ' + (socket.serverId || socket.clientId), from: 'server' });
+				socket.emit('setTimeout', { time: socket.serverId ? serverTimeout : clientTimeout, from: 'server' });
 
 				socket
 					.on('disconnect', () => console.log(socket.serverId || socket.clientId, 'disconnected'))
@@ -125,18 +107,18 @@ export const webSocketServer = {
 							});
 					})
 					.onAny((event: string, args: { message: never; to: string }) => {
-						resetTimeout(socket);
-						if (event !== 'disconnect' && event !== 'reload' && event !== 'saveSkill' && event !== 'saveClass' && event !== 'exportAll' && event !== 'trust') {
-							console.log(event, args);
-							const relay = {
-								content: args?.message || args,
-								from:    socket.serverId || socket.clientId
-							};
-							if (args?.to) {
-								socket.to(args?.to).emit(event, relay);
-							} else {
-								socket.broadcast.emit(event, relay);
-							}
+						// no-op
+						if (event === 'setTimeout' || event === 'disconnect' || event === 'reload' || event === 'saveSkill' || event === 'saveClass' || event === 'exportAll' || event === 'trust') return;
+
+						console.log(event, args);
+						const relay = {
+							content: args?.message || args,
+							from:    socket.serverId || socket.clientId
+						};
+						if (args?.to) {
+							socket.to(args?.to).emit(event, relay);
+						} else {
+							socket.broadcast.emit(event, relay);
 						}
 					});
 			});

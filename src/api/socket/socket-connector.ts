@@ -19,6 +19,9 @@ class SocketService {
 	private sessionId                     = '';
 	private clientId                      = '';
 	private serverId                      = '';
+	private dcTimeout                     = 4 * 60 * 1000;
+	private _dcTask: number | null        = null;
+	private _dcWarningTask: number | null = null;
 	private _onConnect: (() => void)[]    = [];
 	private _onDisconnect: (() => void)[] = [];
 
@@ -73,13 +76,17 @@ class SocketService {
 			}
 		});
 
-		this.socket.on('connect', () => this.keyphrase.set(clientKey));
+		this.socket.on('connect', () => {
+			this.resetTimeout();
+			this.keyphrase.set(clientKey);
+		});
 		this.socket.on('disconnect', () => {
 			socketConnected.set(false);
 			this._onDisconnect.forEach(cb => cb());
 			const disconnectMsg = { id: {}, content: 'Disconnected' };
 			messages.set([disconnectMsg, ...get(messages)]);
 			setTimeout(() => messages.set(get(messages).filter(m => m !== disconnectMsg)), 5000);
+			if (this._dcTask) clearTimeout(this._dcTask);
 			dcWarning.set(-1);
 		});
 
@@ -102,12 +109,14 @@ class SocketService {
 
 		this.socket
 			.onAny((event, args) => {
+				if (event === 'setTimeout') {
+					this.dcTimeout = (args?.time || 4) * 60 * 1000;
+					return;
+				}
+
 				if (!get(socketTrusted)) return;
 
-				if (event === 'warn') {
-					console.log(args);
-					dcWarning.set(args?.content);
-				}
+				this.resetTimeout();
 
 				const message: SocketMessage = {
 					id:      {},
@@ -115,6 +124,7 @@ class SocketService {
 					from:    args?.from,
 					content: args?.content || args?.message
 				};
+
 				messages.set([message, ...get(messages)]);
 				setTimeout(() => messages.set(get(messages).filter(m => m !== message)), 5000);
 			});
@@ -126,16 +136,30 @@ class SocketService {
 		this.socket = null;
 	}
 
+	public resetTimeout() {
+		if (this._dcTask) window.clearTimeout(this._dcTask);
+		if (this._dcWarningTask) window.clearTimeout(this._dcWarningTask);
+		dcWarning.set(-1);
+
+		if (this.dcTimeout >= 60000) {
+			this._dcWarningTask = window.setTimeout(() => dcWarning.set(60), this.dcTimeout - 60000);
+		} else if (this.dcTimeout >= 1000) {
+			dcWarning.set(this.dcTimeout / 1000);
+		}
+
+		this._dcTask = window.setTimeout(() => this.socket?.disconnect(), this.dcTimeout);
+	}
+
 	public ping() {
 		if (!this.socket) return;
 		this.socket.emit('ping', { to: this.serverId });
-		dcWarning.set(-1);
+		this.resetTimeout();
 	}
 
 	public emit(event: string, args?: object) {
 		if (!this.socket || !get(socketTrusted)) return;
 		this.socket.emit(event, args);
-
+		this.resetTimeout();
 	}
 
 	public reloadSapi(): Promise<boolean> {
@@ -147,9 +171,10 @@ class SocketService {
 
 			this.socket.timeout(10000).emitWithAck('reload', { to: this.serverId })
 				.then((response) => {
-					if (response[0] === true)
+					if (response[0] === true) {
 						resolve(true);
-					else
+						this.resetTimeout();
+					} else
 						reject(response[0]);
 				})
 				.catch((err: string) => reject(err));
@@ -220,6 +245,8 @@ class SocketService {
 				console.log('Error saving skill', response);
 			}
 
+			this.resetTimeout();
+
 			return match;
 		} catch (e) {
 			console.log('Timeout saving skill to server', e);
@@ -235,6 +262,8 @@ class SocketService {
 			if (!match) {
 				console.log('Error saving class', response);
 			}
+
+			this.resetTimeout();
 
 			return match;
 		} catch (e) {
@@ -252,6 +281,8 @@ class SocketService {
 				skillYaml
 			});
 			if (response && !!response[0]) return !!response[0];
+
+			this.resetTimeout();
 
 			console.log('Error exporting all', response);
 			return false;

@@ -48,16 +48,17 @@
 	let distance     = derived<Readable<number>, number>(numButtons, (numButtons, set) => set((4.725 * (numButtons - 1) + 1.5) / Math.PI));
 	let dcTime       = derived<Readable<number>, number>(dcWarning, (dcWarning, set) => {
 		let interval: number;
+		let seconds   = 0;
 		const setTime = () => {
-			let time = dcWarning - Date.now();
+			let time = dcWarning - ++seconds;
 			if (time <= 0) {
-				window.clearInterval(interval);
-				return set(0);
+				clearInterval(interval);
+				return;
 			}
-			set(Math.round(time / 1000));
+			set(time);
 		};
 
-		setTime();
+		set(dcWarning);
 
 		interval = window.setInterval(() => setTime(), 1000);
 		return () => clearInterval(interval);
