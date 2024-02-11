@@ -45,13 +45,13 @@ export default class ProClass implements Serializable {
 	unusableItems: string[]    = [];
 	actionBar                  = '';
 
-	lInverted  = false;
-	rInverted  = false;
-	lsInverted = false;
-	rsInverted = false;
-	pInverted  = false;
-	qInverted  = false;
-	fInverted  = false;
+	lInverted  = true;
+	rInverted  = true;
+	lsInverted = true;
+	rsInverted = true;
+	pInverted  = true;
+	qInverted  = true;
+	fInverted  = true;
 
 	lWhitelist: string[]  = [];
 	rWhitelist: string[]  = [];
@@ -262,5 +262,6 @@ export default class ProClass implements Serializable {
 		}
 		this.previousName = this.name;
 		localStorage.setItem('sapi.class.' + this.name, yaml.toString());
+
 	};
 }
