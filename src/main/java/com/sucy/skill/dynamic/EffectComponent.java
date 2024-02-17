@@ -43,6 +43,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 /**
  * A component for dynamic skills which takes care of one effect
@@ -258,50 +259,19 @@ public abstract class EffectComponent {
     }
 
     protected String filter(LivingEntity caster, LivingEntity target, String text) {
-        // Grab values
-        int i = text.indexOf('{');
-        if (i < 0) {
-            return filterSpecialChars(text);
-        }
-
-        int j = text.indexOf('}', i);
-        if (j < 0) {
-            return filterSpecialChars(text);
-        }
-
-        StringBuilder       builder = new StringBuilder();
         CastData data    = DynamicSkill.getCastData(caster);
-
-        int k = 0;
-        while (i >= 0 && j > i) {
-            String key = text.substring(i + 1, j);
-            if (data.contains(key)) {
-                String obj = data.get(key);
-                builder.append(text, k, i);
-                builder.append(obj);
-
-                k = j + 1;
-            } else if (key.equals("player")) {
-                builder.append(text, k, i);
-                builder.append(caster.getName());
-
-                k = j + 1;
-            } else if (key.equals("target")) {
-                builder.append(text, k, i);
-                builder.append(target.getName());
-
-                k = j + 1;
-            } else if (key.equals("targetUUID")) {
-                builder.append(text, k, i);
-                builder.append(target.getUniqueId());
-
-                k = j + 1;
-            }
-            i = text.indexOf('{', j);
-            j = text.indexOf('}', i);
-        }
-        builder.append(text.substring(k));
-        return filterSpecialChars(builder.toString());
+        String pattern   = "\\{((\\{[^{}]+})|[^{}])+}";
+        return filterSpecialChars(Pattern.compile(pattern)
+                .matcher(text)
+                .replaceAll(match->{
+                    String key = match.group().substring(1,match.group().length()-1);
+                    if (key.matches(".*"+pattern+".*")) key = filter(caster, target, key);
+                    if (data.contains(key)) return data.get(key);
+                    else if (key.equals("player")) return caster.getName();
+                    else if (key.equals("target")) return target.getName();
+                    else if (key.equals("targetUUID")) return target.getUniqueId().toString();
+                    else return "{"+key+"}";
+                }));
     }
 
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets) {
