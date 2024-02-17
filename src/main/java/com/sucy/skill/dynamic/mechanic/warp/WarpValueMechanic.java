@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.WarpValueMechanic
+ * com.sucy.skill.dynamic.mechanic.warp.WarpValueMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,7 +24,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.warp;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.CastData;
@@ -79,7 +79,7 @@ public class WarpValueMechanic extends AbstractWarpingMechanic {
         Location loc = parseLocation(caster);
         if (loc == null) return false;
         for (LivingEntity target : targets) {
-            warp(target, loc);
+            warp(target, caster, loc, level);
         }
         return true;
     }

@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.WarpMechanic
+ * com.sucy.skill.dynamic.mechanic.warp.WarpMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,7 +24,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.warp;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.particle.ParticleHelper;
@@ -94,7 +94,7 @@ public class WarpMechanic extends AbstractWarpingMechanic {
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (targets.isEmpty()) return false;
         for (LivingEntity target : targets) {
-            warp(target, getLocation(caster, level, target));
+            warp(target, caster, getLocation(caster, level, target), level);
         }
         return true;
     }

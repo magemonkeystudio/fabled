@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.WarpTargetMechanic
+ * com.sucy.skill.dynamic.mechanic.warp.WarpTargetMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,7 +24,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.warp;
 
 import org.bukkit.entity.LivingEntity;
 
@@ -59,9 +59,9 @@ public class WarpTargetMechanic extends AbstractWarpingMechanic {
         boolean toCaster = settings.getString(TYPE, "caster to target").toLowerCase().equals("target to caster");
         for (LivingEntity target : targets) {
             if (toCaster) {
-                warp(target, caster.getLocation());
+                warp(target, caster, caster.getLocation(), level);
             } else {
-                warp(caster, target.getLocation());
+                warp(caster, caster, target.getLocation(), level);
             }
         }
         return !targets.isEmpty();
