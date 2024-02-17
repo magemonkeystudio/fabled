@@ -82,7 +82,7 @@ public class ArmorStandMechanic extends MechanicComponent {
                 } catch (NoSuchMethodError ignored) {
                 }
                 as.setGravity(gravity);
-                as.setCustomName(name);
+                as.setCustomName(filter(caster, target, name));
                 as.setCustomNameVisible(nameVisible);
                 as.setSmall(small);
                 as.setArms(arms);
@@ -105,7 +105,7 @@ public class ArmorStandMechanic extends MechanicComponent {
             } else {
                 instance = new ArmorStandInstance(as, target);
             }
-            ArmorStandManager.register(instance, target, key);
+            ArmorStandManager.register(instance, target, filter(caster, target, key));
         }
         executeChildren(caster, level, armorStands, force);
         new RemoveTask(armorStands, duration);

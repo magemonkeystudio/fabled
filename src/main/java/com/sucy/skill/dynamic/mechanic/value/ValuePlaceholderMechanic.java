@@ -40,7 +40,7 @@ public class ValuePlaceholderMechanic extends MechanicComponent {
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         final String key         = settings.getString(KEY);
-        final String placeholder = settings.getString(PLACEHOLDER);
+        final String placeholder = filter(caster, targets.get(0), settings.getString(PLACEHOLDER));
         final String type        = settings.getString(TYPE).toUpperCase(Locale.US);
 
         String value = placeholder;
