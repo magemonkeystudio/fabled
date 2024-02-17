@@ -382,7 +382,7 @@ public class MainListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPhysicalDamage_allyCheck(EntityDamageByEntityEvent event) {
-        if (event instanceof DefaultCombatProtection.FakeEntityDamageByEntityEvent) {
+        if (DefaultCombatProtection.isFakeDamageEvent(event)) {
             return;
         }
         if (event.getDamager() instanceof Player && event.getEntity() instanceof Player &&

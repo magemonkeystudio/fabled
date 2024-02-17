@@ -27,8 +27,7 @@ public class ShieldBlockListener extends SkillAPIListener {
      */
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof Player)
-                || event instanceof DefaultCombatProtection.FakeEntityDamageByEntityEvent) return;
+        if (!(event.getEntity() instanceof Player) || DefaultCombatProtection.isFakeDamageEvent(event)) return;
         Player player = (Player) event.getEntity();
         if (!player.isBlocking()) return;
         UUID player_uuid = player.getUniqueId();
