@@ -4145,7 +4145,7 @@ class StatMechanic extends ProMechanic {
 	public constructor() {
 		super({
 			name:         'Stat',
-			description:  'Gives a player bonus stat temporarily',
+			description:  'Gives a player bonus stat temporarily. All available <a href="https://github.com/promcteam/proskillapi/wiki/attributes#attribute-stats">attribute stats</a>',
 			data:         [
 				// new DropdownSelect('Stat', 'key', ['health',
 				//                                              'mana',
