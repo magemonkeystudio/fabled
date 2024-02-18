@@ -25,7 +25,7 @@
 	{#if data}
 		<h2 class:deprecated={data.isDeprecated}><span>{data.name}</span></h2>
 		{#if data.description}
-			<div class='modal-desc'>{data.description}</div>
+			<div class='modal-desc'>{@html data.description}</div>
 		{/if}
 		<hr />
 		<div class='component-entry'>
