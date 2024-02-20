@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.WarpTargetMechanic
+ * com.sucy.skill.dynamic.mechanic.value.ValueAddMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,21 +24,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.value;
 
+import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.CastData;
+import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.dynamic.mechanic.MechanicComponent;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
 
 /**
- * Warp to a target
+ * Adds to a cast data value
  */
-public class WarpTargetMechanic extends MechanicComponent {
-    private static final String TYPE = "type";
+public class ValueAddMechanic extends MechanicComponent {
+    private static final String KEY    = "key";
+    private static final String AMOUNT = "amount";
+    private static final String SAVE   = "save";
 
     @Override
     public String getKey() {
-        return "warp target";
+        return "value add";
     }
 
     /**
@@ -52,18 +59,20 @@ public class WarpTargetMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.isEmpty()) {
+        if (targets.isEmpty() || !settings.has(KEY)) {
             return false;
         }
 
-        boolean toCaster = settings.getString(TYPE, "caster to target").toLowerCase().equals("target to caster");
-        for (LivingEntity target : targets) {
-            if (toCaster) {
-                target.teleport(caster);
-            } else {
-                caster.teleport(target);
-            }
+        String   key    = settings.getString(KEY);
+        double   amount = parseValues(caster, AMOUNT, level, 1) * targets.size();
+        CastData data   = DynamicSkill.getCastData(caster);
+        if (!data.contains(key)) {
+            data.put(key, amount);
+        } else {
+            data.put(key, amount + data.getDouble(key));
         }
-        return !targets.isEmpty();
+        if (settings.getBool(SAVE, false))
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
+        return true;
     }
 }

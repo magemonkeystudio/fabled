@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.ValueLoreSlot
+ * com.sucy.skill.dynamic.mechanic.ValueMana
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,25 +24,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.value;
 
-import com.sucy.skill.dynamic.ItemChecker;
+import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.CastData;
+import com.sucy.skill.api.player.PlayerData;
+import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.dynamic.mechanic.MechanicComponent;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Map;
 
-public class ValueLoreSlotMechanic extends MechanicComponent {
-    private static final String KEY        = "key";
-    private static final String REGEX      = "regex";
-    private static final String MULTIPLIER = "multiplier";
-    private static final String SLOT       = "slot";
+public class ValueManaMechanic extends MechanicComponent {
+    private static final String KEY  = "key";
+    private static final String TYPE = "type";
     private static final String SAVE   = "save";
 
     @Override
     public String getKey() {
-        return "value lore slot";
+        return "value mana";
     }
 
     /**
@@ -56,17 +59,26 @@ public class ValueLoreSlotMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0 || !settings.has(KEY) || !(caster instanceof Player)) {
-            return false;
+        if (!(targets.get(0) instanceof Player)) return false;
+
+        final PlayerData          player = SkillAPI.getPlayerData((Player) targets.get(0));
+        final String              key    = settings.getString(KEY);
+        final String   type = settings.getString(TYPE, "current").toLowerCase();
+        final CastData data = DynamicSkill.getCastData(caster);
+
+        switch (type) {
+            case "max":
+                data.put(key, player.getMaxMana());
+            case "percent":
+                data.put(key, player.getMana() / player.getMaxMana());
+            case "missing":
+                data.put(key, player.getMaxMana() - player.getMana());
+            default: // current
+                data.put(key, player.getMana());
         }
 
-        String key        = settings.getString(KEY);
-        double multiplier = parseValues(caster, MULTIPLIER, level, 1);
-        int    slot       = settings.getInt(SLOT);
-        String regex      = settings.getString(REGEX, "Damage: {value}");
-
-        ItemStack item = ((Player) caster).getInventory().getItem(slot);
-
-        return ItemChecker.findLore(caster, item, regex, key, multiplier, settings.getBool(SAVE, false));
+        if (settings.getBool(SAVE, false))
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.getRaw(key));
+        return true;
     }
 }

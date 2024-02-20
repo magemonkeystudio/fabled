@@ -1,10 +1,10 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.ValueSetMechanic
+ * com.sucy.skill.dynamic.mechanic.value.ValueRoundMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2014 Steven Sucy
+ * Copyright (c) 2024 ProMCTeam
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -24,30 +24,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.value;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.dynamic.mechanic.MechanicComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Locale;
 
 /**
  * Adds to a cast data value
  */
-public class ValueRandomMechanic extends MechanicComponent {
+public class ValueRoundMechanic extends MechanicComponent {
     private static final String KEY  = "key";
     private static final String TYPE = "type";
-    private static final String MIN  = "min";
-    private static final String MAX  = "max";
-    private static final String INT  = "integer";
-    private static final String SAVE   = "save";
+    private static final String SAVE = "save";
 
     @Override
     public String getKey() {
-        return "value random";
+        return "value round";
     }
 
     /**
@@ -65,27 +64,27 @@ public class ValueRandomMechanic extends MechanicComponent {
             return false;
         }
 
-        String  key        = settings.getString(KEY);
-        boolean triangular = settings.getString(TYPE).equalsIgnoreCase("triangular");
+        String   key  = settings.getString(KEY);
+        String   type = settings.getString(TYPE).toUpperCase(Locale.US);
+        CastData data = DynamicSkill.getCastData(caster);
+        if (data.contains(key)) {
+            double value = data.getDouble(key);
+            switch (type) {
+                case "ROUND":
+                    value = Math.round(value);
+                    break;
+                case "CEILING":
+                    value = Math.ceil(value);
+                    break;
+                case "FLOOR":
+                    value = Math.floor(value);
+                    break;
+            }
 
-        Map<String, Object> data = DynamicSkill.getCastData(caster);
-        if (settings.getBool(INT, false)) {
-            int  min        = (int) Math.ceil(parseValues(caster, MIN, level, 1));
-            int  max        = (int) Math.floor(parseValues(caster, MAX, level, 1));
-            if (triangular) {
-                int middle = SkillAPI.RANDOM.nextInt(max-min+1)+min+SkillAPI.RANDOM.nextInt(max-min+1)+min;
-                middle = middle/2 + (middle%2 == 1 ? (Math.random() < 0.5 ? 1 : 0) : 0);
-                data.put(key, middle);
-            } else data.put(key, SkillAPI.RANDOM.nextInt(max-min+1)+min);
-        } else {
-            double  min        = parseValues(caster, MIN, level, 1);
-            double  max        = parseValues(caster, MAX, level, 1);
-            double rand = triangular ? 0.5 * (Math.random() + Math.random()) : Math.random();
-            data.put(key, rand * (max - min) + min);
+            data.put(key, value);
         }
-
         if (settings.getBool(SAVE, false))
-            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.get(key));
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;
     }
 }

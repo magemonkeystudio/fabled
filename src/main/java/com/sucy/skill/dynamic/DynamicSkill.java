@@ -28,6 +28,7 @@ package com.sucy.skill.dynamic;
 
 import com.google.common.collect.ImmutableList;
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.api.event.DynamicTriggerEvent;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.skills.PassiveSkill;
@@ -54,14 +55,14 @@ import static com.sucy.skill.dynamic.ComponentRegistry.getTrigger;
  * A skill implementation for the Dynamic system
  */
 public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, Listener {
-    private static final Map<Integer, Map<String, Object>> castData   = new HashMap<>();
-    private final        List<TriggerHandler>              triggers   = new ArrayList<>();
-    private final        Map<String, EffectComponent>      attribKeys = new HashMap<>();
-    private final        Map<Integer, Integer>             active     = new HashMap<>();
-    private final        List<Integer>                     forced     = new ArrayList<>();
-    private              TriggerComponent                  castTrigger;
-    private              TriggerComponent                  initializeTrigger;
-    private              TriggerComponent                  cleanupTrigger;
+    private static final Map<Integer, CastData>       castData           = new HashMap<>();
+    private final        List<TriggerHandler>         triggers           = new ArrayList<>();
+    private final        Map<String, EffectComponent> attribKeys         = new HashMap<>();
+    private final        Map<Integer, Integer>        active             = new HashMap<>();
+    private final        List<Integer>                forced             = new ArrayList<>();
+    private              List<TriggerComponent>       castTriggers       = new ArrayList<>();
+    private              List<TriggerComponent>       initializeTriggers = new ArrayList<>();
+    private              List<TriggerComponent>       cleanupTriggers    = new ArrayList<>();
 
     private boolean cancel     = false;
     private double  multiplier = 1;
@@ -82,17 +83,16 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
      * @param caster caster to get the data for
      * @return cast data for the caster
      */
-    public static Map<String, Object> getCastData(final LivingEntity caster) {
+    public static CastData getCastData(final LivingEntity caster) {
         if (caster == null) {
             return null;
         }
-        Map<String, Object> map = castData.get(caster.getEntityId());
-        if (map == null) {
-            map = new HashMap<>();
-            map.put("caster", caster);
-            castData.put(caster.getEntityId(), map);
+        CastData entCastData = castData.get(caster.getEntityId());
+        if (entCastData == null) {
+            entCastData = new CastData(caster);
+            castData.put(caster.getEntityId(), entCastData);
         }
-        return map;
+        return entCastData;
     }
 
     /**
@@ -110,7 +110,7 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
      * @return true if can cast, false otherwise
      */
     public boolean canCast() {
-        return castTrigger != null;
+        return castTriggers != null && !castTriggers.isEmpty();
     }
 
     /**
@@ -212,7 +212,9 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
      */
     @Override
     public void initialize(final LivingEntity user, final int level) {
-        trigger(user, user, level, initializeTrigger);
+        for (TriggerComponent initializeTrigger : initializeTriggers) {
+            trigger(user, user, level, initializeTrigger);
+        }
         Bukkit.getPluginManager().callEvent(new DynamicTriggerEvent(user, this, null, "initialize"));
         active.put(user.getEntityId(), level);
         for (final TriggerHandler triggerHandler : triggers) {
@@ -233,11 +235,19 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
         for (final TriggerHandler triggerHandler : triggers) {
             triggerHandler.cleanup(user);
         }
-        cleanup(user, castTrigger);
-        cleanup(user, initializeTrigger);
+        cleanup(user, castTriggers);
+        cleanup(user, initializeTriggers);
 
-        trigger(user, user, 1, cleanupTrigger);
+        for (TriggerComponent cleanupTrigger : cleanupTriggers) {
+            trigger(user, user, 1, cleanupTrigger);
+        }
         Bukkit.getPluginManager().callEvent(new DynamicTriggerEvent(user, this, null, "cleanup"));
+    }
+
+    private void cleanup(final LivingEntity user, final List<TriggerComponent> components) {
+        if (components == null) return;
+
+        components.forEach(component -> cleanup(user, component));
     }
 
     private void cleanup(final LivingEntity user, final TriggerComponent component) {
@@ -254,17 +264,23 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
      * @param user  user of the skill
      * @param level skill level
      * @param force
-     * @return true if casted successfully, false if conditions weren't met or no effects are using the cast trigger
+     * @return true if cast successfully, false if conditions weren't met or no effects are using the cast trigger
      */
     @Override
     public boolean cast(final LivingEntity user, final int level, boolean force) {
         if (!force && !SkillAPI.getSettings().isWorldEnabled(user.getWorld())) return false;
         if (force && !isForced(user)) forced.add(user.getEntityId());
-        if (trigger(user, user, level, castTrigger, force)) {
-            Bukkit.getPluginManager().callEvent(new DynamicTriggerEvent(user, this, null, "cast"));
-            return true;
-        } return false;
 
+        boolean cast = false;
+        for (TriggerComponent castTrigger : castTriggers) {
+            boolean result = trigger(user, user, level, castTrigger, force);
+            cast = cast || result;
+        }
+
+        if (!cast) return false;
+
+        Bukkit.getPluginManager().callEvent(new DynamicTriggerEvent(user, this, null, "cast"));
+        return true;
     }
 
     @Override
@@ -277,14 +293,17 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
      */
     @Override
     public void playPreview(PlayerData playerData, int level) {
-        if (castTrigger != null) {
-            List<Runnable> onPreviewStop = new ArrayList<>();
+        if (castTriggers == null || castTriggers.isEmpty())
+            return;
+
+        List<Runnable> onPreviewStop = new ArrayList<>();
+        for (TriggerComponent castTrigger : castTriggers) {
             castTrigger.playChildrenPreviews(onPreviewStop,
                     playerData.getPlayer(),
                     level,
                     () -> ImmutableList.of(playerData.getPlayer()));
-            playerData.setOnPreviewStop(() -> onPreviewStop.forEach(Runnable::run));
         }
+        playerData.setOnPreviewStop(() -> onPreviewStop.forEach(Runnable::run));
     }
 
     /**
@@ -363,16 +382,20 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
             return;
         }
 
+        castTriggers.clear();
+        initializeTriggers.clear();
+        cleanupTriggers.clear();
+
         for (final String key : triggers.keys()) {
             final String modified = key.replaceAll("-.+", "");
             try {
                 final DataSection settings = triggers.getSection(key);
                 if (modified.equalsIgnoreCase("CAST")) {
-                    castTrigger = loadComponent(settings);
+                    castTriggers.add(loadComponent(settings));
                 } else if (modified.equalsIgnoreCase("INITIALIZE")) {
-                    initializeTrigger = loadComponent(settings);
+                    initializeTriggers.add(loadComponent(settings));
                 } else if (modified.equalsIgnoreCase("CLEANUP")) {
-                    cleanupTrigger = loadComponent(settings);
+                    cleanupTriggers.add(loadComponent(settings));
                 } else {
                     this.triggers.add(new TriggerHandler(this, key, getTrigger(modified), loadComponent(settings)));
                 }
@@ -404,9 +427,18 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
             triggerHandler.getComponent()
                     .save(triggers.createSection(TextFormatter.format(triggerHandler.getKey())));
         }
-        save(triggers, castTrigger, "Cast");
-        save(triggers, initializeTrigger, "Initialize");
-        save(triggers, cleanupTrigger, "Cleanup");
+        for (int i = 0; i < castTriggers.size(); i++) {
+            TriggerComponent castTrigger = castTriggers.get(i);
+            save(triggers, castTrigger, "Cast-" + i);
+        }
+        for (int i = 0; i < initializeTriggers.size(); i++) {
+            TriggerComponent initializeTrigger = initializeTriggers.get(i);
+            save(triggers, initializeTrigger, "Initialize-" + i);
+        }
+        for (int i = 0; i < cleanupTriggers.size(); i++) {
+            TriggerComponent cleanupTrigger = cleanupTriggers.get(i);
+            save(triggers, cleanupTrigger, "Cleanup-" + i);
+        }
     }
 
     private void save(final DataSection triggers, final TriggerComponent component, final String key) {

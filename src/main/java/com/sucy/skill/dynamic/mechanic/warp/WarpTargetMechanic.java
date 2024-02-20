@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.ValueSetMechanic
+ * com.sucy.skill.dynamic.mechanic.warp.WarpTargetMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,28 +24,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.warp;
 
-import com.sucy.skill.SkillAPI;
-import com.sucy.skill.api.player.PlayerData;
-import com.sucy.skill.dynamic.DynamicSkill;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
-import java.util.Map;
 
 /**
- * Load data from persistent data into cast data
+ * Warp to a target
  */
-public class ValueLoadMechanic extends MechanicComponent {
-    private static final String KEY   = "key";
-    private static final String OVERRIDE = "override";
-    private static final String SAVE   = "save";
+public class WarpTargetMechanic extends AbstractWarpingMechanic {
+    private static final String TYPE = "type";
 
     @Override
     public String getKey() {
-        return "value load";
+        return "warp target";
     }
 
     /**
@@ -59,16 +52,18 @@ public class ValueLoadMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        String              key   = settings.getString(KEY);
-        boolean             override = settings.getBool(OVERRIDE);
-        Map<String, Object> data  = DynamicSkill.getCastData(caster);
-        PlayerData playerData = SkillAPI.getPlayerData((OfflinePlayer) caster);
-        if (!playerData.getAllPersistentData().containsKey(key)) return false;
-        if (!data.containsKey(key) || override) {
-            data.put(key, playerData.getPersistentData(key));
+        if (targets.isEmpty()) {
+            return false;
         }
-        if (!override && settings.getBool(SAVE, false))
-            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.get(key));
-        return true;
+
+        boolean toCaster = settings.getString(TYPE, "caster to target").toLowerCase().equals("target to caster");
+        for (LivingEntity target : targets) {
+            if (toCaster) {
+                warp(target, caster, caster.getLocation(), level);
+            } else {
+                warp(caster, caster, target.getLocation(), level);
+            }
+        }
+        return !targets.isEmpty();
     }
 }

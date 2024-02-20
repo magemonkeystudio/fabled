@@ -1,13 +1,13 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.ValueHealth
+ * com.sucy.skill.dynamic.mechanic.value.ValueSetMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2016 Steven Sucy
+ * Copyright (c) 2014 Steven Sucy
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
+ * of this software and associated documentation files (the "Software") to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
@@ -24,24 +24,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.value;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.dynamic.mechanic.MechanicComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
 import java.util.Map;
 
-public class ValueHealthMechanic extends MechanicComponent {
+/**
+ * Adds to a cast data value
+ */
+public class ValueRandomMechanic extends MechanicComponent {
     private static final String KEY  = "key";
     private static final String TYPE = "type";
+    private static final String MIN  = "min";
+    private static final String MAX  = "max";
+    private static final String INT  = "integer";
     private static final String SAVE   = "save";
 
     @Override
     public String getKey() {
-        return "value health";
+        return "value random";
     }
 
     /**
@@ -55,26 +63,31 @@ public class ValueHealthMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        final String              key  = settings.getString(KEY);
-        final String              type = settings.getString(TYPE, "current").toLowerCase();
-        final Map<String, Object> data = DynamicSkill.getCastData(caster);
-
-        final LivingEntity target = targets.get(0);
-        switch (type) {
-            case "max":
-                data.put(key, target.getMaxHealth());
-                break;
-            case "percent":
-                data.put(key, target.getHealth() / target.getMaxHealth());
-                break;
-            case "missing":
-                data.put(key, target.getMaxHealth() - target.getHealth());
-                break;
-            default: // current
-                data.put(key, target.getHealth());
+        if (targets.isEmpty() || !settings.has(KEY)) {
+            return false;
         }
+
+        String  key        = settings.getString(KEY);
+        boolean triangular = settings.getString(TYPE).equalsIgnoreCase("triangular");
+
+        CastData data = DynamicSkill.getCastData(caster);
+        if (settings.getBool(INT, false)) {
+            int  min        = (int) Math.ceil(parseValues(caster, MIN, level, 1));
+            int  max        = (int) Math.floor(parseValues(caster, MAX, level, 1));
+            if (triangular) {
+                int middle = SkillAPI.RANDOM.nextInt(max-min+1)+min+SkillAPI.RANDOM.nextInt(max-min+1)+min;
+                middle = middle/2 + (middle%2 == 1 ? (Math.random() < 0.5 ? 1 : 0) : 0);
+                data.put(key, middle);
+            } else data.put(key, SkillAPI.RANDOM.nextInt(max-min+1)+min);
+        } else {
+            double  min        = parseValues(caster, MIN, level, 1);
+            double  max        = parseValues(caster, MAX, level, 1);
+            double rand = triangular ? 0.5 * (Math.random() + Math.random()) : Math.random();
+            data.put(key, rand * (max - min) + min);
+        }
+
         if (settings.getBool(SAVE, false))
-            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.get(key));
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.getRaw(key));
         return true;
     }
 }

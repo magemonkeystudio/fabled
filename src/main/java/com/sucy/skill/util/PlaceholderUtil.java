@@ -1,6 +1,7 @@
 package com.sucy.skill.util;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.api.classes.RPGClass;
 import com.sucy.skill.api.player.PlayerAccounts;
 import com.sucy.skill.api.player.PlayerClass;
@@ -351,10 +352,10 @@ public class PlaceholderUtil {
             String[]     ident  = identifier.split("_", 3);
             switch (ident[1]) {
                 case "value" -> {
-                    Map<String, Object> castData = DynamicSkill.getCastData(caster);
+                    CastData castData = DynamicSkill.getCastData(caster);
                     if (ident.length < 3) return "0";
                     if (castData == null) return "0";
-                    return String.valueOf(castData.getOrDefault(ident[2], 0));
+                    return castData.getOrDefault(ident[2], "0");
                 }
                 case "flags" -> {
                     FlagData flagData = FlagManager.getFlagData(caster);

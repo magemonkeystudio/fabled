@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.ValueLoreMechanic
+ * com.sucy.skill.dynamic.mechanic.value.ValueMultiplyMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,28 +24,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.value;
 
-import com.sucy.skill.dynamic.ItemChecker;
-import mc.promcteam.engine.mccore.util.VersionManager;
+import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.CastData;
+import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.dynamic.mechanic.MechanicComponent;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
 /**
  * Adds to a cast data value
  */
-public class ValueLoreMechanic extends MechanicComponent {
+public class ValueMultiplyMechanic extends MechanicComponent {
     private static final String KEY        = "key";
-    private static final String REGEX      = "regex";
     private static final String MULTIPLIER = "multiplier";
-    private static final String HAND       = "hand";
-    private static final String SAVE   = "save";
+    private static final String SAVE       = "save";
 
     @Override
     public String getKey() {
-        return "value lore";
+        return "value multiply";
     }
 
     /**
@@ -59,26 +59,18 @@ public class ValueLoreMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0 || !settings.has(KEY)) {
+        if (targets.isEmpty() || !settings.has(KEY)) {
             return false;
         }
 
-        String  key        = settings.getString(KEY);
-        double  multiplier = parseValues(caster, MULTIPLIER, level, 1);
-        boolean offhand    = settings.getString(HAND, "").equalsIgnoreCase("offhand");
-        String  regex      = settings.getString(REGEX, "Damage: {value}");
-
-        if (caster.getEquipment() == null) {
-            return false;
+        String   key        = settings.getString(KEY);
+        double   multiplier = parseValues(caster, MULTIPLIER, level, 1);
+        CastData data       = DynamicSkill.getCastData(caster);
+        if (data.contains(key)) {
+            data.put(key, multiplier * data.getDouble(key));
         }
-
-        ItemStack hand;
-        if (offhand && VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
-            hand = caster.getEquipment().getItemInOffHand();
-        } else {
-            hand = caster.getEquipment().getItemInHand();
-        }
-
-        return ItemChecker.findLore(caster, hand, regex, key, multiplier, settings.getBool(SAVE, false));
+        if (settings.getBool(SAVE, false))
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
+        return true;
     }
 }

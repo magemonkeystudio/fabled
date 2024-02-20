@@ -1,5 +1,6 @@
 package com.sucy.skill.dynamic.trigger;
 
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.api.Settings;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -32,7 +33,7 @@ public abstract class ClickTrigger implements Trigger<PlayerInteractEvent> {
      * {@inheritDoc}
      */
     @Override
-    public void setValues(PlayerInteractEvent event, Map<String, Object> data) {}
+    public void setValues(PlayerInteractEvent event, CastData data) {}
 
     /**
      * {@inheritDoc}

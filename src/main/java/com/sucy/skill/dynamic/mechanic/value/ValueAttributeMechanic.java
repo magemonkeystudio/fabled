@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.WarpSwapMechanic
+ * com.sucy.skill.dynamic.mechanic.value.ValueAttributeMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,20 +24,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.value;
 
-import org.bukkit.Location;
+import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.CastData;
+import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.dynamic.mechanic.MechanicComponent;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
 /**
- * Swaps to entities
+ * Adds to a cast data value
  */
-public class WarpSwapMechanic extends MechanicComponent {
+public class ValueAttributeMechanic extends MechanicComponent {
+    private static final String KEY  = "key";
+    private static final String ATTR = "attribute";
+    private static final String SAVE = "save";
+
     @Override
     public String getKey() {
-        return "warp swap";
+        return "value attribute";
     }
 
     /**
@@ -51,13 +60,16 @@ public class WarpSwapMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() > 0) {
-            Location tloc = targets.get(0).getLocation();
-            Location cloc = caster.getLocation();
-            targets.get(0).teleport(cloc);
-            caster.teleport(tloc);
-            return true;
+        if (!settings.has(KEY) || !settings.has(ATTR) || !(targets.get(0) instanceof Player)) {
+            return false;
         }
-        return false;
+
+        String   key  = settings.getString(KEY);
+        String   attr = settings.getString(ATTR);
+        CastData data = DynamicSkill.getCastData(caster);
+        data.put(key, (double) SkillAPI.getPlayerData((Player) targets.get(0)).getAttribute(attr));
+        if (settings.getBool(SAVE, false))
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
+        return true;
     }
 }

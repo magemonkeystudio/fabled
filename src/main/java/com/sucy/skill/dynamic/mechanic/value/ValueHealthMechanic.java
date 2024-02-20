@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.ValueMana
+ * com.sucy.skill.dynamic.mechanic.ValueHealth
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,26 +24,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.value;
 
 import com.sucy.skill.SkillAPI;
-import com.sucy.skill.api.player.PlayerData;
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.dynamic.mechanic.MechanicComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.Map;
 
-public class ValueManaMechanic extends MechanicComponent {
+public class ValueHealthMechanic extends MechanicComponent {
     private static final String KEY  = "key";
     private static final String TYPE = "type";
-    private static final String SAVE   = "save";
+    private static final String SAVE = "save";
 
     @Override
     public String getKey() {
-        return "value mana";
+        return "value health";
     }
 
     /**
@@ -57,26 +56,26 @@ public class ValueManaMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (!(targets.get(0) instanceof Player)) return false;
+        final String   key  = settings.getString(KEY);
+        final String   type = settings.getString(TYPE, "current").toLowerCase();
+        final CastData data = DynamicSkill.getCastData(caster);
 
-        final PlayerData          player = SkillAPI.getPlayerData((Player) targets.get(0));
-        final String              key    = settings.getString(KEY);
-        final String              type   = settings.getString(TYPE, "current").toLowerCase();
-        final Map<String, Object> data   = DynamicSkill.getCastData(caster);
-
+        final LivingEntity target = targets.get(0);
         switch (type) {
             case "max":
-                data.put(key, player.getMaxMana());
+                data.put(key, target.getMaxHealth());
+                break;
             case "percent":
-                data.put(key, player.getMana() / player.getMaxMana());
+                data.put(key, target.getHealth() / target.getMaxHealth());
+                break;
             case "missing":
-                data.put(key, player.getMaxMana() - player.getMana());
+                data.put(key, target.getMaxHealth() - target.getHealth());
+                break;
             default: // current
-                data.put(key, player.getMana());
+                data.put(key, target.getHealth());
         }
-
         if (settings.getBool(SAVE, false))
-            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.get(key));
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;
     }
 }

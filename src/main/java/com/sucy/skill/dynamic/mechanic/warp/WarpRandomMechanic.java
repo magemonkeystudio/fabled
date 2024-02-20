@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.ValueAttributeMechanic
+ * com.sucy.skill.dynamic.mechanic.warp.WarpRandomMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,28 +24,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.warp;
 
 import com.sucy.skill.SkillAPI;
-import com.sucy.skill.dynamic.DynamicSkill;
-import org.bukkit.OfflinePlayer;
+import com.sucy.skill.api.target.TargetHelper;
+import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.Map;
 
 /**
- * Adds to a cast data value
+ * Warps a random distance
  */
-public class ValueAttributeMechanic extends MechanicComponent {
-    private static final String KEY  = "key";
-    private static final String ATTR = "attribute";
-    private static final String SAVE   = "save";
+public class WarpRandomMechanic extends AbstractWarpingMechanic {
+    private static final String WALL       = "walls";
+    private static final String HORIZONTAL = "horizontal";
+    private static final String DISTANCE   = "distance";
 
     @Override
     public String getKey() {
-        return "value attribute";
+        return "warp random";
     }
 
     /**
@@ -59,16 +58,35 @@ public class ValueAttributeMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (!settings.has(KEY) || !settings.has(ATTR) || !(targets.get(0) instanceof Player)) {
+        if (targets.isEmpty()) {
             return false;
         }
 
-        String              key  = settings.getString(KEY);
-        String              attr = settings.getString(ATTR);
-        Map<String, Object> data = DynamicSkill.getCastData(caster);
-        data.put(key, (double) SkillAPI.getPlayerData((Player) targets.get(0)).getAttribute(attr));
-        if (settings.getBool(SAVE, false))
-            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.get(key));
-        return true;
+        // Get the world
+        boolean throughWalls = settings.getString(WALL, "false").toLowerCase().equals("true");
+        boolean horizontal   = !settings.getString(HORIZONTAL, "true").toLowerCase().equals("false");
+        double  distance     = parseValues(caster, DISTANCE, level, 3.0);
+
+        for (LivingEntity target : targets) {
+            Location loc;
+            Location temp = target.getLocation();
+            do {
+                loc = temp.clone().add(rand(distance), 0, rand(distance));
+                if (!horizontal) {
+                    loc.add(0, rand(distance), 0);
+                }
+            }
+            while (temp.distanceSquared(loc) > distance * distance);
+            loc = TargetHelper.getOpenLocation(target.getLocation().add(0, 1, 0), loc, throughWalls);
+            if (!loc.getBlock().getType().isSolid() && loc.getBlock().getRelative(BlockFace.DOWN).getType().isSolid()) {
+                loc.add(0, 1, 0);
+            }
+            warp(target, caster, loc.subtract(0, 1, 0), level);
+        }
+        return !targets.isEmpty();
+    }
+
+    private double rand(double distance) {
+        return SkillAPI.RANDOM.nextDouble() * distance * 2 - distance;
     }
 }

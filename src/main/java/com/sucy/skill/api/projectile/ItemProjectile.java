@@ -59,14 +59,16 @@ import static com.sucy.skill.listener.MechanicListener.ITEM_PROJECTILE;
  * <p>Represents a projectile that uses an item as the actual projectile.</p>
  */
 public class ItemProjectile extends CustomProjectile {
-    private static final String NAME = "SkillAPI#";
-    public static final  String HOMING             = "homing";
-    public static final  String HOMING_TARGET      = "target";
-    public static final  String HOMING_DIST        = "homing-distance";
-    public static final  String REMEMBER           = "remember-key";
-    public static final  String CORRECTION         = "correction";
-    public static final  String WALL               = "wall";
-    private static       int    NEXT = 0;
+    private static final String NAME          = "SkillAPI#";
+    public static final  String HOMING        = "homing";
+    public static final  String HOMING_TARGET = "target";
+    public static final  String HOMING_DIST   = "homing-distance";
+    public static final  String REMEMBER      = "remember-key";
+    public static final  String CORRECTION    = "correction";
+    public static final  String WALL          = "wall";
+    public static final  String RADIUS        = "collision-radius";
+
+    private static int NEXT = 0;
 
     private final Item                   item;
     private       int                    life;
@@ -74,6 +76,7 @@ public class ItemProjectile extends CustomProjectile {
     private final double                 speed;
     protected     Supplier<LivingEntity> homing;
     protected     double                 correction;
+    protected     double                 radius;
 
     /**
      * <p>Constructs a new item projectile.</p>
@@ -85,6 +88,7 @@ public class ItemProjectile extends CustomProjectile {
      * @param collideWalls whether to consider wall collisions as the projectile landing
      */
     public ItemProjectile(LivingEntity thrower,
+                          int level,
                           Location loc,
                           Settings settings,
                           ItemStack item,
@@ -106,18 +110,22 @@ public class ItemProjectile extends CustomProjectile {
         this.item.setPickupDelay(Integer.MAX_VALUE);
         this.walls = collideWalls;
         this.life = lifespan;
+        this.radius = settings.getAttr(RADIUS, level, 0.2);
         SkillAPI.setMeta(this.item, ITEM_PROJECTILE, this);
 
         if (settings.getBool(HOMING, false)) {
-            String                         target     = settings.getString(HOMING_TARGET, "nearest");
-            final Comparator<LivingEntity> comparator = Comparator.comparingDouble(o -> o.getLocation().distanceSquared(getLocation()));
+            String target = settings.getString(HOMING_TARGET, "nearest");
+            final Comparator<LivingEntity> comparator =
+                    Comparator.comparingDouble(o -> o.getLocation().distanceSquared(getLocation()));
             if (target.equalsIgnoreCase("remember target")) {
                 homing = () -> {
-                    Object data = DynamicSkill.getCastData(getShooter()).get(ItemProjectile.this.settings.getString(REMEMBER, "target"));
+                    Object data = DynamicSkill.getCastData(getShooter())
+                            .getRaw(ItemProjectile.this.settings.getString(REMEMBER, "target"));
                     if (data == null) return null;
                     try {
                         return ((List<LivingEntity>) data).stream()
-                                .filter(tar -> ItemProjectile.this.settings.getBool(WALL, false) || !TargetHelper.isObstructed(getLocation(), tar.getEyeLocation()))
+                                .filter(tar -> ItemProjectile.this.settings.getBool(WALL, false)
+                                        || !TargetHelper.isObstructed(getLocation(), tar.getEyeLocation()))
                                 .min(comparator)
                                 .orElse(null);
                     } catch (ClassCastException e) {
@@ -125,7 +133,9 @@ public class ItemProjectile extends CustomProjectile {
                     }
                 };
             } else {
-                homing = () -> Nearby.getLivingNearby(getLocation(), ItemProjectile.this.settings.getAttr(HOMING_DIST, 0, 20)).stream()
+                homing = () -> Nearby.getLivingNearby(getLocation(),
+                                ItemProjectile.this.settings.getAttr(HOMING_DIST, 0, 20))
+                        .stream()
                         .filter(tar -> {
                             if (tar == getShooter()) return false;
                             if (!SkillAPI.getSettings().isValidTarget(tar)) return false;
@@ -134,7 +144,9 @@ public class ItemProjectile extends CustomProjectile {
                             if (!ally && !ItemProjectile.this.enemy) return false;
                             return true;
                         })
-                        .filter(tar -> ItemProjectile.this.settings.getBool(WALL, false) || !TargetHelper.isObstructed(getLocation(), tar.getEyeLocation()))
+                        .filter(tar -> ItemProjectile.this.settings.getBool(WALL, false) || !TargetHelper.isObstructed(
+                                getLocation(),
+                                tar.getEyeLocation()))
                         .min(comparator)
                         .orElse(null);
             }
@@ -196,11 +208,8 @@ public class ItemProjectile extends CustomProjectile {
         }
         if (walls) {
             Vector velocity = item.getVelocity();
-            RayTraceResult raytrace = item.getWorld().rayTraceBlocks(item.getLocation(),
-                    velocity,
-                    velocity.length(),
-                    FluidCollisionMode.NEVER,
-                    true);
+            RayTraceResult raytrace = item.getWorld()
+                    .rayTraceBlocks(item.getLocation(), velocity, velocity.length(), FluidCollisionMode.NEVER, true);
             if (raytrace == null) {
                 raytrace = collideWall(velocity, X_AXIS);
             }
@@ -229,11 +238,12 @@ public class ItemProjectile extends CustomProjectile {
             }
             return result;
         }
-        return item.getWorld().rayTraceBlocks(item.getLocation().add(0, 0.125, 0),
-                direction,
-                0.225,
-                FluidCollisionMode.NEVER,
-                true);
+        return item.getWorld()
+                .rayTraceBlocks(item.getLocation().add(0, 0.125, 0),
+                        direction,
+                        radius + 0.1,
+                        FluidCollisionMode.NEVER,
+                        true);
     }
 
     /**
@@ -241,7 +251,7 @@ public class ItemProjectile extends CustomProjectile {
      */
     @Override
     protected double getCollisionRadius() {
-        return 0.125;
+        return radius;
     }
 
     @Override
@@ -264,16 +274,19 @@ public class ItemProjectile extends CustomProjectile {
         if (homing != null) {
             LivingEntity target = homing.get();
             if (target != null) {
-                Vector acceleration = target.getBoundingBox().getCenter().subtract(this.item.getBoundingBox().getCenter())
-                        .normalize().multiply(speed).subtract(item.getVelocity());
+                Vector acceleration = target.getBoundingBox()
+                        .getCenter()
+                        .subtract(this.item.getBoundingBox().getCenter())
+                        .normalize()
+                        .multiply(speed)
+                        .subtract(item.getVelocity());
                 double length = acceleration.length();
-                acceleration.multiply(1.0/length).multiply(Math.min(length, correction));
+                acceleration.multiply(1.0 / length).multiply(Math.min(length, correction));
                 item.setVelocity(item.getVelocity().add(acceleration));
             }
         }
 
-        if (isTraveling())
-            checkCollision(false);
+        if (isTraveling()) checkCollision(false);
 
         life--;
         if (life <= 0) {
@@ -307,22 +320,23 @@ public class ItemProjectile extends CustomProjectile {
      * @return list of fired projectiles
      */
     public static List<ItemProjectile> spread(LivingEntity shooter,
-                                                   Vector direction,
-                                                   Location loc,
-                                                   Settings settings,
-                                                   ItemStack item,
-                                                   double angle,
-                                                   int amount,
-                                                   ProjectileCallback callback,
-                                                   int lifespan,
-                                                   boolean collideWalls) {
+                                              int level,
+                                              Vector direction,
+                                              Location loc,
+                                              Settings settings,
+                                              ItemStack item,
+                                              double angle,
+                                              int amount,
+                                              ProjectileCallback callback,
+                                              int lifespan,
+                                              boolean collideWalls) {
         double speed = direction.length();
         direction.normalize();
         List<Vector>         dirs = calcSpread(shooter.getLocation().getDirection(), angle, amount);
         List<ItemProjectile> list = new ArrayList<>();
         for (Vector dir : dirs) {
             Vector         vel = dir.multiply(speed);
-            ItemProjectile p   = new ItemProjectile(shooter, loc, settings, item, vel, lifespan, collideWalls);
+            ItemProjectile p   = new ItemProjectile(shooter, level, loc, settings, item, vel, lifespan, collideWalls);
             p.setCallback(callback);
             list.add(p);
         }
@@ -345,22 +359,23 @@ public class ItemProjectile extends CustomProjectile {
      * @return list of fired projectiles
      */
     public static List<ItemProjectile> rain(LivingEntity shooter,
-                                                 Location center,
-                                                 Settings settings,
-                                                 ItemStack item,
-                                                 double radius,
-                                                 double height,
-                                                 double speed,
-                                                 int amount,
-                                                 ProjectileCallback callback,
-                                                 int lifespan,
-                                                 boolean collideWalls) {
-        Vector vel = new Vector(0, speed, 0);
+                                            int level,
+                                            Location center,
+                                            Settings settings,
+                                            ItemStack item,
+                                            double radius,
+                                            double height,
+                                            double speed,
+                                            int amount,
+                                            ProjectileCallback callback,
+                                            int lifespan,
+                                            boolean collideWalls) {
+        Vector               vel  = new Vector(0, speed, 0);
         List<Location>       locs = calcRain(center, radius, height, amount);
         List<ItemProjectile> list = new ArrayList<>();
         for (Location l : locs) {
             l.setDirection(vel);
-            ItemProjectile p = new ItemProjectile(shooter, l, settings, item, vel, lifespan, collideWalls);
+            ItemProjectile p = new ItemProjectile(shooter, level, l, settings, item, vel, lifespan, collideWalls);
             p.setCallback(callback);
             list.add(p);
         }

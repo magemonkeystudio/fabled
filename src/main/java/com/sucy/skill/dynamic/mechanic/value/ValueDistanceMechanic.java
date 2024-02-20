@@ -1,21 +1,22 @@
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.value;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.dynamic.mechanic.MechanicComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * ProSkillAPI © 2023
- * com.sucy.skill.dynamic.mechanic.ValueDistanceMechanic
+ * com.sucy.skill.dynamic.mechanic.value.ValueDistanceMechanic
  */
 public class ValueDistanceMechanic extends MechanicComponent {
-    private static final String KEY = "key";
-    private static final String SAVE   = "save";
+    private static final String KEY  = "key";
+    private static final String SAVE = "save";
 
     @Override
     public String getKey() {
@@ -40,11 +41,11 @@ public class ValueDistanceMechanic extends MechanicComponent {
             return false;
         }
 
-        final String              key  = settings.getString(KEY);
-        final Map<String, Object> data = DynamicSkill.getCastData(caster);
+        String   key  = settings.getString(KEY);
+        CastData data = DynamicSkill.getCastData(caster);
         data.put(key, targets.get(0).getLocation().distance(caster.getLocation()));
         if (settings.getBool(SAVE, false))
-            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.get(key));
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;
     }
 }

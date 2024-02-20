@@ -1,5 +1,6 @@
 package com.sucy.skill.dynamic.trigger;
 
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.event.SignalEmitEvent;
 import org.bukkit.entity.LivingEntity;
@@ -38,7 +39,7 @@ public class SignalTrigger implements Trigger<SignalEmitEvent> {
      * {@inheritDoc}
      */
     @Override
-    public void setValues(SignalEmitEvent event, Map<String, Object> data) {
+    public void setValues(SignalEmitEvent event, final CastData data) {
         List<Object> arguments = event.getArguments();
         for (int i = 0; i < arguments.size(); i++) {
             Object arg = arguments.get(i);

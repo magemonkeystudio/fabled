@@ -1,5 +1,6 @@
 package com.sucy.skill.dynamic.trigger;
 
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.event.ProjectileTickEvent;
 import com.sucy.skill.api.particle.target.EntityTarget;
@@ -64,7 +65,7 @@ public class ProjectileTickTrigger implements Trigger<ProjectileTickEvent> {
      * {@inheritDoc}
      */
     @Override
-    public void setValues(ProjectileTickEvent event, Map<String, Object> data) {}
+    public void setValues(ProjectileTickEvent event, final CastData data) {}
 
     /**
      * {@inheritDoc}

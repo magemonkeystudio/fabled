@@ -1,5 +1,6 @@
 package com.sucy.skill.dynamic.trigger;
 
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.particle.target.EntityTarget;
 import com.sucy.skill.dynamic.TempEntity;
@@ -10,7 +11,6 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -65,7 +65,7 @@ public class ProjectileHitTrigger implements Trigger<ProjectileHitEvent> {
      * {@inheritDoc}
      */
     @Override
-    public void setValues(ProjectileHitEvent event, Map<String, Object> data) {}
+    public void setValues(ProjectileHitEvent event, CastData data) {}
 
     /**
      * {@inheritDoc}

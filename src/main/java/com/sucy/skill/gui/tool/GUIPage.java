@@ -155,7 +155,13 @@ public class GUIPage {
             if (PluginChecker.isPlaceholderAPIActive()) {
                 PlaceholderAPIHook.processPlaceholders(item, bukkitPlayer);
             }
-            contents[entry.getKey()] = item;
+            try {
+                contents[entry.getKey()] = item;
+            } catch (ArrayIndexOutOfBoundsException e) {
+                SkillAPI.inst()
+                        .getLogger()
+                        .warning("Invalid slot index for " + entry.getValue() + " (" + entry.getKey() + ")");
+            }
         }
 
         return contents;

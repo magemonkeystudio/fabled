@@ -1,5 +1,6 @@
 package com.sucy.skill.dynamic.trigger;
 
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.event.PlayerBlockDamageEvent;
 import org.bukkit.entity.LivingEntity;
@@ -38,7 +39,7 @@ public class ShieldTrigger implements Trigger<PlayerBlockDamageEvent> {
      * {@inheritDoc}
      */
     @Override
-    public void setValues(PlayerBlockDamageEvent event, Map<String, Object> data) {
+    public void setValues(PlayerBlockDamageEvent event, final CastData data) {
         data.put("api-blocked", event.getDamage());
     }
 

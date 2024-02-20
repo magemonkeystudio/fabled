@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.WarpValueMechanic
+ * com.sucy.skill.dynamic.mechanic.warp.WarpLocMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,12 +24,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.warp;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.particle.ParticleHelper;
-import com.sucy.skill.dynamic.DynamicSkill;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -37,30 +38,46 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
 /**
- * Applies a flag to each target
+ * Warps the target to a location
  */
-public class WarpValueMechanic extends MechanicComponent {
-    private static final String KEY = "key";
+public class WarpLocMechanic extends AbstractWarpingMechanic {
+    private static final String WORLD = "world";
+    private static final String X     = "x";
+    private static final String Y     = "y";
+    private static final String Z     = "z";
 
     @Override
     public String getKey() {
-        return "warp value";
+        return "warp location";
     }
+
+    @Override
+    public boolean setYaw() { return true; }
+
+    @Override
+    public boolean setPitch() { return true; }
 
     @Nullable
     private Location parseLocation(LivingEntity caster) {
-        Map<String, Object> data = DynamicSkill.getCastData(caster);
-        if (data == null) return null;
-        String key = settings.getString(KEY);
-        if (key == null) return null;
-        Object obj = data.get(key);
-        if (obj instanceof Location) return (Location) obj;
-        return null;
+        String world = settings.getString(WORLD, "current");
+        if (world.equalsIgnoreCase("current")) {
+            world = caster.getWorld().getName();
+        }
+        World w = Bukkit.getWorld(world);
+        if (w == null) {
+            return null;
+        }
+
+        // Get the other values
+        double x     = settings.getDouble(X, 0.0);
+        double y     = settings.getDouble(Y, 0.0);
+        double z     = settings.getDouble(Z, 0.0);
+
+        return new Location(w, x, y, z);
     }
 
     /**
@@ -78,15 +95,16 @@ public class WarpValueMechanic extends MechanicComponent {
 
         Location loc = parseLocation(caster);
         if (loc == null) return false;
+
         for (LivingEntity target : targets) {
-            target.teleport(loc);
+            warp(target, caster, loc, level);
         }
         return true;
     }
 
     @Override
     public void playPreview(List<Runnable> onPreviewStop, Player caster, int level, Supplier<List<LivingEntity>> targetSupplier) {
-        if (preview.getBool("per-target")) {
+        if (preview.getBool("per-target") && !targetSupplier.get().isEmpty()) {
             BukkitTask task = new BukkitRunnable() {
                 @Override
                 public void run() {

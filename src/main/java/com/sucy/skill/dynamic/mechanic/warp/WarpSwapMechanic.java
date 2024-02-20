@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.ValueSetMechanic
+ * com.sucy.skill.dynamic.mechanic.warp.WarpSwapMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,27 +24,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.warp;
 
-import com.sucy.skill.SkillAPI;
-import com.sucy.skill.dynamic.DynamicSkill;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
-import java.util.Map;
 
 /**
- * Adds to a cast data value
+ * Swaps to entities
  */
-public class ValueSetMechanic extends MechanicComponent {
-    private static final String KEY   = "key";
-    private static final String VALUE = "value";
-    private static final String SAVE   = "save";
-
+public class WarpSwapMechanic extends AbstractWarpingMechanic {
     @Override
     public String getKey() {
-        return "value set";
+        return "warp swap";
     }
 
     /**
@@ -58,16 +51,13 @@ public class ValueSetMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0 || !settings.has(KEY)) {
-            return false;
+        if (!targets.isEmpty()) {
+            Location tloc = targets.get(0).getLocation();
+            Location cloc = caster.getLocation();
+            warp(targets.get(0), caster, cloc, level);
+            warp(caster, caster, tloc, level);
+            return true;
         }
-
-        String              key   = settings.getString(KEY);
-        double              value = parseValues(caster, VALUE, level, 1);
-        Map<String, Object> data  = DynamicSkill.getCastData(caster);
-        data.put(key, value);
-        if (settings.getBool(SAVE, false))
-            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.get(key));
-        return true;
+        return false;
     }
 }

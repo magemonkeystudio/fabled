@@ -1,11 +1,19 @@
 package com.sucy.skill.api;
 
+import com.sucy.skill.SkillAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Animals;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Tameable;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * ProSkillAPI © 2023
@@ -46,19 +54,45 @@ public interface CombatProtection {
                 return false;
             }
 
-            DefaultCombatProtection.FakeEntityDamageByEntityEvent event =
-                    new DefaultCombatProtection.FakeEntityDamageByEntityEvent(attacker, target, cause, 0D);
-            Bukkit.getPluginManager().callEvent(event);
-            boolean attackable = !event.isExternallyCancelled();
-
-            event.setCancelled(true);
-
-            return attackable;
+            return canAttackExternally(attacker, target, cause);
         }
     }
 
     static boolean canAttack(final LivingEntity attacker, final LivingEntity defender) {
         return canAttack(attacker, defender, false);
+    }
+
+    static boolean canAttackExternally(@NotNull Entity damager,
+                                       @NotNull Entity entity,
+                                       @NotNull EntityDamageEvent.DamageCause cause) {
+        EntityDamageByEntityEvent event;
+        try {
+            // The old constructor has been re-added to Spigot, but this future proofs things a little
+            event = new EntityDamageByEntityEvent(damager,
+                    entity,
+                    cause,
+                    DamageSource.builder(DamageType.MOB_ATTACK).build(),
+                    0);
+        } catch (NoClassDefFoundError | NoSuchFieldError | NoSuchMethodError e) {
+            try {
+                event = EntityDamageByEntityEvent.class
+                        .getConstructor(Entity.class, Entity.class, EntityDamageEvent.DamageCause.class, double.class)
+                        .newInstance(damager, entity, cause, 0D);
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                     InvocationTargetException ex) {
+                SkillAPI.inst()
+                        .getLogger()
+                        .warning("Failed to create EntityDamageByEntityEvent, contact a developer for help");
+                ex.printStackTrace();
+                return true;
+            }
+        }
+
+        DefaultCombatProtection.fakeDamageEvents.add(event);
+        Bukkit.getPluginManager().callEvent(event);
+        DefaultCombatProtection.fakeDamageEvents.remove(event);
+
+        return !event.isCancelled();
     }
 
     boolean canAttack(final LivingEntity attacker, final LivingEntity defender, EntityDamageEvent.DamageCause cause);

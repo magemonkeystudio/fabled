@@ -388,7 +388,7 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
      * @return list of nearby living entities
      */
     private List<LivingEntity> getNearbyEntities() {
-        List<LivingEntity> list   = new ArrayList<LivingEntity>();
+        List<LivingEntity> list   = new ArrayList<>();
         Location           loc    = getLocation();
         double             radius = getCollisionRadius();
         int                minX   = (int) (loc.getX() - radius) >> 4;
@@ -441,7 +441,7 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
     @Override
     public void setMetadata(String key, MetadataValue meta) {
         boolean             hasMeta = hasMetadata(key);
-        List<MetadataValue> list    = hasMeta ? getMetadata(key) : new ArrayList<MetadataValue>();
+        List<MetadataValue> list    = hasMeta ? getMetadata(key) : new ArrayList<>();
         list.add(meta);
         if (!hasMeta) {
             metadata.put(key, list);

@@ -37,6 +37,7 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.PistonMoveReaction;
+import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.*;
 import org.bukkit.entity.memory.MemoryKey;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -531,6 +532,10 @@ public class TempEntity implements LivingEntity {
     }
 
     public void damage(double v, Entity entity) {
+    }
+
+    @Override
+    public void damage(double v, @NotNull DamageSource damageSource) {
     }
 
     public void _INVALID_damage(int i, Entity entity) {

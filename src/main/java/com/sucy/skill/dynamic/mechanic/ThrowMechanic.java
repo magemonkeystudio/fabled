@@ -1,10 +1,10 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.WarpRandomMechanic
+ * com.sucy.skill.dynamic.mechanic.ThrowMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2014 Steven Sucy
+ * Copyright (c) 2024 ProMCTeam
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -26,25 +26,24 @@
  */
 package com.sucy.skill.dynamic.mechanic;
 
-import com.sucy.skill.SkillAPI;
-import com.sucy.skill.api.target.TargetHelper;
-import org.bukkit.Location;
-import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Warps a random distance
+ * Throws entities off the target's head
  */
-public class WarpRandomMechanic extends MechanicComponent {
-    private static final String WALL       = "walls";
-    private static final String HORIZONTAL = "horizontal";
-    private static final String DISTANCE   = "distance";
+public class ThrowMechanic extends MechanicComponent {
+    private static final String SPEED    = "speed";
+    private static final String RELATIVE = "relative";
+    private              Vector up       = new Vector(0, 1, 0);
 
     @Override
     public String getKey() {
-        return "warp random";
+        return "throw";
     }
 
     /**
@@ -58,35 +57,49 @@ public class WarpRandomMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0) {
+        if (targets.isEmpty()) {
             return false;
         }
 
-        // Get the world
-        boolean throughWalls = settings.getString(WALL, "false").toLowerCase().equals("true");
-        boolean horizontal   = !settings.getString(HORIZONTAL, "true").toLowerCase().equals("false");
-        double  distance     = parseValues(caster, DISTANCE, level, 3.0);
+        double speed    = parseValues(caster, SPEED, level, 0);
+        String relative = settings.getString(RELATIVE, "target").toLowerCase();
 
+        List<LivingEntity> thrown = new ArrayList<>();
+        boolean            worked = false;
         for (LivingEntity target : targets) {
-            Location loc;
-            Location temp = target.getLocation();
-            do {
-                loc = temp.clone().add(rand(distance), 0, rand(distance));
-                if (!horizontal) {
-                    loc.add(0, rand(distance), 0);
-                }
+            Entity toThrow = getTopOfStack(target);
+            if (toThrow.equals(target)) continue;
+
+            final Vector dir;
+            if (relative.equals("caster")) {
+                dir = caster.getLocation().getDirection().normalize();
+            } else if (relative.equals("thrown")) {
+                dir = toThrow.getLocation().getDirection().normalize();
+            } else {
+                dir = target.getLocation().getDirection().normalize();
             }
-            while (temp.distanceSquared(loc) > distance * distance);
-            loc = TargetHelper.getOpenLocation(target.getLocation().add(0, 1, 0), loc, throughWalls);
-            if (!loc.getBlock().getType().isSolid() && loc.getBlock().getRelative(BlockFace.DOWN).getType().isSolid()) {
-                loc.add(0, 1, 0);
+
+            dir.multiply(speed);
+            toThrow.leaveVehicle();
+            toThrow.setVelocity(dir);
+
+            if (toThrow instanceof LivingEntity) {
+                thrown.add((LivingEntity) toThrow);
             }
-            target.teleport(loc.subtract(0, 1, 0));
+            worked = true;
         }
-        return targets.size() > 0;
+
+        if (!thrown.isEmpty()) {
+            executeChildren(caster, level, thrown, force);
+        }
+        return worked;
     }
 
-    private double rand(double distance) {
-        return SkillAPI.RANDOM.nextDouble() * distance * 2 - distance;
+    private Entity getTopOfStack(Entity entity) {
+        Entity top = entity;
+        while (!top.getPassengers().isEmpty()) {
+            top = top.getPassengers().get(0);
+        }
+        return top;
     }
 }

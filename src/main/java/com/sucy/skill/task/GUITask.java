@@ -162,7 +162,14 @@ public class GUITask extends RepeatThreadTask {
                 Logger.log(LogType.GUI, 2, "Updating action bar");
                 PlayerClass main = data.getMainClass();
                 String filtered = (main.getData().hasActionBarText() ? main.getData().getActionBarText() : actionText)
-                        .replace("{combo}", SkillAPI.getLanguage().getMessage(ComboManager.DISPLAY_KEY, true, FilterType.COLOR, RPGFilter.COMBO.setReplacement(data.getComboData().getCurrentComboString())).get(0))
+                        .replace("{combo}",
+                                SkillAPI.getLanguage()
+                                        .getMessage(ComboManager.DISPLAY_KEY,
+                                                true,
+                                                FilterType.COLOR,
+                                                RPGFilter.COMBO.setReplacement(data.getComboData()
+                                                        .getCurrentComboString()))
+                                        .get(0))
                         .replace("{class}", main.getData().getPrefix())
                         .replace("{level}", "" + main.getLevel())
                         .replace("{exp}", "" + (int) main.getExp())
@@ -179,8 +186,8 @@ public class GUITask extends RepeatThreadTask {
                     int    index = filtered.indexOf("{value:");
                     int    end   = filtered.indexOf('}', index);
                     String key   = filtered.substring(index + 7, end);
-                    Object value = DynamicSkill.getCastData(player).get(key);
-                    filtered = filtered.replace("{value:" + key + "}", (value == null ? "None" : value.toString()));
+                    String value = DynamicSkill.getCastData(player).get(key);
+                    filtered = filtered.replace("{value:" + key + "}", (value == null ? "None" : value));
                 }
 
                 if (PluginChecker.isPlaceholderAPIActive()) {

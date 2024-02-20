@@ -1,5 +1,6 @@
 package com.sucy.skill.dynamic.trigger;
 
+import com.sucy.skill.api.CastData;
 import com.sucy.skill.api.Settings;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -44,7 +45,7 @@ public class BlockPlaceTrigger implements Trigger<BlockPlaceEvent> {
      * {@inheritDoc}
      */
     @Override
-    public void setValues(final BlockPlaceEvent event, final Map<String, Object> data) {
+    public void setValues(final BlockPlaceEvent event, final CastData data) {
         data.put("api-block-type", event.getBlock().getType().name());
         data.put("api-block-loc", event.getBlock().getLocation());
     }
