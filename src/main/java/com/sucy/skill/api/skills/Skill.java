@@ -817,6 +817,9 @@ public abstract class Skill implements IconHolder {
         }
         if (target.equals(source)) knockback = false;
 
+        // We have to check if the damage event would get cancelled, since we aren't _really_ calling
+        // EntityDamageByEntityEvent unless we use knockback, but it may cause multiple call for
+        // EntityDamageByEntityEvent
         if (!SkillAPI.getSettings().canAttack(source, target, cause)) {
             return;
         }
