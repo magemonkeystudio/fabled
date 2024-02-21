@@ -64,6 +64,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -817,59 +818,56 @@ public abstract class Skill implements IconHolder {
         if (target.equals(source)) knockback = false;
 
         // We have to check if the damage event would get cancelled, since we aren't _really_ calling
-        // EntityDamageByEntityEvent unless we use knockback
+        // EntityDamageByEntityEvent unless we use knockback, but it may cause multiple call for
+        // EntityDamageByEntityEvent
         if (!SkillAPI.getSettings().canAttack(source, target, cause)) {
             return;
         }
 
         SkillDamageEvent event = new SkillDamageEvent(this, source, target, damage, classification, knockback);
         Bukkit.getPluginManager().callEvent(event);
-        if (!event.isCancelled()) {
-            damage = event.getDamage();
-            knockback = event.isKnockback();
-            target.setMetadata(MechanicListener.DAMAGE_CAUSE, new FixedMetadataValue(SkillAPI.inst(), cause));
-            if (source instanceof Player) {
-                Player player = (Player) source;
-                if (PluginChecker.isNoCheatActive()) NoCheatHook.exempt(player);
-                skillDamage = true;
-                target.setNoDamageTicks(0);
-                if (knockback) {
-                    target.damage(event.getDamage(), source);
-                } else {
-                    target.damage(event.getDamage());
-                }
-                skillDamage = false;
-                if (PluginChecker.isNoCheatActive()) NoCheatHook.unexempt(player);
+        if (event.isCancelled()) {
+            return;
+        }
+
+        damage = event.getDamage();
+        knockback = event.isKnockback();
+        target.setMetadata(MechanicListener.DAMAGE_CAUSE, new FixedMetadataValue(SkillAPI.inst(), cause));
+        if (source instanceof Player) {
+            if (PluginChecker.isNoCheatActive()) NoCheatHook.exempt((Player) source);
+        }
+
+        // Allow damage to occur
+        int ticks = target.getNoDamageTicks();
+        target.setNoDamageTicks(0);
+        //Modified code from mc.promcteam.engine.mccore.util.VersionManager.damage() (MCCore)
+        if (VersionManager.isVersionAtMost(VersionManager.V1_5_2)) {
+            // 1.5.2 and earlier used integer values
+            if (knockback) {
+                target.damage((int) damage, source);
             } else {
-                skillDamage = true;
-                //Modified code from mc.promcteam.engine.mccore.util.VersionManager.damage() (MCCore)
-                {
-                    // Allow damage to occur
-                    int ticks = target.getNoDamageTicks();
-                    target.setNoDamageTicks(0);
-
-                    if (VersionManager.isVersionAtMost(VersionManager.V1_5_2)) {
-                        // 1.5.2 and earlier used integer values
-                        if (knockback) {
-                            target.damage((int) damage, source);
-                        } else {
-                            target.damage((int) damage);
-                        }
-                    } else {
-                        // 1.6.2 and beyond use double values
-                        if (knockback) {
-                            target.damage(damage, source);
-                        } else {
-                            target.damage(damage);
-                        }
-                    }
-
-                    // Reset damage timer to before the damage was applied
-                    target.setNoDamageTicks(ticks);
-                }
-                skillDamage = false;
+                org.bukkit.util.Vector velocity = target.getVelocity();
+                target.damage((int) damage, source);
+                target.setVelocity(velocity);
+            }
+        } else {
+            // 1.6.2 and beyond use double values
+            if (knockback) {
+                target.damage(damage, source);
+            } else {
+                Vector velocity = target.getVelocity();
+                target.damage(damage, source);
+                target.setVelocity(velocity);
             }
         }
+
+
+        // Reset damage timer to before the damage was applied
+        target.setNoDamageTicks(ticks);
+        if (source instanceof Player) {
+            if (PluginChecker.isNoCheatActive()) NoCheatHook.unexempt((Player) source);
+        }
+        skillDamage = false;
     }
 
     /**
