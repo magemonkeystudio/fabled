@@ -284,6 +284,8 @@ public abstract class TargetHelper {
     public static boolean isSolid(Material mat) {
         if (!mat.isSolid()) return false;
         else return mat.isOccluding()
+                || mat.name().contains("GLASS")
+                || mat.name().contains("FENCE")
                 || mat.name().contains("STAIR");
 
         // Not going to worry about doors, slabs, trapdoors, etc that *could* be blocking the path of a projectile.
