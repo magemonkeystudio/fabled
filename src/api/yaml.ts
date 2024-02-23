@@ -131,7 +131,6 @@ export class YAMLObject {
 
 			// New empty section
 			if (lines[index].search(/: +\{\}/) != -1 && lines[index].length >= 4) {
-				if (indent === 0) console.log('empty section');
 				this.data[key] = new YAMLObject(key);
 			}
 
@@ -232,19 +231,16 @@ export class YAMLObject {
 
 			if (str) {
 				if (!root) {
-					console.log('returning', str);
 					saveString += str;
 				} else {
 					saveString += str.replaceAll(/(\\)?'/g, '\\\\\'')
 						.replaceAll(/((\\)?")/g, s => s.length == 1 ? '\'' : s)
 						.replaceAll(/\\"/g, '"')
 						.replaceAll(/\\\\/g, '\\');
-					console.log(saveString);
 				}
 			}
 		}
 
-		console.log('final', saveString);
 		return saveString;
 	};
 

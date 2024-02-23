@@ -108,6 +108,7 @@ export const getFolder = (data?: ProFolder | ProClass | ProSkill): (ProFolder | 
 	return undefined;
 };
 
+const skillFileRegex = /['"](components|skills|group|combo)['"]:/;
 /**
  * Loads an individual skill or class file
  * @param e ProgressEvent
@@ -118,7 +119,7 @@ export const loadIndividual = async (e: ProgressEvent<FileReader>) => {
 
 	if (text.indexOf('global:') >= 0) {
 		loadAttributes(text);
-	} else if (text.indexOf('components:') >= 0 || (text.indexOf('group:') == -1 && text.indexOf('combo:') == -1 && text.indexOf('skills:') == -1)) {
+	} else if (skillFileRegex.test(text)) {
 		await loadSkillText(text);
 	} else {
 		loadClassText(text);
@@ -126,15 +127,13 @@ export const loadIndividual = async (e: ProgressEvent<FileReader>) => {
 	(<HTMLElement>document.activeElement).blur();
 };
 
-export const loadRaw = (text: string, fromServer: boolean = false) => {
+export const loadRaw = async (text: string, fromServer: boolean = false) => {
 	if (!text) return;
 
 	if (text.indexOf('global:') >= 0) {
 		loadAttributes(text);
-	} else if (text.indexOf('components:') >= 0
-		|| (text.indexOf('group:') == -1 && text.indexOf('combo:') == -1 && text.indexOf('skills:') == -1)) {
-		console.log('loading skills');
-		loadSkillText(text.replace('loaded: false\n', ''), fromServer);
+	} else if (skillFileRegex.test(text)) {
+		await loadSkillText(text.replace('loaded: false\n', ''), fromServer);
 	} else {
 		console.log('loading classes');
 		loadClassText(text.replace('loaded: false\n', ''), fromServer);
