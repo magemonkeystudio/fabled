@@ -1,67 +1,43 @@
-import ProComponent           from "./procomponent";
-import { YAMLObject }         from "../yaml";
-import type { ComponentOption }   from "../options/options";
-import type { ComponentData } from "$api/types";
-import Registry               from "$api/components/registry";
-import { get } from "svelte/store";
+import ProComponent                                   from './procomponent';
+import type { ComponentOption }                       from '../options/options';
+import type { ComponentData, Unknown, YamlComponent } from '$api/types';
+import Registry                                       from '$api/components/registry';
 
 export default class ProMechanic extends ProComponent {
-  iconKey = "";
-  countsAsCast = true;
+	iconKey      = '';
+	countsAsCast = true;
 
-  public constructor(data: ComponentData, isParent = false, isDeprecated = false) {
-    super("mechanic", data);
-    this.isParent = isParent; // This should be false unless for specific mechanics like projectiles
-    this.isDeprecated = isDeprecated;
-  }
+	public constructor(data: ComponentData, isParent = false, isDeprecated = false) {
+		super('mechanic', data, isDeprecated);
+		this.isParent = isParent; // This should be false unless for specific mechanics like projectiles
+	}
 
-  public override toYamlObj(): YAMLObject {
-    const parent: YAMLObject = super.toYamlObj();
-    const data               = this.getData();
-    if (data.getKeys().length > 0) parent.put("data", data);
-    const comps = get(this.components);
-    if (comps.length > 0)
-      parent.put("children", comps);
+	public override getData(raw = false): Unknown {
+		const data: Unknown = {};
 
-    return parent;
-  };
+		data['icon-key'] = this.iconKey;
+		data['counts']   = this.countsAsCast;
 
-  public override getData(): YAMLObject {
-    const data = new YAMLObject("data");
+		this.data
+			.filter(opt => raw || opt.meetsRequirements(this))
+			.forEach((opt: ComponentOption) => {
+				const optData: { [key: string]: unknown } = opt.getData();
+				Object.keys(optData).forEach(key => data[key] = optData[key]);
+			});
 
-    data.put("icon-key", this.iconKey);
-    data.put("counts", this.countsAsCast);
+		return data;
+	}
 
-    this.data
-      .filter(opt => opt.meetsRequirements(this))
-      .forEach((opt: ComponentOption) => {
-        const optData: { [key: string]: string } = opt.getData();
-        Object.keys(optData).forEach(key => data.put(key, optData[key]));
-      });
+	deserialize(yaml: YamlComponent): void {
+		super.deserialize(yaml);
+		const data = yaml.data;
 
-    return data;
-  }
+		if (data) this.data.forEach((opt: ComponentOption) => opt.deserialize(data));
+		this.iconKey      = <string>data['icon-key'];
+		this.countsAsCast = data.counts === undefined ? true : <boolean>data.counts;
 
-  public override getRawData(): YAMLObject {
-    const data = new YAMLObject("data");
-
-    this.data
-      .forEach((opt: ComponentOption) => {
-        const optData: { [key: string]: string } = opt.getData();
-        Object.keys(optData).forEach(key => data.put(key, optData[key]));
-      });
-
-    return data;
-  }
-
-  deserialize(yaml: YAMLObject): void {
-    super.deserialize(yaml);
-    const data = yaml.get<YAMLObject, YAMLObject>("data");
-
-    if (data) this.data.forEach((opt: ComponentOption) => opt.deserialize(data));
-    this.iconKey = data.get("icon-key", "");
-    this.countsAsCast = data.get("counts", true);
-
-    this.setComponents(yaml.get<YAMLObject, ProComponent[]>("children", [], (obj) => Registry.deserializeComponents(obj)));
-  }
+		if (yaml.children && Object.keys(yaml.children).length > 0) {
+			this.setComponents(Registry.deserializeComponents(yaml.children));
+		}
+	}
 }

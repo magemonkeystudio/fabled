@@ -1,14 +1,13 @@
-import type { SvelteComponent } from 'svelte';
 import type { ComponentOption } from '$api/options/options';
 import { Requirements }         from '$api/options/options';
 import MaterialSelectOption     from '$components/options/MaterialSelectOption.svelte';
-import type { YAMLObject }      from '$api/yaml';
+import type { Unknown }         from '$api/types';
 
 export default class MaterialSelect extends Requirements implements ComponentOption {
-	key                               = 'material';
-	component: typeof SvelteComponent<any> = MaterialSelectOption;
-	data                              = { material: 'Dirt', any: false };
-	tooltip: string | undefined       = undefined;
+	component                   = MaterialSelectOption;
+	key                         = 'material';
+	data                        = { material: 'Dirt', any: false };
+	tooltip: string | undefined = undefined;
 
 	constructor(any = true, def?: string) {
 		super();
@@ -28,14 +27,14 @@ export default class MaterialSelect extends Requirements implements ComponentOpt
 		return select;
 	};
 
-	getData = (): { [key: string]: any } => {
-		const data: { [key: string]: any } = {};
-		data.material                      = this.data.material;
+	getData = (): { [key: string]: string } => {
+		const data: { [key: string]: string } = {};
+		data.material                         = this.data.material;
 
 		return data;
 	};
 
 	getSummary = (): string => this.data.material;
 
-	deserialize = (yaml: YAMLObject) => this.data.material = yaml.get<string, string>('material', 'Dirt');
+	deserialize = (yaml: Unknown) => this.data.material = <string>yaml[this.key] || 'Dirt';
 }

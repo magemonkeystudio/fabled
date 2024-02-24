@@ -1,8 +1,8 @@
-import type { Readable, Writable } from 'svelte/store';
-import { derived, get, writable }  from 'svelte/store';
-import ProClass                    from '$api/proclass';
-import ProSkill                    from '$api/proskill';
-import ProFolder                   from '$api/profolder';
+import type { Readable, Writable }                     from 'svelte/store';
+import { derived, get, writable }                      from 'svelte/store';
+import ProClass                                        from '$api/proclass';
+import ProSkill                                        from '$api/proskill';
+import ProFolder                                       from '$api/profolder';
 import {
 	classes,
 	classFolders,
@@ -13,9 +13,9 @@ import {
 	loadClassText,
 	refreshClasses,
 	refreshClassFolders
-}                                  from './class-store';
-import { localStore }              from '$api/api';
-import { loadAttributes }          from './attribute-store';
+}                                                      from './class-store';
+import { localStore }                                  from '$api/api';
+import { loadAttributes }                              from './attribute-store';
 import {
 	deleteSkill,
 	deleteSkillFolder,
@@ -27,10 +27,11 @@ import {
 	refreshSkills,
 	skillFolders,
 	skills
-}                                  from './skill-store';
-import type ProComponent           from '$api/components/procomponent';
-import { YAMLObject }              from '$api/yaml';
-import { socketService }           from '$api/socket/socket-connector';
+}                                                      from './skill-store';
+import type ProComponent                               from '$api/components/procomponent';
+import type { MultiClassYamlData, MultiSkillYamlData } from '$api/types';
+import YAML                                            from 'yaml';
+import { socketService }                               from '$api/socket/socket-connector';
 
 export const active: Writable<ProClass | ProSkill | undefined>     = writable(undefined);
 export const activeType: Readable<'class' | 'skill'>               = derived(
@@ -108,7 +109,7 @@ export const getFolder = (data?: ProFolder | ProClass | ProSkill): (ProFolder | 
 	return undefined;
 };
 
-const skillFileRegex = /['"](components|skills|group|combo)['"]:/;
+const skillFileRegex        = /['"]?(components|combo)['"]?:/;
 /**
  * Loads an individual skill or class file
  * @param e ProgressEvent
@@ -135,7 +136,6 @@ export const loadRaw = async (text: string, fromServer: boolean = false) => {
 	} else if (skillFileRegex.test(text)) {
 		await loadSkillText(text.replace('loaded: false\n', ''), fromServer);
 	} else {
-		console.log('loading classes');
 		loadClassText(text.replace('loaded: false\n', ''), fromServer);
 	}
 };
@@ -156,7 +156,7 @@ export const saveData = (data?: ProSkill | ProClass) => {
 	const act = data || get(active);
 	if (!act) return;
 
-	saveToFile(act.name + '.yml', act.serializeYaml().toString());
+	saveToFile(act.name + '.yml', YAML.stringify({ [act.name]: act.serializeYaml() }));
 };
 
 export const saveDataToServer = async (data?: ProSkill | ProClass) => {
@@ -164,7 +164,7 @@ export const saveDataToServer = async (data?: ProSkill | ProClass) => {
 	if (!act) return false;
 
 	const isSkill = act instanceof ProSkill;
-	const yaml    = act.serializeYaml().toString();
+	const yaml    = YAML.stringify({ [act.name]: act.serializeYaml() });
 
 	const folder = getFolder(act);
 	let path     = '';
@@ -182,7 +182,7 @@ export const saveDataToServer = async (data?: ProSkill | ProClass) => {
 	return result;
 };
 
-export const getAllSkillYaml = async (): Promise<YAMLObject> => {
+export const getAllSkillYaml = async (): Promise<MultiSkillYamlData> => {
 	const allSkills: ProSkill[] = get(skills);
 	allSkills.sort((a, b) => {
 		if (a.name > b.name) return 1;
@@ -190,17 +190,17 @@ export const getAllSkillYaml = async (): Promise<YAMLObject> => {
 		return 0;
 	});
 
-	const skillYaml = new YAMLObject();
-	skillYaml.put('loaded', false);
+	const skillYaml: MultiSkillYamlData = {};
+	skillYaml.loaded                    = false;
 	for (const skill of allSkills) {
 		if (!skill.loaded) await loadSkill(skill);
-		skillYaml.put(skill.name, skill.serializeYaml());
+		skillYaml[skill.name] = skill.serializeYaml();
 	}
 
 	return skillYaml;
 };
 
-export const getAllClassYaml = async (): Promise<YAMLObject> => {
+export const getAllClassYaml = async (): Promise<MultiClassYamlData> => {
 	const allClasses: ProClass[] = get(classes);
 	allClasses.sort((a, b) => {
 		if (a.name > b.name) return 1;
@@ -208,11 +208,11 @@ export const getAllClassYaml = async (): Promise<YAMLObject> => {
 		return 0;
 	});
 
-	const classYaml = new YAMLObject();
-	classYaml.put('loaded', false);
+	const classYaml: MultiClassYamlData = {};
+	classYaml.loaded                    = false;
 	for (const cls of allClasses) {
 		if (!cls.loaded) await loadClass(cls);
-		classYaml.put(cls.name, cls.serializeYaml());
+		classYaml[cls.name] = cls.serializeYaml();
 	}
 
 	return classYaml;
@@ -232,8 +232,8 @@ export const saveAll = async () => {
 	const skillYaml = await getAllSkillYaml();
 	const classYaml = await getAllClassYaml();
 
-	saveToFile('skills.yml', skillYaml.toString());
-	saveToFile('classes.yml', classYaml.toString());
+	saveToFile('skills.yml', YAML.stringify(skillYaml));
+	saveToFile('classes.yml', YAML.stringify(classYaml));
 	isSaving.set(false);
 };
 

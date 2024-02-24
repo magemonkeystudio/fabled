@@ -4769,10 +4769,10 @@ class WarpRandomMechanic extends ProMechanic {
 class WarpSwapMechanic extends ProMechanic {
 	public constructor() {
 		super({
-			name:        'Warp Swap',
-			description: 'Switches the location of the caster and the target. If multiple targets are provided, this takes the first one',
-			data:        [...warpOptions()],
-			preview: ['preserve']
+			name:         'Warp Swap',
+			description:  'Switches the location of the caster and the target. If multiple targets are provided, this takes the first one',
+			data:         [...warpOptions()],
+			summaryItems: ['preserve']
 		});
 	}
 

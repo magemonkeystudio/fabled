@@ -1,28 +1,26 @@
-import type { SvelteComponent } from "svelte";
-import type { ComponentOption }     from "$api/options/options";
-import type { YAMLObject }      from "$api/yaml";
-import SectionMarkerComponent   from "$input/SectionMarkerComponent.svelte";
-import { Requirements }         from "$api/options/options";
+import type { ComponentOption } from '$api/options/options';
+import { Requirements }         from '$api/options/options';
+import SectionMarkerComponent   from '$input/SectionMarkerComponent.svelte';
 
 export default class SectionMarker extends Requirements implements ComponentOption {
-  key = "section-marker";
-  component: typeof SvelteComponent<any> = SectionMarkerComponent;
-  data: string;
+	key       = 'section-marker';
+	component = SectionMarkerComponent;
+	data: string;
 
-  constructor(name: string) {
-    super();
-    this.data = name;
-  }
+	constructor(name: string) {
+		super();
+		this.data = name;
+	}
 
-  setTooltip = (tooltip: string): this => this;
+	setTooltip = (): this => this;
 
-  clone = (): ComponentOption => new SectionMarker(this.data);
+	clone = (): ComponentOption => new SectionMarker(this.data);
 
-  getData = (): { [key: string]: any } => ({});
+	getData = (): { [key: string]: unknown } => ({});
 
-  getSummary = (): string => this.data;
+	getSummary = (): string => this.data;
 
-  deserialize = (_: YAMLObject) => {
-    // No-op
-  };
+	deserialize = () => {
+		// No-op
+	};
 }

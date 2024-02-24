@@ -1,15 +1,14 @@
-import type { SvelteComponent } from 'svelte';
 import type { ComponentOption } from '$api/options/options';
 import { Requirements }         from '$api/options/options';
-import type { YAMLObject }      from '$api/yaml';
 import ColorSelectOption        from '$components/options/ColorSelectOption.svelte';
+import type { Unknown }         from '$api/types';
 
 export default class ColorSelect extends Requirements implements ComponentOption {
-	component: typeof SvelteComponent<any> = ColorSelectOption;
+	component                   = ColorSelectOption;
 	name: string;
 	key: string;
 	data: string;
-	tooltip: string | undefined       = undefined;
+	tooltip: string | undefined = undefined;
 
 	constructor(name: string, key: string, def = '#12cfab') {
 		super();
@@ -23,15 +22,12 @@ export default class ColorSelect extends Requirements implements ComponentOption
 		return this;
 	};
 
-	clone = (): ComponentOption => {
-		const select = new ColorSelect(this.name, this.key, this.data);
-		return select;
-	};
+	clone = (): ComponentOption => new ColorSelect(this.name, this.key, this.data);
 
-	getData = (): { [key: string]: any } => {
-		const data: { [key: string]: any } = {};
+	getData = (): { [key: string]: string } => {
+		const data: { [key: string]: string } = {};
 
-		data[this.key] = this.data || 0;
+		data[this.key] = this.data || '#000000';
 		return data;
 	};
 
@@ -39,5 +35,5 @@ export default class ColorSelect extends Requirements implements ComponentOption
 		return this.data;
 	};
 
-	deserialize = (yaml: YAMLObject) => this.data = yaml.get(this.key, '#12cfab');
+	deserialize = (yaml: Unknown) => this.data = <string>yaml[this.key] || '#12cfab';
 }

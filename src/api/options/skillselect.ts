@@ -1,8 +1,8 @@
 import type { ComponentOption } from '$api/options/options';
 import { Requirements }         from '$api/options/options';
-import type { YAMLObject }      from '$api/yaml';
 import SkillSelectOption        from '$components/options/SkillSelectOption.svelte';
 import ProSkill                 from '$api/proskill';
+import type { Unknown }         from '$api/types';
 
 export default class SkillSelect extends Requirements implements ComponentOption {
 	component                                       = SkillSelectOption;
@@ -47,7 +47,5 @@ export default class SkillSelect extends Requirements implements ComponentOption
 			return this.data instanceof ProSkill ? this.data.name : this.data;
 	};
 
-	deserialize = (yaml: YAMLObject) => {
-		this.data = yaml.get(this.key, this.multiple ? [] : '');
-	};
+	deserialize = (yaml: Unknown) => this.data = <string[] | string>yaml[this.key] || this.multiple ? [] : '';
 }

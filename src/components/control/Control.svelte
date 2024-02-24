@@ -1,6 +1,4 @@
 <script lang='ts'>
-    import {slide} from 'svelte/transition';
-
     export let title = '';
     export let icon = '';
     export let color = 'red';

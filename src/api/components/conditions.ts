@@ -1,68 +1,41 @@
-import ProComponent           from "./procomponent";
-import { YAMLObject }         from "../yaml";
-import type { ComponentOption }   from "../options/options";
-import type { ComponentData } from "$api/types";
-import Registry               from "$api/components/registry";
-import { get } from "svelte/store";
+import ProComponent                                   from './procomponent';
+import type { ComponentOption }                       from '../options/options';
+import type { ComponentData, Unknown, YamlComponent } from '$api/types';
+import Registry                                       from '$api/components/registry';
 
 export default class ProCondition extends ProComponent {
-  iconKey = "";
+	iconKey = '';
 
-  public constructor(data: ComponentData, isDeprecated = false) {
-    super("condition", data);
-    this.isDeprecated = isDeprecated;
-  }
+	public constructor(data: ComponentData, isDeprecated = false) {
+		super('condition', data, isDeprecated);
+	}
 
-  public override toYamlObj(): YAMLObject {
-    const parent: YAMLObject = super.toYamlObj();
-    const data               = this.getData();
-    if (data.getKeys().length > 0) parent.put("data", data);
-    const comps = get(this.components);
-    if (comps.length > 0)
-      parent.put("children", comps);
+	public override getData(raw = false): Unknown {
+		const data: Unknown = {};
+		data['icon-key']    = this.iconKey;
 
-    return parent;
-  };
+		this.data
+			.filter(opt => raw || opt.meetsRequirements(this))
+			.forEach((opt: ComponentOption) => {
+				const optData: { [key: string]: unknown } = opt.getData();
+				Object.keys(optData).forEach(key => data[key] = optData[key]);
+			});
 
-  public override getData(): YAMLObject {
-    const data = new YAMLObject("data");
+		return data;
+	}
 
-    data.put("icon-key", this.iconKey);
+	public override deserialize(yaml: YamlComponent): void {
+		super.deserialize(yaml);
+		const data = yaml.data;
 
-    this.data
-      .filter(opt => opt.meetsRequirements(this))
-      .forEach((opt: ComponentOption) => {
-        const optData: { [key: string]: string } = opt.getData();
-        Object.keys(optData).forEach(key => data.put(key, optData[key]));
-      });
+		this.iconKey = <string>data['icon-key'];
 
-    return data;
-  }
+		if (data) this.data.forEach((opt: ComponentOption) => opt.deserialize(data));
 
-  public override getRawData(): YAMLObject {
-    const data = new YAMLObject("data");
+		if (yaml.children && Object.keys(yaml.children).length > 0) {
+			this.setComponents(Registry.deserializeComponents(yaml.children));
+		}
+	}
 
-    data.put("icon-key", this.iconKey);
-
-    this.data
-      .forEach((opt: ComponentOption) => {
-        const optData: { [key: string]: string } = opt.getData();
-        Object.keys(optData).forEach(key => data.put(key, optData[key]));
-      });
-
-    return data;
-  }
-
-  public override deserialize(yaml: YAMLObject): void {
-    super.deserialize(yaml);
-    const data = yaml.get<YAMLObject, YAMLObject>("data");
-
-    this.iconKey = data.get("icon-key");
-
-    if (data) this.data.forEach((opt: ComponentOption) => opt.deserialize(data));
-
-    this.setComponents(yaml.get<YAMLObject, ProComponent[]>("children", [], (obj) => Registry.deserializeComponents(obj)));
-  }
-
-  public static override new = (): ProCondition => new ProCondition({ name: "null" });
+	public static override new = (): ProCondition => new ProCondition({ name: 'null' });
 }

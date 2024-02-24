@@ -8,9 +8,4 @@ export class ProAttribute {
 		this.base  = base;
 		this.scale = scale;
 	}
-
-	public toYaml = (spaces = '') => {
-		return spaces + this.name.toLowerCase() + '-base: ' + this.base + '\n'
-			+ spaces + this.name.toLowerCase() + '-scale: ' + this.scale + '\n';
-	};
 }

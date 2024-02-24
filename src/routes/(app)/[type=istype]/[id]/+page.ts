@@ -1,17 +1,18 @@
-import { active, isShowClasses } from '../../../../data/store';
-import { get }                   from 'svelte/store';
-import { redirect }              from '@sveltejs/kit';
-import { skills }                from '../../../../data/skill-store';
-import type ProClass             from '$api/proclass';
-import type ProSkill             from '$api/proskill';
-import { socketService }         from '$api/socket/socket-connector';
-import { parseYAML }             from '$api/yaml';
+import { active, isShowClasses }   from '../../../../data/store';
+import { get }                     from 'svelte/store';
+import { redirect }                from '@sveltejs/kit';
+import { skills }                  from '../../../../data/skill-store';
+import type ProClass               from '$api/proclass';
+import type ProSkill               from '$api/proskill';
+import YAML                        from 'yaml';
+import type { MultiSkillYamlData } from '$api/types';
+import { socketService }           from '$api/socket/socket-connector';
 
 export const ssr = false;
 
 // noinspection JSUnusedGlobalSymbols
 /** @type {import('../../../../../.svelte-kit/types/src/routes').PageLoad} */
-export async function load({ params }: any) {
+export async function load({ params }) {
 	const name    = params.id;
 	const isSkill = params.type === 'skill';
 	let data: ProClass | ProSkill | undefined;
@@ -31,15 +32,18 @@ export async function load({ params }: any) {
 
 	if (data) {
 		if (!data.loaded) {
+			let yamlData: MultiSkillYamlData;
 			if (data.location === 'local') {
-				data.load(parseYAML(localStorage.getItem(`sapi.skill.${data.name}`) || ''));
-			} else {
-				let yaml: string;
-				if (params.type == 'class') yaml = await socketService.getClassYaml(data.name);
-				else yaml = await socketService.getSkillYaml(data.name);
+				yamlData = <MultiSkillYamlData>YAML.parse(localStorage.getItem(`sapi.skill.${data.name}`) || '');
 
-				const parsedYaml = parseYAML(yaml);
-				data.load(parsedYaml);
+			} else {
+				const yaml: string = await socketService.getSkillYaml(data.name);
+
+				yamlData = <MultiSkillYamlData>YAML.parse(yaml);
+			}
+
+			if (yamlData && Object.keys(yamlData).length > 0) {
+				(<ProSkill>data).load(Object.values(yamlData)[0]);
 			}
 			(<ProSkill>data).postLoad();
 		}

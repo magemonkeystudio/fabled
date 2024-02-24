@@ -17,10 +17,10 @@
 	import ComponentModal                                from '$components/modal/ComponentModal.svelte';
 	import ComponentSelectModal                          from '$components/modal/ComponentSelectModal.svelte';
 	import PreviewModal                                  from '$components/modal/PreviewModal.svelte';
-	import { parseYAML, YAMLObject }                     from '$api/yaml';
 	import Registry                                      from '$api/components/registry';
 	import Control                                       from '$components/control/Control.svelte';
-	import { skills }                                    from '../data/skill-store';
+	import { skills }                                from '../data/skill-store';
+	import type { YamlComponent, YamlComponentData } from '$api/types';
 
 	export let skill: ProSkill;
 	export let component: ProComponent;
@@ -149,12 +149,9 @@
 	};
 
 	const clone = () => {
-		const test: YAMLObject = new YAMLObject('components');
-		test.put(component.name + '-copy', component.toYamlObj());
-		const testYaml: string = test.toString();
-
-		const newData: YAMLObject    = parseYAML(testYaml);
-		const cloned: ProComponent[] = Registry.deserializeComponents(newData);
+		const yamlData: YamlComponentData = {};
+		yamlData[`${component.name}-copy`]               = component.toYamlObj();
+		const cloned: ProComponent[] = Registry.deserializeComponents(yamlData);
 
 		if (component.parent) {
 			cloned.forEach(c => component.parent?.addComponent(c));

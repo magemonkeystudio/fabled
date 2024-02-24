@@ -1,8 +1,8 @@
 import type { ComponentOption } from '$api/options/options';
 import { Requirements }         from '$api/options/options';
-import type { YAMLObject }      from '$api/yaml';
 import ClassSelectOption        from '$components/options/ClassSelectOption.svelte';
 import ProClass                 from '$api/proclass';
+import type { Unknown }         from '$api/types';
 
 export default class ClassSelect extends Requirements implements ComponentOption {
 	component                                       = ClassSelectOption;
@@ -52,7 +52,5 @@ export default class ClassSelect extends Requirements implements ComponentOption
 		}
 	};
 
-	deserialize = (yaml: YAMLObject) => {
-		this.data = yaml.get(this.key, this.multiple ? [] : '');
-	};
+	deserialize = (yaml: Unknown) => this.data = <string | string[]>yaml[this.key] || (this.multiple ? [] : '');
 }

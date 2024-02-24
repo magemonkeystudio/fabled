@@ -1,15 +1,16 @@
-import type { Writable }         from 'svelte/store';
-import { get, writable }         from 'svelte/store';
-import ProFolder                 from '$api/profolder';
-import { active, rename }        from './store';
-import { sort }                  from '$api/api';
-import { parseYAML, YAMLObject } from '$api/yaml';
-import { browser }               from '$app/environment';
-import ProClass                  from '$api/proclass';
-import ProSkill                  from '$api/proskill';
-import { goto }                  from '$app/navigation';
-import { base }                  from '$app/paths';
-import { socketService }         from '$api/socket/socket-connector';
+import type { Writable }           from 'svelte/store';
+import { get, writable }           from 'svelte/store';
+import ProFolder                   from '$api/profolder';
+import { active, rename }          from './store';
+import { sort }                    from '$api/api';
+import { browser }                 from '$app/environment';
+import ProClass                    from '$api/proclass';
+import ProSkill                    from '$api/proskill';
+import { goto }                    from '$app/navigation';
+import { base }                    from '$app/paths';
+import type { MultiClassYamlData } from '$api/types';
+import YAML                        from 'yaml';
+import { socketService }           from '$api/socket/socket-connector';
 
 const loadClassesFromServer = async () => {
 	let serverClasses: string[];
@@ -69,23 +70,26 @@ let isLegacy = false;
 const loadClassTextToArray = (text: string): ProClass[] => {
 	const list: ProClass[] = [];
 	// Load classes
-	const data: YAMLObject = parseYAML(text);
+	const data             = <MultiClassYamlData>YAML.parse(text);
+
+	const keys = Object.keys(data);
+
 	let clazz: ProClass;
 	// If we only have one class, and it is the current YAML,
 	// the structure is a bit different
-	if (data.key && !data.data[data.key]) {
-		const key: string = data.key;
+	if (keys.length == 1) {
+		const key = keys[0];
 		if (key === 'loaded') return list;
 		clazz = new ProClass({ name: key });
-		clazz.load(data);
+		clazz.load(data[key]);
 		list.push(clazz);
 		return list;
 	}
 
-	for (const key in data.data) {
-		if (key != 'loaded' && data.data[key] instanceof YAMLObject) {
+	for (const key of Object.keys(data)) {
+		if (key != 'loaded') {
 			clazz = new ProClass({ name: key });
-			clazz.load(data.data[key]);
+			clazz.load(data[key]);
 			list.push(clazz);
 		}
 	}
@@ -201,15 +205,19 @@ export const addClass = (name?: string): ProClass => {
 
 export const loadClass = async (data: ProClass) => {
 	if (data.loaded) return;
+	let yamlData: MultiClassYamlData;
+
 	if (data.location === 'local') {
-		data.load(parseYAML(localStorage.getItem(`sapi.class.${data.name}`) || ''));
+		yamlData = <MultiClassYamlData>YAML.parse(localStorage.getItem(`sapi.class.${data.name}`) || '');
 	} else {
 		const yaml = await socketService.getClassYaml(data.name);
 		if (!yaml) return;
-
-		const parsedYaml = parseYAML(yaml);
-		data.load(parsedYaml);
+		yamlData = <MultiClassYamlData>YAML.parse(yaml);
 	}
+
+	const clazz = Object.values(yamlData)[0];
+	data.load(clazz);
+
 	data.updateParent(get(classes));
 	data.loaded = true;
 };
@@ -224,8 +232,9 @@ export const cloneClass = async (data: ProClass): Promise<ProClass> => {
 		name = data.name + ' (Copy ' + i + ')';
 		i++;
 	}
-	const clazz = new ProClass();
-	clazz.load(parseYAML(data.serializeYaml().toString()));
+	const clazz    = new ProClass();
+	const yamlData = data.serializeYaml();
+	clazz.load(yamlData);
 	clazz.name = name;
 	cl.push(clazz);
 
@@ -290,27 +299,35 @@ export const refreshClassFolders = () => {
  */
 export const loadClassText = (text: string, fromServer: boolean = false) => {
 	// Load new classes
-	const data: YAMLObject = parseYAML(text);
+	const data = <MultiClassYamlData>YAML.parse(text);
+
+	if (!data || Object.keys(data).length === 0) {
+		// If there is no data or the object is empty... return
+		return;
+	}
+
+	const keys = Object.keys(data);
+
 	let clazz: ProClass;
 	// If we only have one class, and it is the current YAML,
 	// the structure is a bit different
-	if (data.key && !data.data[data.key]) {
-		const key: string = data.key;
+	if (keys.length == 1) {
+		const key: string = keys[0];
 		clazz             = (<ProClass>(isClassNameTaken(key)
 			? getClass(key)
 			: addClass(key)));
 		if (fromServer) clazz.location = 'server';
-		clazz.load(data);
+		clazz.load(data[key]);
 		refreshClasses();
 		return;
 	}
 
-	for (const key in data.data) {
-		if (key != 'loaded' && data.data[key] instanceof YAMLObject && !isClassNameTaken(key)) {
+	for (const key of Object.keys(data)) {
+		if (key != 'loaded' && !isClassNameTaken(key)) {
 			clazz = (<ProClass>(isClassNameTaken(key)
 				? getClass(key)
 				: addClass(key)));
-			clazz.load(data.data[key]);
+			clazz.load(data[key]);
 		}
 	}
 	refreshClasses();

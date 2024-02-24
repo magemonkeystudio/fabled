@@ -1,9 +1,10 @@
-import type { ComponentOption } from '$api/options/options';
-import { YAMLObject }           from '../yaml';
-import { Constructable }        from '$api/components/constructable';
-import type { ComponentData }   from '$api/types';
-import type { Writable }        from 'svelte/store';
-import { get, writable }        from 'svelte/store';
+import type { ComponentOption }                                                       from '$api/options/options';
+import {
+	Constructable
+}                                                                                     from '$api/components/constructable';
+import type { ComponentData, PreviewData, Unknown, YamlComponent, YamlComponentData } from '$api/types';
+import type { Writable }                                                              from 'svelte/store';
+import { get, writable }                                                              from 'svelte/store';
 
 export default abstract class ProComponent extends Constructable {
 	public type: 'trigger' | 'condition' | 'mechanic' | 'target';
@@ -21,7 +22,7 @@ export default abstract class ProComponent extends Constructable {
 	public _defaultOpen                         = false;
 	public parent: ProComponent | undefined;
 
-	protected constructor(type: 'trigger' | 'condition' | 'mechanic' | 'target', data: ComponentData) {
+	protected constructor(type: 'trigger' | 'condition' | 'mechanic' | 'target', data: ComponentData, isDeprecated = false) {
 		super();
 		this.type         = type;
 		this.name         = data.name;
@@ -29,8 +30,9 @@ export default abstract class ProComponent extends Constructable {
 		this.summaryItems = data.summaryItems ?? [];
 		this.comment      = data.comment ?? '';
 		this.setComponents(data.components || []);
-		this.data    = data.data || [];
-		this.preview = data.preview || [];
+		this.data         = data.data || [];
+		this.preview      = data.preview || [];
+		this.isDeprecated = isDeprecated;
 	}
 
 	public getValue(key: string): any {
@@ -86,54 +88,83 @@ export default abstract class ProComponent extends Constructable {
 		return this;
 	};
 
-	public toYamlObj(): YAMLObject {
-		const data = new YAMLObject(this.name);
-		data.put('type', this.type);
-		data.put('comment', this.comment);
+	protected nextChar = (c: string) => {
+		if (/z$/.test(c)) {
+			return c.replaceAll(/z$/g, 'a') + 'a';
+		}
+		return c.substring(0, c.length - 1) + String.fromCharCode(c.charCodeAt(c.length - 1) + 1);
+	};
+
+	public toYamlObj(): YamlComponent {
+		const comp = <YamlComponent>{
+			type:    this.type,
+			comment: this.comment
+		};
 
 		if (this.preview.length > 0) {
-			const previewData = new YAMLObject('preview');
-			previewData.put('enabled', this.enablePreview);
+			const previewData = <PreviewData>{
+				enabled: this.enablePreview
+			};
+
 			this.preview
 				.filter(opt => opt.meetsPreviewRequirements(this))
 				.forEach((opt: ComponentOption) => {
-					const optData: {
-						[key: string]: string
-					} = opt.getData();
-					Object.keys(optData).forEach(key => previewData.put(key, optData[key]));
+					const optData: { [key: string]: unknown } = opt.getData();
+					Object.keys(optData).forEach(key => previewData[key] = optData[key]);
 				});
 
-			data.put('preview', previewData);
+			comp.preview = previewData;
 		}
 
-		return data;
+		const data = this.getData();
+		if (Object.keys(data).length > 0) comp.data = data;
+
+		if (this.isParent) {
+			const comps = get(this.components);
+			if (comps.length > 0) {
+				const compData = <YamlComponentData>{};
+				comps.forEach(comp => {
+					const yamlData = comp.toYamlObj();
+					let name       = comp.name;
+					let suffix     = 'a';
+					while (compData[name]) {
+						suffix = this.nextChar(suffix);
+						name   = comp.name + '-' + suffix;
+					}
+					compData[name] = yamlData;
+				});
+				comp.children = compData;
+			}
+		}
+
+		return comp;
 	};
 
-	public abstract getData(): YAMLObject;
+	public abstract getData(raw: boolean): Unknown;
 
-	public abstract getRawData(): YAMLObject;
-
-	public getRawPreviewData(): YAMLObject {
-		const data = new YAMLObject('preview');
+	public getRawPreviewData(): Unknown {
+		const data: Unknown = {};
 
 		this.preview
 			.forEach((opt: ComponentOption) => {
 				const optData: {
-					[key: string]: string
+					[key: string]: unknown
 				} = opt.getData();
-				Object.keys(optData).forEach(key => data.put(key, optData[key]));
+				Object.keys(optData).forEach(key => data[key] = optData[key]);
 			});
 
 		return data;
 	}
 
-	public deserialize(yaml: YAMLObject): void {
-		const preview = yaml.get<YAMLObject, YAMLObject>('preview');
+	public deserialize(yaml: YamlComponent): void {
+		const preview = yaml.preview;
 		if (preview) {
-			this.enablePreview = preview.get('enabled', false);
+			this.enablePreview = preview.enabled;
 			this.preview.forEach((opt: ComponentOption) => opt.deserialize(preview));
 		}
 
-		this.comment = yaml.get<string, string>('comment', '').replaceAll('\\n', '\n');
+		if (yaml.comment) {
+			this.comment = yaml.comment.replaceAll('\\n', '\n');
+		}
 	}
 }
