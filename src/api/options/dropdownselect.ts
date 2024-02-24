@@ -1,7 +1,7 @@
 import type { ComponentOption } from '$api/options/options';
 import { Requirements }         from '$api/options/options';
 import DropdownOption           from '$components/options/DropdownOption.svelte';
-import type { YAMLObject }      from '$api/yaml';
+import type { Unknown }         from '$api/types';
 
 export default class DropdownSelect extends Requirements implements ComponentOption {
 	component                   = DropdownOption;
@@ -58,5 +58,5 @@ export default class DropdownSelect extends Requirements implements ComponentOpt
 		return this.data.selected;
 	};
 
-	deserialize = (yaml: YAMLObject) => this.data.selected = yaml.get(this.key);
+	deserialize = (yaml: Unknown) => this.data.selected = <string[] | string>yaml[this.key];
 }

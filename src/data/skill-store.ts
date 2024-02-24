@@ -1,37 +1,45 @@
-import { parseYAML, YAMLObject }       from '$api/yaml';
-import type { Unsubscriber, Writable } from 'svelte/store';
-import { get, writable }               from 'svelte/store';
-import ProFolder                       from '$api/profolder';
-import { sort }                        from '$api/api';
-import { browser }                     from '$app/environment';
-import ProSkill                        from '$api/proskill';
-import { active, rename }              from './store';
-import { goto }                        from '$app/navigation';
-import { base }                        from '$app/paths';
-import { initialized }                 from '$api/components/registry';
+import type { Writable }                          from 'svelte/store';
+import { get, writable }                          from 'svelte/store';
+import ProFolder                                  from '$api/profolder';
+import { sort }                                   from '$api/api';
+import { browser }                                from '$app/environment';
+import ProSkill                                   from '$api/proskill';
+import { active, rename }                         from './store';
+import { goto }                                   from '$app/navigation';
+import { base }                                   from '$app/paths';
+import { initialized }                            from '$api/components/registry';
+import YAML                                       from 'yaml';
+import type { MultiSkillYamlData, SkillYamlData } from '$api/types';
 
 let isLegacy = false;
 
 const loadSkillTextToArray = (text: string): ProSkill[] => {
 	const list: ProSkill[] = [];
 	// Load skills
-	const data: YAMLObject = parseYAML(text);
+	const data             = <MultiSkillYamlData>YAML.parse(text);
+	if (!data || Object.keys(data).length === 0) {
+		// If there is no data or the object is empty... return
+		return list;
+	}
+
+	const keys = Object.keys(data);
+
 	let skill: ProSkill;
 	// If we only have one skill, and it is the current YAML,
 	// the structure is a bit different
-	if (data.key && !data.data[data.key]) {
-		const key: string = data.key;
+	if (keys.length == 1) {
+		const key = keys[0];
 		if (key === 'loaded') return list;
 		skill = new ProSkill({ name: key });
-		skill.load(data);
+		skill.load(data[key]);
 		list.push(skill);
 		return list;
 	}
 
-	for (const key in data.data) {
-		if (key != 'loaded' && data.data[key] instanceof YAMLObject) {
+	for (const key of Object.keys(data)) {
+		if (key != 'loaded') {
 			skill = new ProSkill({ name: key });
-			skill.load(data.data[key]);
+			skill.load(data[key]);
 			list.push(skill);
 		}
 	}
@@ -145,7 +153,10 @@ export const loadSkill = (data: ProSkill) => {
 	if (data.loaded) return;
 
 	if (data.location === 'local') {
-		data.load(parseYAML(localStorage.getItem(`sapi.skill.${data.name}`) || ''));
+		const yamlData = <MultiSkillYamlData>YAML.parse(localStorage.getItem(`sapi.skill.${data.name}`) || '');
+		// Get the first entry in the object
+		const skill    = Object.values(yamlData)[0];
+		data.load(skill);
 	} else {
 		// TODO Load data from server
 	}
@@ -162,8 +173,9 @@ export const cloneSkill = (data: ProSkill): ProSkill => {
 		name = data.name + ' (Copy ' + i + ')';
 		i++;
 	}
-	const skill = new ProSkill();
-	skill.load(parseYAML(data.serializeYaml().toString()));
+	const skill     = new ProSkill();
+	const yamlData  = data.serializeYaml();
+	skill.load(yamlData);
 	skill.name = name;
 	sk.push(skill);
 
@@ -230,29 +242,36 @@ export const refreshSkillFolders = () => {
  */
 export const loadSkillText = async (text: string, fromServer: boolean = false) => {
 	// Load new skills
-	const data: YAMLObject = parseYAML(text);
-	console.log(data);
+	const data = <MultiSkillYamlData>YAML.parse(text);
+
+	if (!data || Object.keys(data).length === 0) {
+		// If there is no data or the object is empty... return
+		return;
+	}
+
+	const keys = Object.keys(data);
+
 	let skill: ProSkill;
 	// If we only have one skill, and it is the current YAML,
 	// the structure is a bit different
-	if (data.key && !data.data[data.key]) {
-		const key: string = data.key;
+	if (keys.length == 1) {
+		const key: string = keys[0];
 		skill             = (<ProSkill>(isSkillNameTaken(key)
 			? getSkill(key)
 			: addSkill(key)));
 		if (fromServer) skill.location = 'server';
-		skill.load(data);
+		skill.load(data[key]);
 		skill.save();
 		refreshSkills();
 		return;
 	}
 
-	for (const key in data.data) {
-		if (key != 'loaded' && data.data[key] instanceof YAMLObject && !isSkillNameTaken(key)) {
+	for (const key of Object.keys(data)) {
+		if (key != 'loaded' && !isSkillNameTaken(key)) {
 			skill = (<ProSkill>(isSkillNameTaken(key)
 				? getSkill(key)
 				: addSkill(key)));
-			skill.load(data.data[key]);
+			skill.load(data[key]);
 			skill.save();
 		}
 	}

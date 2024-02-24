@@ -4,12 +4,13 @@
 	import { createPaste }                                     from '$api/hastebin';
 	import ProClass                                            from '$api/proclass';
 	import ProSkill                                            from '$api/proskill';
+	import YAML                                                from 'yaml';
 
 	const haste = () => {
 		let act: ProClass | ProSkill | undefined = get(active);
 		if (!act) return;
 
-		let data = act.serializeYaml().toString();
+		let data = YAML.stringify({ [act.name]: act.serializeYaml() });
 		createPaste(data)
 			.then((urlToPaste) => {
 				navigator?.clipboard?.writeText(urlToPaste);

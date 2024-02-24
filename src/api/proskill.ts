@@ -1,20 +1,19 @@
-import type { Icon, ProSkillData, Serializable } from './types';
-import { YAMLObject }                            from './yaml';
-import { ProAttribute }                          from './proattribute';
-import { toEditorCase }       from './api';
-import { getSkill, isSaving } from '../data/skill-store';
-import ProTrigger             from './components/triggers';
-import type ProComponent                         from '$api/components/procomponent';
-import Registry, { initialized }                 from '$api/components/registry';
-import type { Unsubscriber }                     from 'svelte/store';
-import { saveError }                             from '../data/store';
+import type { Icon, ProSkillData, Serializable, SkillYamlData, YamlComponentData } from './types';
+import { ProAttribute }                                                            from './proattribute';
+import { getSkill, isSaving }                                                      from '../data/skill-store';
+import ProTrigger                                                                  from './components/triggers';
+import type ProComponent                                                           from '$api/components/procomponent';
+import Registry, { initialized }                                                   from '$api/components/registry';
+import type { Unsubscriber }                                                       from 'svelte/store';
+import { saveError }                                                               from '../data/store';
+import YAML                                                                        from 'yaml';
 
 export default class ProSkill implements Serializable {
-	dataType = 'skill';
+	dataType                     = 'skill';
 	location: 'local' | 'server' = 'local';
 	loaded                       = false;
-	tooBig = false;
-	acknowledged = false;
+	tooBig                       = false;
+	acknowledged                 = false;
 
 	isSkill                               = true;
 	public key                            = {};
@@ -105,76 +104,95 @@ export default class ProSkill implements Serializable {
 		this.triggers = [...this.triggers];
 	};
 
-	public serializeYaml = (): YAMLObject => {
-		const yaml = new YAMLObject(this.name);
-		const data = new YAMLObject();
-		data.put('name', this.name);
-		data.put('type', this.type);
-		data.put('max-level', this.maxLevel);
-		data.put('skill-req', this.skillReq?.name);
-		data.put('skill-req-lvl', this.skillReqLevel);
-		data.put('needs-permission', this.permission);
-		data.put('cooldown-message', this.cooldownMessage);
-		data.put('msg', this.castMessage);
-		data.put('combo', this.combo);
-		data.put('icon', this.icon.material);
-		data.put('icon-data', this.icon.customModelData);
-		data.put('icon-lore', this.icon.lore);
-
-		const attributes = new YAMLObject('attributes');
-		attributes.put('level', this.levelReq);
-		attributes.put('cost', this.cost);
-		attributes.put('cooldown', this.cooldown);
-		attributes.put('mana', this.mana);
-		attributes.put('points-spent-req', this.minSpent);
-		attributes.put('incompatible', this.incompatible.map(s => s.name));
-		this.attributeRequirements.forEach(attr => attributes.put(attr.name.toLowerCase(), attr));
-		data.put('attributes', attributes);
-
-		data.put('components', this.triggers);
-
-		yaml.data = data.data;
-		return yaml;
+	private nextChar = (c: string) => {
+		if (/z$/.test(c)) {
+			return c.replaceAll(/z$/g, 'a') + 'a';
+		}
+		return c.substring(0, c.length - 1) + String.fromCharCode(c.charCodeAt(c.length - 1) + 1);
 	};
 
-	public load = (yaml: YAMLObject) => {
-		this.name            = yaml.get('name', this.name);
-		this.type            = yaml.get('type', this.type);
-		this.maxLevel        = yaml.get('max-level', this.maxLevel);
-		this.skillReqStr     = yaml.get('skill-req', this.skillReqStr);
-		this.skillReqLevel   = yaml.get('skill-req-lvl', this.skillReqLevel);
-		this.permission      = yaml.get('needs-permission', this.permission);
-		this.cooldownMessage = yaml.get('cooldown-message', this.cooldownMessage);
-		this.castMessage     = yaml.get('msg', this.castMessage);
-		this.combo           = yaml.get('combo', this.combo);
+	public serializeYaml = (): SkillYamlData => {
+		const compData = <YamlComponentData>{};
 
-		const attributes: YAMLObject = yaml.get('attributes');
-		this.levelReq                = new ProAttribute('level', attributes.get('level-base'), attributes.get('level-scale'));
-		this.cost                    = new ProAttribute('cost', attributes.get('cost-base'), attributes.get('cost-scale'));
-		this.cooldown                = new ProAttribute('cooldown', attributes.get('cooldown-base'), attributes.get('cooldown-scale'));
-		this.mana                    = new ProAttribute('mana', attributes.get('mana-base'), attributes.get('mana-scale'));
-		this.minSpent                = new ProAttribute('points-spent-req', attributes.get('points-spent-req-base'), attributes.get('points-spent-req-scale'));
-		this.incompStr               = attributes.get('incompatible', this.incompStr);
+		for (const comp of this.triggers) {
+			const yamlData = comp.toYamlObj();
+			let name       = comp.name;
+			let suffix     = 'a';
+			while (compData[name]) {
+				suffix = this.nextChar(suffix);
+				name   = comp.name + '-' + suffix;
+			}
+			compData[name] = yamlData;
+		}
+		const data = <SkillYamlData>{
+			name:               this.name,
+			type:               this.type,
+			'max-level':        this.maxLevel,
+			'skill-req':        this.skillReq?.name,
+			'skill-req-lvl':    this.skillReqLevel,
+			'needs-permission': this.permission,
+			'cooldown-message': this.cooldownMessage,
+			msg:                this.castMessage,
+			combo:              this.combo,
+			icon:               this.icon.material,
+			'icon-data':        this.icon.customModelData,
+			'icon-lore':        this.icon.lore,
+			attributes:         {
+				'level-base':             this.levelReq.base,
+				'level-scale':            this.levelReq.scale,
+				'cost-base':              this.cost.base,
+				'cost-scale':             this.cost.scale,
+				'cooldown-base':          this.cooldown.base,
+				'cooldown-scale':         this.cooldown.scale,
+				'mana-base':              this.mana.base,
+				'mana-scale':             this.mana.scale,
+				'points-spent-req-base':  this.minSpent.base,
+				'points-spent-req-scale': this.minSpent.scale,
+				incompatible:             this.incompatible.map(s => s.name)
+			},
+			components:         compData
+		};
 
-		// Attribute requirements
+		this.attributeRequirements.forEach(attr => {
+			data.attributes[`${attr.name.toLowerCase()}-base`]  = attr.base;
+			data.attributes[`${attr.name.toLowerCase()}-scale`] = attr.scale;
+		});
+
+		return data;
+	};
+
+	public load = (yaml: SkillYamlData) => {
+		this.name            = yaml.name;
+		this.type            = yaml.type;
+		this.maxLevel        = yaml['max-level'];
+		this.skillReqStr     = yaml['skill-req'];
+		this.skillReqLevel   = yaml['skill-req-lvl'];
+		this.permission      = yaml['needs-permission'];
+		this.cooldownMessage = yaml['cooldown-message'];
+		this.castMessage     = yaml.msg;
+		this.combo           = yaml.combo;
+
+		const attributes = yaml.attributes;
+		this.levelReq    = new ProAttribute('level', attributes['level-base'], attributes['level-scale']);
+		this.cost        = new ProAttribute('cost', attributes['cost-base'], attributes['cost-scale']);
+		this.cooldown    = new ProAttribute('cooldown', attributes['cooldown-base'], attributes['cooldown-scale']);
+		this.mana        = new ProAttribute('mana', attributes['mana-base'], attributes['mana-scale']);
+		this.minSpent    = new ProAttribute('points-spent-req', attributes['points-spent-req-base'], attributes['points-spent-req-scale']);
+		this.incompStr   = attributes.incompatible;
+
 		const reserved             = ['level', 'cost', 'cooldown', 'mana', 'points-spent-req', 'incompatible'];
-		const names                =
-						new Set(
-							attributes.getKeys()
-								.map(k => k.replace(/-(base|scale)/i, ''))
-								.filter(name => !reserved.includes(name))
-						);
-		this.attributeRequirements = [...names].map(name => new ProAttribute(name, attributes.get(name + '-base'), attributes.get(name + '-scale')));
+		const names                = new Set(Object.keys(attributes).map(k => k.replace(/-(base|scale)/i, '')).filter(name => !reserved.includes(name)));
+		this.attributeRequirements = [...names].map(name => new ProAttribute(name, attributes[`${name}-base`], attributes[`${name}-scale`]));
 
-		this.icon.material        = yaml.get<string, string>('icon', this.icon.material, toEditorCase);
-		this.icon.customModelData = yaml.get('icon-data', this.icon.customModelData);
-		this.icon.lore            = yaml.get('icon-lore', this.icon.lore);
+		this.icon.material        = yaml.icon;
+		this.icon.customModelData = yaml['icon-data'];
+		this.icon.lore            = yaml['icon-lore'];
 
 		let unsub: Unsubscriber | undefined = undefined;
 
 		unsub = initialized.subscribe(init => {
 			if (!init) return;
-			this.triggers = yaml.get<YAMLObject, ProTrigger[]>('components', this.triggers, (list: YAMLObject) => Registry.deserializeComponents(list));
+			this.triggers = <ProTrigger[]>Registry.deserializeComponents(yaml.components);
 
 			if (unsub) {
 				unsub();
@@ -199,7 +217,7 @@ export default class ProSkill implements Serializable {
 
 		isSaving.set(true);
 
-		const yaml = this.serializeYaml();
+		const yaml = YAML.stringify({ [this.name]: this.serializeYaml() });
 		if (this.location === 'server') {
 
 			return;
@@ -211,7 +229,7 @@ export default class ProSkill implements Serializable {
 		this.previousName = this.name;
 
 		try {
-			localStorage.setItem('sapi.skill.' + this.name, yaml.toString());
+			localStorage.setItem('sapi.skill.' + this.name, yaml);
 			this.tooBig = false;
 		} catch (e: any) {
 			// If the data is too big

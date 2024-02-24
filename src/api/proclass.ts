@@ -1,10 +1,10 @@
-import type { Icon, ProClassData, Serializable } from './types';
-import type ProSkill                             from './proskill';
-import { YAMLObject }                            from './yaml';
-import { ProAttribute }                          from './proattribute';
-import { getSkill }                              from '../data/skill-store';
-import { toEditorCase, toProperCase }            from './api';
-import type { SkillTree }                        from '$api/SkillTree';
+import type { ClassYamlData, Icon, ProClassData, Serializable } from './types';
+import type ProSkill                                            from './proskill';
+import { ProAttribute }                                         from './proattribute';
+import { getSkill }                                             from '../data/skill-store';
+import { toEditorCase, toProperCase }                           from './api';
+import type { SkillTree }                                       from '$api/SkillTree';
+import YAML                                                     from 'yaml';
 
 export default class ProClass implements Serializable {
 	dataType                     = 'class';
@@ -116,60 +116,46 @@ export default class ProClass implements Serializable {
 		}
 	};
 
-	public serializeYaml = (): YAMLObject => {
-		const yaml = new YAMLObject(this.name);
-		const data = new YAMLObject();
-		data.put('name', this.name);
-		data.put('action-bar', this.actionBar);
-		data.put('prefix', this.prefix);
-		data.put('group', this.group);
-		data.put('mana', this.manaName);
-		data.put('max-level', this.maxLevel);
-		data.put('parent', this.parent?.name || '');
-		data.put('needs-permission', this.permission);
-		data.put('attributes', [this.health, this.mana, ...this.attributes]);
-		data.put('mana-regen', this.manaRegen);
-		data.put('skill-tree', this.skillTree.toUpperCase().replace(/ /g, '_'));
-		data.put('blacklist', this.unusableItems);
-		data.put('skills', this.skills.map(s => s.name));
-		data.put('icon', this.icon.material);
-		data.put('icon-data', this.icon.customModelData);
-		data.put('icon-lore', this.icon.lore);
-		data.put('exp-source', this.expSources);
+	public serializeYaml = (): ClassYamlData => {
+		const yaml = <ClassYamlData>{
+			name:               this.name,
+			'action-bar':       this.actionBar,
+			prefix:             this.prefix,
+			group:              this.group,
+			mana:               this.manaName,
+			'max-level':        this.maxLevel,
+			parent:             this.parent?.name || '',
+			'needs-permission': this.permission,
+			attributes:         {
+				'health-base':  this.health.base,
+				'health-scale': this.health.scale,
+				'mana-base':    this.mana.base,
+				'mana-scale':   this.mana.scale
+			},
+			'mana-regen':       this.manaRegen,
+			'skill-tree':       this.skillTree.toUpperCase().replace(/ /g, '_'),
+			blacklist:          this.unusableItems,
+			skills:             this.skills.map(s => s.name),
+			icon:               this.icon.material,
+			'icon-data':        this.icon.customModelData,
+			'icon-lore':        this.icon.lore,
+			'exp-source':       this.expSources,
+			'combo-starters':   {
+				L:  { inverted: this.lInverted, whitelist: this.lWhitelist },
+				R:  { inverted: this.rInverted, whitelist: this.rWhitelist },
+				LS: { inverted: this.lsInverted, whitelist: this.lsWhitelist },
+				RS: { inverted: this.rsInverted, whitelist: this.rsWhitelist },
+				P:  { inverted: this.pInverted, whitelist: this.pWhitelist },
+				Q:  { inverted: this.qInverted, whitelist: this.qWhitelist },
+				F:  { inverted: this.fInverted, whitelist: this.fWhitelist }
+			}
+		};
 
-		// Combo starters
-		const combos = new YAMLObject('combo-starters');
-		const l      = new YAMLObject('L');
-		l.put('inverted', this.lInverted);
-		l.put('whitelist', this.lWhitelist);
-		combos.put('L', l);
-		const r = new YAMLObject('R');
-		r.put('inverted', this.rInverted);
-		r.put('whitelist', this.rWhitelist);
-		combos.put('R', r);
-		const ls = new YAMLObject('LS');
-		ls.put('inverted', this.lsInverted);
-		ls.put('whitelist', this.lsWhitelist);
-		combos.put('LS', ls);
-		const rs = new YAMLObject('RS');
-		rs.put('inverted', this.rsInverted);
-		rs.put('whitelist', this.rsWhitelist);
-		combos.put('RS', rs);
-		const p = new YAMLObject('P');
-		p.put('inverted', this.pInverted);
-		p.put('whitelist', this.pWhitelist);
-		combos.put('P', p);
-		const q = new YAMLObject('Q');
-		q.put('inverted', this.qInverted);
-		q.put('whitelist', this.qWhitelist);
-		combos.put('Q', q);
-		const f = new YAMLObject('F');
-		f.put('inverted', this.fInverted);
-		f.put('whitelist', this.fWhitelist);
-		combos.put('F', f);
-		data.put('combo-starters', combos);
+		this.attributes.forEach(attr => {
+			yaml.attributes[`${attr.name.toLowerCase()}-base`]  = attr.base;
+			yaml.attributes[`${attr.name.toLowerCase()}-scale`] = attr.scale;
+		});
 
-		yaml.data = data.data;
 		return yaml;
 	};
 
@@ -178,71 +164,60 @@ export default class ProClass implements Serializable {
 		this.parent = classes.find(c => c.name === this.parentStr);
 	};
 
-	public load = (yaml: YAMLObject) => {
-		this.name                 = yaml.get('name', this.name);
-		this.actionBar            = yaml.get('action-bar', this.actionBar);
-		this.manaName             = yaml.get('mana', this.manaName);
-		this.prefix               = yaml.get('prefix', this.prefix);
-		this.group                = yaml.get('group', this.group);
-		this.maxLevel             = yaml.get('max-level', this.maxLevel);
-		this.parentStr            = yaml.get('parent', this.parentStr);
-		this.permission           = yaml.get('needs-permission', this.permission);
-		this.attributes           = yaml.get<YAMLObject, ProAttribute[]>('attributes', this.attributes,
-			(obj: YAMLObject) => {
-				const attrs: ProAttribute[] = [];
+	public load = (yaml: ClassYamlData) => {
+		this.name       = yaml.name;
+		this.actionBar  = yaml['action-bar'];
+		this.manaName   = yaml.mana;
+		this.prefix     = yaml.prefix;
+		this.group      = yaml.group;
+		this.maxLevel   = yaml['max-level'];
+		this.parentStr  = yaml.parent;
+		this.permission = yaml['needs-permission'];
 
-				const healthBase: number = obj.get<number, number>('health-base', 20);
-				const healthMod: number  = obj.get<number, number>('health-scale', 1);
-				const manaBase: number   = obj.get<number, number>('mana-base', 20);
-				const manaMod: number    = obj.get<number, number>('mana-scale', 1);
-				this.health              = new ProAttribute('health', healthBase, healthMod);
-				this.mana                = new ProAttribute('mana', manaBase, manaMod);
-				obj.remove('health-base');
-				obj.remove('health-scale');
-				obj.remove('mana-base');
-				obj.remove('mana-scale');
+		const attributes = yaml.attributes;
+		this.health      = new ProAttribute('health', attributes['health-base'] || 20, attributes['health-scale'] || 1);
+		this.mana        = new ProAttribute('mana', attributes['mana-base'] || 20, attributes['mana-scale'] || 1);
 
-				const map: { [key: string]: ProAttribute } = {};
-				Object.keys(obj.data).forEach(key => {
-					const split = key.split('-');
-					const name  = split[0];
-					if (!map[name]) map[name] = new ProAttribute(name, 0, 0);
+		const map: { [key: string]: ProAttribute } = {};
+		for (const attrId of Object.keys(attributes)) {
+			const split = attrId.split('-');
+			const name  = split[0];
+			if (map[name] || name === 'health' || name === 'mana') continue;
 
-					const attr = map[name];
-					if (split[1] == 'base') attr.base = Number.parseFloat(obj.data[key]);
-					if (split[1] == 'scale') attr.scale = Number.parseFloat(obj.data[key]);
-				});
+			const attr = new ProAttribute(name, 0, 0);
+			attr.base  = attributes[`${name}-base`];
+			attr.scale = attributes[`${name}-scale`];
+			map[name]  = attr;
+		}
+		this.attributes = Object.values(map);
 
-				attrs.push(...Object.values(map));
-
-				return attrs;
-			});
-		this.manaRegen            = yaml.get('mana-regen', this.manaRegen);
-		this.skillTree            = yaml.get('skill-tree', this.skillTree, toProperCase);
-		this.unusableItems        = yaml.get('blacklist', this.unusableItems);
-		this.skills               = yaml.get<string[], ProSkill[]>('skills', this.skills,
-			(list: string[]) => list.map(s => getSkill(s)).filter(s => !!s));
-		this.icon.material        = yaml.get<string, string>('icon', this.icon.material, toEditorCase);
-		this.icon.customModelData = yaml.get('icon-data', this.icon.customModelData);
-		this.icon.lore            = yaml.get('icon-lore', this.icon.lore);
-		this.expSources           = yaml.get('exp-source', this.expSources);
+		this.manaRegen            = yaml['mana-regen'];
+		this.skillTree            = <SkillTree>toProperCase(yaml['skill-tree']);
+		this.unusableItems        = yaml.blacklist;
+		this.skills               = <ProSkill[]>yaml.skills.map(s => getSkill(s)).filter(s => !!s);
+		this.icon.material        = toEditorCase(yaml.icon);
+		this.icon.customModelData = yaml['icon-data'];
+		this.icon.lore            = yaml['icon-lore'];
+		this.expSources           = yaml['exp-source'];
 
 		// Combo starters
-		const combos     = yaml.get('combo-starters', new YAMLObject());
-		this.lInverted   = combos.get('L', new YAMLObject()).get('inverted', this.lInverted);
-		this.rInverted   = combos.get('R', new YAMLObject()).get('inverted', this.rInverted);
-		this.lsInverted  = combos.get('LS', new YAMLObject()).get('inverted', this.lsInverted);
-		this.rsInverted  = combos.get('RS', new YAMLObject()).get('inverted', this.rsInverted);
-		this.pInverted   = combos.get('P', new YAMLObject()).get('inverted', this.pInverted);
-		this.qInverted   = combos.get('Q', new YAMLObject()).get('inverted', this.qInverted);
-		this.fInverted   = combos.get('F', new YAMLObject()).get('inverted', this.fInverted);
-		this.lWhitelist  = combos.get('L', new YAMLObject()).get('whitelist', this.lWhitelist);
-		this.rWhitelist  = combos.get('R', new YAMLObject()).get('whitelist', this.rWhitelist);
-		this.lsWhitelist = combos.get('LS', new YAMLObject()).get('whitelist', this.lsWhitelist);
-		this.rsWhitelist = combos.get('RS', new YAMLObject()).get('whitelist', this.rsWhitelist);
-		this.pWhitelist  = combos.get('P', new YAMLObject()).get('whitelist', this.pWhitelist);
-		this.qWhitelist  = combos.get('Q', new YAMLObject()).get('whitelist', this.qWhitelist);
-		this.fWhitelist  = combos.get('F', new YAMLObject()).get('whitelist', this.fWhitelist);
+		const combos = yaml['combo-starters'];
+		if (combos) {
+			this.lInverted   = combos.L.inverted;
+			this.rInverted   = combos.R.inverted;
+			this.lsInverted  = combos.LS.inverted;
+			this.rsInverted  = combos.RS.inverted;
+			this.pInverted   = combos.P.inverted;
+			this.qInverted   = combos.Q.inverted;
+			this.fInverted   = combos.F.inverted;
+			this.lWhitelist  = combos.L.whitelist;
+			this.rWhitelist  = combos.R.whitelist;
+			this.lsWhitelist = combos.LS.whitelist;
+			this.rsWhitelist = combos.RS.whitelist;
+			this.pWhitelist  = combos.P.whitelist;
+			this.qWhitelist  = combos.Q.whitelist;
+			this.fWhitelist  = combos.F.whitelist;
+		}
 
 		this.loaded = true;
 	};
@@ -255,13 +230,12 @@ export default class ProClass implements Serializable {
 			return;
 		}
 
-		const yaml = this.serializeYaml();
+		const yaml = YAML.stringify({ [this.name]: this.serializeYaml() });
 
 		if (this.previousName && this.previousName !== this.name) {
 			localStorage.removeItem('sapi.class.' + this.previousName);
 		}
 		this.previousName = this.name;
-		localStorage.setItem('sapi.class.' + this.name, yaml.toString());
-
+		localStorage.setItem('sapi.class.' + this.name, yaml);
 	};
 }

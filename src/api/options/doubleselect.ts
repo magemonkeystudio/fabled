@@ -1,15 +1,14 @@
-import type { SvelteComponent } from 'svelte';
 import type { ComponentOption } from '$api/options/options';
 import { Requirements }         from '$api/options/options';
-import type { YAMLObject }      from '$api/yaml';
 import DoubleSelectOption       from '$components/options/DoubleSelectOption.svelte';
+import type { Unknown }         from '$api/types';
 
 export default class DoubleSelect extends Requirements implements ComponentOption {
-	component: typeof SvelteComponent<any> = DoubleSelectOption;
+	component                   = DoubleSelectOption;
 	name: string;
 	key: string;
 	data: number;
-	tooltip: string | undefined       = undefined;
+	tooltip: string | undefined = undefined;
 
 	constructor(name: string, key: string, def = 0) {
 		super();
@@ -28,16 +27,14 @@ export default class DoubleSelect extends Requirements implements ComponentOptio
 		return select;
 	};
 
-	getData = (): { [key: string]: any } => {
-		const data: { [key: string]: any } = {};
+	getData = (): { [key: string]: number } => {
+		const data: { [key: string]: number } = {};
 
 		data[this.key] = this.data || 0;
 		return data;
 	};
 
-	getSummary = (): string => {
-		return this.data.toString();
-	};
+	getSummary = (): string => this.data.toString();
 
-	deserialize = (yaml: YAMLObject) => this.data = yaml.get<number, number>(this.key, 0);
+	deserialize = (yaml: Unknown) => this.data = <number>yaml[this.key] || 0;
 }

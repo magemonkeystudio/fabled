@@ -1,11 +1,11 @@
 import type { Readable, Writable } from 'svelte/store';
 import { derived, get, writable }  from 'svelte/store';
-import { YAMLObject }              from '$api/yaml';
 import type ProComponent           from '$api/components/procomponent';
 import type ProTrigger             from '$api/components/triggers';
 import type ProTarget              from '$api/components/targets';
 import type ProCondition           from '$api/components/conditions';
-import type ProMechanic            from '$api/components/mechanics';
+import type ProMechanic           from '$api/components/mechanics';
+import type { YamlComponentData } from '$api/types';
 
 export type RegistryEntry = {
 	name: string,
@@ -109,15 +109,15 @@ export default class Registry {
 		return <typeof ProMechanic><unknown>val;
 	};
 
-	public static deserializeComponents = (yaml: YAMLObject): ProComponent[] => {
-		if (!yaml || !(yaml instanceof YAMLObject)) return [];
+	public static deserializeComponents = (yaml: YamlComponentData): ProComponent[] => {
+		if (!yaml) return [];
 		const comps: ProComponent[] = [];
 
-		const keys: string[] = yaml.getKeys();
+		const keys: string[] = Object.keys(yaml);
 		for (const key of keys) {
 			let comp: ProComponent | undefined = undefined;
-			const data                         = yaml.get<YAMLObject, YAMLObject>(key);
-			const type                         = data.get('type');
+			const data                         = yaml[key];
+			const type                         = data.type;
 
 			if (type === 'trigger') {
 				const trigger: typeof ProTrigger | undefined = Registry.getTriggerByName(key.split('-')[0]);

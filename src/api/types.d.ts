@@ -1,6 +1,5 @@
 import ProSkill         from './proskill';
 import ProClass         from './proclass';
-import { YAMLObject }   from './yaml';
 import { ProAttribute } from './proattribute';
 import ProTrigger       from './components/triggers';
 import ProComponent     from '$api/components/procomponent';
@@ -104,5 +103,110 @@ export interface VersionData {
 }
 
 export abstract class Serializable {
-	public abstract serializeYaml: () => YAMLObject;
+	public abstract serializeYaml: () => SkillYamlData | ClassYamlData;
+}
+
+export interface StarterInfo {
+	inverted: boolean;
+	whitelist: string[];
+}
+
+export interface ComboStarters {
+	L: StarterInfo;
+	R: StarterInfo;
+	LS: StarterInfo;
+	RS: StarterInfo;
+	P: StarterInfo;
+	Q: StarterInfo;
+	F: StarterInfo;
+}
+
+export interface ClassYamlData {
+	name: string;
+	'action-bar': string;
+	prefix: string;
+	group: string;
+	mana: string;
+	'max-level': number;
+	parent: string;
+	'needs-permission': boolean;
+	attributes: AttributeType;
+	'mana-regen': number;
+	'skill-tree': string;
+	blacklist: string[];
+	skills: string[];
+	icon: string;
+	'icon-data': number;
+	'icon-lore': string[];
+	'exp-source': number;
+
+	'combo-starters': ComboStarters
+}
+
+export interface SkillYamlData {
+	name: string;
+	type: string;
+	'max-level': number;
+	'skill-req': string;
+	'skill-req-lvl': number;
+	'needs-permission': boolean;
+	'cooldown-message': boolean;
+	msg: string;
+	combo: string;
+	icon: string;
+	'icon-data': number;
+	'icon-lore': string[];
+
+	attributes: AttributeType & {
+		'level-base': number;
+		'level-scale': number;
+		'cost-base': number;
+		'cost-scale': number;
+		'cooldown-base': number;
+		'cooldown-scale': number;
+		'mana-base': number;
+		'mana-scale': number;
+		'points-spent-req-base': number;
+		'points-spent-req-scale': number;
+		incompatible: string[];
+	};
+
+	components: YamlComponentData;
+}
+
+export interface YamlComponentData {
+	[key: string]: YamlComponent;
+}
+
+export type AttributeType = {
+	[K in string as `${K}-base` | `${K}-scale`]: number;
+}
+
+export type Unknown = {
+	[key: string]: unknown;
+}
+
+export interface PreviewData extends Unknown {
+	enabled: boolean;
+}
+
+export interface YamlComponent {
+	type: 'trigger' | 'target' | 'condition' | 'mechanic';
+	comment?: string;
+	counts?: boolean;
+	preview?: PreviewData;
+	data: Unknown;
+	children: YamlComponentData;
+}
+
+export interface MultiClassYamlData {
+	loaded?: boolean;
+
+	[key: string]: ClassYamlData;
+}
+
+export interface MultiSkillYamlData {
+	loaded?: boolean;
+
+	[key: string]: SkillYamlData;
 }

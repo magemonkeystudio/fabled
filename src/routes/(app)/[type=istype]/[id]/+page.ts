@@ -1,16 +1,17 @@
-import { active, isShowClasses } from '../../../../data/store';
-import { get }                   from 'svelte/store';
-import { redirect }              from '@sveltejs/kit';
-import { skills }                from '../../../../data/skill-store';
-import type ProClass             from '$api/proclass';
-import type ProSkill             from '$api/proskill';
-import { parseYAML }             from '$api/yaml';
+import { active, isShowClasses }   from '../../../../data/store';
+import { get }                     from 'svelte/store';
+import { redirect }                from '@sveltejs/kit';
+import { skills }                  from '../../../../data/skill-store';
+import type ProClass               from '$api/proclass';
+import type ProSkill               from '$api/proskill';
+import YAML                        from 'yaml';
+import type { MultiSkillYamlData } from '$api/types';
 
 export const ssr = false;
 
 // noinspection JSUnusedGlobalSymbols
 /** @type {import('../../../../../.svelte-kit/types/src/routes').PageLoad} */
-export async function load({ params }: any) {
+export async function load({ params }) {
 	const name    = params.id;
 	const isSkill = params.type === 'skill';
 	let data: ProClass | ProSkill | undefined;
@@ -31,7 +32,12 @@ export async function load({ params }: any) {
 	if (data) {
 		if (!data.loaded) {
 			if (data.location === 'local') {
-				data.load(parseYAML(localStorage.getItem(`sapi.skill.${data.name}`) || ''));
+				const yamlData = <MultiSkillYamlData>YAML.parse(localStorage.getItem(`sapi.skill.${data.name}`) || '');
+				console.log(yamlData);
+
+				if (yamlData && Object.keys(yamlData).length > 0) {
+					(<ProSkill>data).load(Object.values(yamlData)[0]);
+				}
 			} else {
 				// TODO Load data from server
 			}

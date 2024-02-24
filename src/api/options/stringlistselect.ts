@@ -1,45 +1,38 @@
-import type { SvelteComponent } from "svelte";
-import type { ComponentOption }     from "$api/options/options";
-import type { YAMLObject }      from "$api/yaml";
-import StringListOption         from "$components/options/StringListOption.svelte";
-import { Requirements }         from "$api/options/options";
+import type { ComponentOption } from '$api/options/options';
+import { Requirements }         from '$api/options/options';
+import StringListOption         from '$components/options/StringListOption.svelte';
+import type { Unknown }         from '$api/types';
 
 export default class StringListSelect extends Requirements implements ComponentOption {
-  component: typeof SvelteComponent<any> = StringListOption;
-  data: { value: string[] }         = { value: [] };
-  name                              = "";
-  key                               = "";
-  tooltip: string | undefined       = undefined;
+	component                   = StringListOption;
+	data: { value: string[] }   = { value: [] };
+	name                        = '';
+	key                         = '';
+	tooltip: string | undefined = undefined;
 
-  constructor(name: string, key: string, def?: string[]) {
-    super();
-    this.name = name;
-    this.key  = key;
+	constructor(name: string, key: string, def?: string[]) {
+		super();
+		this.name = name;
+		this.key  = key;
 
-    this.data.value = def || [];
-  }
+		this.data.value = def || [];
+	}
 
-  setTooltip = (tooltip: string): this => {
-    this.tooltip = tooltip;
-    return this;
-  };
+	setTooltip = (tooltip: string): this => {
+		this.tooltip = tooltip;
+		return this;
+	};
 
-  clone = (): ComponentOption => {
-    return new StringListSelect(this.name, this.key, [...this.data.value]);
-  };
+	clone = (): ComponentOption => new StringListSelect(this.name, this.key, [...this.data.value]);
 
-  getData = (): { [key: string]: any } => {
-    const data: { [key: string]: any } = {};
+	getData = (): { [key: string]: string[] } => {
+		const data: { [key: string]: string[] } = {};
 
-    data[this.key] = this.data.value;
-    return data;
-  };
+		data[this.key] = this.data.value;
+		return data;
+	};
 
-  getSummary = (): string => {
-    return this.data.value.join(", ");
-  }
+	getSummary = (): string => this.data.value.join(', ');
 
-  deserialize = (yaml: YAMLObject) => {
-    this.data.value = yaml.get<string[], string[]>(this.key);
-  };
+	deserialize = (yaml: Unknown) => this.data.value = <string[]>yaml[this.key] || [];
 }
