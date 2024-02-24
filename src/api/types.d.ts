@@ -112,13 +112,13 @@ export interface StarterInfo {
 }
 
 export interface ComboStarters {
-	L: StarterInfo;
-	R: StarterInfo;
-	LS: StarterInfo;
-	RS: StarterInfo;
-	P: StarterInfo;
-	Q: StarterInfo;
-	F: StarterInfo;
+	L?: StarterInfo;
+	R?: StarterInfo;
+	LS?: StarterInfo;
+	RS?: StarterInfo;
+	P?: StarterInfo;
+	Q?: StarterInfo;
+	F?: StarterInfo;
 }
 
 export interface ClassYamlData {
