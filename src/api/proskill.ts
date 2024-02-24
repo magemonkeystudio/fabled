@@ -7,6 +7,7 @@ import Registry, { initialized }                                                
 import type { Unsubscriber }                                                       from 'svelte/store';
 import { saveError }                                                               from '../data/store';
 import YAML                                                                        from 'yaml';
+import { toEditorCase }                                                            from '$api/api';
 
 export default class ProSkill implements Serializable {
 	dataType                     = 'skill';
@@ -184,7 +185,7 @@ export default class ProSkill implements Serializable {
 		const names                = new Set(Object.keys(attributes).map(k => k.replace(/-(base|scale)/i, '')).filter(name => !reserved.includes(name)));
 		this.attributeRequirements = [...names].map(name => new ProAttribute(name, attributes[`${name}-base`], attributes[`${name}-scale`]));
 
-		this.icon.material        = yaml.icon;
+		this.icon.material        = toEditorCase(yaml.icon);
 		this.icon.customModelData = yaml['icon-data'];
 		this.icon.lore            = yaml['icon-lore'];
 
