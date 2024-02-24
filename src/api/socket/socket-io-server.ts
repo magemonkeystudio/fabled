@@ -5,6 +5,7 @@ interface SocketProps {
 	serverId?: string;
 	clientId?: string;
 	sessionId?: string;
+	trustedClients?: string[];
 }
 
 type IDSocket = Socket & SocketProps;
@@ -45,7 +46,30 @@ export const webSocketServer = {
 
 					if (socket.clientId) {
 						socket.join(socket.clientId);
-						if (socket.sessionId) socket.join(socket.sessionId);
+						if (socket.sessionId) {
+							socket.join(socket.sessionId);
+
+							// Get the server socket in the room and check if we have trust
+							const sockets = io.sockets.adapter.rooms.get(socket.sessionId);
+							let serverSocket: IDSocket | undefined;
+							if (sockets) {
+								for (const s of sockets) {
+									const socket = <IDSocket>io.sockets.sockets.get(s);
+									if (socket?.serverId) {
+										serverSocket = socket;
+										break;
+									}
+								}
+							}
+							if (serverSocket) {
+								console.log('associated server socket trust', serverSocket.trustedClients);
+								const trusted = serverSocket.trustedClients?.includes(socket.clientId);
+								console.log(trusted, auth.clientKey);
+								if (trusted) {
+									socket.emit('trust', { content: [auth.clientKey], from: serverSocket.serverId });
+								}
+							}
+						}
 					}
 				}
 
@@ -96,10 +120,19 @@ export const webSocketServer = {
 							content: args?.message || args,
 							from:    socket.serverId || socket.clientId
 						};
+
 						socket.to(args?.to).timeout(2500).emitWithAck('trust', relay)
 							.then(arg => {
-								console.log('callback args', arg);
-								callback(arg);
+								console.log('arg', arg);
+								const args = arg[0];
+								console.log('callback args', args);
+								if (args.client) {
+									if (!socket.trustedClients) socket.trustedClients = [];
+									socket.trustedClients.push(args.client);
+									console.log('added trusted client', args.client);
+								}
+
+								callback(args.success);
 							})
 							.catch(err => {
 								console.error('callback error', err);

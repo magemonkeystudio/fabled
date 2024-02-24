@@ -57,18 +57,26 @@ class SocketService {
 		this._onDisconnect = [];
 	}
 
-	public connect(sessionId: string, clientName: string | undefined = undefined) {
+	public connect(sessionId: string, clientName: string | undefined | null = undefined) {
 		if (this.socket) return this.socket;
 		if (!sessionId) return null;
 
 		// If the client name is not set, generate a random uuid and use the first segment
-		if (!clientName) clientName = uuid().split('-')[0];
+		if (!clientName) {
+			// Use local storage if it exists, otherwise generate a random uuid
+			clientName = localStorage.getItem('clientName');
+
+			if (!clientName) {
+				clientName = uuid().split('-')[0];
+				localStorage.setItem('clientName', clientName);
+			}
+		}
 		this.sessionId  = sessionId;
 		this.clientId   = clientName;
 		const clientKey = Math.floor(10000 + Math.random() * 90000).toString();
 
 		// this.socket = io('ws://localhost:5173', {
-			this.socket = io('wss://synthesis.travja.dev', {
+				this.socket = io('wss://synthesis.travja.dev', {
 			auth: {
 				sessionId: this.sessionId,
 				clientId:  this.clientId,
@@ -102,7 +110,7 @@ class SocketService {
 
 			socketTrusted.set(true);
 			socketConnected.set(true);
-			if (callback) callback(true);
+			if (callback) callback({ success: true, client: this.clientId });
 
 			this._onConnect.forEach(cb => cb());
 		});
