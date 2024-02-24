@@ -83,10 +83,10 @@ public class SkillAPI extends JavaPlugin {
     private static SkillAPI singleton;
     public static  Random   RANDOM = new Random();
 
-    private final HashMap<String, com.sucy.skill.api.skills.Skill> skills  = new HashMap<>();
-    private final HashMap<String, RPGClass>                        classes = new HashMap<>();
-    private final HashMap<String, PlayerAccounts>                  players = new HashMap<>();
-    private final ArrayList<String>                                groups  = new ArrayList<>();
+    private final Map<String, com.sucy.skill.api.skills.Skill> skills  = new HashMap<>();
+    private final Map<String, RPGClass>                        classes = new HashMap<>();
+    private final Map<String, PlayerAccounts>                  players = new HashMap<>();
+    private final List<String>                                groups  = new ArrayList<>();
 
     private final List<SkillAPIListener> listeners = new ArrayList<>();
 
@@ -191,7 +191,7 @@ public class SkillAPI extends JavaPlugin {
      *
      * @return the map of registered skills
      */
-    public static HashMap<String, com.sucy.skill.api.skills.Skill> getSkills() {
+    public static Map<String, com.sucy.skill.api.skills.Skill> getSkills() {
         return inst().skills;
     }
 
@@ -245,7 +245,7 @@ public class SkillAPI extends JavaPlugin {
      *
      * @return the map of registered skills
      */
-    public static HashMap<String, RPGClass> getClasses() {
+    public static Map<String, RPGClass> getClasses() {
         return inst().classes;
     }
 
@@ -434,7 +434,7 @@ public class SkillAPI extends JavaPlugin {
      *
      * @return all SkillAPI player data
      */
-    public static HashMap<String, PlayerAccounts> getPlayerAccountData() {
+    public static Map<String, PlayerAccounts> getPlayerAccountData() {
         return inst().players;
     }
 

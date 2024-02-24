@@ -41,6 +41,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Loads player data from the SQL Database
@@ -111,9 +112,9 @@ public class SQLIO extends IOManager {
 
     @Override
     public void saveAll() {
-        SQLConnection                   connection = openConnection();
-        HashMap<String, PlayerAccounts> data       = SkillAPI.getPlayerAccountData();
-        ArrayList<String>               keys       = new ArrayList<String>(data.keySet());
+        SQLConnection               connection = openConnection();
+        Map<String, PlayerAccounts> data       = SkillAPI.getPlayerAccountData();
+        ArrayList<String>           keys       = new ArrayList<String>(data.keySet());
         for (String key : keys) {
             saveSingle(connection, data.get(key));
         }
