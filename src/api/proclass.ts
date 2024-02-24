@@ -203,20 +203,20 @@ export default class ProClass implements Serializable {
 		// Combo starters
 		const combos = yaml['combo-starters'];
 		if (combos) {
-			this.lInverted   = combos.L.inverted;
-			this.rInverted   = combos.R.inverted;
-			this.lsInverted  = combos.LS.inverted;
-			this.rsInverted  = combos.RS.inverted;
-			this.pInverted   = combos.P.inverted;
-			this.qInverted   = combos.Q.inverted;
-			this.fInverted   = combos.F.inverted;
-			this.lWhitelist  = combos.L.whitelist;
-			this.rWhitelist  = combos.R.whitelist;
-			this.lsWhitelist = combos.LS.whitelist;
-			this.rsWhitelist = combos.RS.whitelist;
-			this.pWhitelist  = combos.P.whitelist;
-			this.qWhitelist  = combos.Q.whitelist;
-			this.fWhitelist  = combos.F.whitelist;
+			this.lInverted   = combos.L?.inverted || false;
+			this.rInverted   = combos.R?.inverted || false;
+			this.lsInverted  = combos.LS?.inverted || false;
+			this.rsInverted  = combos.RS?.inverted || false;
+			this.pInverted   = combos.P?.inverted || false;
+			this.qInverted   = combos.Q?.inverted || false;
+			this.fInverted   = combos.F?.inverted || false;
+			this.lWhitelist  = combos.L?.whitelist || [];
+			this.rWhitelist  = combos.R?.whitelist || [];
+			this.lsWhitelist = combos.LS?.whitelist || [];
+			this.rsWhitelist = combos.RS?.whitelist || [];
+			this.pWhitelist  = combos.P?.whitelist || [];
+			this.qWhitelist  = combos.Q?.whitelist || [];
+			this.fWhitelist  = combos.F?.whitelist || [];
 		}
 
 		this.loaded = true;
