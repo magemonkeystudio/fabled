@@ -628,13 +628,7 @@ public class Settings {
     @Getter
     private ItemStack     unassigned;
     @Getter
-    private boolean       isDamageLeftClick;
-    @Getter
     private boolean       isInteractRightClick;
-    @Getter
-    private boolean       cancelDamage;
-    @Getter
-    private boolean       cancelInteract;
 
     private List<String> worlds;
     private boolean      worldEnabled;

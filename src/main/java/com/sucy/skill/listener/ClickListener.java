@@ -78,9 +78,6 @@ public class ClickListener extends SkillAPIListener {
         Bukkit.getServer()
                 .getPluginManager()
                 .callEvent(keyEvent);
-        if (keyEvent.isCancelParent()) {
-            event.setCancelled(true);
-        }
     }
 
     @EventHandler

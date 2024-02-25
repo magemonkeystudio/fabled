@@ -382,9 +382,8 @@ public class MainListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPhysicalDamage_allyCheck(EntityDamageByEntityEvent event) {
-        if (DefaultCombatProtection.isFakeDamageEvent(event)) {
-            return;
-        }
+        if (DefaultCombatProtection.isFakeDamageEvent(event)) return;
+
         if (event.getDamager() instanceof Player && event.getEntity() instanceof Player &&
                 !SkillAPI.getSettings()
                         .canAttack((Player) event.getDamager(), (Player) event.getEntity(), event.getCause())) {
@@ -392,7 +391,7 @@ public class MainListener extends SkillAPIListener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void fakeDamageClear(EntityDamageByEntityEvent event) {
         if (!DefaultCombatProtection.isFakeDamageEvent(event)) return;
 
@@ -486,7 +485,8 @@ public class MainListener extends SkillAPIListener {
         boolean newEnabled = SkillAPI.getSettings().isWorldEnabled(player.getWorld());
 
         if (newEnabled) {
-            if (oldEnabled) SkillAPI.getPlayerData(player).updateHealth(player); // Fixes some hybrid servers resetting max health to 20 after world change
+            if (oldEnabled) SkillAPI.getPlayerData(player)
+                    .updateHealth(player); // Fixes some hybrid servers resetting max health to 20 after world change
             else init(player);
         }
     }

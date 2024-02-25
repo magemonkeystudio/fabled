@@ -144,13 +144,9 @@ public class BindListener extends SkillAPIListener {
 
         switch (event.getKey()) {
             case LEFT -> {
-                boolean cancelDamage = SkillAPI.getSettings().isCancelDamage();
-                if (cancelDamage) event.setCancelParent(true);
                 playerData.cast(boundSkills.get(index));
             }
             case RIGHT -> {
-                boolean cancelInteract = SkillAPI.getSettings().isCancelInteract();
-                if (cancelInteract) event.setCancelParent(true);
                 playerData.setOnPreviewStop(null);
                 index = (index + 1) % boundSkills.size();
                 indexes.put(player, index);

@@ -18,7 +18,6 @@ public class KeyPressEvent extends Event {
 
     private final Player player;
     private final Key    key;
-    private boolean cancelParent = false;
 
     @Override
     public @NotNull HandlerList getHandlers() {

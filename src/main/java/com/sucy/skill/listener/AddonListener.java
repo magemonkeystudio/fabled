@@ -1,6 +1,7 @@
 package com.sucy.skill.listener;
 
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.DefaultCombatProtection;
 import com.sucy.skill.api.event.PlayerCastSkillEvent;
 import com.sucy.skill.api.event.PlayerExperienceGainEvent;
 import com.sucy.skill.api.player.PlayerClass;
@@ -34,7 +35,7 @@ public class AddonListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerHit(final EntityDamageByEntityEvent event) {
-        if (!SkillAPI.getSettings().isWorldEnabled(event.getEntity().getWorld())) {
+        if (!SkillAPI.getSettings().isWorldEnabled(event.getEntity().getWorld()) || DefaultCombatProtection.isFakeDamageEvent(event)) {
             return;
         }
 

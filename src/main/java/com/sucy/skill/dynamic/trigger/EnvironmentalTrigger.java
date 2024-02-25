@@ -1,13 +1,14 @@
 package com.sucy.skill.dynamic.trigger;
 
 import com.sucy.skill.api.CastData;
+import com.sucy.skill.api.DefaultCombatProtection;
 import com.sucy.skill.api.Settings;
 import com.sucy.skill.dynamic.DynamicSkill;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * ProSkillAPI © 2023
@@ -36,6 +37,11 @@ public class EnvironmentalTrigger implements Trigger<EntityDamageEvent> {
      */
     @Override
     public boolean shouldTrigger(final EntityDamageEvent event, final int level, final Settings settings) {
+        if (event instanceof EntityDamageByEntityEvent
+                && DefaultCombatProtection.isFakeDamageEvent((EntityDamageByEntityEvent) event)) {
+            return false;
+        }
+
         final String type = settings.getString("type", "any").replace(' ', '_').toUpperCase(Locale.US);
         return type.equalsIgnoreCase("ANY") || type.equalsIgnoreCase(event.getCause().name());
     }
