@@ -26,6 +26,7 @@ com.sucy.skill.dynamic
 com.sucy.skill.dynamic.condition
 com.sucy.skill.dynamic.custom
 com.sucy.skill.dynamic.mechanic
+com.sucy.skill.dynamic.mechanic.armorstand
 com.sucy.skill.dynamic.mechanic.value
 com.sucy.skill.dynamic.mechanic.warp
 com.sucy.skill.dynamic.target
