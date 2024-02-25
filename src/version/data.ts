@@ -19,9 +19,9 @@ export const VERSIONS                           = {
 	'17': DATA_1_17,
 	'16': DATA_1_16
 };
-export const versionData: Writable<VersionData> = writable(VERSIONS[<Versions>Object.keys(VERSIONS)[0]]);
+export const versionData: Writable<VersionData> = writable(VERSIONS[<Versions>Object.keys(VERSIONS)[Object.keys(VERSIONS).length - 1]]);
 
-export const version: Writable<Versions> = localStore<Versions>('server-version', <Versions>Object.keys(VERSIONS)[0]);
+export const version: Writable<Versions> = localStore<Versions>('server-version', <Versions>Object.keys(VERSIONS)[Object.keys(VERSIONS).length - 1]);
 version.subscribe((ver: Versions) => {
 	if (!(ver in VERSIONS)) {
 		ver = <Versions>Object.keys(VERSIONS)[0];
