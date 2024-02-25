@@ -89,10 +89,19 @@ public interface CombatProtection {
         }
 
         DefaultCombatProtection.fakeDamageEvents.add(event);
-        Bukkit.getPluginManager().callEvent(event);
-        DefaultCombatProtection.fakeDamageEvents.remove(event);
+        boolean externallyCancelled = false;
+        try {
+            Bukkit.getPluginManager().callEvent(event);
+            externallyCancelled = DefaultCombatProtection.isExternallyCancelled(event);
+        } catch (Exception e) {
+            SkillAPI.inst().getLogger().warning("Failed to process EntityDamageByEntityEvent");
+            e.printStackTrace();
+        } finally {
+            DefaultCombatProtection.fakeDamageEvents.remove(event);
+            DefaultCombatProtection.externallyCancelled.remove(event);
+        }
 
-        return !event.isCancelled();
+        return !externallyCancelled;
     }
 
     boolean canAttack(final LivingEntity attacker, final LivingEntity defender, EntityDamageEvent.DamageCause cause);

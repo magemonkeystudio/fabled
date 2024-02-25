@@ -392,6 +392,14 @@ public class MainListener extends SkillAPIListener {
         }
     }
 
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void fakeDamageClear(EntityDamageByEntityEvent event) {
+        if (!DefaultCombatProtection.isFakeDamageEvent(event)) return;
+
+        DefaultCombatProtection.externallyCancelled.put(event, event.isCancelled());
+        event.setCancelled(true);
+    }
+
     /**
      * Launches physical damage events to differentiate skill damage from physical damage
      *

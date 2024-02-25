@@ -22,7 +22,7 @@
     </url>
 
     <properties>
-        <promccore.version>1.2.0-R0.1-SNAPSHOT</promccore.version>
+        <promccore.version>1.2.0-R0.15-SNAPSHOT</promccore.version>
     </properties>
 
     <repositories>

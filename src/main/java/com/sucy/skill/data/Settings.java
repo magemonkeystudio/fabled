@@ -143,6 +143,11 @@ public class Settings {
             CAST_INSTANT           = CAST_BASE + "instant-item",
             CAST_FORMAT_SKILL      = CAST_BASE + "message-mode-format.skill",
             CAST_FORMAT_SEPARATOR  = CAST_BASE + "message-mode-format.separator",
+            INTERACT_BASE          = "Interaction",
+            DAMAGE_CLICK           = INTERACT_BASE + ".damage-is-left-click",
+            CANCEL_DAMAGE          = INTERACT_BASE + ".cancel-damage",
+            INTERACT_CLICK         = INTERACT_BASE + ".interact-is-right-click",
+            CANCEL_INTERACT        = INTERACT_BASE + ".cancel-interact",
             COMBO_BASE             = "Click Combos.",
             COMBO_ENABLED          = COMBO_BASE + "enabled",
             COMBO_CUSTOM           = COMBO_BASE + "allow-custom",
@@ -625,11 +630,20 @@ public class Settings {
      */
     @Getter
     private ItemStack     unassigned;
-    private List<String>  worlds;
-    private boolean       worldEnabled;
-    private boolean       worldEnableList;
-    private Set<String>   skillDisabledRegions;
-    private Set<String>   expDisabledRegions;
+    @Getter
+    private boolean       isDamageLeftClick;
+    @Getter
+    private boolean       isInteractRightClick;
+    @Getter
+    private boolean       cancelDamage;
+    @Getter
+    private boolean       cancelInteract;
+
+    private List<String> worlds;
+    private boolean      worldEnabled;
+    private boolean      worldEnableList;
+    private Set<String>  skillDisabledRegions;
+    private Set<String>  expDisabledRegions;
 
     /**
      * <p>Initializes a new settings manager.</p>
@@ -670,6 +684,7 @@ public class Settings {
         loadGUISettings();
         loadPVPSettings();
         loadCastSettings();
+        loadInteractionSettings();
         loadComboSettings();
         loadExpSettings();
         loadSkillBarSettings();
@@ -1217,6 +1232,13 @@ public class Settings {
         messageFormatSkill = config.getString(CAST_FORMAT_SKILL, "&6[%number%] &a%skill%");
         messageFormatSeparator = config.getString(CAST_FORMAT_SEPARATOR, "&7 - ");
         castEnabled = castEnabled && castItem != null;
+    }
+
+    private void loadInteractionSettings() {
+        isDamageLeftClick = config.getBoolean(DAMAGE_CLICK);
+        isInteractRightClick = config.getBoolean(INTERACT_CLICK);
+        cancelDamage = config.getBoolean(CANCEL_DAMAGE);
+        cancelInteract = config.getBoolean(CANCEL_INTERACT);
     }
 
     private void loadComboSettings() {

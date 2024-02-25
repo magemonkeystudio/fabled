@@ -840,6 +840,7 @@ public abstract class Skill implements IconHolder {
         // Allow damage to occur
         int ticks = target.getNoDamageTicks();
         target.setNoDamageTicks(0);
+        skillDamage = true;
         //Modified code from mc.promcteam.engine.mccore.util.VersionManager.damage() (MCCore)
         if (VersionManager.isVersionAtMost(VersionManager.V1_5_2)) {
             // 1.5.2 and earlier used integer values

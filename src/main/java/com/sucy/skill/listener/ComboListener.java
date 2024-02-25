@@ -77,27 +77,32 @@ public class ComboListener extends SkillAPIListener {
         PlayerCombos combo = SkillAPI.getPlayerData(event.getPlayer()).getComboData();
 
         switch (event.getKey()) {
-            case Q:
-                combo.applyClick(Click.Q);
-                break;
-            case LEFT:
+            case Q -> combo.applyClick(Click.Q);
+            case LEFT -> {
+                boolean cancelDamage = SkillAPI.getSettings().isCancelDamage();
+                if (cancelDamage) event.setCancelParent(true);
+
                 if (event.getPlayer().isSneaking() && SkillAPI.getComboManager()
                         .isClickEnabled(Click.LEFT_SHIFT.getId())) {
                     combo.applyClick(Click.LEFT_SHIFT);
                 } else {
                     combo.applyClick(Click.LEFT);
                 }
-                break;
-            case RIGHT:
+            }
+            case RIGHT -> {
+                boolean cancelInteract = SkillAPI.getSettings().isCancelInteract();
+                if (cancelInteract) event.setCancelParent(true);
+
                 if (event.getPlayer().isSneaking() && SkillAPI.getComboManager()
                         .isClickEnabled(Click.RIGHT_SHIFT.getId())) {
                     combo.applyClick(Click.RIGHT_SHIFT);
                 } else {
                     combo.applyClick(Click.RIGHT);
                 }
-                break;
-            default:
+            }
+            default -> {
                 return;
+            }
         }
 
         lastClick.put(event.getPlayer().getUniqueId(), System.currentTimeMillis() + 40);

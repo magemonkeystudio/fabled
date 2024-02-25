@@ -9,7 +9,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -17,10 +19,15 @@ import java.util.Set;
  * com.sucy.skill.data.DefaultCombatProtection
  */
 public class DefaultCombatProtection implements CombatProtection {
-    public static final Set<EntityDamageByEntityEvent> fakeDamageEvents = new HashSet<>();
+    public static final Set<EntityDamageByEntityEvent>          fakeDamageEvents    = new HashSet<>();
+    public static final Map<EntityDamageByEntityEvent, Boolean> externallyCancelled = new HashMap<>();
 
     public static boolean isFakeDamageEvent(EntityDamageByEntityEvent event) {
         return fakeDamageEvents.contains(event);
+    }
+
+    public static boolean isExternallyCancelled(EntityDamageByEntityEvent event) {
+        return externallyCancelled.getOrDefault(event, false);
     }
 
     @Override
