@@ -54,3 +54,8 @@ export const localStore = <T>(key: string, def: T) => {
 		update
 	};
 };
+
+export const parseBool = (val: string | boolean | undefined) => {
+	if (typeof val === 'boolean') return val;
+	return val === 'true';
+}

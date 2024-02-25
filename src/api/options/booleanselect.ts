@@ -2,6 +2,7 @@ import type { ComponentOption } from '$api/options/options';
 import { Requirements }         from '$api/options/options';
 import BooleanSelectOption      from '$components/options/BooleanSelectOption.svelte';
 import type { Unknown }         from '$api/types';
+import { parseBool }            from '$api/api';
 
 export default class BooleanSelect extends Requirements implements ComponentOption {
 	component                   = BooleanSelectOption;
@@ -38,5 +39,5 @@ export default class BooleanSelect extends Requirements implements ComponentOpti
 		return this.data ? 'true' : '';
 	};
 
-	deserialize = (yaml: Unknown) => this.data = <boolean>yaml[this.key] || false;
+	deserialize = (yaml: Unknown) => this.data = parseBool(<boolean | string>yaml[this.key]);
 }
