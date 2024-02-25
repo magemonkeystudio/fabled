@@ -144,10 +144,7 @@ public class Settings {
             CAST_FORMAT_SKILL      = CAST_BASE + "message-mode-format.skill",
             CAST_FORMAT_SEPARATOR  = CAST_BASE + "message-mode-format.separator",
             INTERACT_BASE          = "Interaction",
-            DAMAGE_CLICK           = INTERACT_BASE + ".damage-is-left-click",
-            CANCEL_DAMAGE          = INTERACT_BASE + ".cancel-damage",
             INTERACT_CLICK         = INTERACT_BASE + ".interact-is-right-click",
-            CANCEL_INTERACT        = INTERACT_BASE + ".cancel-interact",
             COMBO_BASE             = "Click Combos.",
             COMBO_ENABLED          = COMBO_BASE + "enabled",
             COMBO_CUSTOM           = COMBO_BASE + "allow-custom",
@@ -1235,10 +1232,7 @@ public class Settings {
     }
 
     private void loadInteractionSettings() {
-        isDamageLeftClick = config.getBoolean(DAMAGE_CLICK);
         isInteractRightClick = config.getBoolean(INTERACT_CLICK);
-        cancelDamage = config.getBoolean(CANCEL_DAMAGE);
-        cancelInteract = config.getBoolean(CANCEL_INTERACT);
     }
 
     private void loadComboSettings() {

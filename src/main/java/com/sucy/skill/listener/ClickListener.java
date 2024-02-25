@@ -27,14 +27,11 @@
 package com.sucy.skill.listener;
 
 import com.sucy.skill.SkillAPI;
-import com.sucy.skill.api.DefaultCombatProtection;
 import com.sucy.skill.api.event.KeyPressEvent;
-import com.sucy.skill.api.skills.Skill;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -55,15 +52,8 @@ public class ClickListener extends SkillAPIListener {
     public void onClick(PlayerInteractEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) return;
 
-        // Left clicks
-        if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            Bukkit.getServer()
-                    .getPluginManager()
-                    .callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.LEFT));
-        }
-
         // Right clicks
-        else if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
             Bukkit.getServer()
                     .getPluginManager()
                     .callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.RIGHT));
@@ -79,27 +69,17 @@ public class ClickListener extends SkillAPIListener {
             Bukkit.getServer()
                     .getPluginManager()
                     .callEvent(keyEvent);
-            if (keyEvent.isCancelParent()) {
-                event.setCancelled(true);
-            }
         }
     }
 
     @EventHandler
-    public void onEntityDamage(EntityDamageByEntityEvent event) {
-        if (Skill.isSkillDamage() || !(event.getDamager() instanceof Player)
-                || DefaultCombatProtection.isFakeDamageEvent(event)) {
-            return;
-        }
-
-        if (SkillAPI.getSettings().isDamageLeftClick()) {
-            KeyPressEvent keyEvent = new KeyPressEvent((Player) event.getDamager(), KeyPressEvent.Key.LEFT);
-            Bukkit.getServer()
-                    .getPluginManager()
-                    .callEvent(keyEvent);
-            if (keyEvent.isCancelParent()) {
-                event.setCancelled(true);
-            }
+    public void animation(PlayerAnimationEvent event) {
+        KeyPressEvent keyEvent = new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.LEFT);
+        Bukkit.getServer()
+                .getPluginManager()
+                .callEvent(keyEvent);
+        if (keyEvent.isCancelParent()) {
+            event.setCancelled(true);
         }
     }
 

@@ -411,18 +411,9 @@ Casting:
     separator: "&7 - "
 
 Interaction:
-  # Whether damaging an entity should be considered a left click
-  # This is useful for skills that require a left click to activate
-  damage-is-left-click: false
-  # Whether to cancel the damage event when the click is used for
-  # a combo or skill activation
-  cancel-damage: false
   # Whether right-clicking an entity should be considered a right click
   # This is useful for skills that require a right click to activate
   interact-is-right-click: false
-  # Whether to cancel the right click event when the click is used for
-  # a combo or skill activation
-  cancel-interact: false
 
 #
 Click Combos:

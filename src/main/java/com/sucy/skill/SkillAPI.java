@@ -57,6 +57,7 @@ import mc.promcteam.engine.manager.api.menu.YAMLMenu;
 import mc.promcteam.engine.mccore.config.CommentedConfig;
 import mc.promcteam.engine.mccore.config.CommentedLanguageConfig;
 import mc.promcteam.engine.mccore.util.VersionManager;
+import mc.promcteam.engine.registry.attribute.AttributeProvider;
 import mc.promcteam.engine.registry.attribute.AttributeRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -86,7 +87,7 @@ public class SkillAPI extends JavaPlugin {
     private final Map<String, com.sucy.skill.api.skills.Skill> skills  = new HashMap<>();
     private final Map<String, RPGClass>                        classes = new HashMap<>();
     private final Map<String, PlayerAccounts>                  players = new HashMap<>();
-    private final List<String>                                groups  = new ArrayList<>();
+    private final List<String>                                 groups  = new ArrayList<>();
 
     private final List<SkillAPIListener> listeners = new ArrayList<>();
 
@@ -98,6 +99,7 @@ public class SkillAPI extends JavaPlugin {
     private ComboManager        comboManager;
     private RegistrationManager registrationManager;
     private IAttributeManager   attributeManager = new NullAttributeManager();
+    private AttributeProvider   sapiProvider     = null;
 
     private MainThread mainThread;
     private BukkitTask manaTask;
@@ -557,7 +559,8 @@ public class SkillAPI extends JavaPlugin {
     @Override
     public void onLoad() {
         MimicHook.init(this);
-        AttributeRegistry.registerProvider(new SkillAPIAttributeProvider(this));
+        sapiProvider = new SkillAPIAttributeProvider(this);
+        AttributeRegistry.registerProvider(sapiProvider);
     }
 
     /**
@@ -572,6 +575,8 @@ public class SkillAPI extends JavaPlugin {
         }
 
         disabling = true;
+
+        AttributeRegistry.unregisterProvider(sapiProvider);
 
         GUITool.cleanUp();
         EffectManager.cleanUp();
