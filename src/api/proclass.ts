@@ -1,9 +1,9 @@
 import type { ClassYamlData, Icon, ProClassData, Serializable } from './types';
 import type ProSkill                                            from './proskill';
 import { ProAttribute }                                         from './proattribute';
-import { getSkill }                                             from '../data/skill-store';
-import { toEditorCase, toProperCase }                           from './api';
-import type { SkillTree }                                       from '$api/SkillTree';
+import { getSkill }                              from '../data/skill-store';
+import { parseBool, toEditorCase, toProperCase } from './api';
+import type { SkillTree }                        from '$api/SkillTree';
 import YAML                                                     from 'yaml';
 
 export default class ProClass implements Serializable {
@@ -172,7 +172,7 @@ export default class ProClass implements Serializable {
 		this.group      = yaml.group;
 		this.maxLevel   = yaml['max-level'];
 		this.parentStr  = yaml.parent;
-		this.permission = yaml['needs-permission'];
+		this.permission = parseBool(yaml['needs-permission']);
 
 		const attributes = yaml.attributes;
 		this.health      = new ProAttribute('health', attributes['health-base'] || 20, attributes['health-scale'] || 1);
@@ -203,13 +203,13 @@ export default class ProClass implements Serializable {
 		// Combo starters
 		const combos = yaml['combo-starters'];
 		if (combos) {
-			this.lInverted   = combos.L?.inverted || false;
-			this.rInverted   = combos.R?.inverted || false;
-			this.lsInverted  = combos.LS?.inverted || false;
-			this.rsInverted  = combos.RS?.inverted || false;
-			this.pInverted   = combos.P?.inverted || false;
-			this.qInverted   = combos.Q?.inverted || false;
-			this.fInverted   = combos.F?.inverted || false;
+			this.lInverted   = parseBool(combos.L?.inverted);
+			this.rInverted   = parseBool(combos.R?.inverted);
+			this.lsInverted  = parseBool(combos.LS?.inverted);
+			this.rsInverted  = parseBool(combos.RS?.inverted);
+			this.pInverted   = parseBool(combos.P?.inverted);
+			this.qInverted   = parseBool(combos.Q?.inverted);
+			this.fInverted   = parseBool(combos.F?.inverted);
 			this.lWhitelist  = combos.L?.whitelist || [];
 			this.rWhitelist  = combos.R?.whitelist || [];
 			this.lsWhitelist = combos.LS?.whitelist || [];

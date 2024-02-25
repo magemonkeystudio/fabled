@@ -3,6 +3,7 @@ import ProComponent                                 from './procomponent';
 import type { ComponentOption }                     from '../options/options';
 import Registry                                     from '$api/components/registry';
 import { get }                                      from 'svelte/store';
+import { parseBool }                                from '$api/api';
 
 export default class ProTrigger extends ProComponent {
 	public mana     = false;
@@ -49,8 +50,8 @@ export default class ProTrigger extends ProComponent {
 		super.deserialize(yaml);
 		const data = yaml.data;
 		if (data) {
-			this.mana     = <boolean>data.mana || false;
-			this.cooldown = <boolean>data.cooldown || false;
+			this.mana     = parseBool(<boolean | string>data.mana);
+			this.cooldown = parseBool(<boolean | string>data.cooldown);
 
 			this.data.forEach((opt: ComponentOption) => opt.deserialize(data));
 		}
