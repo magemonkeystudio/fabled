@@ -76,7 +76,7 @@ class SocketService {
 		const clientKey = Math.floor(10000 + Math.random() * 90000).toString();
 
 		// this.socket = io('ws://localhost:5173', {
-				this.socket = io('wss://synthesis.travja.dev', {
+		this.socket = io('wss://synthesis.travja.dev', {
 			auth: {
 				sessionId: this.sessionId,
 				clientId:  this.clientId,
@@ -196,6 +196,7 @@ class SocketService {
 		return new Promise((resolve, reject) => {
 			this.socket?.on('classes', ({ content }) => {
 				this.socket?.off('classes');
+				if (typeof (content) == 'string') content = [content];
 				resolve(content);
 			});
 
@@ -210,6 +211,7 @@ class SocketService {
 		return new Promise((resolve, reject) => {
 			this.socket?.on('skills', ({ content }) => {
 				this.socket?.off('skills');
+				if (typeof (content) == 'string') content = [content];
 				resolve(content);
 			});
 
