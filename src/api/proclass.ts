@@ -1,9 +1,9 @@
 import type { ClassYamlData, Icon, ProClassData, Serializable } from './types';
 import type ProSkill                                            from './proskill';
 import { ProAttribute }                                         from './proattribute';
-import { getSkill }                              from '../data/skill-store';
-import { parseBool, toEditorCase, toProperCase } from './api';
-import type { SkillTree }                        from '$api/SkillTree';
+import { getSkill }                                             from '../data/skill-store';
+import { parseBool, toEditorCase, toProperCase }                from './api';
+import type { SkillTree }                                       from '$api/SkillTree';
 import YAML                                                     from 'yaml';
 
 export default class ProClass implements Serializable {
@@ -49,6 +49,7 @@ export default class ProClass implements Serializable {
 	rInverted  = true;
 	lsInverted = true;
 	rsInverted = true;
+	sInverted  = true;
 	pInverted  = true;
 	qInverted  = true;
 	fInverted  = true;
@@ -57,6 +58,7 @@ export default class ProClass implements Serializable {
 	rWhitelist: string[]  = [];
 	lsWhitelist: string[] = [];
 	rsWhitelist: string[] = [];
+	sWhitelist: string[]  = [];
 	pWhitelist: string[]  = [];
 	qWhitelist: string[]  = [];
 	fWhitelist: string[]  = [];
@@ -145,6 +147,7 @@ export default class ProClass implements Serializable {
 				R:  { inverted: this.rInverted, whitelist: this.rWhitelist },
 				LS: { inverted: this.lsInverted, whitelist: this.lsWhitelist },
 				RS: { inverted: this.rsInverted, whitelist: this.rsWhitelist },
+				S:  { inverted: this.sInverted, whitelist: this.sWhitelist },
 				P:  { inverted: this.pInverted, whitelist: this.pWhitelist },
 				Q:  { inverted: this.qInverted, whitelist: this.qWhitelist },
 				F:  { inverted: this.fInverted, whitelist: this.fWhitelist }
@@ -207,6 +210,7 @@ export default class ProClass implements Serializable {
 			this.rInverted   = parseBool(combos.R?.inverted);
 			this.lsInverted  = parseBool(combos.LS?.inverted);
 			this.rsInverted  = parseBool(combos.RS?.inverted);
+			this.sInverted   = parseBool(combos.S?.inverted);
 			this.pInverted   = parseBool(combos.P?.inverted);
 			this.qInverted   = parseBool(combos.Q?.inverted);
 			this.fInverted   = parseBool(combos.F?.inverted);
@@ -214,6 +218,7 @@ export default class ProClass implements Serializable {
 			this.rWhitelist  = combos.R?.whitelist || [];
 			this.lsWhitelist = combos.LS?.whitelist || [];
 			this.rsWhitelist = combos.RS?.whitelist || [];
+			this.sWhitelist  = combos.S?.whitelist || [];
 			this.pWhitelist  = combos.P?.whitelist || [];
 			this.qWhitelist  = combos.Q?.whitelist || [];
 			this.fWhitelist  = combos.F?.whitelist || [];

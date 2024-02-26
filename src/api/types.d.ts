@@ -116,6 +116,7 @@ export interface ComboStarters {
 	R?: StarterInfo;
 	LS?: StarterInfo;
 	RS?: StarterInfo;
+	S?: StarterInfo;
 	P?: StarterInfo;
 	Q?: StarterInfo;
 	F?: StarterInfo;
