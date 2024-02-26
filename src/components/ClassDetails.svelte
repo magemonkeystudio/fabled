@@ -179,6 +179,14 @@
 							tooltip='The materials that can be used as combo starters'>
 			<LoreInput bind:value={data.rsWhitelist} />
 		</ProInput>
+		<ProInput label='S Inverted'
+							tooltip='Whether the S list should be used as a blacklist'>
+			<Toggle bind:data={data.rsInverted} />
+		</ProInput>
+		<ProInput label='S Whitelist'
+							tooltip='The materials that can be used as combo starters'>
+			<LoreInput bind:value={data.rsWhitelist} />
+		</ProInput>
 		<ProInput label='P Inverted'
 							tooltip='Whether the P list should be used as a blacklist'>
 			<Toggle bind:data={data.pInverted} />
