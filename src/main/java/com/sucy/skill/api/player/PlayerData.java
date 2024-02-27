@@ -99,6 +99,7 @@ public class PlayerData {
     private final Map<String, List<PlayerAttributeModifier>> attributesModifiers = new HashMap<>();
     private final Map<String, List<PlayerStatModifier>>      statModifiers       = new HashMap<>();
     private final Map<String, String>                        persistentData      = new HashMap<>();
+    private final Map<String, Long>                          cooldownCache       = new HashMap<>();
 
     private final DataSection           extraData  = new DataSection();
     private final UUID                  playerUUID;
@@ -963,6 +964,8 @@ public class PlayerData {
         PlayerSkill existing = skills.get(key);
         if (existing == null || existing.getLevel() == 0) {
             PlayerSkill data = new PlayerSkill(this, skill, parent, true);
+            data.setCooldown(cooldownCache.getOrDefault(key, 0L));
+            cooldownCache.remove(key);
             skills.put(key, data);
             combos.addSkill(skill);
             forceUpSkill(data, level);
@@ -989,6 +992,7 @@ public class PlayerData {
                 }
             }
             if (max == null) {
+                cooldownCache.put(key, existing.getCooldown());
                 skills.remove(key);
                 combos.removeSkill(existing.getData());
                 forceDownSkill(existing, existing.getLevel());
@@ -2591,7 +2595,7 @@ public class PlayerData {
                         .sendMessage(ErrorNodes.COOLDOWN,
                                 getPlayer(),
                                 FilterType.COLOR,
-                                RPGFilter.COOLDOWN.setReplacement(skill.getCooldown() + ""),
+                                RPGFilter.COOLDOWN.setReplacement(skill.getCooldownLeft() + ""),
                                 RPGFilter.SKILL.setReplacement(skill.getData().getName()));
                 onCooldown.add(getUUID());
                 Bukkit.getScheduler().runTaskLater(SkillAPI.inst(), () -> onCooldown.remove(getUUID()), 40L);

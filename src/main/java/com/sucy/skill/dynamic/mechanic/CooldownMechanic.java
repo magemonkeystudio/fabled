@@ -88,7 +88,7 @@ public class CooldownMechanic extends MechanicComponent {
 
     private void subtractCooldown(String type, PlayerSkill data, double value) {
         Bukkit.getScheduler().runTaskLater(SkillAPI.inst(), () -> {
-            if (type.equals("percent")) data.subtractCooldown(value * data.getCooldown() / 100);
+            if (type.equals("percent")) data.subtractCooldown(value * data.getCooldownLeft() / 100);
             else data.subtractCooldown(value);
         }, 1L);
     }

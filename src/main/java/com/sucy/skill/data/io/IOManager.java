@@ -315,7 +315,7 @@ public abstract class IOManager {
                     DataSection skillSection = skills.createSection(skill.getData().getName());
                     skillSection.set(LEVEL, skill.getLevel());
                     if (skill.isOnCooldown())
-                        skillSection.set(COOLDOWN, skill.getCooldown());
+                        skillSection.set(COOLDOWN, skill.getCooldownLeft());
                 }
 
                 // Save binds
