@@ -382,7 +382,7 @@ public class MainListener extends SkillAPIListener {
      * @param event event details
      */
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onPhysicalDamage_allyCheck(EntityDamageByEntityEvent event) {
+    public void allyCheck(EntityDamageByEntityEvent event) {
         if (DefaultCombatProtection.isFakeDamageEvent(event)) return;
 
         if (event.getDamager() instanceof Player && event.getEntity() instanceof Player &&
@@ -405,7 +405,7 @@ public class MainListener extends SkillAPIListener {
      *
      * @param event event details
      */
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPhysicalDamage(EntityDamageByEntityEvent event) {
         if (Skill.isSkillDamage()
                 || event.getCause() == EntityDamageEvent.DamageCause.CUSTOM
