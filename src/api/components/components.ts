@@ -4446,6 +4446,27 @@ class ValueDistanceMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
+class ValueDivideMechanic extends ProMechanic {
+	public constructor() {
+		super({
+			name:         'Value Divide',
+			description:  'Divides a stored value under a unique key for the caster. If the value wasn\'t set before, this will not do anything',
+			data:         [
+				new StringSelect('Key', 'key', 'value')
+					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
+				new AttributeSelect('Divisor', 'divisor', 1)
+					.setTooltip('The amount to divide the value by'),
+				new BooleanSelect('Save', 'save', false)
+					.setTooltip('If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account')
+
+			],
+			summaryItems: ['key', 'divisor', 'save']
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
 class ValueHealthMechanic extends ProMechanic {
 	public constructor() {
 		super({
@@ -5093,6 +5114,7 @@ export const initComponents = () => {
 		VALUE_ATTRIBUTE:   { name: 'Value Attribute', component: ValueAttributeMechanic, section: 'Value' },
 		VALUE_COPY:        { name: 'Value Copy', component: ValueCopyMechanic, section: 'Value' },
 		VALUE_DISTANCE:    { name: 'Value Distance', component: ValueDistanceMechanic, section: 'Value' },
+		VALUE_DIVIDE:      { name: 'Value Divide', component: ValueDivideMechanic, section: 'Value' },
 		VALUE_HEALTH:      { name: 'Value Health', component: ValueHealthMechanic, section: 'Value' },
 		VALUE_LOAD:        { name: 'Value Load', component: ValueLoadMechanic, section: 'Value' },
 		VALUE_LOCATION:    { name: 'Value Location', component: ValueLocationMechanic, section: 'Value' },
