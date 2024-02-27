@@ -239,6 +239,10 @@ GUI:
   # Options are: none, mana, exp
   food-bar: none
   #
+  # Whether using food bar for mana or exp should block saturation healing
+  #
+  block-saturation: true
+  #
   # Whether to use the action bar
   use-action-bar: false
   #

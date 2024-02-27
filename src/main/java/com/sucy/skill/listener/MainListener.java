@@ -367,8 +367,9 @@ public class MainListener extends SkillAPIListener {
     @EventHandler
     public void onSaturationHeal(EntityRegainHealthEvent event) {
         String foodBar = SkillAPI.getSettings().getFoodBar().toLowerCase();
-        if ((foodBar.equals("mana") || foodBar.equals("exp"))
-                && event.getRegainReason() == EntityRegainHealthEvent.RegainReason.SATIATED) {
+        if (event.getRegainReason() == EntityRegainHealthEvent.RegainReason.SATIATED
+                && SkillAPI.getSettings().isBlockSaturation()
+                && (foodBar.equals("mana") || foodBar.equals("exp"))) {
             event.setCancelled(true);
         }
     }
