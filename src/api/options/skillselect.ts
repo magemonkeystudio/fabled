@@ -3,6 +3,7 @@ import { Requirements }         from '$api/options/options';
 import SkillSelectOption        from '$components/options/SkillSelectOption.svelte';
 import ProSkill                 from '$api/proskill';
 import type { Unknown }         from '$api/types';
+import { getSkill }             from '../../data/skill-store';
 
 export default class SkillSelect extends Requirements implements ComponentOption {
 	component                                       = SkillSelectOption;
@@ -47,5 +48,15 @@ export default class SkillSelect extends Requirements implements ComponentOption
 			return this.data instanceof ProSkill ? this.data.name : this.data;
 	};
 
-	deserialize = (yaml: Unknown) => this.data = <string[] | string>yaml[this.key] || this.multiple ? [] : '';
+	deserialize = (yaml: Unknown) => {
+		const skillName = <string | string[]>yaml[this.key];
+
+		// Let's attempt to get the skill from the skill store before creating a dummy skill for display
+		if (skillName instanceof Array) {
+			this.data = skillName.map(skill => getSkill(skill) || new ProSkill({ name: skill }));
+		} else if (skillName)
+			this.data = getSkill(skillName) || new ProSkill({ name: skillName });
+		else
+			this.data = this.multiple ? [] : '';
+	};
 }

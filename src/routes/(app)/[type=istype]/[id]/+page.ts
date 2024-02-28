@@ -33,7 +33,6 @@ export async function load({ params }) {
 		if (!data.loaded) {
 			if (data.location === 'local') {
 				const yamlData = <MultiSkillYamlData>YAML.parse(localStorage.getItem(`sapi.skill.${data.name}`) || '');
-				console.log(yamlData);
 
 				if (yamlData && Object.keys(yamlData).length > 0) {
 					(<ProSkill>data).load(Object.values(yamlData)[0]);
