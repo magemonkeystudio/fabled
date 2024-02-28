@@ -10,7 +10,7 @@
 	export let tooltip: string | undefined                     = undefined;
 	export let multiple                                        = true;
 
-	$: if (!multiple && data.length === 0) data = '';
+	$: if (!multiple && (!data || data.length === 0)) data = '';
 
 	const dispatch = createEventDispatcher();
 	$: if (data instanceof Array) {

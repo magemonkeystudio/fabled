@@ -35,7 +35,6 @@ export async function load({ params }) {
 			let yamlData: MultiSkillYamlData;
 			if (data.location === 'local') {
 				yamlData = <MultiSkillYamlData>YAML.parse(localStorage.getItem(`sapi.skill.${data.name}`) || '');
-
 			} else {
 				const yaml: string = await socketService.getSkillYaml(data.name);
 
