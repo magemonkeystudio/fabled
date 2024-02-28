@@ -27,6 +27,7 @@
 package com.sucy.skill.api.player;
 
 import com.sucy.skill.api.enums.Operation;
+import lombok.Getter;
 
 import java.util.UUID;
 
@@ -35,10 +36,14 @@ import java.util.UUID;
  */
 public class PlayerAttributeModifier {
 
-    private final UUID      uuid;
-    private final String    name;
-    private final double    amount;
+    private final UUID   uuid;
+    @Getter
+    private final String name;
+    @Getter
+    private final double amount;
+    @Getter
     private final Operation operation;
+    @Getter
     private final boolean   persistent;
 
     /**
@@ -52,7 +57,6 @@ public class PlayerAttributeModifier {
      *                   or change world.
      */
     public PlayerAttributeModifier(String name, double amount, Operation operation, boolean persistent) {
-
         this.uuid = UUID.randomUUID();
         this.name = name;
         this.amount = amount;
@@ -77,21 +81,4 @@ public class PlayerAttributeModifier {
     public UUID getUUID() {
         return uuid;
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public Operation getOperation() {
-        return operation;
-    }
-
-    public boolean isPersistent() {
-        return this.persistent;
-    }
-
 }
