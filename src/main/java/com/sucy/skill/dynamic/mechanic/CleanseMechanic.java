@@ -49,6 +49,7 @@ public class CleanseMechanic extends MechanicComponent {
             PotionEffectType.POISON,
             PotionEffectType.SLOW,
             PotionEffectType.SLOW_DIGGING,
+            PotionEffectType.UNLUCK,
             PotionEffectType.WEAKNESS,
             PotionEffectType.WITHER
     );
