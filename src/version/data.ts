@@ -115,37 +115,37 @@ export const getMiscDisguises = () => {
 };
 
 const GOOD_POTIONS: string[] = [
-	'Speed',
-	'Fast Digging',
-	'Increase Damage',
-	'Jump',
-	'Regeneration',
-	'Damage Resistance',
-	'Fire Resistance',
-	'Water Breathing',
-	'Invisibility',
-	'Night Vision',
-	'Health Boost',
 	'Absorption',
-	'Saturation',
+	'Conduit power',
+	'Damage resistance',
+	'Dolphins grace',
+	'Fast digging',
+	'Fire resistance',
 	'Glowing',
+	'Health boost',
+	'Increase damage',
+	'Invisibility',
+	'Jump',
 	'Luck',
-	'Slow Falling',
-	'Conduit Power',
-	'Dolphins Grace'
+	'Night vision',
+	'Regeneration',
+	'Saturation',
+	'Slow falling',
+	'Speed',
+	'Water breathing'
 ];
 
 const BAD_POTIONS: string[] = [
+	'Blindness',
+	'Confusion',
+	'Hunger',
+	'Levitation',
+	'Poison',
 	'Slow',
 	'Slow Digging',
-	'Confusion',
-	'Blindness',
-	'Hunger',
+	'Unluck',
 	'Weakness',
-	'Poison',
-	'Wither',
-	'Levitation',
-	'Unluck'
+	'Wither'
 ];
 
 const DYES: string[] = [
