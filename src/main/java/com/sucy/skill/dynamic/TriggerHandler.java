@@ -5,6 +5,7 @@ import com.sucy.skill.api.enums.ManaCost;
 import com.sucy.skill.api.event.DynamicTriggerEvent;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkill;
+import com.sucy.skill.dynamic.trigger.ChatTrigger;
 import com.sucy.skill.dynamic.trigger.Trigger;
 import com.sucy.skill.dynamic.trigger.TriggerComponent;
 import org.bukkit.Bukkit;
@@ -16,6 +17,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import static com.sucy.skill.dynamic.ComponentRegistry.getExecutor;
@@ -26,7 +28,7 @@ import static com.sucy.skill.dynamic.ComponentRegistry.getExecutor;
  */
 public class TriggerHandler implements Listener {
 
-    private final HashMap<Integer, Integer> active = new HashMap<>();
+    private final Map<Integer, Integer> active = new HashMap<>();
 
     private final DynamicSkill     skill;
     private final String           key;
@@ -108,21 +110,42 @@ public class TriggerHandler implements Listener {
             return;
         }
 
-        Bukkit.getScheduler()
-                .runTask(SkillAPI.inst(),
-                        () -> {
-                            Bukkit.getPluginManager()
-                                    .callEvent(new DynamicTriggerEvent(caster, this.skill, event, trigger.getKey()));
+        if(trigger instanceof ChatTrigger) {
+            // KNOWN CAVEAT: ChatTrigger is called Asynchronously. In order to properly call
+            // child components, we need to make subsequent calls _synchronously_.
+            // This effectively means that ChatTriggers won't be able to cancel the original
+            // AsyncPlayerChatEvent.
+            Bukkit.getScheduler()
+                    .runTask(SkillAPI.inst(),
+                            () -> {
+                                Bukkit.getPluginManager()
+                                        .callEvent(new DynamicTriggerEvent(caster,
+                                                this.skill,
+                                                event,
+                                                trigger.getKey()));
 
-                            final LivingEntity target = trigger.getTarget(event, component.settings);
-                            trigger.setValues(event, DynamicSkill.getCastData(caster));
-                            trigger(caster, target, level);
+                                final LivingEntity target = trigger.getTarget(event, component.settings);
+                                trigger.setValues(event, DynamicSkill.getCastData(caster));
+                                trigger(caster, target, level);
 
-                            if (event instanceof Cancellable) {
-                                skill.applyCancelled((Cancellable) event);
-                            }
-                            trigger.postProcess(event, skill);
-                        });
+                                trigger.postProcess(event, skill);
+                            });
+        } else {
+            Bukkit.getPluginManager()
+                    .callEvent(new DynamicTriggerEvent(caster,
+                            this.skill,
+                            event,
+                            trigger.getKey()));
+
+            final LivingEntity target = trigger.getTarget(event, component.settings);
+            trigger.setValues(event, DynamicSkill.getCastData(caster));
+            trigger(caster, target, level);
+
+            if (event instanceof Cancellable) {
+                skill.applyCancelled((Cancellable) event);
+            }
+            trigger.postProcess(event, skill);
+        }
     }
 
     boolean trigger(final LivingEntity user, final LivingEntity target, final int level) {

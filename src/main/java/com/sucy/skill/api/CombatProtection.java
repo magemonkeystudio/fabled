@@ -72,12 +72,12 @@ public interface CombatProtection {
                     entity,
                     cause,
                     DamageSource.builder(DamageType.MOB_ATTACK).build(),
-                    0);
+                    5);
         } catch (NoClassDefFoundError | NoSuchFieldError | NoSuchMethodError e) {
             try {
                 event = EntityDamageByEntityEvent.class
                         .getConstructor(Entity.class, Entity.class, EntityDamageEvent.DamageCause.class, double.class)
-                        .newInstance(damager, entity, cause, 0D);
+                        .newInstance(damager, entity, cause, 5D);
             } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                      InvocationTargetException ex) {
                 SkillAPI.inst()

@@ -206,6 +206,7 @@ public class StatusListener extends SkillAPIListener {
      *
      * @param event event details
      */
+    @EventHandler
     public void onTrueDamage(TrueDamageEvent event) {
         checkAbsorbAndInvincible(event.getTarget(), event, event.getDamage());
     }
