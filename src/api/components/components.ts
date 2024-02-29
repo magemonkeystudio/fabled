@@ -4415,7 +4415,7 @@ class ValueCopyMechanic extends ProMechanic {
 				new StringSelect('Destination', 'destination', 'value')
 					.setTooltip('The key to copy the original value to'),
 				new BooleanSelect('To target', 'to-target', true)
-					.setTooltip('The amount to add to the value'),
+					.setTooltip('Whether to copy the value to the target or from the target to the caster'),
 				new BooleanSelect('Save', 'save', false)
 					.setTooltip('If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account')
 
