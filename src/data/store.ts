@@ -219,4 +219,4 @@ const saveToFile = (file: string, data: string) => {
 	document.body.removeChild(element);
 };
 
-export const saveError: Writable<ProSkill> = writable();
+export const saveError: Writable<ProSkill | undefined> = writable();
