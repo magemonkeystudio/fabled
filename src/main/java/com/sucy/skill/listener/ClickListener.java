@@ -52,6 +52,16 @@ public class ClickListener extends SkillAPIListener {
     public void onClick(PlayerInteractEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) return;
 
+        // Left clicks
+        if (!SkillAPI.getSettings().isAnimationLeftClick()) {
+            if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
+                Bukkit.getServer()
+                        .getPluginManager()
+                        .callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.LEFT));
+                return;
+            }
+        }
+
         // Right clicks
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
             Bukkit.getServer()
@@ -74,6 +84,8 @@ public class ClickListener extends SkillAPIListener {
 
     @EventHandler
     public void animation(PlayerAnimationEvent event) {
+        if (!SkillAPI.getSettings().isAnimationLeftClick()) return;
+
         KeyPressEvent keyEvent = new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.LEFT);
         Bukkit.getServer()
                 .getPluginManager()

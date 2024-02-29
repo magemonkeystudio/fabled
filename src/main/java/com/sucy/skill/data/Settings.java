@@ -146,6 +146,7 @@ public class Settings {
             CAST_FORMAT_SEPARATOR  = CAST_BASE + "message-mode-format.separator",
             INTERACT_BASE          = "Interaction",
             INTERACT_CLICK         = INTERACT_BASE + ".interact-is-right-click",
+            ANIMATION_LEFT_CLICK         = INTERACT_BASE + ".animation-is-left-click",
             COMBO_BASE             = "Click Combos.",
             COMBO_ENABLED          = COMBO_BASE + "enabled",
             COMBO_CUSTOM           = COMBO_BASE + "allow-custom",
@@ -629,9 +630,11 @@ public class Settings {
      * @return unassigned indicator
      */
     @Getter
-    private ItemStack     unassigned;
+    private ItemStack unassigned;
     @Getter
-    private boolean       isInteractRightClick;
+    private boolean   interactRightClick;
+    @Getter
+    private boolean   animationLeftClick;
 
     private List<String> worlds;
     private boolean      worldEnabled;
@@ -1230,7 +1233,8 @@ public class Settings {
     }
 
     private void loadInteractionSettings() {
-        isInteractRightClick = config.getBoolean(INTERACT_CLICK);
+        interactRightClick = config.getBoolean(INTERACT_CLICK);
+        animationLeftClick = config.getBoolean(ANIMATION_LEFT_CLICK);
     }
 
     private void loadComboSettings() {

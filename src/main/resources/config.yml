@@ -418,6 +418,10 @@ Interaction:
   # Whether right-clicking an entity should be considered a right click
   # This is useful for skills that require a right click to activate
   interact-is-right-click: false
+  # Whether an arm swing should be considered a left click _INSTEAD OF_ the
+  # default click detection. This isn't the recommended setting as it can
+  # cause left clicks to be detected when right clicks were used instead.
+  animation-is-left-click: false
 
 #
 Click Combos:
