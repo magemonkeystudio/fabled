@@ -383,7 +383,9 @@ public class MainListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void allyCheck(EntityDamageByEntityEvent event) {
-        if (DefaultCombatProtection.isFakeDamageEvent(event)) return;
+        if (DefaultCombatProtection.isFakeDamageEvent(event)
+                || event.getClass().getSimpleName().equals("DamageCheckEvent") // Don't cause StackOverflow with MMOLib
+        ) return;
 
         if (event.getDamager() instanceof Player && event.getEntity() instanceof Player &&
                 !SkillAPI.getSettings()
