@@ -184,11 +184,6 @@
 			 class:bottom
 			 class:dragging={$draggingComponent === component}
 			 style:--comp-color={getColor()}>
-		{#if collapsed}
-			<span class='material-symbols-rounded' in:spin={{duration: 400}}>expand_more</span>
-		{:else}
-			<span class='material-symbols-rounded' in:spin={{duration: 400}}>expand_less</span>
-		{/if}
 		<div class='name'>
 			<span>{getName($useSymbols)}</span>{($useSymbols ? ' ' : ': ')}
 			{#if component.isDeprecated}
@@ -205,6 +200,11 @@
             if (e.key === 'Enter') collapsed = !collapsed;
         }}
 		/>
+		{#if collapsed}
+			<span class='material-symbols-rounded' in:spin={{duration: 400}}>expand_more</span>
+		{:else}
+			<span class='material-symbols-rounded' in:spin={{duration: 400}}>expand_less</span>
+		{/if}
 
 		{#if $showSummaryItems && component.summaryItems && component.summaryItems.length > 0}
 			<div class='summary'>
@@ -304,7 +304,6 @@
         position: absolute;
         top: 0;
         right: 0;
-        z-index: 3;
         pointer-events: none;
         /*text-shadow: 0 0 0.1rem black;*/
     }
