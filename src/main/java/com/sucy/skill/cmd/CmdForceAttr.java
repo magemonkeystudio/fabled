@@ -32,7 +32,9 @@ import com.sucy.skill.language.RPGFilter;
 import mc.promcteam.engine.mccore.commands.CommandManager;
 import mc.promcteam.engine.mccore.commands.ConfigurableCommand;
 import mc.promcteam.engine.mccore.commands.IFunction;
+import mc.promcteam.engine.mccore.config.CustomFilter;
 import mc.promcteam.engine.mccore.config.Filter;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -50,12 +52,14 @@ import java.util.List;
  * A command that resets the attributes of a player
  */
 public class CmdForceAttr implements IFunction, TabCompleter {
-    private static final String NOT_PLAYER = "not-player";
-    private static final String RESET      = "reset";
-    private static final String RESET_ONE  = "reset-one";
-    private static final String NOT_ATTR   = "not-attribute";
-    private static final String NOT_NUM    = "not-number";
-    private static final String GAVE_ATTR  = "gave-attributes";
+    private static final String NOT_PLAYER     = "not-player";
+    private static final String RESET          = "reset";
+    private static final String RESET_ONE      = "reset-one";
+    private static final String RESET_ONE_FAIL = "reset-one-fail";
+    private static final String NOT_ATTR       = "not-attribute";
+    private static final String NOT_NUM        = "not-number";
+    private static final String GAVE_ATTR      = "gave-attributes";
+    private static final String GAVE_ATTR_FAIL = "gave-attributes-fail";
 
     /**
      * Runs the command
@@ -83,11 +87,13 @@ public class CmdForceAttr implements IFunction, TabCompleter {
 
         // Reset their attributes
         if (args.length == 1) {
-            data.refundAttributes();
+            List<String> refunded = data.refundAttributes();
             cmd.sendMessage(sender,
                     RESET,
-                    ChatColor.GOLD + "{player}'s " + ChatColor.DARK_GREEN + "attributes were refunded",
-                    Filter.PLAYER.setReplacement(args[0]));
+                    ChatColor.GOLD + "{player}'s " + ChatColor.DARK_GREEN + "attributes were refunded for attributes "
+                            + ChatColor.GOLD + "{attributes}",
+                    Filter.PLAYER.setReplacement(args[0]),
+                    new CustomFilter("attributes", StringUtils.join(refunded, ", ")));
             return;
         }
 
@@ -102,19 +108,38 @@ public class CmdForceAttr implements IFunction, TabCompleter {
 
         // Reset a specific attribute
         if (args.length == 2) {
-            data.refundAttributes(args[1]);
+            boolean success = data.refundAttributes(args[1]);
+            if (!success) {
+                cmd.sendMessage(sender,
+                        RESET_ONE_FAIL,
+                        ChatColor.GOLD + "{player}'s " + ChatColor.DARK_GREEN + "{name}" + ChatColor.RED
+                                + " attributes were not refunded",
+                        Filter.PLAYER.setReplacement(args[0]),
+                        RPGFilter.NAME.setReplacement(args[1]));
+                return;
+            }
             cmd.sendMessage(sender,
                     RESET_ONE,
-                    ChatColor.GOLD + "{player}'s {name}" + ChatColor.DARK_GREEN + " attributes were refunded",
+                    ChatColor.GOLD + "{player}'s " + ChatColor.DARK_GREEN + "{name}" + ChatColor.GOLD
+                            + " attributes were refunded",
                     Filter.PLAYER.setReplacement(args[0]),
                     RPGFilter.NAME.setReplacement(args[1]));
         }
 
         // Give a specific attribute
-        else if (args.length >= 3) {
+        else {
             try {
-                int amount = Integer.parseInt(args[2]);
-                data.giveAttribute(args[1], amount);
+                int     amount  = Integer.parseInt(args[2]);
+                boolean success = data.giveAttribute(args[1], amount);
+                if (!success) {
+                    cmd.sendMessage(sender,
+                            GAVE_ATTR_FAIL,
+                            ChatColor.GOLD + "{player}" + ChatColor.RED + " was not given " + ChatColor.GOLD
+                                    + "{amount} {name} points",
+                            Filter.PLAYER.setReplacement(args[0]),
+                            RPGFilter.NAME.setReplacement(args[1]));
+                    return;
+                }
                 cmd.sendMessage(sender,
                         GAVE_ATTR,
                         ChatColor.GOLD + "{player}" + ChatColor.DARK_GREEN + " was given " + ChatColor.GOLD
@@ -133,11 +158,15 @@ public class CmdForceAttr implements IFunction, TabCompleter {
 
     @Override
     @Nullable
-    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender commandSender,
+                                      @NotNull Command command,
+                                      @NotNull String s,
+                                      @NotNull String[] args) {
         if (args.length == 1) {
             return ConfigurableCommand.getPlayerTabCompletions(commandSender, args[0]);
         } else if (args.length > 1) {
-            return ConfigurableCommand.getTabCompletions(SkillAPI.getAttributeManager().getKeys(), Arrays.copyOfRange(args, 1, args.length));
+            return ConfigurableCommand.getTabCompletions(SkillAPI.getAttributeManager().getKeys(),
+                    Arrays.copyOfRange(args, 1, args.length));
         }
         return null;
     }
