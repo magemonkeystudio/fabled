@@ -38,6 +38,7 @@ public class ComponentRegistry {
 
         // Triggers
         register(new ArmorEquipTrigger());
+        register(new AttributeChangeTrigger());
         register(new BlockBreakTrigger());
         register(new BlockPlaceTrigger());
         register(new ChatTrigger());

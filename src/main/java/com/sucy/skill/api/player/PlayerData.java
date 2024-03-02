@@ -138,7 +138,7 @@ public class PlayerData {
 
     /**
      * -- SETTER --
-     *  Sets the current amount of attribute points
+     * Sets the current amount of attribute points
      *
      * @param amount amount of points to have
      */
@@ -463,9 +463,8 @@ public class PlayerData {
         ProAttribute proAttribute = SkillAPI.getAttributeManager().getAttribute(key);
         if (proAttribute == null) return 0;
 
-        return Math.max(0,
-                proAttribute.getCostBase() + (int) Math.floor(
-                        (getInvestedAttributeStage(key) + 1) * proAttribute.getCostModifier()));
+        int currentStage = getInvestedAttributeStage(key);
+        return getAttributeUpCost(key, currentStage, currentStage + 1);
     }
 
     /**
@@ -485,9 +484,9 @@ public class PlayerData {
         ProAttribute proAttribute = SkillAPI.getAttributeManager().getAttribute(key);
         if (proAttribute == null) return 0;
 
-        int selectedStage = getInvestedAttributeStage(key) + modifier;
-        return Math.max(0,
-                proAttribute.getCostBase() + (int) Math.floor(selectedStage * proAttribute.getCostModifier()));
+        int currentStage  = getInvestedAttributeStage(key);
+        int selectedStage = currentStage + modifier;
+        return getAttributeUpCost(key, currentStage, selectedStage);
     }
 
     /**
@@ -548,9 +547,6 @@ public class PlayerData {
 
         int newStage = Math.min(amount + currentStage, max);
         int cost     = getAttributeUpCost(key, currentStage, newStage);
-        if (attribPoints < cost) {
-            return false;
-        }
 
         attrUpStages.put(key, newStage); // iomatix: attr stage goes up by the given value
         attributes.put(key, invested + cost); // let's increase totals value for now
@@ -633,7 +629,7 @@ public class PlayerData {
      */
     public boolean refundAttribute(String key) {
         key = key.toLowerCase();
-        int current     = getInvestedAttributeStage(key); // iomatix: get current stage
+        int current = getInvestedAttributeStage(key); // iomatix: get current stage
         if (current <= 0) {
             return false;
         }
@@ -646,11 +642,12 @@ public class PlayerData {
         }
 
         int newStage = Math.max(0, current + event.getChange());
-        int invested    = getInvestedAttribute(key); // iomatix: the total invested
-        int currentCost = getAttributeUpCost(key, current, newStage); // iomatix: the cost [from] previous --> [to] current stage
+        int invested = getInvestedAttribute(key); // iomatix: the total invested
+        int currentCost =
+                getAttributeUpCost(key, current, newStage); // iomatix: the cost [from] previous --> [to] current stage
 
-        attribPoints += currentCost; // iomatix: get the current stage cost back
-        attributes.put(key, invested - currentCost); // iomatix: the fix for total spent attributes
+        attribPoints -= currentCost; // iomatix: get the current stage cost back
+        attributes.put(key, invested + currentCost); // iomatix: the fix for total spent attributes
         attrUpStages.put(key, newStage); // iomatix: single step back to previous stage
 
         this.updatePlayerStat(getPlayer());
@@ -684,8 +681,8 @@ public class PlayerData {
             return false;
         }
 
-        attribPoints += refundAmount;
-        attributes.put(key, getInvestedAttribute(key) - refundAmount);
+        attribPoints -= refundAmount;
+        attributes.put(key, getInvestedAttribute(key) + refundAmount);
         attrUpStages.put(key, newStage);
 
         this.updatePlayerStat(getPlayer());
@@ -1631,16 +1628,28 @@ public class PlayerData {
     }
 
     /**
-     * Resets attributes for the player
+     * Resets attributes for the player. If refunds are cancelled for any
+     * specific attribute, that attribute will not be reset.
      */
     public void resetAttribs() {
-        attributes.clear();
-        attrUpStages.clear();
         attribPoints = 0;
+
         for (PlayerClass c : classes.values()) {
             GroupSettings s = c.getData().getGroupSettings();
             attribPoints += s.getStartingAttribs() + s.getAttribsForLevels(c.getLevel(), 1);
         }
+
+        Set<String> toRemove = new HashSet<>();
+        for (String attr : attributes.keySet()) {
+            boolean refunded = refundAttributes(attr);
+            if (refunded) toRemove.add(attr);
+        }
+
+        for (String attr : toRemove) {
+            if (attributes.get(attr) == 0)
+                attributes.remove(attr);
+        }
+
         this.updatePlayerStat(getPlayer());
     }
 
