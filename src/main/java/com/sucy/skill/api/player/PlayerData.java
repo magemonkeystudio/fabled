@@ -57,8 +57,6 @@ import com.sucy.skill.manager.AttributeManager;
 import com.sucy.skill.manager.IAttributeManager;
 import com.sucy.skill.manager.ProAttribute;
 import com.sucy.skill.task.ScoreboardTask;
-import lombok.Getter;
-import lombok.Setter;
 import mc.promcteam.engine.NexEngine;
 import mc.promcteam.engine.api.meta.NBTAttribute;
 import mc.promcteam.engine.mccore.config.Filter;
@@ -107,89 +105,22 @@ public class PlayerData {
     private final Map<String, List<PlayerStatModifier>>      statModifiers       = new HashMap<>();
     private final Map<String, String>                        persistentData      = new HashMap<>();
     private final Map<String, Long>                          cooldownCache       = new HashMap<>();
+    private final DataSection                                extraData           = new DataSection();
+    private final UUID                                       playerUUID;
+    private       PlayerSkillBar                             skillBar;
+    private       PlayerCastBars                             castBars;
+    private       PlayerTextCastingData                      textCastingData;
+    private final PlayerCombos                               comboData;
+    private final PlayerEquips                               equips;
+    private final List<UUID>                                 onCooldown          = new ArrayList<>();
 
-    /**
-     * -- GETTER --
-     *
-     * @return extra data attached to the player's account
-     */
-    @Getter
-    private final DataSection           extraData  = new DataSection();
-    private final UUID                  playerUUID;
-    private       PlayerSkillBar        skillBar;
-    private       PlayerCastBars        castBars;
-    private       PlayerTextCastingData textCastingData;
-    /**
-     * -- GETTER --
-     * Returns the data for the player's combos
-     *
-     * @return combo data for the player
-     */
-    @Getter
-    private final PlayerCombos          comboData;
-    /**
-     * -- GETTER --
-     *
-     * @return equipped item data
-     */
-    @Getter
-    private final PlayerEquips          equips;
-    private final List<UUID>            onCooldown = new ArrayList<>();
-
-    /**
-     * -- SETTER --
-     * Sets the current amount of attribute points
-     *
-     * @param amount amount of points to have
-     */
-    @Setter
     public  int        attribPoints;
-    /**
-     * -- GETTER --
-     * Retrieves the name of the active map menu scheme for the player
-     * <p>
-     * -- SETTER --
-     * Sets the active scheme name for the player
-     *
-     * @return map menu scheme name
-     * @param name name of the scheme
-     */
-    @Setter
-    @Getter
     private String     scheme;
     private String     menuClass;
     private double     mana;
     private double     maxMana;
-    /**
-     * -- GETTER --
-     * <p>
-     * <p>
-     * -- SETTER --
-     * Used by the API for restoring health - do not use this.
-     *
-     * @return health during last logout
-     * @param health health logged off with
-     */
-    @Setter
-    @Getter
     private double     lastHealth;
-    private double     health;
     private double     maxHealth;
-    /**
-     * -- GETTER --
-     * The hunger value here is not representative of the player's total hunger,
-     * rather the amount left of the next hunger point. This is manipulated by
-     * attributes were if an attribute says a player has twice as much "hunger"
-     * as normal, this will go down by decimals to slow the decay of hunger.
-     * <p>
-     * <p>
-     * -- SETTER --
-     *
-     * @return amount of the next hunger point the player has
-     * @param hungerValue new hunger value
-     */
-    @Setter
-    @Getter
     private double     hungerValue;
     private boolean    init;
     private boolean    passive;
@@ -1264,7 +1195,7 @@ public class PlayerData {
      * @return true if shown, false if nothing to show
      */
     public boolean showDetails(Player player) {
-        if (classes.size() > 0 && player != null) {
+        if (!classes.isEmpty() && player != null) {
             HashMap<String, RPGClass> iconMap = new HashMap<>();
             for (Map.Entry<String, PlayerClass> entry : classes.entrySet()) {
                 iconMap.put(entry.getKey().toLowerCase(), entry.getValue().getData());
@@ -1295,7 +1226,7 @@ public class PlayerData {
     public boolean showProfession(Player player) {
         for (String group : SkillAPI.getGroups()) {
             PlayerClass c = getClass(group);
-            if (c == null || (c.getLevel() == c.getData().getMaxLevel() && c.getData().getOptions().size() > 0)) {
+            if (c == null || (c.getLevel() == c.getData().getMaxLevel() && !c.getData().getOptions().isEmpty())) {
                 GUITool.getProfessMenu(c == null
                                 ? null
                                 : c.getData())
@@ -1324,7 +1255,7 @@ public class PlayerData {
      */
     public boolean showSkills(Player player) {
         // Cannot show an invalid player, and cannot show no skills
-        if (player == null || classes.size() == 0 || skills.size() == 0) {
+        if (player == null || classes.isEmpty() || skills.isEmpty()) {
             return false;
         }
 
@@ -1348,7 +1279,7 @@ public class PlayerData {
      */
     public boolean showSkills(Player player, PlayerClass playerClass) {
         // Cannot show an invalid player, and cannot show no skills
-        if (player == null || playerClass.getData().getSkills().size() == 0) {
+        if (player == null || playerClass.getData().getSkills().isEmpty()) {
             return false;
         }
 
@@ -1383,7 +1314,7 @@ public class PlayerData {
      * @return true if professed, false otherwise
      */
     public boolean hasClass() {
-        return classes.size() > 0;
+        return !classes.isEmpty();
     }
 
     /**
@@ -1958,7 +1889,6 @@ public class PlayerData {
 
         if (this.maxHealth <= 0) {
             this.maxHealth = SkillAPI.getSettings().getDefaultHealth();
-            this.health = this.maxHealth;
         }
 
         double modifiedMax = getModifiedMaxHealth(player);
@@ -1988,43 +1918,6 @@ public class PlayerData {
         double            def      = instance.getDefaultValue();
         double            modified = this.scaleStat(attribKey, def, min, max);
         instance.setBaseValue(/*def + */modified);
-    }
-
-    /**
-     * Retrieves the amount of mana the player currently has.
-     *
-     * @return current player mana
-     */
-    public double getMana() {
-        return mana;
-    }
-
-    /**
-     * Sets the player's amount of mana without launching events
-     *
-     * @param amount current mana
-     */
-    public void setMana(double amount) {
-        this.mana = amount;
-    }
-
-    /**
-     * Checks whether the player has at least the specified amount of mana
-     *
-     * @param amount required mana amount
-     * @return true if has the amount of mana, false otherwise
-     */
-    public boolean hasMana(double amount) {
-        return mana >= amount;
-    }
-
-    /**
-     * Retrieves the max amount of mana the player can have including bonus mana
-     *
-     * @return max amount of mana the player can have
-     */
-    public double getMaxMana() {
-        return maxMana;
     }
 
     /**
@@ -2678,6 +2571,110 @@ public class PlayerData {
         this.autoLevel();
         this.updateScoreboard();
     }
+
+    /**
+     * Retrieves the amount of mana the player currently has.
+     *
+     * @return current player mana
+     */
+    public double getMana() {
+        return mana;
+    }
+
+    /**
+     * Sets the player's amount of mana without launching events
+     *
+     * @param amount current mana
+     */
+    public void setMana(double amount) {
+        this.mana = amount;
+    }
+
+    /**
+     * Checks whether the player has at least the specified amount of mana
+     *
+     * @param amount required mana amount
+     * @return true if has the amount of mana, false otherwise
+     */
+    public boolean hasMana(double amount) {
+        return mana >= amount;
+    }
+
+    /**
+     * Retrieves the max amount of mana the player can have including bonus mana
+     *
+     * @return max amount of mana the player can have
+     */
+    public double getMaxMana() {
+        return maxMana;
+    }
+
+    /**
+     * @return extra data attached to the player's account
+     */
+    public DataSection getExtraData() {return this.extraData;}
+
+    /**
+     * Returns the data for the player's combos
+     *
+     * @return combo data for the player
+     */
+    public PlayerCombos getComboData() {return this.comboData;}
+
+    /**
+     * @return equipped item data
+     */
+    public PlayerEquips getEquips() {return this.equips;}
+
+    /**
+     * -- GETTER --
+     * Retrieves the name of the active map menu scheme for the player
+     *
+     * @return map menu scheme name
+     */
+    public String getScheme() {return this.scheme;}
+
+    /**
+     * @return health during last logout
+     */
+    public double getLastHealth() {return this.lastHealth;}
+
+    /**
+     * The hunger value here is not representative of the player's total hunger,
+     * rather the amount left of the next hunger point. This is manipulated by
+     * attributes were if an attribute says a player has twice as much "hunger"
+     * as normal, this will go down by decimals to slow the decay of hunger.
+     *
+     * @return amount of the next hunger point the player has
+     */
+    public double getHungerValue() {return this.hungerValue;}
+
+    /**
+     * Sets the current amount of attribute points
+     *
+     * @param amount amount of points to have
+     */
+    public void setAttribPoints(int amount) {this.attribPoints = amount;}
+
+    /**
+     * Sets the active scheme name for the player
+     *
+     * @param name name of the scheme
+     */
+    public void setScheme(String name) {this.scheme = name;}
+
+    /**
+     * Used by the API for restoring health - do not use this.
+     *
+     * @param health health logged off with
+     * @return health during last logout
+     */
+    public void setLastHealth(double health) {this.lastHealth = health;}
+
+    /**
+     * @param hungerValue new hunger value
+     */
+    public void setHungerValue(double hungerValue) {this.hungerValue = hungerValue;}
 
     public static class ExternallyAddedSkill {
         private final String        id;
