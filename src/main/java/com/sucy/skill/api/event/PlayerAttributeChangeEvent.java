@@ -31,7 +31,7 @@ public class PlayerAttributeChangeEvent extends PlayerEvent implements Cancellab
      */
     private              int         change;
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     private              boolean     cancelled;
 

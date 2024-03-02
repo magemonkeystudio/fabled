@@ -57,6 +57,10 @@ import com.sucy.skill.manager.AttributeManager;
 import com.sucy.skill.manager.IAttributeManager;
 import com.sucy.skill.manager.ProAttribute;
 import com.sucy.skill.task.ScoreboardTask;
+import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import mc.promcteam.engine.NexEngine;
 import mc.promcteam.engine.api.meta.NBTAttribute;
 import mc.promcteam.engine.mccore.config.Filter;
@@ -89,6 +93,7 @@ import java.util.stream.Collectors;
  * In order to get a player's data, use "SkillAPI.getPlayerData(...)". Do NOT
  * try to instantiate your own PlayerData object.
  */
+@Getter
 public class PlayerData {
     /**
      * This represents the number of attribute points invested in each attribute
@@ -105,22 +110,86 @@ public class PlayerData {
     private final Map<String, List<PlayerStatModifier>>      statModifiers       = new HashMap<>();
     private final Map<String, String>                        persistentData      = new HashMap<>();
     private final Map<String, Long>                          cooldownCache       = new HashMap<>();
+    /**
+     * @return extra data attached to the player's account
+     */
     private final DataSection                                extraData           = new DataSection();
     private final UUID                                       playerUUID;
     private       PlayerSkillBar                             skillBar;
     private       PlayerCastBars                             castBars;
     private       PlayerTextCastingData                      textCastingData;
+    /**
+     * The data for the player's combos
+     *
+     * @return combo data for the player
+     */
     private final PlayerCombos                               comboData;
+    /**
+     * @return equipped item data
+     */
     private final PlayerEquips                               equips;
     private final List<UUID>                                 onCooldown          = new ArrayList<>();
 
+    /**
+     * The current amount of attribute points
+     *
+     * @param attribPoints amount of points to have
+     */
+    @Setter
     public  int        attribPoints;
+    /**
+     * -- GETTER --
+     * Retrieves the name of the active map menu scheme for the player
+     *
+     * @return map menu scheme name
+     * -- SETTER --
+     * Sets the active scheme name for the player
+     * @param scheme name of the scheme
+     */
+    @Setter
     private String     scheme;
     private String     menuClass;
+    /**
+     * -- GETTER --
+     * Retrieves the amount of mana the player currently has
+     *
+     * @return current player mana
+     * -- SETTER --
+     * Sets the player's amount of mana without launching events
+     * @param mana current mana
+     */
+    @Setter
     private double     mana;
+    /**
+     * -- GETTER --
+     * Retrieves the max amount of mana the player can have including bonus mana
+     *
+     * @return max amount of mana the player can have
+     */
     private double     maxMana;
+    /**
+     * -- SETTER --
+     * Used by the API for restoring health - do not use this.
+     *
+     * @param lastHealth health logged off with
+     * -- GETTER --
+     * @return health during last logout
+     */
+    @Setter
     private double     lastHealth;
     private double     maxHealth;
+    /**
+     * -- GETTER --
+     * The hunger value here is not representative of the player's total hunger,
+     * rather the amount left of the next hunger point. This is manipulated by
+     * attributes were if an attribute says a player has twice as much "hunger"
+     * as normal, this will go down by decimals to slow the decay of hunger.
+     *
+     * @return amount of the next hunger point the player has
+     * -- SETTER --
+     * @param hungerValue new hunger value
+     */
+    @Setter
     private double     hungerValue;
     private boolean    init;
     private boolean    passive;
@@ -2573,24 +2642,6 @@ public class PlayerData {
     }
 
     /**
-     * Retrieves the amount of mana the player currently has.
-     *
-     * @return current player mana
-     */
-    public double getMana() {
-        return mana;
-    }
-
-    /**
-     * Sets the player's amount of mana without launching events
-     *
-     * @param amount current mana
-     */
-    public void setMana(double amount) {
-        this.mana = amount;
-    }
-
-    /**
      * Checks whether the player has at least the specified amount of mana
      *
      * @param amount required mana amount
@@ -2600,97 +2651,11 @@ public class PlayerData {
         return mana >= amount;
     }
 
-    /**
-     * Retrieves the max amount of mana the player can have including bonus mana
-     *
-     * @return max amount of mana the player can have
-     */
-    public double getMaxMana() {
-        return maxMana;
-    }
-
-    /**
-     * @return extra data attached to the player's account
-     */
-    public DataSection getExtraData() {return this.extraData;}
-
-    /**
-     * Returns the data for the player's combos
-     *
-     * @return combo data for the player
-     */
-    public PlayerCombos getComboData() {return this.comboData;}
-
-    /**
-     * @return equipped item data
-     */
-    public PlayerEquips getEquips() {return this.equips;}
-
-    /**
-     * -- GETTER --
-     * Retrieves the name of the active map menu scheme for the player
-     *
-     * @return map menu scheme name
-     */
-    public String getScheme() {return this.scheme;}
-
-    /**
-     * @return health during last logout
-     */
-    public double getLastHealth() {return this.lastHealth;}
-
-    /**
-     * The hunger value here is not representative of the player's total hunger,
-     * rather the amount left of the next hunger point. This is manipulated by
-     * attributes were if an attribute says a player has twice as much "hunger"
-     * as normal, this will go down by decimals to slow the decay of hunger.
-     *
-     * @return amount of the next hunger point the player has
-     */
-    public double getHungerValue() {return this.hungerValue;}
-
-    /**
-     * Sets the current amount of attribute points
-     *
-     * @param amount amount of points to have
-     */
-    public void setAttribPoints(int amount) {this.attribPoints = amount;}
-
-    /**
-     * Sets the active scheme name for the player
-     *
-     * @param name name of the scheme
-     */
-    public void setScheme(String name) {this.scheme = name;}
-
-    /**
-     * Used by the API for restoring health - do not use this.
-     *
-     * @param health health logged off with
-     * @return health during last logout
-     */
-    public void setLastHealth(double health) {this.lastHealth = health;}
-
-    /**
-     * @param hungerValue new hunger value
-     */
-    public void setHungerValue(double hungerValue) {this.hungerValue = hungerValue;}
-
+    @Data
+    @RequiredArgsConstructor
     public static class ExternallyAddedSkill {
         private final String        id;
         private final NamespacedKey key;
         private final int           level;
-
-        public ExternallyAddedSkill(String id, NamespacedKey key, int level) {
-            this.id = id;
-            this.key = key;
-            this.level = level;
-        }
-
-        public String getId() {return id;}
-
-        public NamespacedKey getKey() {return key;}
-
-        public int getLevel() {return level;}
     }
 }
