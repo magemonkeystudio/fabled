@@ -41,6 +41,7 @@ import IntSelect                                                 from '$api/opti
 import ColorSelect                                               from '$api/options/colorselect';
 import { get }                                                   from 'svelte/store';
 import type ProComponent                                         from '$api/components/procomponent';
+import { attributes }                                            from '../../data/attribute-store';
 
 // TRIGGERS
 
@@ -52,6 +53,21 @@ class ArmorEquipTrigger extends ProTrigger {
 			data:         [new DropdownSelect('Slots', 'slots', ['Any', 'Helmet', 'Chestplate', 'Leggings', 'Boots', 'Main hand', 'Offhand'], ['Any'], true)
 				.setTooltip('The armor slots to check for')],
 			summaryItems: ['slots']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
+class AttributeChangeTrigger extends ProTrigger {
+	public constructor() {
+		super({
+			name:         'Attribute Change',
+			description:  'Applies skill effects when a player\'s attribute changes. <code>api-attribute</code> is the attribute name, '
+											+ '<code>api-change</code> is the change, and <code>api-value</code> is the new value',
+			data:         [new DropdownSelect('Attribute', 'attr', ['Any', ...get(attributes)], ['Any'], true)
+				.setTooltip('The attribute to check for')],
+			summaryItems: ['attr']
 		});
 	}
 
@@ -4940,6 +4956,7 @@ const particlePreviewOptions = (key: string): ComponentOption[] => {
 
 export const initComponents = () => {
 	triggers.set({
+		ATTR_CHANGE:   { name: 'Attribute Change', component: AttributeChangeTrigger },
 		BLOCK_BREAK:   { name: 'Block Break', component: BlockBreakTrigger },
 		BLOCK_PLACE:   { name: 'Block Place', component: BlockPlaceTrigger },
 		CAST:          { name: 'Cast', component: CastTrigger },

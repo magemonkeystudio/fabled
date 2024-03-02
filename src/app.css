@@ -211,6 +211,19 @@ select, input, textarea {
     cursor: pointer;
 }
 
+code {
+    display: inline;
+    background-color: #555;
+    padding: 0.15rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
+    font-size: 0.75em;
+    line-height: 2;
+    white-space: nowrap;
+
+    transition: background-color 0.5s ease;
+}
+
 @media screen and (max-width: 500px) {
     body {
         font-size: 1.2rem;
