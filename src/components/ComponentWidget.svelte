@@ -184,19 +184,6 @@
 			 class:bottom
 			 class:dragging={$draggingComponent === component}
 			 style:--comp-color={getColor()}>
-		{#if collapsed}
-			<span class='material-symbols-rounded' in:spin={{duration: 400}}>expand_more</span>
-		{:else}
-			<span class='material-symbols-rounded' in:spin={{duration: 400}}>expand_less</span>
-		{/if}
-		<div class='corner'
-				 tabindex='0'
-				 role='button'
-				 on:click|stopPropagation={() => collapsed = !collapsed}
-				 on:keypress|stopPropagation={(e) => {
-            if (e.key === 'Enter') collapsed = !collapsed;
-        }}
-		/>
 		<div class='name'>
 			<span>{getName($useSymbols)}</span>{($useSymbols ? ' ' : ': ')}
 			{#if component.isDeprecated}
@@ -205,6 +192,19 @@
 				{component.name}
 			{/if}
 		</div>
+		<div class='corner'
+				 tabindex='0'
+				 role='button'
+				 on:click|stopPropagation={() => collapsed = !collapsed}
+				 on:keypress|stopPropagation={(e) => {
+            if (e.key === 'Enter') collapsed = !collapsed;
+        }}
+		/>
+		{#if collapsed}
+			<span class='material-symbols-rounded' in:spin={{duration: 400}}>expand_more</span>
+		{:else}
+			<span class='material-symbols-rounded' in:spin={{duration: 400}}>expand_less</span>
+		{/if}
 
 		{#if $showSummaryItems && component.summaryItems && component.summaryItems.length > 0}
 			<div class='summary'>
@@ -304,7 +304,6 @@
         position: absolute;
         top: 0;
         right: 0;
-        z-index: 3;
         pointer-events: none;
         /*text-shadow: 0 0 0.1rem black;*/
     }
@@ -333,7 +332,6 @@
         top: 0;
         height: 2rem;
         width: 4rem;
-        z-index: 2;
         transform-origin: 50% 0;
         transform: rotate(45deg);
         background-color: var(--comp-color);
