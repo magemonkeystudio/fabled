@@ -142,7 +142,7 @@ const BAD_POTIONS: string[] = [
 	'Levitation',
 	'Poison',
 	'Slow',
-	'Slow Digging',
+	'Slow digging',
 	'Unluck',
 	'Weakness',
 	'Wither'
