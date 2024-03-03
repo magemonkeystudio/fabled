@@ -3087,15 +3087,17 @@ class LaunchMechanic extends ProMechanic {
 			description:  'Launches the target relative to their forward direction. Use negative values to go in the opposite direction (e.g. negative forward makes the target go backwards)',
 			data:         [
 				new DropdownSelect('Relative', 'relative', ['Target', 'Caster', 'Between'], 'Target')
-					.setTooltip('Determines what is considered "forward". Target uses the direction the target is facing, Caster uses the direction the caster is facing, and Between uses the direction from the caster to the target'),
+					.setTooltip('Determines what is considered "forward". Target uses the direction the target is facing, Caster uses the direction the caster is facing, and Between uses the direction from the target to the caster'),
+				new BooleanSelect('Reset Y', 'reset-y')
+				  					.setTooltip('Whether to reset the Y value. False means the upward velocity is a combination of the setting and the relative vector.'),
 				new AttributeSelect('Forward Speed', 'forward')
-					.setTooltip('The speed to give the target in the direction they are facing'),
+					.setTooltip('The speed to give the target in the direction they are facing/looking'),
 				new AttributeSelect('Upward Speed', 'upward', 2, 0.5)
-					.setTooltip('The speed to give the target upwards'),
+					.setTooltip('The speed to give the target upwards, this is added to the calculated vector if \'Use Look\' is true'),
 				new AttributeSelect('Right Speed', 'right')
 					.setTooltip('The speed to give the target to their right')
 			],
-			summaryItems: ['relative', 'forward', 'upward', 'right']
+			summaryItems: ['relative', 'reset-y', 'forward', 'upward', 'right']
 		}, false);
 	}
 
