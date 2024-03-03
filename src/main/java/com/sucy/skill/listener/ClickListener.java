@@ -30,6 +30,7 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.event.KeyPressEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -37,11 +38,17 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 /**
  * Handles transferring click actions by the player to
  * combos that cast skills.
  */
 public class ClickListener extends SkillAPIListener {
+    private Set<UUID> dropPlayers = new HashSet<>();
+
 
     /**
      * Registers clicks as they happen
@@ -52,9 +59,15 @@ public class ClickListener extends SkillAPIListener {
     public void onClick(PlayerInteractEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) return;
 
+        if (dropPlayers.contains(event.getPlayer().getUniqueId())) {
+            dropPlayers.remove(event.getPlayer().getUniqueId());
+            return;
+        }
+
         // Left clicks
         if (!SkillAPI.getSettings().isAnimationLeftClick()) {
             if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
+
                 Bukkit.getServer()
                         .getPluginManager()
                         .callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.LEFT));
@@ -95,5 +108,14 @@ public class ClickListener extends SkillAPIListener {
     @EventHandler
     public void onDrop(final PlayerDropItemEvent event) {
         Bukkit.getServer().getPluginManager().callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.Q));
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void dropTimer(final PlayerDropItemEvent event) {
+        dropPlayers.add(event.getPlayer().getUniqueId());
+        Bukkit.getScheduler()
+                .runTaskLater(SkillAPI.getPlugin(SkillAPI.class),
+                        () -> dropPlayers.remove(event.getPlayer().getUniqueId()),
+                        2);
     }
 }
