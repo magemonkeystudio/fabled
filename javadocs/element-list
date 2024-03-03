@@ -1,6 +1,7 @@
 com.sucy.skill
 com.sucy.skill.api
 com.sucy.skill.api.armorstand
+com.sucy.skill.api.binding
 com.sucy.skill.api.classes
 com.sucy.skill.api.enums
 com.sucy.skill.api.event
@@ -25,6 +26,9 @@ com.sucy.skill.dynamic
 com.sucy.skill.dynamic.condition
 com.sucy.skill.dynamic.custom
 com.sucy.skill.dynamic.mechanic
+com.sucy.skill.dynamic.mechanic.armorstand
+com.sucy.skill.dynamic.mechanic.value
+com.sucy.skill.dynamic.mechanic.warp
 com.sucy.skill.dynamic.target
 com.sucy.skill.dynamic.trigger
 com.sucy.skill.exception
