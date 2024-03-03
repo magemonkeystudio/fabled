@@ -8,7 +8,9 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 /**
  * ProSkillAPI © 2023
@@ -42,8 +44,13 @@ public class EnvironmentalTrigger implements Trigger<EntityDamageEvent> {
             return false;
         }
 
-        final String type = settings.getString("type", "any").replace(' ', '_').toUpperCase(Locale.US);
-        return type.equalsIgnoreCase("ANY") || type.equalsIgnoreCase(event.getCause().name());
+        List<String> types = settings.getStringList("types").stream()
+                .map(str -> str.replace(' ', '_').toUpperCase(Locale.US))
+                .collect(Collectors.toList());
+
+        boolean isAny = types.contains("ANY");
+
+        return isAny || types.contains(event.getCause().name());
     }
 
     /**
