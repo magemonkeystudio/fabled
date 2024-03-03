@@ -218,7 +218,7 @@ export default class ProSkill implements Serializable {
 
 		isSaving.set(true);
 
-		const yaml = YAML.stringify({ [this.name]: this.serializeYaml() });
+		const yaml = YAML.stringify({ [this.name]: this.serializeYaml() }, { lineWidth: 0 });
 		if (this.location === 'server') {
 
 			return;

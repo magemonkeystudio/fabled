@@ -235,7 +235,7 @@ export default class ProClass implements Serializable {
 			return;
 		}
 
-		const yaml = YAML.stringify({ [this.name]: this.serializeYaml() });
+		const yaml = YAML.stringify({ [this.name]: this.serializeYaml() }, { lineWidth: 0 });
 
 		if (this.previousName && this.previousName !== this.name) {
 			localStorage.removeItem('sapi.class.' + this.previousName);

@@ -154,7 +154,7 @@ export const saveData = (data?: ProSkill | ProClass) => {
 	const act = data || get(active);
 	if (!act) return;
 
-	saveToFile(act.name + '.yml', YAML.stringify({ [act.name]: act.serializeYaml() }));
+	saveToFile(act.name + '.yml', YAML.stringify({ [act.name]: act.serializeYaml() }, { lineWidth: 0 }));
 };
 
 export const getAllSkillYaml = (): MultiSkillYamlData => {
@@ -199,8 +199,8 @@ export const saveAll = async () => {
 	const skillYaml = getAllSkillYaml();
 	const classYaml = getAllClassYaml();
 
-	saveToFile('skills.yml', YAML.stringify(skillYaml));
-	saveToFile('classes.yml', YAML.stringify(classYaml));
+	saveToFile('skills.yml', YAML.stringify(skillYaml, { lineWidth: 0 }));
+	saveToFile('classes.yml', YAML.stringify(classYaml, { lineWidth: 0 }));
 };
 
 /**

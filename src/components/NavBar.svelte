@@ -10,7 +10,7 @@
 		let act: ProClass | ProSkill | undefined = get(active);
 		if (!act) return;
 
-		let data = YAML.stringify({ [act.name]: act.serializeYaml() });
+		let data = YAML.stringify({ [act.name]: act.serializeYaml() }, { lineWidth: 0 });
 		createPaste(data)
 			.then((urlToPaste) => {
 				navigator?.clipboard?.writeText(urlToPaste);
