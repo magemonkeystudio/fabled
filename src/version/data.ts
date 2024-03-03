@@ -72,6 +72,10 @@ export const getDamageTypes = () => {
 	return get(versionData).DAMAGE_TYPES;
 };
 
+export const getAnyDamageTypes = () => {
+	return ['Any', ...get(versionData).DAMAGE_TYPES];
+}
+
 export const getPotionTypes = () => {
 	return get(versionData).POTIONS;
 };
@@ -142,7 +146,7 @@ const BAD_POTIONS: string[] = [
 	'Levitation',
 	'Poison',
 	'Slow',
-	'Slow Digging',
+	'Slow digging',
 	'Unluck',
 	'Weakness',
 	'Wither'
