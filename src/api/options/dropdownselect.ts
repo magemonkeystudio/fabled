@@ -58,5 +58,10 @@ export default class DropdownSelect extends Requirements implements ComponentOpt
 		return this.data.selected;
 	};
 
-	deserialize = (yaml: Unknown) => this.data.selected = <string[] | string>yaml[this.key];
+	deserialize = (yaml: Unknown) => {
+		this.data.selected = <string[] | string>yaml[this.key];
+		// If selected is not a list and multiple is true, convert it to a list
+		if (this.data.multiple && !(this.data.selected instanceof Array)) this.data.selected = [this.data.selected];
+		else if (!this.data.multiple && this.data.selected instanceof Array) this.data.selected = this.data.selected[0];
+	}
 }
