@@ -240,7 +240,7 @@ public class PlayerEquips {
      * Represents one available item's data
      */
     public class EquipData {
-        private final ArrayList<UUID>          attrModifierUUIDs = new ArrayList<UUID>();
+        private final List<UUID>               attrModifierUUIDs = new ArrayList<>();
         private       HashMap<String, Integer> skillReq;
         private       HashMap<String, Integer> attrReq;
         private       HashMap<String, Integer> attribs;
