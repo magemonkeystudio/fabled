@@ -110,7 +110,7 @@ public class ClickListener extends SkillAPIListener {
         Bukkit.getServer().getPluginManager().callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.Q));
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void dropTimer(final PlayerDropItemEvent event) {
         dropPlayers.add(event.getPlayer().getUniqueId());
         Bukkit.getScheduler()
