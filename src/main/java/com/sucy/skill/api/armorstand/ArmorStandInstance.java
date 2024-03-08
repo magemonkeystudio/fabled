@@ -2,6 +2,7 @@ package com.sucy.skill.api.armorstand;
 
 import com.sucy.skill.SkillAPI;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -9,6 +10,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 
 @AllArgsConstructor
+@RequiredArgsConstructor
 public class ArmorStandInstance {
     private static final Vector       UP = new Vector(0, 1, 0);
     private final        ArmorStand   armorStand;
@@ -17,12 +19,6 @@ public class ArmorStandInstance {
     private              double       forward;
     private              double       upward;
     private              double       right;
-
-    public ArmorStandInstance(ArmorStand armorStand, LivingEntity target) {
-        this.armorStand = armorStand;
-        this.target = target;
-        this.follow = false;
-    }
 
     /**
      * @return true if the instance is still valid
