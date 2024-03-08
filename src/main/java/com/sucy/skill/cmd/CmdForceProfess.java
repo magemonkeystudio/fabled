@@ -82,6 +82,13 @@ public class CmdForceProfess implements IFunction, TabCompleter {
                 args = Arrays.stream(args).filter(s -> !s.equalsIgnoreCase("-s"))
                         .collect(Collectors.toList()).toArray(new String[0]);
 
+            // If the -f flag is present, skip checking requirements
+            boolean checkRequirements = !Arrays.stream(args).anyMatch(s -> s.equalsIgnoreCase("-f"));
+            if (!checkRequirements)
+                args = Arrays.stream(args).filter(s -> !s.equalsIgnoreCase("-f"))
+                        .collect(Collectors.toList()).toArray(new String[0]);
+
+
             OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
             if (player == null) {
                 cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name");
@@ -100,7 +107,7 @@ public class CmdForceProfess implements IFunction, TabCompleter {
             }
 
             // Can profess
-            else if (data.canProfess(target)) {
+            else if (!checkRequirements || data.canProfess(target)) {
                 data.profess(target);
                 if (player.isOnline()) {
                     cmd.sendMessage(sender,
