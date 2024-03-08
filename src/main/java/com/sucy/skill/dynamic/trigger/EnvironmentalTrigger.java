@@ -44,7 +44,7 @@ public class EnvironmentalTrigger implements Trigger<EntityDamageEvent> {
             return false;
         }
 
-        List<String> types = settings.getStringList("types").stream()
+        List<String> types = settings.getStringList("type").stream()
                 .map(str -> str.replace(' ', '_').toUpperCase(Locale.US))
                 .collect(Collectors.toList());
 
