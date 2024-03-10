@@ -53,7 +53,7 @@ import java.util.stream.Collectors;
 public class BindListener extends SkillAPIListener {
     public static final NamespacedKey SKILLS_KEY = new NamespacedKey(SkillAPI.inst(), "bound_skills");
 
-    private static final Map<Player,Integer> indexes = new HashMap<>();
+    private static final Map<Player, Integer> indexes = new HashMap<>();
 
     @Override
     public void init() {
@@ -90,7 +90,9 @@ public class BindListener extends SkillAPIListener {
     }
 
     public static List<String> getBoundSkills(@NotNull ItemStack itemStack) {
-        String[] array = Objects.requireNonNull(itemStack.getItemMeta()).getPersistentDataContainer().get(SKILLS_KEY, DataUT.STRING_ARRAY);
+        String[] array = Objects.requireNonNull(itemStack.getItemMeta())
+                .getPersistentDataContainer()
+                .get(SKILLS_KEY, DataUT.STRING_ARRAY);
         List<String> list = new ArrayList<>();
         if (array != null)
             for (int i = 0; i < array.length; i++) {
@@ -112,11 +114,14 @@ public class BindListener extends SkillAPIListener {
 
     public static List<PlayerSkill> getBoundSkills(@NotNull ItemStack itemStack, @NotNull PlayerData playerData) {
         List<String> skillNames = getBoundSkills(itemStack);
-        return skillNames.stream().map(playerData::getSkill).filter(skill -> skill != null && skill.getLevel() > 0).collect(Collectors.toList());
+        return skillNames.stream()
+                .map(playerData::getSkill)
+                .filter(skill -> skill != null && skill.getLevel() > 0)
+                .collect(Collectors.toList());
     }
 
     public static int getIndex(Player player, int boundSkills) {
-        return (indexes.getOrDefault(player, 0)%boundSkills+boundSkills)%boundSkills;
+        return (indexes.getOrDefault(player, 0) % boundSkills + boundSkills) % boundSkills;
     }
 
     /**
@@ -130,7 +135,7 @@ public class BindListener extends SkillAPIListener {
         Player player = event.getPlayer();
         if (!SkillAPI.getSettings().isWorldEnabled(player.getWorld())) return;
         PlayerData playerData = SkillAPI.getPlayerData(player);
-        ItemStack heldItem = getHeldItem(player.getInventory());
+        ItemStack  heldItem   = getHeldItem(player.getInventory());
         if (heldItem == null) return;
 
         List<PlayerSkill> boundSkills = getBoundSkills(heldItem, playerData);
@@ -138,7 +143,9 @@ public class BindListener extends SkillAPIListener {
         int index = getIndex(player, boundSkills.size());
 
         switch (event.getKey()) {
-            case LEFT -> playerData.cast(boundSkills.get(index));
+            case LEFT -> {
+                playerData.cast(boundSkills.get(index));
+            }
             case RIGHT -> {
                 playerData.setOnPreviewStop(null);
                 index = (index + 1) % boundSkills.size();

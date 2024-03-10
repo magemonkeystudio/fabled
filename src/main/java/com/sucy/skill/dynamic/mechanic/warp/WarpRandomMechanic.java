@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.WarpRandomMechanic
+ * com.sucy.skill.dynamic.mechanic.warp.WarpRandomMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,7 +24,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.warp;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.target.TargetHelper;
@@ -81,7 +81,7 @@ public class WarpRandomMechanic extends AbstractWarpingMechanic {
             if (!loc.getBlock().getType().isSolid() && loc.getBlock().getRelative(BlockFace.DOWN).getType().isSolid()) {
                 loc.add(0, 1, 0);
             }
-            warp(target, loc.subtract(0, 1, 0));
+            warp(target, caster, loc.subtract(0, 1, 0), level);
         }
         return !targets.isEmpty();
     }

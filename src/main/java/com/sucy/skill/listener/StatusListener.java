@@ -26,6 +26,7 @@
  */
 package com.sucy.skill.listener;
 
+import com.sucy.skill.api.DefaultCombatProtection;
 import com.sucy.skill.api.event.*;
 import com.sucy.skill.api.util.FlagManager;
 import com.sucy.skill.api.util.StatusFlag;
@@ -147,10 +148,11 @@ public class StatusListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onInvulnerable(FlagApplyEvent event) {
-        if (event.getFlag().equals(StatusFlag.INVULNERABLE)){
+        if (event.getFlag().equals(StatusFlag.INVULNERABLE)) {
             event.getEntity().setInvulnerable(true);
         }
     }
+
     /**
      * Cancel invulnerable effect when flag is expire;
      *
@@ -158,10 +160,11 @@ public class StatusListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void offInvulnerable(FlagExpireEvent event) {
-        if (event.getFlag().equals(StatusFlag.INVULNERABLE)){
+        if (event.getFlag().equals(StatusFlag.INVULNERABLE)) {
             event.getEntity().setInvulnerable(false);
         }
     }
+
     /**
      * Cancels damage when an attacker is disarmed.
      *
@@ -169,7 +172,8 @@ public class StatusListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onDamage(EntityDamageByEntityEvent event) {
-        if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM)
+        if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM
+                || DefaultCombatProtection.isFakeDamageEvent(event))
             return;
 
         LivingEntity damager = ListenerUtil.getDamager(event);
@@ -189,6 +193,8 @@ public class StatusListener extends SkillAPIListener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onDamaged(EntityDamageEvent event) {
         if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM
+                || (event instanceof EntityDamageByEntityEvent
+                && DefaultCombatProtection.isFakeDamageEvent((EntityDamageByEntityEvent) event))
                 || !(event.getEntity() instanceof LivingEntity))
             return;
 
@@ -200,6 +206,7 @@ public class StatusListener extends SkillAPIListener {
      *
      * @param event event details
      */
+    @EventHandler
     public void onTrueDamage(TrueDamageEvent event) {
         checkAbsorbAndInvincible(event.getTarget(), event, event.getDamage());
     }

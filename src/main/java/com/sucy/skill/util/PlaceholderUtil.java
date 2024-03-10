@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -374,7 +373,7 @@ public class PlaceholderUtil {
                     if (ident.length < 3) return "0";
                     PlayerSkill skill = data.getSkill(ident[2]);
                     if (skill == null) return "0";
-                    return String.valueOf(skill.getCooldown());
+                    return String.valueOf(skill.getCooldownLeft());
                 }
             }
         }

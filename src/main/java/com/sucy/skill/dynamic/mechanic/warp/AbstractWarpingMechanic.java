@@ -24,20 +24,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.warp;
 
+import com.sucy.skill.dynamic.mechanic.MechanicComponent;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 
 abstract class AbstractWarpingMechanic extends MechanicComponent {
-    protected static final String PRESERVE = "preserve";
+    protected static final String PRESERVE  = "preserve";
+    protected static final String SET_YAW   = "setYaw";
+    protected static final String SET_PITCH = "setPitch";
+    protected static final String YAW       = "yaw";
+    protected static final String PITCH     = "pitch";
 
     public boolean preserveVelocity() {
         return settings.getBool(PRESERVE, false);
     }
 
-    public void warp(LivingEntity target, Location location) {
+    public boolean setYaw() {
+        return settings.getBool(SET_YAW, false);
+    }
+
+    public boolean setPitch() {
+        return settings.getBool(SET_PITCH, false);
+    }
+
+    public void warp(LivingEntity target, LivingEntity caster, Location location, int level) {
+        if (setYaw()) {
+            location.setYaw((float) parseValues(caster, YAW, level, 0));
+        }
+        if (setPitch()) {
+            location.setPitch((float) parseValues(caster, PITCH, level, 0));
+        }
+
         Vector velocity = target.getVelocity().clone();
         target.teleport(location);
 

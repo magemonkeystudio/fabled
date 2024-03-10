@@ -30,6 +30,8 @@ import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.enums.SkillStatus;
 import com.sucy.skill.api.skills.Skill;
 import com.sucy.skill.manager.AttributeManager;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Material;
 
 /**
@@ -41,6 +43,8 @@ public final class PlayerSkill {
     private Skill       skill;
     private PlayerData  player;
     private PlayerClass parent;
+    @Getter
+    @Setter
     private long        cooldown;
     private int         level;
     private boolean     external;
@@ -205,7 +209,7 @@ public final class PlayerSkill {
      *
      * @return current cooldown in seconds or 0 if not on cooldown
      */
-    public int getCooldown() {
+    public int getCooldownLeft() {
         if (isOnCooldown()) {
             return (int) ((cooldown - System.currentTimeMillis() + 999) / 1000);
         } else {

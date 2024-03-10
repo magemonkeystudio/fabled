@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.WarpSwapMechanic
+ * com.sucy.skill.dynamic.mechanic.warp.WarpSwapMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,7 +24,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.warp;
 
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
@@ -54,8 +54,8 @@ public class WarpSwapMechanic extends AbstractWarpingMechanic {
         if (!targets.isEmpty()) {
             Location tloc = targets.get(0).getLocation();
             Location cloc = caster.getLocation();
-            warp(targets.get(0), cloc);
-            warp(caster, tloc);
+            warp(targets.get(0), caster, cloc, level);
+            warp(caster, caster, tloc, level);
             return true;
         }
         return false;

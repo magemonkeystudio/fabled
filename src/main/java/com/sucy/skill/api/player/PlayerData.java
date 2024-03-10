@@ -57,6 +57,10 @@ import com.sucy.skill.manager.AttributeManager;
 import com.sucy.skill.manager.IAttributeManager;
 import com.sucy.skill.manager.ProAttribute;
 import com.sucy.skill.task.ScoreboardTask;
+import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import mc.promcteam.engine.NexEngine;
 import mc.promcteam.engine.api.meta.NBTAttribute;
 import mc.promcteam.engine.mccore.config.Filter;
@@ -79,6 +83,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * Represents one account for a player which can contain one class from each group
@@ -88,36 +93,104 @@ import java.util.Map.Entry;
  * In order to get a player's data, use "SkillAPI.getPlayerData(...)". Do NOT
  * try to instantiate your own PlayerData object.
  */
+@Getter
 public class PlayerData {
+    /**
+     * This represents the number of attribute points invested in each attribute
+     */
     public final  Map<String, Integer>                       attributes          = new HashMap<>();
-    // iomatix: It's an attr total like described
+    /**
+     * This represents the actual attribute level/stage
+     */
     public final  Map<String, Integer>                       attrUpStages        = new HashMap<>();
-    // iomatix: distinguish attr total from attrUpStage (it's an attr upgrade level/stage)
     private final Map<String, PlayerClass>                   classes             = new HashMap<>();
     private final Map<String, PlayerSkill>                   skills              = new HashMap<>();
     private final Set<ExternallyAddedSkill>                  extSkills           = new HashSet<>();
     private final Map<String, List<PlayerAttributeModifier>> attributesModifiers = new HashMap<>();
     private final Map<String, List<PlayerStatModifier>>      statModifiers       = new HashMap<>();
     private final Map<String, String>                        persistentData      = new HashMap<>();
+    private final Map<String, Long>                          cooldownCache       = new HashMap<>();
+    /**
+     * @return extra data attached to the player's account
+     */
+    private final DataSection                                extraData           = new DataSection();
+    private final UUID                                       playerUUID;
+    private       PlayerSkillBar                             skillBar;
+    private       PlayerCastBars                             castBars;
+    private       PlayerTextCastingData                      textCastingData;
+    /**
+     * The data for the player's combos
+     *
+     * @return combo data for the player
+     */
+    private final PlayerCombos                               comboData;
+    /**
+     * @return equipped item data
+     */
+    private final PlayerEquips                               equips;
+    private final List<UUID>                                 onCooldown          = new ArrayList<>();
 
-    private final DataSection           extraData  = new DataSection();
-    private final UUID                  playerUUID;
-    private       PlayerSkillBar        skillBar;
-    private       PlayerCastBars        castBars;
-    private       PlayerTextCastingData textCastingData;
-    private final PlayerCombos          combos;
-    private final PlayerEquips          equips;
-    private final List<UUID>            onCooldown = new ArrayList<>();
-
+    /**
+     * The current amount of attribute points
+     *
+     * @param attribPoints amount of points to have
+     */
+    @Setter
     public  int        attribPoints;
+    /**
+     * -- GETTER --
+     * Retrieves the name of the active map menu scheme for the player
+     *
+     * @return map menu scheme name
+     * -- SETTER --
+     * Sets the active scheme name for the player
+     * @param scheme name of the scheme
+     */
+    @Setter
     private String     scheme;
     private String     menuClass;
+    /**
+     * -- GETTER --
+     * Retrieves the amount of mana the player currently has
+     *
+     * @return current player mana
+     * -- SETTER --
+     * Sets the player's amount of mana without launching events
+     * @param mana current mana
+     */
+    @Setter
     private double     mana;
+    /**
+     * -- GETTER --
+     * Retrieves the max amount of mana the player can have including bonus mana
+     *
+     * @return max amount of mana the player can have
+     */
     private double     maxMana;
+    /**
+     * -- SETTER --
+     * Used by the API for restoring health - do not use this.
+     *
+     * @param lastHealth health logged off with
+     * -- GETTER --
+     * @return health during last logout
+     */
+    @Setter
     private double     lastHealth;
-    private double     health;
     private double     maxHealth;
-    private double     hunger;
+    /**
+     * -- GETTER --
+     * The hunger value here is not representative of the player's total hunger,
+     * rather the amount left of the next hunger point. This is manipulated by
+     * attributes were if an attribute says a player has twice as much "hunger"
+     * as normal, this will go down by decimals to slow the decay of hunger.
+     *
+     * @return amount of the next hunger point the player has
+     * -- SETTER --
+     * @param hungerValue new hunger value
+     */
+    @Setter
+    private double     hungerValue;
     private boolean    init;
     private boolean    passive;
     private long       skillTimer;
@@ -132,11 +205,11 @@ public class PlayerData {
     PlayerData(OfflinePlayer player, boolean init) {
         this.playerUUID = player.getUniqueId();
         this.castBars = new PlayerCastBars(this);
-        this.combos = new PlayerCombos(this);
+        this.comboData = new PlayerCombos(this);
         this.equips = new PlayerEquips(this);
         this.init = SkillAPI.isLoaded() && init;
         this.scheme = "default";
-        this.hunger = 1;
+        this.hungerValue = 1;
         for (String group : SkillAPI.getGroups()) {
             GroupSettings settings = SkillAPI.getSettings().getGroupSettings(group);
             RPGClass      rpgClass = settings.getDefault();
@@ -195,69 +268,10 @@ public class PlayerData {
         return textCastingData;
     }
 
-    /**
-     * Returns the data for the player's combos
-     *
-     * @return combo data for the player
-     */
-    public PlayerCombos getComboData() {
-        return combos;
-    }
-
-    /**
-     * @return extra data attached to the player's account
-     */
-    public DataSection getExtraData() {
-        return extraData;
-    }
-
-    /**
-     * @return equipped item data
-     */
-    public PlayerEquips getEquips() {
-        return equips;
-    }
-
-    /**
-     * @return health during last logout
-     */
-    public double getLastHealth() {
-        return lastHealth;
-    }
-
-    /**
-     * Used by the API for restoring health - do not use this.
-     *
-     * @param health health logged off with
-     */
-    public void setLastHealth(double health) {
-        lastHealth = health;
-    }
-
-    /**
-     * The hunger value here is not representative of the player's total hunger,
-     * rather the amount left of the next hunger point. This is manipulated by
-     * attributes were if an attribute says a player has twice as much "hunger"
-     * as normal, this will go down by decimals to slow the decay of hunger.
-     *
-     * @return amount of the next hunger point the player has
-     */
-    public double getHungerValue() {
-        return hunger;
-    }
-
-    /**
-     * @param hungerValue new hunger value
-     * @see PlayerData#getHungerValue
-     */
-    public void setHungerValue(final double hungerValue) {
-        this.hunger = hungerValue;
-    }
-
     public int subtractHungerValue(final double amount) {
         final double scaled = amount / scaleStat(AttributeManager.HUNGER, amount, 0D, Double.MAX_VALUE);
-        final int    lost   = scaled >= hunger ? (int) (scaled - hunger) + 1 : 0;
-        this.hunger += lost - amount;
+        final int    lost   = scaled >= hungerValue ? (int) (scaled - hungerValue) + 1 : 0;
+        this.hungerValue += lost - amount;
         return lost;
     }
 
@@ -275,24 +289,6 @@ public class PlayerData {
     //                    Attributes                     //
     //                                                   //
     ///////////////////////////////////////////////////////
-
-    /**
-     * Retrieves the name of the active map menu scheme for the player
-     *
-     * @return map menu scheme name
-     */
-    public String getScheme() {
-        return scheme;
-    }
-
-    /**
-     * Sets the active scheme name for the player
-     *
-     * @param name name of the scheme
-     */
-    public void setScheme(String name) {
-        scheme = name;
-    }
 
     /**
      * Retrieves a map of all player attribute totals. Modifying
@@ -427,30 +423,33 @@ public class PlayerData {
         ProAttribute proAttribute = SkillAPI.getAttributeManager().getAttribute(key);
         if (proAttribute == null) return false;
 
-        int max = proAttribute.getMax();
-        int currentStage =
-                getInvestedAttributeStage(key); // iomatix: the current upgrade stage, not the invested attributes
-        int currentInvested = getInvestedAttribute(key); // iomatix: the invested attributes
-        int cost            = getAttributeUpCost(key);
+        int max          = proAttribute.getMax();
+        int currentStage = getInvestedAttributeStage(key);
 
-        // iomatix apply the new logic below:
-        if (attribPoints >= cost && currentStage < max) {
-            attributes.put(key, currentInvested + cost); // iomatix: total spent goes by the cost
-            attrUpStages.put(key, currentStage + 1); // iomatix: upgrade stage goes by 1
-            attribPoints -= cost; // iomatix new cost has been applied
-
-            PlayerUpAttributeEvent event = new PlayerUpAttributeEvent(this, key);
-            Bukkit.getPluginManager().callEvent(event);
-            if (event.isCancelled()) {
-                // iomatix: roll back the cost and previous stage
-                attributes.put(key, currentInvested);
-                attrUpStages.put(key, currentStage);
-                attribPoints += cost;
-            } else {
-                return true;
-            }
+        if (currentStage >= max) {
+            return false;
         }
-        return false;
+
+        PlayerUpAttributeEvent event = new PlayerUpAttributeEvent(this, key, 1);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled() || event.getChange() == 0) {
+            return false;
+        }
+
+        int newStage        = currentStage + event.getChange();
+        int currentInvested = getInvestedAttribute(key); // iomatix: the invested attributes
+        int cost            = getAttributeUpCost(key, currentStage, newStage);
+
+        if (attribPoints < cost) {
+            return false;
+        }
+
+        attributes.put(key, currentInvested + cost);
+        attrUpStages.put(key, newStage);
+        attribPoints -= cost;
+
+        this.updatePlayerStat(getPlayer());
+        return true;
     }
 
     /**
@@ -464,9 +463,8 @@ public class PlayerData {
         ProAttribute proAttribute = SkillAPI.getAttributeManager().getAttribute(key);
         if (proAttribute == null) return 0;
 
-        return Math.max(0,
-                proAttribute.getCostBase() + (int) Math.floor(
-                        (getInvestedAttributeStage(key) + 1) * proAttribute.getCostModifier()));
+        int currentStage = getInvestedAttributeStage(key);
+        return getAttributeUpCost(key, currentStage, currentStage + 1);
     }
 
     /**
@@ -486,9 +484,9 @@ public class PlayerData {
         ProAttribute proAttribute = SkillAPI.getAttributeManager().getAttribute(key);
         if (proAttribute == null) return 0;
 
-        int selectedStage = getInvestedAttributeStage(key) + modifier;
-        return Math.max(0,
-                proAttribute.getCostBase() + (int) Math.floor(selectedStage * proAttribute.getCostModifier()));
+        int currentStage  = getInvestedAttributeStage(key);
+        int selectedStage = currentStage + modifier;
+        return getAttributeUpCost(key, currentStage, selectedStage);
     }
 
     /**
@@ -531,21 +529,30 @@ public class PlayerData {
      * @param key    attribute to give points for
      * @param amount amount to give
      */
-    public void giveAttribute(String key, int amount) {
-        key = key.toLowerCase(); // iomatix: is it necessary?
+    public boolean giveAttribute(String key, int amount) {
+        key = key.toLowerCase();
         ProAttribute proAttribute = SkillAPI.getAttributeManager().getAttribute(key);
-        if (proAttribute == null) return;
+        if (proAttribute == null) return false;
 
+        PlayerAttributeChangeEvent event = new PlayerAttributeChangeEvent(this, key, amount);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled() || event.getChange() == 0) {
+            return false;
+        }
+
+        amount = event.getChange();
         int currentStage = getInvestedAttributeStage(key);
         int invested     = getInvestedAttribute(key);
         int max          = proAttribute.getMax();
 
-        amount = Math.min(amount + currentStage, max);
-        attrUpStages.put(key, amount); // iomatix: attr stage goes up by the given value
-        int cost = getAttributeUpCost(key, currentStage, amount);
+        int newStage = Math.min(amount + currentStage, max);
+        int cost     = getAttributeUpCost(key, currentStage, newStage);
+
+        attrUpStages.put(key, newStage); // iomatix: attr stage goes up by the given value
         attributes.put(key, invested + cost); // let's increase totals value for now
 
         this.updatePlayerStat(getPlayer());
+        return true;
     }
 
     /**
@@ -621,31 +628,30 @@ public class PlayerData {
      * @param key attribute key
      */
     public boolean refundAttribute(String key) {
-        key =
-                key.toLowerCase(); // iomatix: is this line necessary ? if yes there should be method getKey which returns key.toLowerCase(); and applied everywhere
-        int current     = getInvestedAttributeStage(key); // iomatix: get current stage
-        int invested    = getInvestedAttribute(key); // iomatix: the total invested
-        int currentCost = getAttributeUpCost(key, 0); // iomatix: the cost [from] previous --> [to] current stage
-
-        if (current > 0) {
-            PlayerRefundAttributeEvent event = new PlayerRefundAttributeEvent(this, key);
-            Bukkit.getPluginManager().callEvent(event);
-            if (event.isCancelled()) {
-                return false;
-            }
-
-            attribPoints += currentCost; // iomatix: get the current stage cost back
-            attributes.put(key, invested - currentCost); // iomatix: the fix for total spent attributes
-            attrUpStages.put(key, current - 1); // iomatix: single step back to previous stage
-            if (current - 1 <= 0) {
-                attributes.remove(key);
-                attrUpStages.remove(key);
-            }
-            this.updatePlayerStat(getPlayer());
-
-            return true;
+        key = key.toLowerCase();
+        int current = getInvestedAttributeStage(key); // iomatix: get current stage
+        if (current <= 0) {
+            return false;
         }
-        return false;
+
+        // TODO Replace this with just PlayerAttributeChangeEvent
+        PlayerRefundAttributeEvent event = new PlayerRefundAttributeEvent(this, key, -1);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return false;
+        }
+
+        int newStage = Math.max(0, current + event.getChange());
+        int invested = getInvestedAttribute(key); // iomatix: the total invested
+        int currentCost =
+                getAttributeUpCost(key, current, newStage); // iomatix: the cost [from] previous --> [to] current stage
+
+        attribPoints -= currentCost; // iomatix: get the current stage cost back
+        attributes.put(key, invested + currentCost); // iomatix: the fix for total spent attributes
+        attrUpStages.put(key, newStage); // iomatix: single step back to previous stage
+
+        this.updatePlayerStat(getPlayer());
+        return true;
     }
 
     /**
@@ -653,24 +659,43 @@ public class PlayerData {
      *
      * @param key attribute key
      */
-    public void refundAttributes(String key) {
-        key =
-                key.toLowerCase(); // iomatix: is it necessary ? it's not applied everywhere, there should be method getKey() implemented if necessary
-        attribPoints +=
-                getInvestedAttribute(key); // alternative totalCost==>getAttributeUpCost(key, 0, getInvestedAttributeStage(key)); // iomatix: alternative calculate total cost in points
-        attributes.remove(key);
-        attrUpStages.remove(key); // iomatix: reset to stage 0 by removing the mapping
+    public boolean refundAttributes(String key) {
+        key = key.toLowerCase();
+        int change = -getInvestedAttributeStage(key);
+        if (change == 0) return true;
+
+        PlayerAttributeChangeEvent event = new PlayerAttributeChangeEvent(this, key, change);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled() || event.getChange() == 0) {
+            return false;
+        }
+
+        int currentStage = getInvestedAttributeStage(key);
+        int newStage     = Math.max(0, currentStage + event.getChange());
+        // This _should_ be positive as we should be giving points back to the user, but could potentially
+        // be negative if someone set the change to a positive number in the event.
+        // If it's negative, we'll need to check if they have enough points to purchase the upgrade
+        int refundAmount = getAttributeUpCost(key, currentStage, newStage);
+
+        if (event.getChange() > 0 && attribPoints < refundAmount) {
+            return false;
+        }
+
+        attribPoints -= refundAmount;
+        attributes.put(key, getInvestedAttribute(key) + refundAmount);
+        attrUpStages.put(key, newStage);
+
         this.updatePlayerStat(getPlayer());
+        return true;
     }
 
     /**
      * Refunds all spent attribute points
      */
-    public void refundAttributes() {
-        ArrayList<String> keys = new ArrayList<>(attributes.keySet());
-        for (String key : keys) {
-            refundAttributes(key);
-        }
+    public List<String> refundAttributes() {
+        return attributes.keySet().stream()
+                .filter(this::refundAttributes)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -689,15 +714,6 @@ public class PlayerData {
      */
     public void giveAttribPoints(int amount) {
         attribPoints += amount;
-    }
-
-    /**
-     * Sets the current amount of attribute points
-     *
-     * @param amount amount of points to have
-     */
-    public void setAttribPoints(int amount) {
-        attribPoints = amount;
     }
 
     /**
@@ -951,7 +967,7 @@ public class PlayerData {
         if (existing == null || !existing.isExternal()) {
             PlayerSkill data = new PlayerSkill(this, skill, parent);
             skills.put(key, data);
-            combos.addSkill(skill);
+            comboData.addSkill(skill);
         }
     }
 
@@ -963,8 +979,10 @@ public class PlayerData {
         PlayerSkill existing = skills.get(key);
         if (existing == null || existing.getLevel() == 0) {
             PlayerSkill data = new PlayerSkill(this, skill, parent, true);
+            data.setCooldown(cooldownCache.getOrDefault(key, 0L));
+            cooldownCache.remove(key);
             skills.put(key, data);
-            combos.addSkill(skill);
+            comboData.addSkill(skill);
             forceUpSkill(data, level);
         } else if (existing.isExternal() && level > existing.getLevel()) {
             forceUpSkill(existing, level - existing.getLevel());
@@ -989,8 +1007,9 @@ public class PlayerData {
                 }
             }
             if (max == null) {
+                cooldownCache.put(key, existing.getCooldown());
                 skills.remove(key);
-                combos.removeSkill(existing.getData());
+                comboData.removeSkill(existing.getData());
                 forceDownSkill(existing, existing.getLevel());
             } else {
                 forceDownSkill(existing, existing.getLevel() - maxLevel);
@@ -1245,7 +1264,7 @@ public class PlayerData {
      * @return true if shown, false if nothing to show
      */
     public boolean showDetails(Player player) {
-        if (classes.size() > 0 && player != null) {
+        if (!classes.isEmpty() && player != null) {
             HashMap<String, RPGClass> iconMap = new HashMap<>();
             for (Map.Entry<String, PlayerClass> entry : classes.entrySet()) {
                 iconMap.put(entry.getKey().toLowerCase(), entry.getValue().getData());
@@ -1276,7 +1295,7 @@ public class PlayerData {
     public boolean showProfession(Player player) {
         for (String group : SkillAPI.getGroups()) {
             PlayerClass c = getClass(group);
-            if (c == null || (c.getLevel() == c.getData().getMaxLevel() && c.getData().getOptions().size() > 0)) {
+            if (c == null || (c.getLevel() == c.getData().getMaxLevel() && !c.getData().getOptions().isEmpty())) {
                 GUITool.getProfessMenu(c == null
                                 ? null
                                 : c.getData())
@@ -1305,7 +1324,7 @@ public class PlayerData {
      */
     public boolean showSkills(Player player) {
         // Cannot show an invalid player, and cannot show no skills
-        if (player == null || classes.size() == 0 || skills.size() == 0) {
+        if (player == null || classes.isEmpty() || skills.isEmpty()) {
             return false;
         }
 
@@ -1329,7 +1348,7 @@ public class PlayerData {
      */
     public boolean showSkills(Player player, PlayerClass playerClass) {
         // Cannot show an invalid player, and cannot show no skills
-        if (player == null || playerClass.getData().getSkills().size() == 0) {
+        if (player == null || playerClass.getData().getSkills().isEmpty()) {
             return false;
         }
 
@@ -1364,7 +1383,7 @@ public class PlayerData {
      * @return true if professed, false otherwise
      */
     public boolean hasClass() {
-        return classes.size() > 0;
+        return !classes.isEmpty();
     }
 
     /**
@@ -1439,19 +1458,19 @@ public class PlayerData {
                             resetAttribs();
 
                         skills.remove(nm);
-                        combos.removeSkill(skill);
+                        comboData.removeSkill(skill);
                     }
                 } else {
                     if (!reset && SkillAPI.getSettings().isRefundOnClassChange() && skills.containsKey(nm)) {
                         if (ps.getInvestedCost() > 0)
                             c.givePoints(ps.getInvestedCost(), PointSource.REFUND);
                         skills.remove(nm);
-                        combos.removeSkill(skill);
+                        comboData.removeSkill(skill);
                     }
 
                     if (reset) {
                         skills.remove(nm);
-                        combos.removeSkill(skill);
+                        comboData.removeSkill(skill);
                     }
                     resetAttribs();
                 }
@@ -1570,7 +1589,7 @@ public class PlayerData {
                 }
 
                 if (settings.isProfessRefundSkills() && toSubclass) points += ps.getInvestedCost();
-                combos.removeSkill(skill);
+                comboData.removeSkill(skill);
             }
 
             // Update GUI features
@@ -1609,16 +1628,28 @@ public class PlayerData {
     }
 
     /**
-     * Resets attributes for the player
+     * Resets attributes for the player. If refunds are cancelled for any
+     * specific attribute, that attribute will not be reset.
      */
     public void resetAttribs() {
-        attributes.clear();
-        attrUpStages.clear();
         attribPoints = 0;
+
         for (PlayerClass c : classes.values()) {
             GroupSettings s = c.getData().getGroupSettings();
             attribPoints += s.getStartingAttribs() + s.getAttribsForLevels(c.getLevel(), 1);
         }
+
+        Set<String> toRemove = new HashSet<>();
+        for (String attr : attributes.keySet()) {
+            boolean refunded = refundAttributes(attr);
+            if (refunded) toRemove.add(attr);
+        }
+
+        for (String attr : toRemove) {
+            if (attributes.get(attr) == 0)
+                attributes.remove(attr);
+        }
+
         this.updatePlayerStat(getPlayer());
     }
 
@@ -1669,7 +1700,7 @@ public class PlayerData {
             for (Skill skill : rpgClass.getSkills(!isResetting)) {
                 if (!skills.containsKey(skill.getKey())) {
                     skills.put(skill.getKey(), new PlayerSkill(this, skill, current));
-                    combos.addSkill(skill);
+                    comboData.addSkill(skill);
                 }
             }
 
@@ -1927,7 +1958,6 @@ public class PlayerData {
 
         if (this.maxHealth <= 0) {
             this.maxHealth = SkillAPI.getSettings().getDefaultHealth();
-            this.health = this.maxHealth;
         }
 
         double modifiedMax = getModifiedMaxHealth(player);
@@ -1957,43 +1987,6 @@ public class PlayerData {
         double            def      = instance.getDefaultValue();
         double            modified = this.scaleStat(attribKey, def, min, max);
         instance.setBaseValue(/*def + */modified);
-    }
-
-    /**
-     * Retrieves the amount of mana the player currently has.
-     *
-     * @return current player mana
-     */
-    public double getMana() {
-        return mana;
-    }
-
-    /**
-     * Sets the player's amount of mana without launching events
-     *
-     * @param amount current mana
-     */
-    public void setMana(double amount) {
-        this.mana = amount;
-    }
-
-    /**
-     * Checks whether the player has at least the specified amount of mana
-     *
-     * @param amount required mana amount
-     * @return true if has the amount of mana, false otherwise
-     */
-    public boolean hasMana(double amount) {
-        return mana >= amount;
-    }
-
-    /**
-     * Retrieves the max amount of mana the player can have including bonus mana
-     *
-     * @return max amount of mana the player can have
-     */
-    public double getMaxMana() {
-        return maxMana;
     }
 
     /**
@@ -2591,7 +2584,7 @@ public class PlayerData {
                         .sendMessage(ErrorNodes.COOLDOWN,
                                 getPlayer(),
                                 FilterType.COLOR,
-                                RPGFilter.COOLDOWN.setReplacement(skill.getCooldown() + ""),
+                                RPGFilter.COOLDOWN.setReplacement(skill.getCooldownLeft() + ""),
                                 RPGFilter.SKILL.setReplacement(skill.getData().getName()));
                 onCooldown.add(getUUID());
                 Bukkit.getScheduler().runTaskLater(SkillAPI.inst(), () -> onCooldown.remove(getUUID()), 40L);
@@ -2648,21 +2641,21 @@ public class PlayerData {
         this.updateScoreboard();
     }
 
+    /**
+     * Checks whether the player has at least the specified amount of mana
+     *
+     * @param amount required mana amount
+     * @return true if has the amount of mana, false otherwise
+     */
+    public boolean hasMana(double amount) {
+        return mana >= amount;
+    }
+
+    @Data
+    @RequiredArgsConstructor
     public static class ExternallyAddedSkill {
         private final String        id;
         private final NamespacedKey key;
         private final int           level;
-
-        public ExternallyAddedSkill(String id, NamespacedKey key, int level) {
-            this.id = id;
-            this.key = key;
-            this.level = level;
-        }
-
-        public String getId() {return id;}
-
-        public NamespacedKey getKey() {return key;}
-
-        public int getLevel() {return level;}
     }
 }

@@ -6,7 +6,11 @@ import com.sucy.skill.dynamic.custom.CustomComponent;
 import com.sucy.skill.dynamic.custom.CustomEffectComponent;
 import com.sucy.skill.dynamic.custom.EditorOption;
 import com.sucy.skill.dynamic.mechanic.*;
+import com.sucy.skill.dynamic.mechanic.armorstand.ArmorStandMechanic;
+import com.sucy.skill.dynamic.mechanic.armorstand.ArmorStandPoseMechanic;
+import com.sucy.skill.dynamic.mechanic.armorstand.ArmorStandRemoveMechanic;
 import com.sucy.skill.dynamic.mechanic.value.*;
+import com.sucy.skill.dynamic.mechanic.warp.*;
 import com.sucy.skill.dynamic.target.*;
 import com.sucy.skill.dynamic.trigger.*;
 import org.bukkit.event.Event;
@@ -34,6 +38,7 @@ public class ComponentRegistry {
 
         // Triggers
         register(new ArmorEquipTrigger());
+        register(new AttributeChangeTrigger());
         register(new BlockBreakTrigger());
         register(new BlockPlaceTrigger());
         register(new ChatTrigger());

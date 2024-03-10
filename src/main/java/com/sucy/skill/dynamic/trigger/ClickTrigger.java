@@ -2,12 +2,10 @@ package com.sucy.skill.dynamic.trigger;
 
 import com.sucy.skill.api.CastData;
 import com.sucy.skill.api.Settings;
+import com.sucy.skill.api.event.KeyPressEvent;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.player.PlayerInteractEvent;
 
-import java.util.Map;
-
-public abstract class ClickTrigger implements Trigger<PlayerInteractEvent> {
+public abstract class ClickTrigger implements Trigger<KeyPressEvent> {
 
     /**
      * {@inheritDoc}
@@ -19,27 +17,27 @@ public abstract class ClickTrigger implements Trigger<PlayerInteractEvent> {
      * {@inheritDoc}
      */
     @Override
-    public Class<PlayerInteractEvent> getEvent() {
-        return PlayerInteractEvent.class;
+    public Class<KeyPressEvent> getEvent() {
+        return KeyPressEvent.class;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public abstract boolean shouldTrigger(PlayerInteractEvent event, int level, Settings settings);
+    public abstract boolean shouldTrigger(KeyPressEvent event, int level, Settings settings);
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setValues(PlayerInteractEvent event, CastData data) {}
+    public void setValues(KeyPressEvent event, CastData data) {}
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public LivingEntity getCaster(PlayerInteractEvent event) {
+    public LivingEntity getCaster(KeyPressEvent event) {
         return event.getPlayer();
     }
 
@@ -47,7 +45,7 @@ public abstract class ClickTrigger implements Trigger<PlayerInteractEvent> {
      * {@inheritDoc}
      */
     @Override
-    public LivingEntity getTarget(PlayerInteractEvent event, Settings settings) {
+    public LivingEntity getTarget(KeyPressEvent event, Settings settings) {
         return event.getPlayer();
     }
 

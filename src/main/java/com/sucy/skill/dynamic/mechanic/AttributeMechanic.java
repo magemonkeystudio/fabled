@@ -77,16 +77,16 @@ public class AttributeMechanic extends MechanicComponent {
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         String key = settings.getString(KEY, "");
-        if (targets.size() == 0 || SkillAPI.getAttributeManager().getAttribute(key) == null) {
+        if (targets.isEmpty() || SkillAPI.getAttributeManager().getAttribute(key) == null) {
             return false;
         }
 
         final Map<String, AttribTask> casterTasks = tasks.computeIfAbsent(caster.getEntityId(), HashMap::new);
-        final int                     amount      = (int) parseValues(caster, AMOUNT, level, 5);
+        final double                  amount      = parseValues(caster, AMOUNT, level, 5);
         final double                  seconds     = parseValues(caster, SECONDS, level, 3.0);
         final boolean                 stackable   = settings.getString(STACKABLE, "false").equalsIgnoreCase("true");
         final int                     ticks       = (int) (seconds * 20);
-        final String                  operation   = settings.getString(OPERATION, "MULTIPLY_PERCENTAGE");
+        final String                  operation   = settings.getString(OPERATION, "ADD_NUMBER");
 
         boolean worked = false;
         for (LivingEntity target : targets) {

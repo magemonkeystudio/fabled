@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.WarpLocMechanic
+ * com.sucy.skill.dynamic.mechanic.warp.WarpLocMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,7 +24,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.warp;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.particle.ParticleHelper;
@@ -49,13 +49,17 @@ public class WarpLocMechanic extends AbstractWarpingMechanic {
     private static final String X     = "x";
     private static final String Y     = "y";
     private static final String Z     = "z";
-    private static final String YAW   = "yaw";
-    private static final String PITCH = "pitch";
 
     @Override
     public String getKey() {
         return "warp location";
     }
+
+    @Override
+    public boolean setYaw() { return true; }
+
+    @Override
+    public boolean setPitch() { return true; }
 
     @Nullable
     private Location parseLocation(LivingEntity caster) {
@@ -72,10 +76,8 @@ public class WarpLocMechanic extends AbstractWarpingMechanic {
         double x     = settings.getDouble(X, 0.0);
         double y     = settings.getDouble(Y, 0.0);
         double z     = settings.getDouble(Z, 0.0);
-        float  yaw   = (float) settings.getDouble(YAW, 0.0);
-        float  pitch = (float) settings.getDouble(PITCH, 0.0);
 
-        return new Location(w, x, y, z, yaw, pitch);
+        return new Location(w, x, y, z);
     }
 
     /**
@@ -95,7 +97,7 @@ public class WarpLocMechanic extends AbstractWarpingMechanic {
         if (loc == null) return false;
 
         for (LivingEntity target : targets) {
-            warp(target, loc);
+            warp(target, caster, loc, level);
         }
         return true;
     }

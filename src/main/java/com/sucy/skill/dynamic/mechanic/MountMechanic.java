@@ -71,6 +71,9 @@ public class MountMechanic extends MechanicComponent {
                 }
                 Entity bottom    = getBottomOfStack(caster);
                 Entity targetTop = getTopOfStack(target);
+                if (targetTop.equals(bottom)) {
+                    return false;
+                }
                 targetTop.addPassenger(bottom);
             }
         } else if (type.equalsIgnoreCase("target->caster")) {
@@ -81,6 +84,9 @@ public class MountMechanic extends MechanicComponent {
                     break;
                 }
                 Entity top = getTopOfStack(caster);
+                if (top.equals(target)) {
+                    return false;
+                }
                 top.addPassenger(target);
             }
         } else {

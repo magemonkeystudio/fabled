@@ -80,6 +80,38 @@ public class RegistrationManager {
     }
 
     /**
+     * Gets the relative path of the file with the given name in the given directory,
+     * keeping in mind that it could be in a sub-folder
+     *
+     * @param directoryPath
+     * @param name
+     * @return the relative path of the file with the given name in the given directory
+     */
+    private String getPath(String directoryPath, String name) {
+        File   directory = new File(directoryPath);
+        String path      = null;
+        if (directory.exists() && directory.isDirectory()) {
+            File[] files = directory.listFiles();
+            if (files == null) return null;
+
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    String subPath = getPath(file.getPath(), name);
+                    if (subPath != null) {
+                        path = file.getName() + File.separator + subPath;
+                        break;
+                    }
+                } else if (file.getName().equals(name + ".yml")) {
+                    path = file.getName().replace(".yml", "");
+                    break;
+                }
+            }
+        }
+
+        return path;
+    }
+
+    /**
      * Initializes the registration manager, fetching skills and classes from
      * configuration files and other plugins.
      */
@@ -144,7 +176,9 @@ public class RegistrationManager {
                     if (!SkillAPI.isSkillRegistered(skill.getName())) {
                         api.addDynamicSkill(skill);
                         skill.registerEvents(api);
-                        CommentedConfig sConfig = new CommentedConfig(api, SKILL_DIR + key);
+                        String path = getPath(SkillAPI.inst().getDataFolder() + File.separator + SKILL_DIR, key);
+                        if (path == null) path = key;
+                        CommentedConfig sConfig = new CommentedConfig(api, SKILL_DIR + path);
                         sConfig.clear();
                         skill.save(sConfig.getConfig().createSection(key));
                         skill.save(skillConfig.getConfig().createSection(key));
@@ -233,7 +267,9 @@ public class RegistrationManager {
                     tree.load(classConfig.getConfig().getSection(key));
                     if (!SkillAPI.isClassRegistered(tree.getName())) {
                         api.addDynamicClass(tree);
-                        CommentedConfig cConfig = new CommentedConfig(api, CLASS_DIR + key);
+                        String path = getPath(SkillAPI.inst().getDataFolder() + File.separator + CLASS_DIR, key);
+                        if (path == null) path = key;
+                        CommentedConfig cConfig = new CommentedConfig(api, CLASS_DIR + path);
                         cConfig.clear();
                         tree.save(cConfig.getConfig().createSection(key));
                         tree.save(classConfig.getConfig().createSection(key));
@@ -251,7 +287,7 @@ public class RegistrationManager {
             Logger.log(LogType.REGISTRATION, 1, "classes.yml doesn't have any changes, skipping it");
         }
 
-        // Load individual dynamic classes
+        // Load individual dynamic classes first
         Logger.log(LogType.REGISTRATION, 1, "Loading individual dynamic class files...");
         File classRoot = new File(api.getDataFolder().getPath() + File.separator + CLASS_FOLDER);
         if (classRoot.exists()) {

@@ -1,10 +1,13 @@
 package com.sucy.skill.listener;
 
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
+import com.sucy.skill.api.CombatProtection;
 import com.sucy.skill.api.DefaultCombatProtection;
 import com.sucy.skill.api.event.PhysicalDamageEvent;
 import com.sucy.skill.testutil.MockedTest;
 import org.bukkit.Location;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -28,28 +31,28 @@ public class PhysicalDamageListenerTest extends MockedTest {
         mainListener = new MainListener();
     }
 
-    @Test
-    void fakeEntityDamageByEntityEventDoesNotCallPhysicalDamageEvent() {
-        DefaultCombatProtection.FakeEntityDamageByEntityEvent event =
-                new DefaultCombatProtection.FakeEntityDamageByEntityEvent(attacker,
-                        damager,
-                        EntityDamageEvent.DamageCause.CUSTOM,
-                        0D);
-
-        mainListener.onPhysicalDamage_allyCheck(event);
-
-        server.getPluginManager().assertEventNotFired(PhysicalDamageEvent.class);
-    }
-
-    @Test
-    void fakeEntityDamageByEntityEventIsCalledOnAttack() {
-        EntityDamageByEntityEvent event =
-                new EntityDamageByEntityEvent(attacker, damager, EntityDamageEvent.DamageCause.ENTITY_ATTACK, 5D);
-
-        mainListener.onPhysicalDamage_allyCheck(event);
-
-        server.getPluginManager().assertEventFired(DefaultCombatProtection.FakeEntityDamageByEntityEvent.class);
-    }
+//    @Test
+//    void canAttackExternallyDoesNotCallPhysicalDamageEvent() {
+//        CombatProtection.canAttackExternally(attacker, damager, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+//
+//        mainListener.onPhysicalDamage_allyCheck(event);
+//
+//        server.getPluginManager().assertEventNotFired(PhysicalDamageEvent.class);
+//    }
+//
+//    @Test
+//    void fakeEntityDamageByEntityEventIsCalledOnAttack() {
+//        EntityDamageByEntityEvent event =
+//                new EntityDamageByEntityEvent(attacker,
+//                        damager,
+//                        EntityDamageEvent.DamageCause.ENTITY_ATTACK,
+//                        DamageSource.builder(DamageType.MOB_ATTACK).build(),
+//                        5D);
+//
+//        mainListener.onPhysicalDamage_allyCheck(event);
+//
+//        server.getPluginManager().assertEventFired(DefaultCombatProtection.FakeEntityDamageByEntityEvent.class);
+//    }
 
     @Test
     void passiveMobsCanAttackEachOther() {

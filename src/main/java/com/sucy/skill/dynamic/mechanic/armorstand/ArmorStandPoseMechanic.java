@@ -1,5 +1,6 @@
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.armorstand;
 
+import com.sucy.skill.dynamic.mechanic.MechanicComponent;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.EulerAngle;

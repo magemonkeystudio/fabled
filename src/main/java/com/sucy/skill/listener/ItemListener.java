@@ -28,6 +28,7 @@ package com.sucy.skill.listener;
 
 import com.google.common.collect.ImmutableSet;
 import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.DefaultCombatProtection;
 import com.sucy.skill.api.event.PlayerClassChangeEvent;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.data.PlayerEquips;
@@ -242,7 +243,7 @@ public class ItemListener extends SkillAPIListener {
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onAttack(EntityDamageByEntityEvent event) {
-        if (!SkillAPI.getSettings().isWorldEnabled(event.getEntity().getWorld())) {
+        if (!SkillAPI.getSettings().isWorldEnabled(event.getEntity().getWorld()) || DefaultCombatProtection.isFakeDamageEvent(event)) {
             return;
         }
 

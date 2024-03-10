@@ -51,7 +51,6 @@ import mc.promcteam.engine.mccore.config.FilterType;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.config.parse.NumberParser;
 import mc.promcteam.engine.mccore.util.TextFormatter;
-import mc.promcteam.engine.mccore.util.VersionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -64,6 +63,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -164,6 +164,7 @@ public abstract class Skill implements IconHolder {
     public Skill(String name, String type, ItemStack indicator, int maxLevel, String skillReq, int skillReqLevel) {
         this(name, type, indicator, maxLevel, skillReq, skillReqLevel, null);
     }
+
     /**
      * Initializes a skill that requires another skill to be upgraded
      * before it can be upgraded itself and enough attributes.
@@ -178,7 +179,13 @@ public abstract class Skill implements IconHolder {
      * @param skillReqLevel level of the required skill needed
      * @param attributes    attributes and their levels required to upgrade skill
      */
-    public Skill(String name, String type, ItemStack indicator, int maxLevel, String skillReq, int skillReqLevel, Map<String, Map.Entry<Double, Double>> attributes) {
+    public Skill(String name,
+                 String type,
+                 ItemStack indicator,
+                 int maxLevel,
+                 String skillReq,
+                 int skillReqLevel,
+                 Map<String, Map.Entry<Double, Double>> attributes) {
         if (name == null) {
             throw new IllegalArgumentException("Skill name cannot be null");
         }
@@ -194,7 +201,7 @@ public abstract class Skill implements IconHolder {
             maxLevel = 1;
         }
         if (attributes != null)
-            for (Map.Entry<String, Map.Entry<Double, Double>> attribute : attributes.entrySet()){
+            for (Map.Entry<String, Map.Entry<Double, Double>> attribute : attributes.entrySet()) {
                 settings.set(attribute.getKey(), attribute.getValue().getKey(), attribute.getValue().getValue());
             }
 
@@ -413,10 +420,10 @@ public abstract class Skill implements IconHolder {
      *
      * @return true if requires, false otherwise
      */
-    private boolean doesRequireAttributes(int level){
+    private boolean doesRequireAttributes(int level) {
         Set<String> attributes = SkillAPI.getAttributeManager().getKeys();
-        for(String key : attributes){
-            if (settings.getAttr(key,level,0) != 0) return true;
+        for (String key : attributes) {
+            if (settings.getAttr(key, level, 0) != 0) return true;
         }
         return false;
     }
@@ -539,16 +546,18 @@ public abstract class Skill implements IconHolder {
         final double reqPoints = settings.getAttr(SkillAttribute.POINTS_SPENT_REQ, skill.getLevel(), 0);
         return playerData.getInvestedSkillPoints() >= reqPoints;
     }
-    public boolean hasEnoughAttributes(final PlayerData playerData){
+
+    public boolean hasEnoughAttributes(final PlayerData playerData) {
         Set<String> attributes = SkillAPI.getAttributeManager().getKeys();
-        for(String attr : attributes){
+        for (String attr : attributes) {
             if (!checkSingleAttribute(playerData, attr)) return false;
         }
         return true;
     }
-    public boolean checkSingleAttribute(final PlayerData playerData, String key){
-        final PlayerSkill skill = playerData.getSkill(name);
-        double reqAttr = settings.getAttr(key, skill.getLevel()+1);
+
+    public boolean checkSingleAttribute(final PlayerData playerData, String key) {
+        final PlayerSkill skill   = playerData.getSkill(name);
+        double            reqAttr = settings.getAttr(key, skill.getLevel() + 1);
         return playerData.getAttribute(key) >= reqAttr;
     }
 
@@ -585,14 +594,16 @@ public abstract class Skill implements IconHolder {
         MET = MET.substring(0, MET.length() - 2);
         NOT_MET = NOT_MET.substring(0, NOT_MET.length() - 2);
 
-        final String lvlReq    = skillData.getLevelReq() <= skillData.getPlayerClass().getLevel() ? MET : NOT_MET;
-        final String costReq   = skillData.getCost() <= skillData.getPlayerClass().getPoints() ? MET : NOT_MET;
-        final String spentReq  = hasInvestedEnough(skillData.getPlayerData()) ? MET : NOT_MET;
-        final String branchReq = isCompatible(skillData.getPlayerData()) ? MET : NOT_MET;
-        final String skillReq  = isCompatible(skillData.getPlayerData()) ? MET : NOT_MET;
-        final String attrReq   = hasEnoughAttributes(skillData.getPlayerData())? MET : NOT_MET;
+        final String        lvlReq               =
+                skillData.getLevelReq() <= skillData.getPlayerClass().getLevel() ? MET : NOT_MET;
+        final String        costReq              =
+                skillData.getCost() <= skillData.getPlayerClass().getPoints() ? MET : NOT_MET;
+        final String        spentReq             = hasInvestedEnough(skillData.getPlayerData()) ? MET : NOT_MET;
+        final String        branchReq            = isCompatible(skillData.getPlayerData()) ? MET : NOT_MET;
+        final String        skillReq             = isCompatible(skillData.getPlayerData()) ? MET : NOT_MET;
+        final String        attrReq              = hasEnoughAttributes(skillData.getPlayerData()) ? MET : NOT_MET;
         Map<String, String> attributeSpecificReq = new HashMap<>();
-        for(String key : SkillAPI.getAttributeManager().getKeys()){
+        for (String key : SkillAPI.getAttributeManager().getKeys()) {
             attributeSpecificReq.put(key, checkSingleAttribute(skillData.getPlayerData(), key) ? MET : NOT_MET);
         }
 
@@ -616,8 +627,8 @@ public abstract class Skill implements IconHolder {
                         .replace("{name}", name)
                         .replace("{type}", type)
                         .replace("{skill_points}", String.valueOf(skillData.getPlayerClass().getPoints()));
-                for(Map.Entry<String,String> entry : attributeSpecificReq.entrySet()){
-                    line = line.replace("{req:"+ entry.getKey() +"}", entry.getValue());
+                for (Map.Entry<String, String> entry : attributeSpecificReq.entrySet()) {
+                    line = line.replace("{req:" + entry.getKey() + "}", entry.getValue());
                 }
 
                 // Attributes
@@ -817,59 +828,45 @@ public abstract class Skill implements IconHolder {
         if (target.equals(source)) knockback = false;
 
         // We have to check if the damage event would get cancelled, since we aren't _really_ calling
-        // EntityDamageByEntityEvent unless we use knockback
+        // EntityDamageByEntityEvent unless we use knockback, but it may cause multiple call for
+        // EntityDamageByEntityEvent
         if (!SkillAPI.getSettings().canAttack(source, target, cause)) {
             return;
         }
 
         SkillDamageEvent event = new SkillDamageEvent(this, source, target, damage, classification, knockback);
         Bukkit.getPluginManager().callEvent(event);
-        if (!event.isCancelled()) {
-            damage = event.getDamage();
-            knockback = event.isKnockback();
-            target.setMetadata(MechanicListener.DAMAGE_CAUSE, new FixedMetadataValue(SkillAPI.inst(), cause));
-            if (source instanceof Player) {
-                Player player = (Player) source;
-                if (PluginChecker.isNoCheatActive()) NoCheatHook.exempt(player);
-                skillDamage = true;
-                target.setNoDamageTicks(0);
-                if (knockback) {
-                    target.damage(event.getDamage(), source);
-                } else {
-                    target.damage(event.getDamage());
-                }
-                skillDamage = false;
-                if (PluginChecker.isNoCheatActive()) NoCheatHook.unexempt(player);
-            } else {
-                skillDamage = true;
-                //Modified code from mc.promcteam.engine.mccore.util.VersionManager.damage() (MCCore)
-                {
-                    // Allow damage to occur
-                    int ticks = target.getNoDamageTicks();
-                    target.setNoDamageTicks(0);
-
-                    if (VersionManager.isVersionAtMost(VersionManager.V1_5_2)) {
-                        // 1.5.2 and earlier used integer values
-                        if (knockback) {
-                            target.damage((int) damage, source);
-                        } else {
-                            target.damage((int) damage);
-                        }
-                    } else {
-                        // 1.6.2 and beyond use double values
-                        if (knockback) {
-                            target.damage(damage, source);
-                        } else {
-                            target.damage(damage);
-                        }
-                    }
-
-                    // Reset damage timer to before the damage was applied
-                    target.setNoDamageTicks(ticks);
-                }
-                skillDamage = false;
-            }
+        if (event.isCancelled()) {
+            return;
         }
+
+        damage = event.getDamage();
+        knockback = event.isKnockback();
+        target.setMetadata(MechanicListener.DAMAGE_CAUSE, new FixedMetadataValue(SkillAPI.inst(), cause));
+        if (source instanceof Player) {
+            if (PluginChecker.isNoCheatActive()) NoCheatHook.exempt((Player) source);
+        }
+
+        // Allow damage to occur
+        int ticks = target.getNoDamageTicks();
+        target.setNoDamageTicks(0);
+        skillDamage = true;
+        //Modified code from mc.promcteam.engine.mccore.util.VersionManager.damage() (MCCore)
+        if (knockback) {
+            target.damage(damage, source);
+        } else {
+            Vector velocity = target.getVelocity();
+            target.damage(damage, source);
+            target.setVelocity(velocity);
+        }
+
+
+        // Reset damage timer to before the damage was applied
+        target.setNoDamageTicks(ticks);
+        if (source instanceof Player) {
+            if (PluginChecker.isNoCheatActive()) NoCheatHook.unexempt((Player) source);
+        }
+        skillDamage = false;
     }
 
     /**

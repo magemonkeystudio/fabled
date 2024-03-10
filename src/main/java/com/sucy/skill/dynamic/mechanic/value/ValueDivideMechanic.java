@@ -1,6 +1,6 @@
 /**
  * SkillAPI
- * com.sucy.skill.dynamic.mechanic.LaunchMechanic
+ * com.sucy.skill.dynamic.mechanic.value.ValueDivideMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,27 +24,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.value;
 
+import com.sucy.skill.SkillAPI;
+import com.sucy.skill.api.CastData;
+import com.sucy.skill.dynamic.DynamicSkill;
+import com.sucy.skill.dynamic.mechanic.MechanicComponent;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.util.Vector;
 
 import java.util.List;
 
 /**
- * Launches the target in a given direction relative to their forward direction
+ * Divides a value
  */
-public class LaunchMechanic extends MechanicComponent {
-    private static final String FORWARD  = "forward";
-    private static final String UPWARD   = "upward";
-    private static final String RIGHT    = "right";
-    private static final String RELATIVE = "relative";
-    private static final String RESET_Y  = "reset-y";
-    private              Vector up       = new Vector(0, 1, 0);
+public class ValueDivideMechanic extends MechanicComponent {
+    private static final String KEY     = "key";
+    private static final String DIVISOR = "divisor";
+    private static final String SAVE    = "save";
 
     @Override
     public String getKey() {
-        return "launch";
+        return "value divide";
     }
 
     /**
@@ -58,34 +59,18 @@ public class LaunchMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.isEmpty()) {
+        if (targets.isEmpty() || !settings.has(KEY)) {
             return false;
         }
 
-        boolean resetY = settings.getBool(RESET_Y, true);
-        double forward  = parseValues(caster, FORWARD, level, 0);
-        double upward   = parseValues(caster, UPWARD, level, 0);
-        double right    = parseValues(caster, RIGHT, level, 0);
-        String relative = settings.getString(RELATIVE, "target").toLowerCase();
-        for (LivingEntity target : targets) {
-            final Vector dir;
-            if (relative.equals("caster")) {
-                dir = caster.getLocation().getDirection();
-            } else if (relative.equals("between")) {
-                dir = target.getLocation().toVector().subtract(caster.getLocation().toVector());
-            } else {
-                dir = target.getLocation().getDirection();
-            }
-
-            if(resetY) dir.setY(0);
-            dir.normalize();
-
-            final Vector nor = dir.clone().crossProduct(up);
-            dir.multiply(forward);
-            dir.add(nor.multiply(right)).setY(dir.getY() + upward);
-
-            target.setVelocity(dir);
+        String   key     = settings.getString(KEY);
+        double   divisor = parseValues(caster, DIVISOR, level, 1);
+        CastData data    = DynamicSkill.getCastData(caster);
+        if (data.contains(key)) {
+            data.put(key, data.getDouble(key) / divisor);
         }
-        return !targets.isEmpty();
+        if (settings.getBool(SAVE, false))
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
+        return true;
     }
 }

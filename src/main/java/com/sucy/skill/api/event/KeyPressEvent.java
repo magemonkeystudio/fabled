@@ -1,34 +1,28 @@
 package com.sucy.skill.api.event;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * ProSkillAPI © 2023
  * com.sucy.skill.api.event.KeyPressEvent
  */
+@Data
+@RequiredArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class KeyPressEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 
     private final Player player;
     private final Key    key;
 
-    public KeyPressEvent(final Player player, final Key key) {
-        this.player = player;
-        this.key = key;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public Key getKey() {
-        return key;
-    }
-
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 

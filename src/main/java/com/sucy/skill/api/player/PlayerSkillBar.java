@@ -384,7 +384,7 @@ public class PlayerSkillBar {
                 }
                 PlayerSkill skill = this.player.getSkill(slots.get(i + 1));
                 if (skill != null && skill.isUnlocked()) {
-                    int amount = Math.max(1, skill.getCooldown());
+                    int amount = Math.max(1, skill.getCooldownLeft());
                     if (item.getAmount() != amount) {
                         item.setAmount(amount);
                         player.getInventory().clear(i);

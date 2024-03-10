@@ -57,6 +57,7 @@ import mc.promcteam.engine.manager.api.menu.YAMLMenu;
 import mc.promcteam.engine.mccore.config.CommentedConfig;
 import mc.promcteam.engine.mccore.config.CommentedLanguageConfig;
 import mc.promcteam.engine.mccore.util.VersionManager;
+import mc.promcteam.engine.registry.attribute.AttributeProvider;
 import mc.promcteam.engine.registry.attribute.AttributeRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -83,10 +84,10 @@ public class SkillAPI extends JavaPlugin {
     private static SkillAPI singleton;
     public static  Random   RANDOM = new Random();
 
-    private final HashMap<String, com.sucy.skill.api.skills.Skill> skills  = new HashMap<>();
-    private final HashMap<String, RPGClass>                        classes = new HashMap<>();
-    private final HashMap<String, PlayerAccounts>                  players = new HashMap<>();
-    private final ArrayList<String>                                groups  = new ArrayList<>();
+    private final Map<String, com.sucy.skill.api.skills.Skill> skills  = new HashMap<>();
+    private final Map<String, RPGClass>                        classes = new HashMap<>();
+    private final Map<String, PlayerAccounts>                  players = new HashMap<>();
+    private final List<String>                                 groups  = new ArrayList<>();
 
     private final List<SkillAPIListener> listeners = new ArrayList<>();
 
@@ -98,6 +99,7 @@ public class SkillAPI extends JavaPlugin {
     private ComboManager        comboManager;
     private RegistrationManager registrationManager;
     private IAttributeManager   attributeManager = new NullAttributeManager();
+    private AttributeProvider   sapiProvider     = null;
 
     private MainThread mainThread;
     private BukkitTask manaTask;
@@ -191,7 +193,7 @@ public class SkillAPI extends JavaPlugin {
      *
      * @return the map of registered skills
      */
-    public static HashMap<String, com.sucy.skill.api.skills.Skill> getSkills() {
+    public static Map<String, com.sucy.skill.api.skills.Skill> getSkills() {
         return inst().skills;
     }
 
@@ -245,7 +247,7 @@ public class SkillAPI extends JavaPlugin {
      *
      * @return the map of registered skills
      */
-    public static HashMap<String, RPGClass> getClasses() {
+    public static Map<String, RPGClass> getClasses() {
         return inst().classes;
     }
 
@@ -434,7 +436,7 @@ public class SkillAPI extends JavaPlugin {
      *
      * @return all SkillAPI player data
      */
-    public static HashMap<String, PlayerAccounts> getPlayerAccountData() {
+    public static Map<String, PlayerAccounts> getPlayerAccountData() {
         return inst().players;
     }
 
@@ -557,7 +559,8 @@ public class SkillAPI extends JavaPlugin {
     @Override
     public void onLoad() {
         MimicHook.init(this);
-        AttributeRegistry.registerProvider(new SkillAPIAttributeProvider(this));
+        sapiProvider = new SkillAPIAttributeProvider(this);
+        AttributeRegistry.registerProvider(sapiProvider);
     }
 
     /**
@@ -572,6 +575,8 @@ public class SkillAPI extends JavaPlugin {
         }
 
         disabling = true;
+
+        AttributeRegistry.unregisterProvider(sapiProvider);
 
         GUITool.cleanUp();
         EffectManager.cleanUp();
@@ -705,7 +710,6 @@ public class SkillAPI extends JavaPlugin {
             }
         }
         listen(new DeathListener(), !VersionManager.isVersionAtLeast(11000));
-        listen(new CombatProtectionListener(), VersionManager.isVersionAtLeast(11000));
         listen(new LingeringPotionListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
         listen(new ExperienceListener(), settings.isYieldsEnabled());
         listen(new PluginChecker(), true);

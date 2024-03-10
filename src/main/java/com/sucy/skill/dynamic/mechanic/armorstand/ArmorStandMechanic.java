@@ -1,9 +1,10 @@
-package com.sucy.skill.dynamic.mechanic;
+package com.sucy.skill.dynamic.mechanic.armorstand;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.armorstand.ArmorStandInstance;
 import com.sucy.skill.api.armorstand.ArmorStandManager;
 import com.sucy.skill.dynamic.TempEntity;
+import com.sucy.skill.dynamic.mechanic.MechanicComponent;
 import com.sucy.skill.listener.MechanicListener;
 import com.sucy.skill.task.RemoveTask;
 import org.bukkit.Location;
@@ -101,9 +102,9 @@ public class ArmorStandMechanic extends MechanicComponent {
 
             ArmorStandInstance instance;
             if (follow) {
-                instance = new ArmorStandInstance(as, target, forward, upward, right);
+                instance = new ArmorStandInstance(as, target, true, forward, upward, right);
             } else {
-                instance = new ArmorStandInstance(as, target);
+                instance = new ArmorStandInstance(as, target, false);
             }
             ArmorStandManager.register(instance, target, key);
         }

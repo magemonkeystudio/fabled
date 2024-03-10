@@ -70,6 +70,7 @@ public class Settings {
             GUI_FORCE                    = GUI_BASE + "force-scaling",
             GUI_LVLBAR                   = GUI_BASE + "level-bar",
             GUI_FOOD                     = GUI_BASE + "food-bar",
+            GUI_SATURATION               = GUI_BASE + "block-saturation",
             GUI_ACTION                   = GUI_BASE + "use-action-bar",
             GUI_TEXT                     = GUI_BASE + "action-bar-text",
             GUI_NAME                     = GUI_BASE + "show-class-name",
@@ -143,6 +144,9 @@ public class Settings {
             CAST_INSTANT           = CAST_BASE + "instant-item",
             CAST_FORMAT_SKILL      = CAST_BASE + "message-mode-format.skill",
             CAST_FORMAT_SEPARATOR  = CAST_BASE + "message-mode-format.separator",
+            INTERACT_BASE          = "Interaction",
+            INTERACT_CLICK         = INTERACT_BASE + ".interact-is-right-click",
+            ANIMATION_LEFT_CLICK         = INTERACT_BASE + ".animation-is-left-click",
             COMBO_BASE             = "Click Combos.",
             COMBO_ENABLED          = COMBO_BASE + "enabled",
             COMBO_CUSTOM           = COMBO_BASE + "allow-custom",
@@ -394,6 +398,8 @@ public class Settings {
      */
     @Getter
     private String        foodBar;
+    @Getter
+    private boolean        blockSaturation;
     /**
      * @return boolean whether classes should be refunded their skill points on changing.
      */
@@ -624,12 +630,17 @@ public class Settings {
      * @return unassigned indicator
      */
     @Getter
-    private ItemStack     unassigned;
-    private List<String>  worlds;
-    private boolean       worldEnabled;
-    private boolean       worldEnableList;
-    private Set<String>   skillDisabledRegions;
-    private Set<String>   expDisabledRegions;
+    private ItemStack unassigned;
+    @Getter
+    private boolean   interactRightClick;
+    @Getter
+    private boolean   animationLeftClick;
+
+    private List<String> worlds;
+    private boolean      worldEnabled;
+    private boolean      worldEnableList;
+    private Set<String>  skillDisabledRegions;
+    private Set<String>  expDisabledRegions;
 
     /**
      * <p>Initializes a new settings manager.</p>
@@ -670,6 +681,7 @@ public class Settings {
         loadGUISettings();
         loadPVPSettings();
         loadCastSettings();
+        loadInteractionSettings();
         loadComboSettings();
         loadExpSettings();
         loadSkillBarSettings();
@@ -1170,6 +1182,7 @@ public class Settings {
         levelBar = config.getString(GUI_LVLBAR);
         levelText = TextFormatter.colorString(config.getString(GUI_LVLTXT, "Level"));
         foodBar = config.getString(GUI_FOOD);
+        blockSaturation = config.getBoolean(GUI_SATURATION, true);
         useActionBar = config.getBoolean(GUI_ACTION);
         actionText = config.getString(GUI_TEXT);
         showScoreboard = config.getBoolean("scoreboard.enabled");
@@ -1217,6 +1230,11 @@ public class Settings {
         messageFormatSkill = config.getString(CAST_FORMAT_SKILL, "&6[%number%] &a%skill%");
         messageFormatSeparator = config.getString(CAST_FORMAT_SEPARATOR, "&7 - ");
         castEnabled = castEnabled && castItem != null;
+    }
+
+    private void loadInteractionSettings() {
+        interactRightClick = config.getBoolean(INTERACT_CLICK);
+        animationLeftClick = config.getBoolean(ANIMATION_LEFT_CLICK);
     }
 
     private void loadComboSettings() {

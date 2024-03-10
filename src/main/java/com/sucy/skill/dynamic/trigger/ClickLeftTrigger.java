@@ -1,9 +1,7 @@
 package com.sucy.skill.dynamic.trigger;
 
 import com.sucy.skill.api.Settings;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
+import com.sucy.skill.api.event.KeyPressEvent;
 
 public class ClickLeftTrigger extends ClickTrigger {
 
@@ -19,9 +17,8 @@ public class ClickLeftTrigger extends ClickTrigger {
      * {@inheritDoc}
      */
     @Override
-    public boolean shouldTrigger(PlayerInteractEvent event, int level, Settings settings) {
-        if ((event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK)
-                && event.getHand() == EquipmentSlot.HAND) {
+    public boolean shouldTrigger(KeyPressEvent event, int level, Settings settings) {
+        if (event.getKey() == KeyPressEvent.Key.LEFT) {
             return settings.getString("crouch").equalsIgnoreCase("both") ||
                     event.getPlayer().isSneaking() != settings.getString("crouch").equalsIgnoreCase("Dont crouch");
         }

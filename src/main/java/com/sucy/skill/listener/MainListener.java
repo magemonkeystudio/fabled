@@ -367,8 +367,9 @@ public class MainListener extends SkillAPIListener {
     @EventHandler
     public void onSaturationHeal(EntityRegainHealthEvent event) {
         String foodBar = SkillAPI.getSettings().getFoodBar().toLowerCase();
-        if ((foodBar.equals("mana") || foodBar.equals("exp"))
-                && event.getRegainReason() == EntityRegainHealthEvent.RegainReason.SATIATED) {
+        if (event.getRegainReason() == EntityRegainHealthEvent.RegainReason.SATIATED
+                && SkillAPI.getSettings().isBlockSaturation()
+                && (foodBar.equals("mana") || foodBar.equals("exp"))) {
             event.setCancelled(true);
         }
     }
@@ -381,10 +382,11 @@ public class MainListener extends SkillAPIListener {
      * @param event event details
      */
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onPhysicalDamage_allyCheck(EntityDamageByEntityEvent event) {
-        if (event instanceof DefaultCombatProtection.FakeEntityDamageByEntityEvent) {
-            return;
-        }
+    public void allyCheck(EntityDamageByEntityEvent event) {
+        if (DefaultCombatProtection.isFakeDamageEvent(event)
+                || event.getClass().getSimpleName().equals("DamageCheckEvent") // Don't cause StackOverflow with MMOLib
+        ) return;
+
         if (event.getDamager() instanceof Player && event.getEntity() instanceof Player &&
                 !SkillAPI.getSettings()
                         .canAttack((Player) event.getDamager(), (Player) event.getEntity(), event.getCause())) {
@@ -392,12 +394,20 @@ public class MainListener extends SkillAPIListener {
         }
     }
 
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void fakeDamageClear(EntityDamageByEntityEvent event) {
+        if (!DefaultCombatProtection.isFakeDamageEvent(event)) return;
+
+        DefaultCombatProtection.externallyCancelled.put(event, event.isCancelled());
+        event.setCancelled(true);
+    }
+
     /**
      * Launches physical damage events to differentiate skill damage from physical damage
      *
      * @param event event details
      */
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPhysicalDamage(EntityDamageByEntityEvent event) {
         if (Skill.isSkillDamage()
                 || event.getCause() == EntityDamageEvent.DamageCause.CUSTOM
@@ -478,7 +488,8 @@ public class MainListener extends SkillAPIListener {
         boolean newEnabled = SkillAPI.getSettings().isWorldEnabled(player.getWorld());
 
         if (newEnabled) {
-            if (oldEnabled) SkillAPI.getPlayerData(player).updateHealth(player); // Fixes some hybrid servers resetting max health to 20 after world change
+            if (oldEnabled) SkillAPI.getPlayerData(player)
+                    .updateHealth(player); // Fixes some hybrid servers resetting max health to 20 after world change
             else init(player);
         }
     }
