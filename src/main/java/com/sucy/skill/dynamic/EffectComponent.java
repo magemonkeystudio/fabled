@@ -28,14 +28,12 @@ package com.sucy.skill.dynamic;
 
 import com.sucy.skill.SkillAPI;
 import com.sucy.skill.api.CastData;
-import com.sucy.skill.api.PlayerDataConsumer;
 import com.sucy.skill.api.Settings;
 import com.sucy.skill.api.particle.ParticleHelper;
 import com.sucy.skill.api.player.PlayerData;
 import com.sucy.skill.api.player.PlayerSkill;
 import com.sucy.skill.log.Logger;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
-import mc.promcteam.engine.mccore.util.MobManager;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -43,6 +41,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -260,18 +259,36 @@ public abstract class EffectComponent {
 
     protected String filter(LivingEntity caster, LivingEntity target, String text) {
         CastData data    = DynamicSkill.getCastData(caster);
-        String pattern   = "\\{((\\{[^{}]+})|[^{}])+}";
-        return filterSpecialChars(Pattern.compile(pattern)
-                .matcher(text)
-                .replaceAll(match->{
-                    String key = match.group().substring(1,match.group().length()-1);
-                    if (key.matches(".*"+pattern+".*")) key = filter(caster, target, key);
-                    if (data.contains(key)) return data.get(key);
-                    else if (key.equals("player")) return caster.getName();
-                    else if (key.equals("target")) return target.getName();
-                    else if (key.equals("targetUUID")) return target.getUniqueId().toString();
-                    else return "{"+key+"}";
-                }));
+        String   pattern = "\\{[^{}]+}";
+        Pattern  pat     = Pattern.compile(pattern);
+
+        Map<String, String> snipped = new LinkedHashMap<>();
+
+        Matcher match = pat.matcher(text);
+        while (match.find()) {
+            String key = match.group().substring(1, match.group().length() - 1);
+            if (data.contains(key)) text = text.replace(match.group(), data.get(key));
+            else if (key.equals("player")) text = text.replace(match.group(), caster.getName());
+            else if (key.equals("target")) text = text.replace(match.group(), target.getName());
+            else if (key.equals("targetUUID")) text = text.replace(match.group(), target.getUniqueId().toString());
+            else {
+                // Replace the key with a unique identifier, so we don't loop infinitely
+                UUID uuid = UUID.randomUUID();
+                snipped.put(uuid.toString(), key);
+                text = text.replace(match.group(), uuid.toString());
+            }
+
+            match = pat.matcher(text);
+        }
+
+        List<Map.Entry<String, String>> list = new ArrayList<>(snipped.entrySet());
+        // Iterate in reverse order. FILO
+        for (int i = list.size() - 1; i >= 0; i--) {
+            Map.Entry<String, String> entry = list.get(i);
+            text = text.replace(entry.getKey(), "{" + entry.getValue() + "}");
+        }
+
+        return filterSpecialChars(text);
     }
 
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets) {

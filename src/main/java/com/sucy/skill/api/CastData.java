@@ -61,8 +61,9 @@ public class CastData {
             obj = MobManager.getName((LivingEntity) obj);
         } else if (obj instanceof PlayerDataConsumer) {
             obj = ((PlayerDataConsumer) obj).consume();
-        } else if (obj instanceof Double && (double)obj%1==0){
-            obj = String.valueOf((int) obj);
+        } else if (obj instanceof Double) {
+            obj = String.valueOf(Math.round((double) obj * 100) / 100d);
+            if (obj.toString().endsWith(".0")) obj = obj.toString().substring(0, obj.toString().length() - 2);
         }
 
         return obj.toString();
