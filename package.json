@@ -33,6 +33,6 @@
   "type": "module",
   "dependencies": {
     "eslint-plugin-svelte": "^2.35.1",
-    "yaml": "^2.4.0"
+    "yaml": "^2.4.1"
   }
 }
