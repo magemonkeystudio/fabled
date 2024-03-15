@@ -36,12 +36,11 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.Map;
 
 public class ValueManaMechanic extends MechanicComponent {
     private static final String KEY  = "key";
     private static final String TYPE = "type";
-    private static final String SAVE   = "save";
+    private static final String SAVE = "save";
 
     @Override
     public String getKey() {
@@ -61,24 +60,28 @@ public class ValueManaMechanic extends MechanicComponent {
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (!(targets.get(0) instanceof Player)) return false;
 
-        final PlayerData          player = SkillAPI.getPlayerData((Player) targets.get(0));
-        final String              key    = settings.getString(KEY);
-        final String   type = settings.getString(TYPE, "current").toLowerCase();
-        final CastData data = DynamicSkill.getCastData(caster);
+        final PlayerData player = SkillAPI.getPlayerData((Player) targets.get(0));
+        final String     key    = settings.getString(KEY);
+        final String     type   = settings.getString(TYPE, "current").toLowerCase();
+        final CastData   data   = DynamicSkill.getCastData(caster);
 
         switch (type) {
             case "max":
                 data.put(key, player.getMaxMana());
+                break;
             case "percent":
                 data.put(key, player.getMana() / player.getMaxMana());
+                break;
             case "missing":
                 data.put(key, player.getMaxMana() - player.getMana());
+                break;
             default: // current
                 data.put(key, player.getMana());
+                break;
         }
 
         if (settings.getBool(SAVE, false))
-            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key,data.getRaw(key));
+            SkillAPI.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;
     }
 }
