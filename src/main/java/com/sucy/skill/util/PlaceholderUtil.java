@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -61,8 +62,12 @@ public class PlaceholderUtil {
 
         if (identifier.startsWith("group_")) {
             if (!SkillAPI.getClasses().isEmpty()) {
-                for (RPGClass group : SkillAPI.getClasses().values()) {
-                    String      groupName   = group.getGroup().toLowerCase();
+                Set<String> groups = SkillAPI.getClasses()
+                        .values()
+                        .stream()
+                        .map(clazz -> clazz.getGroup().toLowerCase())
+                        .collect(Collectors.toSet());
+                for (String groupName : groups) {
                     PlayerClass playerClass = playerData.getClass(groupName);
 
                     if (identifier.equals("group_" + groupName + "_basehealth")) {
@@ -132,7 +137,7 @@ public class PlaceholderUtil {
                         return String.valueOf(playerClass.getData().getMaxLevel());
                     }
                     if (identifier.equals("group_" + groupName + "_parent")) {
-                        if (group.getParent() != null) {
+                        if (playerClass.getData().getParent() != null) {
                             return String.valueOf(playerClass.getData().getParent().getName());
                         } else {
                             return "0";
@@ -142,7 +147,7 @@ public class PlaceholderUtil {
                         return String.valueOf(playerClass.getData().getPrefix());
                     }
                     if (identifier.equals("group_" + groupName + "_sprefix")) {
-                        return String.valueOf(ChatColor.stripColor(group.getPrefix()));
+                        return String.valueOf(ChatColor.stripColor(playerClass.getData().getPrefix()));
                     }
                     if (identifier.startsWith("group_" + groupName + "_reqexpat:")) {
                         String[] idSplit = identifier.split(":");
