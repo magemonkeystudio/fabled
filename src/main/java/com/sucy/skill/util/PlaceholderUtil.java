@@ -69,6 +69,7 @@ public class PlaceholderUtil {
                         .collect(Collectors.toSet());
                 for (String groupName : groups) {
                     PlayerClass playerClass = playerData.getClass(groupName);
+                    if(playerClass == null || playerClass.getData() == null) continue;
 
                     if (identifier.equals("group_" + groupName + "_basehealth")) {
                         return String.valueOf(playerClass.getData().getBaseHealth());
