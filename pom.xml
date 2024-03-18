@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>proskillapi</artifactId>
-    <version>1.3.1-R0.13-SNAPSHOT</version>
+    <version>1.3.1-R0.14-SNAPSHOT</version>
 
     <name>ProSkillAPI</name>
     <description>A Minecraft Bukkit plugin aiming to provide an easy code API and skill editor for all server owners to
