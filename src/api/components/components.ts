@@ -2401,8 +2401,8 @@ class DamageMechanic extends ProMechanic {
 					.setTooltip('The amount of damage to deal'),
 				new BooleanSelect('True Damage', 'true')
 					.setTooltip('Whether to deal true damage. True damage ignores armor and all plugin checks, and doesn not have a damage animation nor knockback'),
-				new StringSelect('Classifier', 'classifier', 'default')
-					.setTooltip('The type of damage to deal. Can act as elemental damage or fake physical damage'),
+					new StringSelect('Damage Type', 'classifier', 'default')
+					.setTooltip('The type of damage to deal. Can act as elemental damage or fake physical damage. Supports Damage types from ProRPGItems like "PRORPGITEMS_magical"'),
 				new BooleanSelect('Apply Knockback', 'knockback', true)
 					.setTooltip('Whether the damage will inflict knockback. Ignored if it is True Damage'),
 				new DropdownSelect('Damage Cause', 'cause', ['Contact', 'Custom', 'Entity Attack', 'Entity Sweep Attack', 'Projectile', 'Suffocation', 'Fall', 'Fire', 'Fire Tick', 'Melting', 'Lava', 'Drowning', 'Block Explosion', 'Entity Explosion', 'Void', 'Lightning', 'Suicide', 'Starvation', 'Poison', 'Magic', 'Wither', 'Falling Block', 'Thorns', 'Dragon Breath', 'Fly Into Wall', 'Hot Floor', 'Cramming', 'Dryout', 'Freeze', 'Sonic Boom'], 'Custom')
