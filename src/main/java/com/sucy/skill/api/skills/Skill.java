@@ -51,6 +51,7 @@ import mc.promcteam.engine.mccore.config.FilterType;
 import mc.promcteam.engine.mccore.config.parse.DataSection;
 import mc.promcteam.engine.mccore.config.parse.NumberParser;
 import mc.promcteam.engine.mccore.util.TextFormatter;
+import mc.promcteam.engine.registry.damage.DamageRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -852,11 +853,14 @@ public abstract class Skill implements IconHolder {
         target.setNoDamageTicks(0);
         skillDamage = true;
         //Modified code from mc.promcteam.engine.mccore.util.VersionManager.damage() (MCCore)
+
         if (knockback) {
-            target.damage(damage, source);
+            if (!DamageRegistry.dealDamage(target, damage, classification, source))
+                target.damage(damage, source);
         } else {
             Vector velocity = target.getVelocity();
-            target.damage(damage, source);
+            if (!DamageRegistry.dealDamage(target, damage, classification, source))
+                target.damage(damage, source);
             target.setVelocity(velocity);
         }
 
