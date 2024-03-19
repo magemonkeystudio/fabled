@@ -91,16 +91,6 @@ public class AttributeListener extends SkillAPIListener {
     }
 
     /**
-     * Applies health and mana attribute bonuses on upgrading the attribute
-     *
-     * @param event event details
-     */
-    @EventHandler
-    public void onInvest(PlayerUpAttributeEvent event) {
-        updatePlayer(event.getPlayerData());
-    }
-
-    /**
      * Apply attributes to mana regen
      *
      * @param event event details

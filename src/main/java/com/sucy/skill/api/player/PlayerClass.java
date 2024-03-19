@@ -44,9 +44,9 @@ import org.bukkit.entity.Player;
 
 /**
  * <p>Represents a player's class progress.</p>
- * <p></p>
+ *
  * <p>This class if for handling individual players.</p>
- * <p></p>
+ *
  * <p>This does not include information about the class specifically,
  * rather what the player has within the class. For more general information
  * about the class, you should use the RPGClass class.</p>

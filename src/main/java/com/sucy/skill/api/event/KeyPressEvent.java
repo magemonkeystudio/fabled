@@ -1,6 +1,7 @@
 package com.sucy.skill.api.event;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -13,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @Data
 @RequiredArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class KeyPressEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 

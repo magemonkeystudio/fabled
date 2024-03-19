@@ -86,7 +86,7 @@ public class AttributeMechanic extends MechanicComponent {
         final double                  seconds     = parseValues(caster, SECONDS, level, 3.0);
         final boolean                 stackable   = settings.getString(STACKABLE, "false").equalsIgnoreCase("true");
         final int                     ticks       = (int) (seconds * 20);
-        final String                  operation   = settings.getString(OPERATION, "MULTIPLY_PERCENTAGE");
+        final String                  operation   = settings.getString(OPERATION, "ADD_NUMBER");
 
         boolean worked = false;
         for (LivingEntity target : targets) {

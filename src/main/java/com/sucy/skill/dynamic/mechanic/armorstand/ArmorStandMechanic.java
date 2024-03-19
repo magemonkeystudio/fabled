@@ -102,9 +102,9 @@ public class ArmorStandMechanic extends MechanicComponent {
 
             ArmorStandInstance instance;
             if (follow) {
-                instance = new ArmorStandInstance(as, target, forward, upward, right);
+                instance = new ArmorStandInstance(as, target, true, forward, upward, right);
             } else {
-                instance = new ArmorStandInstance(as, target);
+                instance = new ArmorStandInstance(as, target, false);
             }
             ArmorStandManager.register(instance, target, key);
         }

@@ -1,12 +1,16 @@
 package com.sucy.skill.api.armorstand;
 
 import com.sucy.skill.SkillAPI;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 
+@AllArgsConstructor
+@RequiredArgsConstructor
 public class ArmorStandInstance {
     private static final Vector       UP = new Vector(0, 1, 0);
     private final        ArmorStand   armorStand;
@@ -15,21 +19,6 @@ public class ArmorStandInstance {
     private              double       forward;
     private              double       upward;
     private              double       right;
-
-    public ArmorStandInstance(ArmorStand armorStand, LivingEntity target) {
-        this.armorStand = armorStand;
-        this.target = target;
-        this.follow = false;
-    }
-
-    public ArmorStandInstance(ArmorStand armorStand, LivingEntity target, double forward, double upward, double right) {
-        this.armorStand = armorStand;
-        this.target = target;
-        this.forward = forward;
-        this.upward = upward;
-        this.right = right;
-        this.follow = true;
-    }
 
     /**
      * @return true if the instance is still valid
@@ -42,7 +31,7 @@ public class ArmorStandInstance {
      * Removes the armor stand
      */
     public void remove() {
-        Bukkit.getScheduler().runTask(SkillAPI.inst(), () -> armorStand.remove());
+        Bukkit.getScheduler().runTask(SkillAPI.inst(), armorStand::remove);
     }
 
     /**
@@ -51,10 +40,20 @@ public class ArmorStandInstance {
     public void tick() {
         if (follow) {
             Bukkit.getScheduler().runTask(SkillAPI.inst(), () -> {
+                boolean sameWorld = armorStand.getWorld().equals(target.getWorld());
+
                 Location loc  = target.getLocation().clone();
                 Vector   dir  = loc.getDirection().setY(0).normalize();
                 Vector   side = dir.clone().crossProduct(UP);
                 loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
+
+                if (!sameWorld) {
+                    boolean chunkLoaded = armorStand.getLocation().getChunk().isLoaded();
+                    if (!chunkLoaded) {
+                        // If the armor stand is in an unloaded chunk, we can't teleport it
+                        armorStand.getLocation().getChunk().load();
+                    }
+                }
                 armorStand.teleport(loc);
             });
         }

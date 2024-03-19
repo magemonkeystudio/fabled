@@ -39,6 +39,7 @@ public class LaunchMechanic extends MechanicComponent {
     private static final String UPWARD   = "upward";
     private static final String RIGHT    = "right";
     private static final String RELATIVE = "relative";
+    private static final String RESET_Y  = "reset-y";
     private              Vector up       = new Vector(0, 1, 0);
 
     @Override
@@ -57,10 +58,11 @@ public class LaunchMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0) {
+        if (targets.isEmpty()) {
             return false;
         }
 
+        boolean resetY = settings.getBool(RESET_Y, true);
         double forward  = parseValues(caster, FORWARD, level, 0);
         double upward   = parseValues(caster, UPWARD, level, 0);
         double right    = parseValues(caster, RIGHT, level, 0);
@@ -68,19 +70,22 @@ public class LaunchMechanic extends MechanicComponent {
         for (LivingEntity target : targets) {
             final Vector dir;
             if (relative.equals("caster")) {
-                dir = caster.getLocation().getDirection().setY(0).normalize();
+                dir = caster.getLocation().getDirection();
             } else if (relative.equals("between")) {
-                dir = target.getLocation().toVector().subtract(caster.getLocation().toVector()).setY(0).normalize();
+                dir = target.getLocation().toVector().subtract(caster.getLocation().toVector());
             } else {
-                dir = target.getLocation().getDirection().setY(0).normalize();
+                dir = target.getLocation().getDirection();
             }
+
+            if(resetY) dir.setY(0);
+            dir.normalize();
 
             final Vector nor = dir.clone().crossProduct(up);
             dir.multiply(forward);
-            dir.add(nor.multiply(right)).setY(upward);
+            dir.add(nor.multiply(right)).setY(dir.getY() + upward);
 
             target.setVelocity(dir);
         }
-        return targets.size() > 0;
+        return !targets.isEmpty();
     }
 }
