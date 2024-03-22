@@ -984,6 +984,11 @@ const itemConditionOptions = (): ComponentOption[] => {
 		new IntSelect('Data', 'data')
 			.requireValue('check-data', [true])
 			.setTooltip('The data value the item must have'),
+		new BooleanSelect('Check Custom Data', 'check-custom-data', false)
+			.setTooltip('Whether the item needs to have a certain custom model data value'),
+		new IntSelect('Custom Data', 'custom-data')
+			.requireValue('check-custom-data', [true])
+			.setTooltip('The custom model data value the item must have'),
 		new BooleanSelect('Check Lore', 'check-lore', false)
 			.setTooltip('Whether the item requires a bit of text in its lore'),
 		new StringSelect('Lore', 'lore', 'text')
@@ -2401,7 +2406,7 @@ class DamageMechanic extends ProMechanic {
 					.setTooltip('The amount of damage to deal'),
 				new BooleanSelect('True Damage', 'true')
 					.setTooltip('Whether to deal true damage. True damage ignores armor and all plugin checks, and doesn not have a damage animation nor knockback'),
-					new StringSelect('Damage Type', 'classifier', 'default')
+				new StringSelect('Damage Type', 'classifier', 'default')
 					.setTooltip('The type of damage to deal. Can act as elemental damage or fake physical damage. Supports Damage types from ProRPGItems like "PRORPGITEMS_magical"'),
 				new BooleanSelect('Apply Knockback', 'knockback', true)
 					.setTooltip('Whether the damage will inflict knockback. Ignored if it is True Damage'),
