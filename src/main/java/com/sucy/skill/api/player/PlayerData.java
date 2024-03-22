@@ -1903,7 +1903,6 @@ public class PlayerData {
         if (VersionManager.isVersionAtLeast(110200)) {
             this.updateMCAttribute(player, Attribute.GENERIC_ARMOR_TOUGHNESS, AttributeManager.ARMOR_TOUGHNESS, 0, 20);
         }
-
     }
 
     /**
