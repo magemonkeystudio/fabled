@@ -70,7 +70,7 @@ public class SQLIO extends IOManager {
         connection.table = connection.database.createTable(api, "players");
 
         connection.table.createColumn(ID, ColumnType.INCREMENT);
-        connection.table.createColumn(DATA, ColumnType.TEXT);
+        connection.table.createColumn(DATA, ColumnType.MEDIUM_TEXT);
         return connection;
     }
 

@@ -23,7 +23,7 @@
 
     <properties>
         <java.version>14</java.version>
-        <promccore.version>1.2.2-R0.1-SNAPSHOT</promccore.version>
+        <promccore.version>1.2.2-R0.2-SNAPSHOT</promccore.version>
 
         <delombok.dir>${project.build.directory}/javadoc-delombok</delombok.dir>
     </properties>
