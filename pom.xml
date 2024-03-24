@@ -10,10 +10,10 @@
         <version>1.20.4-SNAPSHOT</version>
     </parent>
 
-    <artifactId>proskillapi</artifactId>
-    <version>1.3.2-R0.3-SNAPSHOT</version>
+    <artifactId>fabled</artifactId>
+    <version>1.0.0-R0.1-SNAPSHOT</version>
 
-    <name>ProSkillAPI</name>
+    <name>Fabled</name>
     <description>A Minecraft Bukkit plugin aiming to provide an easy code API and skill editor for all server owners to
         create unique and fully custom classes and skills.
     </description>
@@ -23,7 +23,7 @@
 
     <properties>
         <java.version>14</java.version>
-        <promccore.version>1.2.2-R0.2-SNAPSHOT</promccore.version>
+        <codex.version>1.0.0-R0.1-SNAPSHOT</codex.version>
 
         <delombok.dir>${project.build.directory}/javadoc-delombok</delombok.dir>
     </properties>
@@ -113,8 +113,8 @@
         </dependency>
         <dependency>
             <groupId>com.promcteam</groupId>
-            <artifactId>promccore</artifactId>
-            <version>${promccore.version}</version>
+            <artifactId>codex</artifactId>
+            <version>${codex.version}</version>
         </dependency>
         <!-- Test Dependencies -->
         <dependency>
@@ -166,8 +166,8 @@
                 <version>3.2.5</version>
                 <configuration>
                     <systemPropertyVariables>
-                        <PROMCCORE_VERSION>${promccore.version}</PROMCCORE_VERSION>
-                        <PROSKILLAPI_VERSION>${project.version}</PROSKILLAPI_VERSION>
+                        <CODEX_VERSION>${codex.version}</CODEX_VERSION>
+                        <FABLED_VERSION>${project.version}</FABLED_VERSION>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

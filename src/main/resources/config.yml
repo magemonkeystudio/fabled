@@ -2,7 +2,7 @@
 #                                              General Configuration                                                         #
 # -------------------------------------------------------------------------------------------------------------------------- #
 # If you are unsure of how to use this file but would like to change how the plugin shows text, visit the BukkitDev page at: #
-# https://www.spigotmc.org/resources/proskillapi-create-custom-races-classes-skills-spells-with-an-easy-online-editor.91913/ #
+# https://www.spigotmc.org/resources/Fabled-create-custom-races-classes-skills-spells-with-an-easy-online-editor.91913/ #
 # and look at the default configuration section                                                                              #
 # -------------------------------------------------------------------------------------------------------------------------- #
 Accounts:
@@ -23,9 +23,9 @@ Accounts:
   #
   # The max number of accounts users can have with certain permissions
   # must be in the format '<permission>:<accounts>'
-  # Note that you can use 'skillapi.max_accounts.<accounts> instead'
+  # Note that you can use 'fabled.max_accounts.<accounts> instead'
   perm-accounts:
-    - 'skillapi.account.admin:10'
+    - 'fabled.account.admin:10'
 #
 # While targeting settings aren't necessary most of the time,
 # they can help make running ally checks much faster if
@@ -93,7 +93,7 @@ Saving:
 #
 Classes:
   #
-  # Whether to use SkillAPI's health system
+  # Whether to use Fabled's health system
   modify-health: true
   #
   # The default health for players without a class
@@ -119,7 +119,7 @@ Classes:
 #
 Mana:
   #
-  # Whether to use SkillAPI's mana system
+  # Whether to use Fabled's mana system
   enabled: true
   #
   # How frequently mana is gained in seconds
@@ -227,7 +227,7 @@ GUI:
   # Should the health bar be downscaled to real health if the max is under 20?
   downscale-under: false
   #
-  # Whether to force SkillAPI to override
+  # Whether to force Fabled to override
   # health scaling of other plugins
   force-scaling: false
   #
@@ -605,7 +605,7 @@ Experience:
     witherskeleton: '5'
     zombie: '2'
 #
-# How much logging to do when loading SkillAPI
+# How much logging to do when loading Fabled
 # When testing setting up skills/classes, increase this to 1-5
 Logging:
   #
@@ -630,8 +630,8 @@ Worlds:
   enable: false
   #
   # Whether to use the list as an enabling list
-  # If true, only worlds in the list will let players use SkillAPI
-  # If false, any world not in the list will let players use SkillAPI
+  # If true, only worlds in the list will let players use Fabled
+  # If false, any world not in the list will let players use Fabled
   use-as-enabling: true
   #
   # The worlds to include in the enable/disable list
@@ -641,11 +641,11 @@ Worlds:
 # Customize the scoreboard here
 scoreboard:
   enabled: true
-  title: '&6&l%sapi_default_currentclassname%'
+  title: '&6&l%fabled_default_currentclassname%'
   format:
-    - '&2Health &c%sapi_default_scurrenthealth%'
-    - '&2%sapi_default_currentmananame% &b%sapi_default_scurrentmana%'
-    - '&2Level &a%sapi_default_currentlevel%'
-    - '&2Exp &a%sapi_default_scurrentexp%'
-    - '&2AP &a%sapi_default_attributepoints%'
-    - '&2SP &a%sapi_default_skillpoints%'
+    - '&2Health &c%fabled_default_scurrenthealth%'
+    - '&2%fabled_default_currentmananame% &b%fabled_default_scurrentmana%'
+    - '&2Level &a%fabled_default_currentlevel%'
+    - '&2Exp &a%fabled_default_scurrentexp%'
+    - '&2AP &a%fabled_default_attributepoints%'
+    - '&2SP &a%fabled_default_skillpoints%'

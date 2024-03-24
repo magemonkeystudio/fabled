@@ -1,18 +1,18 @@
-[![Build](https://github.com/promcteam/proskillapi/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/promcteam/promccore/packages/1203744)
-[![Build](https://github.com/promcteam/proskillapi/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/promcteam/promccore/packages/1203744)
-[![Build](https://github.com/promcteam/proskillapi/actions/workflows/devbuild.yml/badge.svg?branch=dev)](https://github.com/promcteam/promccore/packages/1203744)
+[![Build](https://github.com/promcteam/${project.artifactId}/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/promcteam/promccore/packages/1203744)
+[![Build](https://github.com/promcteam/${project.artifactId}/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/promcteam/promccore/packages/1203744)
+[![Build](https://github.com/promcteam/${project.artifactId}/actions/workflows/devbuild.yml/badge.svg?branch=dev)](https://github.com/promcteam/promccore/packages/1203744)
 
 # ${project.name}
 
-Our fork is based on the original skillapi and the forked skillapi by Sentropic.
+Our fork is based on the original SkillAPI and the forked SkillAPI by Sentropic.
 
-* Includes all premium features from the original premium version of Skillapi found on spigot.
+* Includes all premium features from the original premium version of SkillAPI found on spigot.
 
 ## New dynamic editor
 
 You'll need to use this editor in order for your classes and skills to be compatible with ${project.name}.
 
-* Online Editor: https://promcteam.github.io/proskillapi/
+* Online Editor: https://promcteam.github.io/${project.artifactId}/
 
 ## Downloads
 
@@ -41,7 +41,9 @@ or snapshots through Sonatype.
     <version>${project.version}</version>
 </dependency>
 ```
+
 ### A huge thanks to our contributors
-<a href="https://github.com/promcteam/proskillapi/graphs/contributors">
-<img src="https://contrib.rocks/image?repo=promcteam/proskillapi" />
+
+<a href="https://github.com/promcteam/${project.artifactId}/graphs/contributors">
+<img src="https://contrib.rocks/image?repo=promcteam/${project.artifactId}" />
 </a>

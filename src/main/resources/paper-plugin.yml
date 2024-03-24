@@ -1,8 +1,9 @@
 name: ${project.name}
 version: ${project.version}
-main: com.sucy.skill.SkillAPI
+main: com.promcteam.fabled.Fabled
 provides:
   - SkillAPI
+  - ProSkillAPI
 api-version: '1.19'
 authors:
   - Travja
@@ -12,7 +13,7 @@ authors:
 has-open-classloader: true
 
 dependencies:
-  - name: ProMCCore
+  - name: Codex
     required: true
     bootstrap: true
   - name: Vault
@@ -43,7 +44,7 @@ dependencies:
     required: false
     bootstrap: true
 load-before:
-  - name: ProRPGItems
+  - name: Divinity
     boostrap: false
   - name: QuantumRPG
     boostrap: false
@@ -52,60 +53,60 @@ load-before:
   - name: TAB
     boostrap: false
 load-after:
-    - name: ProMCCore
-      boostrap: false
+  - name: Codex
+    boostrap: false
 
 permissions:
-  skillapi.basic:
+  fabled.basic:
     description: access to skill trees and using skills
     default: true
-  skillapi.reset:
+  fabled.reset:
     description: access to resetting your class
     default: true
-  skillapi.exp:
+  fabled.exp:
     description: access to gaining exp
     default: true
-  skillapi.level:
+  fabled.level:
     description: access to using the level and exp commands
     default: op
-  skillapi.mana:
+  fabled.mana:
     description: access to using the mana command
     default: op
-  skillapi.points:
+  fabled.points:
     description: access to using the points command
     default: op
-  skillapi.reload:
+  fabled.reload:
     description: access to using the reload command
     default: op
-  skillapi.class:
+  fabled.class:
     description: access to all classes
     default: op
-  skillapi.skill:
+  fabled.skill:
     description: access to all skills
     default: op
-  skillapi.lore:
+  fabled.lore:
     description: access to all lore commands
     default: op
-  skillapi.force:
+  fabled.force:
     description: access to force commands
     default: op
-  skillapi.attrib:
+  fabled.attrib:
     description: access to giving attribute points
     default: op
-  skillapi.gui:
+  fabled.gui:
     description: access to GUI editor menu
     default: op
 
-  skillapi.*:
+  fabled.*:
     description: access to all commands and features
     default: op
     children:
-      skillapi.basic: true
-      skillapi.reset: true
-      skillapi.exp: true
-      skillapi.level: true
-      skillapi.mana: true
-      skillapi.points: true
+      fabled.basic: true
+      fabled.reset: true
+      fabled.exp: true
+      fabled.level: true
+      fabled.mana: true
+      fabled.points: true
       skillapi.reload: true
       skillapi.class: true
       skillapi.skill: true

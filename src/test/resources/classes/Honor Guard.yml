@@ -24,23 +24,23 @@ Honor Guard:
     strength-scale: '7'
   mana-regen: 17.5
   tree: 'REQUIREMENT'
-  blacklist:  []
-  skills: 
-  - 'Brilliance Strike'
-  - 'Test'
-  - 'Item'
-  - 'Forcecast'
-  - 'ValAdd'
-  - 'Tir Rapide'
-  - 'Whee'
+  blacklist: [ ]
+  skills:
+    - 'Brilliance Strike'
+    - 'Test'
+    - 'Item'
+    - 'Forcecast'
+    - 'ValAdd'
+    - 'Tir Rapide'
+    - 'Whee'
   icon: 'DIAMOND_CHESTPLATE'
   icon-data: 0
   icon-durability: 0
-  icon-lore: 
-  - '&3&lHonor Guard &7&l The Honor Guard,'
-  - '&7&la honed skilled warrior in the art of combat'
-  - '&7&land the power of the holy light blessed upon'
-  - '&7&lthem by the crystal. With their heavy shield'
-  - '&7&land dense training, they can withstand generall'
-  - '&7&lall physical damage coming their way.'
+  icon-lore:
+    - '&3&lHonor Guard &7&l The Honor Guard,'
+    - '&7&la honed skilled warrior in the art of combat'
+    - '&7&land the power of the holy light blessed upon'
+    - '&7&lthem by the crystal. With their heavy shield'
+    - '&7&land dense training, they can withstand generall'
+    - '&7&lall physical damage coming their way.'
   exp-source: 273
