@@ -407,10 +407,10 @@ public abstract class EffectComponent {
         DataSection children = config.getSection("children");
         if (children != null) {
             for (String key : children.keys()) {
-                final String        typeName =
+                final String typeName =
                         children.getSection(key).getString(TYPE, "missing").toUpperCase(Locale.US);
-                final ComponentType type     = ComponentType.valueOf(typeName);
-                final String        mkey     = key.replaceAll("-.+", "");
+                final ComponentType type = ComponentType.valueOf(typeName);
+                final String        mkey = key.replaceAll("-.+", "");
                 try {
                     final EffectComponent child = ComponentRegistry.getComponent(type, mkey);
                     if (child != null) {

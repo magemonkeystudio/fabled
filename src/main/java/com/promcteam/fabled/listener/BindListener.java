@@ -30,7 +30,7 @@ import com.promcteam.fabled.Fabled;
 import com.promcteam.fabled.api.event.KeyPressEvent;
 import com.promcteam.fabled.api.player.PlayerData;
 import com.promcteam.fabled.api.player.PlayerSkill;
-import com.promcteam.codex.utils.DataUT;
+import com.promcteam.codex.util.DataUT;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;

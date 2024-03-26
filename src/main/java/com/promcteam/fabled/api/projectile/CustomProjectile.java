@@ -26,12 +26,12 @@
  */
 package com.promcteam.fabled.api.projectile;
 
+import com.promcteam.codex.util.Reflex;
+import com.promcteam.codex.util.reflection.ReflectionManager;
 import com.promcteam.fabled.Fabled;
 import com.promcteam.fabled.api.Settings;
 import com.promcteam.fabled.api.particle.target.Followable;
 import com.promcteam.fabled.log.Logger;
-import com.promcteam.codex.utils.Reflex;
-import com.promcteam.codex.utils.reflection.ReflectionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;

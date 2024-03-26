@@ -27,12 +27,12 @@
 package com.promcteam.fabled.gui.tool;
 
 import com.google.common.base.Preconditions;
+import com.promcteam.codex.mccore.config.parse.DataSection;
 import com.promcteam.fabled.Fabled;
 import com.promcteam.fabled.api.player.PlayerData;
 import com.promcteam.fabled.api.skills.Skill;
 import com.promcteam.fabled.tree.basic.CustomTree;
 import com.promcteam.fabled.tree.basic.InventoryTree;
-import com.promcteam.codex.mccore.config.parse.DataSection;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;

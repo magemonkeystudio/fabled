@@ -1,7 +1,7 @@
 package com.promcteam.fabled.api.util;
 
-import com.promcteam.fabled.api.Settings;
 import com.promcteam.codex.mccore.util.TextFormatter;
+import com.promcteam.fabled.api.Settings;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
@@ -37,8 +37,10 @@ public final class ItemStackReader {
 
     private static final String DATA      = "data"; // Previously used instead of 'durability'
     private static final String BYTE      = "byte"; // Previously used instead of 'cmd'
-    private static final String ITEM      = "item"; // Previously used instead of 'material' in ItemProjectileMechanic
-    private static final String ITEM_DATA = "item-data"; // Previously used instead of 'cmd' in ItemProjectileMechanic
+    private static final String ITEM      = "item";
+            // Previously used instead of 'material' in ItemProjectileMechanic
+    private static final String ITEM_DATA = "item-data";
+            // Previously used instead of 'cmd' in ItemProjectileMechanic
 
     private ItemStackReader() {}
 

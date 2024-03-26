@@ -1,5 +1,8 @@
 package com.promcteam.fabled.cmd;
 
+import com.promcteam.codex.mccore.commands.ConfigurableCommand;
+import com.promcteam.codex.mccore.commands.IFunction;
+import com.promcteam.codex.mccore.config.Filter;
 import com.promcteam.fabled.Fabled;
 import com.promcteam.fabled.api.classes.FabledClass;
 import com.promcteam.fabled.api.player.PlayerClass;
@@ -11,9 +14,6 @@ import com.promcteam.fabled.api.util.FlagManager;
 import com.promcteam.fabled.dynamic.DynamicSkill;
 import com.promcteam.fabled.hook.CitizensHook;
 import com.promcteam.fabled.language.RPGFilter;
-import com.promcteam.codex.mccore.commands.ConfigurableCommand;
-import com.promcteam.codex.mccore.commands.IFunction;
-import com.promcteam.codex.mccore.config.Filter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

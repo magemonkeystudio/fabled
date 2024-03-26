@@ -26,12 +26,12 @@
  */
 package com.promcteam.fabled.cmd;
 
-import com.promcteam.fabled.Fabled;
-import com.promcteam.fabled.api.skills.Skill;
-import com.promcteam.fabled.api.skills.SkillShot;
 import com.promcteam.codex.mccore.commands.CommandManager;
 import com.promcteam.codex.mccore.commands.ConfigurableCommand;
 import com.promcteam.codex.mccore.commands.IFunction;
+import com.promcteam.fabled.Fabled;
+import com.promcteam.fabled.api.skills.Skill;
+import com.promcteam.fabled.api.skills.SkillShot;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

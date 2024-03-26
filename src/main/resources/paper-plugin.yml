@@ -46,8 +46,6 @@ dependencies:
 load-before:
   - name: Divinity
     boostrap: false
-  - name: QuantumRPG
-    boostrap: false
   - name: Quests
     boostrap: false
   - name: TAB

@@ -4,22 +4,22 @@ import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
-import com.promcteam.fabled.Fabled;
-import com.promcteam.fabled.api.player.PlayerData;
-import com.promcteam.fabled.api.util.DamageLoreRemover;
-import lombok.extern.slf4j.Slf4j;
 import com.promcteam.codex.CodexEngine;
 import com.promcteam.codex.core.config.CoreLang;
 import com.promcteam.codex.hooks.HookManager;
 import com.promcteam.codex.mccore.commands.CommandManager;
 import com.promcteam.codex.mccore.scoreboard.Board;
 import com.promcteam.codex.nms.NMS;
-import com.promcteam.codex.utils.ItemUT;
-import com.promcteam.codex.utils.Reflex;
-import com.promcteam.codex.utils.actions.ActionsManager;
-import com.promcteam.codex.utils.reflection.ReflectionManager;
-import com.promcteam.codex.utils.reflection.ReflectionUtil;
-import com.promcteam.codex.utils.reflection.Reflection_1_17;
+import com.promcteam.codex.util.ItemUT;
+import com.promcteam.codex.util.Reflex;
+import com.promcteam.codex.util.actions.ActionsManager;
+import com.promcteam.codex.util.reflection.ReflectionManager;
+import com.promcteam.codex.util.reflection.ReflectionUtil;
+import com.promcteam.codex.util.reflection.Reflection_1_17;
+import com.promcteam.fabled.Fabled;
+import com.promcteam.fabled.api.player.PlayerData;
+import com.promcteam.fabled.api.util.DamageLoreRemover;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -42,12 +42,12 @@ import static org.mockito.Mockito.*;
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class MockedTest {
-    protected List<PlayerMock>      players          = new ArrayList<>();
-    protected Map<UUID, PlayerData> activePlayerData = new HashMap<>();
-    private   Set<String>           classesToLoad    = new HashSet<>();
-    private   Set<String>           skillsToLoad     = new HashSet<>();
-    protected boolean               loadClasses      = false;
-    protected boolean               loadSkills       = false;
+    protected     List<PlayerMock>      players          = new ArrayList<>();
+    protected     Map<UUID, PlayerData> activePlayerData = new HashMap<>();
+    private final Set<String>           classesToLoad    = new HashSet<>();
+    private final Set<String>           skillsToLoad     = new HashSet<>();
+    protected     boolean               loadClasses      = false;
+    protected     boolean               loadSkills       = false;
 
     protected ServerMock  server;
     protected WorldMock   world;
@@ -71,9 +71,9 @@ public abstract class MockedTest {
 
     public void useClasses(String masterFileLoc) {
         loadClasses = true;
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(this.getClass()
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(Objects.requireNonNull(this.getClass()
                 .getClassLoader()
-                .getResourceAsStream(masterFileLoc)))) {
+                .getResourceAsStream(masterFileLoc))))) {
             // Copy to Fabled/dynamic/classes.yml
             File classDir = new File(
                     server.getPluginsFolder().getAbsolutePath() + File.separator + "Fabled-" + System
@@ -106,7 +106,7 @@ public abstract class MockedTest {
 
     public void unloadClasses(String... classes) {
         loadClasses = false;
-        classesToLoad.removeAll(Arrays.asList(classes));
+        Arrays.asList(classes).forEach(classesToLoad::remove);
         for (String clazz : classes) {
             // Remove from class folder
             File classFile = new File(
@@ -121,9 +121,9 @@ public abstract class MockedTest {
 
     public void useSkills(String masterFileLoc) {
         loadSkills = true;
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(this.getClass()
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(Objects.requireNonNull(this.getClass()
                 .getClassLoader()
-                .getResourceAsStream(masterFileLoc)))) {
+                .getResourceAsStream(masterFileLoc))))) {
             // Copy to Fabled/dynamic/skills.yml
             File skillDir = new File(
                     server.getPluginsFolder().getAbsolutePath() + File.separator + "Fabled-" + System
@@ -165,7 +165,7 @@ public abstract class MockedTest {
                 skillFile.delete();
             }
         }
-        skillsToLoad.removeAll(Arrays.asList(skills));
+        Arrays.asList(skills).forEach(skillsToLoad::remove);
     }
 
     @BeforeAll
@@ -191,15 +191,13 @@ public abstract class MockedTest {
         reflectionMock = mock(ReflectionUtil.class);
         reflection17Mock = mock(Reflection_1_17.class);
         reflectionManager = mockStatic(ReflectionManager.class);
-        reflectionManager.when(() -> ReflectionManager.getReflectionUtil())
-                .thenReturn(reflectionMock);
+        reflectionManager.when(ReflectionManager::getReflectionUtil).thenReturn(reflectionMock);
 
         coreLang = mock(CoreLang.class);
         when(coreLang.getEnum(any()))
                 .thenAnswer(args -> {
-                    Enum<?> e    = args.getArgument(0);
-                    String  path = e.getClass().getSimpleName() + "." + e.name();
-                    return path;
+                    Enum<?> e = args.getArgument(0);
+                    return e.getClass().getSimpleName() + "." + e.name();
                 });
 
         hookManager = mock(HookManager.class);
@@ -212,7 +210,7 @@ public abstract class MockedTest {
 
         engine = mock(CodexEngine.class);
         codexEngine = mockStatic(CodexEngine.class);
-        codexEngine.when(() -> CodexEngine.get()).thenReturn(engine);
+        codexEngine.when(CodexEngine::get).thenReturn(engine);
         when(engine.getDescription()).thenReturn(new PluginDescriptionFile("Codex",
                 coreVersion,
                 CodexEngine.class.getName()));
@@ -279,9 +277,9 @@ public abstract class MockedTest {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(this.getClass()
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(Objects.requireNonNull(this.getClass()
                     .getClassLoader()
-                    .getResourceAsStream("classes" + File.separator + c + ".yml")));
+                    .getResourceAsStream("classes" + File.separator + c + ".yml"))));
                  FileWriter writer = new FileWriter(classFile);) {
                 String str;
                 while ((str = in.readLine()) != null) {
@@ -304,9 +302,9 @@ public abstract class MockedTest {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(this.getClass()
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(Objects.requireNonNull(this.getClass()
                     .getClassLoader()
-                    .getResourceAsStream("skills" + File.separator + s + ".yml")));
+                    .getResourceAsStream("skills" + File.separator + s + ".yml"))));
                  FileWriter writer = new FileWriter(skillFile);) {
                 String str;
                 while ((str = in.readLine()) != null) {

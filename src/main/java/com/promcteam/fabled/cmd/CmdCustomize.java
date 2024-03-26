@@ -26,9 +26,9 @@
  */
 package com.promcteam.fabled.cmd;
 
-import com.promcteam.fabled.gui.tool.GUITool;
 import com.promcteam.codex.mccore.commands.ConfigurableCommand;
 import com.promcteam.codex.mccore.commands.IFunction;
+import com.promcteam.fabled.gui.tool.GUITool;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;

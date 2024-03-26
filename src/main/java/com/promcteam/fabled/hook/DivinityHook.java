@@ -1,6 +1,6 @@
 package com.promcteam.fabled.hook;
 
-import com.promcteam.codex.utils.DataUT;
+import com.promcteam.codex.util.DataUT;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 

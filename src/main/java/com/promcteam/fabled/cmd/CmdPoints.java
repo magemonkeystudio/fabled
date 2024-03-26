@@ -26,14 +26,14 @@
  */
 package com.promcteam.fabled.cmd;
 
-import com.promcteam.fabled.Fabled;
-import com.promcteam.fabled.api.enums.ExpSource;
-import com.promcteam.fabled.api.player.PlayerData;
-import com.promcteam.fabled.language.RPGFilter;
 import com.promcteam.codex.mccore.commands.CommandManager;
 import com.promcteam.codex.mccore.commands.ConfigurableCommand;
 import com.promcteam.codex.mccore.commands.IFunction;
 import com.promcteam.codex.mccore.config.Filter;
+import com.promcteam.fabled.Fabled;
+import com.promcteam.fabled.api.enums.ExpSource;
+import com.promcteam.fabled.api.player.PlayerData;
+import com.promcteam.fabled.language.RPGFilter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;

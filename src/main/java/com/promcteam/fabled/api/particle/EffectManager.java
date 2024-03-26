@@ -26,14 +26,14 @@
  */
 package com.promcteam.fabled.api.particle;
 
+import com.promcteam.codex.mccore.config.CommentedConfig;
+import com.promcteam.codex.mccore.config.parse.DataSection;
 import com.promcteam.fabled.Fabled;
 import com.promcteam.fabled.api.particle.direction.XZHandler;
 import com.promcteam.fabled.api.particle.target.EffectTarget;
 import com.promcteam.fabled.api.particle.target.EntityTarget;
 import com.promcteam.fabled.task.EffectTask;
 import com.promcteam.fabled.thread.MainThread;
-import com.promcteam.codex.mccore.config.CommentedConfig;
-import com.promcteam.codex.mccore.config.parse.DataSection;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.HashMap;

@@ -26,10 +26,10 @@
  */
 package com.promcteam.fabled.gui.map;
 
+import com.promcteam.codex.mccore.gui.*;
 import com.promcteam.fabled.Fabled;
 import com.promcteam.fabled.api.player.PlayerData;
 import com.promcteam.fabled.api.player.PlayerSkill;
-import com.promcteam.codex.mccore.gui.*;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;

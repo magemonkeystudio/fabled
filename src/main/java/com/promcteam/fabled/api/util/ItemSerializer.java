@@ -28,10 +28,10 @@ package com.promcteam.fabled.api.util;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
-import com.promcteam.fabled.Fabled;
 import com.promcteam.codex.mccore.util.VersionManager;
-import com.promcteam.codex.utils.Reflex;
-import com.promcteam.codex.utils.reflection.ReflectionManager;
+import com.promcteam.codex.util.Reflex;
+import com.promcteam.codex.util.reflection.ReflectionManager;
+import com.promcteam.fabled.Fabled;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;

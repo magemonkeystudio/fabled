@@ -34,7 +34,7 @@ import com.promcteam.fabled.api.skills.Skill;
 import com.promcteam.fabled.api.util.ItemSerializer;
 import com.promcteam.fabled.gui.handlers.SkillHandler;
 import com.promcteam.fabled.hook.CitizensHook;
-import com.promcteam.codex.utils.ItemUT;
+import com.promcteam.codex.util.ItemUT;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;

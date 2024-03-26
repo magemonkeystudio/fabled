@@ -26,9 +26,9 @@
  */
 package com.promcteam.fabled.cmd;
 
-import com.promcteam.fabled.Fabled;
 import com.promcteam.codex.mccore.commands.ConfigurableCommand;
 import com.promcteam.codex.mccore.commands.IFunction;
+import com.promcteam.fabled.Fabled;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 

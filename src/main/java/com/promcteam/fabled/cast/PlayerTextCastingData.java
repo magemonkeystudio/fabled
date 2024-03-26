@@ -4,7 +4,7 @@ import com.promcteam.fabled.Fabled;
 import com.promcteam.fabled.api.player.PlayerData;
 import com.promcteam.fabled.api.player.PlayerSkill;
 import com.promcteam.codex.mccore.config.parse.DataSection;
-import com.promcteam.codex.utils.StringUT;
+import com.promcteam.codex.util.StringUT;
 import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.Nullable;
 

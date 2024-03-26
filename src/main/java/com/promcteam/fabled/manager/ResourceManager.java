@@ -74,6 +74,6 @@ public class ResourceManager {
      * <p>Places the Fabled module for Quests into the proper directory</p>
      */
     public static void copyQuestsModule() {
-        copyResource("FabledModule.jar", QUESTS_FOLDER);
+        copyResource("FabledQuestsModule.jar", QUESTS_FOLDER);
     }
 }

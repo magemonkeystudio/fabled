@@ -27,6 +27,13 @@
 package com.promcteam.fabled.api.player;
 
 import com.google.common.base.Preconditions;
+import com.promcteam.codex.CodexEngine;
+import com.promcteam.codex.api.meta.NBTAttribute;
+import com.promcteam.codex.mccore.config.Filter;
+import com.promcteam.codex.mccore.config.FilterType;
+import com.promcteam.codex.mccore.config.parse.DataSection;
+import com.promcteam.codex.mccore.util.VersionManager;
+import com.promcteam.codex.util.EntityUT;
 import com.promcteam.fabled.Fabled;
 import com.promcteam.fabled.api.classes.FabledClass;
 import com.promcteam.fabled.api.enums.*;
@@ -61,13 +68,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import com.promcteam.codex.CodexEngine;
-import com.promcteam.codex.api.meta.NBTAttribute;
-import com.promcteam.codex.mccore.config.Filter;
-import com.promcteam.codex.mccore.config.FilterType;
-import com.promcteam.codex.mccore.config.parse.DataSection;
-import com.promcteam.codex.mccore.util.VersionManager;
-import com.promcteam.codex.utils.EntityUT;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -1679,7 +1679,7 @@ public class PlayerData {
 
             // Reset data if applicable
             final boolean isResetting = Fabled.getSettings().getGroupSettings(fabledClass.getGroup()).isProfessReset();
-            boolean       isSubclass  =
+            boolean isSubclass =
                     previous != null && fabledClass.getParent().getName().equals(previous.getName());
             int skillPoints = isResetting
                     ? reset(fabledClass.getGroup(), isSubclass)

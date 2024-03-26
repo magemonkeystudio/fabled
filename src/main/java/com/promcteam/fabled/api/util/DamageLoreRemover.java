@@ -26,9 +26,9 @@
  */
 package com.promcteam.fabled.api.util;
 
+import com.promcteam.codex.util.Reflex;
+import com.promcteam.codex.util.reflection.ReflectionManager;
 import com.promcteam.fabled.log.Logger;
-import com.promcteam.codex.utils.Reflex;
-import com.promcteam.codex.utils.reflection.ReflectionManager;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Method;

@@ -27,6 +27,7 @@
 package com.promcteam.fabled.api.player;
 
 import com.google.common.base.Preconditions;
+import com.promcteam.codex.mccore.config.Filter;
 import com.promcteam.fabled.Fabled;
 import com.promcteam.fabled.api.classes.FabledClass;
 import com.promcteam.fabled.api.enums.ExpSource;
@@ -38,7 +39,6 @@ import com.promcteam.fabled.dynamic.DynamicSkill;
 import com.promcteam.fabled.language.NotificationNodes;
 import com.promcteam.fabled.language.RPGFilter;
 import com.promcteam.fabled.manager.TitleManager;
-import com.promcteam.codex.mccore.config.Filter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

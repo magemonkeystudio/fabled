@@ -26,10 +26,10 @@
  */
 package com.promcteam.fabled.gui.map;
 
-import com.promcteam.fabled.Fabled;
 import com.promcteam.codex.mccore.gui.MapFont;
 import com.promcteam.codex.mccore.gui.MapMenuManager;
 import com.promcteam.codex.mccore.gui.MapScheme;
+import com.promcteam.fabled.Fabled;
 
 import java.awt.*;
 import java.io.File;

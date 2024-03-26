@@ -26,11 +26,11 @@
  */
 package com.promcteam.fabled.cmd;
 
-import com.promcteam.fabled.Fabled;
-import com.promcteam.fabled.gui.map.Menu;
 import com.promcteam.codex.mccore.commands.ConfigurableCommand;
 import com.promcteam.codex.mccore.commands.IFunction;
 import com.promcteam.codex.mccore.gui.MapMenuManager;
+import com.promcteam.fabled.Fabled;
+import com.promcteam.fabled.gui.map.Menu;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;

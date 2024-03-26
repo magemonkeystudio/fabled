@@ -40,7 +40,7 @@ import com.promcteam.fabled.thread.RepeatThreadTask;
 import com.promcteam.codex.mccore.config.FilterType;
 import com.promcteam.codex.mccore.util.TextFormatter;
 import com.promcteam.codex.mccore.util.VersionManager;
-import com.promcteam.codex.utils.MsgUT;
+import com.promcteam.codex.util.MsgUT;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;

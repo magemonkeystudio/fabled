@@ -26,8 +26,8 @@
  */
 package com.promcteam.fabled.api.particle;
 
-import com.promcteam.fabled.api.Settings;
 import com.promcteam.codex.mccore.config.parse.DataSection;
+import com.promcteam.fabled.api.Settings;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;

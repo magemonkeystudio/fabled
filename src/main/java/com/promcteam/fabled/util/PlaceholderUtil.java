@@ -12,7 +12,7 @@ import com.promcteam.fabled.api.util.FlagManager;
 import com.promcteam.fabled.dynamic.DynamicSkill;
 import com.promcteam.fabled.hook.PlaceholderAPIHook;
 import com.promcteam.fabled.hook.PluginChecker;
-import com.promcteam.codex.utils.StringUT;
+import com.promcteam.codex.util.StringUT;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;

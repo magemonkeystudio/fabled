@@ -130,7 +130,7 @@ public class ParticleProjectile extends CustomProjectile {
         this.pierce = settings.getBool(PIERCE, false);
 
         if (settings.getBool(HOMING, false)) {
-            String                         target     = settings.getString(HOMING_TARGET, "nearest");
+            String target = settings.getString(HOMING_TARGET, "nearest");
             final Comparator<LivingEntity> comparator =
                     Comparator.comparingDouble(o -> o.getLocation().distanceSquared(getLocation()));
             if (target.equalsIgnoreCase("remember target")) {

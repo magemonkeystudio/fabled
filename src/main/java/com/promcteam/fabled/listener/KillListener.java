@@ -35,7 +35,7 @@ import com.promcteam.fabled.api.player.PlayerData;
 import com.promcteam.fabled.api.util.BuffManager;
 import com.promcteam.fabled.api.util.FlagManager;
 import com.promcteam.fabled.data.Permissions;
-import com.promcteam.codex.utils.reflection.ReflectionManager;
+import com.promcteam.codex.util.reflection.ReflectionManager;
 import org.bukkit.GameMode;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;

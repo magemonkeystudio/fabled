@@ -1,7 +1,7 @@
 package com.promcteam.fabled.api.util;
 
-import com.promcteam.codex.utils.Reflex;
-import com.promcteam.codex.utils.reflection.ReflectionManager;
+import com.promcteam.codex.util.Reflex;
+import com.promcteam.codex.util.reflection.ReflectionManager;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Constructor;

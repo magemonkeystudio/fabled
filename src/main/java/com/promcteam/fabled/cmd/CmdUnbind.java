@@ -26,13 +26,13 @@
  */
 package com.promcteam.fabled.cmd;
 
+import com.promcteam.codex.mccore.commands.ConfigurableCommand;
+import com.promcteam.codex.mccore.commands.IFunction;
+import com.promcteam.codex.mccore.util.TextFormatter;
 import com.promcteam.fabled.Fabled;
 import com.promcteam.fabled.api.player.PlayerData;
 import com.promcteam.fabled.api.player.PlayerSkill;
 import com.promcteam.fabled.language.RPGFilter;
-import com.promcteam.codex.mccore.commands.ConfigurableCommand;
-import com.promcteam.codex.mccore.commands.IFunction;
-import com.promcteam.codex.mccore.util.TextFormatter;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

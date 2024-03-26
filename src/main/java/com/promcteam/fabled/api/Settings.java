@@ -27,9 +27,9 @@
 package com.promcteam.fabled.api;
 
 import com.google.common.collect.ImmutableList;
-import com.promcteam.fabled.log.Logger;
 import com.promcteam.codex.mccore.config.parse.DataSection;
 import com.promcteam.codex.mccore.config.parse.NumberParser;
+import com.promcteam.fabled.log.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;

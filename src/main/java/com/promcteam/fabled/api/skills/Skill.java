@@ -26,6 +26,12 @@
  */
 package com.promcteam.fabled.api.skills;
 
+import com.promcteam.codex.mccore.config.Filter;
+import com.promcteam.codex.mccore.config.FilterType;
+import com.promcteam.codex.mccore.config.parse.DataSection;
+import com.promcteam.codex.mccore.config.parse.NumberParser;
+import com.promcteam.codex.mccore.util.TextFormatter;
+import com.promcteam.codex.registry.damage.DamageRegistry;
 import com.promcteam.fabled.Fabled;
 import com.promcteam.fabled.api.ReadOnlySettings;
 import com.promcteam.fabled.api.Settings;
@@ -46,12 +52,6 @@ import com.promcteam.fabled.language.RPGFilter;
 import com.promcteam.fabled.language.SkillNodes;
 import com.promcteam.fabled.listener.MechanicListener;
 import com.promcteam.fabled.log.Logger;
-import com.promcteam.codex.mccore.config.Filter;
-import com.promcteam.codex.mccore.config.FilterType;
-import com.promcteam.codex.mccore.config.parse.DataSection;
-import com.promcteam.codex.mccore.config.parse.NumberParser;
-import com.promcteam.codex.mccore.util.TextFormatter;
-import com.promcteam.codex.registry.damage.DamageRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

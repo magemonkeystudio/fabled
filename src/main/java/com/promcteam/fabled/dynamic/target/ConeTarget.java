@@ -63,10 +63,10 @@ public class ConeTarget extends TargetComponent {
                 @Override
                 public void run() {
                     ParticleSettings particleSettings = new ParticleSettings(preview, "triangle-");
-                    double           angle            =
+                    double angle =
                             parseValues(caster, ANGLE, level, 90.0) * Math.PI / 360; // Intentional division by 2
-                    double           range            = parseValues(caster, RANGE, level, 5.0);
-                    double           density          = preview.getDouble("triangle-" + "density", 1);
+                    double range   = parseValues(caster, RANGE, level, 5.0);
+                    double density = preview.getDouble("triangle-" + "density", 1);
 
                     double rStep = 1 / range / density;
 
@@ -106,10 +106,10 @@ public class ConeTarget extends TargetComponent {
                 @Override
                 public void run() {
                     ParticleSettings particleSettings = new ParticleSettings(preview, "cone-");
-                    double           angle            =
+                    double angle =
                             parseValues(caster, ANGLE, level, 90.0) * Math.PI / 360; // Intentional division by 2
-                    double           range            = parseValues(caster, RANGE, level, 5.0);
-                    double           density          = preview.getDouble("cone-" + "density", 1);
+                    double range   = parseValues(caster, RANGE, level, 5.0);
+                    double density = preview.getDouble("cone-" + "density", 1);
 
                     double rStep = 1 / range / density;
 

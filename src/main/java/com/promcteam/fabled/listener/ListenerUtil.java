@@ -26,7 +26,7 @@
  */
 package com.promcteam.fabled.listener;
 
-import com.promcteam.codex.utils.Reflex;
+import com.promcteam.codex.util.Reflex;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;

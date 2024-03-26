@@ -26,13 +26,13 @@
  */
 package com.promcteam.fabled.api.particle;
 
+import com.promcteam.codex.mccore.config.parse.DataSection;
 import com.promcteam.fabled.api.particle.direction.DirectionHandler;
 import com.promcteam.fabled.data.Point2D;
 import com.promcteam.fabled.data.Point3D;
 import com.promcteam.fabled.data.formula.Formula;
 import com.promcteam.fabled.data.formula.IValue;
 import com.promcteam.fabled.data.formula.value.CustomValue;
-import com.promcteam.codex.mccore.config.parse.DataSection;
 
 import java.util.HashMap;
 

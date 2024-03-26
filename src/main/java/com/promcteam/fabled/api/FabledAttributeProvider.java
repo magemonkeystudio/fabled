@@ -1,9 +1,9 @@
 package com.promcteam.fabled.api;
 
+import com.promcteam.codex.registry.attribute.AttributeProvider;
 import com.promcteam.fabled.Fabled;
 import com.promcteam.fabled.api.player.PlayerData;
 import lombok.RequiredArgsConstructor;
-import com.promcteam.codex.registry.attribute.AttributeProvider;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 

@@ -1,14 +1,14 @@
 package com.promcteam.fabled.api.binding;
 
-import com.promcteam.fabled.Fabled;
-import com.promcteam.fabled.api.player.PlayerData;
-import com.promcteam.fabled.api.player.PlayerSkill;
-import com.promcteam.fabled.listener.BindListener;
 import com.promcteam.codex.manager.api.menu.Menu;
 import com.promcteam.codex.manager.api.menu.Slot;
 import com.promcteam.codex.manager.api.menu.YAMLMenu;
 import com.promcteam.codex.mccore.util.TextFormatter;
-import com.promcteam.codex.utils.StringUT;
+import com.promcteam.codex.util.StringUT;
+import com.promcteam.fabled.Fabled;
+import com.promcteam.fabled.api.player.PlayerData;
+import com.promcteam.fabled.api.player.PlayerSkill;
+import com.promcteam.fabled.listener.BindListener;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -71,7 +71,7 @@ public class BindingMenu extends Menu {
                         String currentSkill = Objects.requireNonNull(getItemStack().getItemMeta())
                                 .getPersistentDataContainer()
                                 .get(SKILL_KEY, PersistentDataType.STRING);
-                        int    current      = inItem.indexOf(currentSkill);
+                        int current = inItem.indexOf(currentSkill);
                         if (current <= 0) {
                             this.menu.open();
                             return;
@@ -92,7 +92,7 @@ public class BindingMenu extends Menu {
                         String currentSkill = Objects.requireNonNull(getItemStack().getItemMeta())
                                 .getPersistentDataContainer()
                                 .get(SKILL_KEY, PersistentDataType.STRING);
-                        int    current      = inItem.indexOf(currentSkill);
+                        int current = inItem.indexOf(currentSkill);
                         if (current < 0 || current == inItem.size() - 1) {
                             this.menu.open();
                             return;
@@ -133,7 +133,7 @@ public class BindingMenu extends Menu {
                 case "not-bound" -> new Slot(configItem) {
                     @Override
                     public void onLeftClick() {
-                        String       skill  = Objects.requireNonNull(getItemStack().getItemMeta())
+                        String skill = Objects.requireNonNull(getItemStack().getItemMeta())
                                 .getPersistentDataContainer()
                                 .get(SKILL_KEY, PersistentDataType.STRING);
                         List<String> inItem = BindListener.getBoundSkills(item);
