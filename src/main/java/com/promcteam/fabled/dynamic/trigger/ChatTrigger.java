@@ -6,7 +6,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.dynamic.trigger.BlockBreakTrigger
  */
 public class ChatTrigger implements Trigger<AsyncPlayerChatEvent> {

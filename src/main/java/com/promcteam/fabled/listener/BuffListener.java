@@ -17,7 +17,7 @@ import org.bukkit.potion.PotionEffectType;
 import static com.promcteam.fabled.listener.attribute.AttributeListener.PHYSICAL;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.listener.BuffListener
  */
 public class BuffListener extends FabledListener {

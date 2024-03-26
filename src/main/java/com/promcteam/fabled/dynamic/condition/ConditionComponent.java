@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.dynamic.condition.ConditionComponent
  */
 public abstract class ConditionComponent extends EffectComponent {

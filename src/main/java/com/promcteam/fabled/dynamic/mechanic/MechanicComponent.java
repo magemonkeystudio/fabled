@@ -4,7 +4,7 @@ import com.promcteam.fabled.dynamic.ComponentType;
 import com.promcteam.fabled.dynamic.EffectComponent;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.dynamic.mechanic.MechanicComponent
  */
 public abstract class MechanicComponent extends EffectComponent {

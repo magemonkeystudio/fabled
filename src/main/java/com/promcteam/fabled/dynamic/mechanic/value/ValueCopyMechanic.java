@@ -9,7 +9,7 @@ import org.bukkit.entity.LivingEntity;
 import java.util.List;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.dynamic.mechanic.value.ValueCopyMechanic
  */
 public class ValueCopyMechanic extends MechanicComponent {

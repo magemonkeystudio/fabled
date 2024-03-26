@@ -23,7 +23,7 @@ import java.util.Objects;
 import static com.promcteam.fabled.dynamic.ComponentRegistry.getExecutor;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.dynamic.TriggerHandler
  */
 public class TriggerHandler implements Listener {

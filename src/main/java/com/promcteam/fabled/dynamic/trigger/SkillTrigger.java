@@ -7,7 +7,7 @@ import com.promcteam.fabled.dynamic.DynamicSkill;
 import java.util.List;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.dynamic.trigger.BlockBreakTrigger
  */
 public abstract class SkillTrigger implements Trigger<SkillDamageEvent> {

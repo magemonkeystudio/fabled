@@ -19,7 +19,7 @@ import java.util.Locale;
 import static com.promcteam.fabled.listener.MechanicListener.*;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.listener.LingeringPotionListener
  */
 public class LingeringPotionListener extends FabledListener {

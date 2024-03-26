@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.util.Lists
  */
 public class Lists {

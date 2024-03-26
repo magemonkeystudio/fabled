@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.dynamic.trigger.BlockBreakTrigger
  */
 public class EnvironmentalTrigger implements Trigger<EntityDamageEvent> {

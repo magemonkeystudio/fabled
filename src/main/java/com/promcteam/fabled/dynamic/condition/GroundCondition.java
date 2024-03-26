@@ -3,7 +3,7 @@ package com.promcteam.fabled.dynamic.condition;
 import org.bukkit.entity.LivingEntity;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.dynamic.condition.Ground
  */
 public class GroundCondition extends ConditionComponent {

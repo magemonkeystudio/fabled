@@ -5,7 +5,7 @@ import com.promcteam.fabled.api.event.PhysicalDamageEvent;
 import com.promcteam.fabled.dynamic.DynamicSkill;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.dynamic.trigger.BlockBreakTrigger
  */
 public abstract class PhysicalTrigger implements Trigger<PhysicalDamageEvent> {

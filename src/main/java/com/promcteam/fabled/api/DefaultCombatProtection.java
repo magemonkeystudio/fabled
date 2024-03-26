@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.data.DefaultCombatProtection
  */
 public class DefaultCombatProtection implements CombatProtection {

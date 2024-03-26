@@ -60,6 +60,7 @@ import com.promcteam.fabled.task.GUITask;
 import com.promcteam.fabled.task.ManaTask;
 import com.promcteam.fabled.task.SaveTask;
 import com.promcteam.fabled.thread.MainThread;
+import com.sucy.skill.SkillAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -81,7 +82,7 @@ import java.util.*;
  * <p>The main class of the plugin which has the accessor methods into most of the API</p>
  * <p>You can retrieve a reference to this through Bukkit the same way as any other plugin</p>
  */
-public class Fabled extends JavaPlugin {
+public class Fabled extends JavaPlugin implements SkillAPI {
     private static Fabled singleton;
     public static  Random RANDOM = new Random();
 
@@ -257,8 +258,8 @@ public class Fabled extends JavaPlugin {
      *
      * @return the list of base classes
      */
-    public static ArrayList<FabledClass> getBaseClasses(String group) {
-        ArrayList<FabledClass> list = new ArrayList<>();
+    public static List<FabledClass> getBaseClasses(String group) {
+        List<FabledClass> list = new ArrayList<>();
         for (FabledClass c : singleton.classes.values()) {
             if (!c.hasParent() && c.getGroup().equals(group)) {
                 list.add(c);
@@ -393,6 +394,14 @@ public class Fabled extends JavaPlugin {
         unloadPlayerData(player, false);
     }
 
+    /**
+     * Unloads player data from memory, saving it to the config
+     * first and then removing it from the map.
+     *
+     * @param player     player to unload data for
+     * @param skipSaving whether to skip saving the data
+     *                   before unloading
+     */
     public static void unloadPlayerData(final OfflinePlayer player, final boolean skipSaving) {
         if (singleton == null || player == null || singleton.disabling
                 || !singleton.players.containsKey(player.getUniqueId().toString().toLowerCase())) {

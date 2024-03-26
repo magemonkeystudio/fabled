@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.cmd.CmdChangeClass
  */
 public class CmdChangeClass implements IFunction, TabCompleter {

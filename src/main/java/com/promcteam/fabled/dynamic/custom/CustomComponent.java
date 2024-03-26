@@ -5,7 +5,7 @@ import com.promcteam.fabled.dynamic.ComponentType;
 import java.util.List;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.dynamic.custom.CustomComponent
  */
 public interface CustomComponent {

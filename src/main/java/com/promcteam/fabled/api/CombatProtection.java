@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.api.AllyChecker
  */
 public interface CombatProtection {

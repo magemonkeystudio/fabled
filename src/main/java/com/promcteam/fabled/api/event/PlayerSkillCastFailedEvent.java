@@ -7,7 +7,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.api.event.PlayerSkillCastFailedEvent
  */
 public class PlayerSkillCastFailedEvent extends Event {

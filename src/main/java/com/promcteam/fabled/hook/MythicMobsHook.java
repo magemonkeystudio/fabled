@@ -5,7 +5,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.hook.MythicMobsHook
  */
 public class MythicMobsHook {

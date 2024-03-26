@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.dynamic.trigger.EntityTargetEvent
  */
 public class EntityTargetTrigger implements Trigger<EntityTargetLivingEntityEvent> {

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.dynamic.trigger.ProjectileHitTrigger
  */
 public class ProjectileHitTrigger implements Trigger<ProjectileHitEvent> {

@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.dynamic.mechanic.FoodMechanic
  */
 public class FoodMechanic extends MechanicComponent {

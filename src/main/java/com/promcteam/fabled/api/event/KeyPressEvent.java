@@ -9,7 +9,7 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.api.event.KeyPressEvent
  */
 @Data

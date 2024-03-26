@@ -8,7 +8,7 @@ import org.bukkit.entity.LivingEntity;
 import java.util.List;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.dynamic.trigger.TriggerComponent
  */
 public class TriggerComponent extends EffectComponent {

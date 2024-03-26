@@ -5,7 +5,7 @@ import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.dynamic.condition.Weather
  */
 public class WeatherCondition extends ConditionComponent {

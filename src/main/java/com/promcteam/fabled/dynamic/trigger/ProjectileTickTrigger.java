@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.dynamic.trigger.ProjectileTickTrigger
  */
 public class ProjectileTickTrigger implements Trigger<ProjectileTickEvent> {

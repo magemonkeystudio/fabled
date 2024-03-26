@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.hook.WorldGuardHook
  */
 public class WorldGuardHook {

@@ -22,7 +22,7 @@ import java.util.OptionalInt;
 import java.util.Set;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.listener.ExperienceListener
  */
 public class ExperienceListener extends FabledListener {

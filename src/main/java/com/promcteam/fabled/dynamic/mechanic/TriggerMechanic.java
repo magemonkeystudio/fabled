@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.dynamic.mechanic.TriggerMechanic
  */
 public class TriggerMechanic extends MechanicComponent {

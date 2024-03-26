@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.dynamic.mechanic.DurabilityMechanic
  */
 public class DurabilityMechanic extends MechanicComponent {

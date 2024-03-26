@@ -6,7 +6,7 @@ import com.promcteam.fabled.api.event.SkillDamageEvent;
 import org.bukkit.entity.LivingEntity;
 
 /**
- * Fabled © 2023
+ * Fabled © 2024
  * com.promcteam.fabled.dynamic.trigger.BlockBreakTrigger
  */
 public class SkillTakenTrigger extends SkillTrigger {
