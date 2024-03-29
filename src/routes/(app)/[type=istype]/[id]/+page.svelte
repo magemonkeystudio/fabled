@@ -110,7 +110,7 @@
         width: 100%;
         z-index: 20;
         position: sticky;
-        top: 3rem;
+        top: 0;
         background: var(--color-bg);
     }
 
@@ -128,7 +128,7 @@
         flex-wrap: nowrap;
         width: 100%;
         max-width: 100%;
-        overflow-x: auto;
+        overflow: auto;
         padding-inline: 2rem;
         flex-grow: 1;
     }

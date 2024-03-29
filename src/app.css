@@ -26,8 +26,8 @@
 }
 
 html {
-    min-height: 100vh;
-    height: 100vh;
+    min-height: 100dvh;
+    height: 100dvh;
 }
 
 body {
@@ -45,7 +45,7 @@ body {
 #svelte-body {
     display: flex;
     flex-direction: column;
-    min-height: 100%;
+    height: 100%;
 }
 
 :root {
