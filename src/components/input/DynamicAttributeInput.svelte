@@ -1,13 +1,13 @@
 <script lang='ts'>
 
 	import ProInput         from '$input/ProInput.svelte';
-	import AttributeInput   from '$input/AttributeInput.svelte';
-	import { ProAttribute } from '$api/proattribute';
+	import AttributeInput      from '$input/AttributeInput.svelte';
+	import { FabledAttribute } from '$api/fabled-attribute';
 
-	export let value: ProAttribute[] = [];
+	export let value: FabledAttribute[] = [];
 
 	let name = '';
-	$: attribute = new ProAttribute(name, 0, 0);
+	$: attribute = new FabledAttribute(name, 0, 0);
 
 	const addAttribute = (e?: Event) => {
 		if (!name) return;
@@ -16,7 +16,7 @@
 		name  = '';
 	};
 
-	const removeAttribute = (attribute: ProAttribute) => {
+	const removeAttribute = (attribute: FabledAttribute) => {
 		value = value.filter(a => a !== attribute);
 	};
 </script>

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { ProAttribute } from "$api/proattribute";
+  import type { FabledAttribute } from "$api/fabled-attribute";
 
-  export let value: ProAttribute;
+  export let value: FabledAttribute;
 </script>
 
 <div class="wrap">

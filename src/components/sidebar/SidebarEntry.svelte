@@ -8,11 +8,11 @@
 		saveData,
 		sidebarOpen,
 		updateFolders
-	}                                     from '../../data/store';
-	import ProSkill                       from '$api/proskill';
-	import ProClass                       from '$api/proclass';
-	import { get }                        from 'svelte/store';
-	import ProFolder                      from '$api/profolder';
+	}                  from '../../data/store';
+	import FabledSkill from '$api/fabled-skill';
+	import FabledClass from '$api/fabled-class';
+	import { get }     from 'svelte/store';
+	import FabledFolder                   from '$api/fabled-folder';
 	import { fly, type TransitionConfig } from 'svelte/transition';
 	import Modal                          from '../Modal.svelte';
 	import { addClassFolder, cloneClass } from '../../data/class-store';
@@ -23,7 +23,7 @@
 
 	export let delay                       = 0;
 	export let direction: 'right' | 'left' = 'left';
-	export let data: ProSkill | ProClass;
+	export let data: FabledSkill | FabledClass;
 
 	let over     = false;
 	let deleting = false;
@@ -39,7 +39,7 @@
 	};
 
 	const drop = () => {
-		const dragData: ProClass | ProSkill | ProFolder = get(dragging);
+		const dragData: FabledClass | FabledSkill | FabledFolder = get(dragging);
 		let targetFolder;
 		if (data) {
 			targetFolder = getFolder(data);
@@ -53,7 +53,7 @@
 			updateFolders();
 			return;
 		}
-		if (dragData instanceof ProFolder) {
+		if (dragData instanceof FabledFolder) {
 			if (get(isShowClasses)) addClassFolder(dragData);
 			else addSkillFolder(dragData);
 			dragData.parent = undefined;
@@ -78,10 +78,10 @@
 		return options.fn(node, options);
 	};
 
-	const cloneData = (data?: ProClass | ProSkill) => {
+	const cloneData = (data?: FabledClass | FabledSkill) => {
 		if (!data) return;
 
-		if (data instanceof ProClass) {
+		if (data instanceof FabledClass) {
 			cloneClass(data);
 		} else {
 			cloneSkill(data);
@@ -110,7 +110,7 @@
 	<slot />
 	{#if data}
 		<div class='buttons'>
-			{#if data instanceof ProSkill}
+			{#if data instanceof FabledSkill}
 				<a href='{base}/skill/{data.name}/edit'
 					 class='edit'
 					 title='Edit Skill'>

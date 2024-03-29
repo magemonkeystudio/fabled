@@ -11,7 +11,7 @@
 			 on:click={() => goto(`${base}/`)}
 			 on:keypress={(e) => e.key === "Enter" && goto(`${base}/`)}
 	>
-		<h1 class='accent'>ProSkillAPI</h1>
+		<h1 class='accent'>Fabled</h1>
 		<h2>Dynamic Editor</h2>
 		<div class='copy'>&copy; ProMCTeam {new Date().getFullYear()}</div>
 	</div>

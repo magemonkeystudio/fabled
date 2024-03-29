@@ -8,7 +8,7 @@
 	import { slide }                                     from 'svelte/transition';
 	import { backOut }                                   from 'svelte/easing';
 	import { draggingComponent }                         from '../data/store';
-	import type ProSkill                                 from '$api/proskill';
+	import type FabledSkill                              from '$api/fabled-skill';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 	import type { Unsubscriber }                         from 'svelte/store';
 	import { get }                                       from 'svelte/store';
@@ -22,7 +22,7 @@
 	import { skills }                                    from '../data/skill-store';
 	import type { YamlComponentData }                    from '$api/types';
 
-	export let skill: ProSkill;
+	export let skill: FabledSkill;
 	export let component: ProComponent;
 	let wrapper: HTMLElement;
 	let children: HTMLElement;

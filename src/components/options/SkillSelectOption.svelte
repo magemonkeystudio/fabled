@@ -2,11 +2,11 @@
 	import ProInput                  from '$input/ProInput.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import SearchableSelect          from '$input/SearchableSelect.svelte';
-	import { getSkill, skills }      from '../../data/skill-store';
-	import ProSkill                  from '$api/proskill';
+	import { getSkill, skills } from '../../data/skill-store';
+	import FabledSkill          from '$api/fabled-skill';
 
-	export let data: ProSkill[] | ProSkill | string[] | string = [];
-	export let name: string | undefined                        = '';
+	export let data: FabledSkill[] | FabledSkill | string[] | string = [];
+	export let name: string | undefined                              = '';
 	export let tooltip: string | undefined                     = undefined;
 	export let multiple                                        = true;
 
@@ -15,14 +15,14 @@
 	const dispatch = createEventDispatcher();
 	$: if (data instanceof Array) {
 		data = data.map(cl => {
-			if (cl instanceof ProSkill) return cl;
+			if (cl instanceof FabledSkill) return cl;
 
 			const sk = getSkill(cl);
 			if (sk) return sk;
 		});
 		dispatch('save');
 	} else {
-		if (data && !(data instanceof ProSkill)) {
+		if (data && !(data instanceof FabledSkill)) {
 			const sk = getSkill(<string>data);
 			if (sk) data = sk;
 		}
