@@ -16,7 +16,7 @@ softdepend:
   - ProtocolLib
 loadbefore: [ Divinity, Quests, TAB ]
 provides: [ SkillAPI, ProSkillAPI ]
-api-version: 1.14
+api-version: 1.16
 
 permissions:
   fabled.basic:
