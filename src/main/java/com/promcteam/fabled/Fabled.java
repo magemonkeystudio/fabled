@@ -29,6 +29,7 @@ import com.promcteam.codex.manager.api.menu.YAMLMenu;
 import com.promcteam.codex.mccore.config.CommentedConfig;
 import com.promcteam.codex.mccore.config.CommentedLanguageConfig;
 import com.promcteam.codex.mccore.util.VersionManager;
+import com.promcteam.codex.migration.MigrationUtil;
 import com.promcteam.codex.registry.attribute.AttributeProvider;
 import com.promcteam.codex.registry.attribute.AttributeRegistry;
 import com.promcteam.fabled.api.FabledAttributeProvider;
@@ -60,6 +61,7 @@ import com.promcteam.fabled.task.GUITask;
 import com.promcteam.fabled.task.ManaTask;
 import com.promcteam.fabled.task.SaveTask;
 import com.promcteam.fabled.thread.MainThread;
+import com.sk89q.worldguard.protection.managers.migration.Migration;
 import com.sucy.skill.SkillAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -111,10 +113,12 @@ public class Fabled extends JavaPlugin implements SkillAPI {
 
     public Fabled() {
         super();
+        MigrationUtil.renameDirectory("plugins/ProSkillAPI", "plugins/Fabled");
     }
 
     public Fabled(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
         super(loader, description, dataFolder, file);
+        MigrationUtil.renameDirectory("plugins/ProSkillAPI", "plugins/Fabled");
     }
 
     /**
