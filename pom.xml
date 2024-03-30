@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.promcteam</groupId>
         <artifactId>promc-parent</artifactId>
-        <version>1.20.4-SNAPSHOT</version>
+        <version>1.20.4-R1-SNAPSHOT</version>
     </parent>
 
     <artifactId>fabled</artifactId>
