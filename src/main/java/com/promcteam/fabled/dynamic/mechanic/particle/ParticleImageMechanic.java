@@ -1,7 +1,8 @@
-package com.promcteam.fabled.dynamic.mechanic;
+package com.promcteam.fabled.dynamic.mechanic.particle;
 
 import com.promcteam.fabled.api.particle.EffectImage;
 import com.promcteam.fabled.api.particle.target.EntityTarget;
+import com.promcteam.fabled.dynamic.mechanic.MechanicComponent;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.List;

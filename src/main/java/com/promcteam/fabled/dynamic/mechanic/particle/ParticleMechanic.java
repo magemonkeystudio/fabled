@@ -1,6 +1,6 @@
 /**
  * Fabled
- * com.promcteam.fabled.dynamic.mechanic.ParticleMechanic
+ * com.promcteam.fabled.dynamic.mechanic.particle.ParticleMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,10 +24,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.promcteam.fabled.dynamic.mechanic;
+package com.promcteam.fabled.dynamic.mechanic.particle;
 
 import com.promcteam.fabled.api.Settings;
 import com.promcteam.fabled.api.particle.ParticleHelper;
+import com.promcteam.fabled.dynamic.mechanic.MechanicComponent;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;

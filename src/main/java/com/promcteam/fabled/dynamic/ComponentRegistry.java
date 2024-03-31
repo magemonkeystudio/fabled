@@ -9,6 +9,7 @@ import com.promcteam.fabled.dynamic.mechanic.*;
 import com.promcteam.fabled.dynamic.mechanic.armorstand.ArmorStandMechanic;
 import com.promcteam.fabled.dynamic.mechanic.armorstand.ArmorStandPoseMechanic;
 import com.promcteam.fabled.dynamic.mechanic.armorstand.ArmorStandRemoveMechanic;
+import com.promcteam.fabled.dynamic.mechanic.particle.*;
 import com.promcteam.fabled.dynamic.mechanic.value.*;
 import com.promcteam.fabled.dynamic.mechanic.warp.*;
 import com.promcteam.fabled.dynamic.target.*;
