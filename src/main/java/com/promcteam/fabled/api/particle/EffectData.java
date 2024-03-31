@@ -30,14 +30,16 @@ import com.promcteam.fabled.api.particle.target.EffectTarget;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * A collection of effects played on a target
  */
 public class EffectData {
-    private HashMap<String, EffectInstance> effects = new HashMap<String, EffectInstance>();
+    private final Map<String, EffectInstance> effects = new HashMap<>();
 
-    private EffectTarget target;
+    private final EffectTarget target;
 
     /**
      * @param target target of each effect
@@ -67,10 +69,10 @@ public class EffectData {
     }
 
     /**
-     * @return true if should keep the data, false otherwise
+     * @return true should keep the data, false otherwise
      */
     public boolean isValid() {
-        return effects.size() > 0 && target.isValid();
+        return !effects.isEmpty() && target.isValid();
     }
 
     /**
@@ -82,7 +84,7 @@ public class EffectData {
      * @param ticks  ticks to run for
      * @param level  effect level
      */
-    public void runEffect(ParticleEffect effect, int ticks, int level) {
+    public void runEffect(IParticleEffect effect, int ticks, int level) {
         EffectInstance instance = new EffectInstance(effect, target, level);
         instance.extend(ticks);
         effects.put(effect.getName(), instance);

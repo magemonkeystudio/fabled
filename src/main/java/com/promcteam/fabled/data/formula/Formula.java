@@ -35,6 +35,7 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represents a basic math equation read from left to right, ignoring
@@ -44,7 +45,7 @@ import java.util.HashMap;
 public class Formula implements IValue {
     public static final double DEG_TO_RAD = Math.PI / 180;
 
-    private static final HashMap<Character, IOperator> OPS = new HashMap<Character, IOperator>() {{
+    private static final Map<Character, IOperator> OPS = new HashMap<>() {{
         put('+', new Addition());
         put('-', new Subtraction());
         put('*', new Multiplication());
@@ -54,8 +55,8 @@ public class Formula implements IValue {
         put('_', new Log());
     }};
 
-    private static final HashMap<String, Class<? extends IValue>> FUNCS =
-            new HashMap<String, Class<? extends IValue>>() {{
+    private static final Map<String, Class<? extends IValue>> FUNCS =
+            new HashMap<>() {{
                 put("abs", Abs.class);
                 put("ceil", Ceil.class);
                 put("cos", Cos.class);
@@ -66,6 +67,12 @@ public class Formula implements IValue {
                 put("sq", Square.class);
                 put("tan", Tan.class);
             }};
+
+    private static final Map<String, Double> constants =
+            new HashMap<>(Map.of(
+                    "pi", Math.PI,
+                    "e", Math.E
+            ));
 
     private IValue[]    values;
     private IOperator[] operations;
@@ -92,7 +99,7 @@ public class Formula implements IValue {
         negative = false;
 
         // Empty formulas
-        if (equation == null || equation.length() == 0) {
+        if (equation == null || equation.isEmpty()) {
             invalidate(defined);
             return;
         }

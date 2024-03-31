@@ -28,12 +28,14 @@ package com.promcteam.fabled.api.particle;
 
 import com.promcteam.fabled.api.particle.target.EffectTarget;
 
+import java.util.function.Consumer;
+
 /**
  * An instanced particle effect
  */
 public class EffectInstance {
-    private final ParticleEffect effect;
-    private final EffectTarget   target;
+    private final IParticleEffect effect;
+    private final EffectTarget    target;
 
     private final int level;
     private       int life;
@@ -45,7 +47,7 @@ public class EffectInstance {
      * @param target target to play an effect for
      * @param level  the level of the effect
      */
-    public EffectInstance(ParticleEffect effect, EffectTarget target, int level) {
+    public EffectInstance(IParticleEffect effect, EffectTarget target, int level) {
         this.effect = effect;
         this.target = target;
         this.level = level;
@@ -60,6 +62,22 @@ public class EffectInstance {
      */
     public boolean isValid() {
         return target.isValid() && life > 0;
+    }
+
+    public EffectInstance ifValid(Consumer<EffectInstance> consumer) {
+        if (isValid()) {
+            consumer.accept(this);
+        }
+        return this;
+    }
+
+    public EffectInstance ifValidOrElse(Consumer<EffectInstance> consumer, Consumer<EffectInstance> orElse) {
+        if (isValid()) {
+            consumer.accept(this);
+        } else {
+            orElse.accept(this);
+        }
+        return this;
     }
 
     /**

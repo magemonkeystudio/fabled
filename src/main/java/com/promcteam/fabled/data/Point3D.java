@@ -26,6 +26,8 @@
  */
 package com.promcteam.fabled.data;
 
+import com.promcteam.fabled.api.particle.MatrixUtil;
+
 public class Point3D {
     public double x;
     public double y;
@@ -39,6 +41,45 @@ public class Point3D {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    /**
+     * Rotates the point around the origin
+     * @param xRot The rotation around the x-axis (in degrees)
+     * @param yRot The rotation around the y-axis (in degrees)
+     * @param zRot The rotation around the z-axis (in degrees)
+     */
+    public void rotate(double xRot, double yRot, double zRot) {
+        Matrix3D rotMatrix = MatrixUtil.getRotationMatrix(xRot, yRot, zRot);
+        Point3D newPoint = MatrixUtil.multiply(rotMatrix, this);
+
+        this.x = newPoint.x;
+        this.y = newPoint.y;
+        this.z = newPoint.z;
+    }
+
+    /**
+     * Rotates the point around the origin
+     * @param xRot The rotation around the x-axis (in degrees)
+     */
+    public void rotateX(double xRot) {
+        rotate(xRot, 0, 0);
+    }
+
+    /**
+     * Rotates the point around the origin
+     * @param yRot The rotation around the y-axis (in degrees)
+     */
+    public void rotateY(double yRot) {
+        rotate(0, yRot, 0);
+    }
+
+    /**
+     * Rotates the point around the origin
+     * @param zRot The rotation around the z-axis (in degrees)
+     */
+    public void rotateZ(double zRot) {
+        rotate(0, 0, zRot);
     }
 
     @Override

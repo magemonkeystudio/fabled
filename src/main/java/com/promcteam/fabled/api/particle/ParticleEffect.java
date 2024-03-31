@@ -35,6 +35,7 @@ import com.promcteam.fabled.data.Point3D;
 import com.promcteam.fabled.data.formula.Formula;
 import com.promcteam.fabled.data.formula.IValue;
 import com.promcteam.fabled.data.formula.value.CustomValue;
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
@@ -46,7 +47,7 @@ import java.util.Set;
 /**
  * A particle effect that can be played
  */
-public class ParticleEffect {
+public class ParticleEffect implements IParticleEffect {
     private static final XZHandler flatRot = (XZHandler) Directions.byName("XZ");
 
     private final PolarSettings    shape;
@@ -62,8 +63,10 @@ public class ParticleEffect {
     private final double   initialRotation;
     private final Matrix3D rotMatrix;
 
+    @Getter
     private final String name;
 
+    @Getter
     private final int interval;
     private final int view;
 
@@ -138,20 +141,6 @@ public class ParticleEffect {
 
         int points = shape.getPoints(shapeDir).length;
         animation.getPoints(animDir);
-    }
-
-    /**
-     * @return name of the effect
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @return time between each frame in ticks
-     */
-    public int getInterval() {
-        return interval;
     }
 
     /**

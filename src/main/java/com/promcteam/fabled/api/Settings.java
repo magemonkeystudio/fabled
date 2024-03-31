@@ -146,6 +146,34 @@ public class Settings {
     }
 
     /**
+     * Retrieves a float value from the settings. If the setting is
+     * not set, this will instead return 0.
+     *
+     * @param key setting key
+     * @return float setting value
+     */
+    public float getFloat(String key) {
+        return getFloat(key, 0f);
+    }
+
+    /**
+     * Retrieves a float value from the settings. If the setting is
+     * not set, this will instead return 0.
+     *
+     * @param key          setting key
+     * @param defaultValue the default value in case not set
+     * @return float setting value
+     */
+    public float getFloat(String key, float defaultValue) {
+        if (settings.containsKey(key)) {
+            return Float.parseFloat(settings.get(key).toString());
+        } else {
+            set(key, defaultValue);
+            return defaultValue;
+        }
+    }
+
+    /**
      * Retrieves an integer value from the settings. If the setting is
      * not set, this will instead return 0.
      *

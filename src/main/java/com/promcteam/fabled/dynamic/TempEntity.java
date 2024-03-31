@@ -164,6 +164,22 @@ public class TempEntity implements LivingEntity {
 
     }
 
+    @Nullable
+    @Override
+    public ItemStack getItemInUse() {
+        return null;
+    }
+
+    @Override
+    public int getItemInUseTicks() {
+        return 0;
+    }
+
+    @Override
+    public void setItemInUseTicks(int i) {
+
+    }
+
     @Override
     public int getArrowCooldown() {
         return 0;

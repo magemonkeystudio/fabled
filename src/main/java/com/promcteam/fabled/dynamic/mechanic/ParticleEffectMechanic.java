@@ -50,6 +50,6 @@ public class ParticleEffectMechanic extends MechanicComponent {
         for (LivingEntity target : targets)
             player.start(new EntityTarget(target), key, duration, level, true);
 
-        return targets.size() > 0;
+        return !targets.isEmpty();
     }
 }

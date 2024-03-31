@@ -26,6 +26,9 @@
  */
 package com.promcteam.fabled.api.enums;
 
+import com.promcteam.fabled.api.particle.MatrixUtil;
+import com.promcteam.fabled.data.Matrix3D;
+
 /**
  * Direction used in the Particle class that are defined by what directions it uses for 2D shapes
  */
@@ -44,5 +47,19 @@ public enum Direction {
     /**
      * X-axis and Z-axis
      */
-    XZ
+    XZ;
+
+    /**
+     * Gets the rotation matrix for the direction.
+     * This matrix can be used to transform a point from the XY plane into the direction's plane.
+     *
+     * @return The rotation matrix
+     */
+    public Matrix3D getMatrix() {
+        return MatrixUtil.getRotationMatrix(
+                this == XZ ? 90 : 0,
+                this == YZ ? 90 : 0,
+                0
+        );
+    }
 }

@@ -28,6 +28,7 @@ package com.promcteam.fabled.api.particle;
 
 import com.promcteam.codex.mccore.config.CommentedConfig;
 import com.promcteam.codex.mccore.config.parse.DataSection;
+import com.promcteam.codex.util.FileUT;
 import com.promcteam.fabled.Fabled;
 import com.promcteam.fabled.api.particle.direction.XZHandler;
 import com.promcteam.fabled.api.particle.target.EffectTarget;
@@ -36,18 +37,20 @@ import com.promcteam.fabled.task.EffectTask;
 import com.promcteam.fabled.thread.MainThread;
 import org.bukkit.entity.LivingEntity;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Handles the management of particle effects and related components
  */
 public class EffectManager {
-    private static Map<EffectTarget, EffectData> instances = new ConcurrentHashMap<EffectTarget, EffectData>();
-    private static Map<String, ParticleEffect>   effects   = new HashMap<String, ParticleEffect>();
-    private static Map<String, PolarSettings>    formulas  = new HashMap<String, PolarSettings>();
+    private static Map<EffectTarget, EffectData> instances = new ConcurrentHashMap<>();
+    private static Map<String, IParticleEffect>  effects   = new HashMap<>();
+    private static Map<String, PolarSettings>    formulas  = new HashMap<>();
 
     /**
      * Initializes the utility, loading formulas from the config file
@@ -61,6 +64,16 @@ public class EffectManager {
             if (key.equals("one-circle")) {
                 formulas.get(key).getPoints(XZHandler.instance);
             }
+        }
+
+        try {
+            File imagesDir = new File(Fabled.inst().getDataFolder(), "images");
+            if (!imagesDir.exists() && imagesDir.mkdirs()) {
+                FileUT.copy(Objects.requireNonNull(Fabled.inst().getResource("images/default.png")),
+                        new File(imagesDir, "default.png"));
+            }
+        } catch (Exception e) {
+            Fabled.inst().getLogger().warning("Failed to create images directory: " + e.getMessage());
         }
 
         MainThread.register(new EffectTask());
@@ -78,7 +91,7 @@ public class EffectManager {
      *
      * @param effect effect to register
      */
-    public static void register(ParticleEffect effect) {
+    public static void register(IParticleEffect effect) {
         if (effect != null) {
             effects.put(effect.getName(), effect);
         }
@@ -112,7 +125,7 @@ public class EffectManager {
      * @param name name of the effect
      * @return particle effect
      */
-    public static ParticleEffect getEffect(String name) {
+    public static IParticleEffect getEffect(String name) {
         return effects.get(name);
     }
 
@@ -140,7 +153,7 @@ public class EffectManager {
      * Gets the effect data for the given target
      *
      * @param target target to get the data for
-     * @return effect data for the target or null if doesn't exist
+     * @return effect data for the target or null if it doesn't exist
      */
     public static EffectData getEffectData(EffectTarget target) {
         return instances.get(target);
@@ -171,7 +184,7 @@ public class EffectManager {
      * @param ticks  ticks to run for
      * @param level  effect level
      */
-    public static void runEffect(ParticleEffect effect, EffectTarget target, int ticks, int level) {
+    public static void runEffect(IParticleEffect effect, EffectTarget target, int ticks, int level) {
         if (!instances.containsKey(target)) {
             instances.put(target, new EffectData(target));
         }
