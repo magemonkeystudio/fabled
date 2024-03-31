@@ -1,13 +1,13 @@
 <script lang='ts'>
 	import { active, activeType, setImporting, toggleSidebar } from '../data/store';
 	import { get }                                             from 'svelte/store';
-	import { createPaste }                                     from '$api/hastebin';
-	import ProClass                                            from '$api/proclass';
-	import ProSkill                                            from '$api/proskill';
-	import YAML                                                from 'yaml';
+	import { createPaste } from '$api/hastebin';
+	import FabledClass from '$api/fabled-class';
+	import FabledSkill from '$api/fabled-skill';
+	import YAML        from 'yaml';
 
 	const haste = () => {
-		let act: ProClass | ProSkill | undefined = get(active);
+		let act: FabledClass | FabledSkill | undefined = get(active);
 		if (!act) return;
 
 		let data = YAML.stringify({ [act.name]: act.serializeYaml() }, { lineWidth: 0 });

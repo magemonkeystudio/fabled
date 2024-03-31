@@ -1,10 +1,10 @@
 import { active, isShowClasses }   from '../../../../data/store';
 import { get }                     from 'svelte/store';
 import { redirect }                from '@sveltejs/kit';
-import { skills }                  from '../../../../data/skill-store';
-import type ProClass               from '$api/proclass';
-import type ProSkill               from '$api/proskill';
-import YAML                        from 'yaml';
+import { skills }       from '../../../../data/skill-store';
+import type FabledClass from '$api/fabled-class';
+import type FabledSkill from '$api/fabled-skill';
+import YAML             from 'yaml';
 import type { MultiSkillYamlData } from '$api/types';
 
 export const ssr = false;
@@ -14,8 +14,8 @@ export const ssr = false;
 export async function load({ params }) {
 	const name    = params.id;
 	const isSkill = params.type === 'skill';
-	let data: ProClass | ProSkill | undefined;
-	let fallback: ProClass | ProSkill | undefined;
+	let data: FabledClass | FabledSkill | undefined;
+	let fallback: FabledClass | FabledSkill | undefined;
 	if (!isSkill) {
 		redirect(302, `/${params.type}/${params.id}/edit`);
 	} else if (isSkill) {
@@ -35,12 +35,12 @@ export async function load({ params }) {
 				const yamlData = <MultiSkillYamlData>YAML.parse(localStorage.getItem(`sapi.skill.${data.name}`) || '');
 
 				if (yamlData && Object.keys(yamlData).length > 0) {
-					(<ProSkill>data).load(Object.values(yamlData)[0]);
+					(<FabledSkill>data).load(Object.values(yamlData)[0]);
 				}
 			} else {
 				// TODO Load data from server
 			}
-			(<ProSkill>data).postLoad();
+			(<FabledSkill>data).postLoad();
 		}
 
 		active.set(data);

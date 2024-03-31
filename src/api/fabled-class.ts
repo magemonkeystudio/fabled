@@ -1,12 +1,12 @@
 import type { ClassYamlData, Icon, ProClassData, Serializable } from './types';
-import type ProSkill                                            from './proskill';
-import { ProAttribute }                                         from './proattribute';
-import { getSkill }                                             from '../data/skill-store';
+import type FabledSkill    from './fabled-skill';
+import { FabledAttribute } from './fabled-attribute';
+import { getSkill }        from '../data/skill-store';
 import { parseBool, toEditorCase, toProperCase }                from './api';
 import type { SkillTree }                                       from '$api/SkillTree';
 import YAML                                                     from 'yaml';
 
-export default class ProClass implements Serializable {
+export default class FabledClass implements Serializable {
 	dataType                     = 'class';
 	location: 'local' | 'server' = 'local';
 	loaded                       = false;
@@ -20,25 +20,25 @@ export default class ProClass implements Serializable {
 	manaName             = '&2Mana';
 	maxLevel             = 40;
 	parentStr            = '';
-	_parent?: ProClass;
+	_parent?: FabledClass;
 	get parent() {
 		return this._parent;
 	}
 
-	set parent(parent: ProClass | undefined) {
+	set parent(parent: FabledClass | undefined) {
 		this._parent   = parent;
 		this.parentStr = parent ? parent.name : '';
 	}
 
 	permission                 = false;
 	expSources                 = 273;
-	manaRegen                  = 1;
-	health: ProAttribute       = new ProAttribute('health', 20, 1);
-	mana: ProAttribute         = new ProAttribute('mana', 20, 1);
-	attributes: ProAttribute[] = [];
-	skillTree: SkillTree       = 'Requirement';
-	skills: ProSkill[]         = [];
-	icon: Icon                 = {
+	manaRegen                     = 1;
+	health: FabledAttribute       = new FabledAttribute('health', 20, 1);
+	mana: FabledAttribute         = new FabledAttribute('mana', 20, 1);
+	attributes: FabledAttribute[] = [];
+	skillTree: SkillTree          = 'Requirement';
+	skills: FabledSkill[] = [];
+	icon: Icon            = {
 		material:        'Pumpkin',
 		customModelData: 0
 	};
@@ -114,7 +114,7 @@ export default class ProClass implements Serializable {
 		attribs = attribs.filter(a => !included.includes(a));
 
 		for (const attrib of attribs) {
-			this.attributes.push(new ProAttribute(attrib, 0, 0));
+			this.attributes.push(new FabledAttribute(attrib, 0, 0));
 		}
 	};
 
@@ -162,7 +162,7 @@ export default class ProClass implements Serializable {
 		return yaml;
 	};
 
-	public updateParent = (classes: ProClass[]) => {
+	public updateParent = (classes: FabledClass[]) => {
 		if (!this.parentStr) return;
 		this.parent = classes.find(c => c.name === this.parentStr);
 	};
@@ -178,16 +178,16 @@ export default class ProClass implements Serializable {
 		this.permission = parseBool(yaml['needs-permission']);
 
 		const attributes = yaml.attributes;
-		this.health      = new ProAttribute('health', attributes['health-base'] || 20, attributes['health-scale'] || 1);
-		this.mana        = new ProAttribute('mana', attributes['mana-base'] || 20, attributes['mana-scale'] || 1);
+		this.health      = new FabledAttribute('health', attributes['health-base'] || 20, attributes['health-scale'] || 1);
+		this.mana        = new FabledAttribute('mana', attributes['mana-base'] || 20, attributes['mana-scale'] || 1);
 
-		const map: { [key: string]: ProAttribute } = {};
+		const map: { [key: string]: FabledAttribute } = {};
 		for (const attrId of Object.keys(attributes)) {
 			const split = attrId.split('-');
 			const name  = split[0];
 			if (map[name] || name === 'health' || name === 'mana') continue;
 
-			const attr = new ProAttribute(name, 0, 0);
+			const attr = new FabledAttribute(name, 0, 0);
 			attr.base  = attributes[`${name}-base`];
 			attr.scale = attributes[`${name}-scale`];
 			map[name]  = attr;
@@ -197,7 +197,7 @@ export default class ProClass implements Serializable {
 		this.manaRegen            = yaml['mana-regen'];
 		this.skillTree            = <SkillTree>toProperCase(yaml['skill-tree']);
 		this.unusableItems        = yaml.blacklist;
-		this.skills               = <ProSkill[]>yaml.skills.map(s => getSkill(s)).filter(s => !!s);
+		this.skills               = <FabledSkill[]>yaml.skills.map(s => getSkill(s)).filter(s => !!s);
 		this.icon.material        = toEditorCase(yaml.icon);
 		this.icon.customModelData = yaml['icon-data'];
 		this.icon.lore            = yaml['icon-lore'];

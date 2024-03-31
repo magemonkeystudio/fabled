@@ -1,16 +1,16 @@
 <script lang='ts'>
-	import ProFolder                                                                       from '$api/profolder';
-	import { slide }                                                                       from 'svelte/transition';
+	import FabledFolder from '$api/fabled-folder';
+	import { slide }    from 'svelte/transition';
 	import { deleteFolder, dragging, getFolder, removeFolder, sidebarOpen, updateFolders } from '../data/store';
-	import ProClass                                                                        from '$api/proclass';
-	import ProSkill                                                                        from '$api/proskill';
-	import { get }                                                                         from 'svelte/store';
+	import FabledClass from '$api/fabled-class';
+	import FabledSkill from '$api/fabled-skill';
+	import { get }     from 'svelte/store';
 	import SidebarEntry
 																																												 from '$components/sidebar/SidebarEntry.svelte';
 	import { goto }                                                                        from '$app/navigation';
 	import { base }                                                                        from '$app/paths';
 
-	export let folder: ProFolder;
+	export let folder: FabledFolder;
 	let elm: HTMLElement;
 
 	let focus = () => {
@@ -53,14 +53,14 @@
 
 	const drop = () => {
 		over                                            = false;
-		const dragData: ProClass | ProSkill | ProFolder = get(dragging);
+		const dragData: FabledClass | FabledSkill | FabledFolder = get(dragging);
 		if (!dragData) return;
 		if (folder.data.includes(dragData)) return;
 
 		const containing = getFolder(dragData);
 		if (containing) containing.remove(dragData);
 
-		if (dragData instanceof ProFolder) {
+		if (dragData instanceof FabledFolder) {
 			removeFolder(dragData);
 			dragData.parent = folder;
 		}
@@ -151,7 +151,7 @@
 {#if folder.open}
 	<div class='folder-content' transition:slide>
 		{#each folder.data as data (data.key)}
-			{#if data instanceof ProFolder}
+			{#if data instanceof FabledFolder}
 				<svelte:self folder={data} />
 			{:else}
 				<SidebarEntry {data}

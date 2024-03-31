@@ -1,10 +1,10 @@
 <script lang="ts">
   import ProInput                  from "$input/ProInput.svelte";
   import { createEventDispatcher } from "svelte";
-  import AttributeInput            from "$input/AttributeInput.svelte";
-  import type { ProAttribute }     from "$api/proattribute";
+  import AttributeInput           from "$input/AttributeInput.svelte";
+  import type { FabledAttribute } from "$api/fabled-attribute";
 
-  export let data: ProAttribute;
+  export let data: FabledAttribute;
   export let name: string | undefined    = "";
   export let tooltip: string | undefined = undefined;
 

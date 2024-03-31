@@ -1,32 +1,32 @@
 import type { Writable }           from 'svelte/store';
-import { get, writable }           from 'svelte/store';
-import ProFolder                   from '$api/profolder';
-import { active, rename }          from './store';
+import { get, writable }  from 'svelte/store';
+import FabledFolder       from '$api/fabled-folder';
+import { active, rename } from './store';
 import { sort }                    from '$api/api';
-import { browser }                 from '$app/environment';
-import ProClass                    from '$api/proclass';
-import ProSkill                    from '$api/proskill';
-import { goto }                    from '$app/navigation';
+import { browser } from '$app/environment';
+import FabledClass from '$api/fabled-class';
+import FabledSkill from '$api/fabled-skill';
+import { goto }    from '$app/navigation';
 import { base }                    from '$app/paths';
 import type { MultiClassYamlData } from '$api/types';
 import YAML                        from 'yaml';
 
 let isLegacy = false;
 
-const loadClassTextToArray = (text: string): ProClass[] => {
-	const list: ProClass[] = [];
+const loadClassTextToArray = (text: string): FabledClass[] => {
+	const list: FabledClass[] = [];
 	// Load classes
-	const data             = <MultiClassYamlData>YAML.parse(text);
+	const data                = <MultiClassYamlData>YAML.parse(text);
 
 	const keys = Object.keys(data);
 
-	let clazz: ProClass;
+	let clazz: FabledClass;
 	// If we only have one class, and it is the current YAML,
 	// the structure is a bit different
 	if (keys.length == 1) {
 		const key = keys[0];
 		if (key === 'loaded') return list;
-		clazz = new ProClass({ name: key });
+		clazz = new FabledClass({ name: key });
 		clazz.load(data[key]);
 		list.push(clazz);
 		return list;
@@ -34,7 +34,7 @@ const loadClassTextToArray = (text: string): ProClass[] => {
 
 	for (const key of Object.keys(data)) {
 		if (key != 'loaded') {
-			clazz = new ProClass({ name: key });
+			clazz = new FabledClass({ name: key });
 			clazz.load(data[key]);
 			list.push(clazz);
 		}
@@ -71,28 +71,28 @@ const setupClassStore = <T>(key: string,
 	};
 };
 
-export const classes: Writable<ProClass[]> = setupClassStore<ProClass[]>(
+export const classes: Writable<FabledClass[]> = setupClassStore<FabledClass[]>(
 	browser && localStorage.getItem('classNames') ? 'classNames' : 'classData', [],
 	(data: string) => {
 		if (localStorage.getItem('classNames')) {
 			return data.split(', ').map(name => {
-				const clazz = new ProClass({ name, location: 'local' });
+				const clazz = new FabledClass({ name, location: 'local' });
 				return clazz;
 			}).filter(cl => localStorage.getItem('sapi.class.' + cl.name));
 		} else {
 			localStorage.removeItem('classData');
 			isLegacy = true;
-			return sort<ProClass>(loadClassTextToArray(data));
+			return sort<FabledClass>(loadClassTextToArray(data));
 		}
 	},
-	(value: ProClass[]) => {
+	(value: FabledClass[]) => {
 		persistClasses(value);
 		value.forEach(c => c.updateParent(value));
-		return sort<ProClass>(value);
+		return sort<FabledClass>(value);
 	},
-	(saved: ProClass[]) => saved.forEach(c => c.updateParent(saved))); // This will be the gotcha here
+	(saved: FabledClass[]) => saved.forEach(c => c.updateParent(saved))); // This will be the gotcha here
 
-export const getClass = (name: string): ProClass | undefined => {
+export const getClass = (name: string): FabledClass | undefined => {
 	for (const c of get(classes)) {
 		if (c.name == name) return c;
 	}
@@ -100,7 +100,7 @@ export const getClass = (name: string): ProClass | undefined => {
 	return undefined;
 };
 
-export const classFolders: Writable<ProFolder[]> = setupClassStore<ProFolder[]>('classFolders', [],
+export const classFolders: Writable<FabledFolder[]> = setupClassStore<FabledFolder[]>('classFolders', [],
 	(data: string) => {
 		if (!data || data === 'null') return [];
 
@@ -111,7 +111,7 @@ export const classFolders: Writable<ProFolder[]> = setupClassStore<ProFolder[]>(
 					return getClass(value);
 				}
 
-				const folder = new ProFolder(value.data);
+				const folder = new FabledFolder(value.data);
 				folder.name  = value.name;
 				return folder;
 			}
@@ -120,14 +120,14 @@ export const classFolders: Writable<ProFolder[]> = setupClassStore<ProFolder[]>(
 
 		return parsedData;
 	},
-	(value: ProFolder[]) => {
-		const data = JSON.stringify(value, (key, value: ProFolder | ProClass | ProSkill) => {
-			if (value instanceof ProClass || value instanceof ProSkill) return value.name;
+	(value: FabledFolder[]) => {
+		const data = JSON.stringify(value, (key, value: FabledFolder | FabledClass | FabledSkill) => {
+			if (value instanceof FabledClass || value instanceof FabledSkill) return value.name;
 			else if (key === 'parent') return undefined;
 			return value;
 		});
 		localStorage.setItem('classFolders', data);
-		return sort<ProFolder>(value);
+		return sort<FabledFolder>(value);
 	});
 
 export const updateAllAttributes = (attributes: string[]) =>
@@ -135,13 +135,13 @@ export const updateAllAttributes = (attributes: string[]) =>
 
 export const isClassNameTaken = (name: string): boolean => !!getClass(name);
 
-export const addClass = (name?: string): ProClass => {
+export const addClass = (name?: string): FabledClass => {
 	const cl  = get(classes);
 	let index = cl.length + 1;
 	while (!name && isClassNameTaken(name || 'Class ' + index)) {
 		index++;
 	}
-	const clazz = new ProClass({ name: (name || 'Class ' + index) });
+	const clazz = new FabledClass({ name: (name || 'Class ' + index) });
 	cl.push(clazz);
 
 	classes.set(cl);
@@ -149,7 +149,7 @@ export const addClass = (name?: string): ProClass => {
 	return clazz;
 };
 
-export const loadClass = (data: ProClass) => {
+export const loadClass = (data: FabledClass) => {
 	if (data.loaded) return;
 	if (data.location === 'local') {
 		const yamlData = <MultiClassYamlData>YAML.parse(localStorage.getItem(`sapi.class.${data.name}`) || '');
@@ -162,17 +162,17 @@ export const loadClass = (data: ProClass) => {
 	data.loaded = true;
 };
 
-export const cloneClass = (data: ProClass): ProClass => {
+export const cloneClass = (data: FabledClass): FabledClass => {
 	if (!data.loaded) loadClass(data);
 
-	const cl: ProClass[] = get(classes);
-	let name             = data.name + ' (Copy)';
-	let i                = 1;
+	const cl: FabledClass[] = get(classes);
+	let name                = data.name + ' (Copy)';
+	let i                   = 1;
 	while (isClassNameTaken(name)) {
 		name = data.name + ' (Copy ' + i + ')';
 		i++;
 	}
-	const clazz    = new ProClass();
+	const clazz    = new FabledClass();
 	const yamlData = data.serializeYaml();
 	clazz.load(yamlData);
 	clazz.name = name;
@@ -183,7 +183,7 @@ export const cloneClass = (data: ProClass): ProClass => {
 	return clazz;
 };
 
-export const addClassFolder = (folder: ProFolder) => {
+export const addClassFolder = (folder: FabledFolder) => {
 	const folders = get(classFolders);
 	if (folders.includes(folder)) return;
 
@@ -194,11 +194,11 @@ export const addClassFolder = (folder: ProFolder) => {
 	classFolders.set(folders);
 };
 
-export const deleteClassFolder = (folder: ProFolder, deleteCheck?: (subfolder: ProFolder) => boolean) => {
+export const deleteClassFolder = (folder: FabledFolder, deleteCheck?: (subfolder: FabledFolder) => boolean) => {
 	const folders = get(classFolders).filter(f => f != folder);
 
 	folder.data.forEach(d => {
-		if (d instanceof ProFolder) {
+		if (d instanceof FabledFolder) {
 			if (deleteCheck && deleteCheck(d)) {
 				deleteClassFolder(d, deleteCheck);
 				return;
@@ -215,21 +215,21 @@ export const deleteClassFolder = (folder: ProFolder, deleteCheck?: (subfolder: P
 	classFolders.set(folders);
 };
 
-export const deleteClass = (data: ProClass) => {
+export const deleteClass = (data: FabledClass) => {
 	const filtered = get(classes).filter(c => c != data);
 	const act      = get(active);
 	classes.set(filtered);
 	localStorage.removeItem('sapi.class.' + data.name);
 
-	if (!(act instanceof ProClass)) return;
+	if (!(act instanceof FabledClass)) return;
 
 	if (filtered.length === 0) goto(`${base}/`);
 	else if (!filtered.find(cl => cl === get(active))) goto(`${base}/class/${filtered[0].name}/edit`);
 };
 
-export const refreshClasses      = () => classes.set(sort<ProClass>(get(classes)));
+export const refreshClasses      = () => classes.set(sort<FabledClass>(get(classes)));
 export const refreshClassFolders = () => {
-	classFolders.set(sort<ProFolder>(get(classFolders)));
+	classFolders.set(sort<FabledFolder>(get(classFolders)));
 	refreshClasses();
 };
 
@@ -248,12 +248,12 @@ export const loadClassText = (text: string, fromServer: boolean = false) => {
 
 	const keys = Object.keys(data);
 
-	let clazz: ProClass;
+	let clazz: FabledClass;
 	// If we only have one class, and it is the current YAML,
 	// the structure is a bit different
 	if (keys.length == 1) {
 		const key: string = keys[0];
-		clazz             = (<ProClass>(isClassNameTaken(key)
+		clazz             = (<FabledClass>(isClassNameTaken(key)
 			? getClass(key)
 			: addClass(key)));
 		if (fromServer) clazz.location = 'server';
@@ -264,7 +264,7 @@ export const loadClassText = (text: string, fromServer: boolean = false) => {
 
 	for (const key of Object.keys(data)) {
 		if (key != 'loaded' && !isClassNameTaken(key)) {
-			clazz = (<ProClass>(isClassNameTaken(key)
+			clazz = (<FabledClass>(isClassNameTaken(key)
 				? getClass(key)
 				: addClass(key)));
 			clazz.load(data[key]);
@@ -280,7 +280,7 @@ export const loadClasses = (e: ProgressEvent<FileReader>) => {
 	loadClassText(text);
 };
 
-export const persistClasses = (list?: ProClass[]) => {
+export const persistClasses = (list?: FabledClass[]) => {
 	const classList = (list || get(classes)).filter(c => c.location === 'local');
 	localStorage.setItem('classNames', classList.map(c => c.name).join(', '));
 };

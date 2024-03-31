@@ -1,22 +1,22 @@
-import type { Writable }                          from 'svelte/store';
-import { get, writable }                          from 'svelte/store';
-import ProFolder                                  from '$api/profolder';
-import { sort }                                   from '$api/api';
-import { browser }                                from '$app/environment';
-import ProSkill                                   from '$api/proskill';
-import { active, rename }                         from './store';
-import { goto }                                   from '$app/navigation';
-import { base }                                   from '$app/paths';
-import { initialized }                            from '$api/components/registry';
-import YAML                                       from 'yaml';
-import type { MultiSkillYamlData, SkillYamlData } from '$api/types';
+import type { Writable }           from 'svelte/store';
+import { get, writable }           from 'svelte/store';
+import FabledFolder                from '$api/fabled-folder';
+import { sort }                    from '$api/api';
+import { browser }                 from '$app/environment';
+import FabledSkill                 from '$api/fabled-skill';
+import { active, rename }          from './store';
+import { goto }                    from '$app/navigation';
+import { base }                    from '$app/paths';
+import { initialized }             from '$api/components/registry';
+import YAML                        from 'yaml';
+import type { MultiSkillYamlData } from '$api/types';
 
 let isLegacy = false;
 
-const loadSkillTextToArray = (text: string): ProSkill[] => {
-	const list: ProSkill[] = [];
+const loadSkillTextToArray = (text: string): FabledSkill[] => {
+	const list: FabledSkill[] = [];
 	// Load skills
-	const data             = <MultiSkillYamlData>YAML.parse(text);
+	const data                = <MultiSkillYamlData>YAML.parse(text);
 	if (!data || Object.keys(data).length === 0) {
 		// If there is no data or the object is empty... return
 		return list;
@@ -24,13 +24,13 @@ const loadSkillTextToArray = (text: string): ProSkill[] => {
 
 	const keys = Object.keys(data);
 
-	let skill: ProSkill;
+	let skill: FabledSkill;
 	// If we only have one skill, and it is the current YAML,
 	// the structure is a bit different
 	if (keys.length == 1) {
 		const key = keys[0];
 		if (key === 'loaded') return list;
-		skill = new ProSkill({ name: key });
+		skill = new FabledSkill({ name: key });
 		skill.load(data[key]);
 		list.push(skill);
 		return list;
@@ -38,7 +38,7 @@ const loadSkillTextToArray = (text: string): ProSkill[] => {
 
 	for (const key of Object.keys(data)) {
 		if (key != 'loaded') {
-			skill = new ProSkill({ name: key });
+			skill = new FabledSkill({ name: key });
 			skill.load(data[key]);
 			list.push(skill);
 		}
@@ -46,11 +46,11 @@ const loadSkillTextToArray = (text: string): ProSkill[] => {
 	return list;
 };
 
-const setupSkillStore = <T extends ProSkill[] | ProFolder[]>(key: string,
-																														 def: T,
-																														 mapper: (data: string) => T,
-																														 setAction: (data: T) => T,
-																														 postLoad?: (saved: T) => void): Writable<T> => {
+const setupSkillStore = <T extends FabledSkill[] | FabledFolder[]>(key: string,
+																																	 def: T,
+																																	 mapper: (data: string) => T,
+																																	 setAction: (data: T) => T,
+																																	 postLoad?: (saved: T) => void): Writable<T> => {
 	let saved: T = def;
 	if (browser) {
 		const stored = localStorage.getItem(key);
@@ -75,27 +75,27 @@ const setupSkillStore = <T extends ProSkill[] | ProFolder[]>(key: string,
 	};
 };
 
-export const skills: Writable<ProSkill[]> = setupSkillStore<ProSkill[]>(
+export const skills: Writable<FabledSkill[]> = setupSkillStore<FabledSkill[]>(
 	browser && localStorage.getItem('skillNames') ? 'skillNames' : 'skillData',
 	[],
 	(data: string) => {
 		if (localStorage.getItem('skillNames')) {
 			return data.split(', ').map(name => {
-				const skill = new ProSkill({ name, location: 'local' });
+				const skill = new FabledSkill({ name, location: 'local' });
 				return skill;
 			}).filter(sk => localStorage.getItem('sapi.skill.' + sk.name));
 		} else {
 			localStorage.removeItem('skillData');
 			isLegacy = true;
-			return sort<ProSkill>(loadSkillTextToArray(data));
+			return sort<FabledSkill>(loadSkillTextToArray(data));
 		}
 	},
-	(value: ProSkill[]) => {
+	(value: FabledSkill[]) => {
 		persistSkills();
-		return sort<ProSkill>(value);
+		return sort<FabledSkill>(value);
 	});
 
-export const getSkill = (name: string): ProSkill | undefined => {
+export const getSkill = (name: string): FabledSkill | undefined => {
 	for (const c of get(skills)) {
 		if (c.name == name) return c;
 	}
@@ -103,7 +103,7 @@ export const getSkill = (name: string): ProSkill | undefined => {
 	return undefined;
 };
 
-export const skillFolders: Writable<ProFolder[]> = setupSkillStore<ProFolder[]>('skillFolders', [],
+export const skillFolders: Writable<FabledFolder[]> = setupSkillStore<FabledFolder[]>('skillFolders', [],
 	(data: string) => {
 		if (!data || data === 'null') return [];
 
@@ -114,7 +114,7 @@ export const skillFolders: Writable<ProFolder[]> = setupSkillStore<ProFolder[]>(
 					return getSkill(value);
 				}
 
-				const folder = new ProFolder(value.data);
+				const folder = new FabledFolder(value.data);
 				folder.name  = value.name;
 				return folder;
 			}
@@ -123,25 +123,25 @@ export const skillFolders: Writable<ProFolder[]> = setupSkillStore<ProFolder[]>(
 
 		return parsedData;
 	},
-	(value: ProFolder[]) => {
-		const data = JSON.stringify(value, (key, value: ProFolder | ProSkill | ProSkill) => {
-			if (value instanceof ProSkill || value instanceof ProSkill) return value.name;
+	(value: FabledFolder[]) => {
+		const data = JSON.stringify(value, (key, value: FabledFolder | FabledSkill | FabledSkill) => {
+			if (value instanceof FabledSkill || value instanceof FabledSkill) return value.name;
 			else if (key === 'parent') return undefined;
 			return value;
 		});
 		localStorage.setItem('skillFolders', data);
-		return sort<ProFolder>(value);
+		return sort<FabledFolder>(value);
 	});
 
 export const isSkillNameTaken = (name: string): boolean => !!getSkill(name);
 
-export const addSkill = (name?: string): ProSkill => {
+export const addSkill = (name?: string): FabledSkill => {
 	const allSkills = get(skills);
 	let index       = allSkills.length + 1;
 	while (!name && isSkillNameTaken(name || 'Skill ' + index)) {
 		index++;
 	}
-	const skill = new ProSkill({ name: (name || 'Skill ' + index) });
+	const skill = new FabledSkill({ name: (name || 'Skill ' + index) });
 	allSkills.push(skill);
 
 	skills.set(allSkills);
@@ -149,7 +149,7 @@ export const addSkill = (name?: string): ProSkill => {
 	return skill;
 };
 
-export const loadSkill = (data: ProSkill) => {
+export const loadSkill = (data: FabledSkill) => {
 	if (data.loaded) return;
 
 	if (data.location === 'local') {
@@ -163,18 +163,18 @@ export const loadSkill = (data: ProSkill) => {
 	data.postLoad();
 };
 
-export const cloneSkill = (data: ProSkill): ProSkill => {
+export const cloneSkill = (data: FabledSkill): FabledSkill => {
 	if (!data.loaded) loadSkill(data);
 
-	const sk: ProSkill[] = get(skills);
-	let name             = data.name + ' (Copy)';
-	let i                = 1;
+	const sk: FabledSkill[] = get(skills);
+	let name                = data.name + ' (Copy)';
+	let i                   = 1;
 	while (isSkillNameTaken(name)) {
 		name = data.name + ' (Copy ' + i + ')';
 		i++;
 	}
-	const skill     = new ProSkill();
-	const yamlData  = data.serializeYaml();
+	const skill    = new FabledSkill();
+	const yamlData = data.serializeYaml();
 	skill.load(yamlData);
 	skill.name = name;
 	sk.push(skill);
@@ -184,7 +184,7 @@ export const cloneSkill = (data: ProSkill): ProSkill => {
 	return skill;
 };
 
-export const addSkillFolder = (folder: ProFolder) => {
+export const addSkillFolder = (folder: FabledFolder) => {
 	const folders = get(skillFolders);
 	if (folders.includes(folder)) return;
 
@@ -196,12 +196,12 @@ export const addSkillFolder = (folder: ProFolder) => {
 };
 
 
-export const deleteSkillFolder = (folder: ProFolder, deleteCheck?: (subfolder: ProFolder) => boolean) => {
+export const deleteSkillFolder = (folder: FabledFolder, deleteCheck?: (subfolder: FabledFolder) => boolean) => {
 	const folders = get(skillFolders).filter(f => f != folder);
 
 	// If there are any subfolders or skills, move them to the parent or root
 	folder.data.forEach(d => {
-		if (d instanceof ProFolder) {
+		if (d instanceof FabledFolder) {
 			if (deleteCheck && deleteCheck(d)) {
 				deleteSkillFolder(d, deleteCheck);
 				return;
@@ -218,21 +218,21 @@ export const deleteSkillFolder = (folder: ProFolder, deleteCheck?: (subfolder: P
 	skillFolders.set(folders);
 };
 
-export const deleteSkill = (data: ProSkill) => {
+export const deleteSkill = (data: FabledSkill) => {
 	const filtered = get(skills).filter(c => c != data);
 	const act      = get(active);
 	skills.set(filtered);
 	localStorage.removeItem('sapi.skill.' + data.name);
 
-	if (!(act instanceof ProSkill)) return;
+	if (!(act instanceof FabledSkill)) return;
 
 	if (filtered.length === 0) goto(`${base}/`);
 	else if (!filtered.find(sk => sk === get(active))) goto(`${base}/skill/${filtered[0].name}`);
 };
 
-export const refreshSkills       = () => skills.set(sort<ProSkill>(get(skills)));
+export const refreshSkills       = () => skills.set(sort<FabledSkill>(get(skills)));
 export const refreshSkillFolders = () => {
-	skillFolders.set(sort<ProFolder>(get(skillFolders)));
+	skillFolders.set(sort<FabledFolder>(get(skillFolders)));
 	refreshSkills();
 };
 
@@ -251,12 +251,12 @@ export const loadSkillText = async (text: string, fromServer: boolean = false) =
 
 	const keys = Object.keys(data);
 
-	let skill: ProSkill;
+	let skill: FabledSkill;
 	// If we only have one skill, and it is the current YAML,
 	// the structure is a bit different
 	if (keys.length == 1) {
 		const key: string = keys[0];
-		skill             = (<ProSkill>(isSkillNameTaken(key)
+		skill             = (<FabledSkill>(isSkillNameTaken(key)
 			? getSkill(key)
 			: addSkill(key)));
 		if (fromServer) skill.location = 'server';
@@ -268,7 +268,7 @@ export const loadSkillText = async (text: string, fromServer: boolean = false) =
 
 	for (const key of Object.keys(data)) {
 		if (key != 'loaded' && !isSkillNameTaken(key)) {
-			skill = (<ProSkill>(isSkillNameTaken(key)
+			skill = (<FabledSkill>(isSkillNameTaken(key)
 				? getSkill(key)
 				: addSkill(key)));
 			skill.load(data[key]);
@@ -288,7 +288,7 @@ export const loadSkills = async (e: ProgressEvent<FileReader>) => {
 export const isSaving: Writable<boolean> = writable(false);
 
 let saveTask: NodeJS.Timeout;
-export const persistSkills = (list?: ProSkill[]) => {
+export const persistSkills = (list?: FabledSkill[]) => {
 	if (get(isSaving) && saveTask) {
 		clearTimeout(saveTask);
 	}

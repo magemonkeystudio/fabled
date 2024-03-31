@@ -1,15 +1,15 @@
 import type { ComponentOption } from '$api/options/options';
 import { Requirements }         from '$api/options/options';
-import ClassSelectOption        from '$components/options/ClassSelectOption.svelte';
-import ProClass                 from '$api/proclass';
-import type { Unknown }         from '$api/types';
+import ClassSelectOption from '$components/options/ClassSelectOption.svelte';
+import FabledClass       from '$api/fabled-class';
+import type { Unknown }  from '$api/types';
 
 export default class ClassSelect extends Requirements implements ComponentOption {
 	component                                       = ClassSelectOption;
 	name: string;
 	key: string;
-	data: ProClass[] | ProClass | string[] | string = [];
-	tooltip: string | undefined                     = undefined;
+	data: FabledClass[] | FabledClass | string[] | string = [];
+	tooltip: string | undefined                           = undefined;
 	multiple                                        = true;
 
 	constructor(name: string, key: string, multiple = true) {
@@ -30,21 +30,21 @@ export default class ClassSelect extends Requirements implements ComponentOption
 		return select;
 	};
 
-	getData = (): { [key: string]: ProClass[] | ProClass | string[] | string } => {
-		const data: { [key: string]: ProClass[] | ProClass | string[] | string } = {};
+	getData = (): { [key: string]: FabledClass[] | FabledClass | string[] | string } => {
+		const data: { [key: string]: FabledClass[] | FabledClass | string[] | string } = {};
 
 		if (this.data instanceof Array)
-			data[this.key] = this.data.map(cl => cl instanceof ProClass ? cl.name : cl);
+			data[this.key] = this.data.map(cl => cl instanceof FabledClass ? cl.name : cl);
 		else
-			data[this.key] = this.data instanceof ProClass ? this.data.name : this.data;
+			data[this.key] = this.data instanceof FabledClass ? this.data.name : this.data;
 		return data;
 	};
 
 	getSummary = (): string => {
 		if (this.data instanceof Array) {
 			// Join the names of the classes with commas
-			return this.data.map(cl => cl instanceof ProClass ? cl.name : cl).join(', ');
-		} else if (this.data instanceof ProClass) {
+			return this.data.map(cl => cl instanceof FabledClass ? cl.name : cl).join(', ');
+		} else if (this.data instanceof FabledClass) {
 			// Return the name of the class
 			return this.data.name;
 		} else {
