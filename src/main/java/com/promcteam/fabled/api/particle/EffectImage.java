@@ -28,15 +28,17 @@ package com.promcteam.fabled.api.particle;
 
 import com.promcteam.fabled.Fabled;
 import com.promcteam.fabled.api.Settings;
-import com.promcteam.fabled.api.enums.Direction;
-import com.promcteam.fabled.api.particle.direction.Directions;
-import com.promcteam.fabled.api.particle.direction.XYHandler;
 import com.promcteam.fabled.api.particle.target.EffectTarget;
-import com.promcteam.fabled.data.Matrix3D;
 import com.promcteam.fabled.data.Point3D;
+import com.promcteam.fabled.data.formula.Formula;
+import com.promcteam.fabled.data.formula.value.CustomValue;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Color;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -45,21 +47,16 @@ import java.io.IOException;
  * Handles playing effects based on configuration settings
  */
 public class EffectImage {
-    private static final XYHandler flat = (XYHandler) Directions.byName("XY");
-
-    private static final String IMG              = "img";
-    public static final  String INTERVAL         = "interval";
-    public static final  String VIEW_RANGE       = "view-range";
-    private static final String DIRECTION        = "direction";
-    private static final String WIDTH            = "width";
-    private static final String HEIGHT           = "height";
-    private static final String LOCK_ASPECT      = "lock-aspect";
-    private static final String RESOLUTION       = "resolution";
-    private static final String DUST_SIZE        = "dust-size";
-    private static final String ROTATION         = "rotation";
-    private static final String FORWARD_ROTATION = "forward-rotation";
-    private static final String SPIN             = "spin";
-    private static final String WITH_ROTATION    = "with-rotation";
+    private static final String IMG            = "img";
+    public static final  String INTERVAL       = "interval";
+    public static final  String ITER_PER_FRAME = "iterations-per-frame";
+    public static final  String VIEW_RANGE     = "view-range";
+    private static final String WIDTH          = "width";
+    private static final String HEIGHT         = "height";
+    private static final String LOCK_ASPECT    = "lock-aspect";
+    private static final String RESOLUTION     = "resolution";
+    private static final String DUST_SIZE      = "dust-size";
+    private static final String WITH_ROTATION  = "with-rotation";
 
     private final Settings settings;
 
@@ -103,12 +100,48 @@ public class EffectImage {
      * @param key effect key
      */
     private void makeEffect(String key) {
+        String fileName = settings.getString(IMG, "default.png");
         File file = new File(Fabled.inst().getDataFolder(),
-                "images" + File.separator + settings.getString(IMG, "default.png"));
+                "images" + File.separator + fileName);
         if (!file.exists()) {
             Fabled.inst().getLogger().warning("Image file not found: " + file.getPath());
             return;
         }
+
+        Formula dustSizeFormula = new Formula(
+                settings.getString(DUST_SIZE, "1"),
+                new CustomValue("t"),
+                new CustomValue("l")
+        );
+
+        ImageData imgData = readImage(file);
+        if (imgData == null) {
+            Fabled.inst().getLogger().warning("Failed to read image file: " + file.getPath());
+            return;
+        }
+
+        // Make the effect
+        ParticleImage effect = new ParticleImage(
+                key,
+                imgData.getColors(),
+                imgData.getPoints(),
+                dustSizeFormula,
+                settings.getInt(INTERVAL, 5),
+                settings.getInt(ITER_PER_FRAME, 3),
+                settings.getInt(VIEW_RANGE, 25),
+                settings.getBool(WITH_ROTATION, false),
+                new TimeBasedTransform(settings)
+        );
+
+        // Register the effect
+        EffectManager.register(effect);
+    }
+
+    private ImageData readImage(File file) {
+        if (file.getName().endsWith(".gif")) {
+            return readGif(file);
+        }
+
         BufferedImage original;
         try {
             original = ImageIO.read(file);
@@ -117,7 +150,7 @@ public class EffectImage {
                     .getLogger()
                     .warning("Failed to read image file: " + file.getPath() + " (" + e.getMessage() + ")");
             e.printStackTrace();
-            return;
+            return null;
         }
 
         // Scale the image to the desired size
@@ -138,9 +171,63 @@ public class EffectImage {
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         image.getGraphics()
                 .drawImage(original.getScaledInstance(width, height, BufferedImage.SCALE_SMOOTH), 0, 0, null);
+        Color[][]   colors = new Color[1][width * height];
+        Point3D[][] points = new Point3D[1][width * height];
+
+        FrameData frameData = getFrameData(image, resolution);
+        colors[0] = frameData.getColors();
+        points[0] = frameData.getPoints();
+
+        return new ImageData(colors, points);
+    }
+
+    private ImageData readGif(File file) {
+        try {
+            ImageReader      reader = ImageIO.getImageReadersByFormatName("gif").next();
+            ImageInputStream stream = ImageIO.createImageInputStream(file);
+            reader.setInput(stream);
+            BufferedImage image = reader.read(0);
+
+            // Scale the image to the desired size
+            int     resolution = settings.getInt(RESOLUTION, 6);
+            boolean lockAspect = settings.getBool(LOCK_ASPECT, true);
+            int     width      = settings.getInt(WIDTH, 3) * resolution;
+            int     height     = settings.getInt(HEIGHT, width / resolution) * resolution;
+
+            if (lockAspect) {
+                double aspect = (double) image.getWidth() / image.getHeight();
+                if (aspect > 1) {
+                    width = (int) (width * aspect);
+                } else {
+                    height = (int) (height / aspect);
+                }
+            }
+
+            int         frames = reader.getNumImages(true);
+            Color[][]   colors = new Color[frames][width * height];
+            Point3D[][] points = new Point3D[frames][width * height];
+            for (int index = 0; index < frames; index++) {
+                BufferedImage frameImage = reader.read(index);
+                BufferedImage frame      = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+                frame.getGraphics()
+                        .drawImage(frameImage.getScaledInstance(width, height, BufferedImage.SCALE_SMOOTH), 0, 0, null);
+                FrameData data = getFrameData(frame, resolution);
+                colors[index] = data.getColors();
+                points[index] = data.getPoints();
+            }
+
+            return new ImageData(colors, points);
+        } catch (IOException ex) {
+            // An I/O problem has occurred
+            return null;
+        }
+    }
+
+    private FrameData getFrameData(BufferedImage img, int resolution) {
+        int       width  = img.getWidth();
+        int       height = img.getHeight();
         Color[]   colors = new Color[width * height];
         Point3D[] points = new Point3D[width * height];
-
         // Get the image's pixels
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -150,7 +237,7 @@ public class EffectImage {
                 points[x + y * width] = new Point3D(relativeX, relativeY, 0);
 
                 // Get the color of the pixel
-                int color = image.getRGB(width - x - 1, height - y - 1);
+                int color = img.getRGB(width - x - 1, height - y - 1);
                 // If the color is transparent, skip it
                 if ((color & 0xFF000000) == 0) continue;
 
@@ -163,19 +250,20 @@ public class EffectImage {
             }
         }
 
-        // Make the effect
-        ParticleImage effect = new ParticleImage(
-                key,
-                colors,
-                points,
-                settings.getFloat(DUST_SIZE, 0.1f),
-                settings.getInt(INTERVAL, 5),
-                settings.getInt(VIEW_RANGE, 25),
-                settings.getBool(WITH_ROTATION, false),
-                new TimeBasedTransform(settings)
-        );
+        return new FrameData(colors, points);
+    }
 
-        // Register the effect
-        EffectManager.register(effect);
+    @Data
+    @RequiredArgsConstructor
+    private static class FrameData {
+        private final Color[]   colors;
+        private final Point3D[] points;
+    }
+
+    @Data
+    @RequiredArgsConstructor
+    private static class ImageData {
+        private final Color[][]   colors;
+        private final Point3D[][] points;
     }
 }

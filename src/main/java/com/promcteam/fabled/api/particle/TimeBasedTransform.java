@@ -6,6 +6,7 @@ import com.promcteam.fabled.data.Matrix3D;
 import com.promcteam.fabled.data.Point3D;
 import com.promcteam.fabled.data.formula.Formula;
 import com.promcteam.fabled.data.formula.value.CustomValue;
+import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
 public class TimeBasedTransform {
@@ -28,7 +29,7 @@ public class TimeBasedTransform {
     private final        Formula       translateFowardFormula;
     private final        Formula       translateUpFormula;
     private final        Formula       translateRightFormula;
-    private final Direction direction;
+    private final        Direction     direction;
 
     public TimeBasedTransform(Settings settings) {
         this.rotateFormula = new Formula(
@@ -63,7 +64,7 @@ public class TimeBasedTransform {
         this.direction = Direction.valueOf(settings.getString("direction", "XY"));
     }
 
-    public Point3D[] apply(Point3D[] points, Vector forward, int iteration, int level) {
+    public Point3D[] apply(Point3D[] points, Location loc, boolean withRotation, int iteration, int level) {
         double rotate           = rotateFormula.compute(iteration, level);
         double spin             = spinFormula.compute(iteration, level);
         double tilt             = tiltFormula.compute(iteration, level);
@@ -72,17 +73,19 @@ public class TimeBasedTransform {
         double translateUp      = translateUpFormula.compute(iteration, level);
         double translateRight   = translateRightFormula.compute(iteration, level);
 
-        forward.setY(0).normalize();
-        forward.multiply(translateForward)
-                .add(forward.clone().crossProduct(UP).multiply(translateRight));
-        forward.setY(translateUp);
-
         Matrix3D directionMatrix = direction.getMatrix();
-        Matrix3D rotationMatrix = MatrixUtil.getRotationMatrix(tilt, spin, rotate);
-        Matrix3D scaleMatrix    = MatrixUtil.getScaleMatrix(newScale);
+        Matrix3D pointedRotation = withRotation ? MatrixUtil.getRotationMatrix(0, -loc.getYaw(), 0) : null;
+        Matrix3D rotationMatrix  = MatrixUtil.getRotationMatrix(tilt, spin, rotate);
+        Matrix3D scaleMatrix     = MatrixUtil.getScaleMatrix(newScale);
 
-        Matrix3D finalMatrix = MatrixUtil.multiply(directionMatrix, rotationMatrix, scaleMatrix);
+        Matrix3D finalMatrix = MatrixUtil.multiply(pointedRotation, directionMatrix, rotationMatrix, scaleMatrix);
 
-        return MatrixUtil.translate(finalMatrix.multiply(points), forward.getX(), forward.getY(), forward.getZ());
+        Vector dir   = loc.getDirection().setY(0).normalize();
+        Vector right = dir.clone().crossProduct(UP).normalize();
+        Vector offset = new Vector()
+                .add(dir.clone().multiply(translateForward))
+                .add(right.clone().multiply(translateRight))
+                .setY(translateUp);
+        return MatrixUtil.translate(finalMatrix.multiply(points), offset.getX(), offset.getY(), offset.getZ());
     }
 }

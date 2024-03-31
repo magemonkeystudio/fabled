@@ -94,8 +94,9 @@ public class MatrixUtil {
     }
 
     public static Matrix3D multiply(Matrix3D base, Matrix3D... matrices) {
-        Matrix3D result = base;
+        Matrix3D result = base == null ? IDENTITY : base;
         for (Matrix3D matrix : matrices) {
+            if (matrix == null) continue;
             result = multiply(result, matrix);
         }
         return result;

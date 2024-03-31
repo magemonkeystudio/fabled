@@ -26,10 +26,10 @@
  */
 package com.promcteam.fabled.api.particle;
 
-import com.promcteam.fabled.api.particle.direction.Directions;
-import com.promcteam.fabled.api.particle.direction.XZHandler;
 import com.promcteam.fabled.data.Point3D;
+import com.promcteam.fabled.data.formula.Formula;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -41,45 +41,19 @@ import java.util.Set;
 /**
  * A particle effect image that can be played
  */
+@RequiredArgsConstructor
 public class ParticleImage implements IParticleEffect {
-    private static final XZHandler flatRot = (XZHandler) Directions.byName("XZ");
-
-    private final Color[]   colors;
-    private final Point3D[] points;
-
-    private final float particleSize;
-
-    private final boolean withRotation;
-
     @Getter
-    private final String name;
-
+    private final String             name;
+    private final Color[][]          colors;
+    private final Point3D[][]        points;
+    private final Formula            particleSizeFormula;
     @Getter
     private final int                interval;
+    private final int                iterationsPerFrame;
     private final int                view;
+    private final boolean            withRotation;
     private final TimeBasedTransform transform;
-
-    public ParticleImage(
-            String name,
-            Color[] colors,
-            Point3D[] points,
-            float particleSize,
-            int interval,
-            int viewRange,
-            boolean withRotation,
-            TimeBasedTransform transform
-    ) {
-        this.name = name;
-        this.colors = colors;
-        this.points = points;
-
-        this.particleSize = particleSize;
-        this.withRotation = withRotation;
-
-        this.interval = interval;
-        this.view = viewRange;
-        this.transform = transform;
-    }
 
     /**
      * Plays the effect
@@ -96,15 +70,15 @@ public class ParticleImage implements IParticleEffect {
 
         if (players.isEmpty()) return;
 
-        boolean withRotation = this.withRotation && loc.getYaw() != 0;
-        Point3D[] displayPoints =
-                withRotation
-                        ? MatrixUtil.getRotationMatrix(0, -loc.getYaw(), 0).multiply(points)
-                        : points;
-
+        int       gifFrame      = iterationsPerFrame == 0 ? 1 : frame / iterationsPerFrame;
+        Point3D[] framePoints   = points[gifFrame % points.length];
+        Color[]   colors        = this.colors[gifFrame % this.colors.length];
+        Point3D[] displayPoints = framePoints;
         if (transform != null) {
-            displayPoints = transform.apply(displayPoints, loc.getDirection(), frame, level);
+            displayPoints = transform.apply(displayPoints, loc, withRotation, frame, level);
         }
+
+        float particleSize = (float) particleSizeFormula.compute(frame, level);
 
         for (int i = 0; i < displayPoints.length; i++) {
             Point3D point = displayPoints[i];
