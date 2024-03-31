@@ -1,15 +1,15 @@
 <script lang='ts'>
     import { updateSidebar } from '../data/store';
-    import ProInput                            from './input/ProInput.svelte';
-    import type ProSkill                       from '$api/proskill';
-    import SearchableSelect                    from './input/SearchableSelect.svelte';
+    import ProInput         from './input/ProInput.svelte';
+    import type FabledSkill from '$api/fabled-skill';
+    import SearchableSelect from './input/SearchableSelect.svelte';
     import Toggle                              from './input/Toggle.svelte';
     import AttributeInput                      from './input/AttributeInput.svelte';
     import IconInput                           from './input/IconInput.svelte';
     import { skills }                          from '../data/skill-store';
     import DynamicAttributeInput               from '$input/DynamicAttributeInput.svelte';
 
-    export let data: ProSkill;
+    export let data: FabledSkill;
 
     $: {
         if (data?.name) updateSidebar();

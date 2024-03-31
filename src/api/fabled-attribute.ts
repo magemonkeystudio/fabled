@@ -1,4 +1,4 @@
-export class ProAttribute {
+export class FabledAttribute {
 	name: string;
 	base: number;
 	scale: number;

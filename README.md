@@ -1,4 +1,4 @@
-# ProSkillAPI Editor
+# Fabled Editor
 
 This project is powered by [SvelteKit](https://kit.svelte.dev/).
 

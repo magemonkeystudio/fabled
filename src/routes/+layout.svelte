@@ -364,6 +364,7 @@
 
     #body-container {
         max-width: 100dvw;
+        height: 10%;
         flex-grow: 1;
         display: flex;
         flex-direction: row;
@@ -376,6 +377,7 @@
         /*padding-bottom: 1rem;*/
         width: 10%;
         flex: 1;
+        overflow: auto;
     }
 
     #body.centered {

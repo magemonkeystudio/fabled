@@ -1,5 +1,5 @@
 import type { Icon, ProSkillData, Serializable, SkillYamlData, YamlComponentData } from './types';
-import { ProAttribute }                                                            from './proattribute';
+import { FabledAttribute }                                                         from './fabled-attribute';
 import { getSkill, isSaving }                                                      from '../data/skill-store';
 import ProTrigger                                                                  from './components/triggers';
 import type ProComponent                                                           from '$api/components/procomponent';
@@ -9,32 +9,32 @@ import { saveError }                                                            
 import YAML                                                                        from 'yaml';
 import { toEditorCase }                                                            from '$api/api';
 
-export default class ProSkill implements Serializable {
+export default class FabledSkill implements Serializable {
 	dataType                     = 'skill';
 	location: 'local' | 'server' = 'local';
 	loaded                       = false;
 	tooBig                       = false;
 	acknowledged                 = false;
 
-	isSkill                               = true;
-	public key                            = {};
+	isSkill                     = true;
+	public key                  = {};
 	name: string;
-	previousName: string                  = '';
+	previousName: string        = '';
 	type                                  = 'Dynamic';
-	maxLevel                              = 5;
-	skillReq?: ProSkill;
-	skillReqLevel                         = 0;
-	attributeRequirements: ProAttribute[] = [];
-	permission: boolean                   = false;
-	levelReq: ProAttribute                = new ProAttribute('level', 1, 0);
-	cost: ProAttribute                    = new ProAttribute('cost', 1, 0);
-	cooldown: ProAttribute                = new ProAttribute('cooldown', 0, 0);
-	cooldownMessage: boolean              = true;
-	mana: ProAttribute                    = new ProAttribute('mana', 0, 0);
-	minSpent: ProAttribute                = new ProAttribute('points-spent-req', 0, 0);
-	castMessage                           = '&6{player} &2has cast &6{skill}';
+	maxLevel                    = 5;
+	skillReq?: FabledSkill;
+	skillReqLevel                            = 0;
+	attributeRequirements: FabledAttribute[] = [];
+	permission: boolean                      = false;
+	levelReq: FabledAttribute                = new FabledAttribute('level', 1, 0);
+	cost: FabledAttribute                    = new FabledAttribute('cost', 1, 0);
+	cooldown: FabledAttribute                = new FabledAttribute('cooldown', 0, 0);
+	cooldownMessage: boolean                 = true;
+	mana: FabledAttribute                    = new FabledAttribute('mana', 0, 0);
+	minSpent: FabledAttribute                = new FabledAttribute('points-spent-req', 0, 0);
+	castMessage                              = '&6{player} &2has cast &6{skill}';
 	combo                                 = '';
-	icon: Icon                            = {
+	icon: Icon                  = {
 		material:        'Pumpkin',
 		customModelData: 0,
 		lore:            [
@@ -48,8 +48,8 @@ export default class ProSkill implements Serializable {
 			'&2Cooldown: {attr:cooldown}'
 		]
 	};
-	incompatible: ProSkill[]              = [];
-	triggers: ProTrigger[]                = [];
+	incompatible: FabledSkill[] = [];
+	triggers: ProTrigger[]      = [];
 
 	private skillReqStr         = '';
 	private incompStr: string[] = [];
@@ -62,7 +62,7 @@ export default class ProSkill implements Serializable {
 		if (data.maxLevel) this.maxLevel = data.maxLevel;
 		if (data.skillReq) this.skillReq = data.skillReq;
 		if (data.skillReqLevel) this.skillReqLevel = data.skillReqLevel;
-		if (data.attributeRequirements) this.attributeRequirements = data.attributeRequirements.map(a => new ProAttribute(a.name, a.base, a.scale));
+		if (data.attributeRequirements) this.attributeRequirements = data.attributeRequirements.map(a => new FabledAttribute(a.name, a.base, a.scale));
 		if (data.permission) this.permission = data.permission;
 		if (data.levelReq) this.levelReq = data.levelReq;
 		if (data.cost) this.cost = data.cost;
@@ -174,16 +174,16 @@ export default class ProSkill implements Serializable {
 		this.combo           = yaml.combo;
 
 		const attributes = yaml.attributes;
-		this.levelReq    = new ProAttribute('level', attributes['level-base'], attributes['level-scale']);
-		this.cost        = new ProAttribute('cost', attributes['cost-base'], attributes['cost-scale']);
-		this.cooldown    = new ProAttribute('cooldown', attributes['cooldown-base'], attributes['cooldown-scale']);
-		this.mana        = new ProAttribute('mana', attributes['mana-base'], attributes['mana-scale']);
-		this.minSpent    = new ProAttribute('points-spent-req', attributes['points-spent-req-base'], attributes['points-spent-req-scale']);
+		this.levelReq    = new FabledAttribute('level', attributes['level-base'], attributes['level-scale']);
+		this.cost        = new FabledAttribute('cost', attributes['cost-base'], attributes['cost-scale']);
+		this.cooldown    = new FabledAttribute('cooldown', attributes['cooldown-base'], attributes['cooldown-scale']);
+		this.mana        = new FabledAttribute('mana', attributes['mana-base'], attributes['mana-scale']);
+		this.minSpent    = new FabledAttribute('points-spent-req', attributes['points-spent-req-base'], attributes['points-spent-req-scale']);
 		this.incompStr   = attributes.incompatible;
 
 		const reserved             = ['level', 'cost', 'cooldown', 'mana', 'points-spent-req', 'incompatible'];
 		const names                = new Set(Object.keys(attributes).map(k => k.replace(/-(base|scale)/i, '')).filter(name => !reserved.includes(name)));
-		this.attributeRequirements = [...names].map(name => new ProAttribute(name, attributes[`${name}-base`], attributes[`${name}-scale`]));
+		this.attributeRequirements = [...names].map(name => new FabledAttribute(name, attributes[`${name}-base`], attributes[`${name}-scale`]));
 
 		this.icon.material        = toEditorCase(yaml.icon);
 		this.icon.customModelData = yaml['icon-data'];
@@ -205,7 +205,7 @@ export default class ProSkill implements Serializable {
 
 	public postLoad = () => {
 		this.skillReq     = getSkill(this.skillReqStr);
-		this.incompatible = <ProSkill[]>this.incompStr.map(s => getSkill(s)).filter(s => !!s);
+		this.incompatible = <FabledSkill[]>this.incompStr.map(s => getSkill(s)).filter(s => !!s);
 	};
 
 	public save = () => {

@@ -1,6 +1,6 @@
 <script lang='ts'>
-	import type ProClass          from '$api/proclass';
-	import IconInput              from './input/IconInput.svelte';
+	import type FabledClass from '$api/fabled-class';
+	import IconInput        from './input/IconInput.svelte';
 	import MaterialSelect         from './input/MaterialSelect.svelte';
 	import SearchableSelect       from './input/SearchableSelect.svelte';
 	import { updateSidebar }      from '../data/store';
@@ -9,7 +9,7 @@
 	import { expSources }         from '../version/data';
 	import { toProperCase }       from '$api/api';
 	import { onDestroy, onMount } from 'svelte';
-	import { ProAttribute }       from '$api/proattribute';
+	import { FabledAttribute }    from '$api/fabled-attribute';
 	import ProInput               from './input/ProInput.svelte';
 	import { classes }            from '../data/class-store';
 	import { attributes }         from '../data/attribute-store';
@@ -18,7 +18,7 @@
 	import LoreInput              from '$input/LoreInput.svelte';
 	import type { Unsubscriber }  from 'svelte/store';
 
-	export let data: ProClass;
+	export let data: FabledClass;
 
 	let combosShown = false;
 	let sub: Unsubscriber;
@@ -37,7 +37,7 @@
 			attr = attr.filter(a => !included.includes(a));
 
 			for (const attrib of attr) {
-				data.attributes.push(new ProAttribute(attrib, 0, 0));
+				data.attributes.push(new FabledAttribute(attrib, 0, 0));
 			}
 		});
 	});

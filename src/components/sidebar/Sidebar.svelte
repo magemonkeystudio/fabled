@@ -7,11 +7,11 @@
 	import { goto }                                            from '$app/navigation';
 	import { beforeUpdate, onDestroy, onMount }                from 'svelte';
 	import type { Unsubscriber }                               from 'svelte/store';
-	import { get }                                             from 'svelte/store';
-	import ProFolder                                           from '$api/profolder';
-	import ProClass                                            from '$api/proclass';
-	import ProSkill                                            from '$api/proskill';
-	import Folder                                              from '../Folder.svelte';
+	import { get }      from 'svelte/store';
+	import FabledFolder from '$api/fabled-folder';
+	import FabledClass from '$api/fabled-class';
+	import FabledSkill from '$api/fabled-skill';
+	import Folder      from '../Folder.svelte';
 	import { fly }                                             from 'svelte/transition';
 	import { clickOutside }                                    from '$api/clickoutside';
 	import { browser }                                         from '$app/environment';
@@ -20,22 +20,22 @@
 	import { base }                                            from '$app/paths';
 	import { socketService }                                   from '$api/socket/socket-connector';
 
-	let folders: ProFolder[]                      = [];
+	let folders: FabledFolder[] = [];
 	let classSub: Unsubscriber;
 	let skillSub: Unsubscriber;
-	let classIncluded: Array<ProClass | ProSkill> = [];
-	let skillIncluded: Array<ProClass | ProSkill> = [];
+	let classIncluded: Array<FabledClass | FabledSkill> = [];
+	let skillIncluded: Array<FabledClass | FabledSkill> = [];
 
 	let width: number;
 	let height: number;
 	let scrollY: number;
-	const appendIncluded = (item: Array<ProFolder | ProClass | ProSkill> | ProFolder | ProClass | ProSkill, include: Array<ProClass | ProSkill>) => {
+	const appendIncluded                                = (item: Array<FabledFolder | FabledClass | FabledSkill> | FabledFolder | FabledClass | FabledSkill, include: Array<FabledClass | FabledSkill>) => {
 		if (item instanceof Array) item.forEach(fold => appendIncluded(fold, include));
-		if (item instanceof ProFolder) appendIncluded(item.data, include);
-		else if (item instanceof ProClass || item instanceof ProSkill) include.push(item);
+		if (item instanceof FabledFolder) appendIncluded(item.data, include);
+		else if (item instanceof FabledClass || item instanceof FabledSkill) include.push(item);
 	};
 
-	const rebuildFolders = (fold?: ProFolder[]) => {
+	const rebuildFolders = (fold?: FabledFolder[]) => {
 		if (get(isShowClasses)) {
 			folders       = fold || get(classFolders);
 			classIncluded = [];
@@ -107,8 +107,8 @@
 					<span class='new-folder'
 								tabindex='0'
 								role='button'
-								on:click={() => addClassFolder(new ProFolder())}
-								on:keypress={(e) => e.key === 'Enter' && addClassFolder(new ProFolder())}>New Folder</span>
+								on:click={() => addClassFolder(new FabledFolder())}
+								on:keypress={(e) => e.key === 'Enter' && addClassFolder(new FabledFolder())}>New Folder</span>
 				</div>
 			</SidebarEntry>
 		</div>
@@ -139,8 +139,8 @@
 					<span class='new-folder'
 								tabindex='0'
 								role='button'
-								on:click={() => addSkillFolder(new ProFolder())}
-								on:keypress={(e) => e.key === 'Enter' && addSkillFolder(new ProFolder())}>New Folder</span>
+								on:click={() => addSkillFolder(new FabledFolder())}
+								on:keypress={(e) => e.key === 'Enter' && addSkillFolder(new FabledFolder())}>New Folder</span>
 				</div>
 			</SidebarEntry>
 		</div>

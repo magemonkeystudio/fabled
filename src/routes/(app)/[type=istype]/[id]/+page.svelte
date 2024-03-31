@@ -1,6 +1,6 @@
 <script lang='ts'>
-	import type ProSkill                                  from '$api/proskill';
-	import ComponentWidget                                from '$components/ComponentWidget.svelte';
+	import type FabledSkill from '$api/fabled-skill';
+	import ComponentWidget  from '$components/ComponentWidget.svelte';
 	import Modal                                          from '$components/Modal.svelte';
 	import type { Unsubscriber }                          from 'svelte/store';
 	import { get }                                        from 'svelte/store';
@@ -13,8 +13,8 @@
 	import ComponentSection                               from '$components/modal/component/ComponentSection.svelte';
 	import ProComponent                                   from '$api/components/procomponent';
 
-	export let data: { data: ProSkill };
-	let skill: ProSkill;
+	export let data: { data: FabledSkill };
+	let skill: FabledSkill;
 	$: if (data) skill = data.data;
 	let triggerModal = false;
 
@@ -47,7 +47,7 @@
 </script>
 
 <svelte:head>
-	<title>ProSkillAPI Dynamic Editor - {skill.name}</title>
+	<title>Fabled Dynamic Editor - {skill.name}</title>
 </svelte:head>
 <div class='header'>
 	<h2>
@@ -110,7 +110,7 @@
         width: 100%;
         z-index: 20;
         position: sticky;
-        top: 3rem;
+        top: 0;
         background: var(--color-bg);
     }
 
@@ -128,7 +128,7 @@
         flex-wrap: nowrap;
         width: 100%;
         max-width: 100%;
-        overflow-x: auto;
+        overflow: auto;
         padding-inline: 2rem;
         flex-grow: 1;
     }

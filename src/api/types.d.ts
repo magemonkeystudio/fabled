@@ -1,7 +1,7 @@
-import ProSkill         from './proskill';
-import ProClass         from './proclass';
-import { ProAttribute } from './proattribute';
-import ProTrigger       from './components/triggers';
+import FabledSkill from './fabled-skill';
+import FabledClass         from './fabled-class';
+import { FabledAttribute } from './fabled-attribute';
+import ProTrigger          from './components/triggers';
 import ProComponent     from '$api/components/procomponent';
 import ComponentOption  from './options/options';
 
@@ -12,15 +12,15 @@ export interface ProClassData {
 	group?: string;
 	manaName?: string;
 	maxLevel?: number;
-	parent?: ProClass;
+	parent?: FabledClass;
 	permission?: boolean;
 	expSources?: number;
-	health?: ProAttribute;
-	mana?: ProAttribute;
+	health?: FabledAttribute;
+	mana?: FabledAttribute;
 	manaRegen?: number;
-	attributes?: ProAttribute[];
+	attributes?: FabledAttribute[];
 	skillTree?: 'Custom' | 'Requirement' | 'Basic Horizontal' | 'Basic Vertical' | 'Level Horizontal' | 'Level Vertical' | 'Flood';
-	skills?: ProSkill[];
+	skills?: FabledSkill[];
 	icon?: Icon;
 	unusableItems?: string[];
 	actionBar?: string;
@@ -45,21 +45,21 @@ export interface ProSkillData {
 	location?: 'local' | 'server';
 	type?: string;
 	maxLevel?: number;
-	skillReq?: ProSkill;
+	skillReq?: FabledSkill;
 	skillReqLevel?: number;
-	attributeRequirements?: ProAttribute[];
+	attributeRequirements?: FabledAttribute[];
 	permission?: boolean;
-	levelReq?: ProAttribute;
-	cost?: ProAttribute;
-	cooldown?: ProAttribute;
+	levelReq?: FabledAttribute;
+	cost?: FabledAttribute;
+	cooldown?: FabledAttribute;
 	cooldownMessage?: boolean;
-	mana?: ProAttribute;
-	minSpent?: ProAttribute;
+	mana?: FabledAttribute;
+	minSpent?: FabledAttribute;
 	castMessage?: string;
 	combo?: string;
 	indicator?: '2D' | '3D' | 'None';
 	icon?: Icon;
-	incompatible?: ProSkill[];
+	incompatible?: FabledSkill[];
 
 	triggers?: ProTrigger[];
 }

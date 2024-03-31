@@ -107,7 +107,7 @@
 			 tabindex='0'
 			 role='searchbox'
 			 on:click={() => input.focus()}
-			 on:keypress={(e) => { if (e.key == 'Enter' || e.key == ' ') e.preventDefault(); }}
+			 on:keypress={(e) => { if (e.key == 'Enter') e.preventDefault(); }}
 			 class:focused={focused}>
 		{#if multiple && selected instanceof Array}
 			{#each selected as sel (transformer.transform(sel))}

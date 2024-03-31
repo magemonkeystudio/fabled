@@ -1,16 +1,16 @@
 import type { ComponentOption } from '$api/options/options';
 import { Requirements }         from '$api/options/options';
-import SkillSelectOption        from '$components/options/SkillSelectOption.svelte';
-import ProSkill                 from '$api/proskill';
-import type { Unknown }         from '$api/types';
+import SkillSelectOption from '$components/options/SkillSelectOption.svelte';
+import FabledSkill       from '$api/fabled-skill';
+import type { Unknown }  from '$api/types';
 import { getSkill }             from '../../data/skill-store';
 
 export default class SkillSelect extends Requirements implements ComponentOption {
 	component                                       = SkillSelectOption;
 	name: string;
 	key: string;
-	data: ProSkill[] | ProSkill | string[] | string = [];
-	tooltip: string | undefined                     = undefined;
+	data: FabledSkill[] | FabledSkill | string[] | string = [];
+	tooltip: string | undefined                           = undefined;
 	multiple                                        = true;
 
 	constructor(name: string, key: string, multiple = true) {
@@ -31,21 +31,21 @@ export default class SkillSelect extends Requirements implements ComponentOption
 		return select;
 	};
 
-	getData = (): { [key: string]: ProSkill[] | ProSkill | string[] | string } => {
-		const data: { [key: string]: ProSkill[] | ProSkill | string[] | string } = {};
+	getData = (): { [key: string]: FabledSkill[] | FabledSkill | string[] | string } => {
+		const data: { [key: string]: FabledSkill[] | FabledSkill | string[] | string } = {};
 
 		if (this.data instanceof Array)
-			data[this.key] = this.data.map(skill => skill instanceof ProSkill ? skill.name : skill);
+			data[this.key] = this.data.map(skill => skill instanceof FabledSkill ? skill.name : skill);
 		else
-			data[this.key] = this.data instanceof ProSkill ? this.data.name : this.data;
+			data[this.key] = this.data instanceof FabledSkill ? this.data.name : this.data;
 		return data;
 	};
 
 	getSummary = (): string => {
 		if (this.data instanceof Array)
-			return this.data.map(skill => skill instanceof ProSkill ? skill.name : skill).join(', ');
+			return this.data.map(skill => skill instanceof FabledSkill ? skill.name : skill).join(', ');
 		else
-			return this.data instanceof ProSkill ? this.data.name : this.data;
+			return this.data instanceof FabledSkill ? this.data.name : this.data;
 	};
 
 	deserialize = (yaml: Unknown) => {
@@ -53,9 +53,9 @@ export default class SkillSelect extends Requirements implements ComponentOption
 
 		// Let's attempt to get the skill from the skill store before creating a dummy skill for display
 		if (skillName instanceof Array) {
-			this.data = skillName.map(skill => getSkill(skill) || new ProSkill({ name: skill }));
+			this.data = skillName.map(skill => getSkill(skill) || new FabledSkill({ name: skill }));
 		} else if (skillName)
-			this.data = getSkill(skillName) || new ProSkill({ name: skillName });
+			this.data = getSkill(skillName) || new FabledSkill({ name: skillName });
 		else
 			this.data = this.multiple ? [] : '';
 	};

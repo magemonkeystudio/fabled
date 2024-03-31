@@ -43,7 +43,7 @@
 		{#if tooltip && tooltip.length > 0 && hovered}
 			<div class='tooltip' class:top={ypos < window.innerHeight / 2.5}
 					 transition:fly={{x: -20, duration: 100}}>
-				{tooltip}
+				{@html tooltip}
 			</div>
 		{/if}
 		<span class='display'

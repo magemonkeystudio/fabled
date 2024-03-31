@@ -1,24 +1,24 @@
 <script lang='ts'>
-	import ProClass     from '$api/proclass';
-	import ProSkill     from '$api/proskill';
+	import FabledClass  from '$api/fabled-class';
+	import FabledSkill  from '$api/fabled-skill';
 	import ClassDetails from '$components/ClassDetails.svelte';
 	import SkillDetails from '$components/SkillDetails.svelte';
 	import { base }     from '$app/paths';
 
-	export let data: { data: ProClass | ProSkill };
+	export let data: { data: FabledClass | FabledSkill };
 </script>
 
 <svelte:head>
-	<title>ProSkillAPI Dynamic Editor - {data.data.name}</title>
+	<title>Fabled Dynamic Editor - {data.data.name}</title>
 </svelte:head>
 <h1>{data?.data?.name}
-	{#if data?.data instanceof ProSkill}
+	{#if data?.data instanceof FabledSkill}
 		<a href='{base}/skill/{data.data.name}' class='material-symbols-rounded chip edit-skill'>auto_fix</a>
 	{/if}
 </h1>
 <hr />
 <div class='container'>
-	{#if data?.data instanceof ProClass}
+	{#if data?.data instanceof FabledClass}
 		<ClassDetails bind:data={data.data} />
 	{:else}
 		<SkillDetails bind:data={data.data} />

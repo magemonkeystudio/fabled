@@ -1,7 +1,7 @@
-import type ProFolder from './profolder';
-import type ProClass  from './proclass';
-import type ProSkill  from './proskill';
-import { browser }    from '$app/environment';
+import type FabledFolder from './fabled-folder';
+import type FabledClass from './fabled-class';
+import type FabledSkill from './fabled-skill';
+import { browser }      from '$app/environment';
 import { writable }   from 'svelte/store';
 
 export const toProperCase = (s: string) => {
@@ -16,7 +16,7 @@ export const toEditorCase = (s: string) => {
 	return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
 };
 
-export const sort = <T extends ProFolder | ProClass | ProSkill>(data: T[]): T[] => {
+export const sort = <T extends FabledFolder | FabledClass | FabledSkill>(data: T[]): T[] => {
 	return data.sort((a, b) => a.name.localeCompare(b.name));
 };
 

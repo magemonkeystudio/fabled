@@ -984,6 +984,11 @@ const itemConditionOptions = (): ComponentOption[] => {
 		new IntSelect('Data', 'data')
 			.requireValue('check-data', [true])
 			.setTooltip('The data value the item must have'),
+		new BooleanSelect('Check Custom Data', 'check-custom-data', false)
+			.setTooltip('Whether the item needs to have a certain custom model data value'),
+		new IntSelect('Custom Data', 'custom-data')
+			.requireValue('check-custom-data', [true])
+			.setTooltip('The custom model data value the item must have'),
 		new BooleanSelect('Check Lore', 'check-lore', false)
 			.setTooltip('Whether the item requires a bit of text in its lore'),
 		new StringSelect('Lore', 'lore', 'text')
@@ -2031,7 +2036,7 @@ const effectOptions = (optional: boolean): ComponentOption[] => {
 		opt(new StringSelect('Animation', '-animation', 'one-circle')
 			.setTooltip('Key of a formula for deciding where the particle effect moves relative to the target. View "effects.yml" for a list of defined formulas and their keys.')),
 		opt(new DropdownSelect('Animation Direction', '-anim-dir', ['XY', 'YZ', 'XZ'], 'XZ')
-			.setTooltip('The plane the animation motion moves through. XZ wold be flat, the other two are vertical.')),
+			.setTooltip('The plane the animation motion moves through. XZ would be flat, the other two are vertical.')),
 		opt(new StringSelect('Animation Size', '-anim-size', '1')
 			.setTooltip('Formula for deciding the multiplier of the animation distance. This can be any sort of formula using the operations defined in the wiki.')),
 		opt(new IntSelect('Interval', '-interval', 1)
@@ -2401,8 +2406,8 @@ class DamageMechanic extends ProMechanic {
 					.setTooltip('The amount of damage to deal'),
 				new BooleanSelect('True Damage', 'true')
 					.setTooltip('Whether to deal true damage. True damage ignores armor and all plugin checks, and doesn not have a damage animation nor knockback'),
-				new StringSelect('Classifier', 'classifier', 'default')
-					.setTooltip('The type of damage to deal. Can act as elemental damage or fake physical damage'),
+				new StringSelect('Damage Type', 'classifier', 'default')
+					.setTooltip('The type of damage to deal. Can act as elemental damage or fake physical damage. Supports Damage types from ProRPGItems like "PRORPGITEMS_magical"'),
 				new BooleanSelect('Apply Knockback', 'knockback', true)
 					.setTooltip('Whether the damage will inflict knockback. Ignored if it is True Damage'),
 				new DropdownSelect('Damage Cause', 'cause', ['Contact', 'Custom', 'Entity Attack', 'Entity Sweep Attack', 'Projectile', 'Suffocation', 'Fall', 'Fire', 'Fire Tick', 'Melting', 'Lava', 'Drowning', 'Block Explosion', 'Entity Explosion', 'Void', 'Lightning', 'Suicide', 'Starvation', 'Poison', 'Magic', 'Wither', 'Falling Block', 'Thorns', 'Dragon Breath', 'Fly Into Wall', 'Hot Floor', 'Cramming', 'Dryout', 'Freeze', 'Sonic Boom'], 'Custom')
@@ -3330,6 +3335,64 @@ class ParticleEffectMechanic extends ProMechanic {
 				...effectOptions(false)
 			],
 			summaryItems: ['effect-key', '-particle', '-particle-dust-color']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
+class ParticleImageMechanic extends ProMechanic {
+	public constructor() {
+		super({
+			name:         'Particle Image',
+			description:  'Displays an image using particles that (optionally) follows the current target',
+			data:         [
+				new StringSelect('Effect Key', 'effect-key', 'default')
+					.setTooltip('The key to refer to the effect by. Only one effect of each key can be active at a time.'),
+				new StringSelect('Image', 'img', 'default.png')
+					.setTooltip('The image to display. Put images in the plugins/Fabled/images folder'),
+				new AttributeSelect('Duration', 'duration', 5)
+					.setTooltip('The time to play the effect for in seconds'),
+				new IntSelect('Interval', 'interval', 5)
+					.setTooltip('Number of ticks between playing particles.'),
+				new IntSelect('Frame Frequency', 'iterations-per-frame', 3)
+					.setTooltip('Number of iterations before moving to the next frame of a gif. 1 is the fastest, 0 will not animate'),
+				new IntSelect('View Range', 'view-range', 25)
+					.setTooltip('How far away the effect can be seen from.'),
+
+				new DropdownSelect('Direction', 'direction', ['XY', 'YZ', 'XZ'], 'XY')
+					.setTooltip('The plane the shape formula applies to. Player follows the player\'s look direction. XZ would be flat, the other two are vertical.'),
+
+				new DoubleSelect('Width', 'width', 3)
+					.setTooltip('The width of the image in blocks'),
+				new DoubleSelect('Height', 'height', 3)
+					.requireValue('lock-aspect', [false])
+					.setTooltip('The height of the image in blocks'),
+				new BooleanSelect('Lock Aspect Ratio', 'lock-aspect', true)
+					.setTooltip('Whether to keep the aspect ratio of the image'),
+				new IntSelect('Resolution', 'resolution', 6)
+					.setTooltip('Number of particles per block. 6 particles per block is typically pretty decent with a dust size of 1'),
+
+				new StringSelect('Dust Size', 'dust-size', '1')
+					.setTooltip('The formula for the size of the dust particles. <code>t</code> is the number of iterations, <code>l</code> is the skill level'),
+				new StringSelect('Rotate', 'rotate', '0')
+					.setTooltip('The formula to rotate the effect, <code>t</code> is the number of iterations, <code>l</code> is the skill level'),
+				new StringSelect('Tilt', 'tilt', '0')
+					.setTooltip('The formula to tilt the effect forward, <code>t</code> is the number of iterations, <code>l</code> is the skill level'),
+				new StringSelect('Spin', 'spin', '0')
+					.setTooltip('The formula to spin the effect, <code>t</code> is the number of iterations, <code>l</code> is the skill level'),
+				new StringSelect('Scale', 'scale', '1')
+					.setTooltip('The formula to scale the effect, <code>t</code> is the number of iterations, <code>l</code> is the skill level'),
+				new StringSelect('Forward Offset', 'forward', '0')
+					.setTooltip('The formula to offset the effect forward, <code>t</code> is the number of iterations, <code>l</code> is the skill level'),
+				new StringSelect('Upward Offset', 'upward', '0')
+					.setTooltip('The formula to offset the effect upward, <code>t</code> is the number of iterations, <code>l</code> is the skill level'),
+				new StringSelect('Right Offset', 'right', '0')
+					.setTooltip('The formula to offset the effect to the right, <code>t</code> is the number of iterations, <code>l</code> is the skill level'),
+				new BooleanSelect('Rotate w/ Player', 'with-rotation', true)
+					.setTooltip('Whether to follow the rotation of the player for the effect.')
+			],
+			summaryItems: ['effect-key', 'img', 'duration']
 		});
 	}
 
@@ -5124,6 +5187,7 @@ export const initComponents = () => {
 		PARTICLE:            { name: 'Particle', component: ParticleMechanic, section: 'Particle' },
 		PARTICLE_ANIMATION:  { name: 'Particle Animation', component: ParticleAnimationMechanic, section: 'Particle' },
 		PARTICLE_EFFECT:     { name: 'Particle Effect', component: ParticleEffectMechanic, section: 'Particle' },
+		PARTICLE_IMAGE:      { name: 'Particle Image', component: ParticleImageMechanic, section: 'Particle' },
 		PARTICLE_PROJECTILE: { name: 'Particle Projectile', component: ParticleProjectileMechanic, section: 'Particle' },
 
 		FLAG:        { name: 'Flag', component: FlagMechanic, section: 'Flag' },

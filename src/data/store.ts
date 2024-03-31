@@ -1,8 +1,8 @@
 import type { Readable, Writable }                     from 'svelte/store';
 import { derived, get, writable }                      from 'svelte/store';
-import ProClass                                        from '$api/proclass';
-import ProSkill                                        from '$api/proskill';
-import ProFolder                                       from '$api/profolder';
+import FabledClass                                     from '$api/fabled-class';
+import FabledSkill                                     from '$api/fabled-skill';
+import FabledFolder                                    from '$api/fabled-folder';
 import {
 	classes,
 	classFolders,
@@ -33,17 +33,17 @@ import type { MultiClassYamlData, MultiSkillYamlData } from '$api/types';
 import YAML                                            from 'yaml';
 import { socketService }                               from '$api/socket/socket-connector';
 
-export const active: Writable<ProClass | ProSkill | undefined>     = writable(undefined);
-export const activeType: Readable<'class' | 'skill'>               = derived(
+export const active: Writable<FabledClass | FabledSkill | undefined>      = writable(undefined);
+export const activeType: Readable<'class' | 'skill'>                      = derived(
 	active,
-	$active => $active instanceof ProClass ? 'class' : 'skill'
+	$active => $active instanceof FabledClass ? 'class' : 'skill'
 );
-export const dragging: Writable<ProClass | ProSkill | ProFolder>   = writable();
-export const draggingComponent: Writable<ProComponent | undefined> = writable();
-export const showSidebar: Writable<boolean>                        = localStore('sidebarOpen', true);
-export const sidebarOpen: Writable<boolean>                        = writable(true);
-export const isShowClasses: Writable<boolean>                      = writable(true);
-export const importing: Writable<boolean>                          = writable(false);
+export const dragging: Writable<FabledClass | FabledSkill | FabledFolder> = writable();
+export const draggingComponent: Writable<ProComponent | undefined>        = writable();
+export const showSidebar: Writable<boolean>                               = localStore('sidebarOpen', true);
+export const sidebarOpen: Writable<boolean>                               = writable(true);
+export const isShowClasses: Writable<boolean>                             = writable(true);
+export const importing: Writable<boolean>                                 = writable(false);
 
 export const updateSidebar = () => {
 	if (!get(showSidebar)) return;
@@ -55,15 +55,15 @@ export const toggleSidebar = () => showSidebar.set(!get(showSidebar));
 export const closeSidebar  = () => showSidebar.set(false);
 export const setImporting  = (bool: boolean) => importing.set(bool);
 
-export const rename = (folder: ProFolder, folders: Array<ProFolder | ProClass | ProSkill>) => {
+export const rename = (folder: FabledFolder, folders: Array<FabledFolder | FabledClass | FabledSkill>) => {
 	const origName = folder.name;
 	let num        = 1;
-	while (folders.filter(f => f instanceof ProFolder && f.name == folder.name).length >= 1) {
+	while (folders.filter(f => f instanceof FabledFolder && f.name == folder.name).length >= 1) {
 		folder.name = origName + ' (' + (num++) + ')';
 	}
 };
 
-export const deleteFolder = (folder: ProFolder) => {
+export const deleteFolder = (folder: FabledFolder) => {
 	if (folder.parent) {
 		folder.parent.deleteFolder(folder);
 		updateFolders();
@@ -71,11 +71,11 @@ export const deleteFolder = (folder: ProFolder) => {
 	else deleteSkillFolder(folder, () => false);
 };
 
-export const deleteProData = (data: ProClass | ProSkill | undefined) => {
+export const deleteProData = (data: FabledClass | FabledSkill | undefined) => {
 	if (!data) return;
 
 	getFolder(data)?.remove(data);
-	if (data instanceof ProClass) deleteClass(data);
+	if (data instanceof FabledClass) deleteClass(data);
 	else deleteSkill(data);
 	updateFolders();
 };
@@ -86,18 +86,18 @@ export const updateFolders = () => {
 	else refreshSkillFolders();
 };
 
-export const removeFolder = (folder: ProFolder) => {
+export const removeFolder = (folder: FabledFolder) => {
 	const classF = get(classFolders);
 	const skillF = get(skillFolders);
 	if (classF.includes(folder)) classFolders.set(classF.filter(f => f != folder));
 	if (skillF.includes(folder)) skillFolders.set(skillF.filter(f => f != folder));
 };
 
-export const getFolder = (data?: ProFolder | ProClass | ProSkill): (ProFolder | undefined) => {
+export const getFolder = (data?: FabledFolder | FabledClass | FabledSkill): (FabledFolder | undefined) => {
 	if (!data) return undefined;
 
-	if (data instanceof ProFolder) return data.parent;
-	const folders: ProFolder[] = data instanceof ProClass ? get(classFolders) : get(skillFolders);
+	if (data instanceof FabledFolder) return data.parent;
+	const folders: FabledFolder[] = data instanceof FabledClass ? get(classFolders) : get(skillFolders);
 
 	for (const folder of folders) {
 		const containingFolder = folder.getContainingFolder(data);
@@ -152,18 +152,18 @@ export const loadFile = (file: File) => {
 	reader.readAsText(file);
 };
 
-export const saveData = (data?: ProSkill | ProClass) => {
+export const saveData = (data?: FabledSkill | FabledClass) => {
 	const act = data || get(active);
 	if (!act) return;
 
-	saveToFile(act.name + '.yml', YAML.stringify({ [act.name]: act.serializeYaml() }));
+	saveToFile(act.name + '.yml', YAML.stringify({ [act.name]: act.serializeYaml() }, { lineWidth: 0 }));
 };
 
-export const saveDataToServer = async (data?: ProSkill | ProClass) => {
+export const saveDataToServer = async (data?: FabledSkill | FabledClass) => {
 	const act = data || get(active);
 	if (!act) return false;
 
-	const isSkill = act instanceof ProSkill;
+	const isSkill = act instanceof FabledSkill;
 	const yaml    = YAML.stringify({ [act.name]: act.serializeYaml() });
 
 	const folder = getFolder(act);
@@ -183,7 +183,7 @@ export const saveDataToServer = async (data?: ProSkill | ProClass) => {
 };
 
 export const getAllSkillYaml = async (): Promise<MultiSkillYamlData> => {
-	const allSkills: ProSkill[] = get(skills);
+	const allSkills: FabledSkill[] = get(skills);
 	allSkills.sort((a, b) => {
 		if (a.name > b.name) return 1;
 		if (a.name < b.name) return -1;
@@ -201,7 +201,7 @@ export const getAllSkillYaml = async (): Promise<MultiSkillYamlData> => {
 };
 
 export const getAllClassYaml = async (): Promise<MultiClassYamlData> => {
-	const allClasses: ProClass[] = get(classes);
+	const allClasses: FabledClass[] = get(classes);
 	allClasses.sort((a, b) => {
 		if (a.name > b.name) return 1;
 		if (a.name < b.name) return -1;
@@ -232,8 +232,8 @@ export const saveAll = async () => {
 	const skillYaml = await getAllSkillYaml();
 	const classYaml = await getAllClassYaml();
 
-	saveToFile('skills.yml', YAML.stringify(skillYaml));
-	saveToFile('classes.yml', YAML.stringify(classYaml));
+	saveToFile('skills.yml', YAML.stringify(skillYaml, { lineWidth: 0 }));
+	saveToFile('classes.yml', YAML.stringify(classYaml, { lineWidth: 0 }));
 	isSaving.set(false);
 };
 
@@ -253,4 +253,4 @@ const saveToFile = (file: string, data: string) => {
 	document.body.removeChild(element);
 };
 
-export const saveError: Writable<ProSkill | undefined> = writable();
+export const saveError: Writable<FabledSkill | undefined> = writable();

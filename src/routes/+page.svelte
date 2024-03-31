@@ -7,7 +7,7 @@
 </script>
 
 <svelte:head>
-  <title>ProSkillAPI Dynamic Editor</title>
+  <title>Fabled Dynamic Editor</title>
 </svelte:head>
 
 <div class="start">Select/Add a class/skill on the left to get started!</div>
