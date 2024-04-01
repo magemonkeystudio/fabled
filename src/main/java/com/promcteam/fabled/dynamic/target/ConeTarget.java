@@ -44,8 +44,9 @@ import java.util.function.Supplier;
  * each of the current targets.
  */
 public class ConeTarget extends TargetComponent {
-    private static final String ANGLE = "angle";
-    private static final String RANGE = "range";
+    private static final String ANGLE   = "angle";
+    private static final String RANGE   = "range";
+    private static final String RESET_Y = "reset-y";
 
 
     /**
@@ -157,7 +158,10 @@ public class ConeTarget extends TargetComponent {
     List<LivingEntity> getTargets(LivingEntity caster, int level, List<LivingEntity> targets) {
         double range = parseValues(caster, RANGE, level, 3.0);
         double angle = parseValues(caster, ANGLE, level, 90.0);
-        return determineTargets(caster, level, targets, t -> TargetHelper.getConeTargets(t, angle, range));
+        return determineTargets(caster,
+                level,
+                targets,
+                t -> TargetHelper.getConeTargets(t, angle, range, settings.getBool(RESET_Y, true)));
     }
 
     @Override

@@ -72,7 +72,7 @@ public abstract class TargetHelper {
      *
      * @param source living entity to get the target of
      * @param range  maximum range to check
-     * @return entity player is looing at or null if not found
+     * @return entity player is looking at or null if not found
      */
     public static LivingEntity getLivingTarget(LivingEntity source, double range) {
         return getLivingTarget(source, range, 4);
@@ -89,7 +89,7 @@ public abstract class TargetHelper {
      */
     public static LivingEntity getLivingTarget(LivingEntity source, double range, double tolerance) {
         List<LivingEntity> targets = getLivingTargets(source, range, tolerance);
-        if (targets.size() == 0) return null;
+        if (targets.isEmpty()) return null;
         return targets.get(0);
     }
 
@@ -99,9 +99,10 @@ public abstract class TargetHelper {
      * @param source entity to get the targets for
      * @param arc    arc angle of the cone
      * @param range  range of the cone
+     * @param resetY whether to reset the Y value of the target
      * @return list of targets
      */
-    public static List<LivingEntity> getConeTargets(LivingEntity source, double arc, double range) {
+    public static List<LivingEntity> getConeTargets(LivingEntity source, double arc, double range, boolean resetY) {
         List<LivingEntity> targets = new ArrayList<>();
         List<Entity>       list    = source.getNearbyEntities(range, range, range);
         if (arc <= 0) return targets;
@@ -109,7 +110,7 @@ public abstract class TargetHelper {
         // Initialize values
         Location sourceLocation = source.getEyeLocation();
         Vector   dir            = sourceLocation.getDirection();
-        dir.setY(0);
+        if (resetY) dir.setY(0);
         double cos   = Math.cos(arc * Math.PI / 180);
         double cosSq = cos * cos;
 
@@ -129,7 +130,7 @@ public abstract class TargetHelper {
                             .add(0, getHeight(entity) * 0.5, 0)
                             .subtract(sourceLocation)
                             .toVector();
-                    relative.setY(0);
+                    if (resetY) relative.setY(0);
                     double dot   = relative.dot(dir);
                     double value = dot * dot / relative.lengthSquared();
                     if (arc < 180 && dot > 0 && value >= cosSq) targets.add((LivingEntity) entity);
