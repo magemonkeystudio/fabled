@@ -66,21 +66,19 @@ public class ParticleAnimationMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     * @param force
+     * @param force whether this mechanic is being force-casted
      * @return true if applied to something, false otherwise
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0) {
-            return false;
-        }
+        if (targets.isEmpty()) return false;
 
         final Settings copy = new Settings(settings);
         copy.set(ParticleHelper.POINTS_KEY, parseValues(caster, ParticleHelper.POINTS_KEY, level, 1), 0);
         copy.set(ParticleHelper.RADIUS_KEY, parseValues(caster, ParticleHelper.RADIUS_KEY, level, 0), 0);
         copy.set("level", level);
         new ParticleTask(caster, targets, level, copy);
-        return targets.size() > 0;
+        return !targets.isEmpty();
     }
 
     private class ParticleTask extends BukkitRunnable {
@@ -90,17 +88,10 @@ public class ParticleAnimationMechanic extends MechanicComponent {
         private final Vector             offset;
         private final Vector             dir;
 
-        private final double forward;
-        private final double right;
         private final double upward;
 
         private final int      steps;
-        private final int      freq;
-        private final int      angle;
-        private final int      startAngle;
         private final int      duration;
-        private final int      hc;
-        private final int      vc;
         private final int      hl;
         private final int      vl;
         private final double   ht;
@@ -108,27 +99,27 @@ public class ParticleAnimationMechanic extends MechanicComponent {
         private final double   cos;
         private final Settings settings;
         private final double   sin;
-        private       int      life;
-        private       boolean  withRotation = false;
+        private final boolean withRotation;
+        private       int     life;
 
         ParticleTask(LivingEntity caster, List<LivingEntity> targets, int level, Settings settings) {
             this.targets = targets;
             this.settings = settings;
 
-            this.forward = getNum(caster, FORWARD, 0);
+            double forward = getNum(caster, FORWARD, 0);
             this.upward = getNum(caster, UPWARD, 0);
-            this.right = getNum(caster, RIGHT, 0);
+            double right = getNum(caster, RIGHT, 0);
 
             this.steps = (int) getNum(caster, STEPS, 1);
-            this.freq = (int) (getNum(caster, FREQ, 1.0) * 20);
-            this.angle = (int) getNum(caster, ANGLE, 0);
-            this.startAngle = (int) getNum(caster, START, 0);
+            int freq       = (int) (getNum(caster, FREQ, 1.0) * 20);
+            int angle      = (int) getNum(caster, ANGLE, 0);
+            int startAngle = (int) getNum(caster, START, 0);
             this.duration = steps * (int) (20 * parseValues(caster, DURATION, level, 3.0));
             this.life = 0;
             this.ht = parseValues(caster, H_TRANS, level, 0);
             this.vt = parseValues(caster, V_TRANS, level, 0);
-            this.hc = (int) getNum(caster, H_CYCLES, 1);
-            this.vc = (int) getNum(caster, V_CYCLES, 1);
+            int hc = (int) getNum(caster, H_CYCLES, 1);
+            int vc = (int) getNum(caster, V_CYCLES, 1);
             this.hl = duration / hc;
             this.vl = duration / vc;
             this.withRotation = settings.getBool(WITH_ROTATION);
