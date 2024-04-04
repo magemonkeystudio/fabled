@@ -1,5 +1,5 @@
 [![Build](https://github.com/promcteam/fabled/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.studio/magemonkey/promccore/packages/1203744)
-[![Build](https://github.com/promcteam/fabled/actions/workflows/release.yml/badge.svg?branch=main)](https://github.studio/magemonkey/promccore/packages/1203744)
+[![Build](https://github.com/promcteam/fabled/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/promcteam/promccore/packages/1203744)
 [![Build](https://github.com/promcteam/fabled/actions/workflows/devbuild.yml/badge.svg?branch=dev)](https://github.com/promcteam/promccore/packages/1203744)
 
 # Fabled
