@@ -1,6 +1,6 @@
 name: ${project.name}
 version: ${project.version}
-main: com.promcteam.fabled.Fabled
+main: studio.magemonkey.fabled.Fabled
 provides:
   - SkillAPI
   - ProSkillAPI

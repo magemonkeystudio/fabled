@@ -3,7 +3,7 @@ package com.sucy.skill.api;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 /**
- * @deprecated use {@link com.promcteam.fabled.api.DefaultCombatProtection} instead
+ * @deprecated use {@link studio.magemonkey.fabled.api.DefaultCombatProtection} instead
  */
 @Deprecated(forRemoval = true)
 public class DefaultCombatProtection {
@@ -12,11 +12,11 @@ public class DefaultCombatProtection {
      *
      * @param event event to check
      * @return true if fake, false otherwise
-     * @deprecated use {@link com.promcteam.fabled.api.DefaultCombatProtection#isFakeDamageEvent(EntityDamageByEntityEvent)} instead
+     * @deprecated use {@link studio.magemonkey.fabled.api.DefaultCombatProtection#isFakeDamageEvent(EntityDamageByEntityEvent)} instead
      */
     @Deprecated(forRemoval = true)
     public static boolean isFakeDamageEvent(EntityDamageByEntityEvent event) {
-        return com.promcteam.fabled.api.DefaultCombatProtection.isFakeDamageEvent(event);
+        return studio.magemonkey.fabled.api.DefaultCombatProtection.isFakeDamageEvent(event);
     }
 
     /**
@@ -24,10 +24,10 @@ public class DefaultCombatProtection {
      *
      * @param event event to check
      * @return true if externally cancelled, false otherwise
-     * @deprecated use {@link com.promcteam.fabled.api.DefaultCombatProtection#isExternallyCancelled(EntityDamageByEntityEvent)} instead
+     * @deprecated use {@link studio.magemonkey.fabled.api.DefaultCombatProtection#isExternallyCancelled(EntityDamageByEntityEvent)} instead
      */
     @Deprecated(forRemoval = true)
     public static boolean isExternallyCancelled(EntityDamageByEntityEvent event) {
-        return com.promcteam.fabled.api.DefaultCombatProtection.isExternallyCancelled(event);
+        return studio.magemonkey.fabled.api.DefaultCombatProtection.isExternallyCancelled(event);
     }
 }

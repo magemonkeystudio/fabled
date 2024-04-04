@@ -1,4 +1,4 @@
-[![Build](https://github.com/promcteam/${project.artifactId}/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/promcteam/promccore/packages/1203744)
+[![Build](https://github.com/promcteam/${project.artifactId}/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.studio/magemonkey/promccore/packages/1203744)
 [![Build](https://github.com/promcteam/${project.artifactId}/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/promcteam/promccore/packages/1203744)
 [![Build](https://github.com/promcteam/${project.artifactId}/actions/workflows/devbuild.yml/badge.svg?branch=dev)](https://github.com/promcteam/promccore/packages/1203744)
 
@@ -18,9 +18,9 @@ You'll need to use this editor in order for your classes and skills to be compat
 
 You can download ${project.name} from our marketplace
 
-* https://promcteam.com/resources/
+* https://magemonkey.studio/resources/
 
-## PROMCTEAM:
+## Mage Monkey Studios:
 
 * Discord | https://discord.gg/6UzkTe6RvW
 
