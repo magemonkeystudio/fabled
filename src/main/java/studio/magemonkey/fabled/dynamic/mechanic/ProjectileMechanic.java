@@ -26,6 +26,17 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.*;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.api.particle.EffectPlayer;
@@ -42,17 +53,6 @@ import studio.magemonkey.fabled.dynamic.TempEntity;
 import studio.magemonkey.fabled.listener.MechanicListener;
 import studio.magemonkey.fabled.task.RemoveTask;
 import studio.magemonkey.fabled.task.RepeatingEntityTask;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.*;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Vector;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -64,49 +64,49 @@ import java.util.function.Supplier;
  * Heals each target
  */
 public class ProjectileMechanic extends MechanicComponent {
-    private static final Vector                                       UP                 = new Vector(0, 1, 0);
-    private static final String                                       PROJECTILE         = "projectile";
-    private static final String                                       OVERRIDE_ITEM      = "override-item";
-    private static final String                                       MATERIAL           = "material";
-    private static final String                                       ENCHANTED          = "enchanted";
-    private static final String                                       DURABILITY         = "durability";
-    private static final String                                       CMD                = "custom-model-data";
-    private static final String                                       FLAMING            = "flaming";
-    private static final String                                       COST               = "cost";
-    private static final String                                       VELOCITY           = "velocity";
-    private static final String                                       LIFESPAN           = "lifespan";
-    private static final String                                       SPREAD             = "spread";
-    private static final String                                       AMOUNT             = "amount";
-    private static final String                                       ANGLE              = "angle";
-    private static final String                                       HEIGHT             = "height";
-    private static final String                                       RADIUS             = "rain-radius";
-    private static final String                                       FORWARD            = "forward";
-    private static final String                                       UPWARD             = "upward";
-    private static final String                                       RIGHT              = "right";
-    private static final String                                       USE_EFFECT         = "use-effect";
-    private static final String                                       EFFECT_KEY         = "effect-key";
-    public static final  String                                       HOMING             = "homing";
-    public static final  String                                       HOMING_TARGET      = "target";
-    public static final  String                                       HOMING_DIST        = "homing-distance";
-    public static final  String                                       REMEMBER           = "remember-key";
-    public static final  String                                       CORRECTION         = "correction";
-    public static final  String                                       WALL               = "wall";
-    private static final HashMap<String, Class<? extends Projectile>> PROJECTILES        =
-            new HashMap<String, Class<? extends Projectile>>() {{
+    private static final Vector                                       UP            = new Vector(0, 1, 0);
+    private static final String                                       PROJECTILE    = "projectile";
+    private static final String                                       OVERRIDE_ITEM = "override-item";
+    private static final String                                       MATERIAL      = "material";
+    private static final String                                       ENCHANTED     = "enchanted";
+    private static final String                                       DURABILITY    = "durability";
+    private static final String                                       CMD           = "custom-model-data";
+    private static final String                                       FLAMING       = "flaming";
+    private static final String                                       COST          = "cost";
+    private static final String                                       VELOCITY      = "velocity";
+    private static final String                                       LIFESPAN      = "lifespan";
+    private static final String                                       SPREAD        = "spread";
+    private static final String                                       AMOUNT        = "amount";
+    private static final String                                       ANGLE         = "angle";
+    private static final String                                       HEIGHT        = "height";
+    private static final String                                       RADIUS        = "rain-radius";
+    private static final String                                       FORWARD       = "forward";
+    private static final String                                       UPWARD        = "upward";
+    private static final String                                       RIGHT         = "right";
+    private static final String                                       USE_EFFECT    = "use-effect";
+    private static final String                                       EFFECT_KEY    = "effect-key";
+    public static final  String                                       HOMING        = "homing";
+    public static final  String                                       HOMING_TARGET = "target";
+    public static final  String                                       HOMING_DIST   = "homing-distance";
+    public static final  String                                       REMEMBER      = "remember-key";
+    public static final  String                                       CORRECTION    = "correction";
+    public static final  String                                       WALL          = "wall";
+    private static final HashMap<String, Class<? extends Projectile>> PROJECTILES   =
+            new HashMap<>() {{
                 put("arrow", Arrow.class);
                 put("egg", Egg.class);
                 put("ghast fireball", LargeFireball.class);
                 put("snowball", Snowball.class);
                 put("fishing hook", FishHook.class);
             }};
-    private static final HashMap<String, Material>                    MATERIALS          =
-            new HashMap<String, Material>() {{
+    private static final HashMap<String, Material>                    MATERIALS     =
+            new HashMap<>() {{
                 put("arrow", Material.ARROW);
                 put("egg", Material.EGG);
                 put("snowball", snowBall());
             }};
-    private static final Class<Enum<?>>                               PICKUP_STATUS_ENUM = null;
 
+    @SuppressWarnings("unchecked")
     private static Class<? extends Projectile> getProjectileClass(String projectileName) {
         StringBuilder conditionedName = new StringBuilder();
         for (String word : projectileName.split(" ")) {
@@ -139,7 +139,7 @@ public class ProjectileMechanic extends MechanicComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     * @param force
+     * @param force   Whether this call is being forced
      * @return true if applied to something, false otherwise
      */
     @Override
@@ -280,6 +280,7 @@ public class ProjectileMechanic extends MechanicComponent {
                             .getRaw(settings.getString(REMEMBER, "target"));
                     if (data == null) return null;
                     try {
+                        //noinspection unchecked
                         return ((List<LivingEntity>) data).stream()
                                 .filter(tar -> settings.getBool(WALL, false)
                                         || !TargetHelper.isObstructed(proj.getLocation(), tar.getEyeLocation()))
@@ -345,10 +346,11 @@ public class ProjectileMechanic extends MechanicComponent {
         Bukkit.getScheduler().runTaskLater(Fabled.inst(), () -> {
             ArrayList<LivingEntity> targets = new ArrayList<>();
             targets.add(finalHit);
-            executeChildren((LivingEntity) projectile.getShooter(),
-                    Fabled.getMetaInt(projectile, MechanicListener.SKILL_LEVEL),
-                    targets,
-                    skill.isForced((LivingEntity) projectile.getShooter()));
+            if (projectile.getShooter() != null)
+                executeChildren((LivingEntity) projectile.getShooter(),
+                        Fabled.getMetaInt(projectile, MechanicListener.SKILL_LEVEL),
+                        targets,
+                        skill.isForced((LivingEntity) projectile.getShooter()));
             Fabled.removeMeta(projectile, MechanicListener.P_CALL);
             projectile.remove();
         }, 1L);
