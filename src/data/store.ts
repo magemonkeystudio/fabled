@@ -1,8 +1,8 @@
 import type { Readable, Writable }                     from 'svelte/store';
-import { derived, get, writable } from 'svelte/store';
-import FabledClass  from '$api/fabled-class';
-import FabledSkill  from '$api/fabled-skill';
-import FabledFolder from '$api/fabled-folder';
+import { derived, get, writable }                      from 'svelte/store';
+import FabledClass                                     from '$api/fabled-class';
+import FabledSkill                                     from '$api/fabled-skill';
+import FabledFolder                                    from '$api/fabled-folder';
 import {
 	classes,
 	classFolders,
@@ -13,7 +13,7 @@ import {
 	loadClassText,
 	refreshClasses,
 	refreshClassFolders
-}                   from './class-store';
+}                                                      from './class-store';
 import { localStore }                                  from '$api/api';
 import { loadAttributes }                              from './attribute-store';
 import {
@@ -38,10 +38,10 @@ export const activeType: Readable<'class' | 'skill'>                      = deri
 );
 export const dragging: Writable<FabledClass | FabledSkill | FabledFolder> = writable();
 export const draggingComponent: Writable<ProComponent | undefined>        = writable();
-export const showSidebar: Writable<boolean>                        = localStore('sidebarOpen', true);
-export const sidebarOpen: Writable<boolean>                        = writable(true);
-export const isShowClasses: Writable<boolean>                      = writable(true);
-export const importing: Writable<boolean>                          = writable(false);
+export const showSidebar: Writable<boolean>                               = localStore('sidebarOpen', true);
+export const sidebarOpen: Writable<boolean>                               = writable(true);
+export const isShowClasses: Writable<boolean>                             = writable(true);
+export const importing: Writable<boolean>                                 = writable(false);
 
 export const updateSidebar = () => {
 	if (!get(showSidebar)) return;
@@ -157,7 +157,7 @@ export const saveData = (data?: FabledSkill | FabledClass) => {
 	saveToFile(act.name + '.yml', YAML.stringify({ [act.name]: act.serializeYaml() }, { lineWidth: 0 }));
 };
 
-export const getAllSkillYaml = (): MultiSkillYamlData => {
+export const getAllSkillYaml = async (): Promise<MultiSkillYamlData> => {
 	const allSkills: FabledSkill[] = get(skills);
 	allSkills.sort((a, b) => {
 		if (a.name > b.name) return 1;
@@ -168,10 +168,12 @@ export const getAllSkillYaml = (): MultiSkillYamlData => {
 	const skillYaml: MultiSkillYamlData = {
 		loaded: false
 	};
-	for (const skill of allSkills) {
-		if (!skill.loaded) loadSkill(skill);
+
+	const loadedPromise = allSkills.map(async skill => {
+		if (!skill.loaded) await loadSkill(skill);
 		skillYaml[skill.name] = skill.serializeYaml();
-	}
+	});
+	await Promise.all(loadedPromise);
 
 	return skillYaml;
 };
@@ -196,7 +198,7 @@ export const getAllClassYaml = (): MultiClassYamlData => {
 };
 
 export const saveAll = async () => {
-	const skillYaml = getAllSkillYaml();
+	const skillYaml = await getAllSkillYaml();
 	const classYaml = getAllClassYaml();
 
 	saveToFile('skills.yml', YAML.stringify(skillYaml, { lineWidth: 0 }));

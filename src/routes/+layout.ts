@@ -6,13 +6,15 @@ import { getAllClassYaml, getAllSkillYaml } from '../data/store';
 import { get }                              from 'svelte/store';
 import { loadClassText }                    from '../data/class-store';
 import YAML                                 from 'yaml';
+import { initComponents }                   from '$api/components/components';
 
 export const ssr = false;
 
 const expectedHost = 'fabled.magemonkey.studio';
 const separator    = '\n\n\n~~~~~\n\n\n';
 
-export const load: LayoutLoad = ({ url }) => {
+export const load: LayoutLoad = async ({ url }) => {
+	initComponents();
 	if (url.host.includes('localhost')) return;
 
 	if (url.searchParams.has('migrationData')) {
@@ -26,7 +28,8 @@ export const load: LayoutLoad = ({ url }) => {
 				const skillFolders = data.split(separator)[2];
 				const classFolders = data.split(separator)[3];
 
-				loadSkillText(skillData).then(() => {});
+				loadSkillText(skillData).then(() => {
+				});
 				loadClassText(classData);
 				localStorage.setItem('skillFolders', skillFolders);
 				localStorage.setItem('classFolders', classFolders);
@@ -42,7 +45,7 @@ export const load: LayoutLoad = ({ url }) => {
 
 	alert('We\'re migrating to a new URL. You\'re now going to be redirected. Your skills/classes should remain in tact.');
 
-	const skillYaml    = YAML.stringify(getAllSkillYaml(), { lineWidth: 0 });
+	const skillYaml    = YAML.stringify(await getAllSkillYaml(), { lineWidth: 0 });
 	const classYaml    = YAML.stringify(getAllClassYaml(), { lineWidth: 0 });
 	const skillFolders = localStorage.getItem('skillFolders');
 	const classFolders = localStorage.getItem('classFolders');

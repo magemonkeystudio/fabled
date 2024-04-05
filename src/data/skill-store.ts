@@ -149,22 +149,22 @@ export const addSkill = (name?: string): FabledSkill => {
 	return skill;
 };
 
-export const loadSkill = (data: FabledSkill) => {
+export const loadSkill = async (data: FabledSkill) => {
 	if (data.loaded) return;
 
 	if (data.location === 'local') {
 		const yamlData = <MultiSkillYamlData>YAML.parse(localStorage.getItem(`sapi.skill.${data.name}`) || '');
 		// Get the first entry in the object
 		const skill    = Object.values(yamlData)[0];
-		data.load(skill);
+		await data.load(skill);
 	} else {
 		// TODO Load data from server
 	}
 	data.postLoad();
 };
 
-export const cloneSkill = (data: FabledSkill): FabledSkill => {
-	if (!data.loaded) loadSkill(data);
+export const cloneSkill = async (data: FabledSkill): Promise<FabledSkill> => {
+	if (!data.loaded) await loadSkill(data);
 
 	const sk: FabledSkill[] = get(skills);
 	let name                = data.name + ' (Copy)';
@@ -175,7 +175,7 @@ export const cloneSkill = (data: FabledSkill): FabledSkill => {
 	}
 	const skill    = new FabledSkill();
 	const yamlData = data.serializeYaml();
-	skill.load(yamlData);
+	await skill.load(yamlData);
 	skill.name = name;
 	sk.push(skill);
 
