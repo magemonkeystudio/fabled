@@ -1,10 +1,11 @@
-import type { LayoutLoad }       from './$types';
-import { createPaste, getHaste } from '$api/hastebin';
+import type { LayoutLoad }                  from './$types';
+import { createPaste, getHaste }            from '$api/hastebin';
 import { base }                             from '$app/paths';
 import { loadSkillText, skills }            from '../data/skill-store';
 import { getAllClassYaml, getAllSkillYaml } from '../data/store';
-import { get } from 'svelte/store';
-import { loadClassText } from '../data/class-store';
+import { get }                              from 'svelte/store';
+import { loadClassText }                    from '../data/class-store';
+import YAML                                 from 'yaml';
 
 export const ssr = false;
 
@@ -41,8 +42,8 @@ export const load: LayoutLoad = ({ url }) => {
 
 	alert('We\'re migrating to a new URL. You\'re now going to be redirected. Your skills/classes should remain in tact.');
 
-	const skillYaml    = getAllSkillYaml();
-	const classYaml    = getAllClassYaml();
+	const skillYaml    = YAML.stringify(getAllSkillYaml(), { lineWidth: 0 });
+	const classYaml    = YAML.stringify(getAllClassYaml(), { lineWidth: 0 });
 	const skillFolders = localStorage.getItem('skillFolders');
 	const classFolders = localStorage.getItem('classFolders');
 
