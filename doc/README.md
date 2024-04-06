@@ -1,6 +1,5 @@
-[![Build](https://github.com/promcteam/${project.artifactId}/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.studio/magemonkey/promccore/packages/1203744)
-[![Build](https://github.com/promcteam/${project.artifactId}/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/promcteam/promccore/packages/1203744)
-[![Build](https://github.com/promcteam/${project.artifactId}/actions/workflows/devbuild.yml/badge.svg?branch=dev)](https://github.com/promcteam/promccore/packages/1203744)
+[![Build](https://github.com/promcteam/${project.artifactId}/actions/workflows/release.yml/badge.svg?branch=main)](https://s01.oss.sonatype.org/content/repositories/snapshots/studio/magemonkey/${project.artifactId}/)
+[![Build](https://github.com/promcteam/${project.artifactId}/actions/workflows/devbuild.yml/badge.svg?branch=dev)](https://s01.oss.sonatype.org/content/repositories/snapshots/studio/magemonkey/${project.artifactId}/${project.version}/)
 
 # ${project.name}
 
@@ -8,11 +7,11 @@ Our fork is based on the original SkillAPI and the forked SkillAPI by Sentropic.
 
 * Includes all premium features from the original premium version of SkillAPI found on spigot.
 
-## New dynamic editor
+## New Dynamic editor
 
 You'll need to use this editor in order for your classes and skills to be compatible with ${project.name}.
 
-* Online Editor: https://promcteam.github.io/${project.artifactId}/
+* Online Editor: https://fabled.magemonkey.studio/
 
 ## Downloads
 

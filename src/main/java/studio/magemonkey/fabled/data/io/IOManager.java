@@ -146,7 +146,7 @@ public abstract class IOManager {
             } catch (NumberFormatException e) {
                 Logger.bug("Could not parse account key '" + accountKey + "' for player " + player.getUniqueId());
                 Logger.bug("This is related to ticket #154. Please paste the player's file and this stack trace.");
-                Logger.bug("https://github.com/promcteam/Fabled/issues/154");
+                Logger.bug("https://github.com/promcteam/fabled/issues/154");
                 e.printStackTrace();
             }
 
