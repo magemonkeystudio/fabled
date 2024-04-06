@@ -4,13 +4,13 @@
 # the missing ones will use the last entry
 # Enable config.yml.Experience.use-levels to use this
 level-exp:
-- 50
-- 300
-- 450
-- 500
-- 800
-- 1600
-- 3500
-- 7000
-- 15000
-- 30000
+  - 50
+  - 300
+  - 450
+  - 500
+  - 800
+  - 1600
+  - 3500
+  - 7000
+  - 15000
+  - 30000

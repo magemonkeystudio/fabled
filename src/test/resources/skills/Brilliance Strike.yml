@@ -11,14 +11,14 @@
   icon: 'Bell'
   icon-data: 0
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   'attributes':
     level-base: 1
     level-scale: 0
@@ -30,7 +30,7 @@
     mana-scale: 5
     points-spent-req-base: 0
     points-spent-req-scale: 0
-  incompatible: []
+  incompatible: [ ]
   components:
     'Cast-a':
       type: 'trigger'

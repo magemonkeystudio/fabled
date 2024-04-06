@@ -48,14 +48,14 @@ vitality:
   icon: 'ink sack'
   icon-data: 1
   icon-lore:
-  - '&6Vitality &7(&2{amount}&7)'
-  - ''
-  - '&7Grants 1 health per'
-  - '&7point invested.'
+    - '&6Vitality &7(&2{amount}&7)'
+    - ''
+    - '&7Grants 1 health per'
+    - '&7point invested.'
   global:
-    condition: {}
-    mechanic: {}
-    target: {}
+    condition: { }
+    mechanic: { }
+    target: { }
   stats:
     health: 'a+v'
 spirit:
@@ -66,15 +66,15 @@ spirit:
   icon: 'ink sack'
   icon-data: 6
   icon-lore:
-  - '&6Spirit &7(&2{amount}&7)'
-  - ''
-  - '&7Grants 1 mana and 2.5%'
-  - '&7mana regeneration per'
-  - '&7point invested.'
+    - '&6Spirit &7(&2{amount}&7)'
+    - ''
+    - '&7Grants 1 mana and 2.5%'
+    - '&7mana regeneration per'
+    - '&7point invested.'
   global:
-    condition: {}
-    mechanic: {}
-    target: {}
+    condition: { }
+    mechanic: { }
+    target: { }
   stats:
     mana: 'a+v'
     mana-regen: 'a*0.025+1*v'
@@ -86,16 +86,16 @@ intelligence:
   icon: 'ink sack'
   icon-data: 5
   icon-lore:
-  - '&6Intelligence &7(&2{amount}&7)'
-  - ''
-  - '&7Grants 2.5% increased'
-  - '&7skill damage per point'
-  - '&7invested.'
+    - '&6Intelligence &7(&2{amount}&7)'
+    - ''
+    - '&7Grants 2.5% increased'
+    - '&7skill damage per point'
+    - '&7invested.'
   global:
-    condition: {}
+    condition: { }
     mechanic:
       Damage-value: 'a*0.025+1*v'
-    target: {}
+    target: { }
 dexterity:
   display: 'Dexterity'
   max: 999
@@ -104,13 +104,13 @@ dexterity:
   icon: 'ink sack'
   icon-data: 10
   icon-lore:
-  - '&6Dexterity &7(&2{amount}&7)'
-  - ''
-  - '&7Grants 2.5% increased'
-  - '&7range per point invested.'
+    - '&6Dexterity &7(&2{amount}&7)'
+    - ''
+    - '&7Grants 2.5% increased'
+    - '&7range per point invested.'
   global:
-    condition: {}
-    mechanic: {}
+    condition: { }
+    mechanic: { }
     target:
       Cone-range: 'a*0.025+1*v'
       Linear-range: 'a*0.025+1*v'
@@ -125,14 +125,14 @@ strength:
   icon: 'ink sack'
   icon-data: 14
   icon-lore:
-  - '&6Strength &7(&2{amount}&7)'
-  - ''
-  - '&7Grants 2.5% increased'
-  - '&7non-skill damage per'
-  - '&7point invested.'
+    - '&6Strength &7(&2{amount}&7)'
+    - ''
+    - '&7Grants 2.5% increased'
+    - '&7non-skill damage per'
+    - '&7point invested.'
   global:
-    condition: {}
-    mechanic: {}
-    target: {}
+    condition: { }
+    mechanic: { }
+    target: { }
   stats:
     physical-damage: 'a*0.025+1*v'

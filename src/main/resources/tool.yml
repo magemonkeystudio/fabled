@@ -7,11 +7,11 @@ NEXT_PAGE:
   durability: 0
   name: '&6Next Page'
   lore:
-  - ''
+    - ''
 PREV_PAGE:
   type: 'Book'
   data: 0
   durability: 0
   name: '&6Prev Page'
   lore:
-  - ''
+    - ''
