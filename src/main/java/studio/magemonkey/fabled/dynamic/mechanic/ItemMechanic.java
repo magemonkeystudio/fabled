@@ -26,10 +26,10 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.fabled.api.util.ItemStackReader;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import studio.magemonkey.fabled.api.util.ItemStackReader;
 
 import java.util.List;
 
@@ -44,13 +44,7 @@ public class ItemMechanic extends MechanicComponent {
     }
 
     /**
-     * Executes the component
-     *
-     * @param caster  caster of the skill
-     * @param level   level of the skill
-     * @param targets targets to apply to
-     * @param force
-     * @return true if applied to something, false otherwise
+     * {@inheritDoc}
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
@@ -62,6 +56,6 @@ public class ItemMechanic extends MechanicComponent {
                 worked = ((Player) target).getInventory().addItem(item).isEmpty() || worked;
             }
         }
-        return targets.size() > 0;
+        return !targets.isEmpty();
     }
 }

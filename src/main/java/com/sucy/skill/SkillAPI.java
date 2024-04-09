@@ -1,5 +1,10 @@
 package com.sucy.skill;
 
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.metadata.Metadatable;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import studio.magemonkey.codex.mccore.config.CommentedConfig;
 import studio.magemonkey.codex.mccore.config.CommentedLanguageConfig;
 import studio.magemonkey.fabled.Fabled;
@@ -13,11 +18,6 @@ import studio.magemonkey.fabled.data.Settings;
 import studio.magemonkey.fabled.exception.FabledNotEnabledException;
 import studio.magemonkey.fabled.manager.ComboManager;
 import studio.magemonkey.fabled.manager.IAttributeManager;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-import org.bukkit.metadata.Metadatable;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.List;
 import java.util.Map;

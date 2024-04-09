@@ -1,9 +1,8 @@
 package studio.magemonkey.fabled.api.util;
 
-import studio.magemonkey.codex.mccore.util.TextFormatter;
-import studio.magemonkey.fabled.api.Settings;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -12,9 +11,14 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import studio.magemonkey.codex.mccore.util.TextFormatter;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.Settings;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public final class ItemStackReader {
     private static final String MATERIAL    = "material";
@@ -38,9 +42,9 @@ public final class ItemStackReader {
     private static final String DATA      = "data"; // Previously used instead of 'durability'
     private static final String BYTE      = "byte"; // Previously used instead of 'cmd'
     private static final String ITEM      = "item";
-            // Previously used instead of 'material' in ItemProjectileMechanic
+    // Previously used instead of 'material' in ItemProjectileMechanic
     private static final String ITEM_DATA = "item-data";
-            // Previously used instead of 'cmd' in ItemProjectileMechanic
+    // Previously used instead of 'cmd' in ItemProjectileMechanic
 
     private ItemStackReader() {}
 
@@ -78,6 +82,24 @@ public final class ItemStackReader {
         }
     }
 
+    @SuppressWarnings("deprecation")
+    public static Map<Enchantment, Integer> readEnchantments(Settings settings) {
+        Map<Enchantment, Integer> enchants = new HashMap<>();
+
+        List<String> enchantments = settings.getStringList("enchants");
+        for (String enchantData : enchantments) {
+            String[] enchantment = enchantData.split(":");
+            try {
+                Enchantment enchant = Enchantment.getByName(enchantment[0].toUpperCase(Locale.US).replace(" ", "_"));
+                enchants.put(enchant, Integer.parseInt(enchantment[1]));
+            } catch (Exception e) {
+                Fabled.inst().getLogger().warning("Invalid enchantment: " + enchantData + " -- " + e.getMessage());
+            }
+        }
+
+        return enchants;
+    }
+
     public static ItemStack read(Settings settings) {
         ItemStack item = new ItemStack(readMaterial(settings), settings.getInt(AMOUNT, 1));
         ItemMeta  meta = item.getItemMeta();
@@ -101,7 +123,7 @@ public final class ItemStackReader {
 
         if (settings.getString(CUSTOM, "false").equalsIgnoreCase("true")) {
             String name = TextFormatter.colorString(settings.getString(NAME, ""));
-            if (name.length() > 0) {
+            if (!name.isEmpty()) {
                 meta.setDisplayName(name);
             }
             List<String> lore = TextFormatter.colorStringList(settings.getStringList(LORE));
@@ -132,6 +154,11 @@ public final class ItemStackReader {
                         .substring(1), 16)));
             } catch (Exception ignored) {
             }
+        }
+
+        Map<Enchantment, Integer> enchants = readEnchantments(settings);
+        for (Map.Entry<Enchantment, Integer> enchant : enchants.entrySet()) {
+            meta.addEnchant(enchant.getKey(), enchant.getValue(), true);
         }
 
         item.setItemMeta(meta);
