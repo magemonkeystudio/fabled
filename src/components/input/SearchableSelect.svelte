@@ -66,8 +66,8 @@
 
 		if (!selected || (selected instanceof Array && selected.includes(item))) return;
 
-		const cancelled = dispatch('select', [...<Array<unknown>>selected, item], { cancelable: true });
-		if (cancelled) return;
+		const notCancelled = dispatch('select', [...<Array<unknown>>selected, item], { cancelable: true });
+		if (!notCancelled) return;
 
 		selected = [...<Array<unknown>>selected, item];
 		criteria = '';
