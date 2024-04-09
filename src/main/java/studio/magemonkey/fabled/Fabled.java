@@ -24,6 +24,20 @@
 
 package studio.magemonkey.fabled;
 
+import com.sucy.skill.SkillAPI;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
+import org.bukkit.metadata.Metadatable;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import studio.magemonkey.codex.CodexEngine;
 import studio.magemonkey.codex.manager.api.menu.YAMLMenu;
 import studio.magemonkey.codex.mccore.config.CommentedConfig;
@@ -61,22 +75,9 @@ import studio.magemonkey.fabled.task.GUITask;
 import studio.magemonkey.fabled.task.ManaTask;
 import studio.magemonkey.fabled.task.SaveTask;
 import studio.magemonkey.fabled.thread.MainThread;
-import com.sucy.skill.SkillAPI;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
-import org.bukkit.metadata.Metadatable;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.java.JavaPluginLoader;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -110,14 +111,17 @@ public class Fabled extends JavaPlugin implements SkillAPI {
     private boolean loaded    = false;
     private boolean disabling = false;
 
-    public Fabled() {
+    public Fabled() throws IOException {
         super();
         MigrationUtil.renameDirectory("plugins/ProSkillAPI", "plugins/Fabled");
+        MigrationUtil.replace("plugins/Fabled/config.yml", "%sapi_", "%fabled_");
     }
 
-    public Fabled(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+    public Fabled(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) throws
+            IOException {
         super(loader, description, dataFolder, file);
         MigrationUtil.renameDirectory("plugins/ProSkillAPI", "plugins/Fabled");
+        MigrationUtil.replace("plugins/Fabled/config.yml", "%sapi_", "%fabled_");
     }
 
     /**
