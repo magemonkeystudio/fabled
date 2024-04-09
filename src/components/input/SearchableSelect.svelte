@@ -77,8 +77,8 @@
 	const remove = (e: MouseEvent | KeyboardEvent, item: unknown) => {
 		e.stopPropagation();
 
-		const cancelled = dispatch('remove', item, { cancelable: true });
-		if (cancelled) return;
+		const notCancelled = dispatch('remove', item, { cancelable: true });
+		if (!notCancelled) return;
 
 		if (multiple) selected = (<Array<unknown>>selected).filter((s: unknown) => s != item);
 		else selected = undefined;
