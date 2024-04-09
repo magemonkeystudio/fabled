@@ -38,7 +38,7 @@ or snapshots through Sonatype.
 <dependency>
     <groupId>studio.magemonkey</groupId>
     <artifactId>fabled</artifactId>
-    <version>1.0.0-R0.1-SNAPSHOT</version>
+    <version>1.0.0-R0.2-SNAPSHOT</version>
 </dependency>
 ```
 
