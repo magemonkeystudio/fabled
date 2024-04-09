@@ -43,6 +43,7 @@ import ColorSelect                                               from '$api/opti
 import { get }                                                   from 'svelte/store';
 import type ProComponent                                         from '$api/components/procomponent';
 import { attributes }                                            from '../../data/attribute-store';
+import EnchantSelect                                             from '$api/options/enchantselect';
 
 // TRIGGERS
 
@@ -1845,7 +1846,9 @@ const itemOptions = (): ComponentOption[] => {
 			.setTooltip('The potion duration (seconds)'),
 		new ColorSelect('Armor Color', 'armor_color', '#a06540')
 			.requireValue('material', ['Leather helmet', 'Leather chestplate', 'Leather leggings', 'Leather boots'])
-			.setTooltip('The armor color in hex RGB')
+			.setTooltip('The armor color in hex RGB'),
+		new EnchantSelect()
+			.setTooltip('The enchantment to apply to the item')
 	];
 
 	return data;

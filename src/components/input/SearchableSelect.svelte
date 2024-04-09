@@ -14,6 +14,7 @@
 	export let multiple                                  = false;
 	export let selected: unknown[] | unknown             = undefined;
 	export let filtered: unknown[]                       = [];
+	export let autoFocus                                 = false;
 
 	let focused    = false;
 	let focusedIn  = false;
@@ -33,6 +34,7 @@
 		if (!browser) return;
 
 		window.addEventListener('scroll', updateY, true);
+		if (autoFocus) focus();
 	});
 
 	onDestroy(() => {
@@ -40,6 +42,8 @@
 
 		window.removeEventListener('scroll', updateY, true);
 	});
+
+	export const focus = () => input.focus();
 
 	const select = (item: unknown, event?: KeyboardEvent) => {
 		if (event && event?.key != 'Enter' && event?.key != ' ') return;
@@ -50,22 +54,32 @@
 		}
 
 		if (!multiple) {
-			selected = item;
-			criteria = '';
-			dispatch('select', selected);
+			const cancelled = dispatch('select', item, { cancelable: true });
+
+			if (!cancelled) {
+				selected = item;
+				criteria = '';
+			}
+
 			return;
 		}
 
 		if (!selected || (selected instanceof Array && selected.includes(item))) return;
+
+		const cancelled = dispatch('select', [...<Array<unknown>>selected, item], { cancelable: true });
+		if (cancelled) return;
+
 		selected = [...<Array<unknown>>selected, item];
 		criteria = '';
-		input.focus();
-
-		dispatch('select', selected);
+		focus();
 	};
 
 	const remove = (e: MouseEvent | KeyboardEvent, item: unknown) => {
 		e.stopPropagation();
+
+		const cancelled = dispatch('remove', item, { cancelable: true });
+		if (cancelled) return;
+
 		if (multiple) selected = (<Array<unknown>>selected).filter((s: unknown) => s != item);
 		else selected = undefined;
 	};
@@ -106,8 +120,8 @@
 	<div {id} class='input'
 			 tabindex='0'
 			 role='searchbox'
-			 on:click={() => input.focus()}
-			 on:keypress={(e) => { if (e.key == 'Enter') e.preventDefault(); }}
+			 on:click={() => focus()}
+			 on:keypress={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
 			 class:focused={focused}>
 		{#if multiple && selected instanceof Array}
 			{#each selected as sel (transformer.transform(sel))}
@@ -118,7 +132,7 @@
 						 transition:fly={{y: -25}}
 						 animate:flip={{duration: 500}}
 						 on:click={(e) => remove(e, sel)}
-						 on:keypress={(e) => { if (e.key == 'Enter' || e.key == ' ') remove(e, sel); }}
+						 on:keypress={(e) => { if (e.key === 'Enter' || e.key === ' ') remove(e, sel); }}
 				>{transformer.transform(sel)}</div>
 			{/each}
 		{:else if selected}
@@ -128,7 +142,7 @@
 					 role='button'
 					 transition:fly={{y: -25}}
 					 on:click={(e) => remove(e, selected)}
-					 on:keypress={(e) => { if (e.key == 'Enter' || e.key == ' ') remove(e, selected); }}
+					 on:keypress={(e) => { if (e.key === 'Enter' || e.key === ' ') remove(e, selected); }}
 			>{transformer.transform(selected)}</div>
 		{/if}
 		{#if !focused && !criteria && (!selected || (selected instanceof Array && selected.length === 0))}

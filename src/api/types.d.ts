@@ -98,6 +98,7 @@ export interface VersionData {
 	PROJECTILES: string[];
 	MOB_DISGUISES: string[];
 	MISC_DISGUISES: string[];
+	ENCHANTS: string[];
 	ANY_POTION?: string[];
 	CONSUMABLE: string[];
 }

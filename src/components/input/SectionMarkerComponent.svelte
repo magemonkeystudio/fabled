@@ -1,13 +1,10 @@
-<script lang="ts">
-
-  export let data: string;
-
-  $: console.log(data);
+<script lang='ts'>
+	export let data: string;
 </script>
 
 <div>
-  {data}
-  <hr />
+	{data}
+	<hr />
 </div>
 
 <style>
