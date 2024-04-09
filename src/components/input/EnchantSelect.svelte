@@ -12,7 +12,7 @@
 
 	let input: SearchableSelect;
 
-	const handleSelect = (e: CustomEvent<string>, index = -1): boolean => {
+	const handleSelect = (e: CustomEvent<string>, index = -1) => {
 		if (multiple) {
 			selected = selected || [];
 
@@ -24,12 +24,10 @@
 
 			input.focus();
 
-			return false;
+			e.preventDefault();
 		} else {
 			selected = { name: e.detail, level: 1 };
 		}
-
-		return true;
 	};
 
 	const handleRemove = (index: number): boolean => {

@@ -54,9 +54,9 @@
 		}
 
 		if (!multiple) {
-			const cancelled = dispatch('select', item, { cancelable: true });
+			const notCancelled = dispatch('select', item, { cancelable: true });
 
-			if (!cancelled) {
+			if (notCancelled) {
 				selected = item;
 				criteria = '';
 			}
