@@ -5,19 +5,19 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.promcteam</groupId>
-    <artifactId>proskillapi-datagenerator</artifactId>
+    <artifactId>fabled-datagenerator</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>ProSkillAPI-DataGenerator</name>
+    <name>Fabled-DataGenerator</name>
 
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <spigot-version>1.20.1</spigot-version>
+        <spigot-version>1.20.4</spigot-version>
     </properties>
 
-    <description>Data generator for ProSkillAPI's web editor</description>
+    <description>Data generator for Fabled's web editor</description>
     <url>
         https://www.spigotmc.org/resources/proskillapi-create-custom-races-classes-skills-spells-with-an-easy-online-editor.91913/
     </url>
@@ -68,7 +68,7 @@
                     <goal>java</goal>
                 </goals>
                 <configuration>
-                    <mainClass>com.sucy.skill.DataGenerator</mainClass>
+                    <mainClass>studio.magemonkey.fabled.DataGenerator</mainClass>
                 </configuration>
             </plugin>
         </plugins>
@@ -77,15 +77,15 @@
     <licenses>
         <license>
             <name>MIT License</name>
-            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <url>https://www.opensource.org/licenses/mit-license.php</url>
         </license>
     </licenses>
 
     <developers>
         <developer>
-            <name>ProMCTeam</name>
-            <organization>ProMCTeam</organization>
-            <organizationUrl>https://promcteam.com</organizationUrl>
+            <name>MageMonkeyStudios</name>
+            <organization>MageMonkeyStudios</organization>
+            <organizationUrl>https://magemonkey.studio</organizationUrl>
         </developer>
     </developers>
 </project>

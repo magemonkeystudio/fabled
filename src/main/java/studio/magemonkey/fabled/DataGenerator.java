@@ -1,10 +1,11 @@
-package com.sucy.skill;
+package studio.magemonkey.fabled;
 
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Biome;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Projectile;
@@ -121,6 +122,13 @@ public class DataGenerator {
             writeEnumConstant(out, Material.MILK_BUCKET);
             writeEnumConstant(out, Material.POTION);
 
+            out.write(("    ],\n    ENCHANTS: [\n").getBytes());
+            for (Field field : Enchantment.class.getDeclaredFields()) {
+                if (field.getType().isAssignableFrom(Enchantment.class)
+                        && !field.isAnnotationPresent(Deprecated.class)) {
+                    out.write(("        \"" + sentenceCase(field.getName()) + "\",\n").getBytes());
+                }
+            }
             out.write(("    ]\n};\n\n").getBytes());
             if (useTypescript) {
                 out.write((dataVersion + ".MATERIALS.sort();\n"
@@ -135,6 +143,7 @@ public class DataGenerator {
                         + dataVersion + ".MOB_DISGUISES.sort();\n"
                         + dataVersion + ".MISC_DISGUISES.sort();\n"
                         + dataVersion + ".CONSUMABLE.sort();\n"
+                        + dataVersion + ".ENCHANTS.sort();\n"
                         + dataVersion + ".ANY_POTION = " + dataVersion
                         + ".POTIONS.slice().splice(0, 0, \"Any\");").getBytes());
             } else {
