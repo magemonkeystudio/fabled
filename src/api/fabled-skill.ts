@@ -16,12 +16,12 @@ export default class FabledSkill implements Serializable {
 	tooBig                       = false;
 	acknowledged                 = false;
 
-	isSkill                     = true;
-	public key                  = {};
+	isSkill                                  = true;
+	public key                               = {};
 	name: string;
-	previousName: string        = '';
-	type                                  = 'Dynamic';
-	maxLevel                    = 5;
+	previousName: string                     = '';
+	type                                     = 'Dynamic';
+	maxLevel                                 = 5;
 	skillReq?: FabledSkill;
 	skillReqLevel                            = 0;
 	attributeRequirements: FabledAttribute[] = [];
@@ -33,8 +33,8 @@ export default class FabledSkill implements Serializable {
 	mana: FabledAttribute                    = new FabledAttribute('mana', 0, 0);
 	minSpent: FabledAttribute                = new FabledAttribute('points-spent-req', 0, 0);
 	castMessage                              = '&6{player} &2has cast &6{skill}';
-	combo                                 = '';
-	icon: Icon                  = {
+	combo                                    = '';
+	icon: Icon                               = {
 		material:        'Pumpkin',
 		customModelData: 0,
 		lore:            [
@@ -48,8 +48,8 @@ export default class FabledSkill implements Serializable {
 			'&2Cooldown: {attr:cooldown}'
 		]
 	};
-	incompatible: FabledSkill[] = [];
-	triggers: ProTrigger[]      = [];
+	incompatible: FabledSkill[]              = [];
+	triggers: ProTrigger[]                   = [];
 
 	private skillReqStr         = '';
 	private incompStr: string[] = [];
@@ -162,7 +162,7 @@ export default class FabledSkill implements Serializable {
 		return data;
 	};
 
-	public load = (yaml: SkillYamlData) => {
+	public load = async (yaml: SkillYamlData) => {
 		this.name            = yaml.name;
 		this.type            = yaml.type;
 		this.maxLevel        = yaml['max-level'];
@@ -191,16 +191,19 @@ export default class FabledSkill implements Serializable {
 
 		let unsub: Unsubscriber | undefined = undefined;
 
-		unsub = initialized.subscribe(init => {
-			if (!init) return;
-			this.triggers = <ProTrigger[]>Registry.deserializeComponents(yaml.components);
+		return new Promise<void>((resolve) => {
+			unsub = initialized.subscribe(init => {
+				if (!init) return;
+				this.triggers = <ProTrigger[]>Registry.deserializeComponents(yaml.components);
 
-			if (unsub) {
-				unsub();
-			}
+				if (unsub) {
+					unsub();
+				}
+
+				this.loaded = true;
+				resolve();
+			});
 		});
-
-		this.loaded = true;
 	};
 
 	public postLoad = () => {

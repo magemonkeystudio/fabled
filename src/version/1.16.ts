@@ -3308,6 +3308,46 @@ export const DATA_1_16: VersionData = {
         "Honey bottle",
         "Milk bucket",
         "Potion",
+    ],
+    ENCHANTS: [
+        "Protection environmental",
+        "Protection fire",
+        "Protection fall",
+        "Protection explosions",
+        "Protection projectile",
+        "Oxygen",
+        "Water worker",
+        "Thorns",
+        "Depth strider",
+        "Frost walker",
+        "Binding curse",
+        "Damage all",
+        "Damage undead",
+        "Damage arthropods",
+        "Knockback",
+        "Fire aspect",
+        "Loot bonus mobs",
+        "Sweeping edge",
+        "Dig speed",
+        "Silk touch",
+        "Durability",
+        "Loot bonus blocks",
+        "Arrow damage",
+        "Arrow knockback",
+        "Arrow fire",
+        "Arrow infinite",
+        "Luck",
+        "Lure",
+        "Loyalty",
+        "Impaling",
+        "Riptide",
+        "Channeling",
+        "Multishot",
+        "Quick charge",
+        "Piercing",
+        "Mending",
+        "Vanishing curse",
+        "Soul speed",
     ]
 };
 
@@ -3323,4 +3363,5 @@ DATA_1_16.PROJECTILES.sort();
 DATA_1_16.MOB_DISGUISES.sort();
 DATA_1_16.MISC_DISGUISES.sort();
 DATA_1_16.CONSUMABLE.sort();
+DATA_1_16.ENCHANTS.sort();
 DATA_1_16.ANY_POTION = DATA_1_16.POTIONS.slice().splice(0, 0, "Any");

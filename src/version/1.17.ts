@@ -3710,9 +3710,6 @@ export const DATA_1_17: VersionData = {
         "Strider",
         "Zoglin",
         "Piglin brute",
-        "Axolotl",
-        "Glow squid",
-        "Goat",
     ],
     MISC_DISGUISES: [
         "Dropped item",
@@ -3749,7 +3746,10 @@ export const DATA_1_17: VersionData = {
         "Llama spit",
         "Ender crystal",
         "Trident",
+        "Axolotl",
         "Glow item frame",
+        "Glow squid",
+        "Goat",
         "Marker",
         "Fishing hook",
         "Lightning",
@@ -3797,6 +3797,46 @@ export const DATA_1_17: VersionData = {
         "Honey bottle",
         "Milk bucket",
         "Potion",
+    ],
+    ENCHANTS: [
+        "Protection environmental",
+        "Protection fire",
+        "Protection fall",
+        "Protection explosions",
+        "Protection projectile",
+        "Oxygen",
+        "Water worker",
+        "Thorns",
+        "Depth strider",
+        "Frost walker",
+        "Binding curse",
+        "Damage all",
+        "Damage undead",
+        "Damage arthropods",
+        "Knockback",
+        "Fire aspect",
+        "Loot bonus mobs",
+        "Sweeping edge",
+        "Dig speed",
+        "Silk touch",
+        "Durability",
+        "Loot bonus blocks",
+        "Arrow damage",
+        "Arrow knockback",
+        "Arrow fire",
+        "Arrow infinite",
+        "Luck",
+        "Lure",
+        "Loyalty",
+        "Impaling",
+        "Riptide",
+        "Channeling",
+        "Multishot",
+        "Quick charge",
+        "Piercing",
+        "Mending",
+        "Vanishing curse",
+        "Soul speed",
     ]
 };
 
@@ -3812,4 +3852,5 @@ DATA_1_17.PROJECTILES.sort();
 DATA_1_17.MOB_DISGUISES.sort();
 DATA_1_17.MISC_DISGUISES.sort();
 DATA_1_17.CONSUMABLE.sort();
+DATA_1_17.ENCHANTS.sort();
 DATA_1_17.ANY_POTION = DATA_1_17.POTIONS.slice().splice(0, 0, "Any");

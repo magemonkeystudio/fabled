@@ -43,6 +43,7 @@ import ColorSelect                                               from '$api/opti
 import { get }                                                   from 'svelte/store';
 import type ProComponent                                         from '$api/components/procomponent';
 import { attributes }                                            from '../../data/attribute-store';
+import EnchantSelect                                             from '$api/options/enchantselect';
 
 // TRIGGERS
 
@@ -718,6 +719,8 @@ class ConeTarget extends ProTarget {
 					.setTooltip('The max distance away any target can be in blocks'),
 				new AttributeSelect('Angle', 'angle', 90)
 					.setTooltip('The angle of the cone arc in degrees'),
+				new BooleanSelect('Reset Y', 'reset-y', true)
+					.setTooltip('Whether to remove the Y component of the caster/target when determining targets'),
 				...targetOptions()
 			],
 			preview:      [
@@ -1843,7 +1846,9 @@ const itemOptions = (): ComponentOption[] => {
 			.setTooltip('The potion duration (seconds)'),
 		new ColorSelect('Armor Color', 'armor_color', '#a06540')
 			.requireValue('material', ['Leather helmet', 'Leather chestplate', 'Leather leggings', 'Leather boots'])
-			.setTooltip('The armor color in hex RGB')
+			.setTooltip('The armor color in hex RGB'),
+		new EnchantSelect()
+			.setTooltip('The enchantment to apply to the item')
 	];
 
 	return data;

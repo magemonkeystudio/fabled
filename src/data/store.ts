@@ -172,14 +172,11 @@ export const saveDataToServer = async (data?: FabledSkill | FabledClass) => {
 		path = folder.name + '/';
 	}
 
-	let result = false;
 	if (isSkill) {
-		result = await socketService.saveSkillToServer(path + act.name, yaml);
+		return await socketService.saveSkillToServer(path + act.name, yaml);
 	} else {
-		result = await socketService.saveClassToServer(path + act.name, yaml);
+		return await socketService.saveClassToServer(path + act.name, yaml);
 	}
-
-	return result;
 };
 
 export const getAllSkillYaml = async (): Promise<MultiSkillYamlData> => {
@@ -192,10 +189,12 @@ export const getAllSkillYaml = async (): Promise<MultiSkillYamlData> => {
 
 	const skillYaml: MultiSkillYamlData = {};
 	skillYaml.loaded                    = false;
-	for (const skill of allSkills) {
+
+	const loadedPromise = allSkills.map(async skill => {
 		if (!skill.loaded) await loadSkill(skill);
 		skillYaml[skill.name] = skill.serializeYaml();
-	}
+	});
+	await Promise.all(loadedPromise);
 
 	return skillYaml;
 };
@@ -222,9 +221,7 @@ export const saveAllToServer = async () => {
 	const skillYaml = await getAllSkillYaml();
 	const classYaml = await getAllClassYaml();
 
-	const result = await socketService.exportAll(classYaml.toString(), skillYaml.toString());
-
-	return result;
+	return await socketService.exportAll(classYaml.toString(), skillYaml.toString());
 };
 
 export const saveAll = async () => {

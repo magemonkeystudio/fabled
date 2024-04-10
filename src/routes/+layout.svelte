@@ -16,7 +16,6 @@
 	import ImportModal                                                       from '$components/ImportModal.svelte';
 	import NavBar                                                            from '$components/NavBar.svelte';
 	import HeaderBar                                                         from '$components/HeaderBar.svelte';
-	import { initComponents }                                                from '$api/components/components';
 	import { isSaving, skills }                                              from '../data/skill-store';
 	import { fly }                                                           from 'svelte/transition';
 	import { derived, get, type Readable, type Unsubscriber, type Writable } from 'svelte/store';
@@ -79,8 +78,6 @@
 
 			saveTask = <number><unknown>setTimeout(() => displaySave = true, 1000);
 		});
-
-		initComponents();
 	});
 
 	onDestroy(() => {

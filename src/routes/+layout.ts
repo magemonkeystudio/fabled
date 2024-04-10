@@ -2,13 +2,15 @@ import type { LayoutLoad }       from './$types';
 import { createPaste, getHaste } from '$api/hastebin';
 import { base }                  from '$app/paths';
 import { socketService }         from '$api/socket/socket-connector';
+import { initComponents }        from '$api/components/components';
 
 export const ssr = false;
 
-const expectedHost = ['promcteam.github.io', 'synthesis.travja.dev'];
+const expectedHost = ['fabled.magemonkey.studio', 'synthesis.travja.dev'];
 const separator    = '\n\n\n~~~~~\n\n\n';
 
-export const load: LayoutLoad = ({ url }) => {
+export const load: LayoutLoad = async ({ url }) => {
+	initComponents();
 	if (url.searchParams.has('session')) {
 		// Attempt to connect to the socket.io server
 		const sessionId = url.searchParams.get('session');
@@ -30,24 +32,25 @@ export const load: LayoutLoad = ({ url }) => {
 				const skillFolders = data.split(separator)[2];
 				const classFolders = data.split(separator)[3];
 
-				localStorage.setItem('skillData', skillData);
-				localStorage.setItem('classData', classData);
+				loadSkillText(skillData).then(() => {
+				});
+				loadClassText(classData);
 				localStorage.setItem('skillFolders', skillFolders);
 				localStorage.setItem('classFolders', classFolders);
 
-				window.location.href = `http://${expectedHost}${base}`;
+				window.location.href = `https://${expectedHost}${base}`;
 			})
 			.catch(console.error);
 
 		return;
 	}
 
-	if (expectedHost.includes(url.host) || !localStorage.getItem('skillData')) return;
+	if (expectedHost.includes(url.host) || get(skills).length == 0) return;
 
-	alert('We\'re migrating the new editor to the old URL. You\'re now going to be redirected. Your skills/classes should remain in tact.');
+	alert('We\'re migrating to a new URL. You\'re now going to be redirected. Your skills/classes should remain in tact.');
 
-	const skillYaml    = localStorage.getItem('skillData');
-	const classYaml    = localStorage.getItem('classData');
+	const skillYaml    = YAML.stringify(await getAllSkillYaml(), { lineWidth: 0 });
+	const classYaml    = YAML.stringify(getAllClassYaml(), { lineWidth: 0 });
 	const skillFolders = localStorage.getItem('skillFolders');
 	const classFolders = localStorage.getItem('classFolders');
 
@@ -57,7 +60,5 @@ export const load: LayoutLoad = ({ url }) => {
 		+ classFolders;
 
 	createPaste(qualifiedData)
-		.then((url: string) => window.location.href = `http://${expectedHost}/proskillapi?migrationData=${url}`);
-
-	return;
+		.then((url: string) => window.location.href = `https://${expectedHost}?migrationData=${url}`);
 };
