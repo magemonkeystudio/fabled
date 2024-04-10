@@ -26,11 +26,11 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.player.PlayerSkill;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.player.PlayerSkill;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,18 +56,13 @@ public class PassiveMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (tasks.containsKey(caster.getEntityId())) {
-            return false;
-        }
+        if (tasks.containsKey(caster.getEntityId()) || targets.isEmpty()) return false;
 
-        if (targets.size() > 0) {
-            final int         period = (int) (parseValues(caster, PERIOD, level, 1.0) * 20);
-            final PassiveTask task   = new PassiveTask(caster, level, targets, period);
-            tasks.put(caster.getEntityId(), task);
+        final int         period = (int) (parseValues(caster, PERIOD, level, 1.0) * 20);
+        final PassiveTask task   = new PassiveTask(caster, level, targets, period);
+        tasks.put(caster.getEntityId(), task);
 
-            return true;
-        }
-        return false;
+        return true;
     }
 
     @Override
@@ -78,9 +73,7 @@ public class PassiveMechanic extends MechanicComponent {
     @Override
     protected void doCleanUp(final LivingEntity caster) {
         final PassiveTask task = tasks.remove(caster.getEntityId());
-        if (task != null) {
-            task.cancel();
-        }
+        if (task != null) task.cancel();
     }
 
     private class PassiveTask extends BukkitRunnable {
@@ -109,7 +102,7 @@ public class PassiveMechanic extends MechanicComponent {
                     targets.remove(i);
                 }
             }
-            if (!skill.isActive(caster) || targets.size() == 0) {
+            if (!skill.isActive(caster) || targets.isEmpty()) {
                 cancel();
                 return;
             } else if (caster instanceof Player) {
@@ -122,9 +115,7 @@ public class PassiveMechanic extends MechanicComponent {
             level = skill.getActiveLevel(caster);
             executeChildren(caster, level, targets, skill.isForced(caster));
 
-            if (skill.checkCancelled()) {
-                cancel();
-            }
+            if (skill.checkCancelled()) cancel();
         }
     }
 }
