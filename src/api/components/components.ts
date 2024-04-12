@@ -1879,11 +1879,17 @@ const warpOptions = (): ComponentOption[] => {
 			.setTooltip('Whether to preserve the target\'s velocity post-warp'),
 		new BooleanSelect('Set Yaw', 'setYaw', false)
 			.setTooltip('Whether to set the target\'s yaw on teleport'),
+		new BooleanSelect('Relative', 'relative-yaw', false)
+			.requireValue('setYaw', [true])
+			.setTooltip('Whether to set the yaw relative to the target\'s current yaw'),
 		new AttributeSelect('Yaw', 'yaw', 0)
 			.requireValue('setYaw', [true])
 			.setTooltip('The Yaw of the desired position (left/right orientation)'),
 		new BooleanSelect('Set Pitch', 'setPitch', false)
 			.setTooltip('Whether to set the target\'s pitch on teleport'),
+		new BooleanSelect('Relative', 'relative-pitch', false)
+			.requireValue('setPitch', [true])
+			.setTooltip('Whether to set the pitch relative to the target\'s current pitch'),
 		new AttributeSelect('Pitch', 'pitch', 0)
 			.requireValue('setPitch', [true])
 			.setTooltip('The Pitch of the desired position (up/down orientation)')
