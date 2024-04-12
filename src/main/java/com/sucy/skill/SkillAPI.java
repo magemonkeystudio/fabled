@@ -1,8 +1,12 @@
 package com.sucy.skill;
 
+import io.lumine.mythic.core.drops.droppables.SkillAPIDrop;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.Metadatable;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import studio.magemonkey.codex.mccore.config.CommentedConfig;
@@ -19,6 +23,8 @@ import studio.magemonkey.fabled.exception.FabledNotEnabledException;
 import studio.magemonkey.fabled.manager.ComboManager;
 import studio.magemonkey.fabled.manager.IAttributeManager;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +37,17 @@ import java.util.Map;
  * @deprecated use {@link Fabled} instead
  */
 @Deprecated
-public interface SkillAPI {
+public class SkillAPI extends JavaPlugin {
+    @Deprecated
+    public SkillAPI() {
+        super();
+    }
+    @Deprecated
+    public SkillAPI(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) throws
+            IOException {
+        super(loader, description, dataFolder, file);
+    }
+
     /**
      * Checks whether Fabled has all its
      * data loaded and running.
@@ -40,7 +56,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#isLoaded()}
      */
     @Deprecated(forRemoval = true)
-    static boolean isLoaded() {
+    public static boolean isLoaded() {
         return Fabled.isLoaded();
     }
 
@@ -54,7 +70,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#inst()}
      */
     @Deprecated(forRemoval = true)
-    static Fabled inst() {
+    public static Fabled inst() {
         return Fabled.inst();
     }
 
@@ -65,7 +81,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#getSettings()}
      */
     @Deprecated(forRemoval = true)
-    static Settings getSettings() {
+    public static Settings getSettings() {
         return Fabled.getSettings();
     }
 
@@ -76,7 +92,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#getLanguage()}
      */
     @Deprecated(forRemoval = true)
-    static CommentedLanguageConfig getLanguage() {
+    public static CommentedLanguageConfig getLanguage() {
         return Fabled.getLanguage();
     }
 
@@ -87,7 +103,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#getComboManager()}
      */
     @Deprecated(forRemoval = true)
-    static ComboManager getComboManager() {
+    public static ComboManager getComboManager() {
         return Fabled.getComboManager();
     }
 
@@ -98,7 +114,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#getAttributeManager()}
      */
     @Deprecated(forRemoval = true)
-    static IAttributeManager getAttributeManager() {
+    public static IAttributeManager getAttributeManager() {
         return Fabled.getAttributeManager();
     }
 
@@ -111,7 +127,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#getSkill(String)}
      */
     @Deprecated(forRemoval = true)
-    static Skill getSkill(String name) {
+    public static Skill getSkill(String name) {
         return Fabled.getSkill(name);
     }
 
@@ -123,7 +139,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#getSkills()}
      */
     @Deprecated(forRemoval = true)
-    static Map<String, Skill> getSkills() {
+    public static Map<String, Skill> getSkills() {
         return Fabled.getSkills();
     }
 
@@ -135,7 +151,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#isSkillRegistered(String)}
      */
     @Deprecated(forRemoval = true)
-    static boolean isSkillRegistered(String name) {
+    public static boolean isSkillRegistered(String name) {
         return Fabled.isSkillRegistered(name);
     }
 
@@ -147,7 +163,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#isSkillRegistered(PlayerSkill)}
      */
     @Deprecated(forRemoval = true)
-    static boolean isSkillRegistered(PlayerSkill skill) {
+    public static boolean isSkillRegistered(PlayerSkill skill) {
         return Fabled.isSkillRegistered(skill);
     }
 
@@ -159,7 +175,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#isSkillRegistered(Skill)}
      */
     @Deprecated(forRemoval = true)
-    static boolean isSkillRegistered(Skill skill) {
+    public static boolean isSkillRegistered(Skill skill) {
         return Fabled.isSkillRegistered(skill);
     }
 
@@ -172,7 +188,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#getClass(String)}
      */
     @Deprecated(forRemoval = true)
-    static FabledClass getClass(String name) {
+    public static FabledClass getClass(String name) {
         return Fabled.getClass(name);
     }
 
@@ -184,7 +200,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#getClasses()}
      */
     @Deprecated(forRemoval = true)
-    static Map<String, FabledClass> getClasses() {
+    public static Map<String, FabledClass> getClasses() {
         return Fabled.getClasses();
     }
 
@@ -195,7 +211,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#getBaseClasses(String)}
      */
     @Deprecated(forRemoval = true)
-    static List<FabledClass> getBaseClasses(String group) {
+    public static List<FabledClass> getBaseClasses(String group) {
         return Fabled.getBaseClasses(group);
     }
 
@@ -207,7 +223,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#isClassRegistered(String)}
      */
     @Deprecated(forRemoval = true)
-    static boolean isClassRegistered(String name) {
+    public static boolean isClassRegistered(String name) {
         return Fabled.isClassRegistered(name);
     }
 
@@ -219,7 +235,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#isClassRegistered(PlayerClass)}
      */
     @Deprecated(forRemoval = true)
-    static boolean isClassRegistered(PlayerClass playerClass) {
+    public static boolean isClassRegistered(PlayerClass playerClass) {
         return Fabled.isClassRegistered(playerClass);
     }
 
@@ -231,7 +247,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#isClassRegistered(FabledClass)}
      */
     @Deprecated(forRemoval = true)
-    static boolean isClassRegistered(FabledClass fabledClass) {
+    public static boolean isClassRegistered(FabledClass fabledClass) {
         return Fabled.isClassRegistered(fabledClass);
     }
 
@@ -244,7 +260,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#getPlayerData(OfflinePlayer)}
      */
     @Deprecated(forRemoval = true)
-    static PlayerData getPlayerData(OfflinePlayer player) {
+    public static PlayerData getPlayerData(OfflinePlayer player) {
         return Fabled.getPlayerData(player);
     }
 
@@ -258,7 +274,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#loadPlayerData(OfflinePlayer)}
      */
     @Deprecated(forRemoval = true)
-    static PlayerAccounts loadPlayerData(OfflinePlayer player) {
+    public static PlayerAccounts loadPlayerData(OfflinePlayer player) {
         return Fabled.loadPlayerData(player);
     }
 
@@ -270,7 +286,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#initFakeData(OfflinePlayer)}
      */
     @Deprecated(forRemoval = true)
-    static void initFakeData(final OfflinePlayer player) {
+    public static void initFakeData(final OfflinePlayer player) {
         Fabled.initFakeData(player);
     }
 
@@ -281,7 +297,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#reloadPlayerData(Player)} (OfflinePlayer)}
      */
     @Deprecated(forRemoval = true)
-    static void reloadPlayerData(final Player player) {
+    public static void reloadPlayerData(final Player player) {
         Fabled.reloadPlayerData(player);
     }
 
@@ -293,7 +309,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#saveData()}
      */
     @Deprecated(forRemoval = true)
-    static void saveData() {
+    public static void saveData() {
         Fabled.saveData();
     }
 
@@ -308,7 +324,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#hasPlayerData(OfflinePlayer)}
      */
     @Deprecated(forRemoval = true)
-    static boolean hasPlayerData(OfflinePlayer player) {
+    public static boolean hasPlayerData(OfflinePlayer player) {
         return Fabled.hasPlayerData(player);
     }
 
@@ -320,7 +336,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#unloadPlayerData(OfflinePlayer)}
      */
     @Deprecated(forRemoval = true)
-    static void unloadPlayerData(final OfflinePlayer player) {
+    public static void unloadPlayerData(final OfflinePlayer player) {
         Fabled.unloadPlayerData(player);
     }
 
@@ -333,7 +349,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#unloadPlayerData(OfflinePlayer, boolean)}
      */
     @Deprecated(forRemoval = true)
-    static void unloadPlayerData(final OfflinePlayer player, final boolean skipSaving) {
+    public static void unloadPlayerData(final OfflinePlayer player, final boolean skipSaving) {
         Fabled.unloadPlayerData(player, skipSaving);
     }
 
@@ -347,7 +363,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#getPlayerAccountData(OfflinePlayer)}
      */
     @Deprecated(forRemoval = true)
-    static PlayerAccounts getPlayerAccountData(OfflinePlayer player) {
+    public static PlayerAccounts getPlayerAccountData(OfflinePlayer player) {
         return Fabled.getPlayerAccountData(player);
     }
 
@@ -359,7 +375,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#getPlayerAccountData()}
      */
     @Deprecated(forRemoval = true)
-    static Map<String, PlayerAccounts> getPlayerAccountData() {
+    public static Map<String, PlayerAccounts> getPlayerAccountData() {
         return Fabled.getPlayerAccountData();
     }
 
@@ -371,7 +387,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#getGroups()}
      */
     @Deprecated(forRemoval = true)
-    static List<String> getGroups() {
+    public static List<String> getGroups() {
         return Fabled.getGroups();
     }
 
@@ -383,7 +399,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#schedule(BukkitRunnable, int)}
      */
     @Deprecated(forRemoval = true)
-    static BukkitTask schedule(BukkitRunnable runnable, int delay) {
+    public static BukkitTask schedule(BukkitRunnable runnable, int delay) {
         return Fabled.schedule(runnable, delay);
     }
 
@@ -395,7 +411,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#schedule(BukkitRunnable, int)}
      */
     @Deprecated(forRemoval = true)
-    static BukkitTask schedule(Runnable runnable, int delay) {
+    public static BukkitTask schedule(Runnable runnable, int delay) {
         return Fabled.schedule(runnable, delay);
     }
 
@@ -408,7 +424,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#schedule(BukkitRunnable, int, int)}
      */
     @Deprecated(forRemoval = true)
-    static BukkitTask schedule(BukkitRunnable runnable, int delay, int period) {
+    public static BukkitTask schedule(BukkitRunnable runnable, int delay, int period) {
         return Fabled.schedule(runnable, delay, period);
     }
 
@@ -421,7 +437,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#setMeta(Metadatable, String, Object)}
      */
     @Deprecated(forRemoval = true)
-    static void setMeta(Metadatable target, String key, Object value) {
+    public static void setMeta(Metadatable target, String key, Object value) {
         Fabled.setMeta(target, key, value);
     }
 
@@ -434,7 +450,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#getMeta(Metadatable, String)}
      */
     @Deprecated(forRemoval = true)
-    static Object getMeta(Metadatable target, String key) {
+    public static Object getMeta(Metadatable target, String key) {
         return Fabled.getMeta(target, key);
     }
 
@@ -447,7 +463,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#getMetaInt(Metadatable, String)}
      */
     @Deprecated(forRemoval = true)
-    static int getMetaInt(Metadatable target, String key) {
+    public static int getMetaInt(Metadatable target, String key) {
         return Fabled.getMetaInt(target, key);
     }
 
@@ -460,7 +476,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#getMetaInt(Metadatable, String)}
      */
     @Deprecated(forRemoval = true)
-    static double getMetaDouble(Metadatable target, String key) {
+    public static double getMetaDouble(Metadatable target, String key) {
         return Fabled.getMetaDouble(target, key);
     }
 
@@ -472,7 +488,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#removeMeta(Metadatable, String)}
      */
     @Deprecated(forRemoval = true)
-    static void removeMeta(Metadatable target, String key) {
+    public static void removeMeta(Metadatable target, String key) {
         Fabled.removeMeta(target, key);
     }
 
@@ -484,7 +500,7 @@ public interface SkillAPI {
      * @deprecated use {@link Fabled#getConfig(String)}
      */
     @Deprecated(forRemoval = true)
-    static CommentedConfig getConfig(String name) {
+    public static CommentedConfig getConfig(String name) {
         return Fabled.getConfig(name);
     }
 }

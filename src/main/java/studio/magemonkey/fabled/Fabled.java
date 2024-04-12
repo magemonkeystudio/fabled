@@ -34,7 +34,6 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.metadata.Metadatable;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -84,7 +83,7 @@ import java.util.*;
  * <p>The main class of the plugin which has the accessor methods into most of the API</p>
  * <p>You can retrieve a reference to this through Bukkit the same way as any other plugin</p>
  */
-public class Fabled extends JavaPlugin implements SkillAPI {
+public class Fabled extends SkillAPI {
     private static Fabled singleton;
     public static  Random RANDOM = new Random();
 
@@ -518,7 +517,7 @@ public class Fabled extends JavaPlugin implements SkillAPI {
      */
     public static Object getMeta(Metadatable target, String key) {
         List<MetadataValue> meta = target.getMetadata(key);
-        return meta == null || meta.size() == 0 ? null : meta.get(0).value();
+        return meta.isEmpty() ? null : meta.get(0).value();
     }
 
     /**
