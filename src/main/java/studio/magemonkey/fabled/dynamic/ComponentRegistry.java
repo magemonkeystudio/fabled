@@ -1,5 +1,7 @@
 package studio.magemonkey.fabled.dynamic;
 
+import org.bukkit.event.Event;
+import org.bukkit.plugin.EventExecutor;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.dynamic.condition.*;
 import studio.magemonkey.fabled.dynamic.custom.CustomComponent;
@@ -12,15 +14,6 @@ import studio.magemonkey.fabled.dynamic.mechanic.armorstand.ArmorStandRemoveMech
 import studio.magemonkey.fabled.dynamic.mechanic.particle.*;
 import studio.magemonkey.fabled.dynamic.mechanic.value.*;
 import studio.magemonkey.fabled.dynamic.mechanic.warp.*;
-import studio.magemonkey.fabled.dynamic.target.*;
-import studio.magemonkey.fabled.dynamic.trigger.*;
-import org.bukkit.event.Event;
-import org.bukkit.plugin.EventExecutor;
-import studio.magemonkey.fabled.dynamic.mechanic.*;
-import studio.magemonkey.fabled.dynamic.mechanic.particle.ParticleAnimationMechanic;
-import studio.magemonkey.fabled.dynamic.mechanic.particle.ParticleEffectMechanic;
-import studio.magemonkey.fabled.dynamic.mechanic.particle.ParticleMechanic;
-import studio.magemonkey.fabled.dynamic.mechanic.particle.ParticleProjectileMechanic;
 import studio.magemonkey.fabled.dynamic.target.*;
 import studio.magemonkey.fabled.dynamic.trigger.*;
 
@@ -138,6 +131,7 @@ public class ComponentRegistry {
         register(new WaterCondition());
         register(new WeatherCondition());
         register(new WorldCondition());
+        register(new YawCondition());
 
         // Mechanics
         register(new ArmorMechanic());
