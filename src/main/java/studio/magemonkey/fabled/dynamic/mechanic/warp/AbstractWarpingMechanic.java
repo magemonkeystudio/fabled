@@ -50,12 +50,30 @@ abstract class AbstractWarpingMechanic extends MechanicComponent {
         return settings.getBool(SET_PITCH, false);
     }
 
+    public boolean relativeYaw() {
+        return settings.getBool("relative-yaw", false);
+    }
+
+    public boolean relativePitch() {
+        return settings.getBool("relative-pitch", false);
+    }
+
     public void warp(LivingEntity target, LivingEntity caster, Location location, int level) {
         if (setYaw()) {
-            location.setYaw((float) parseValues(caster, YAW, level, 0));
+            boolean relative = relativeYaw();
+            float yaw = (float) parseValues(caster, YAW, level, 0);
+            if (relative) {
+                yaw += target.getLocation().getYaw();
+            }
+            location.setYaw(yaw);
         }
         if (setPitch()) {
-            location.setPitch((float) parseValues(caster, PITCH, level, 0));
+            boolean relative = relativePitch();
+            float pitch = (float) parseValues(caster, PITCH, level, 0);
+            if (relative) {
+                pitch += target.getLocation().getPitch();
+            }
+            location.setPitch(pitch);
         }
 
         Vector velocity = target.getVelocity().clone();
