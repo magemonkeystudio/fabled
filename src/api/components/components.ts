@@ -1801,6 +1801,24 @@ class WorldCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
+class YawCondition extends ProCondition {
+	public constructor() {
+		super({
+			name:         'Yaw',
+			description:  'Applies child components when the target is facing the correct direction. This is on a scale of 0-360 degrees. 0 is south, 90 is west, 180 is north, and 270 is east',
+			data:         [
+				new DoubleSelect('Min Yaw', 'min-yaw', 0)
+					.setTooltip('The minimum yaw the target should be facing'),
+				new DoubleSelect('Max Yaw', 'max-yaw', 60)
+					.setTooltip('The maximum yaw the target should be facing')
+			],
+			summaryItems: ['min-yaw', 'max-yaw']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 // MECHANICS
 
 /**
@@ -5124,7 +5142,8 @@ export const initComponents = () => {
 		VALUETEXT:      { name: 'Value Text', component: ValueTextCondition },
 		WATER:          { name: 'Water', component: WaterCondition },
 		WEATHER:        { name: 'Weather', component: WeatherCondition },
-		WORLD:          { name: 'World', component: WorldCondition }
+		WORLD:          { name: 'World', component: WorldCondition },
+		YAW:            { name: 'Yaw', component: YawCondition }
 	});
 	mechanics.set({
 		ARMOR:              { name: 'Armor', component: ArmorMechanic },
