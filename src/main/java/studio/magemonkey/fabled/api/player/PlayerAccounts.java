@@ -38,6 +38,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -48,7 +49,7 @@ import java.util.UUID;
  * to extend functionality for handling the inactive accounts.
  */
 public class PlayerAccounts {
-    private final HashMap<Integer, PlayerData> classData = new HashMap<>();
+    private final Map<Integer, PlayerData> classData = new HashMap<>();
     private final UUID                         player;
     private       int                          active;
     @Getter
@@ -172,7 +173,7 @@ public class PlayerAccounts {
      *
      * @return all account data for the player
      */
-    public HashMap<Integer, PlayerData> getAllData() {
+    public Map<Integer, PlayerData> getAllData() {
         return classData;
     }
 

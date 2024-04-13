@@ -24,7 +24,6 @@
 
 package studio.magemonkey.fabled;
 
-import com.sucy.skill.SkillAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -85,7 +84,7 @@ import java.util.*;
  * <p>The main class of the plugin which has the accessor methods into most of the API</p>
  * <p>You can retrieve a reference to this through Bukkit the same way as any other plugin</p>
  */
-public class Fabled extends SkillAPI implements Plugin {
+public class Fabled extends JavaPlugin {
     private static Fabled singleton;
     public static  Random RANDOM = new Random();
 

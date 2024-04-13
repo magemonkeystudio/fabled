@@ -1,6 +1,6 @@
 package com.sucy.skill;
 
-import io.lumine.mythic.core.drops.droppables.SkillAPIDrop;
+import com.sucy.skill.api.player.PlayerAccounts;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.Metadatable;
@@ -13,7 +13,6 @@ import studio.magemonkey.codex.mccore.config.CommentedConfig;
 import studio.magemonkey.codex.mccore.config.CommentedLanguageConfig;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.classes.FabledClass;
-import studio.magemonkey.fabled.api.player.PlayerAccounts;
 import studio.magemonkey.fabled.api.player.PlayerClass;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.player.PlayerSkill;
@@ -27,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * SkillAPI compatibility class for 3rd party plugins hooking into SkillAPI.
@@ -42,6 +42,7 @@ public class SkillAPI extends JavaPlugin {
     public SkillAPI() {
         super();
     }
+
     @Deprecated
     public SkillAPI(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) throws
             IOException {
@@ -275,7 +276,7 @@ public class SkillAPI extends JavaPlugin {
      */
     @Deprecated(forRemoval = true)
     public static PlayerAccounts loadPlayerData(OfflinePlayer player) {
-        return Fabled.loadPlayerData(player);
+        return new PlayerAccounts(Fabled.loadPlayerData(player));
     }
 
     /**
@@ -364,7 +365,7 @@ public class SkillAPI extends JavaPlugin {
      */
     @Deprecated(forRemoval = true)
     public static PlayerAccounts getPlayerAccountData(OfflinePlayer player) {
-        return Fabled.getPlayerAccountData(player);
+        return new PlayerAccounts(Fabled.getPlayerAccountData(player));
     }
 
     /**
@@ -376,7 +377,11 @@ public class SkillAPI extends JavaPlugin {
      */
     @Deprecated(forRemoval = true)
     public static Map<String, PlayerAccounts> getPlayerAccountData() {
-        return Fabled.getPlayerAccountData();
+        return Fabled.getPlayerAccountData().entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                        entry -> new PlayerAccounts(entry.getValue()),
+                        (a, b) -> b));
     }
 
     /**
