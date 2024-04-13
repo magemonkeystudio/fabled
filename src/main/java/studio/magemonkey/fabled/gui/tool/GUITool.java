@@ -26,17 +26,7 @@
  */
 package studio.magemonkey.fabled.gui.tool;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.classes.FabledClass;
-import studio.magemonkey.fabled.api.player.PlayerData;
-import studio.magemonkey.fabled.api.skills.Skill;
-import studio.magemonkey.fabled.api.util.DamageLoreRemover;
-import studio.magemonkey.fabled.log.Logger;
-import studio.magemonkey.fabled.manager.ProAttribute;
-import studio.magemonkey.fabled.tree.basic.CustomTree;
-import studio.magemonkey.codex.mccore.config.CommentedConfig;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import studio.magemonkey.codex.mccore.util.TextFormatter;
+import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -48,7 +38,20 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import studio.magemonkey.codex.mccore.config.CommentedConfig;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
+import studio.magemonkey.codex.mccore.util.TextFormatter;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.classes.FabledClass;
+import studio.magemonkey.fabled.api.player.PlayerData;
+import studio.magemonkey.fabled.api.skills.Skill;
+import studio.magemonkey.fabled.api.util.DamageLoreRemover;
+import studio.magemonkey.fabled.log.Logger;
+import studio.magemonkey.fabled.manager.ProAttribute;
+import studio.magemonkey.fabled.tree.basic.CustomTree;
 
 import java.util.*;
 
@@ -58,9 +61,11 @@ public class GUITool implements ToolMenu {
     private static final String                     PREV_PAGE     = "PREV_PAGE";
     private static final HashMap<String, GUIData>   setups        = new HashMap<>();
     private static final HashMap<String, ItemStack> items         = new HashMap<>();
+    @Getter
     private static       boolean                    inUse         = false;
     private static       CommentedConfig            config;
-    private static final NamespacedKey              CAST_ITEM_KEY = new NamespacedKey(Fabled.inst(), "castItem");
+    private static final NamespacedKey              CAST_ITEM_KEY =
+            new NamespacedKey((Plugin) Fabled.inst(), "castItem");
 
     private static ItemStack
             NEXT,
@@ -93,10 +98,6 @@ public class GUITool implements ToolMenu {
 
     public GUITool(Player player) {
         this.player = player;
-    }
-
-    public static boolean isInUse() {
-        return inUse;
     }
 
     public static void init() {
@@ -149,8 +150,8 @@ public class GUITool implements ToolMenu {
                 professes.add(c.getParent());
             groups.add(c.getGroup());
         }
-        availableGroups = groups.toArray(new String[groups.size()]);
-        availableProfesses = professes.toArray(new FabledClass[professes.size()]);
+        availableGroups = groups.toArray(new String[0]);
+        availableProfesses = professes.toArray(new FabledClass[0]);
 
         CommentedConfig itemFile = Fabled.getConfig("tool");
         itemFile.checkDefaults();
@@ -376,22 +377,12 @@ public class GUITool implements ToolMenu {
         playerContents[4] = ADD_PAGE;
         playerContents[5] = DEL_PAGE;
 
-        String name = null;
-
-        switch (type) {
-            case CLASS_DETAILS:
-                name = populateClassDetails();
-                break;
-            case SKILL_TREE:
-                name = populateSkillTree();
-                break;
-            case CLASS_SELECTION:
-                name = populateClassSelection();
-                break;
-            case ATTRIBUTES:
-                name = populateAttributes();
-                break;
-        }
+        String name = switch (type) {
+            case CLASS_DETAILS -> populateClassDetails();
+            case SKILL_TREE -> populateSkillTree();
+            case CLASS_SELECTION -> populateClassSelection();
+            case ATTRIBUTES -> populateAttributes();
+        };
 
         GUIPage page = guiData.getPage();
         for (Map.Entry<String, ItemStack> entry : items.entrySet()) {
@@ -614,14 +605,15 @@ public class GUITool implements ToolMenu {
 
     @Override
     public void restore() {
-        if (data != null && !switching) {
-            update();
-            data.restore(player);
-            data = null;
-            inUse = false;
-        }
+        if (data == null || switching) return;
+
+        update();
+        data.restore(player);
+        data = null;
+        inUse = false;
     }
 
+    @NotNull
     @Override
     public Inventory getInventory() {
         return inventory;

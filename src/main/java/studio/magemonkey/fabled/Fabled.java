@@ -33,7 +33,9 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.metadata.Metadatable;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -83,7 +85,7 @@ import java.util.*;
  * <p>The main class of the plugin which has the accessor methods into most of the API</p>
  * <p>You can retrieve a reference to this through Bukkit the same way as any other plugin</p>
  */
-public class Fabled extends SkillAPI {
+public class Fabled extends SkillAPI implements Plugin {
     private static Fabled singleton;
     public static  Random RANDOM = new Random();
 
@@ -414,7 +416,7 @@ public class Fabled extends SkillAPI {
             return;
         }
 
-        singleton.getServer().getScheduler().runTaskAsynchronously(singleton, () -> {
+        singleton.getServer().getScheduler().runTaskAsynchronously((Plugin) singleton, () -> {
             PlayerAccounts accounts = getPlayerAccountData(player);
             if (!skipSaving) {
                 singleton.io.saveData(accounts);
@@ -559,7 +561,7 @@ public class Fabled extends SkillAPI {
      * @return config data
      */
     public static CommentedConfig getConfig(String name) {
-        return new CommentedConfig(singleton, name);
+        return new CommentedConfig((JavaPlugin) singleton, name);
     }
 
     /**
@@ -661,7 +663,7 @@ public class Fabled extends SkillAPI {
         // Load settings
         settings = new Settings(this);
         settings.reload();
-        language = new CommentedLanguageConfig(this, "language");
+        language = new CommentedLanguageConfig((JavaPlugin) this, "language");
         language.checkDefaults();
         language.trim();
         language.save();
