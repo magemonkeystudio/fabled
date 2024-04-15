@@ -113,15 +113,11 @@ public class Fabled extends JavaPlugin {
 
     public Fabled() throws IOException {
         super();
-        MigrationUtil.renameDirectory("plugins/ProSkillAPI", "plugins/Fabled");
-        MigrationUtil.replace("plugins/Fabled/config.yml", "%sapi_", "%fabled_");
     }
 
     public Fabled(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) throws
             IOException {
         super(loader, description, dataFolder, file);
-        MigrationUtil.renameDirectory("plugins/ProSkillAPI", "plugins/Fabled");
-        MigrationUtil.replace("plugins/Fabled/config.yml", "%sapi_", "%fabled_");
     }
 
     /**
@@ -576,6 +572,13 @@ public class Fabled extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        try {
+            MigrationUtil.renameDirectory("plugins/ProSkillAPI", "plugins/Fabled");
+            MigrationUtil.replace("plugins/Fabled/config.yml", "%sapi_", "%fabled_");
+        } catch (IOException e) {
+            getLogger().warning("Failed to migrate ProSkillAPI data to Fabled. " + e.getMessage());
+        }
+
         MimicHook.init(this);
         fabledProvider = new FabledAttributeProvider(this);
         AttributeRegistry.registerProvider(fabledProvider);
