@@ -516,9 +516,10 @@ public class Fabled extends JavaPlugin {
      * @param key    key the value was stored under
      * @return the stored value
      */
+    @SuppressWarnings("ConstantValue")
     public static Object getMeta(Metadatable target, String key) {
         List<MetadataValue> meta = target.getMetadata(key);
-        return meta.isEmpty() ? null : meta.get(0).value();
+        return meta == null || meta.isEmpty() ? null : meta.get(0).value();
     }
 
     /**
