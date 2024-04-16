@@ -4,22 +4,20 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
-import studio.magemonkey.fabled.Fabled;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
-import java.lang.reflect.InvocationTargetException;
+import studio.magemonkey.fabled.Fabled;
 
 public class ProtocolLibHook {
     private final Fabled          plugin;
+    @Getter
     private final ProtocolManager protocolManager;
 
     public ProtocolLibHook(Fabled plugin) {
         this.plugin = plugin;
         protocolManager = ProtocolLibrary.getProtocolManager();
     }
-
-    public ProtocolManager getProtocolManager() {return protocolManager;}
 
     public void register(PacketAdapter listener) {
         protocolManager.addPacketListener(listener);
@@ -39,11 +37,7 @@ public class ProtocolLibHook {
 
             double dist = player.getLocation().distanceSquared(p.getLocation());
             if (dist < Bukkit.getViewDistance() * 16) {
-                try {
-                    protocolManager.sendServerPacket(p, packet);
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                }
+                protocolManager.sendServerPacket(p, packet);
             }
         }
     }
