@@ -11,9 +11,13 @@ updates:
       interval: "weekly"
     target-branch: "editor"
     open-pull-requests-limit: 10
+    reviewers:
+      - Travja
   - package-ecosystem: "maven"
     directory: "/"
     schedule:
       interval: "weekly"
     target-branch: "dev"
     open-pull-requests-limit: 10
+    reviewers:
+      - Travja
