@@ -20,7 +20,7 @@ You can download Fabled from our marketplace
 
 * https://magemonkey.studio/resources/
 
-## Mage Monkey Studios:
+## MageMonkeyStudio:
 
 [![Discord](https://dcbadge.vercel.app/api/server/6UzkTe6RvW?style=flat)](https://discord.gg/6UzkTe6RvW)
 
