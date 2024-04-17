@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2024 Mage Monkey Studios
+ * Copyright (c) 2024 MageMonkeyStudios
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal
@@ -26,6 +26,22 @@
  */
 package studio.magemonkey.fabled.listener;
 
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.*;
+import org.bukkit.event.inventory.FurnaceExtractEvent;
+import org.bukkit.event.player.*;
+import org.bukkit.event.server.ServerCommandEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.scheduler.BukkitTask;
+import studio.magemonkey.codex.mccore.util.VersionManager;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.DefaultCombatProtection;
 import studio.magemonkey.fabled.api.enums.ExpSource;
@@ -42,22 +58,6 @@ import studio.magemonkey.fabled.dynamic.mechanic.ImmunityMechanic;
 import studio.magemonkey.fabled.gui.tool.GUITool;
 import studio.magemonkey.fabled.hook.CitizensHook;
 import studio.magemonkey.fabled.manager.ClassBoardManager;
-import studio.magemonkey.codex.mccore.util.VersionManager;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.*;
-import org.bukkit.event.inventory.FurnaceExtractEvent;
-import org.bukkit.event.player.*;
-import org.bukkit.event.server.ServerCommandEvent;
-import org.bukkit.event.world.ChunkUnloadEvent;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -410,6 +410,7 @@ public class MainListener extends FabledListener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPhysicalDamage(EntityDamageByEntityEvent event) {
         if (Skill.isSkillDamage()
+                || DefaultCombatProtection.isFakeDamageEvent(event)
                 || event.getCause() == EntityDamageEvent.DamageCause.CUSTOM
                 || !(event.getEntity() instanceof LivingEntity)
                 || event.getDamage() <= 0) {
