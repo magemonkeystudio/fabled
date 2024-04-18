@@ -110,7 +110,7 @@ public class ConfigIO extends IOManager {
      */
     @Override
     public void saveAll() {
-        Map<String, PlayerAccounts> data = Fabled.getPlayerAccountData();
+        Map<String, PlayerAccounts> data = Fabled.getPlayerAccounts();
         ArrayList<String>           keys = new ArrayList<String>(data.keySet());
         for (String key : keys)
             saveData(data.get(key));

@@ -81,7 +81,7 @@ public class CmdList implements IFunction, TabCompleter {
                 return;
             }
 
-            PlayerAccounts accounts = Fabled.getPlayerAccountData(target);
+            PlayerAccounts accounts = Fabled.getPlayerAccounts(target);
             cmd.sendMessage(sender,
                     TITLE,
                     ChatColor.DARK_GRAY + "--" + ChatColor.DARK_GREEN + " {player} " + ChatColor.DARK_GRAY

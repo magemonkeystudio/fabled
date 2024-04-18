@@ -78,7 +78,7 @@ public class CmdForceReset implements IFunction, TabCompleter {
                 return;
             }
 
-            PlayerAccounts accounts = Fabled.getPlayerAccountData(player);
+            PlayerAccounts accounts = Fabled.getPlayerAccounts(player);
             int            id       = accounts.getActiveId();
 
             if (args.length > 1)

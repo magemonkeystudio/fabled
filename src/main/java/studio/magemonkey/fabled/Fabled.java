@@ -24,6 +24,7 @@
 
 package studio.magemonkey.fabled;
 
+import com.sucy.skill.SkillAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -84,7 +85,7 @@ import java.util.*;
  * <p>The main class of the plugin which has the accessor methods into most of the API</p>
  * <p>You can retrieve a reference to this through Bukkit the same way as any other plugin</p>
  */
-public class Fabled extends JavaPlugin {
+public class Fabled extends SkillAPI {
     private static Fabled singleton;
     public static  Random RANDOM = new Random();
 
@@ -312,7 +313,7 @@ public class Fabled extends JavaPlugin {
         if (player == null) {
             return null;
         }
-        return getPlayerAccountData(player).getActiveData();
+        return getPlayerAccounts(player).getActiveData();
     }
 
     /**
@@ -323,7 +324,7 @@ public class Fabled extends JavaPlugin {
      *
      * @param player player to load the data for
      */
-    public static PlayerAccounts loadPlayerData(OfflinePlayer player) {
+    public static PlayerAccounts loadPlayerAccounts(OfflinePlayer player) {
         if (player == null) {
             return null;
         }
@@ -412,7 +413,7 @@ public class Fabled extends JavaPlugin {
         }
 
         singleton.getServer().getScheduler().runTaskAsynchronously((Plugin) singleton, () -> {
-            PlayerAccounts accounts = getPlayerAccountData(player);
+            PlayerAccounts accounts = getPlayerAccounts(player);
             if (!skipSaving) {
                 singleton.io.saveData(accounts);
             }
@@ -428,14 +429,14 @@ public class Fabled extends JavaPlugin {
      * @param player player to get the data for
      * @return the class data of the player
      */
-    public static PlayerAccounts getPlayerAccountData(OfflinePlayer player) {
+    public static PlayerAccounts getPlayerAccounts(OfflinePlayer player) {
         if (player == null) {
             return null;
         }
 
         String id = player.getUniqueId().toString().toLowerCase();
         if (!inst().players.containsKey(id)) {
-            PlayerAccounts data = loadPlayerData(player);
+            PlayerAccounts data = loadPlayerAccounts(player);
             singleton.players.put(id, data);
             return data;
         } else {
@@ -449,7 +450,7 @@ public class Fabled extends JavaPlugin {
      *
      * @return all Fabled player data
      */
-    public static Map<String, PlayerAccounts> getPlayerAccountData() {
+    public static Map<String, PlayerAccounts> getPlayerAccounts() {
         return inst().players;
     }
 
@@ -470,7 +471,7 @@ public class Fabled extends JavaPlugin {
      * @param delay    the delay in ticks
      */
     public static BukkitTask schedule(BukkitRunnable runnable, int delay) {
-        return runnable.runTaskLater(inst(), delay);
+        return runnable.runTaskLater((JavaPlugin) inst(), delay);
     }
 
     /**
@@ -480,7 +481,7 @@ public class Fabled extends JavaPlugin {
      * @param delay    the delay in ticks
      */
     public static BukkitTask schedule(Runnable runnable, int delay) {
-        return Bukkit.getScheduler().runTaskLater(singleton, runnable, delay);
+        return Bukkit.getScheduler().runTaskLater((JavaPlugin) singleton, runnable, delay);
     }
 
     /**
@@ -491,7 +492,7 @@ public class Fabled extends JavaPlugin {
      * @param period   how often to run in ticks
      */
     public static BukkitTask schedule(BukkitRunnable runnable, int delay, int period) {
-        return runnable.runTaskTimer(inst(), delay, period);
+        return runnable.runTaskTimer((JavaPlugin) inst(), delay, period);
     }
 
     /**
@@ -502,7 +503,7 @@ public class Fabled extends JavaPlugin {
      * @param value  value to store
      */
     public static void setMeta(Metadatable target, String key, Object value) {
-        target.setMetadata(key, new FixedMetadataValue(inst(), value));
+        target.setMetadata(key, new FixedMetadataValue((JavaPlugin) inst(), value));
     }
 
     /**
@@ -547,7 +548,7 @@ public class Fabled extends JavaPlugin {
      * @param key    key metadata was stored under
      */
     public static void removeMeta(Metadatable target, String key) {
-        target.removeMetadata(key, inst());
+        target.removeMetadata(key, (JavaPlugin) inst());
     }
 
     /**
@@ -567,7 +568,7 @@ public class Fabled extends JavaPlugin {
         Fabled inst = inst();
         inst.onDisable();
         inst.onEnable();
-        YAMLMenu.reloadMenus(inst);
+        YAMLMenu.reloadMenus((JavaPlugin) inst);
     }
 
     @Override
@@ -630,7 +631,7 @@ public class Fabled extends JavaPlugin {
         classes.clear();
         players.clear();
 
-        HandlerList.unregisterAll(this);
+        HandlerList.unregisterAll((JavaPlugin) this);
         cmd.clear();
 
         loaded = false;
@@ -653,7 +654,7 @@ public class Fabled extends JavaPlugin {
         if (!DependencyRequirement.meetsVersion(DependencyRequirement.MIN_CORE_VERSION, coreVersion)) {
             getLogger().warning("Missing required Codex version. " + coreVersion + " installed. "
                     + DependencyRequirement.MIN_CORE_VERSION + " required. Disabling.");
-            Bukkit.getPluginManager().disablePlugin(this);
+            Bukkit.getPluginManager().disablePlugin((JavaPlugin) this);
             return;
         }
 
@@ -739,7 +740,7 @@ public class Fabled extends JavaPlugin {
         if (settings.isManaEnabled()) {
             if (VersionManager.isVersionAtLeast(11400)) {
                 manaTask = Bukkit.getScheduler().runTaskTimer(
-                        this,
+                        (JavaPlugin) this,
                         new ManaTask(),
                         Fabled.getSettings().getGainFreq(),
                         Fabled.getSettings().getGainFreq()
@@ -788,7 +789,7 @@ public class Fabled extends JavaPlugin {
                     iterator.remove();
                 }
             }
-            Bukkit.getPluginManager().registerEvents(listener, this);
+            Bukkit.getPluginManager().registerEvents(listener, (JavaPlugin) this);
             this.listeners.add(listener);
         }
     }

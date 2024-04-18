@@ -41,6 +41,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Nullable;
 import studio.magemonkey.codex.CodexEngine;
@@ -2543,7 +2544,7 @@ public class PlayerData {
     }
 
     private boolean applyUse(final Player player, final PlayerSkill skill, final double manaCost) {
-        player.setMetadata("custom-cooldown", new FixedMetadataValue(Fabled.inst(), 1));
+        player.setMetadata("custom-cooldown", new FixedMetadataValue((JavaPlugin) Fabled.inst(), 1));
         skill.startCooldown();
         if (Fabled.getSettings().isShowSkillMessages()) {
             skill.getData().sendMessage(player, Fabled.getSettings().getMessageRadius());
@@ -2556,7 +2557,9 @@ public class PlayerData {
             if (!removeTimer.isCancelled()) removeTimer.cancel();
         }
         removeTimer = Bukkit.getScheduler()
-                .runTaskLater(Fabled.inst(), () -> player.removeMetadata("custom-cooldown", Fabled.inst()), 20L);
+                .runTaskLater((JavaPlugin) Fabled.inst(),
+                        () -> player.removeMetadata("custom-cooldown", (JavaPlugin) Fabled.inst()),
+                        20L);
         return true;
     }
 
@@ -2592,7 +2595,7 @@ public class PlayerData {
                                 RPGFilter.COOLDOWN.setReplacement(skill.getCooldownLeft() + ""),
                                 RPGFilter.SKILL.setReplacement(skill.getData().getName()));
                 onCooldown.add(getUUID());
-                Bukkit.getScheduler().runTaskLater(Fabled.inst(), () -> onCooldown.remove(getUUID()), 40L);
+                Bukkit.getScheduler().runTaskLater((JavaPlugin) Fabled.inst(), () -> onCooldown.remove(getUUID()), 40L);
             }
             return PlayerSkillCastFailedEvent.invoke(skill, Cause.ON_COOLDOWN);
         }

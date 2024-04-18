@@ -110,7 +110,7 @@ public class CmdChangeClass implements IFunction, TabCompleter {
 
             clazz.setClassData(target);
             unload(player);
-            Fabled.getPlayerAccountData(player).getActiveData().init(player);
+            Fabled.getPlayerAccounts(player).getActiveData().init(player);
             if (bar)
                 Fabled.getPlayerData(player).getSkillBar().toggleEnabled();
 

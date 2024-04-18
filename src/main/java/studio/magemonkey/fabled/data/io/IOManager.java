@@ -116,7 +116,7 @@ public abstract class IOManager {
      * Saves all player data
      */
     public void saveAll() {
-        for (PlayerAccounts data : Fabled.getPlayerAccountData().values()) {
+        for (PlayerAccounts data : Fabled.getPlayerAccounts().values()) {
             if (data.isLoaded() && !MainListener.loadingPlayers.containsKey(data.getOfflinePlayer().getUniqueId())) {
                 saveData(data);
             }

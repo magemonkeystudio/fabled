@@ -272,11 +272,11 @@ public class SkillAPI extends JavaPlugin {
      * asynchronously since it is loading configuration files.
      *
      * @param player player to load the data for
-     * @deprecated use {@link Fabled#loadPlayerData(OfflinePlayer)}
+     * @deprecated use {@link Fabled#loadPlayerAccounts(OfflinePlayer)}
      */
     @Deprecated(forRemoval = true)
     public static PlayerAccounts loadPlayerData(OfflinePlayer player) {
-        return new PlayerAccounts(Fabled.loadPlayerData(player));
+        return new PlayerAccounts(Fabled.loadPlayerAccounts(player));
     }
 
     /**
@@ -361,11 +361,11 @@ public class SkillAPI extends JavaPlugin {
      *
      * @param player player to get the data for
      * @return the class data of the player
-     * @deprecated use {@link Fabled#getPlayerAccountData(OfflinePlayer)}
+     * @deprecated use {@link Fabled#getPlayerAccounts(OfflinePlayer)}
      */
     @Deprecated(forRemoval = true)
     public static PlayerAccounts getPlayerAccountData(OfflinePlayer player) {
-        return new PlayerAccounts(Fabled.getPlayerAccountData(player));
+        return new PlayerAccounts(Fabled.getPlayerAccounts(player));
     }
 
     /**
@@ -373,11 +373,11 @@ public class SkillAPI extends JavaPlugin {
      * modify this map. Instead, use helper methods within individual player data.
      *
      * @return all Fabled player data
-     * @deprecated use {@link Fabled#getPlayerAccountData()}
+     * @deprecated use {@link Fabled#getPlayerAccounts()}
      */
     @Deprecated(forRemoval = true)
     public static Map<String, PlayerAccounts> getPlayerAccountData() {
-        return Fabled.getPlayerAccountData().entrySet()
+        return Fabled.getPlayerAccounts().entrySet()
                 .stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
                         entry -> new PlayerAccounts(entry.getValue()),

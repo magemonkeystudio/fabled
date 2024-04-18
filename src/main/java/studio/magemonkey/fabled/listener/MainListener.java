@@ -146,7 +146,7 @@ public class MainListener extends FabledListener {
         if (Fabled.getSettings().isUseSql() && Fabled.getSettings().getSqlDelay() > 0)
             Fabled.initFakeData(player);
         else
-            Fabled.loadPlayerData(player);
+            Fabled.loadPlayerAccounts(player);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

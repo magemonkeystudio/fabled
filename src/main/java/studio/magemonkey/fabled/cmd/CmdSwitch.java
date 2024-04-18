@@ -80,7 +80,7 @@ public class CmdSwitch implements IFunction, TabCompleter {
 
         // Switch accounts if valid number
         else {
-            PlayerAccounts player = Fabled.getPlayerAccountData((Player) sender);
+            PlayerAccounts player = Fabled.getPlayerAccounts((Player) sender);
 
             FabledClass fabledClass = getRoot(Fabled.getClass(args[0]));
             if (fabledClass != null) {

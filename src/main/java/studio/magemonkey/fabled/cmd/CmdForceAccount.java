@@ -78,7 +78,7 @@ public class CmdForceAccount implements IFunction, TabCompleter {
                 return;
             }
 
-            PlayerAccounts accounts = Fabled.getPlayerAccountData(player);
+            PlayerAccounts accounts = Fabled.getPlayerAccounts(player);
             try {
                 int id = Integer.parseInt(args[1]);
 

@@ -71,7 +71,7 @@ public class CmdAccount implements IFunction {
 
         // Switch accounts if valid number
         else {
-            PlayerAccounts player = Fabled.getPlayerAccountData((Player) sender);
+            PlayerAccounts player = Fabled.getPlayerAccounts((Player) sender);
 
             try {
                 int id = Integer.parseInt(args[0]);

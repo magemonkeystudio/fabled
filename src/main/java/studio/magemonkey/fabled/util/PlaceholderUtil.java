@@ -327,7 +327,7 @@ public class PlaceholderUtil {
 
         if (identifier.startsWith("player_")) {
             if (identifier.startsWith("player_account_")) {
-                PlayerAccounts accounts = Fabled.getPlayerAccountData(player);
+                PlayerAccounts accounts = Fabled.getPlayerAccounts(player);
                 Pattern        pattern  = Pattern.compile("player_account_(\\d+)");
                 Matcher        matcher  = pattern.matcher(identifier);
                 if (matcher.find()) {

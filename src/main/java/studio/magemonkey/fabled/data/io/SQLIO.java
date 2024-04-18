@@ -112,7 +112,7 @@ public class SQLIO extends IOManager {
     @Override
     public void saveAll() {
         SQLConnection               connection = openConnection();
-        Map<String, PlayerAccounts> data       = Fabled.getPlayerAccountData();
+        Map<String, PlayerAccounts> data       = Fabled.getPlayerAccounts();
         ArrayList<String>           keys       = new ArrayList<String>(data.keySet());
         for (String key : keys) {
             saveSingle(connection, data.get(key));
