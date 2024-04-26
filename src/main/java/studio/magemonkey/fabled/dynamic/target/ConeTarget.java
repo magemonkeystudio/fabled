@@ -26,6 +26,7 @@
  */
 package studio.magemonkey.fabled.dynamic.target;
 
+import org.bukkit.plugin.Plugin;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.particle.ParticleSettings;
 import studio.magemonkey.fabled.api.target.TargetHelper;
@@ -98,7 +99,7 @@ public class ConeTarget extends TargetComponent {
                         }
                     }
                 }
-            }.runTaskTimer(Fabled.inst(), 0, Math.max(1, preview.getInt("triangle-" + "period", 5)));
+            }.runTaskTimer((Plugin) Fabled.inst(), 0, Math.max(1, preview.getInt("triangle-" + "period", 5)));
             onPreviewStop.add(task::cancel);
         }
 
@@ -146,7 +147,7 @@ public class ConeTarget extends TargetComponent {
                         }
                     }
                 }
-            }.runTaskTimer(Fabled.inst(), 0, Math.max(1, preview.getInt("cone-" + "period", 5)));
+            }.runTaskTimer((Plugin) Fabled.inst(), 0, Math.max(1, preview.getInt("cone-" + "period", 5)));
             onPreviewStop.add(task::cancel);
         }
     }

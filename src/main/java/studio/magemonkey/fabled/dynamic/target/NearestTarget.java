@@ -26,6 +26,7 @@
  */
 package studio.magemonkey.fabled.dynamic.target;
 
+import org.bukkit.plugin.Plugin;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.particle.ParticleSettings;
 import studio.magemonkey.fabled.api.util.Nearby;
@@ -117,7 +118,7 @@ public class NearestTarget extends TargetComponent {
                         }
                     }
                 }
-            }.runTaskTimer(Fabled.inst(), 0, Math.max(1, preview.getInt("circle-" + "period", 5)));
+            }.runTaskTimer((Plugin) Fabled.inst(), 0, Math.max(1, preview.getInt("circle-" + "period", 5)));
             onPreviewStop.add(task::cancel);
         }
 
@@ -176,7 +177,7 @@ public class NearestTarget extends TargetComponent {
                         }
                     }
                 }
-            }.runTaskTimer(Fabled.inst(), 0, Math.max(1, preview.getInt("sphere-" + "period", 5)));
+            }.runTaskTimer((Plugin) Fabled.inst(), 0, Math.max(1, preview.getInt("sphere-" + "period", 5)));
             onPreviewStop.add(task::cancel);
         }
     }

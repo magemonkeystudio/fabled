@@ -26,15 +26,16 @@
  */
 package studio.magemonkey.fabled.dynamic.target;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.particle.ParticleSettings;
-import studio.magemonkey.fabled.api.util.Nearby;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.particle.ParticleSettings;
+import studio.magemonkey.fabled.api.util.Nearby;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +105,7 @@ public class AreaTarget extends TargetComponent {
                         }
                     }
                 }
-            }.runTaskTimer(Fabled.inst(), 0, Math.max(1, preview.getInt("circle-" + "period", 5)));
+            }.runTaskTimer((Plugin) Fabled.inst(), 0, Math.max(1, preview.getInt("circle-" + "period", 5)));
             onPreviewStop.add(task::cancel);
         }
 
@@ -163,7 +164,7 @@ public class AreaTarget extends TargetComponent {
                         }
                     }
                 }
-            }.runTaskTimer(Fabled.inst(), 0, Math.max(1, preview.getInt("sphere-" + "period", 5)));
+            }.runTaskTimer((Plugin) Fabled.inst(), 0, Math.max(1, preview.getInt("sphere-" + "period", 5)));
             onPreviewStop.add(task::cancel);
         }
     }

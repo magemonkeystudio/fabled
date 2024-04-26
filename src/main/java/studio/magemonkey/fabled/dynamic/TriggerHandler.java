@@ -1,5 +1,14 @@
 package studio.magemonkey.fabled.dynamic;
 
+import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.enums.ManaCost;
 import studio.magemonkey.fabled.api.event.DynamicTriggerEvent;
@@ -8,13 +17,6 @@ import studio.magemonkey.fabled.api.player.PlayerSkill;
 import studio.magemonkey.fabled.dynamic.trigger.ChatTrigger;
 import studio.magemonkey.fabled.dynamic.trigger.Trigger;
 import studio.magemonkey.fabled.dynamic.trigger.TriggerComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,13 +33,15 @@ public class TriggerHandler implements Listener {
     private final Map<Integer, Integer> active = new HashMap<>();
 
     private final DynamicSkill     skill;
+    @Getter
     private final String           key;
+    @Getter
     private final Trigger<?>       trigger;
     private final TriggerComponent component;
 
     public TriggerHandler(final DynamicSkill skill,
                           final String key,
-                          final Trigger trigger,
+                          final Trigger<?> trigger,
                           final TriggerComponent component) {
 
         Objects.requireNonNull(skill, "Must provide a skill");
@@ -49,14 +53,6 @@ public class TriggerHandler implements Listener {
         this.key = key;
         this.trigger = trigger;
         this.component = component;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public Trigger getTrigger() {
-        return trigger;
     }
 
     public EffectComponent getComponent() {
@@ -78,23 +74,17 @@ public class TriggerHandler implements Listener {
      * @param plugin plugin reference
      */
     public void register(final Fabled plugin) {
-
-        if (trigger.getEvent().getTypeName().equals("org.bukkit.event.player.PlayerInteractEvent") || trigger.getEvent()
-                .getTypeName()
-                .contains("PlayerSwapHandItemsEvent")) {
-            plugin.getServer()
-                    .getPluginManager()
-                    .registerEvent(trigger.getEvent(),
-                            this,
-                            EventPriority.HIGHEST,
-                            getExecutor(trigger),
-                            plugin,
-                            false);
-        } else {
-            plugin.getServer()
-                    .getPluginManager()
-                    .registerEvent(trigger.getEvent(), this, EventPriority.HIGHEST, getExecutor(trigger), plugin, true);
-        }
+        plugin.getServer()
+                .getPluginManager()
+                .registerEvent(trigger.getEvent(),
+                        this,
+                        EventPriority.HIGHEST,
+                        getExecutor(trigger),
+                        (Plugin) plugin,
+                        !trigger.getEvent().getTypeName().equals("org.bukkit.event.player.PlayerInteractEvent")
+                                && !trigger.getEvent()
+                                .getTypeName()
+                                .contains("PlayerSwapHandItemsEvent"));
 
     }
 
@@ -116,7 +106,7 @@ public class TriggerHandler implements Listener {
             // This effectively means that ChatTriggers won't be able to cancel the original
             // AsyncPlayerChatEvent.
             Bukkit.getScheduler()
-                    .runTask(Fabled.inst(),
+                    .runTask((Plugin) Fabled.inst(),
                             () -> {
                                 Bukkit.getPluginManager()
                                         .callEvent(new DynamicTriggerEvent(caster,
@@ -163,7 +153,7 @@ public class TriggerHandler implements Listener {
                 return false;
             }
 
-            //TODO Make sure that FALSE is appropriate here.
+            // TODO Make sure that FALSE is appropriate here.
             if (component.trigger(user, target, level, false)) {
                 if (cd) {
                     skill.startCooldown();

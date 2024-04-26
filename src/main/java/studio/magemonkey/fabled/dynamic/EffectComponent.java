@@ -26,6 +26,12 @@
  */
 package studio.magemonkey.fabled.dynamic;
 
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.api.Settings;
@@ -33,13 +39,11 @@ import studio.magemonkey.fabled.api.particle.ParticleHelper;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.player.PlayerSkill;
 import studio.magemonkey.fabled.log.Logger;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -342,7 +346,7 @@ public abstract class EffectComponent {
                         );
                     }
                 }
-            }.runTaskTimer(Fabled.inst(), 0, Math.max(1, preview.getInt("per-target-" + "period", 5)));
+            }.runTaskTimer((Plugin) Fabled.inst(), 0, Math.max(1, preview.getInt("per-target-" + "period", 5)));
             onPreviewStop.add(task::cancel);
         }
         playChildrenPreviews(onPreviewStop, caster, level, targetSupplier);

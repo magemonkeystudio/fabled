@@ -1,5 +1,9 @@
 package studio.magemonkey.fabled.dynamic.target;
 
+import org.bukkit.GameMode;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.target.TargetHelper;
 import studio.magemonkey.fabled.dynamic.ComponentType;
@@ -7,10 +11,6 @@ import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.EffectComponent;
 import studio.magemonkey.fabled.dynamic.TempEntity;
 import studio.magemonkey.fabled.listener.MechanicListener;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import org.bukkit.GameMode;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,12 +47,13 @@ public abstract class TargetComponent extends EffectComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to apply to
-     * @param force
+     * @param force   whether the execution is being forced
      * @return true if applied to something, false otherwise
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         final List<LivingEntity> list = getTargets(caster, level, targets);
+        DynamicSkill.getCastData(caster).put("api-num-targets", list.size());
         return (!list.isEmpty() && executeChildren(caster, level, list, force));
     }
 
