@@ -1,5 +1,16 @@
 package studio.magemonkey.fabled.cmd;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
 import studio.magemonkey.codex.mccore.commands.IFunction;
 import studio.magemonkey.codex.mccore.config.Filter;
@@ -14,16 +25,6 @@ import studio.magemonkey.fabled.api.util.FlagManager;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.hook.CitizensHook;
 import studio.magemonkey.fabled.language.RPGFilter;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.util.StringUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,8 +42,7 @@ public class CmdChangeClass implements IFunction, TabCompleter {
     private static final String NOTIFICATION   = "notification";
 
     public static void unload(Player player) {
-        if (CitizensHook.isNPC(player))
-            return;
+        if (CitizensHook.isNPC(player)) return;
 
         PlayerData data = Fabled.getPlayerData(player);
         if (Fabled.getSettings().isWorldEnabled(player.getWorld())) {
@@ -75,11 +75,16 @@ public class CmdChangeClass implements IFunction, TabCompleter {
             String       className  = args[2];
             for (int i = 3; i < args.length; i++) className += ' ' + args[i];
 
-            final Player player = Bukkit.getPlayer(playerName);
+            OfflinePlayer player = Bukkit.getPlayer(playerName);
             if (player == null) {
-                cmd.sendMessage(sender, INVALID_PLAYER, ChatColor.DARK_RED + "{player} is not online",
-                        Filter.PLAYER.setReplacement(playerName));
-                return;
+                player = Bukkit.getOfflinePlayer(playerName);
+                if (!player.hasPlayedBefore()) {
+                    cmd.sendMessage(sender,
+                            INVALID_PLAYER,
+                            ChatColor.DARK_RED + "{player} is not online, nor have they played before.",
+                            Filter.PLAYER.setReplacement(playerName));
+                    return;
+                }
             }
 
             final PlayerData  data  = Fabled.getPlayerData(player);
@@ -109,8 +114,10 @@ public class CmdChangeClass implements IFunction, TabCompleter {
             }
 
             clazz.setClassData(target);
-            unload(player);
-            Fabled.getPlayerAccounts(player).getActiveData().init(player);
+            if (player.isOnline()) {
+                unload((Player) player);
+                Fabled.getPlayerAccounts(player).getActiveData().init((Player) player);
+            }
             if (bar)
                 Fabled.getPlayerData(player).getSkillBar().toggleEnabled();
 
@@ -121,8 +128,8 @@ public class CmdChangeClass implements IFunction, TabCompleter {
                     RPGFilter.CLASS.setReplacement(className),
                     RPGFilter.NAME.setReplacement(original));
 
-            if (sender != player) {
-                cmd.sendMessage(player, NOTIFICATION, "You have changed from a {name} to a {class}",
+            if (sender != player && player.isOnline()) {
+                cmd.sendMessage((Player) player, NOTIFICATION, "You have changed from a {name} to a {class}",
                         RPGFilter.GROUP.setReplacement(groupName),
                         RPGFilter.CLASS.setReplacement(className),
                         RPGFilter.NAME.setReplacement(original));
