@@ -4780,6 +4780,27 @@ class ValueRandomMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
+class ValueRotationMechanic extends ProMechanic {
+	public constructor() {
+		super({
+			name:         'Value Rotation',
+			description:  'Stores a value as the rotation between the target\'s look direction and a remembered location as a source. The caster is used if no targets are remembered or no source key is passed',
+			data:         [
+				new StringSelect('Key', 'key', 'value')
+					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
+				new StringSelect('Source', 'source', '')
+					.setTooltip('The key to use as the source location for the rotation. If left empty, the caster is used'),
+				new BooleanSelect('Save', 'save', false)
+					.setTooltip('If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account')
+
+			],
+			summaryItems: ['key', 'source', 'save']
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
 class ValueRoundMechanic extends ProMechanic {
 	public constructor() {
 		super({
@@ -5238,6 +5259,7 @@ export const initComponents = () => {
 		VALUE_MULTIPLY:    { name: 'Value Multiply', component: ValueMultiplyMechanic, section: 'Value' },
 		VALUE_PLACEHOLDER: { name: 'Value Placeholder', component: ValuePlaceholderMechanic, section: 'Value' },
 		VALUE_RANDOM:      { name: 'Value Random', component: ValueRandomMechanic, section: 'Value' },
+		VALUE_ROTATION:    { name: 'Value Rotation', component: ValueRotationMechanic, section: 'Value' },
 		VALUE_ROUND:       { name: 'Value Round', component: ValueRoundMechanic, section: 'Value' },
 		VALUE_SET:         { name: 'Value Set', component: ValueSetMechanic, section: 'Value' },
 
