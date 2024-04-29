@@ -215,6 +215,7 @@ public class ComponentRegistry {
         register(new ValueMultiplyMechanic());
         register(new ValuePlaceholderMechanic());
         register(new ValueRandomMechanic());
+        register(new ValueRotationMechanic());
         register(new ValueRoundMechanic());
         register(new ValueSetMechanic());
         register(new WarpMechanic());

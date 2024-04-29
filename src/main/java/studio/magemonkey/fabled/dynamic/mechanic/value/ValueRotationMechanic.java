@@ -1,6 +1,6 @@
 /**
  * Fabled
- * studio.magemonkey.fabled.dynamic.mechanic.value.ValueRoundMechanic
+ * studio.magemonkey.fabled.dynamic.mechanic.value.ValueRotationMechanic
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -26,27 +26,29 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic.value;
 
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.util.Vector;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.fabled.dynamic.target.RememberTarget;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
- * Adds to a cast data value
+ * Gets the degree differential between the target's vector and the source location
  */
-public class ValueRoundMechanic extends MechanicComponent {
-    private static final String KEY  = "key";
-    private static final String TYPE = "type";
-    private static final String SAVE = "save";
+public class ValueRotationMechanic extends MechanicComponent {
+    private static final String KEY    = "key";
+    private static final String SOURCE = "source";
+    private static final String SAVE   = "save";
 
     @Override
     public String getKey() {
-        return "value round";
+        return "value rotation";
     }
 
     /**
@@ -54,24 +56,28 @@ public class ValueRoundMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.isEmpty() || !settings.has(KEY)) {
-            return false;
-        }
+        if (targets.isEmpty()) return false;
+        List<LivingEntity> potentialSources = RememberTarget.remember(caster, settings.getString(SOURCE, "_none"));
+        if (potentialSources.isEmpty()) potentialSources = List.of(caster);
 
-        String   key  = settings.getString(KEY);
-        String   type = settings.getString(TYPE).toUpperCase(Locale.US);
+        String             key    = settings.getString(KEY);
+        final LivingEntity source = potentialSources.get(0);
+        final LivingEntity target = targets.get(0);
+
+        if (source.equals(target)) return false;
+
+        Location targetEyeLoc = target.getEyeLocation();
+        Vector   targetDir    = target.getLocation().getDirection();
+        Vector   sourceVec    = source.getLocation().subtract(targetEyeLoc).toVector();
+
+        // Get the angle between the loc and vec (arccos(a dot b / |a| * |b|)) -- |a| is always 1
+        double dot       = targetDir.dot(sourceVec);
+        double magnitude = sourceVec.length();
+        double angle     = Math.toDegrees(Math.acos(dot / magnitude));
+
+        // Set the value
         CastData data = DynamicSkill.getCastData(caster);
-        if (data.contains(key)) {
-            double value = data.getDouble(key);
-            value = switch (type) {
-                case "ROUND" -> Math.round(value);
-                case "CEILING" -> Math.ceil(value);
-                case "FLOOR" -> Math.floor(value);
-                default -> value;
-            };
-
-            data.put(key, value);
-        }
+        data.put(key, angle);
         if (settings.getBool(SAVE, false))
             Fabled.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;
