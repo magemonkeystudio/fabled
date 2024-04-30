@@ -348,6 +348,21 @@ public class PlayerData {
         return _data.profess(fabledClass);
     }
 
+    /**
+     * @deprecated Use {@link #giveExp(double, ExpSource)} instead, utilizing the {@link ExpSource} enum
+     * instead of the legacy com.sucy.skill.api.enums.ExpSource enum
+     */
+    @Deprecated
+    public void giveExp(double amount, com.sucy.skill.api.enums.ExpSource expSource) {
+        giveExp(amount, ExpSource.valueOf(expSource.name()));
+    }
+
+    /**
+     * Gives the player experience from the specified source
+     *
+     * @param amount amount of experience to give
+     * @param source source of the experience
+     */
     public void giveExp(double amount, ExpSource source) {
         _data.giveExp(amount, source);
     }
