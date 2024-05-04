@@ -9,7 +9,7 @@
 	import { expSources }         from '../version/data';
 	import { toProperCase }       from '$api/api';
 	import { onDestroy, onMount } from 'svelte';
-	import { FabledAttribute }    from '$api/fabled-attribute';
+	import { Attribute }    from '$api/stat';
 	import ProInput               from './input/ProInput.svelte';
 	import { classes }            from '../data/class-store';
 	import { attributes }         from '../data/attribute-store';
@@ -24,20 +24,18 @@
 	let sub: Unsubscriber;
 
 	onMount(() => {
-		sub = attributes.subscribe(attr => {
+		sub = attributes.subscribe(value => {
 			const included: string[] = [];
 			data.attributes          = data.attributes.filter(a => {
-				if (attr?.includes(a.name)) {
+				if (value.some((attr) => attr.name === a.name)) {
 					included.push(a.name);
 					return true;
 				}
 				return false;
 			});
 
-			attr = attr.filter(a => !included.includes(a));
-
-			for (const attrib of attr) {
-				data.attributes.push(new FabledAttribute(attrib, 0, 0));
+			for (const attrib of value.filter(attr => !included.includes(attr.name))) {
+				data.attributes.push(new Attribute(attrib.name, 0, 0));
 			}
 		});
 	});

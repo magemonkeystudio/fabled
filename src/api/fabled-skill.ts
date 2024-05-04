@@ -1,5 +1,5 @@
 import type { Icon, ProSkillData, Serializable, SkillYamlData, YamlComponentData } from './types';
-import { FabledAttribute }                                                         from './fabled-attribute';
+import { Attribute }                                                         from './stat';
 import { getSkill, isSaving }                                                      from '../data/skill-store';
 import ProTrigger                                                                  from './components/triggers';
 import type ProComponent                                                           from '$api/components/procomponent';
@@ -24,14 +24,14 @@ export default class FabledSkill implements Serializable {
 	maxLevel                                 = 5;
 	skillReq?: FabledSkill;
 	skillReqLevel                            = 0;
-	attributeRequirements: FabledAttribute[] = [];
+	attributeRequirements: Attribute[] = [];
 	permission: boolean                      = false;
-	levelReq: FabledAttribute                = new FabledAttribute('level', 1, 0);
-	cost: FabledAttribute                    = new FabledAttribute('cost', 1, 0);
-	cooldown: FabledAttribute                = new FabledAttribute('cooldown', 0, 0);
+	levelReq: Attribute                = new Attribute('level', 1, 0);
+	cost: Attribute                    = new Attribute('cost', 1, 0);
+	cooldown: Attribute                = new Attribute('cooldown', 0, 0);
 	cooldownMessage: boolean                 = true;
-	mana: FabledAttribute                    = new FabledAttribute('mana', 0, 0);
-	minSpent: FabledAttribute                = new FabledAttribute('points-spent-req', 0, 0);
+	mana: Attribute                    = new Attribute('mana', 0, 0);
+	minSpent: Attribute                = new Attribute('points-spent-req', 0, 0);
 	castMessage                              = '&6{player} &2has cast &6{skill}';
 	combo                                    = '';
 	icon: Icon                               = {
@@ -62,7 +62,7 @@ export default class FabledSkill implements Serializable {
 		if (data.maxLevel) this.maxLevel = data.maxLevel;
 		if (data.skillReq) this.skillReq = data.skillReq;
 		if (data.skillReqLevel) this.skillReqLevel = data.skillReqLevel;
-		if (data.attributeRequirements) this.attributeRequirements = data.attributeRequirements.map(a => new FabledAttribute(a.name, a.base, a.scale));
+		if (data.attributeRequirements) this.attributeRequirements = data.attributeRequirements.map(a => new Attribute(a.name, a.base, a.scale));
 		if (data.permission) this.permission = data.permission;
 		if (data.levelReq) this.levelReq = data.levelReq;
 		if (data.cost) this.cost = data.cost;
@@ -174,16 +174,16 @@ export default class FabledSkill implements Serializable {
 		this.combo           = yaml.combo;
 
 		const attributes = yaml.attributes;
-		this.levelReq    = new FabledAttribute('level', attributes['level-base'], attributes['level-scale']);
-		this.cost        = new FabledAttribute('cost', attributes['cost-base'], attributes['cost-scale']);
-		this.cooldown    = new FabledAttribute('cooldown', attributes['cooldown-base'], attributes['cooldown-scale']);
-		this.mana        = new FabledAttribute('mana', attributes['mana-base'], attributes['mana-scale']);
-		this.minSpent    = new FabledAttribute('points-spent-req', attributes['points-spent-req-base'], attributes['points-spent-req-scale']);
+		this.levelReq    = new Attribute('level', attributes['level-base'], attributes['level-scale']);
+		this.cost        = new Attribute('cost', attributes['cost-base'], attributes['cost-scale']);
+		this.cooldown    = new Attribute('cooldown', attributes['cooldown-base'], attributes['cooldown-scale']);
+		this.mana        = new Attribute('mana', attributes['mana-base'], attributes['mana-scale']);
+		this.minSpent    = new Attribute('points-spent-req', attributes['points-spent-req-base'], attributes['points-spent-req-scale']);
 		this.incompStr   = attributes.incompatible;
 
 		const reserved             = ['level', 'cost', 'cooldown', 'mana', 'points-spent-req', 'incompatible'];
 		const names                = new Set(Object.keys(attributes).map(k => k.replace(/-(base|scale)/i, '')).filter(name => !reserved.includes(name)));
-		this.attributeRequirements = [...names].map(name => new FabledAttribute(name, attributes[`${name}-base`], attributes[`${name}-scale`]));
+		this.attributeRequirements = [...names].map(name => new Attribute(name, attributes[`${name}-base`], attributes[`${name}-scale`]));
 
 		this.icon.material        = toEditorCase(yaml.icon);
 		this.icon.customModelData = yaml['icon-data'];

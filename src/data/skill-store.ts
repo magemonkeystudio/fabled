@@ -9,7 +9,8 @@ import { goto }                    from '$app/navigation';
 import { base }                    from '$app/paths';
 import { initialized }             from '$api/components/registry';
 import YAML                        from 'yaml';
-import type { MultiSkillYamlData } from '$api/types';
+import type { MultiAttributeYamlData, MultiSkillYamlData } from '$api/types';
+import type FabledAttribute from '$api/fabled-attribute';
 
 let isLegacy = false;
 

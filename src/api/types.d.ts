@@ -1,6 +1,6 @@
 import FabledSkill from './fabled-skill';
 import FabledClass         from './fabled-class';
-import { FabledAttribute } from './fabled-attribute';
+import { Attribute } from './stat';
 import ProTrigger          from './components/triggers';
 import ProComponent     from '$api/components/procomponent';
 import ComponentOption  from './options/options';
@@ -15,10 +15,10 @@ export interface ProClassData {
 	parent?: FabledClass;
 	permission?: boolean;
 	expSources?: number;
-	health?: FabledAttribute;
-	mana?: FabledAttribute;
+	health?: Attribute;
+	mana?: Attribute;
 	manaRegen?: number;
-	attributes?: FabledAttribute[];
+	attributes?: Attribute[];
 	skillTree?: 'Custom' | 'Requirement' | 'Basic Horizontal' | 'Basic Vertical' | 'Level Horizontal' | 'Level Vertical' | 'Flood';
 	skills?: FabledSkill[];
 	icon?: Icon;
@@ -47,14 +47,14 @@ export interface ProSkillData {
 	maxLevel?: number;
 	skillReq?: FabledSkill;
 	skillReqLevel?: number;
-	attributeRequirements?: FabledAttribute[];
+	attributeRequirements?: Attribute[];
 	permission?: boolean;
-	levelReq?: FabledAttribute;
-	cost?: FabledAttribute;
-	cooldown?: FabledAttribute;
+	levelReq?: Attribute;
+	cost?: Attribute;
+	cooldown?: Attribute;
 	cooldownMessage?: boolean;
-	mana?: FabledAttribute;
-	minSpent?: FabledAttribute;
+	mana?: Attribute;
+	minSpent?: Attribute;
 	castMessage?: string;
 	combo?: string;
 	indicator?: '2D' | '3D' | 'None';
@@ -62,6 +62,19 @@ export interface ProSkillData {
 	incompatible?: FabledSkill[];
 
 	triggers?: ProTrigger[];
+}
+
+export interface ProAttributeData {
+	name: string;
+	location?: 'local' | 'server';
+	display?: string;
+	max?: number;
+	cost?: Attribute;
+	icon?: Icon;
+	condition?: { [key: string]: string };
+	mechanic?: { [key: string]: string };
+	target?: { [key: string]: string };
+	stats?: { [key: string]: string };
 }
 
 export interface Icon {
@@ -104,7 +117,7 @@ export interface VersionData {
 }
 
 export abstract class Serializable {
-	public abstract serializeYaml: () => SkillYamlData | ClassYamlData;
+	public abstract serializeYaml: () => SkillYamlData | ClassYamlData | AttributeYamlData;
 }
 
 export interface StarterInfo {
@@ -176,6 +189,30 @@ export interface SkillYamlData {
 	components: YamlComponentData;
 }
 
+export interface AttributeYamlData {
+	display: string;
+	max: number;
+	cost_base: number;
+	cost_modifier: number;
+	icon: string;
+	'icon-data': number;
+	'icon-lore': string[];
+	global: {
+		condition: {
+			[key: string]: string;
+		}
+		mechanic: {
+			[key: string]: string;
+		}
+		target: {
+			[key: string]: string;
+		}
+	}
+	stats: {
+		[key: string]: string;
+	}
+}
+
 export interface YamlComponentData {
 	[key: string]: YamlComponent;
 }
@@ -211,4 +248,10 @@ export interface MultiSkillYamlData {
 	loaded?: boolean;
 
 	[key: string]: SkillYamlData;
+}
+
+export interface MultiAttributeYamlData {
+	loaded?: boolean;
+
+	[key: string]: AttributeYamlData;
 }

@@ -3,9 +3,11 @@
 	import FabledSkill  from '$api/fabled-skill';
 	import ClassDetails from '$components/ClassDetails.svelte';
 	import SkillDetails from '$components/SkillDetails.svelte';
+	import AttributeDetails from '$components/AttributeDetails.svelte';
 	import { base }     from '$app/paths';
+	import FabledAttribute from '$api/fabled-attribute';
 
-	export let data: { data: FabledClass | FabledSkill };
+	export let data: { data: FabledClass | FabledSkill | FabledAttribute };
 </script>
 
 <svelte:head>
@@ -20,8 +22,10 @@
 <div class='container'>
 	{#if data?.data instanceof FabledClass}
 		<ClassDetails bind:data={data.data} />
-	{:else}
+	{:else if data?.data instanceof FabledSkill}
 		<SkillDetails bind:data={data.data} />
+	{:else if data?.data instanceof FabledAttribute}
+		<AttributeDetails bind:data={data.data} />
 	{/if}
 </div>
 

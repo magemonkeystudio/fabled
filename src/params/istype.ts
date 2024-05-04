@@ -1,4 +1,4 @@
 /** @type {import('@sveltejs/kit').ParamMatcher} */
 export function match(param: string) {
-  return /^(skill|class)$/.test(param);
+  return /^(skill|class|attribute)$/.test(param);
 }
