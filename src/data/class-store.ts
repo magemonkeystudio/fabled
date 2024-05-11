@@ -1,15 +1,16 @@
 import type { Writable }           from 'svelte/store';
-import { get, writable }  from 'svelte/store';
-import FabledFolder       from '$api/fabled-folder';
-import { active, rename } from './store';
+import { get, writable }           from 'svelte/store';
+import FabledFolder                from '$api/fabled-folder';
+import { active, rename }          from './store';
 import { sort }                    from '$api/api';
-import { browser } from '$app/environment';
-import FabledClass from '$api/fabled-class';
-import FabledSkill from '$api/fabled-skill';
-import { goto }    from '$app/navigation';
+import { browser }                 from '$app/environment';
+import FabledClass                 from '$api/fabled-class';
+import FabledSkill                 from '$api/fabled-skill';
+import { goto }                    from '$app/navigation';
 import { base }                    from '$app/paths';
 import type { MultiClassYamlData } from '$api/types';
 import YAML                        from 'yaml';
+import { notify }                  from '$api/notification-service';
 
 let isLegacy = false;
 
@@ -104,21 +105,24 @@ export const classFolders: Writable<FabledFolder[]> = setupClassStore<FabledFold
 	(data: string) => {
 		if (!data || data === 'null') return [];
 
-		const parsedData = JSON.parse(data, (key: string, value) => {
-			if (!value) return;
-			if (/\d+/.test(key)) {
-				if (typeof (value) === 'string') {
-					return getClass(value);
+		try {
+			return JSON.parse(data, (key: string, value) => {
+				if (!value) return;
+				if (/\d+/.test(key)) {
+					if (typeof (value) === 'string') {
+						return getClass(value);
+					}
+
+					const folder = new FabledFolder(value.data);
+					folder.name  = value.name;
+					return folder;
 				}
-
-				const folder = new FabledFolder(value.data);
-				folder.name  = value.name;
-				return folder;
-			}
-			return value;
-		});
-
-		return parsedData;
+				return value;
+			});
+		} catch (e) {
+			notify('Error loading class folders. Folder data: ' + data);
+			return [];
+		}
 	},
 	(value: FabledFolder[]) => {
 		const data = JSON.stringify(value, (key, value: FabledFolder | FabledClass | FabledSkill) => {

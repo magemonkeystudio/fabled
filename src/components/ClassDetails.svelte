@@ -68,7 +68,7 @@
 	<ProInput label='Mana Name'
 						tooltip='The name the class uses for mana'
 						bind:value={data.manaName} />
-	<ProInput label='Max Level' type='number' intMode={true}
+	<ProInput label='Max Level' intMode={true}
 						tooltip='The maximum level the class can reach. If this class turns into other classes, this will also be the level it can profess into those classes'
 						bind:value={data.maxLevel} />
 	<ProInput label='Parent'
@@ -104,7 +104,7 @@
 		</ProInput>
 	{/each}
 
-	<ProInput label='Mana Regen' type='number'
+	<ProInput label='Mana Regen'
 						tooltip='The amount of mana the class regenerates at each interval. The interval is in the config.yml and by default is once every second. If you want to regen a decimal amount per second, increase the interval'
 						bind:value={data.manaRegen} />
 	<ProInput label='Skill Tree'

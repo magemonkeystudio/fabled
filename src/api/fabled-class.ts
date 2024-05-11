@@ -64,8 +64,8 @@ export default class FabledClass implements Serializable {
 	fWhitelist: string[]  = [];
 
 	constructor(data?: ProClassData) {
-		this.name   = data ? data.name : 'Class';
-		this.prefix = data?.prefix ? data.prefix : '&6' + this.name;
+		this.name   = data?.name || 'Class';
+		this.prefix = data?.prefix || '&6' + this.name;
 		if (!data) return;
 		if (data?.location) this.location = data.location;
 		if (data?.group) this.group = data.group;

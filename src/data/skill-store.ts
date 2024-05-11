@@ -10,6 +10,7 @@ import { base }                    from '$app/paths';
 import { initialized }             from '$api/components/registry';
 import YAML                        from 'yaml';
 import type { MultiSkillYamlData } from '$api/types';
+import { notify }                  from '$api/notification-service';
 
 let isLegacy = false;
 
@@ -107,25 +108,28 @@ export const skillFolders: Writable<FabledFolder[]> = setupSkillStore<FabledFold
 	(data: string) => {
 		if (!data || data === 'null') return [];
 
-		const parsedData = JSON.parse(data, (key: string, value) => {
-			if (!value) return;
-			if (/\d+/.test(key)) {
-				if (typeof (value) === 'string') {
-					return getSkill(value);
+		try {
+			return JSON.parse(data, (key: string, value) => {
+				if (!value) return;
+				if (/\d+/.test(key)) {
+					if (typeof (value) === 'string') {
+						return getSkill(value);
+					}
+
+					const folder = new FabledFolder(value.data);
+					folder.name  = value.name;
+					return folder;
 				}
-
-				const folder = new FabledFolder(value.data);
-				folder.name  = value.name;
-				return folder;
-			}
-			return value;
-		});
-
-		return parsedData;
+				return value;
+			});
+		} catch (e) {
+			notify('Error loading skill folders. Folder data: ' + data);
+			return [];
+		}
 	},
 	(value: FabledFolder[]) => {
-		const data = JSON.stringify(value, (key, value: FabledFolder | FabledSkill | FabledSkill) => {
-			if (value instanceof FabledSkill || value instanceof FabledSkill) return value.name;
+		const data = JSON.stringify(value, (key, value: FabledFolder | FabledSkill) => {
+			if (value instanceof FabledSkill) return value.name;
 			else if (key === 'parent') return undefined;
 			return value;
 		});
