@@ -1,7 +1,7 @@
 import type { ClassYamlData, Icon, ProClassData, Serializable } from './types';
-import type FabledSkill    from './fabled-skill';
-import { FabledAttribute } from './fabled-attribute';
-import { getSkill }        from '../data/skill-store';
+import type FabledSkill                                         from './fabled-skill';
+import { FabledAttribute }                                      from './fabled-attribute';
+import { getSkill }                                             from '../data/skill-store';
 import { parseBool, toEditorCase, toProperCase }                from './api';
 import type { SkillTree }                                       from '$api/SkillTree';
 import YAML                                                     from 'yaml';
@@ -30,20 +30,20 @@ export default class FabledClass implements Serializable {
 		this.parentStr = parent ? parent.name : '';
 	}
 
-	permission                 = false;
-	expSources                 = 273;
+	permission                    = false;
+	expSources                    = 273;
 	manaRegen                     = 1;
 	health: FabledAttribute       = new FabledAttribute('health', 20, 1);
 	mana: FabledAttribute         = new FabledAttribute('mana', 20, 1);
 	attributes: FabledAttribute[] = [];
 	skillTree: SkillTree          = 'Requirement';
-	skills: FabledSkill[] = [];
-	icon: Icon            = {
+	skills: FabledSkill[]         = [];
+	icon: Icon                    = {
 		material:        'Pumpkin',
 		customModelData: 0
 	};
-	unusableItems: string[]    = [];
-	actionBar                  = '';
+	unusableItems: string[]       = [];
+	actionBar                     = '';
 
 	lInverted  = true;
 	rInverted  = true;
@@ -168,60 +168,64 @@ export default class FabledClass implements Serializable {
 	};
 
 	public load = (yaml: ClassYamlData) => {
-		this.name       = yaml.name;
-		this.actionBar  = yaml['action-bar'];
-		this.manaName   = yaml.mana;
-		this.prefix     = yaml.prefix;
-		this.group      = yaml.group;
-		this.maxLevel   = yaml['max-level'];
-		this.parentStr  = yaml.parent;
+		if (yaml.name) this.name = yaml.name;
+		if (yaml['action-bar']) this.actionBar = yaml['action-bar'];
+		if (yaml.mana) this.manaName = yaml.mana;
+		if (yaml.prefix) this.prefix = yaml.prefix;
+		if (yaml.group) this.group = yaml.group;
+		if (yaml['max-level']) this.maxLevel = yaml['max-level'];
+		if (yaml.parent) this.parentStr = yaml.parent;
 		this.permission = parseBool(yaml['needs-permission']);
 
-		const attributes = yaml.attributes;
-		this.health      = new FabledAttribute('health', attributes['health-base'] || 20, attributes['health-scale'] || 1);
-		this.mana        = new FabledAttribute('mana', attributes['mana-base'] || 20, attributes['mana-scale'] || 1);
+		if (yaml.attributes) {
+			const attributes = yaml.attributes;
+			this.health      = new FabledAttribute('health', attributes['health-base'] || 20, attributes['health-scale'] || 1);
+			this.mana        = new FabledAttribute('mana', attributes['mana-base'] || 20, attributes['mana-scale'] || 1);
 
-		const map: { [key: string]: FabledAttribute } = {};
-		for (const attrId of Object.keys(attributes)) {
-			const split = attrId.split('-');
-			const name  = split[0];
-			if (map[name] || name === 'health' || name === 'mana') continue;
+			const map: { [key: string]: FabledAttribute } = {};
+			for (const attrId of Object.keys(attributes)) {
+				const split = attrId.split('-');
+				const name  = split[0];
+				if (map[name] || name === 'health' || name === 'mana') continue;
 
-			const attr = new FabledAttribute(name, 0, 0);
-			attr.base  = attributes[`${name}-base`];
-			attr.scale = attributes[`${name}-scale`];
-			map[name]  = attr;
+				const attr = new FabledAttribute(name, 0, 0);
+				attr.base  = attributes[`${name}-base`];
+				attr.scale = attributes[`${name}-scale`];
+				map[name]  = attr;
+			}
+			this.attributes = Object.values(map);
 		}
-		this.attributes = Object.values(map);
 
-		this.manaRegen            = yaml['mana-regen'];
-		this.skillTree            = <SkillTree>toProperCase(yaml['skill-tree']);
-		this.unusableItems        = yaml.blacklist;
-		this.skills               = <FabledSkill[]>yaml.skills.map(s => getSkill(s)).filter(s => !!s);
-		this.icon.material        = toEditorCase(yaml.icon);
-		this.icon.customModelData = yaml['icon-data'];
-		this.icon.lore            = yaml['icon-lore'];
-		this.expSources           = yaml['exp-source'];
+		if (yaml['mana-regen']) this.manaRegen = yaml['mana-regen'];
+		if (yaml['skill-tree']) this.skillTree = <SkillTree>toProperCase(yaml['skill-tree']);
+		if (yaml.blacklist) this.unusableItems = yaml.blacklist;
+		if (yaml.skills) this.skills = <FabledSkill[]>yaml.skills.map(s => getSkill(s)).filter(s => !!s);
+		if (yaml.icon) this.icon.material = toEditorCase(yaml.icon);
+		if (yaml['icon-data']) this.icon.customModelData = yaml['icon-data'];
+		if (yaml['icon-lore']) this.icon.lore = yaml['icon-lore'];
+		if (yaml['exp-source']) this.expSources = yaml['exp-source'];
 
-		// Combo starters
-		const combos = yaml['combo-starters'];
-		if (combos) {
-			this.lInverted   = parseBool(combos.L?.inverted);
-			this.rInverted   = parseBool(combos.R?.inverted);
-			this.lsInverted  = parseBool(combos.LS?.inverted);
-			this.rsInverted  = parseBool(combos.RS?.inverted);
-			this.sInverted   = parseBool(combos.S?.inverted);
-			this.pInverted   = parseBool(combos.P?.inverted);
-			this.qInverted   = parseBool(combos.Q?.inverted);
-			this.fInverted   = parseBool(combos.F?.inverted);
-			this.lWhitelist  = combos.L?.whitelist || [];
-			this.rWhitelist  = combos.R?.whitelist || [];
-			this.lsWhitelist = combos.LS?.whitelist || [];
-			this.rsWhitelist = combos.RS?.whitelist || [];
-			this.sWhitelist  = combos.S?.whitelist || [];
-			this.pWhitelist  = combos.P?.whitelist || [];
-			this.qWhitelist  = combos.Q?.whitelist || [];
-			this.fWhitelist  = combos.F?.whitelist || [];
+		if (yaml['combo-starters']) {
+			// Combo starters
+			const combos = yaml['combo-starters'];
+			if (combos) {
+				this.lInverted   = parseBool(combos.L?.inverted);
+				this.rInverted   = parseBool(combos.R?.inverted);
+				this.lsInverted  = parseBool(combos.LS?.inverted);
+				this.rsInverted  = parseBool(combos.RS?.inverted);
+				this.sInverted   = parseBool(combos.S?.inverted);
+				this.pInverted   = parseBool(combos.P?.inverted);
+				this.qInverted   = parseBool(combos.Q?.inverted);
+				this.fInverted   = parseBool(combos.F?.inverted);
+				this.lWhitelist  = combos.L?.whitelist || [];
+				this.rWhitelist  = combos.R?.whitelist || [];
+				this.lsWhitelist = combos.LS?.whitelist || [];
+				this.rsWhitelist = combos.RS?.whitelist || [];
+				this.sWhitelist  = combos.S?.whitelist || [];
+				this.pWhitelist  = combos.P?.whitelist || [];
+				this.qWhitelist  = combos.Q?.whitelist || [];
+				this.fWhitelist  = combos.F?.whitelist || [];
+			}
 		}
 
 		this.loaded = true;

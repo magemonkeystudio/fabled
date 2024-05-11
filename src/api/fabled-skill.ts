@@ -163,38 +163,40 @@ export default class FabledSkill implements Serializable {
 	};
 
 	public load = async (yaml: SkillYamlData) => {
-		this.name            = yaml.name;
-		this.type            = yaml.type;
-		this.maxLevel        = yaml['max-level'];
-		this.skillReqStr     = yaml['skill-req'];
-		this.skillReqLevel   = yaml['skill-req-lvl'];
-		this.permission      = yaml['needs-permission'];
-		this.cooldownMessage = yaml['cooldown-message'];
-		this.castMessage     = yaml.msg;
-		this.combo           = yaml.combo;
+		if (yaml.name) this.name = yaml.name;
+		if (yaml.type) this.type = yaml.type;
+		if (yaml['max-level']) this.maxLevel = yaml['max-level'];
+		if (yaml['skill-req']) this.skillReqStr = yaml['skill-req'];
+		if (yaml['skill-req-lvl']) this.skillReqLevel = yaml['skill-req-lvl'];
+		if (yaml['needs-permission']) this.permission = yaml['needs-permission'];
+		if (yaml['cooldown-message']) this.cooldownMessage = yaml['cooldown-message'];
+		if (yaml.msg) this.castMessage = yaml.msg;
+		if (yaml.combo) this.combo = yaml.combo;
 
-		const attributes = yaml.attributes;
-		this.levelReq    = new FabledAttribute('level', attributes['level-base'], attributes['level-scale']);
-		this.cost        = new FabledAttribute('cost', attributes['cost-base'], attributes['cost-scale']);
-		this.cooldown    = new FabledAttribute('cooldown', attributes['cooldown-base'], attributes['cooldown-scale']);
-		this.mana        = new FabledAttribute('mana', attributes['mana-base'], attributes['mana-scale']);
-		this.minSpent    = new FabledAttribute('points-spent-req', attributes['points-spent-req-base'], attributes['points-spent-req-scale']);
-		this.incompStr   = attributes.incompatible;
+		if (yaml.attributes) {
+			const attributes = yaml.attributes;
+			this.levelReq    = new FabledAttribute('level', attributes['level-base'], attributes['level-scale']);
+			this.cost        = new FabledAttribute('cost', attributes['cost-base'], attributes['cost-scale']);
+			this.cooldown    = new FabledAttribute('cooldown', attributes['cooldown-base'], attributes['cooldown-scale']);
+			this.mana        = new FabledAttribute('mana', attributes['mana-base'], attributes['mana-scale']);
+			this.minSpent    = new FabledAttribute('points-spent-req', attributes['points-spent-req-base'], attributes['points-spent-req-scale']);
+			this.incompStr   = attributes.incompatible;
 
-		const reserved             = ['level', 'cost', 'cooldown', 'mana', 'points-spent-req', 'incompatible'];
-		const names                = new Set(Object.keys(attributes).map(k => k.replace(/-(base|scale)/i, '')).filter(name => !reserved.includes(name)));
-		this.attributeRequirements = [...names].map(name => new FabledAttribute(name, attributes[`${name}-base`], attributes[`${name}-scale`]));
+			const reserved             = ['level', 'cost', 'cooldown', 'mana', 'points-spent-req', 'incompatible'];
+			const names                = new Set(Object.keys(attributes).map(k => k.replace(/-(base|scale)/i, '')).filter(name => !reserved.includes(name)));
+			this.attributeRequirements = [...names].map(name => new FabledAttribute(name, attributes[`${name}-base`], attributes[`${name}-scale`]));
+		}
 
-		this.icon.material        = toEditorCase(yaml.icon);
-		this.icon.customModelData = yaml['icon-data'];
-		this.icon.lore            = yaml['icon-lore'];
+		if (yaml.icon) this.icon.material = toEditorCase(yaml.icon);
+		if (yaml['icon-data']) this.icon.customModelData = yaml['icon-data'];
+		if (yaml['icon-lore']) this.icon.lore = yaml['icon-lore'];
 
 		let unsub: Unsubscriber | undefined = undefined;
 
 		return new Promise<void>((resolve) => {
 			unsub = initialized.subscribe(init => {
 				if (!init) return;
-				this.triggers = <ProTrigger[]>Registry.deserializeComponents(yaml.components);
+				if (yaml.components) this.triggers = <ProTrigger[]>Registry.deserializeComponents(yaml.components);
 
 				if (unsub) {
 					unsub();
