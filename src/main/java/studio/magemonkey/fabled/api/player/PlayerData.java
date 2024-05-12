@@ -1324,7 +1324,7 @@ public class PlayerData {
      * @return true if able to show the player, false otherwise
      */
     public boolean showSkills(Player player) {
-        // Cannot show an invalid player, and cannot show no skills
+        // Cannot show an invalid player, and cannot show zero skills
         if (player == null || classes.isEmpty() || skills.isEmpty()) {
             return false;
         }
@@ -1348,7 +1348,7 @@ public class PlayerData {
      * @return true if succeeded, false otherwise
      */
     public boolean showSkills(Player player, PlayerClass playerClass) {
-        // Cannot show an invalid player, and cannot show no skills
+        // Cannot show an invalid player, and cannot show zero skills
         if (player == null || playerClass.getData().getSkills().isEmpty()) {
             return false;
         }

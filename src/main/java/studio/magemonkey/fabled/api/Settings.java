@@ -62,7 +62,8 @@ public class Settings {
      * @param value setting value
      */
     public void set(String key, Object value) {
-        settings.put(key, value);
+        if(value == null) settings.remove(key);
+        else settings.put(key, value);
     }
 
     /**
@@ -77,8 +78,8 @@ public class Settings {
      * @param scale value scale
      */
     public void set(String key, double base, double scale) {
-        settings.put(key + BASE, base);
-        settings.put(key + SCALE, scale);
+        set(key + BASE, base);
+        set(key + SCALE, scale);
     }
 
     /**
@@ -93,10 +94,10 @@ public class Settings {
      * @param value new base value
      */
     public void setBase(String key, double value) {
-        if (!settings.containsKey(key + SCALE)) {
-            settings.put(key + SCALE, 0.0);
+        if (!settings.containsKey(key + SCALE) || settings.get(key + SCALE) == null) {
+            set(key + SCALE, 0.0);
         }
-        settings.put(key + BASE, value);
+        set(key + BASE, value);
     }
 
     /**
@@ -111,10 +112,10 @@ public class Settings {
      * @param value new scale value
      */
     public void setScale(String key, double value) {
-        if (!settings.containsKey(key + BASE)) {
-            settings.put(key + BASE, 0.0);
+        if (!settings.containsKey(key + BASE) || settings.get(key + BASE) == null) {
+            set(key + BASE, 0.0);
         }
-        settings.put(key + SCALE, value);
+        set(key + SCALE, value);
     }
 
     /**
@@ -137,7 +138,7 @@ public class Settings {
      * @return double setting value
      */
     public double getDouble(String key, double defaultValue) {
-        if (settings.containsKey(key)) {
+        if (settings.containsKey(key) && settings.get(key) != null) {
             return NumberParser.parseDouble(settings.get(key).toString());
         } else {
             set(key, defaultValue);
@@ -165,7 +166,7 @@ public class Settings {
      * @return float setting value
      */
     public float getFloat(String key, float defaultValue) {
-        if (settings.containsKey(key)) {
+        if (settings.containsKey(key) && settings.get(key) != null) {
             return Float.parseFloat(settings.get(key).toString());
         } else {
             set(key, defaultValue);
@@ -193,7 +194,7 @@ public class Settings {
      * @return integer setting value
      */
     public int getInt(String key, int defaultValue) {
-        if (settings.containsKey(key)) {
+        if (settings.containsKey(key) && settings.get(key) != null) {
             return Integer.parseInt(settings.get(key).toString());
         } else {
             set(key, defaultValue);
@@ -209,7 +210,7 @@ public class Settings {
      * @return boolean setting value
      */
     public boolean getBool(String key) {
-        return settings.containsKey(key) && Boolean.parseBoolean(settings.get(key).toString());
+        return settings.containsKey(key) && settings.get(key) != null && Boolean.parseBoolean(settings.get(key).toString());
     }
 
     /**
@@ -221,7 +222,7 @@ public class Settings {
      * @return boolean setting value
      */
     public boolean getBool(String key, boolean defaultValue) {
-        if (settings.containsKey(key)) {
+        if (settings.containsKey(key) && settings.get(key) != null) {
             return Boolean.parseBoolean(settings.get(key).toString());
         } else {
             set(key, defaultValue);
@@ -265,7 +266,7 @@ public class Settings {
      */
     @SuppressWarnings("unchecked")
     public List<String> getStringList(String key) {
-        if (settings.containsKey(key)) {
+        if (settings.containsKey(key) && settings.get(key) != null) {
             final Object value = settings.get(key);
             if (value instanceof List<?>) {
                 return (List<String>) settings.get(key);
@@ -317,7 +318,7 @@ public class Settings {
      * @return base value
      */
     public double getBase(String key) {
-        if (!settings.containsKey(key + BASE)) {
+        if (!settings.containsKey(key + BASE) || settings.get(key + BASE) == null) {
             return 0;
         } else {
             return NumberParser.parseDouble(settings.get(key + BASE).toString());
@@ -332,7 +333,7 @@ public class Settings {
      * @return change in value per level
      */
     public double getScale(String key) {
-        if (!settings.containsKey(key + SCALE)) {
+        if (!settings.containsKey(key + SCALE) || settings.get(key + SCALE) == null) {
             return 0;
         } else {
             return NumberParser.parseDouble(settings.get(key + SCALE).toString());
@@ -348,9 +349,9 @@ public class Settings {
      * @return attribute value or 0 if not found
      */
     public Object getObj(String key, int level) {
-        if (settings.containsKey(key)) {
+        if (settings.containsKey(key) && settings.get(key) != null) {
             return settings.get(key);
-        } else if (settings.containsKey(key + BASE)) {
+        } else if (settings.containsKey(key + BASE) && settings.get(key + BASE) != null) {
             return getAttr(key, level);
         } else {
             return 0;
@@ -366,7 +367,8 @@ public class Settings {
      * @return true if defined, false otherwise
      */
     public boolean has(String key) {
-        return settings.containsKey(key) || settings.containsKey(key + BASE);
+        return (settings.containsKey(key) && settings.get(key) != null)
+                || (settings.containsKey(key + BASE) && settings.get(key + BASE) != null);
     }
 
     /**
@@ -429,7 +431,7 @@ public class Settings {
         }
 
         for (String key : config.keys()) {
-            settings.put(key, config.get(key));
+            set(key, config.get(key));
         }
     }
 

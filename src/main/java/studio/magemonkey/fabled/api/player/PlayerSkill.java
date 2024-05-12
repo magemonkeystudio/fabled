@@ -46,6 +46,15 @@ public final class PlayerSkill {
     @Getter
     @Setter
     private long        cooldown;
+    /**
+     * -- SETTER --
+     *  Sets the level of the skill. This will not update passive
+     *  effects. To level up/down the skill properly, use the
+     *  upgrade and downgrade methods in PlayerData.
+     *
+     * @param level new level of the skill
+     */
+    @Setter
     private int         level;
     private boolean     external;
 
@@ -239,17 +248,6 @@ public final class PlayerSkill {
 
         // The skill is available when both off cooldown and when there's enough mana
         return SkillStatus.READY;
-    }
-
-    /**
-     * Sets the level of the skill. This will not update passive
-     * effects. To level up/down the skill properly, use the
-     * upgrade and downgrade methods in PlayerData.
-     *
-     * @param level new level of the skill
-     */
-    public void setLevel(int level) {
-        this.level = level;
     }
 
     /**
