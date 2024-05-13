@@ -58,6 +58,9 @@ export const attributes: Writable<FabledAttribute[]> = setupAttributeStore<Fable
 	'attribs',
 	await getDefaultAttributes(),
 	(data: string) => {
+		if (data.split('\n').length < 3 && data.charAt(0) !== '{') { // Old format
+			return data.replace('\n', '').split(',').map((key: string) => new FabledAttribute({name: key}));
+		}
 		let yaml = <MultiAttributeYamlData>YAML.parse(data);
 		if (!yaml) return [];
 		return Object.keys(yaml).map((key: string) => {

@@ -70,9 +70,12 @@ export async function load({ params }) {
 					}
 					data.postLoad();
 				} else if (data instanceof FabledAttribute) {
-					const yamlData = <MultiAttributeYamlData>YAML.parse(localStorage.getItem('attribs') || '');
-					if (yamlData && Object.keys(yamlData).length > 0) {
-						data.load(yamlData[data.name]);
+					const text = localStorage.getItem('attribs') || '';
+					if (text.split('\n').length > 2 || text.charAt(0) == '{') { // New format
+						const yamlData = <MultiAttributeYamlData>YAML.parse(text);
+						if (yamlData && Object.keys(yamlData).length > 0) {
+							data.load(yamlData[data.name]);
+						}
 					}
 				}
 			} else {
