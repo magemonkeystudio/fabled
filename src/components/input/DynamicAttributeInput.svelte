@@ -2,12 +2,12 @@
 
 	import ProInput         from '$input/ProInput.svelte';
 	import AttributeInput      from '$input/AttributeInput.svelte';
-	import { FabledAttribute } from '$api/fabled-attribute';
+	import { Attribute } from '$api/stat';
 
-	export let value: FabledAttribute[] = [];
+	export let value: Attribute[] = [];
 
 	let name = '';
-	$: attribute = new FabledAttribute(name, 0, 0);
+	$: attribute = new Attribute(name, 0, 0);
 
 	const addAttribute = (e?: Event) => {
 		if (!name) return;
@@ -16,7 +16,7 @@
 		name  = '';
 	};
 
-	const removeAttribute = (attribute: FabledAttribute) => {
+	const removeAttribute = (attribute: Attribute) => {
 		value = value.filter(a => a !== attribute);
 	};
 </script>

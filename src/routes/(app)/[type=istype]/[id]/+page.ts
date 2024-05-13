@@ -1,4 +1,4 @@
-import { active, isShowClasses }   from '../../../../data/store';
+import { active, shownTab, Tab }   from '../../../../data/store';
 import { get }                     from 'svelte/store';
 import { redirect }                from '@sveltejs/kit';
 import { skills }       from '../../../../data/skill-store';
@@ -6,6 +6,8 @@ import type FabledClass from '$api/fabled-class';
 import type FabledSkill from '$api/fabled-skill';
 import YAML             from 'yaml';
 import type { MultiSkillYamlData } from '$api/types';
+import type FabledAttribute from '$api/fabled-attribute';
+import { base } from '$app/paths';
 
 export const ssr = false;
 
@@ -14,11 +16,9 @@ export const ssr = false;
 export async function load({ params }) {
 	const name    = params.id;
 	const isSkill = params.type === 'skill';
-	let data: FabledClass | FabledSkill | undefined;
-	let fallback: FabledClass | FabledSkill | undefined;
-	if (!isSkill) {
-		redirect(302, `/${params.type}/${params.id}/edit`);
-	} else if (isSkill) {
+	let data: FabledSkill | undefined;
+	let fallback: FabledSkill | undefined;
+	if (isSkill) {
 		for (const c of get(skills)) {
 			if (!fallback) fallback = c;
 
@@ -27,30 +27,25 @@ export async function load({ params }) {
 				break;
 			}
 		}
-	}
 
-	if (data) {
-		if (!data.loaded) {
-			if (data.location === 'local') {
-				const yamlData = <MultiSkillYamlData>YAML.parse(localStorage.getItem(`sapi.skill.${data.name}`) || '');
-
-				if (yamlData && Object.keys(yamlData).length > 0) {
-					(<FabledSkill>data).load(Object.values(yamlData)[0]);
+		if (data) {
+			if (!data.loaded) {
+				if (data.location === 'local') {
+					const yamlData = <MultiSkillYamlData>YAML.parse(localStorage.getItem(`sapi.skill.${data.name}`) || '');
+	
+					if (yamlData && Object.keys(yamlData).length > 0) {
+						(<FabledSkill>data).load(Object.values(yamlData)[0]);
+					}
+				} else {
+					// TODO Load data from server
 				}
-			} else {
-				// TODO Load data from server
+				(<FabledSkill>data).postLoad();
 			}
-			(<FabledSkill>data).postLoad();
-		}
-
-		active.set(data);
-		isShowClasses.set(!isSkill);
-		return { data };
-	} else {
-		if (fallback) {
-			redirect(302, `/${params.type}/${fallback.name}`);
-		} else {
-			redirect(302, '/');
+	
+			active.set(data);
+			shownTab.set(Tab.Skills);
+			return { data };
 		}
 	}
+	redirect(302, `${base}/${params.type}/${params.id}/edit`);
 }

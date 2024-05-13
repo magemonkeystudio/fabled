@@ -1,21 +1,21 @@
 import type { ComponentOption } from '$api/options/options';
 import { Requirements }         from '$api/options/options';
 import AttributeSelectOption from '$components/options/AttributeSelectOption.svelte';
-import { FabledAttribute }   from '$api/fabled-attribute';
+import { Attribute }   from '$api/stat';
 import type { Unknown }      from '$api/types';
 
 export default class AttributeSelect extends Requirements implements ComponentOption {
 	component                   = AttributeSelectOption;
 	name: string;
 	key: string;
-	data: FabledAttribute;
+	data: Attribute;
 	tooltip: string | undefined = undefined;
 
 	constructor(name: string, key: string, base = 0, scale = 0) {
 		super();
 		this.name = name;
 		this.key  = key;
-		this.data = new FabledAttribute(name, base, scale);
+		this.data = new Attribute(name, base, scale);
 	}
 
 	setTooltip = (tooltip: string): this => {

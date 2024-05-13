@@ -1,5 +1,6 @@
 import type FabledSkill from './fabled-skill';
 import type FabledClass from './fabled-class';
+import type FabledAttribute from './fabled-attribute';
 import { removeFolder, rename, updateFolders } from '../data/store';
 
 export default class FabledFolder {
@@ -8,10 +9,10 @@ export default class FabledFolder {
 	public key                                                   = {};
 	public open                                                  = false;
 	public name                                                  = 'Folder';
-	public data: Array<FabledFolder | FabledClass | FabledSkill> = [];
+	public data: Array<FabledFolder | FabledClass | FabledSkill | FabledAttribute> = [];
 	public parent?: FabledFolder;
 
-	constructor(data?: Array<FabledFolder | FabledClass | FabledSkill>) {
+	constructor(data?: Array<FabledFolder | FabledClass | FabledSkill | FabledAttribute>) {
 		if (data) {
 			this.data = data;
 			data
@@ -25,7 +26,7 @@ export default class FabledFolder {
 		this.parent = parentFolder;
 	};
 
-	public add = (data: FabledClass | FabledSkill | FabledFolder) => {
+	public add = (data: FabledClass | FabledSkill | FabledFolder | FabledAttribute) => {
 		if (this.data.includes(data)) return;
 		if (data instanceof FabledFolder) {
 			rename(data, this.data);
@@ -36,7 +37,7 @@ export default class FabledFolder {
 		this.sort();
 	};
 
-	public remove = (data: FabledClass | FabledSkill | FabledFolder) => {
+	public remove = (data: FabledClass | FabledSkill | FabledFolder | FabledAttribute) => {
 		this.data = this.data.filter(d => d != data);
 		this.sort();
 	};
@@ -75,7 +76,7 @@ export default class FabledFolder {
 		return false;
 	};
 
-	public getContainingFolder = (data: FabledFolder | FabledClass | FabledSkill): FabledFolder | undefined => {
+	public getContainingFolder = (data: FabledFolder | FabledClass | FabledSkill | FabledAttribute): FabledFolder | undefined => {
 		if (this.data.includes(data)) return this;
 
 		for (const folder of <FabledFolder[]>this.data.filter(d => d instanceof FabledFolder)) {

@@ -1,6 +1,6 @@
 import type { ClassYamlData, Icon, ProClassData, Serializable } from './types';
 import type FabledSkill                                         from './fabled-skill';
-import { FabledAttribute }                                      from './fabled-attribute';
+import { Attribute }                                            from './stat';
 import { getSkill }                                             from '../data/skill-store';
 import { parseBool, toEditorCase, toProperCase }                from './api';
 import type { SkillTree }                                       from '$api/SkillTree';
@@ -33,9 +33,9 @@ export default class FabledClass implements Serializable {
 	permission                    = false;
 	expSources                    = 273;
 	manaRegen                     = 1;
-	health: FabledAttribute       = new FabledAttribute('health', 20, 1);
-	mana: FabledAttribute         = new FabledAttribute('mana', 20, 1);
-	attributes: FabledAttribute[] = [];
+	health: Attribute       = new Attribute('health', 20, 1);
+	mana: Attribute         = new Attribute('mana', 20, 1);
+	attributes: Attribute[] = [];
 	skillTree: SkillTree          = 'Requirement';
 	skills: FabledSkill[]         = [];
 	icon: Icon                    = {
@@ -114,7 +114,7 @@ export default class FabledClass implements Serializable {
 		attribs = attribs.filter(a => !included.includes(a));
 
 		for (const attrib of attribs) {
-			this.attributes.push(new FabledAttribute(attrib, 0, 0));
+			this.attributes.push(new Attribute(attrib, 0, 0));
 		}
 	};
 
@@ -179,16 +179,16 @@ export default class FabledClass implements Serializable {
 
 		if (yaml.attributes) {
 			const attributes = yaml.attributes;
-			this.health      = new FabledAttribute('health', attributes['health-base'] || 20, attributes['health-scale'] || 1);
-			this.mana        = new FabledAttribute('mana', attributes['mana-base'] || 20, attributes['mana-scale'] || 1);
+			this.health      = new Attribute('health', attributes['health-base'] || 20, attributes['health-scale'] || 1);
+			this.mana        = new Attribute('mana', attributes['mana-base'] || 20, attributes['mana-scale'] || 1);
 
-			const map: { [key: string]: FabledAttribute } = {};
+			const map: { [key: string]: Attribute } = {};
 			for (const attrId of Object.keys(attributes)) {
 				const split = attrId.split('-');
 				const name  = split[0];
 				if (map[name] || name === 'health' || name === 'mana') continue;
 
-				const attr = new FabledAttribute(name, 0, 0);
+				const attr = new Attribute(name, 0, 0);
 				attr.base  = attributes[`${name}-base`];
 				attr.scale = attributes[`${name}-scale`];
 				map[name]  = attr;

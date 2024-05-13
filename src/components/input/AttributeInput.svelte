@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { FabledAttribute } from "$api/fabled-attribute";
+  import type { Attribute } from "$api/stat";
 
-  export let value: FabledAttribute;
+  export let value: Attribute;
 </script>
 
 <div class="wrap">
