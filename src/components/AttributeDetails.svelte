@@ -1,9 +1,11 @@
 <script lang='ts'>
-	import IconInput        from './input/IconInput.svelte';
-	import { updateSidebar }      from '../data/store';
-	import AttributeInput         from './input/AttributeInput.svelte';
-	import ProInput               from './input/ProInput.svelte';
+	import IconInput            from './input/IconInput.svelte';
+	import { updateSidebar }    from '../data/store';
+	import AttributeInput       from './input/AttributeInput.svelte';
+	import ProInput             from './input/ProInput.svelte';
 	import type FabledAttribute from '$api/fabled-attribute';
+	import AttributeSection from './attributes/AttributeSection.svelte';
+	import AttributeStats from './attributes/AttributeStats.svelte';
 
 	export let data: FabledAttribute;
 
@@ -25,40 +27,8 @@
 		<AttributeInput bind:value={data.cost} />
 	</ProInput>
     <IconInput bind:icon={data.icon} />
-    <div class='header'>Target modifiers</div> <!-- TODO -->
-    <div class='header'>Condition modifiers</div>
-    <div class='header'>Mechanic modifiers</div>
-    <div class='header'>Stat modifiers</div>
+    <AttributeSection name={'Target'} bind:section={data.targets} />
+    <AttributeSection name={'Condition'} bind:section={data.conditions}/>
+    <AttributeSection name={'Mechanic'} bind:section={data.mechanics}/>
+	<AttributeStats bind:stats={data.stats}/>
 {/if}
-
-<style>
-    .info {
-        grid-column: 1 / span 2;
-        text-align: center;
-        margin-left: 5rem;
-        color: rgba(255, 255, 255, 0.7);
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
-    }
-
-    .header {
-        grid-column: 1 / -1;
-        font-size: 1.2em;
-        font-weight: bold;
-        text-align: center;
-        padding-bottom: 1rem;
-    }
-
-    .header::before {
-        content: ' ';
-        display: block;
-        width: 40%;
-        height: 1px;
-        background: white;
-        margin: 1rem auto;
-    }
-
-    .combos {
-        cursor: pointer;
-    }
-</style>

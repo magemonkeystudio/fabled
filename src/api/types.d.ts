@@ -4,6 +4,7 @@ import { Attribute } from './stat';
 import ProTrigger          from './components/triggers';
 import ProComponent     from '$api/components/procomponent';
 import ComponentOption  from './options/options';
+import type { AttributeComponent, AttributeStat, AttributeStats } from './fabled-attribute';
 
 export interface ProClassData {
 	name: string;
@@ -71,10 +72,10 @@ export interface ProAttributeData {
 	max?: number;
 	cost?: Attribute;
 	icon?: Icon;
-	condition?: { [key: string]: string };
-	mechanic?: { [key: string]: string };
-	target?: { [key: string]: string };
-	stats?: { [key: string]: string };
+	targets?: AttributeComponent[];
+	conditions?: AttributeComponent[];
+	mechanics?: AttributeComponent[];
+	stats?: AttributeStat[];
 }
 
 export interface Icon {
@@ -198,18 +199,12 @@ export interface AttributeYamlData {
 	'icon-data': number;
 	'icon-lore': string[];
 	global: {
-		condition: {
-			[key: string]: string;
-		}
-		mechanic: {
-			[key: string]: string;
-		}
-		target: {
-			[key: string]: string;
-		}
+		target: {[key: string]: string}
+		condition: {[key: string]: string}
+		mechanic: {[key: string]: string}
 	}
 	stats: {
-		[key: string]: string;
+		[key: string]: string
 	}
 }
 
@@ -251,7 +246,5 @@ export interface MultiSkillYamlData {
 }
 
 export interface MultiAttributeYamlData {
-	loaded?: boolean;
-
 	[key: string]: AttributeYamlData;
 }

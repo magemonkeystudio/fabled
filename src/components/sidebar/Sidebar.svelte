@@ -152,12 +152,12 @@
 		<div class='items'
 				 in:fly={{ x: 100 }}
 				 out:fly={{ x: 100 }}>
-			{#each $attributes as att, i}
+			{#each $attributes as att, i (att.name)}
 				<SidebarEntry
 					data={att}
 					direction='right'
 					delay={200 + 100*i}
-					on:click={() => goto(`${base}/attribute/${att.name}`)}>
+					on:click={() => goto(`${base}/attribute/${att.name}/edit`)}>
 					{att.name}{att.location === 'server' ? '*' : ''}
 				</SidebarEntry>
 			{/each}
