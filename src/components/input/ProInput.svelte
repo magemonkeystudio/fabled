@@ -20,7 +20,7 @@
 		}
 	});
 
-	const maybe = (node: Element, options: {
+	export const maybe = (node: Element, options: {
 		fn: (node: Element, options: object) => TransitionConfig
 	} & TransitionConfig & { x?: number }) => {
 		if (disableAnimation) {

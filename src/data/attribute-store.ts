@@ -46,8 +46,7 @@ const setupAttributeStore = <T extends FabledAttribute[]>(
 export const getDefaultAttributes = async (): Promise<FabledAttribute[]> => {
 	const yaml = YAML.parse(await fetch('https://raw.githubusercontent.com/promcteam/fabled/dev/src/main/resources/attributes.yml').then(r => r.text()));
 	if (!yaml) return [];
-	let keys: string[] = Object.keys(yaml);
-	return keys.map((key: string) => {
+	return Object.keys(yaml).map((key: string) => {
 		let attrib: FabledAttribute = new FabledAttribute({name: key});
 		attrib.load(yaml[key]);
 		return attrib;
@@ -61,8 +60,7 @@ export const attributes: Writable<FabledAttribute[]> = setupAttributeStore<Fable
 	(data: string) => {
 		let yaml = <MultiAttributeYamlData>YAML.parse(data);
 		if (!yaml) return [];
-		let keys: string[] = Object.keys(yaml);
-		return keys.map((key: string) => {
+		return Object.keys(yaml).map((key: string) => {
 			let attrib: FabledAttribute = new FabledAttribute({name: key});
 			attrib.load(yaml[key]);
 			return attrib;
@@ -101,19 +99,27 @@ export const addAttribute = (name?: string): FabledAttribute => {
 	return attrib;
 };
 
+
+export const loadAttributes = (e: ProgressEvent<FileReader>) => {
+	const text: string = <string>e.target?.result;
+	if (!text) return;
+
+	loadAttributesText(text);
+}
+
 /**
  * Loads attribute data from a file
  * e - event details
  */
-export const loadAttributes = (text: string) => {
+export const loadAttributesText = (text: string) => {
 	const yaml = <MultiAttributeYamlData>YAML.parse(text);
 	if (!yaml) return;
-	let keys: string[] = Object.keys(yaml);
-	attributes.set(keys.map((key: string) => {
+	attributes.set(Object.keys(yaml).map((key: string) => {
 		let attrib: FabledAttribute = new FabledAttribute({name: key});
 		attrib.load(yaml[key]);
 		return attrib;
 	}));
+	refreshAttributes();
 };
 
 export const loadAttribute = (data: FabledAttribute) => {
@@ -160,8 +166,11 @@ export const deleteAttribute = (data: FabledAttribute) => {
 
 	if (!(act instanceof FabledAttribute)) return;
 
-	if (filtered.length === 0) goto(`${base}/`);
-	else if (!filtered.find(attr => attr === get(active))) goto(`${base}/attribute/${filtered[0].name}`);
+	if (filtered.length === 0) {
+		goto(`${base}/`);
+	} else if (!filtered.find(attr => attr === get(active))) {
+		goto(`${base}/attribute/${filtered[0].name}/edit`);
+	}
 };
 
 export const saveAll = () => {
@@ -176,7 +185,6 @@ export const saveAll = () => {
 	for (const attr of get(attributes)) {
 		attributeYaml[attr.name] = attr.serializeYaml();
 	}
-
 	const yaml = YAML.stringify(attributeYaml, { lineWidth: 0 });
 
 	try {

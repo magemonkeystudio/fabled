@@ -15,7 +15,7 @@ import {
 	refreshClassFolders
 }                                                      from './class-store';
 import { localStore }                                  from '$api/api';
-import { attributes, deleteAttribute, loadAttribute, loadAttributes, refreshAttributes } from './attribute-store';
+import { deleteAttribute, loadAttributes, refreshAttributes } from './attribute-store';
 import {
 	deleteSkill,
 	deleteSkillFolder,
@@ -28,7 +28,7 @@ import {
 	skills
 }                                                      from './skill-store';
 import type ProComponent                               from '$api/components/procomponent';
-import type { MultiAttributeYamlData, MultiClassYamlData, MultiSkillYamlData } from '$api/types';
+import type { MultiClassYamlData, MultiSkillYamlData } from '$api/types';
 import YAML                                            from 'yaml';
 import FabledAttribute from '$api/fabled-attribute';
 
@@ -157,9 +157,7 @@ export const loadIndividual = async (e: ProgressEvent<FileReader>) => {
 	const text: string = <string>e.target?.result;
 	if (!text) return;
 
-	if (text.indexOf('global:') >= 0) {
-		loadAttributes(text);
-	} else if (skillFileRegex.test(text)) {
+	if (skillFileRegex.test(text)) {
 		await loadSkillText(text);
 	} else {
 		loadClassText(text);
@@ -185,6 +183,8 @@ export const loadFile = (file: File) => {
 		reader.onload = loadSkills;
 	} else if (file.name.indexOf('classes') == 0) {
 		reader.onload = loadClasses;
+	} else if (file.name.indexOf('attributes') == 0) {
+		reader.onload = loadAttributes;
 	} else {
 		reader.onload = loadIndividual;
 	}

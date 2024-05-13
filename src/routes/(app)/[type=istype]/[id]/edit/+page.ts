@@ -72,7 +72,6 @@ export async function load({ params }) {
 				} else if (data instanceof FabledAttribute) {
 					const yamlData = <MultiAttributeYamlData>YAML.parse(localStorage.getItem('attribs') || '');
 					if (yamlData && Object.keys(yamlData).length > 0) {
-						console.log(yamlData[data.name]);
 						data.load(yamlData[data.name]);
 					}
 				}
