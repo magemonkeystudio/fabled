@@ -75,7 +75,6 @@ export const classes: Writable<FabledClass[]> = setupClassStore<FabledClass[]>(
 	browser && localStorage.getItem('classNames') ? 'classNames' : 'classData', [],
 	(data: string) => {
 		if (localStorage.getItem('classNames')) {
-			console.trace('Loading legacy class data');
 			return data.split(', ').map(name => new FabledClass({
 				name,
 				location: 'local'
