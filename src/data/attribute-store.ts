@@ -116,14 +116,28 @@ export const loadAttributes = (e: ProgressEvent<FileReader>) => {
  * e - event details
  */
 export const loadAttributesText = (text: string) => {
-	const yaml = <MultiAttributeYamlData>parseYaml(text);
-	if (!yaml) return;
-	attributes.set(Object.keys(yaml).map((key: string) => {
-		const attrib: FabledAttribute = new FabledAttribute({ name: key });
-		attrib.load(yaml[key]);
-		return attrib;
-	}));
-	refreshAttributes();
+    const yaml = <MultiAttributeYamlData>parseYaml(text);
+    if (!yaml) return;
+
+    // Get the current attributes
+    const currentAttributes = get(attributes);
+    // Create a map of current attributes for easy lookup
+    const currentAttributesMap = new Map(currentAttributes.map(attr => [attr.name, attr]));
+
+    // Merge the current attributes with the new ones
+    const mergedAttributes = [...currentAttributes];
+    Object.keys(yaml).forEach((key: string) => {
+			// If the attribute already exists, ignore it
+			if (!currentAttributesMap.has(key)) {
+				// Otherwise, create a new attribute
+				const newAttribute = new FabledAttribute({ name: key });
+				newAttribute.load(yaml[key]);
+				mergedAttributes.push(newAttribute);
+			}
+		});
+
+    attributes.set(mergedAttributes);
+    refreshAttributes();
 };
 
 export const loadAttribute = (data: FabledAttribute) => {
