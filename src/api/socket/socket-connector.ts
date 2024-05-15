@@ -295,6 +295,24 @@ class SocketService {
 		}
 	}
 
+	public async saveAttributesToServer(name: string, yaml: string): Promise<boolean> {
+		if (!this.socket || !get(socketTrusted)) return Promise.reject('No socket');
+		try {
+			const response = await this.socket.timeout(3000).emitWithAck('saveAttribute', { name, yaml, to: this.serverId });
+			const match    = response && response[0] === name;
+			if (!match) {
+				console.log('Error saving attribute', response);
+			}
+
+			this.resetTimeout();
+
+			return match;
+		} catch (e) {
+			console.log('Timeout saving attribute to server', e);
+			return false;
+		}
+	}
+
 	public async exportAll(classYaml: string, skillYaml: string): Promise<boolean> {
 		if (!this.socket || !get(socketTrusted)) return Promise.reject('No socket');
 		try {

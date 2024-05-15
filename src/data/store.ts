@@ -200,14 +200,16 @@ export const saveData = (data?: FabledSkill | FabledClass | FabledAttribute) => 
 	const act = data || get(active);
 	if (!act) return;
 	if (act instanceof FabledAttribute) {
+		// If it's an attribute, we should export the whole attributes.yml
 		saveAttributes().then(() => {
 		});
-	} else {
-		saveToFile(act.name + '.yml', YAML.stringify({ [act.name]: act.serializeYaml() }, { lineWidth: 0 }));
+		return;
 	}
+
+	saveToFile(act.name + '.yml', YAML.stringify({ [act.name]: act.serializeYaml() }, { lineWidth: 0 }));
 };
 
-export const saveAttributes = async () => {
+export const getAttributeYaml = async () => {
 	let text = '';
 	for (const line of (await fetch('https://raw.githubusercontent.com/promcteam/fabled/dev/src/main/resources/attributes.yml').then(r => r.text())).split('\n')) {
 		if (line.startsWith('#') || line.length === 0) {
@@ -216,15 +218,20 @@ export const saveAttributes = async () => {
 			break;
 		}
 	}
-	saveToFile('attributes.yml', text + YAML.stringify(parseYaml(localStorage.getItem('attribs') || ''), { lineWidth: 0 }));
+
+	text += YAML.stringify(parseYaml(localStorage.getItem('attribs') || ''), { lineWidth: 0 });
+	return text;
 };
 
-export const saveDataToServer = async (data?: FabledSkill | FabledClass) => {
+export const saveAttributes = async () => {
+	saveToFile('attributes.yml', await getAttributeYaml());
+};
+
+export const saveDataToServer = async (data?: FabledSkill | FabledClass | FabledAttribute) => {
 	const act = data || get(active);
 	if (!act) return false;
 
-	const isSkill = act instanceof FabledSkill;
-	const yaml    = YAML.stringify({ [act.name]: act.serializeYaml() });
+	const yaml = YAML.stringify({ [act.name]: act.serializeYaml() });
 
 	const folder = getFolder(act);
 	let path     = '';
@@ -232,10 +239,12 @@ export const saveDataToServer = async (data?: FabledSkill | FabledClass) => {
 		path = folder.name + '/';
 	}
 
-	if (isSkill) {
+	if (act instanceof FabledSkill) {
 		return await socketService.saveSkillToServer(path + act.name, yaml);
-	} else {
+	} else if (act instanceof FabledClass) {
 		return await socketService.saveClassToServer(path + act.name, yaml);
+	} else if (act instanceof FabledAttribute) {
+		return await socketService.saveAttributesToServer(await getAttributeYaml(), yaml);
 	}
 };
 
