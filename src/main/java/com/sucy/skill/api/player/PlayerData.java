@@ -11,13 +11,17 @@ import studio.magemonkey.fabled.api.enums.ExpSource;
 import studio.magemonkey.fabled.api.enums.ManaCost;
 import studio.magemonkey.fabled.api.enums.ManaSource;
 import studio.magemonkey.fabled.api.enums.PointSource;
-import studio.magemonkey.fabled.api.player.*;
+import studio.magemonkey.fabled.api.player.PlayerAttributeModifier;
+import studio.magemonkey.fabled.api.player.PlayerSkill;
+import studio.magemonkey.fabled.api.player.PlayerSkillBar;
+import studio.magemonkey.fabled.api.player.PlayerStatModifier;
 import studio.magemonkey.fabled.api.skills.Skill;
 import studio.magemonkey.fabled.cast.PlayerCastBars;
 import studio.magemonkey.fabled.cast.PlayerTextCastingData;
 import studio.magemonkey.fabled.dynamic.EffectComponent;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class PlayerData {
@@ -219,16 +223,19 @@ public class PlayerData {
         _data.giveSkill(skill);
     }
 
-    public void giveSkill(Skill skill, PlayerClass parent) {
-        _data.giveSkill(skill, parent);
+    public void giveSkill(Skill skill, com.sucy.skill.api.player.PlayerClass parent) {
+        _data.giveSkill(skill, parent.getRealClass());
     }
 
-    public void addSkill(Skill skill, PlayerClass parent) {
-        _data.addSkill(skill, parent);
+    public void addSkill(Skill skill, com.sucy.skill.api.player.PlayerClass parent) {
+        _data.addSkill(skill, parent.getRealClass());
     }
 
-    public void addSkillExternally(Skill skill, PlayerClass parent, NamespacedKey namespacedKey, int level) {
-        _data.addSkillExternally(skill, parent, namespacedKey, level);
+    public void addSkillExternally(Skill skill,
+                                   com.sucy.skill.api.player.PlayerClass parent,
+                                   NamespacedKey namespacedKey,
+                                   int level) {
+        _data.addSkillExternally(skill, parent.getRealClass(), namespacedKey, level);
     }
 
     public void removeSkillExternally(Skill skill, NamespacedKey namespacedKey) {
@@ -287,8 +294,8 @@ public class PlayerData {
         return _data.showSkills(player);
     }
 
-    public boolean showSkills(Player player, PlayerClass playerClass) {
-        return _data.showSkills(player, playerClass);
+    public boolean showSkills(Player player, com.sucy.skill.api.player.PlayerClass playerClass) {
+        return _data.showSkills(player, playerClass.getRealClass());
     }
 
     public String getShownClassName() {
@@ -304,20 +311,22 @@ public class PlayerData {
     }
 
     public Collection<PlayerClass> getClasses() {
-        return _data.getClasses();
+        return _data.getClasses().stream().map(PlayerClass::new).collect(Collectors.toList());
     }
 
     public PlayerClass getClass(String group) {
-        return _data.getClass(group);
+        return new PlayerClass(_data.getClass(group));
     }
 
     public @Nullable
     PlayerClass getMainClass() {
-        return _data.getMainClass();
+        return new PlayerClass(_data.getMainClass());
     }
 
-    public PlayerClass setClass(@Nullable FabledClass previous, FabledClass fabledClass, boolean reset) {
-        return _data.setClass(previous, fabledClass, reset);
+    public PlayerClass setClass(@Nullable FabledClass previous,
+                                FabledClass fabledClass,
+                                boolean reset) {
+        return new PlayerClass(_data.setClass(previous, fabledClass, reset));
     }
 
     public boolean isExactClass(FabledClass fabledClass) {
