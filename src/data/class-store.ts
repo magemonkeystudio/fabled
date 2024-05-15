@@ -3,13 +3,13 @@ import { get, writable }           from 'svelte/store';
 import FabledFolder                from '$api/fabled-folder';
 import { active, rename }          from './store';
 import { sort }                    from '$api/api';
+import { parseYaml }               from '$api/yaml';
 import { browser }                 from '$app/environment';
 import FabledClass                 from '$api/fabled-class';
 import FabledSkill                 from '$api/fabled-skill';
 import { goto }                    from '$app/navigation';
 import { base }                    from '$app/paths';
 import type { MultiClassYamlData } from '$api/types';
-import YAML                        from 'yaml';
 import { notify }                  from '$api/notification-service';
 
 let isLegacy = false;
@@ -17,9 +17,8 @@ let isLegacy = false;
 const loadClassTextToArray = (text: string): FabledClass[] => {
 	const list: FabledClass[] = [];
 	// Load classes
-	const data                = <MultiClassYamlData>YAML.parse(text);
-
-	const keys = Object.keys(data);
+	const data                = <MultiClassYamlData>parseYaml(text);
+	const keys                = Object.keys(data);
 
 	let clazz: FabledClass;
 	// If we only have one class, and it is the current YAML,
@@ -76,10 +75,11 @@ export const classes: Writable<FabledClass[]> = setupClassStore<FabledClass[]>(
 	browser && localStorage.getItem('classNames') ? 'classNames' : 'classData', [],
 	(data: string) => {
 		if (localStorage.getItem('classNames')) {
-			return data.split(', ').map(name => {
-				const clazz = new FabledClass({ name, location: 'local' });
-				return clazz;
-			}).filter(cl => localStorage.getItem('sapi.class.' + cl.name));
+			console.trace('Loading legacy class data');
+			return data.split(', ').map(name => new FabledClass({
+				name,
+				location: 'local'
+			})).filter(cl => localStorage.getItem('sapi.class.' + cl.name));
 		} else {
 			localStorage.removeItem('classData');
 			isLegacy = true;
@@ -156,7 +156,7 @@ export const addClass = (name?: string): FabledClass => {
 export const loadClass = (data: FabledClass) => {
 	if (data.loaded) return;
 	if (data.location === 'local') {
-		const yamlData = <MultiClassYamlData>YAML.parse(localStorage.getItem(`sapi.class.${data.name}`) || '');
+		const yamlData = <MultiClassYamlData>parseYaml(localStorage.getItem(`sapi.class.${data.name}`) || '');
 		const clazz    = Object.values(yamlData)[0];
 		data.load(clazz);
 	} else {
@@ -243,7 +243,7 @@ export const refreshClassFolders = () => {
  */
 export const loadClassText = (text: string, fromServer: boolean = false) => {
 	// Load new classes
-	const data = <MultiClassYamlData>YAML.parse(text);
+	const data = <MultiClassYamlData>parseYaml(text);
 
 	if (!data || Object.keys(data).length === 0) {
 		// If there is no data or the object is empty... return

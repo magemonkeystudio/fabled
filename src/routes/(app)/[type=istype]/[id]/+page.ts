@@ -1,13 +1,12 @@
-import { active, shownTab, Tab }   from '../../../../data/store';
+import { active, shownTab }        from '../../../../data/store';
 import { get }                     from 'svelte/store';
 import { redirect }                from '@sveltejs/kit';
-import { skills }       from '../../../../data/skill-store';
-import type FabledClass from '$api/fabled-class';
-import type FabledSkill from '$api/fabled-skill';
-import YAML             from 'yaml';
+import { skills }                  from '../../../../data/skill-store';
+import type FabledSkill            from '$api/fabled-skill';
 import type { MultiSkillYamlData } from '$api/types';
-import type FabledAttribute from '$api/fabled-attribute';
-import { base } from '$app/paths';
+import { base }                    from '$app/paths';
+import { parseYaml }               from '$api/yaml';
+import { Tab }                     from '$api/tab';
 
 export const ssr = false;
 
@@ -31,19 +30,19 @@ export async function load({ params }) {
 		if (data) {
 			if (!data.loaded) {
 				if (data.location === 'local') {
-					const yamlData = <MultiSkillYamlData>YAML.parse(localStorage.getItem(`sapi.skill.${data.name}`) || '');
-	
+					const yamlData = <MultiSkillYamlData>parseYaml(localStorage.getItem(`sapi.skill.${data.name}`) || '');
+
 					if (yamlData && Object.keys(yamlData).length > 0) {
-						(<FabledSkill>data).load(Object.values(yamlData)[0]);
+						await (<FabledSkill>data).load(Object.values(yamlData)[0]);
 					}
 				} else {
 					// TODO Load data from server
 				}
 				(<FabledSkill>data).postLoad();
 			}
-	
+
 			active.set(data);
-			shownTab.set(Tab.Skills);
+			shownTab.set(Tab.SKILLS);
 			return { data };
 		}
 	}

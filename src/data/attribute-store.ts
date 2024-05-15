@@ -1,16 +1,17 @@
-import type { Writable }       from 'svelte/store';
-import { get, writable }            from 'svelte/store';
-import { browser }             from '$app/environment';
-import { updateAllAttributes } from './class-store';
-import YAML                    from 'yaml';
-import FabledAttribute from '$api/fabled-attribute';
+import type { Writable }               from 'svelte/store';
+import { get, writable }               from 'svelte/store';
+import { browser }                     from '$app/environment';
+import { updateAllAttributes }         from './class-store';
+import YAML                            from 'yaml';
+import FabledAttribute                 from '$api/fabled-attribute';
 import type { MultiAttributeYamlData } from '$api/types';
-import { sort } from '$api/api';
-import { active, saveError } from './store';
-import { base } from '$app/paths';
-import { goto } from '$app/navigation';
+import { sort }                        from '$api/api';
+import { parseYaml }                   from '$api/yaml';
+import { active, saveError }           from './store';
+import { base }                        from '$app/paths';
+import { goto }                        from '$app/navigation';
 
-const tooBig: Writable<boolean> = writable(false);
+const tooBig: Writable<boolean>       = writable(false);
 const acknowledged: Writable<boolean> = writable(false);
 
 const setupAttributeStore = <T extends FabledAttribute[]>(
@@ -44,27 +45,27 @@ const setupAttributeStore = <T extends FabledAttribute[]>(
 };
 
 export const getDefaultAttributes = async (): Promise<FabledAttribute[]> => {
-	const yaml = YAML.parse(await fetch('https://raw.githubusercontent.com/promcteam/fabled/dev/src/main/resources/attributes.yml').then(r => r.text()));
+	const yaml = parseYaml(await fetch('https://raw.githubusercontent.com/promcteam/fabled/dev/src/main/resources/attributes.yml').then(r => r.text()));
 	if (!yaml) return [];
 	return Object.keys(yaml).map((key: string) => {
-		let attrib: FabledAttribute = new FabledAttribute({name: key});
+		const attrib: FabledAttribute = new FabledAttribute({ name: key });
 		attrib.load(yaml[key]);
 		return attrib;
 	});
 
-}
+};
 
 export const attributes: Writable<FabledAttribute[]> = setupAttributeStore<FabledAttribute[]>(
 	'attribs',
 	await getDefaultAttributes(),
 	(data: string) => {
 		if (data.split('\n').length < 3 && data.charAt(0) !== '{') { // Old format
-			return data.replace('\n', '').split(',').map((key: string) => new FabledAttribute({name: key}));
+			return data.replace('\n', '').split(',').map((key: string) => new FabledAttribute({ name: key }));
 		}
-		let yaml = <MultiAttributeYamlData>YAML.parse(data);
+		const yaml = <MultiAttributeYamlData>parseYaml(data);
 		if (!yaml) return [];
 		return Object.keys(yaml).map((key: string) => {
-			let attrib: FabledAttribute = new FabledAttribute({name: key});
+			const attrib: FabledAttribute = new FabledAttribute({ name: key });
 			attrib.load(yaml[key]);
 			return attrib;
 		});
@@ -76,7 +77,7 @@ export const attributes: Writable<FabledAttribute[]> = setupAttributeStore<Fable
 
 export const getAttributeNames = (): string[] => {
 	return get(attributes).map((attr) => attr.name);
-}
+};
 
 export const getAttribute = (name: string): FabledAttribute | undefined => {
 	for (const c of get(attributes)) {
@@ -90,7 +91,7 @@ export const isAttributeNameTaken = (name: string): boolean => !!getAttribute(na
 
 export const addAttribute = (name?: string): FabledAttribute => {
 	const allAttributes = get(attributes);
-	let index       = allAttributes.length + 1;
+	let index           = allAttributes.length + 1;
 	while (!name && isAttributeNameTaken(name || 'attribute ' + index)) {
 		index++;
 	}
@@ -108,17 +109,17 @@ export const loadAttributes = (e: ProgressEvent<FileReader>) => {
 	if (!text) return;
 
 	loadAttributesText(text);
-}
+};
 
 /**
  * Loads attribute data from a file
  * e - event details
  */
 export const loadAttributesText = (text: string) => {
-	const yaml = <MultiAttributeYamlData>YAML.parse(text);
+	const yaml = <MultiAttributeYamlData>parseYaml(text);
 	if (!yaml) return;
 	attributes.set(Object.keys(yaml).map((key: string) => {
-		let attrib: FabledAttribute = new FabledAttribute({name: key});
+		const attrib: FabledAttribute = new FabledAttribute({ name: key });
 		attrib.load(yaml[key]);
 		return attrib;
 	}));
@@ -129,9 +130,9 @@ export const loadAttribute = (data: FabledAttribute) => {
 	if (data.loaded) return;
 
 	if (data.location === 'local') {
-		const yamlData = <MultiAttributeYamlData>YAML.parse(localStorage.getItem('attribs') || '');
+		const yamlData = <MultiAttributeYamlData>parseYaml(localStorage.getItem('attribs') || '');
 		if (!yamlData) return;
-		const attrib    = yamlData[data.name];
+		const attrib = yamlData[data.name];
 		data.load(attrib);
 	} else {
 		// TODO Load data from server
@@ -142,14 +143,14 @@ export const cloneAttribute = (data: FabledAttribute): FabledAttribute => {
 	if (!data.loaded) loadAttribute(data);
 
 	const attr: FabledAttribute[] = get(attributes);
-	let name                = data.name + ' (Copy)';
-	let i                   = 1;
+	let name                      = data.name + ' (Copy)';
+	let i                         = 1;
 	while (isAttributeNameTaken(name)) {
 		name = data.name + ' (Copy ' + i + ')';
 		i++;
 	}
 	const attribute = new FabledAttribute();
-	const yamlData = data.serializeYaml();
+	const yamlData  = data.serializeYaml();
 	attribute.load(yamlData);
 	attribute.name = name;
 	attr.push(attribute);
@@ -170,9 +171,11 @@ export const deleteAttribute = (data: FabledAttribute) => {
 	if (!(act instanceof FabledAttribute)) return;
 
 	if (filtered.length === 0) {
-		goto(`${base}/`);
+		goto(`${base}/`).then(() => {
+		});
 	} else if (!filtered.find(attr => attr === get(active))) {
-		goto(`${base}/attribute/${filtered[0].name}/edit`);
+		goto(`${base}/attribute/${filtered[0].name}/edit`).then(() => {
+		});
 	}
 };
 

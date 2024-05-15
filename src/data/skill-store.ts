@@ -2,13 +2,13 @@ import type { Writable }           from 'svelte/store';
 import { get, writable }           from 'svelte/store';
 import FabledFolder                from '$api/fabled-folder';
 import { sort }                    from '$api/api';
+import { parseYaml }               from '$api/yaml';
 import { browser }                 from '$app/environment';
 import FabledSkill                 from '$api/fabled-skill';
 import { active, rename }          from './store';
 import { goto }                    from '$app/navigation';
 import { base }                    from '$app/paths';
 import { initialized }             from '$api/components/registry';
-import YAML                        from 'yaml';
 import type { MultiSkillYamlData } from '$api/types';
 import { notify }                  from '$api/notification-service';
 
@@ -17,7 +17,7 @@ let isLegacy = false;
 const loadSkillTextToArray = (text: string): FabledSkill[] => {
 	const list: FabledSkill[] = [];
 	// Load skills
-	const data                = <MultiSkillYamlData>YAML.parse(text);
+	const data                = <MultiSkillYamlData>parseYaml(text);
 	if (!data || Object.keys(data).length === 0) {
 		// If there is no data or the object is empty... return
 		return list;
@@ -32,7 +32,8 @@ const loadSkillTextToArray = (text: string): FabledSkill[] => {
 		const key = keys[0];
 		if (key === 'loaded') return list;
 		skill = new FabledSkill({ name: key });
-		skill.load(data[key]);
+		skill.load(data[key]).then(() => {
+		});
 		list.push(skill);
 		return list;
 	}
@@ -40,7 +41,8 @@ const loadSkillTextToArray = (text: string): FabledSkill[] => {
 	for (const key of Object.keys(data)) {
 		if (key != 'loaded') {
 			skill = new FabledSkill({ name: key });
-			skill.load(data[key]);
+			skill.load(data[key]).then(() => {
+			});
 			list.push(skill);
 		}
 	}
@@ -81,10 +83,10 @@ export const skills: Writable<FabledSkill[]> = setupSkillStore<FabledSkill[]>(
 	[],
 	(data: string) => {
 		if (localStorage.getItem('skillNames')) {
-			return data.split(', ').map(name => {
-				const skill = new FabledSkill({ name, location: 'local' });
-				return skill;
-			}).filter(sk => localStorage.getItem('sapi.skill.' + sk.name));
+			return data.split(', ').map(name => new FabledSkill({
+				name,
+				location: 'local'
+			})).filter(sk => localStorage.getItem('sapi.skill.' + sk.name));
 		} else {
 			localStorage.removeItem('skillData');
 			isLegacy = true;
@@ -157,7 +159,7 @@ export const loadSkill = async (data: FabledSkill) => {
 	if (data.loaded) return;
 
 	if (data.location === 'local') {
-		const yamlData = <MultiSkillYamlData>YAML.parse(localStorage.getItem(`sapi.skill.${data.name}`) || '');
+		const yamlData = <MultiSkillYamlData>parseYaml(localStorage.getItem(`sapi.skill.${data.name}`) || '');
 		// Get the first entry in the object
 		const skill    = Object.values(yamlData)[0];
 		await data.load(skill);
@@ -230,8 +232,10 @@ export const deleteSkill = (data: FabledSkill) => {
 
 	if (!(act instanceof FabledSkill)) return;
 
-	if (filtered.length === 0) goto(`${base}/`);
-	else if (!filtered.find(sk => sk === get(active))) goto(`${base}/skill/${filtered[0].name}`);
+	if (filtered.length === 0) goto(`${base}/`).then(() => {
+	});
+	else if (!filtered.find(sk => sk === get(active))) goto(`${base}/skill/${filtered[0].name}`).then(() => {
+	});
 };
 
 export const refreshSkills       = () => skills.set(sort<FabledSkill>(get(skills)));
@@ -246,7 +250,7 @@ export const refreshSkillFolders = () => {
  */
 export const loadSkillText = async (text: string, fromServer: boolean = false) => {
 	// Load new skills
-	const data = <MultiSkillYamlData>YAML.parse(text);
+	const data = <MultiSkillYamlData>parseYaml(text);
 
 	if (!data || Object.keys(data).length === 0) {
 		// If there is no data or the object is empty... return
@@ -264,7 +268,7 @@ export const loadSkillText = async (text: string, fromServer: boolean = false) =
 			? getSkill(key)
 			: addSkill(key)));
 		if (fromServer) skill.location = 'server';
-		skill.load(data[key]);
+		await skill.load(data[key]);
 		skill.save();
 		refreshSkills();
 		return;
@@ -275,7 +279,7 @@ export const loadSkillText = async (text: string, fromServer: boolean = false) =
 			skill = (<FabledSkill>(isSkillNameTaken(key)
 				? getSkill(key)
 				: addSkill(key)));
-			skill.load(data[key]);
+			await skill.load(data[key]);
 			skill.save();
 		}
 	}

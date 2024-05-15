@@ -1,8 +1,8 @@
-import type { Readable, Writable }                     from 'svelte/store';
-import { derived, get, writable }                      from 'svelte/store';
-import FabledClass                                     from '$api/fabled-class';
-import FabledSkill                                     from '$api/fabled-skill';
-import FabledFolder                                    from '$api/fabled-folder';
+import type { Readable, Writable }                                                from 'svelte/store';
+import { derived, get, writable }                                                 from 'svelte/store';
+import FabledClass                                                                from '$api/fabled-class';
+import FabledSkill                                                                from '$api/fabled-skill';
+import FabledFolder                                                               from '$api/fabled-folder';
 import {
 	classes,
 	classFolders,
@@ -13,9 +13,9 @@ import {
 	loadClassText,
 	refreshClasses,
 	refreshClassFolders
-}                                                      from './class-store';
-import { localStore }                                  from '$api/api';
-import { deleteAttribute, loadAttributes, refreshAttributes } from './attribute-store';
+}                                                                                 from './class-store';
+import { localStore }                                                             from '$api/api';
+import { deleteAttribute, loadAttributes, loadAttributesText, refreshAttributes } from './attribute-store';
 import {
 	deleteSkill,
 	deleteSkillFolder,
@@ -26,47 +26,50 @@ import {
 	refreshSkills,
 	skillFolders,
 	skills
-}                                                      from './skill-store';
-import type ProComponent                               from '$api/components/procomponent';
-import type { MultiClassYamlData, MultiSkillYamlData } from '$api/types';
-import YAML                                            from 'yaml';
-import FabledAttribute from '$api/fabled-attribute';
+}                                                                                 from './skill-store';
+import type ProComponent                                                          from '$api/components/procomponent';
+import type { MultiClassYamlData, MultiSkillYamlData }                            from '$api/types';
+import YAML                                                                       from 'yaml';
+import FabledAttribute                                                            from '$api/fabled-attribute';
+import { parseYaml }                                                              from '$api/yaml';
+import { Tab }                                                                    from '$api/tab';
 
-export enum Tab {
-	Classes, Skills, Attributes
-}
-export const active: Writable<FabledClass | FabledSkill | FabledAttribute | undefined> = writable(undefined);
-export const activeType: Readable<'class' | 'skill' | 'attribute'>                     = derived(
+export const active: Writable<FabledClass | FabledSkill | FabledAttribute | undefined>      = writable(undefined);
+export const activeType: Readable<'class' | 'skill' | 'attribute' | ''>                     = derived(
 	active,
 	$active => {
-		switch($active?.dataType) {
-			case 'class': 'class'; break;
-			case 'skill': 'skill'; break;
-			case 'attribute': 'attribute'; break;
+		if ($active?.dataType === 'class') {
+			return 'class';
+		} else if ($active?.dataType === 'skill') {
+			return 'skill';
+		} else if ($active?.dataType === 'attribute') {
+			return 'attribute';
+		} else {
+			return '';
 		}
 	}
 );
 export const dragging: Writable<FabledClass | FabledSkill | FabledAttribute | FabledFolder> = writable();
-export const draggingComponent: Writable<ProComponent | undefined>        = writable();
-export const showSidebar: Writable<boolean>                               = localStore('sidebarOpen', true);
-export const sidebarOpen: Writable<boolean>                               = writable(true);
-export const shownTab: Writable<Tab>                                      = writable(Tab.Classes);
-export const importing: Writable<boolean>                                 = writable(false);
+export const draggingComponent: Writable<ProComponent | undefined>                          = writable();
+export const showSidebar: Writable<boolean>                                                 = localStore('sidebarOpen', true);
+export const sidebarOpen: Writable<boolean>                                                 = writable(true);
+export const shownTab: Writable<Tab>                                                        = writable(Tab.CLASSES);
+export const importing: Writable<boolean>                                                   = writable(false);
 
 export const updateSidebar = () => {
 	if (!get(showSidebar)) return;
-	switch(get(activeType)) {
+	switch (get(activeType)) {
 		case 'class': {
 			refreshClasses();
-			break
+			break;
 		}
 		case 'skill': {
 			refreshSkills();
-			break
+			break;
 		}
 		case 'attribute': {
 			refreshAttributes();
-			break
+			break;
 		}
 	}
 	updateFolders();
@@ -89,11 +92,11 @@ export const deleteFolder = (folder: FabledFolder) => {
 		updateFolders();
 	} else {
 		switch (get(shownTab)) {
-			case Tab.Classes: {
+			case Tab.CLASSES: {
 				deleteClassFolder(folder, () => false);
 				break;
 			}
-			case Tab.Skills: {
+			case Tab.SKILLS: {
 				deleteSkillFolder(folder, () => false);
 				break;
 			}
@@ -114,11 +117,11 @@ export const deleteProData = (data: FabledClass | FabledSkill | FabledAttribute 
 export const updateFolders = () => {
 	if (!get(showSidebar)) return;
 	switch (get(shownTab)) {
-		case Tab.Classes: {
+		case Tab.CLASSES: {
 			refreshClassFolders();
 			break;
 		}
-		case Tab.Skills: {
+		case Tab.SKILLS: {
 			refreshSkillFolders();
 			break;
 		}
@@ -169,7 +172,7 @@ export const loadRaw = async (text: string, fromServer: boolean = false) => {
 	if (!text) return;
 
 	if (text.indexOf('global:') >= 0) {
-		loadAttributes(text);
+		loadAttributesText(text);
 	} else if (skillFileRegex.test(text)) {
 		await loadSkillText(text.replace('loaded: false\n', ''), fromServer);
 	} else {
@@ -195,7 +198,8 @@ export const saveData = (data?: FabledSkill | FabledClass | FabledAttribute) => 
 	const act = data || get(active);
 	if (!act) return;
 	if (act instanceof FabledAttribute) {
-		saveAttributes();
+		saveAttributes().then(() => {
+		});
 	} else {
 		saveToFile(act.name + '.yml', YAML.stringify({ [act.name]: act.serializeYaml() }, { lineWidth: 0 }));
 	}
@@ -210,8 +214,8 @@ export const saveAttributes = async () => {
 			break;
 		}
 	}
-	saveToFile('attributes.yml', text + YAML.stringify(YAML.parse(localStorage.getItem('attribs') || ''), { lineWidth: 0 }));
-}
+	saveToFile('attributes.yml', text + YAML.stringify(parseYaml(localStorage.getItem('attribs') || ''), { lineWidth: 0 }));
+};
 
 export const getAllSkillYaml = async (): Promise<MultiSkillYamlData> => {
 	const allSkills: FabledSkill[] = get(skills);
@@ -259,7 +263,7 @@ export const saveAll = async () => {
 
 	saveToFile('skills.yml', YAML.stringify(skillYaml, { lineWidth: 0 }));
 	saveToFile('classes.yml', YAML.stringify(classYaml, { lineWidth: 0 }));
-	saveAttributes();
+	await saveAttributes();
 };
 
 /**

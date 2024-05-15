@@ -4,16 +4,15 @@
 		deleteProData,
 		dragging,
 		getFolder,
-		shownTab,
 		saveData,
+		shownTab,
 		sidebarOpen,
-		updateFolders,
-		Tab
-	}                  from '../../data/store';
-	import FabledSkill from '$api/fabled-skill';
-	import FabledClass from '$api/fabled-class';
-	import FabledAttribute from '$api/fabled-attribute';
-	import { get }     from 'svelte/store';
+		updateFolders
+	}                                     from '../../data/store';
+	import FabledSkill                    from '$api/fabled-skill';
+	import FabledClass                    from '$api/fabled-class';
+	import FabledAttribute                from '$api/fabled-attribute';
+	import { get }                        from 'svelte/store';
 	import FabledFolder                   from '$api/fabled-folder';
 	import { fly, type TransitionConfig } from 'svelte/transition';
 	import Modal                          from '../Modal.svelte';
@@ -22,11 +21,12 @@
 	import { animationEnabled }           from '../../data/settings';
 	import { base }                       from '$app/paths';
 	import { createEventDispatcher }      from 'svelte';
-	import { cloneAttribute } from '../../data/attribute-store';
+	import { cloneAttribute }             from '../../data/attribute-store';
+	import { Tab }                        from '$api/tab';
 
-	export let delay                       = 0;
-	export let direction: 'right' | 'left' = 'left';
-	export let data: FabledSkill | FabledClass | FabledAttribute;
+	export let delay                                                         = 0;
+	export let direction: 'right' | 'left'                                   = 'left';
+	export let data: FabledSkill | FabledClass | FabledAttribute | undefined = undefined;
 
 	let over     = false;
 	let deleting = false;
@@ -58,13 +58,13 @@
 		}
 		if (dragData instanceof FabledFolder) {
 			switch (get(shownTab)) {
-				case Tab.Classes: {
+				case Tab.CLASSES: {
 					addClassFolder(dragData);
-					break
+					break;
 				}
-				case Tab.Skills: {
+				case Tab.SKILLS: {
 					addSkillFolder(dragData);
-					break
+					break;
 				}
 			}
 			dragData.parent = undefined;
@@ -94,9 +94,9 @@
 
 		if (data instanceof FabledClass) {
 			cloneClass(data);
-		} else if (data instanceof FabledSkill){
+		} else if (data instanceof FabledSkill) {
 			cloneSkill(data);
-		} else if (data instanceof FabledAttribute){
+		} else if (data instanceof FabledAttribute) {
 			cloneAttribute(data);
 		}
 	};
@@ -137,7 +137,7 @@
 					 tabindex='0'
 					 role='button'
 					 class='download'
-					 title="Save {data.dataType.substring(0, 1).toUpperCase()+data.dataType.substring(1)}">
+					 title='Save {data.dataType.substring(0, 1).toUpperCase()+data.dataType.substring(1)}'>
         <span class='material-symbols-rounded'>
           save
         </span>
@@ -147,7 +147,7 @@
 					 tabindex='0'
 					 role='button'
 					 class='clone'
-					 title="Clone {data.dataType.substring(0, 1).toUpperCase()+data.dataType.substring(1)}">
+					 title='Clone {data.dataType.substring(0, 1).toUpperCase()+data.dataType.substring(1)}'>
         <span class='material-symbols-rounded'>
           content_copy
         </span>
@@ -173,7 +173,7 @@
 					 tabindex='0'
 					 role='button'
 					 class='delete'
-					 title="Delete {data.dataType.substring(0, 1).toUpperCase()+data.dataType.substring(1)}">
+					 title='Delete {data.dataType.substring(0, 1).toUpperCase()+data.dataType.substring(1)}'>
         <span class='material-symbols-rounded'>
           delete
         </span>

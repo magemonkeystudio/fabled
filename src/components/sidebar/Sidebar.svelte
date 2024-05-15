@@ -1,26 +1,27 @@
 <!--suppress CssUnresolvedCustomProperty -->
 <script lang='ts'>
 	import { addClass, addClassFolder, classes, classFolders } from '../../data/class-store';
-	import { closeSidebar, shownTab, sidebarOpen, Tab }        from '../../data/store';
+	import { closeSidebar, shownTab, sidebarOpen }             from '../../data/store';
 	import SidebarEntry                                        from './SidebarEntry.svelte';
 	import { squish }                                          from '../../data/squish';
 	import { goto }                                            from '$app/navigation';
 	import { beforeUpdate, onDestroy, onMount }                from 'svelte';
 	import type { Unsubscriber }                               from 'svelte/store';
-	import { get }      from 'svelte/store';
-	import FabledFolder from '$api/fabled-folder';
-	import FabledClass from '$api/fabled-class';
-	import FabledSkill from '$api/fabled-skill';
-	import Folder      from '../Folder.svelte';
+	import { get }                                             from 'svelte/store';
+	import FabledFolder                                        from '$api/fabled-folder';
+	import FabledClass                                         from '$api/fabled-class';
+	import FabledSkill                                         from '$api/fabled-skill';
+	import Folder                                              from '../Folder.svelte';
 	import { fly }                                             from 'svelte/transition';
 	import { clickOutside }                                    from '$api/clickoutside';
 	import { browser }                                         from '$app/environment';
 	import Tabs                                                from '../input/Tabs.svelte';
 	import { addSkill, addSkillFolder, skillFolders, skills }  from '../../data/skill-store';
-	import { addAttribute, attributes }                                      from '../../data/attribute-store';
+	import { addAttribute, attributes }                        from '../../data/attribute-store';
 	import { base }                                            from '$app/paths';
+	import { Tab }                                             from '$api/tab';
 
-	let folders: FabledFolder[] = [];
+	let folders: FabledFolder[]                         = [];
 	let classSub: Unsubscriber;
 	let skillSub: Unsubscriber;
 	let classIncluded: Array<FabledClass | FabledSkill> = [];
@@ -29,7 +30,7 @@
 	let width: number;
 	let height: number;
 	let scrollY: number;
-	const appendIncluded                                = (item: Array<FabledFolder | FabledClass | FabledSkill> | FabledFolder | FabledClass | FabledSkill, include: Array<FabledClass | FabledSkill>) => {
+	const appendIncluded = (item: Array<FabledFolder | FabledClass | FabledSkill> | FabledFolder | FabledClass | FabledSkill, include: Array<FabledClass | FabledSkill>) => {
 		if (item instanceof Array) item.forEach(fold => appendIncluded(fold, include));
 		if (item instanceof FabledFolder) appendIncluded(item.data, include);
 		else if (item instanceof FabledClass || item instanceof FabledSkill) include.push(item);
@@ -37,13 +38,13 @@
 
 	const rebuildFolders = (fold?: FabledFolder[]) => {
 		switch (get(shownTab)) {
-			case Tab.Classes: {
+			case Tab.CLASSES: {
 				folders       = fold || get(classFolders);
 				classIncluded = [];
 				appendIncluded(folders, classIncluded);
 				break;
 			}
-			case Tab.Skills: {
+			case Tab.SKILLS: {
 				folders       = fold || get(skillFolders);
 				skillIncluded = [];
 				appendIncluded(folders, skillIncluded);
@@ -86,7 +87,7 @@
 		<Tabs bind:selectedTab={$shownTab} data={["Classes", "Skills", "Attributes"]} color='#111' inline={false} />
 		<hr />
 	</div>
-	{#if $shownTab == Tab.Classes}
+	{#if $shownTab == Tab.CLASSES}
 		<div class='items'
 				 in:fly={{x: -100}}
 				 out:fly={{x: -100}}>
@@ -116,7 +117,7 @@
 				</div>
 			</SidebarEntry>
 		</div>
-	{:else if $shownTab == Tab.Skills}
+	{:else if $shownTab == Tab.SKILLS}
 		<div class='items'
 				 in:fly={{ x: 100 }}
 				 out:fly={{ x: 100 }}>
@@ -148,7 +149,7 @@
 				</div>
 			</SidebarEntry>
 		</div>
-	{:else if $shownTab == Tab.Attributes}
+	{:else if $shownTab == Tab.ATTRIBUTES}
 		<div class='items'
 				 in:fly={{ x: 100 }}
 				 out:fly={{ x: 100 }}>
