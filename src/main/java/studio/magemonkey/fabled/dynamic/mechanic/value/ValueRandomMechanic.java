@@ -86,7 +86,7 @@ public class ValueRandomMechanic extends MechanicComponent {
         }
 
         if (settings.getBool(SAVE, false))
-            Fabled.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
+            Fabled.getData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;
     }
 }

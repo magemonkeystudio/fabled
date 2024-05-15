@@ -92,7 +92,7 @@ public class AttributeMechanic extends MechanicComponent {
         for (LivingEntity target : targets) {
             if (target instanceof Player) {
                 worked = true;
-                final PlayerData data = Fabled.getPlayerData((Player) target);
+                final PlayerData data = Fabled.getData((Player) target);
                 PlayerAttributeModifier modifier = new PlayerAttributeModifier("fabled.mechanic.attribute_mechanic",
                         amount,
                         Operation.valueOf(operation),

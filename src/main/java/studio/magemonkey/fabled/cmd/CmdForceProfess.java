@@ -98,7 +98,7 @@ public class CmdForceProfess implements IFunction, TabCompleter {
             String name = args[1];
             for (int i = 2; i < args.length; i++) name += ' ' + args[i];
 
-            PlayerData  data   = Fabled.getPlayerData(player);
+            PlayerData  data   = Fabled.getData(player);
             FabledClass target = Fabled.getClass(name);
 
             // Invalid class

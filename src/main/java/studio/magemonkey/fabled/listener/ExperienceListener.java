@@ -55,7 +55,7 @@ public class ExperienceListener extends FabledListener {
             return;
         }
 
-        PlayerData playerData = Fabled.getPlayerData(event.getPlayer());
+        PlayerData playerData = Fabled.getData(event.getPlayer());
         for (PlayerClass playerClass : playerData.getClasses()) {
             double yield = Fabled.getSettings().getBreakYield(playerClass, event.getBlock().getType());
             if (yield > 0) {
@@ -70,7 +70,7 @@ public class ExperienceListener extends FabledListener {
             unnatural.add(format(event.getBlock()));
         }
 
-        PlayerData playerData = Fabled.getPlayerData(event.getPlayer());
+        PlayerData playerData = Fabled.getData(event.getPlayer());
         for (PlayerClass playerClass : playerData.getClasses()) {
             double yield = Fabled.getSettings().getPlaceYield(playerClass, event.getBlock().getType());
             if (yield > 0) {
@@ -81,7 +81,7 @@ public class ExperienceListener extends FabledListener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onCraft(CraftItemEvent event) {
-        PlayerData playerData = Fabled.getPlayerData((Player) event.getWhoClicked());
+        PlayerData playerData = Fabled.getData((Player) event.getWhoClicked());
         for (PlayerClass playerClass : playerData.getClasses()) {
             double yield = Fabled.getSettings().getCraftYield(playerClass, event.getRecipe().getResult().getType());
             if (yield > 0) {

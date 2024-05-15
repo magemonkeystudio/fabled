@@ -26,7 +26,6 @@
  */
 package studio.magemonkey.fabled.cmd;
 
-import studio.magemonkey.fabled.cmd.CmdExp;
 import studio.magemonkey.codex.mccore.commands.CommandManager;
 import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
 import studio.magemonkey.codex.mccore.commands.IFunction;
@@ -94,7 +93,7 @@ public class CmdLevel implements IFunction, TabCompleter {
                 cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name");
                 return;
             }
-            PlayerData data = Fabled.getPlayerData(target);
+            PlayerData data = Fabled.getData(target);
 
             // Parse the levels
             int amount = NumberParser.parseInt(args[numberIndex]);

@@ -63,7 +63,7 @@ public class AttributeListener extends FabledListener {
      * Refresh player stats on login
      */
     public void onJoin(final Player player) {
-        updatePlayer(Fabled.getPlayerData(player));
+        updatePlayer(Fabled.getData(player));
     }
 
     /**
@@ -76,7 +76,7 @@ public class AttributeListener extends FabledListener {
         if (event.getPlayer().hasMetadata("NPC"))
             return;
 
-        updatePlayer(Fabled.getPlayerData(event.getPlayer()));
+        updatePlayer(Fabled.getData(event.getPlayer()));
     }
 
     /**
@@ -119,7 +119,7 @@ public class AttributeListener extends FabledListener {
             if (DivinityHook.isDivinity(item)) return;
             if (CitizensHook.isNPC(player)) return;
 
-            PlayerData data = Fabled.getPlayerData(player);
+            PlayerData data = Fabled.getData(player);
 
             double newAmount = data.scaleStat(AttributeManager.PHYSICAL_DAMAGE, event.getDamage());
             if (event.isProjectile()) {
@@ -136,7 +136,7 @@ public class AttributeListener extends FabledListener {
             if (CitizensHook.isNPC(player))
                 return;
 
-            PlayerData data = Fabled.getPlayerData(player);
+            PlayerData data = Fabled.getData(player);
 
             double newAmount = data.scaleStat(AttributeManager.PHYSICAL_DEFENSE, event.getDamage());
             if (event.isProjectile()) {
@@ -161,7 +161,7 @@ public class AttributeListener extends FabledListener {
             if (CitizensHook.isNPC(player))
                 return;
 
-            final PlayerData data = Fabled.getPlayerData(player);
+            final PlayerData data = Fabled.getData(player);
 
             if (event.getClassification().equalsIgnoreCase(PHYSICAL)) {
                 event.setDamage(data.scaleStat(AttributeManager.PHYSICAL_DAMAGE, event.getDamage()));
@@ -179,7 +179,7 @@ public class AttributeListener extends FabledListener {
             if (CitizensHook.isNPC(player))
                 return;
 
-            final PlayerData data = Fabled.getPlayerData(player);
+            final PlayerData data = Fabled.getData(player);
 
             if (event.getClassification().equalsIgnoreCase(PHYSICAL)) {
                 event.setDamage(data.scaleStat(AttributeManager.PHYSICAL_DEFENSE, event.getDamage()));
@@ -202,7 +202,7 @@ public class AttributeListener extends FabledListener {
             return;
         }
 
-        final PlayerData data = Fabled.getPlayerData(player);
+        final PlayerData data = Fabled.getData(player);
         event.setDamage(data.scaleStat("defense-" + event.getCause().name().toLowerCase(), event.getDamage()));
     }
 
@@ -221,7 +221,7 @@ public class AttributeListener extends FabledListener {
         if (oldEnabled && !newEnabled) {
             //TODO: Clear global Attribute/Stats bonus
         } else if (!oldEnabled && newEnabled) {
-            updatePlayer(Fabled.getPlayerData(event.getPlayer()));
+            updatePlayer(Fabled.getData(event.getPlayer()));
         }
     }
 
@@ -229,7 +229,7 @@ public class AttributeListener extends FabledListener {
     public void onHungerChange(final FoodLevelChangeEvent event) {
         final Player player = (Player) event.getEntity();
         if (event.getFoodLevel() < player.getFoodLevel()) {
-            final PlayerData data = Fabled.getPlayerData(player);
+            final PlayerData data = Fabled.getData(player);
             final int        lost = data.subtractHungerValue(player.getFoodLevel() - event.getFoodLevel());
             event.setFoodLevel(player.getFoodLevel() - lost);
         }
@@ -240,7 +240,7 @@ public class AttributeListener extends FabledListener {
         if (event.getRegainReason() == EntityRegainHealthEvent.RegainReason.SATIATED
                 && event.getEntity() instanceof Player) {
             final Player     player = (Player) event.getEntity();
-            final PlayerData data   = Fabled.getPlayerData(player);
+            final PlayerData data   = Fabled.getData(player);
             final double     scaled = data.scaleStat(AttributeManager.HUNGER_HEAL, event.getAmount());
             event.setAmount(scaled);
         }

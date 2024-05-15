@@ -130,7 +130,7 @@ public class CastItemListener extends FabledListener {
 
         PlayerSkillSlot slotData = new PlayerSkillSlot();
         data.put(player.getUniqueId(), slotData);
-        slotData.init(Fabled.getPlayerData(player));
+        slotData.init(Fabled.getData(player));
 
         PlayerInventory inv  = player.getInventory();
         int             slot = Fabled.getSettings().getCastSlot();

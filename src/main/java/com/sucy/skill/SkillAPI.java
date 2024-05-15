@@ -1,6 +1,7 @@
 package com.sucy.skill;
 
 import com.sucy.skill.api.player.PlayerAccounts;
+import com.sucy.skill.api.player.PlayerData;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.Metadatable;
@@ -14,7 +15,6 @@ import studio.magemonkey.codex.mccore.config.CommentedLanguageConfig;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.player.PlayerClass;
-import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.player.PlayerSkill;
 import studio.magemonkey.fabled.api.skills.Skill;
 import studio.magemonkey.fabled.data.Settings;
@@ -258,11 +258,11 @@ public class SkillAPI extends JavaPlugin {
      *
      * @param player player to get the data for
      * @return the class data of the player
-     * @deprecated use {@link Fabled#getPlayerData(OfflinePlayer)}
+     * @deprecated use {@link Fabled#getData(OfflinePlayer)}
      */
     @Deprecated(forRemoval = true)
     public static PlayerData getPlayerData(OfflinePlayer player) {
-        return Fabled.getPlayerData(player);
+        return new PlayerData(Fabled.getData(player));
     }
 
     /**

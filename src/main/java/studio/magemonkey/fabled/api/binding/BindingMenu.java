@@ -173,7 +173,7 @@ public class BindingMenu extends Menu {
             }
         });
 
-        PlayerData        playerData  = Fabled.getPlayerData(this.player);
+        PlayerData        playerData  = Fabled.getData(this.player);
         List<PlayerSkill> boundSkills = BindListener.getBoundSkills(itemStack, playerData);
         BindListener.setBoundSkills(itemStack,
                 boundSkills.stream().map(skill -> skill.getData().getKey()).collect(Collectors.toList()));
@@ -278,7 +278,7 @@ public class BindingMenu extends Menu {
         super.onClose();
 
         if (!Fabled.getSettings().isWorldEnabled(player.getWorld())) return;
-        PlayerData playerData = Fabled.getPlayerData(player);
+        PlayerData playerData = Fabled.getData(player);
         playerData.setOnPreviewStop(null);
         List<PlayerSkill> boundSkills = BindListener.getBoundSkills(itemStack, playerData);
         if (boundSkills.isEmpty()) return;

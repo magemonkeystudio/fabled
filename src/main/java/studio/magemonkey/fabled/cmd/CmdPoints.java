@@ -101,7 +101,7 @@ public class CmdPoints implements IFunction, TabCompleter {
             }
 
             // Give skill points
-            PlayerData data = Fabled.getPlayerData(target);
+            PlayerData data = Fabled.getData(target);
             data.givePoints(amount, ExpSource.COMMAND);
 
             // Messages

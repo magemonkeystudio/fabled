@@ -9,7 +9,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
-import studio.magemonkey.fabled.hook.PlaceholderAPIHook;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,7 +36,7 @@ public class PlaceholderAPIHookTest extends MockedTest {
     @BeforeEach
     public void setup() {
         player = genPlayer("Travja");
-        PlayerData data = plugin.getPlayerData(player);
+        PlayerData data = plugin.getData(player);
         data.profess(plugin.getClass("Honor Guard"));
     }
 

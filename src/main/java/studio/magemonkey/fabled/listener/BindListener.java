@@ -71,14 +71,14 @@ public class BindListener extends FabledListener {
         if (!Fabled.getSettings().isWorldEnabled(player.getWorld())) return;
         ItemStack itemStack = getHeldItem(player.getInventory());
         if (itemStack == null) return;
-        List<PlayerSkill> boundSkills = getBoundSkills(itemStack, Fabled.getPlayerData(player));
+        List<PlayerSkill> boundSkills = getBoundSkills(itemStack, Fabled.getData(player));
         if (boundSkills.isEmpty()) return;
         boundSkills.get(getIndex(player, boundSkills.size())).startPreview();
     }
 
     public void cleanup(Player player) {
         indexes.remove(player);
-        Fabled.getPlayerData(player).setOnPreviewStop(null);
+        Fabled.getData(player).setOnPreviewStop(null);
     }
 
     @Nullable
@@ -134,7 +134,7 @@ public class BindListener extends FabledListener {
     public void onInteract(KeyPressEvent event) {
         Player player = event.getPlayer();
         if (!Fabled.getSettings().isWorldEnabled(player.getWorld())) return;
-        PlayerData playerData = Fabled.getPlayerData(player);
+        PlayerData playerData = Fabled.getData(player);
         ItemStack  heldItem   = getHeldItem(player.getInventory());
         if (heldItem == null) return;
 
@@ -159,7 +159,7 @@ public class BindListener extends FabledListener {
     public void onItemHeld(PlayerItemHeldEvent event) {
         Player player = event.getPlayer();
         indexes.remove(player);
-        PlayerData playerData = Fabled.getPlayerData(player);
+        PlayerData playerData = Fabled.getData(player);
         playerData.setOnPreviewStop(null);
         if (!Fabled.getSettings().isWorldEnabled(player.getWorld())) return;
 

@@ -89,7 +89,7 @@ public class CmdExp implements IFunction, TabCompleter {
                 cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name");
                 return;
             }
-            PlayerData data = Fabled.getPlayerData(target);
+            PlayerData data = Fabled.getData(target);
 
             // Parse the experience
             double amount = NumberParser.parseDouble(args[numberIndex]);

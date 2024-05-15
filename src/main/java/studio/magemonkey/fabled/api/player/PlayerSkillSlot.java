@@ -74,7 +74,7 @@ public class PlayerSkillSlot {
      */
     public void updateItem(Player player) {
         if (player != null) {
-            PlayerData playerData = Fabled.getPlayerData(player);
+            PlayerData playerData = Fabled.getData(player);
             if (skills.isEmpty()) {
                 player.getInventory()
                         .setItem(Fabled.getSettings().getCastSlot(),

@@ -100,7 +100,7 @@ public class CmdMana implements IFunction, TabCompleter {
             }
 
             // Give mana
-            PlayerData data = Fabled.getPlayerData(target);
+            PlayerData data = Fabled.getData(target);
             data.giveMana(amount, ManaSource.COMMAND);
 
             // Messages

@@ -69,7 +69,7 @@ public class CmdBar implements IFunction {
             return;
         }
 
-        PlayerData player = Fabled.getPlayerData((Player) sender);
+        PlayerData player = Fabled.getData((Player) sender);
 
         // Player must have a class
         if (!player.hasClass()) {

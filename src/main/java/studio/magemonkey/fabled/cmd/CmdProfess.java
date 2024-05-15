@@ -72,7 +72,7 @@ public class CmdProfess implements IFunction, TabCompleter {
 
         // Only players have profession options
         else if (sender instanceof Player) {
-            PlayerData data = Fabled.getPlayerData((Player) sender);
+            PlayerData data = Fabled.getData((Player) sender);
 
             if (args.length == 0) {
                 if (!data.showProfession((Player) sender))
@@ -121,7 +121,7 @@ public class CmdProfess implements IFunction, TabCompleter {
                                       @NotNull String label,
                                       @NotNull String[] args) {
         if (sender instanceof Player) {
-            PlayerData playerData = Fabled.getPlayerData((Player) sender);
+            PlayerData playerData = Fabled.getData((Player) sender);
             if (playerData == null) return null;
             return ConfigurableCommand.getTabCompletions(Fabled.getClasses().values().stream()
                     .filter(playerData::canProfess)

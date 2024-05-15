@@ -77,7 +77,7 @@ public class CmdCombo implements IFunction, TabCompleter {
         else if (!Fabled.getSettings().isWorldEnabled(((Player) sender).getWorld())) {
             command.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
         } else if (args.length >= Fabled.getComboManager().getComboSize() + 1) {
-            PlayerData player = Fabled.getPlayerData((Player) sender);
+            PlayerData player = Fabled.getData((Player) sender);
 
             String name      = args[0];
             int    comboSize = Fabled.getComboManager().getComboSize();
@@ -133,7 +133,7 @@ public class CmdCombo implements IFunction, TabCompleter {
 
         // Tab-complete skill until nothing matches
         List<String> tabCompletions =
-                ConfigurableCommand.getTabCompletions(Fabled.getPlayerData(player).getSkills().stream()
+                ConfigurableCommand.getTabCompletions(Fabled.getData(player).getSkills().stream()
                         .filter(playerSkill -> playerSkill.getData() instanceof SkillShot)
                         .map(playerSkill -> playerSkill.getData().getKey())
                         .collect(Collectors.toList()), args);

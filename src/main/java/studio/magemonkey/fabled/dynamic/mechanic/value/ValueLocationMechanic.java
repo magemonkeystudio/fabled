@@ -66,7 +66,7 @@ public class ValueLocationMechanic extends MechanicComponent {
         CastData data = DynamicSkill.getCastData(caster);
         data.put(key, targets.get(0).getLocation());
         if (settings.getBool(SAVE, false))
-            Fabled.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
+            Fabled.getData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;
     }
 }

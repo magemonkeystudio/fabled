@@ -46,7 +46,7 @@ public class ManaCondition extends ConditionComponent {
         final String      type  = settings.getString(TYPE).toLowerCase();
         final double      min   = parseValues(caster, MIN, level, 0);
         final double      max   = parseValues(caster, MAX, level, 99);
-        final PlayerData  data  = Fabled.getPlayerData((Player) target);
+        final PlayerData  data  = Fabled.getData((Player) target);
         final PlayerSkill skill = getSkillData(caster);
         final double      mana  = data.getMana();
 

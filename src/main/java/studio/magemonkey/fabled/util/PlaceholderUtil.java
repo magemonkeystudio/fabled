@@ -58,7 +58,7 @@ public class PlaceholderUtil {
     }
 
     public static String replace(OfflinePlayer player, String identifier) {
-        PlayerData playerData = Fabled.getPlayerData(player);
+        PlayerData playerData = Fabled.getData(player);
 
         if (identifier.startsWith("group_")) {
             if (!Fabled.getClasses().isEmpty()) {
@@ -230,7 +230,7 @@ public class PlaceholderUtil {
             return "0";
         }
 
-        PlayerData data = Fabled.getPlayerData(player);
+        PlayerData data = Fabled.getData(player);
 
         if (data == null) {
             return "0";

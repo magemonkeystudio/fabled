@@ -89,7 +89,7 @@ public class ItemListener extends FabledListener {
     public void onDrop(PlayerDropItemEvent event) {
         if (Fabled.getSettings().isWorldEnabled(event.getPlayer().getWorld())) {
             Player     player     = event.getPlayer();
-            PlayerData playerData = Fabled.getPlayerData(player);
+            PlayerData playerData = Fabled.getData(player);
             playerData.getEquips().update(player);
             playerData.updatePlayerStat(player);
         }
@@ -104,7 +104,7 @@ public class ItemListener extends FabledListener {
     public void onBreak(PlayerItemBreakEvent event) {
         Player player = event.getPlayer();
         if (Fabled.getSettings().isWorldEnabled(player.getWorld())) {
-            PlayerData playerData = Fabled.getPlayerData(player);
+            PlayerData playerData = Fabled.getData(player);
             if (playerData.getEquips().updateHandHeldItem(player, null)) {
                 playerData.updatePlayerStat(player);
             }
@@ -116,7 +116,7 @@ public class ItemListener extends FabledListener {
      */
     public void onJoin(final Player player) {
         if (Fabled.getSettings().isWorldEnabled(player.getWorld()))
-            Fabled.getPlayerData(player).getEquips().update(player);
+            Fabled.getData(player).getEquips().update(player);
     }
 
     @EventHandler
@@ -144,7 +144,7 @@ public class ItemListener extends FabledListener {
             Fabled.schedule(new BukkitRunnable() {
                 @Override
                 public void run() {
-                    PlayerData playerData = Fabled.getPlayerData(player);
+                    PlayerData playerData = Fabled.getData(player);
                     if (playerData.getEquips().update(player)) {
                         playerData.updatePlayerStat(player);
                     }
@@ -163,14 +163,14 @@ public class ItemListener extends FabledListener {
     public void onWorld(PlayerChangedWorldEvent event) {
         if (!Fabled.getSettings().isWorldEnabled(event.getFrom())
                 && Fabled.getSettings().isWorldEnabled(event.getPlayer().getWorld()))
-            Fabled.getPlayerData(event.getPlayer()).getEquips().update(event.getPlayer());
+            Fabled.getData(event.getPlayer()).getEquips().update(event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onHeld(PlayerItemHeldEvent event) {
         Player player = event.getPlayer();
         if (Fabled.getSettings().isWorldEnabled(player.getWorld())) {
-            PlayerData playerData = Fabled.getPlayerData(player);
+            PlayerData playerData = Fabled.getData(player);
             if (playerData.getEquips().updateHandHeldItem(player, player.getInventory().getItem(event.getNewSlot()))) {
                 playerData.updatePlayerStat(player);
             }
@@ -181,7 +181,7 @@ public class ItemListener extends FabledListener {
     public void onClose(InventoryCloseEvent event) {
         Player player = (Player) event.getPlayer();
         if (Fabled.getSettings().isWorldEnabled(player.getWorld())) {
-            PlayerData playerData = Fabled.getPlayerData(player);
+            PlayerData playerData = Fabled.getData(player);
             if (playerData.getEquips().update(player)) {
                 playerData.updatePlayerStat(player);
             }
@@ -206,7 +206,7 @@ public class ItemListener extends FabledListener {
 //                && ARMOR_TYPES.contains(item.getType())) {
 //            int equippedSlot = getArmorSlot(item.getType());
 //
-//            PlayerData playerData = Fabled.getPlayerData(player);
+//            PlayerData playerData = Fabled.getData(player);
 //            playerData.getEquips().updateEquip(player, equippedSlot, item);
 //            playerData.updatePlayerStat(player);
 //        }
@@ -221,7 +221,7 @@ public class ItemListener extends FabledListener {
                 && item != null && ARMOR_TYPES.contains(item.getType())) {
             int slot = getArmorSlot(item.getType());
 
-            PlayerData playerData = Fabled.getPlayerData(player);
+            PlayerData playerData = Fabled.getData(player);
 
             PlayerEquips.EquipData data =
                     playerData.getEquips().getEquipData(item, PlayerEquips.EquipType.fromSlot(slot));
@@ -250,7 +250,7 @@ public class ItemListener extends FabledListener {
 
         if (event.getDamager() instanceof Player) {
             Player player = (Player) event.getDamager();
-            if (!Fabled.getPlayerData(player).getEquips().canHit()) {
+            if (!Fabled.getData(player).getEquips().canHit()) {
                 Fabled.getLanguage().sendMessage(ErrorNodes.CANNOT_USE, player, FilterType.COLOR);
                 event.setCancelled(true);
             }
@@ -258,7 +258,7 @@ public class ItemListener extends FabledListener {
         if (event.getEntity() instanceof Player && VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
             Player        player   = (Player) event.getEntity();
             final boolean blocking = event.getDamage(EntityDamageEvent.DamageModifier.BLOCKING) < 0;
-            if (blocking && !Fabled.getPlayerData(player).getEquips().canBlock()) {
+            if (blocking && !Fabled.getData(player).getEquips().canBlock()) {
                 Fabled.getLanguage().sendMessage(ErrorNodes.CANNOT_USE, event.getEntity(), FilterType.COLOR);
                 event.setDamage(EntityDamageEvent.DamageModifier.BLOCKING, 0);
             }
@@ -277,7 +277,7 @@ public class ItemListener extends FabledListener {
         }
 
         if (event.getEntity() instanceof Player) {
-            final PlayerEquips equips = Fabled.getPlayerData((Player) event.getEntity()).getEquips();
+            final PlayerEquips equips = Fabled.getData((Player) event.getEntity()).getEquips();
             if (isMainhand(event.getBow(), event.getEntity())) {
                 if (!equips.canHit()) {
                     Fabled.getLanguage().sendMessage(ErrorNodes.CANNOT_USE, event.getEntity(), FilterType.COLOR);
@@ -298,7 +298,7 @@ public class ItemListener extends FabledListener {
         ProjectileSource shooter = event.getEntity().getShooter();
         if (shooter instanceof Player) {
             Player             player = (Player) shooter;
-            final PlayerEquips equips = Fabled.getPlayerData(player).getEquips();
+            final PlayerEquips equips = Fabled.getData(player).getEquips();
             if (!equips.canHit()) {
                 Fabled.getLanguage().sendMessage(ErrorNodes.CANNOT_USE, player, FilterType.COLOR);
                 event.setCancelled(true);

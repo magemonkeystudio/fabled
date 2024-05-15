@@ -63,7 +63,7 @@ public class CmdSkill implements IFunction {
         // Only plays have skills to view
         else if (sender instanceof Player) {
             Player     p    = (Player) sender;
-            PlayerData data = Fabled.getPlayerData(p);
+            PlayerData data = Fabled.getData(p);
             if (!data.showSkills(p)) {
                 cmd.sendMessage(sender, NO_SKILLS, ChatColor.RED + "You have no skills to view");
             }

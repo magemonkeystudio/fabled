@@ -70,7 +70,7 @@ public class ValueMultiplyMechanic extends MechanicComponent {
             data.put(key, multiplier * data.getDouble(key));
         }
         if (settings.getBool(SAVE, false))
-            Fabled.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
+            Fabled.getData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;
     }
 }

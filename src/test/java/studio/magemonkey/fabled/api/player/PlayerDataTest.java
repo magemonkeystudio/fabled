@@ -25,7 +25,7 @@ public class PlayerDataTest extends MockedTest implements Listener {
         cancelEvent = null;
         modifier = 0;
         attacker = genPlayer("Travja");
-        playerData = Fabled.getPlayerData(attacker);
+        playerData = Fabled.getData(attacker);
         playerData.resetAll();
         playerData.giveAttribPoints(Integer.MAX_VALUE);
 

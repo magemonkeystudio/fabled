@@ -35,8 +35,8 @@ public class DefaultCombatProtection implements CombatProtection {
                              final LivingEntity defender,
                              EntityDamageEvent.DamageCause cause) {
         if (attacker instanceof Player && defender instanceof Player) {
-            PlayerClass attackerClass = Fabled.getPlayerData(((Player) attacker)).getMainClass();
-            PlayerClass defenderClass = Fabled.getPlayerData(((Player) defender)).getMainClass();
+            PlayerClass attackerClass = Fabled.getData(((Player) attacker)).getMainClass();
+            PlayerClass defenderClass = Fabled.getData(((Player) defender)).getMainClass();
             int         attackerLevel = attackerClass == null ? 0 : attackerClass.getLevel();
             int         defenderLevel = defenderClass == null ? 0 : defenderClass.getLevel();
             int         minLevel      = Fabled.getSettings().getPvpMinLevel();

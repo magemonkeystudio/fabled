@@ -144,7 +144,7 @@ public class TriggerHandler implements Listener {
         }
 
         if (user instanceof Player) {
-            final PlayerData  data  = Fabled.getPlayerData((Player) user);
+            final PlayerData  data  = Fabled.getData((Player) user);
             final PlayerSkill skill = data.getSkill(this.skill.getName());
             final boolean     cd    = component.getSettings().getBool("cooldown", false);
             final boolean     mana  = component.getSettings().getBool("mana", false);

@@ -309,7 +309,7 @@ public class Fabled extends SkillAPI {
      * @param player player to get the data for
      * @return the class data of the player
      */
-    public static PlayerData getPlayerData(OfflinePlayer player) {
+    public static PlayerData getData(OfflinePlayer player) {
         if (player == null) {
             return null;
         }

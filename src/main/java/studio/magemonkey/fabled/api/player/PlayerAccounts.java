@@ -45,7 +45,7 @@ import java.util.UUID;
  * Represents the collection of accounts owned by a single player.
  * Most of the time, this class won't be used by other plugins as
  * you can skip directly to a player's active data using the
- * Fabled.getPlayerData methods. This would be if you want
+ * Fabled.getData methods. This would be if you want
  * to extend functionality for handling the inactive accounts.
  */
 public class PlayerAccounts {

@@ -92,7 +92,7 @@ public class StatMechanic extends MechanicComponent {
         for (LivingEntity target : targets) {
             if (target instanceof Player) {
                 worked = true;
-                final PlayerData data = Fabled.getPlayerData((Player) target);
+                final PlayerData data = Fabled.getData((Player) target);
                 PlayerStatModifier modifier = new PlayerStatModifier("fabled.mechanic.stat_mechanic", amount,
                         Operation.valueOf(operation), false);
 

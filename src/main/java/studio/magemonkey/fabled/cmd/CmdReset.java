@@ -71,7 +71,7 @@ public class CmdReset implements IFunction {
                         ChatColor.GRAY + "Type " + ChatColor.GOLD + "/class reset confirm" + ChatColor.GRAY
                                 + " to continue");
             } else {
-                PlayerData data = Fabled.getPlayerData((Player) sender);
+                PlayerData data = Fabled.getData((Player) sender);
                 data.resetAll();
                 data.updatePlayerStat(((Player) sender).getPlayer());
                 cmd.sendMessage(sender, RESET, ChatColor.DARK_GREEN + "You have reset your active account data");

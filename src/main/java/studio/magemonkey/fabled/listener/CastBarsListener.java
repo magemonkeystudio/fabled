@@ -62,7 +62,7 @@ public class CastBarsListener extends FabledListener {
     }
 
     private static void forceCleanup(Player player) {
-        Fabled.getPlayerData(player).getCastBars().restore();
+        Fabled.getData(player).getCastBars().restore();
         GUITool.removeCastItems(player);
     }
 
@@ -85,7 +85,7 @@ public class CastBarsListener extends FabledListener {
     public void onDamaged(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
-            Fabled.getPlayerData(player).getCastBars().restore();
+            Fabled.getData(player).getCastBars().restore();
         }
     }
 
@@ -136,12 +136,12 @@ public class CastBarsListener extends FabledListener {
 
     @EventHandler
     public void onOpen(InventoryOpenEvent event) {
-        Fabled.getPlayerData((Player) event.getPlayer()).getCastBars().handleOpen();
+        Fabled.getData((Player) event.getPlayer()).getCastBars().handleOpen();
     }
 
     @EventHandler
     public void onClose(InventoryCloseEvent event) {
-        Fabled.getPlayerData((Player) event.getPlayer()).getCastBars().restore();
+        Fabled.getData((Player) event.getPlayer()).getCastBars().restore();
         init((Player) event.getPlayer());
     }
 
@@ -181,13 +181,13 @@ public class CastBarsListener extends FabledListener {
 
         // Cancelling te event would re-add the skill indicator to the inventory after event handling
         // That's why Entity#remove() is used instead
-        if (Fabled.getPlayerData(player).getCastBars().handleInteract(player)) {
+        if (Fabled.getData(player).getCastBars().handleInteract(player)) {
             event.getItemDrop().remove();
             dropped(player.getUniqueId());
         } else if (player.getInventory().getHeldItemSlot() == Fabled.getSettings().getCastSlot()) {
             event.getItemDrop().remove();
             dropped(player.getUniqueId());
-            Fabled.getPlayerData(player).getCastBars().showOrganizer(player);
+            Fabled.getData(player).getCastBars().showOrganizer(player);
         }
     }
 
@@ -206,7 +206,7 @@ public class CastBarsListener extends FabledListener {
         if (!Fabled.getSettings().isWorldEnabled(event.getPlayer().getWorld()))
             return;
 
-        PlayerCastBars bars = Fabled.getPlayerData(event.getPlayer()).getCastBars();
+        PlayerCastBars bars = Fabled.getData(event.getPlayer()).getCastBars();
 
         // Interaction while in a view
         if (bars.isHovering()) event.setCancelled(true);
@@ -217,7 +217,7 @@ public class CastBarsListener extends FabledListener {
                 if (this.playersDropping.remove(event.getPlayer().getUniqueId())) {
                     return;
                 }
-                Fabled.getPlayerData(event.getPlayer()).getCastBars().restore();
+                Fabled.getData(event.getPlayer()).getCastBars().restore();
                 bars.showHoverBar(event.getPlayer());
             } else if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)
                 bars.showInstantBar(event.getPlayer());
@@ -226,11 +226,11 @@ public class CastBarsListener extends FabledListener {
 
     @EventHandler
     public void onHeld(PlayerItemHeldEvent event) {
-        Fabled.getPlayerData(event.getPlayer()).getCastBars().handle(event);
+        Fabled.getData(event.getPlayer()).getCastBars().handle(event);
     }
 
     private void handleClear(final Player player) {
         player.getInventory().setItem(Fabled.getSettings().getCastSlot(), Fabled.getSettings().getCastItem());
-        Fabled.getPlayerData(player).setOnPreviewStop(null);
+        Fabled.getData(player).setOnPreviewStop(null);
     }
 }

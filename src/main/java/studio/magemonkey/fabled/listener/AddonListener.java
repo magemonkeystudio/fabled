@@ -42,8 +42,8 @@ public class AddonListener extends FabledListener {
 
         final LivingEntity damager = ListenerUtil.getDamager(event);
         if (event.getEntity() instanceof Player && damager instanceof Player) {
-            final PlayerData attackerData = Fabled.getPlayerData((Player) damager);
-            final PlayerData defenderData = Fabled.getPlayerData((Player) event.getEntity());
+            final PlayerData attackerData = Fabled.getData((Player) damager);
+            final PlayerData defenderData = Fabled.getData((Player) event.getEntity());
 
             for (final String group : Fabled.getGroups()) {
                 final boolean     friendly = Fabled.getSettings().getGroupSettings(group).isFriendly();

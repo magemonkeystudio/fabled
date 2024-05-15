@@ -83,7 +83,7 @@ public class CmdForceAttr implements IFunction, TabCompleter {
             cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name");
             return;
         }
-        PlayerData data = Fabled.getPlayerData(player);
+        PlayerData data = Fabled.getData(player);
 
         // Reset their attributes
         if (args.length == 1) {

@@ -46,7 +46,7 @@ public class ExperienceMechanic extends MechanicComponent {
         String      type            = settings.getString(TYPE, "flat");
         boolean     flat            = type.equalsIgnoreCase("flat");
         boolean     percent         = type.equalsIgnoreCase("percent");
-        PlayerClass playerClass     = Fabled.getPlayerData(player).getClass(group);
+        PlayerClass playerClass     = Fabled.getData(player).getClass(group);
         double      allNextLevelExp = playerClass.getData().getRequiredExp(playerClass.getLevel());
         double      amount          = 0;
         if (flat)

@@ -98,7 +98,7 @@ public abstract class InventoryTree extends SkillTree {
      * @param player player to show
      */
     public void show(Player player) {
-        player.openInventory(getInventory(Fabled.getPlayerData(player)));
+        player.openInventory(getInventory(Fabled.getData(player)));
     }
 
     /**

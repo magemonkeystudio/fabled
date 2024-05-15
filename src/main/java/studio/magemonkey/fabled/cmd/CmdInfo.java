@@ -86,7 +86,7 @@ public class CmdInfo implements IFunction, TabCompleter {
                 return;
             }
 
-            PlayerData data = Fabled.getPlayerData(target);
+            PlayerData data = Fabled.getData(target);
             cmd.sendMessage(sender,
                     TITLE,
                     ChatColor.DARK_GRAY + "--" + ChatColor.DARK_GREEN + " {player} " + ChatColor.DARK_GRAY

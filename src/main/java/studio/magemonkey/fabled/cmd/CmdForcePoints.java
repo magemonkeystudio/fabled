@@ -133,7 +133,7 @@ public class CmdForcePoints implements IFunction, TabCompleter {
             return;
         }
 
-        PlayerData data = Fabled.getPlayerData(target);
+        PlayerData data = Fabled.getData(target);
         if (data == null) {
             cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name");
             return;

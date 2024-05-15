@@ -229,7 +229,7 @@ public class MechanicListener extends FabledListener {
                 Player player = (Player) event.getEntity();
                 UUID   uuid   = UUID.fromString(event.getFlag().split(":")[1]);
 
-                PlayerData data = Fabled.getPlayerData(player);
+                PlayerData data = Fabled.getData(player);
                 data.removeStatModifier(uuid, false);
                 data.updateWalkSpeed(player);
             }

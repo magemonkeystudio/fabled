@@ -43,7 +43,7 @@ public class ClassCondition extends ConditionComponent {
         final FabledClass fabledClass = Fabled.getClass(settings.getString(CLASS));
         final boolean     exact       = settings.getBool(EXACT, false);
 
-        final PlayerData data = Fabled.getPlayerData((Player) target);
+        final PlayerData data = Fabled.getData((Player) target);
         return exact ? data.isExactClass(fabledClass) : data.isClass(fabledClass);
     }
 

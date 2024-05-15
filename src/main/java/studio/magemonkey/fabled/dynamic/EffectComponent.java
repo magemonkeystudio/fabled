@@ -158,7 +158,7 @@ public abstract class EffectComponent {
 
         // Apply global modifiers
         if (Fabled.getSettings().isAttributesEnabled() && caster instanceof Player) {
-            PlayerData data = Fabled.getPlayerData((Player) caster);
+            PlayerData data = Fabled.getData((Player) caster);
             value = data.scaleDynamic(this, key, value);
         }
 
@@ -253,7 +253,7 @@ public abstract class EffectComponent {
      */
     protected PlayerSkill getSkillData(LivingEntity caster) {
         if (caster instanceof Player) {
-            return Fabled.getPlayerData((Player) caster).getSkill(skill.getName());
+            return Fabled.getData((Player) caster).getSkill(skill.getName());
         } else {
             return null;
         }

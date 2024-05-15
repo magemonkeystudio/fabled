@@ -68,7 +68,7 @@ public class ValueSetMechanic extends MechanicComponent {
         CastData data  = DynamicSkill.getCastData(caster);
         data.put(key, value);
         if (settings.getBool(SAVE, false))
-            Fabled.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
+            Fabled.getData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;
     }
 }

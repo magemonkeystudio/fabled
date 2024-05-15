@@ -19,7 +19,7 @@ public class CastData {
         if (caster instanceof Player) {
             for (String attr : Fabled.getAttributeManager().getAttributes().keySet()) {
                 data.put("attr:" + attr.toLowerCase(), (PlayerDataConsumer) () -> {
-                    PlayerData playerData = Fabled.getPlayerData((Player) caster);
+                    PlayerData playerData = Fabled.getData((Player) caster);
                     int        stage      = playerData.getInvestedAttributeStage(attr);
                     return stage;
                 });

@@ -59,7 +59,7 @@ public class ManaTask extends RepeatThreadTask {
         Player[] players = VersionManager.getOnlinePlayers();
         Logger.log(LogType.MANA, 1, "Applying mana regen for " + players.length + " players");
         for (Player player : players) {
-            PlayerData data = Fabled.getPlayerData(player);
+            PlayerData data = Fabled.getData(player);
             data.regenMana();
         }
     }

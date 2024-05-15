@@ -92,7 +92,7 @@ public class CmdAP implements IFunction, TabCompleter {
             }
 
             // Give skill points
-            PlayerData data = Fabled.getPlayerData(target);
+            PlayerData data = Fabled.getData(target);
             data.giveAttribPoints(amount);
 
             // Messages

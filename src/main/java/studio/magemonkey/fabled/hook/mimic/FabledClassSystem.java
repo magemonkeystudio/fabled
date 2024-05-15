@@ -34,6 +34,6 @@ public class FabledClassSystem extends BukkitClassSystem {
     }
 
     private PlayerData getPlayerData() {
-        return Fabled.getPlayerData(getPlayer());
+        return Fabled.getData(getPlayer());
     }
 }

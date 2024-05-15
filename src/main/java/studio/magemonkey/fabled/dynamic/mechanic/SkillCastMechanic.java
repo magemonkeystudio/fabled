@@ -40,7 +40,7 @@ public class SkillCastMechanic extends MechanicComponent {
         targets.forEach(target -> {
             if (!(target instanceof Player)) return;
             Player     player = (Player) target;
-            PlayerData data   = Fabled.getPlayerData(player);
+            PlayerData data   = Fabled.getData(player);
 
             //  Split skills input into skill name and level
             List<Map.Entry<String, Integer>> handle = new ArrayList<>();
@@ -79,7 +79,7 @@ public class SkillCastMechanic extends MechanicComponent {
     }
 
     private static void cast(Player player, String sk, int lv, boolean force) {
-        PlayerData data = Fabled.getPlayerData(player);
+        PlayerData data = Fabled.getData(player);
         if (lv <= 0) lv = (data.hasSkill(sk) && data.getSkill(sk).getLevel() > 0) ? data.getSkill(sk).getLevel() : 1;
         Skill skill = Fabled.getSkill(sk);
         ((SkillShot) skill).cast(player, lv, force);

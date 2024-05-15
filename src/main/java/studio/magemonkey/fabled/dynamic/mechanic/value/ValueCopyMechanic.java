@@ -42,7 +42,7 @@ public class ValueCopyMechanic extends MechanicComponent {
         }
 
         if (settings.getBool(SAVE, false))
-            Fabled.getPlayerData((OfflinePlayer) caster)
+            Fabled.getData((OfflinePlayer) caster)
                     .setPersistentData(key, DynamicSkill.getCastData(caster).getRaw(key));
         return true;
     }

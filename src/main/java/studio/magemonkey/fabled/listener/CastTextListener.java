@@ -63,7 +63,7 @@ public class CastTextListener extends FabledListener {
         if (player.getOpenInventory().getTopInventory() != null && player.getOpenInventory()
                 .getTopInventory()
                 .getHolder() instanceof SkillHandler) player.closeInventory();
-        Fabled.getPlayerData(player).getTextCastingData().validate();
+        Fabled.getData(player).getTextCastingData().validate();
     }
 
     public void restore(Player player) {
@@ -97,7 +97,7 @@ public class CastTextListener extends FabledListener {
     }
 
     private void refresh(Player player) {
-        PlayerData            playerData = Fabled.getPlayerData(player);
+        PlayerData            playerData = Fabled.getData(player);
         PlayerTextCastingData layout     = playerData.getTextCastingData();
         PlayerInventory       inventory  = player.getInventory();
         ItemStack             unassigned = GUITool.markCastItem(Fabled.getSettings().getUnassigned());
@@ -125,14 +125,14 @@ public class CastTextListener extends FabledListener {
             if (clickedInventory == topInventory && event.getClick() == ClickType.NUMBER_KEY) {
                 Skill skill = ((SkillHandler) topInventory.getHolder()).get(event.getSlot());
                 if (skill != null) {
-                    Fabled.getPlayerData(player)
+                    Fabled.getData(player)
                             .getTextCastingData()
                             .assign(skill.getName(), event.getHotbarButton());
                     refresh(player);
                 }
             } else if (clickedInventory == view.getBottomInventory()
                     && event.getSlotType() == InventoryType.SlotType.QUICKBAR) {
-                Fabled.getPlayerData(player).getTextCastingData().assign(null, event.getSlot());
+                Fabled.getData(player).getTextCastingData().assign(null, event.getSlot());
                 refresh(player);
             }
         }
@@ -221,7 +221,7 @@ public class CastTextListener extends FabledListener {
     public void onHandSwap(PlayerSwapHandItemsEvent event) {
         event.setCancelled(true);
         Player                player     = event.getPlayer();
-        PlayerData            playerData = Fabled.getPlayerData(player);
+        PlayerData            playerData = Fabled.getData(player);
         PlayerTextCastingData castData   = playerData.getTextCastingData();
         if (castData.isCasting()) {
             castData.setCasting(false);
@@ -236,7 +236,7 @@ public class CastTextListener extends FabledListener {
 
     @EventHandler
     public void onHeld(PlayerItemHeldEvent event) {
-        PlayerTextCastingData castData = Fabled.getPlayerData(event.getPlayer()).getTextCastingData();
+        PlayerTextCastingData castData = Fabled.getData(event.getPlayer()).getTextCastingData();
         if (!castData.isCasting()) return;
         event.setCancelled(true);
         castData.cast(event.getNewSlot());

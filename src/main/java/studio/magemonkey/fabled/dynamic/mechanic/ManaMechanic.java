@@ -69,7 +69,7 @@ public class ManaMechanic extends MechanicComponent {
 
             worked = true;
 
-            PlayerData data = Fabled.getPlayerData((Player) target);
+            PlayerData data = Fabled.getData((Player) target);
             double     amount;
             if (percent) {
                 amount = data.getMaxMana() * value / 100;

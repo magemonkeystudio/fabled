@@ -67,9 +67,9 @@ public class ValueAttributeMechanic extends MechanicComponent {
         String   key  = settings.getString(KEY);
         String   attr = settings.getString(ATTR);
         CastData data = DynamicSkill.getCastData(caster);
-        data.put(key, (double) Fabled.getPlayerData((Player) targets.get(0)).getAttribute(attr));
+        data.put(key, (double) Fabled.getData((Player) targets.get(0)).getAttribute(attr));
         if (settings.getBool(SAVE, false))
-            Fabled.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
+            Fabled.getData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;
     }
 }

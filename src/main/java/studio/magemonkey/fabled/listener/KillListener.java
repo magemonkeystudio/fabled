@@ -79,7 +79,7 @@ public class KillListener extends FabledListener {
             if (killer.getGameMode() == GameMode.CREATIVE && Fabled.getSettings().isBlockCreative())
                 return;
 
-            PlayerData player = Fabled.getPlayerData(killer);
+            PlayerData player = Fabled.getData(killer);
 
             // Give experience based on orbs when enabled
             if (Fabled.getSettings().isUseOrbs())

@@ -44,7 +44,7 @@ public class CmdChangeClass implements IFunction, TabCompleter {
     public static void unload(Player player) {
         if (CitizensHook.isNPC(player)) return;
 
-        PlayerData data = Fabled.getPlayerData(player);
+        PlayerData data = Fabled.getData(player);
         if (Fabled.getSettings().isWorldEnabled(player.getWorld())) {
             data.record(player);
             data.stopPassives(player);
@@ -87,7 +87,7 @@ public class CmdChangeClass implements IFunction, TabCompleter {
                 }
             }
 
-            final PlayerData  data  = Fabled.getPlayerData(player);
+            final PlayerData  data  = Fabled.getData(player);
             final PlayerClass clazz = data.getClass(groupName);
             if (clazz == null) {
                 cmd.sendMessage(sender, INVALID_GROUP, "{player} does not have a {class}",
@@ -119,7 +119,7 @@ public class CmdChangeClass implements IFunction, TabCompleter {
                 Fabled.getPlayerAccounts(player).getActiveData().init((Player) player);
             }
             if (bar)
-                Fabled.getPlayerData(player).getSkillBar().toggleEnabled();
+                Fabled.getData(player).getSkillBar().toggleEnabled();
 
 
             cmd.sendMessage(sender, SUCCESS, "You have changed {player} from a {name} to a {class}",

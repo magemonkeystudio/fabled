@@ -67,7 +67,7 @@ public class CooldownMechanic extends MechanicComponent {
         String type  = settings.getString(TYPE, "all").toLowerCase();
         double value = parseValues(caster, VALUE, level, 0);
 
-        PlayerData playerData = Fabled.getPlayerData((Player) caster);
+        PlayerData playerData = Fabled.getData((Player) caster);
 
         PlayerSkill skillData = playerData.getSkill(skill);
         if (skillData == null && !skill.equals("all"))

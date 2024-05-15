@@ -74,7 +74,7 @@ public class ComboListener extends FabledListener {
         }
 
         // Get the history
-        PlayerCombos combo = Fabled.getPlayerData(event.getPlayer()).getComboData();
+        PlayerCombos combo = Fabled.getData(event.getPlayer()).getComboData();
 
         switch (event.getKey()) {
             case Q -> combo.applyClick(Click.Q);
@@ -117,7 +117,7 @@ public class ComboListener extends FabledListener {
     @EventHandler
     public void onShiftClick(PlayerToggleSneakEvent event) {
         if (event.isSneaking()) {
-            Fabled.getPlayerData(event.getPlayer()).getComboData().applyClick(Click.SHIFT);
+            Fabled.getData(event.getPlayer()).getComboData().applyClick(Click.SHIFT);
         }
     }
 
@@ -126,7 +126,7 @@ public class ComboListener extends FabledListener {
         if (event.getTo().getY() > event.getFrom().getY()
                 && event.getPlayer().getNoDamageTicks() == 0
                 && onGround.contains(event.getPlayer().getUniqueId())) {
-            Fabled.getPlayerData(event.getPlayer()).getComboData().applyClick(Click.SPACE);
+            Fabled.getData(event.getPlayer()).getComboData().applyClick(Click.SPACE);
         }
         if (((Entity) event.getPlayer()).isOnGround()) {
             onGround.add(event.getPlayer().getUniqueId());
@@ -137,7 +137,7 @@ public class ComboListener extends FabledListener {
 
     @EventHandler(ignoreCancelled = true)
     public void onFClick(final PlayerSwapHandItemsEvent event) {
-        Fabled.getPlayerData(event.getPlayer()).getComboData().applyClick(Click.F);
+        Fabled.getData(event.getPlayer()).getComboData().applyClick(Click.F);
 
         if (Fabled.getComboManager().isClickEnabled(Click.F.getId())) {
             event.setCancelled(true);

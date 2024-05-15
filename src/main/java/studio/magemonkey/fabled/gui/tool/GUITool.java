@@ -327,7 +327,7 @@ public class GUITool implements ToolMenu {
 
     public void open() {
         if (!inUse) {
-            PlayerData data = Fabled.getPlayerData(player);
+            PlayerData data = Fabled.getData(player);
             if (data.hasClass() && Fabled.getSettings().isSkillBarEnabled())
                 data.getSkillBar().clear(player);
 

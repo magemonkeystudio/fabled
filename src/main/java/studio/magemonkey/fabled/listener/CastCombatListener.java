@@ -85,7 +85,7 @@ public class CastCombatListener extends FabledListener {
     private void init(Player player) {
         if (!Fabled.getSettings().isWorldEnabled(player.getWorld())) return;
 
-        PlayerData data = Fabled.getPlayerData(player);
+        PlayerData data = Fabled.getData(player);
         if (data.getExtraData().has(ITEM_SAVE_KEY)) {
             ItemStack[] items;
             if (data.getExtraData().get(ITEM_SAVE_KEY) instanceof String) {
@@ -133,7 +133,7 @@ public class CastCombatListener extends FabledListener {
 
     private void cleanup(Player player) {
         ignored.remove(player.getUniqueId());
-        PlayerData     data = Fabled.getPlayerData(player);
+        PlayerData     data = Fabled.getData(player);
         PlayerSkillBar bar  = data.getSkillBar();
         if (bar.isSetup()) toggle(player);
 
@@ -149,7 +149,7 @@ public class CastCombatListener extends FabledListener {
         if (items == null) items = new ItemStack[9];
 
         ItemStack[] temp = new ItemStack[9];
-        PlayerData  data = Fabled.getPlayerData(player);
+        PlayerData  data = Fabled.getData(player);
         for (int i = 0; i < items.length; i++) {
             if (i == slot || (data.getSkillBar().isSetup() && !data.getSkillBar().isWeaponSlot(i))) continue;
 
@@ -225,7 +225,7 @@ public class CastCombatListener extends FabledListener {
     @EventHandler
     public void onDowngrade(final PlayerSkillDowngradeEvent event) {
         if (event.getPlayerData().getSkillBar().isSetup()) {
-            Fabled.schedule(() -> Fabled.getPlayerData(event.getPlayerData().getPlayer())
+            Fabled.schedule(() -> Fabled.getData(event.getPlayerData().getPlayer())
                     .getSkillBar()
                     .update(event.getPlayerData().getPlayer()), 1);
         }
@@ -241,7 +241,7 @@ public class CastCombatListener extends FabledListener {
         if (event.getAction() != InventoryAction.HOTBAR_MOVE_AND_READD || !(event.getInventory()
                 .getHolder() instanceof SkillHandler)) return;
 
-        final PlayerData data = Fabled.getPlayerData((Player) event.getWhoClicked());
+        final PlayerData data = Fabled.getData((Player) event.getWhoClicked());
         if (!data.getSkillBar().isSetup() || data.getSkillBar().isWeaponSlot(event.getHotbarButton())) return;
 
         final SkillHandler handler = (SkillHandler) event.getInventory().getHolder();
@@ -267,7 +267,7 @@ public class CastCombatListener extends FabledListener {
         // This is important because if other plugins are using the death event, they may
         // be modifying drops, or doing something with the items the player has in their inventory
         Player     player = event.getEntity();
-        PlayerData data   = Fabled.getPlayerData(player);
+        PlayerData data   = Fabled.getData(player);
         if (data.getSkillBar().isSetup()) {
             player.setMetadata("skill-bar-setup", new FixedMetadataValue(Fabled.inst(), true));
             for (int i = 0; i < 9; i++) {
@@ -302,7 +302,7 @@ public class CastCombatListener extends FabledListener {
         if (!wasSetup) return;
 
         player.removeMetadata("skill-bar-setup", Fabled.inst());
-        PlayerData data = Fabled.getPlayerData(player);
+        PlayerData data = Fabled.getData(player);
         player.getInventory().setItem(slot, Fabled.getSettings().getCastItem());
         data.getSkillBar().setup(player);
     }
@@ -337,7 +337,7 @@ public class CastCombatListener extends FabledListener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onToggle(InventoryClickEvent event) {
         // Must click on an active skill bar
-        PlayerData           data     = Fabled.getPlayerData((Player) event.getWhoClicked());
+        PlayerData           data     = Fabled.getData((Player) event.getWhoClicked());
         final PlayerSkillBar skillBar = data.getSkillBar();
         if (!skillBar.isSetup()) return;
 
@@ -371,7 +371,7 @@ public class CastCombatListener extends FabledListener {
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChangeWorldPre(PlayerChangedWorldEvent event) {
-        PlayerData data       = Fabled.getPlayerData(event.getPlayer());
+        PlayerData data       = Fabled.getData(event.getPlayer());
         boolean    enabled    = Fabled.getSettings().isWorldEnabled(event.getPlayer().getWorld());
         boolean    wasEnabled = Fabled.getSettings().isWorldEnabled(event.getFrom());
         if (data.hasClass() && data.getSkillBar().isSetup() && enabled) ignored.add(event.getPlayer().getUniqueId());
@@ -409,7 +409,7 @@ public class CastCombatListener extends FabledListener {
         }
 
         // Must be a skill slot when the bar is set up
-        PlayerData     data = Fabled.getPlayerData(event.getPlayer());
+        PlayerData     data = Fabled.getData(event.getPlayer());
         PlayerSkillBar bar  = data.getSkillBar();
         if (!bar.isWeaponSlot(event.getNewSlot()) && bar.isSetup()) {
             event.setCancelled(true);
@@ -426,13 +426,13 @@ public class CastCombatListener extends FabledListener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onChangeMode(PlayerGameModeChangeEvent event) {
         // Clear on entering creative mode
-        final PlayerData data = Fabled.getPlayerData(event.getPlayer());
+        final PlayerData data = Fabled.getData(event.getPlayer());
         if (event.getNewGameMode() == GameMode.CREATIVE && data.getSkillBar().isSetup()) toggle(data.getPlayer());
     }
 
     private void handleClear(final Player player) {
         backup.put(player.getUniqueId(), new ItemStack[9]);
-        PlayerSkillBar skillBar = Fabled.getPlayerData(player).getSkillBar();
+        PlayerSkillBar skillBar = Fabled.getData(player).getSkillBar();
         if (skillBar.isSetup()) skillBar.update(player);
         player.getInventory().setItem(slot, Fabled.getSettings().getCastItem());
     }

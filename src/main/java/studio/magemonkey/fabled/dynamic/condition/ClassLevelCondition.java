@@ -55,7 +55,7 @@ public class ClassLevelCondition extends ConditionComponent {
     boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
         if (!(target instanceof Player)) return false;
 
-        final PlayerClass playerClass = Fabled.getPlayerData((Player) target).getMainClass();
+        final PlayerClass playerClass = Fabled.getData((Player) target).getMainClass();
         return playerClass != null && playerClass.getLevel() >= min && playerClass.getLevel() <= max;
     }
 }

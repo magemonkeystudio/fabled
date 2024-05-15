@@ -175,10 +175,10 @@ public class SkillListMenu extends MapMenu {
      */
     @Override
     public void setup(Player player) {
-        MapScheme scheme = MapScheme.get(api, Fabled.getPlayerData(player).getScheme());
+        MapScheme scheme = MapScheme.get(api, Fabled.getData(player).getScheme());
 
         MapScene   scene      = getScene(player);
-        PlayerData playerData = Fabled.getPlayerData(player);
+        PlayerData playerData = Fabled.getData(player);
         ArrayList<PlayerSkill> skills     = new ArrayList<PlayerSkill>();
         for (PlayerSkill skill : playerData.getSkills()) {
             if (skill.getPlayerClass().getData().getSkillTree().canShow(player, skill.getData())) {

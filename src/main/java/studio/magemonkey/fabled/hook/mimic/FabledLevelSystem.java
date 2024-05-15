@@ -78,6 +78,6 @@ public class FabledLevelSystem extends BukkitLevelSystem {
     }
 
     private @Nullable PlayerClass getPlayerClass() {
-        return Fabled.getPlayerData(getPlayer()).getMainClass();
+        return Fabled.getData(getPlayer()).getMainClass();
     }
 }

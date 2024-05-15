@@ -60,7 +60,7 @@ public class CmdAttribute implements IFunction {
         // Only plays have skills to view
         else if (sender instanceof Player) {
             Player     p    = (Player) sender;
-            PlayerData data = Fabled.getPlayerData(p);
+            PlayerData data = Fabled.getData(p);
             data.openAttributeMenu();
         }
 

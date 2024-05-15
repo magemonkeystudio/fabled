@@ -95,7 +95,7 @@ public class MainListener extends FabledListener {
             skipSaving = true;
         }
 
-        PlayerData data = Fabled.getPlayerData(player);
+        PlayerData data = Fabled.getData(player);
         if (Fabled.getSettings().isWorldEnabled(player.getWorld())) {
             data.setOnPreviewStop(null);
             data.record(player);
@@ -119,7 +119,7 @@ public class MainListener extends FabledListener {
     }
 
     public static void init(final Player player) {
-        final PlayerData data = Fabled.getPlayerData(player);
+        final PlayerData data = Fabled.getData(player);
         data.init(player);
         GUITool.removeCastItems(player);
         JOIN_HANDLERS.forEach(handler -> handler.accept(player));
@@ -204,7 +204,7 @@ public class MainListener extends FabledListener {
 
         if (CitizensHook.isNPC(event.getEntity())) return;
 
-        PlayerData data = Fabled.getPlayerData(event.getEntity());
+        PlayerData data = Fabled.getData(event.getEntity());
         if (data.hasClass() && Fabled.getSettings().isWorldEnabled(event.getEntity().getWorld())) {
             data.stopPassives(event.getEntity());
             if (!Fabled.getSettings().shouldIgnoreExpLoss(event.getEntity().getWorld())) {
@@ -248,7 +248,7 @@ public class MainListener extends FabledListener {
         Player player = event.getPlayer();
         if (Fabled.getSettings().isUseOrbs() && player != null && Fabled.getSettings()
                 .isWorldEnabled(player.getWorld()))
-            Fabled.getPlayerData(player).giveExp(event.getExpToDrop(), ExpSource.BLOCK_BREAK);
+            Fabled.getData(player).giveExp(event.getExpToDrop(), ExpSource.BLOCK_BREAK);
     }
 
     /**
@@ -261,7 +261,7 @@ public class MainListener extends FabledListener {
         Player player = event.getPlayer();
         if (Fabled.getSettings().isUseOrbs() && player != null && Fabled.getSettings()
                 .isWorldEnabled(player.getWorld()))
-            Fabled.getPlayerData(player).giveExp(event.getExpToDrop(), ExpSource.SMELT);
+            Fabled.getData(player).giveExp(event.getExpToDrop(), ExpSource.SMELT);
     }
 
     /**
@@ -280,7 +280,7 @@ public class MainListener extends FabledListener {
             return;
 
         if (Fabled.getSettings().isUseOrbs())
-            Fabled.getPlayerData(player).giveExp(event.getExperience(), ExpSource.EXP_BOTTLE);
+            Fabled.getData(player).giveExp(event.getExperience(), ExpSource.EXP_BOTTLE);
     }
 
     /**
@@ -321,7 +321,7 @@ public class MainListener extends FabledListener {
         if (event.getPlayer().hasMetadata("NPC"))
             return;
 
-        PlayerData data = Fabled.getPlayerData(event.getPlayer());
+        PlayerData data = Fabled.getData(event.getPlayer());
         if (data.hasClass() && Fabled.getSettings().isWorldEnabled(event.getPlayer().getWorld())) {
             data.startPassives(event.getPlayer());
             data.updateScoreboard();
@@ -461,7 +461,7 @@ public class MainListener extends FabledListener {
         boolean newEnabled = Fabled.getSettings().isWorldEnabled(event.getPlayer().getWorld());
         if (!oldEnabled || newEnabled) return;
 
-        PlayerData data = Fabled.getPlayerData(event.getPlayer());
+        PlayerData data = Fabled.getData(event.getPlayer());
         data.clearAllModifiers();
         data.stopPassives(event.getPlayer());
         ClassBoardManager.clear(event.getPlayer());
@@ -489,7 +489,7 @@ public class MainListener extends FabledListener {
         boolean newEnabled = Fabled.getSettings().isWorldEnabled(player.getWorld());
 
         if (newEnabled) {
-            if (oldEnabled) Fabled.getPlayerData(player)
+            if (oldEnabled) Fabled.getData(player)
                     .updateHealth(player); // Fixes some hybrid servers resetting max health to 20 after world change
             else init(player);
         }
@@ -517,7 +517,7 @@ public class MainListener extends FabledListener {
     private void handleClear(final Player player) {
         if (player != null) {
             Fabled.schedule(() -> {
-                final PlayerData data = Fabled.getPlayerData(player);
+                final PlayerData data = Fabled.getData(player);
                 data.getEquips().update(player);
 
                 CLEAR_HANDLERS.forEach(handler -> handler.accept(player));

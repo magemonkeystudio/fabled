@@ -60,7 +60,7 @@ public class ValueManaMechanic extends MechanicComponent {
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (!(targets.get(0) instanceof Player)) return false;
 
-        final PlayerData player = Fabled.getPlayerData((Player) targets.get(0));
+        final PlayerData player = Fabled.getData((Player) targets.get(0));
         final String     key    = settings.getString(KEY);
         final String     type   = settings.getString(TYPE, "current").toLowerCase();
         final CastData   data   = DynamicSkill.getCastData(caster);
@@ -81,7 +81,7 @@ public class ValueManaMechanic extends MechanicComponent {
         }
 
         if (settings.getBool(SAVE, false))
-            Fabled.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
+            Fabled.getData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;
     }
 }

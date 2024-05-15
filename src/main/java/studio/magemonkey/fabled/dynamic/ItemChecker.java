@@ -225,7 +225,7 @@ public class ItemChecker {
                 try {
                     double base = NumberParser.parseDouble(value);
                     DynamicSkill.getCastData(caster).put(key, base * multiplier);
-                    if (save) Fabled.getPlayerData((OfflinePlayer) caster)
+                    if (save) Fabled.getData((OfflinePlayer) caster)
                             .setPersistentData(key, DynamicSkill.getCastData(caster).getRaw(key));
                     break;
                 } catch (Exception ex) {

@@ -105,7 +105,7 @@ public class GUITask extends RepeatThreadTask {
             if (!Fabled.getSettings().isWorldEnabled(player.getWorld())) continue;
             if (!Fabled.hasPlayerData(player)) continue;
 
-            PlayerData data = Fabled.getPlayerData(player);
+            PlayerData data = Fabled.getData(player);
 
             // Health scale
             if (forceScaling) {

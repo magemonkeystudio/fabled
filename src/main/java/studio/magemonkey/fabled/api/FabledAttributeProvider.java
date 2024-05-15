@@ -16,7 +16,7 @@ public class FabledAttributeProvider implements AttributeProvider {
         if (!(entity instanceof Player)) return value;
 
         Player     player = (Player) entity;
-        PlayerData data   = Fabled.getPlayerData(player);
+        PlayerData data   = Fabled.getData(player);
         if (data == null) return value;
 
         return data.scaleStat(name, value);

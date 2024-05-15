@@ -53,7 +53,7 @@ public class CooldownTask extends RepeatThreadTask {
         for (Player player : VersionManager.getOnlinePlayers()) {
             if (!Fabled.hasPlayerData(player)) continue;
 
-            PlayerData data = Fabled.getPlayerData(player);
+            PlayerData data = Fabled.getData(player);
             if (data.hasClass()) data.getSkillBar().updateCooldowns();
         }
     }

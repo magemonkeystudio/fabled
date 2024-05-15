@@ -91,7 +91,7 @@ import java.util.stream.Collectors;
  * and the skills in each of those classes. You should not instantiate this class
  * yourself and instead get it from the Fabled static methods.
  * <p>
- * In order to get a player's data, use "Fabled.getPlayerData(...)". Do NOT
+ * In order to get a player's data, use "Fabled.getData(...)". Do NOT
  * try to instantiate your own PlayerData object.
  */
 @Getter

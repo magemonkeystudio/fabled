@@ -72,7 +72,7 @@ public class ValueAddMechanic extends MechanicComponent {
             data.put(key, amount + data.getDouble(key));
         }
         if (settings.getBool(SAVE, false))
-            Fabled.getPlayerData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
+            Fabled.getData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;
     }
 }
