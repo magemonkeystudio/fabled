@@ -14,6 +14,7 @@ import type { MultiAttributeYamlData, MultiClassYamlData, MultiSkillYamlData } f
 import YAML                                                                    from 'yaml';
 import FabledAttribute                                                         from '$api/fabled-attribute';
 import { Tab }                                                                 from '$api/tab';
+import { parseYaml }                                                           from '$api/yaml';
 
 export const ssr = false;
 
@@ -67,14 +68,14 @@ export async function load({ params }) {
 				if (data instanceof FabledAttribute) {
 					const text = localStorage.getItem('attribs') || '';
 					if (text.split('\n').length > 2 || text.charAt(0) == '{') { // New format
-						const yamlData = <MultiAttributeYamlData>YAML.parse(text);
+						const yamlData = <MultiAttributeYamlData>parseYaml(text);
 						if (yamlData && Object.keys(yamlData).length > 0) {
 							data.load(yamlData[data.name]);
 						}
 					}
 				} else {
 					classOrSkill   = true;
-					const yamlData = <MultiSkillYamlData | MultiClassYamlData>YAML.parse(localStorage.getItem(`sapi.${isSkill ? 'skill' : 'class'}.${data.name}`) || '');
+					const yamlData = <MultiSkillYamlData | MultiClassYamlData>parseYaml(localStorage.getItem(`sapi.${isSkill ? 'skill' : 'class'}.${data.name}`) || '');
 
 					if (yamlData && Object.keys(yamlData).length > 0) {
 						data.load(Object.values(yamlData)[0]);
