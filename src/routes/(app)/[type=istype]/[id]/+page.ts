@@ -1,12 +1,13 @@
-import { active, isShowClasses }   from '../../../../data/store';
+import { active, shownTab }        from '../../../../data/store';
 import { get }                     from 'svelte/store';
 import { redirect }                from '@sveltejs/kit';
 import { skills }                  from '../../../../data/skill-store';
-import type FabledClass            from '$api/fabled-class';
 import type FabledSkill            from '$api/fabled-skill';
-import YAML                        from 'yaml';
 import type { MultiSkillYamlData } from '$api/types';
 import { socketService }           from '$api/socket/socket-connector';
+import { base }                    from '$app/paths';
+import { parseYaml }               from '$api/yaml';
+import { Tab }                     from '$api/tab';
 
 export const ssr = false;
 
@@ -15,11 +16,9 @@ export const ssr = false;
 export async function load({ params }) {
 	const name    = params.id;
 	const isSkill = params.type === 'skill';
-	let data: FabledClass | FabledSkill | undefined;
-	let fallback: FabledClass | FabledSkill | undefined;
-	if (!isSkill) {
-		redirect(302, `/${params.type}/${params.id}/edit`);
-	} else if (isSkill) {
+	let data: FabledSkill | undefined;
+	let fallback: FabledSkill | undefined;
+	if (isSkill) {
 		for (const c of get(skills)) {
 			if (!fallback) fallback = c;
 
@@ -28,33 +27,28 @@ export async function load({ params }) {
 				break;
 			}
 		}
-	}
 
-	if (data) {
-		if (!data.loaded) {
-			let yamlData: MultiSkillYamlData;
-			if (data.location === 'local') {
-				yamlData = <MultiSkillYamlData>YAML.parse(localStorage.getItem(`sapi.skill.${data.name}`) || '');
-			} else {
-				const yaml: string = await socketService.getSkillYaml(data.name);
+		if (data) {
+			if (!data.loaded) {
+				let yamlData: MultiSkillYamlData;
+				if (data.location === 'local') {
+					yamlData = <MultiSkillYamlData>parseYaml(localStorage.getItem(`sapi.skill.${data.name}`) || '');
+				} else {
+					const yaml: string = await socketService.getSkillYaml(data.name);
 
-				yamlData = <MultiSkillYamlData>YAML.parse(yaml);
+					yamlData = <MultiSkillYamlData>parseYaml(yaml);
+				}
+
+				if (yamlData && Object.keys(yamlData).length > 0) {
+					await (<FabledSkill>data).load(Object.values(yamlData)[0]);
+				}
+				(<FabledSkill>data).postLoad();
 			}
 
-			if (yamlData && Object.keys(yamlData).length > 0) {
-				(<FabledSkill>data).load(Object.values(yamlData)[0]);
-			}
-			(<FabledSkill>data).postLoad();
-		}
-
-		active.set(data);
-		isShowClasses.set(!isSkill);
-		return { data };
-	} else {
-		if (fallback) {
-			redirect(302, `/${params.type}/${fallback.name}`);
-		} else {
-			redirect(302, '/');
+			active.set(data);
+			shownTab.set(Tab.SKILLS);
+			return { data };
 		}
 	}
+	redirect(302, `${base}/${params.type}/${params.id}/edit`);
 }

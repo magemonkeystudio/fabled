@@ -1,15 +1,21 @@
-import type FabledClass          from '$api/fabled-class';
-import type FabledSkill          from '$api/fabled-skill';
-import { active, isShowClasses } from '../../../../../data/store';
-import { get }                                         from 'svelte/store';
-import { redirect }                                    from '@sveltejs/kit';
-import { classes }                                     from '../../../../../data/class-store';
-import { skills }          from '../../../../../data/skill-store';
-import { FabledAttribute } from '$api/fabled-attribute';
-import { attributes }      from '../../../../../data/attribute-store';
-import type { MultiClassYamlData, MultiSkillYamlData } from '$api/types';
-import YAML                                            from 'yaml';
 import { socketService }                               from '$api/socket/socket-connector';
+import type FabledClass                                                        from '$api/fabled-class';
+import type FabledSkill                                                        from '$api/fabled-skill';
+import { active, shownTab }                                                    from '../../../../../data/store';
+import { get }                                                                 from 'svelte/store';
+import { redirect }                                                            from '@sveltejs/kit';
+import { classes }                                                             from '../../../../../data/class-store';
+import { skills }                                                              from '../../../../../data/skill-store';
+import { Attribute }                                                           from '$api/stat';
+import {
+	attributes,
+	getAttributeNames
+}                                                                              from '../../../../../data/attribute-store';
+import type { MultiAttributeYamlData, MultiClassYamlData, MultiSkillYamlData } from '$api/types';
+import YAML                                                                    from 'yaml';
+import FabledAttribute                                                         from '$api/fabled-attribute';
+import { Tab }                                                                 from '$api/tab';
+import { parseYaml }                                                           from '$api/yaml';
 
 export const ssr = false;
 
@@ -18,52 +24,95 @@ export const ssr = false;
 export async function load({ params }) {
 	const name    = params.id;
 	const isSkill = params.type === 'skill';
-	let data: FabledClass | FabledSkill | undefined;
-	let fallback: FabledClass | FabledSkill | undefined;
-	if (!isSkill) {
-		for (const c of get(classes)) {
-			if (!fallback) fallback = c;
 
-			if (c.name == name) {
-				data = c;
-				break;
+	let data: FabledClass | FabledSkill | FabledAttribute | undefined;
+	let fallback: FabledClass | FabledSkill | FabledAttribute | undefined;
+	switch (params.type) {
+		case 'skill': {
+			for (const c of get(skills)) {
+				if (!fallback) fallback = c;
+
+				if (c.name == name) {
+					data = c;
+					break;
+				}
 			}
+			break;
 		}
-	} else if (isSkill) {
-		for (const c of get(skills)) {
-			if (!fallback) fallback = c;
+		case 'attribute': {
+			for (const c of get(attributes)) {
+				if (!fallback) fallback = c;
 
-			if (c.name == name) {
-				data = c;
-				break;
+				if (c.name == name) {
+					data = c;
+					break;
+				}
 			}
+			break;
+		}
+		default: {
+			for (const c of get(classes)) {
+				if (!fallback) fallback = c;
+
+				if (c.name == name) {
+					data = c;
+					break;
+				}
+			}
+			break;
 		}
 	}
-
 	if (data) {
+		let classOrSkill = false;
 		if (!data.loaded) {
-			let yamlData: MultiSkillYamlData | MultiClassYamlData;
+			let yamlData: MultiSkillYamlData | MultiClassYamlData | MultiAttributeYamlData;
 			if (data.location === 'local') {
-				yamlData = <MultiSkillYamlData | MultiClassYamlData>YAML.parse(localStorage.getItem(`sapi.${isSkill ? 'skill' : 'class'}.${data.name}`) || '');
-
+				if (data instanceof FabledAttribute) {
+					const text = localStorage.getItem('attribs') || '';
+					if (text.split('\n').length > 2 || text.charAt(0) == '{') { // New format
+						yamlData = <MultiAttributeYamlData>parseYaml(text);
+					}else {
+						yamlData = {};
+					}
+				} else {
+					classOrSkill   = true;
+					yamlData = <MultiSkillYamlData | MultiClassYamlData>parseYaml(localStorage.getItem(`sapi.${isSkill ? 'skill' : 'class'}.${data.name}`) || '');
+				}
 			} else {
 				let yaml: string;
 				if (params.type == 'class') yaml = await socketService.getClassYaml(data.name);
-				else yaml = await socketService.getSkillYaml(data.name);
+				else if(params.type === 'skill') yaml = await socketService.getSkillYaml(data.name);
+				else yaml = await socketService.getAttributeYaml(data.name);
 
-				yamlData = <MultiSkillYamlData | MultiClassYamlData>YAML.parse(yaml);
+				yamlData = <MultiSkillYamlData | MultiClassYamlData | MultiAttributeYamlData>parseYaml(yaml);
 			}
+
 
 			if (yamlData && Object.keys(yamlData).length > 0) {
-				data.load(Object.values(yamlData)[0]);
+				if(data instanceof FabledAttribute) {
+					data.load((<MultiAttributeYamlData>yamlData)[data.name]);
+				} else {
+					data.load(Object.values(yamlData)[0]);
+				}
 			}
 
-			if (isSkill) (<FabledSkill>data).postLoad();
+			if (classOrSkill && isSkill) (<FabledSkill>data).postLoad();
 		}
 
-		if (!isSkill) updateClassAttributes(<FabledClass>data);
+		if (classOrSkill && !isSkill) updateClassAttributes(<FabledClass>data);
+
 		active.set(data);
-		isShowClasses.set(!isSkill);
+		switch (params.type) {
+			case 'skill':
+				shownTab.set(Tab.SKILLS);
+				break;
+			case 'attribute':
+				shownTab.set(Tab.ATTRIBUTES);
+				break;
+			default:
+				shownTab.set(Tab.CLASSES);
+				break;
+		}
 		return { data };
 	} else {
 		if (fallback) {
@@ -75,10 +124,10 @@ export async function load({ params }) {
 }
 
 const updateClassAttributes = (clazz: FabledClass) => {
-	for (const a of get(attributes)) {
+	for (const a of getAttributeNames()) {
 		if (clazz.attributes.find(b => b.name === a))
 			continue;
 
-		clazz.attributes.push(new FabledAttribute(a, 0, 0));
+		clazz.attributes.push(new Attribute(a, 0, 0));
 	}
 };

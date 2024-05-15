@@ -1,5 +1,7 @@
 com.sucy.skill
 com.sucy.skill.api
+com.sucy.skill.api.enums
+com.sucy.skill.api.player
 studio.magemonkey.fabled
 studio.magemonkey.fabled.api
 studio.magemonkey.fabled.api.armorstand

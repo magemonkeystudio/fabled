@@ -3,6 +3,7 @@ import { get, writable }           from 'svelte/store';
 import FabledFolder                from '$api/fabled-folder';
 import { active, rename }          from './store';
 import { sort }                    from '$api/api';
+import { parseYaml }               from '$api/yaml';
 import { browser }                 from '$app/environment';
 import FabledClass                 from '$api/fabled-class';
 import FabledSkill                 from '$api/fabled-skill';
@@ -11,6 +12,7 @@ import { base }                    from '$app/paths';
 import type { MultiClassYamlData } from '$api/types';
 import YAML                        from 'yaml';
 import { socketService }           from '$api/socket/socket-connector';
+import { notify }                  from '$api/notification-service';
 
 const loadClassesFromServer = async () => {
 	let serverClasses: string[];
@@ -70,9 +72,8 @@ let isLegacy = false;
 const loadClassTextToArray = (text: string): FabledClass[] => {
 	const list: FabledClass[] = [];
 	// Load classes
-	const data                = <MultiClassYamlData>YAML.parse(text);
-
-	const keys = Object.keys(data);
+	const data                = <MultiClassYamlData>parseYaml(text);
+	const keys                = Object.keys(data);
 
 	let clazz: FabledClass;
 	// If we only have one class, and it is the current YAML,
@@ -129,10 +130,10 @@ export const classes: Writable<FabledClass[]> = setupClassStore<FabledClass[]>(
 	browser && localStorage.getItem('classNames') ? 'classNames' : 'classData', [],
 	(data: string) => {
 		if (localStorage.getItem('classNames')) {
-			return data.split(', ').map(name => {
-				const clazz = new FabledClass({ name, location: 'local' });
-				return clazz;
-			}).filter(cl => localStorage.getItem('sapi.class.' + cl.name));
+			return data.split(', ').map(name => new FabledClass({
+				name,
+				location: 'local'
+			})).filter(cl => localStorage.getItem('sapi.class.' + cl.name));
 		} else {
 			localStorage.removeItem('classData');
 			isLegacy = true;
@@ -158,21 +159,24 @@ export const classFolders: Writable<FabledFolder[]> = setupClassStore<FabledFold
 	(data: string) => {
 		if (!data || data === 'null') return [];
 
-		const parsedData = JSON.parse(data, (key: string, value) => {
-			if (!value) return;
-			if (/\d+/.test(key)) {
-				if (typeof (value) === 'string') {
-					return getClass(value);
+		try {
+			return JSON.parse(data, (key: string, value) => {
+				if (!value) return;
+				if (/\d+/.test(key)) {
+					if (typeof (value) === 'string') {
+						return getClass(value);
+					}
+
+					const folder = new FabledFolder(value.data);
+					folder.name  = value.name;
+					return folder;
 				}
-
-				const folder = new FabledFolder(value.data);
-				folder.name  = value.name;
-				return folder;
-			}
-			return value;
-		});
-
-		return parsedData;
+				return value;
+			});
+		} catch (e) {
+			notify('Error loading class folders. Folder data: ' + data);
+			return [];
+		}
 	},
 	(value: FabledFolder[]) => {
 		const data = JSON.stringify(value, (key, value: FabledFolder | FabledClass | FabledSkill) => {
@@ -208,7 +212,7 @@ export const loadClass = async (data: FabledClass) => {
 	let yamlData: MultiClassYamlData;
 
 	if (data.location === 'local') {
-		yamlData = <MultiClassYamlData>YAML.parse(localStorage.getItem(`sapi.class.${data.name}`) || '');
+		yamlData = <MultiClassYamlData>parseYaml(localStorage.getItem(`sapi.class.${data.name}`) || '');
 	} else {
 		const yaml = await socketService.getClassYaml(data.name);
 		if (!yaml) return;
@@ -299,7 +303,7 @@ export const refreshClassFolders = () => {
  */
 export const loadClassText = (text: string, fromServer: boolean = false) => {
 	// Load new classes
-	const data = <MultiClassYamlData>YAML.parse(text);
+	const data = <MultiClassYamlData>parseYaml(text);
 
 	if (!data || Object.keys(data).length === 0) {
 		// If there is no data or the object is empty... return

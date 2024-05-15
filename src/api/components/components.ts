@@ -42,7 +42,7 @@ import IntSelect                                                 from '$api/opti
 import ColorSelect                                               from '$api/options/colorselect';
 import { get }                                                   from 'svelte/store';
 import type ProComponent                                         from '$api/components/procomponent';
-import { attributes }                                            from '../../data/attribute-store';
+import { getAttributeNames }                                     from '../../data/attribute-store';
 import EnchantSelect                                             from '$api/options/enchantselect';
 
 // TRIGGERS
@@ -67,7 +67,7 @@ class AttributeChangeTrigger extends ProTrigger {
 			name:         'Attribute Change',
 			description:  'Applies skill effects when a player\'s attribute changes. <code>api-attribute</code> is the attribute name, '
 											+ '<code>api-change</code> is the change, and <code>api-value</code> is the new value',
-			data:         [new DropdownSelect('Attribute', 'attr', ['Any', ...get(attributes)], ['Any'], true)
+			data:         [new DropdownSelect('Attribute', 'attr', ['Any', ...getAttributeNames()], ['Any'], true)
 				.setTooltip('The attribute to check for')],
 			summaryItems: ['attr']
 		});
@@ -2214,8 +2214,8 @@ class AttributeMechanic extends ProMechanic {
 			name:         'Attribute',
 			description:  'Gives a player bonus attributes temporarily',
 			data:         [
-				new StringSelect('Attribute', 'key', 'Intelligence')
-					.setTooltip('The name of the attribute to add to'),
+				new DropdownSelect('Attribute', 'key', getAttributeNames(), ['Intelligence'], true)
+					.setTooltip('The attribute to add to'),
 				new DropdownSelect('Operation', 'operation', ['ADD_NUMBER', 'MULTIPLY_PERCENTAGE'], 'ADD_NUMBER')
 					.setTooltip('The operation on the original value by amount, ADD_NUMBER: Scalar adding, MULTIPLY_PERCENTAGE: Multiply the value by amount'),
 				new AttributeSelect('Amount', 'amount', 5, 2)
@@ -4503,8 +4503,8 @@ class ValueAttributeMechanic extends ProMechanic {
 			data:         [
 				new StringSelect('Key', 'key', 'attribute')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
-				new StringSelect('Attribute', 'attribute', 'Vitality')
-					.setTooltip('The name of the attribute you are loading the value of'),
+				new DropdownSelect('Attribute', 'attribute', getAttributeNames(), ['Vitality'], true)
+					.setTooltip('The attribute you are loading the value of'),
 				new BooleanSelect('Save', 'save', false)
 					.setTooltip('If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account')
 			],
@@ -4774,6 +4774,27 @@ class ValueRandomMechanic extends ProMechanic {
 
 			],
 			summaryItems: ['key', 'type', 'min', 'max', 'save']
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
+class ValueRotationMechanic extends ProMechanic {
+	public constructor() {
+		super({
+			name:         'Value Rotation',
+			description:  'Stores a value as the rotation between the target\'s look direction and a remembered location as a source. The caster is used if no targets are remembered or no source key is passed',
+			data:         [
+				new StringSelect('Key', 'key', 'value')
+					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
+				new StringSelect('Source', 'source', '')
+					.setTooltip('The key to use as the source location for the rotation. If left empty, the caster is used'),
+				new BooleanSelect('Save', 'save', false)
+					.setTooltip('If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account')
+
+			],
+			summaryItems: ['key', 'source', 'save']
 		}, false);
 	}
 
@@ -5238,6 +5259,7 @@ export const initComponents = () => {
 		VALUE_MULTIPLY:    { name: 'Value Multiply', component: ValueMultiplyMechanic, section: 'Value' },
 		VALUE_PLACEHOLDER: { name: 'Value Placeholder', component: ValuePlaceholderMechanic, section: 'Value' },
 		VALUE_RANDOM:      { name: 'Value Random', component: ValueRandomMechanic, section: 'Value' },
+		VALUE_ROTATION:    { name: 'Value Rotation', component: ValueRotationMechanic, section: 'Value' },
 		VALUE_ROUND:       { name: 'Value Round', component: ValueRoundMechanic, section: 'Value' },
 		VALUE_SET:         { name: 'Value Set', component: ValueSetMechanic, section: 'Value' },
 

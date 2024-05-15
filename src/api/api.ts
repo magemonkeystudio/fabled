@@ -1,8 +1,9 @@
-import type FabledFolder from './fabled-folder';
-import type FabledClass from './fabled-class';
-import type FabledSkill from './fabled-skill';
-import { browser }      from '$app/environment';
-import { writable }   from 'svelte/store';
+import type FabledFolder    from './fabled-folder';
+import type FabledClass     from './fabled-class';
+import type FabledSkill     from './fabled-skill';
+import { browser }          from '$app/environment';
+import { writable }         from 'svelte/store';
+import type FabledAttribute from './fabled-attribute';
 
 export const toProperCase = (s: string) => {
 	return s
@@ -16,7 +17,7 @@ export const toEditorCase = (s: string) => {
 	return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
 };
 
-export const sort = <T extends FabledFolder | FabledClass | FabledSkill>(data: T[]): T[] => {
+export const sort = <T extends FabledFolder | FabledClass | FabledSkill | FabledAttribute>(data: T[]): T[] => {
 	return data.sort((a, b) => a.name.localeCompare(b.name));
 };
 
@@ -58,4 +59,4 @@ export const localStore = <T>(key: string, def: T) => {
 export const parseBool = (val: string | boolean | undefined) => {
 	if (typeof val === 'boolean') return val;
 	return val === 'true';
-}
+};

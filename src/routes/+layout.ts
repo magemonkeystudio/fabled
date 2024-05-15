@@ -31,12 +31,15 @@ export const load: LayoutLoad = async ({ url }) => {
 				const classData    = data.split(separator)[1];
 				const skillFolders = data.split(separator)[2];
 				const classFolders = data.split(separator)[3];
+				const attributes   = data.split(separator)[4]
+
 
 				loadSkillText(skillData).then(() => {
 				});
 				loadClassText(classData);
 				localStorage.setItem('skillFolders', skillFolders);
 				localStorage.setItem('classFolders', classFolders);
+				localStorage.setItem('attribs',      attributes);
 
 				window.location.href = `https://${expectedHost}${base}`;
 			})
@@ -53,11 +56,13 @@ export const load: LayoutLoad = async ({ url }) => {
 	const classYaml    = YAML.stringify(getAllClassYaml(), { lineWidth: 0 });
 	const skillFolders = localStorage.getItem('skillFolders');
 	const classFolders = localStorage.getItem('classFolders');
+	const attributes   = localStorage.getItem('attribs');
 
 	const qualifiedData = skillYaml + separator
 		+ classYaml + separator
 		+ skillFolders + separator
-		+ classFolders;
+		+ classFolders + separator
+		+ attributes;
 
 	createPaste(qualifiedData)
 		.then((url: string) => window.location.href = `https://${expectedHost}?migrationData=${url}`);

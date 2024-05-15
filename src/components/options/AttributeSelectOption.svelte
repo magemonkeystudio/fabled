@@ -2,9 +2,9 @@
   import ProInput                  from "$input/ProInput.svelte";
   import { createEventDispatcher } from "svelte";
   import AttributeInput           from "$input/AttributeInput.svelte";
-  import type { FabledAttribute } from "$api/fabled-attribute";
+  import type { Stat } from "$api/stat";
 
-  export let data: FabledAttribute;
+  export let data: Stat;
   export let name: string | undefined    = "";
   export let tooltip: string | undefined = undefined;
 

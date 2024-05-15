@@ -4,14 +4,15 @@
 		deleteProData,
 		dragging,
 		getFolder,
-		isShowClasses,
 		saveData,
+		shownTab,
 		sidebarOpen,
 		updateFolders
-	}                  from '../../data/store';
-	import FabledSkill from '$api/fabled-skill';
-	import FabledClass from '$api/fabled-class';
-	import { get }     from 'svelte/store';
+	}                                     from '../../data/store';
+	import FabledSkill                    from '$api/fabled-skill';
+	import FabledClass                    from '$api/fabled-class';
+	import FabledAttribute                from '$api/fabled-attribute';
+	import { get }                        from 'svelte/store';
 	import FabledFolder                   from '$api/fabled-folder';
 	import { fly, type TransitionConfig } from 'svelte/transition';
 	import Modal                          from '../Modal.svelte';
@@ -20,10 +21,12 @@
 	import { animationEnabled }           from '../../data/settings';
 	import { base }                       from '$app/paths';
 	import { createEventDispatcher }      from 'svelte';
+	import { cloneAttribute }             from '../../data/attribute-store';
+	import { Tab }                        from '$api/tab';
 
-	export let delay                       = 0;
-	export let direction: 'right' | 'left' = 'left';
-	export let data: FabledSkill | FabledClass;
+	export let delay                                                         = 0;
+	export let direction: 'right' | 'left'                                   = 'left';
+	export let data: FabledSkill | FabledClass | FabledAttribute | undefined = undefined;
 
 	let over     = false;
 	let deleting = false;
@@ -39,7 +42,7 @@
 	};
 
 	const drop = () => {
-		const dragData: FabledClass | FabledSkill | FabledFolder = get(dragging);
+		const dragData: FabledClass | FabledSkill | FabledAttribute | FabledFolder = get(dragging);
 		let targetFolder;
 		if (data) {
 			targetFolder = getFolder(data);
@@ -54,8 +57,16 @@
 			return;
 		}
 		if (dragData instanceof FabledFolder) {
-			if (get(isShowClasses)) addClassFolder(dragData);
-			else addSkillFolder(dragData);
+			switch (get(shownTab)) {
+				case Tab.CLASSES: {
+					addClassFolder(dragData);
+					break;
+				}
+				case Tab.SKILLS: {
+					addSkillFolder(dragData);
+					break;
+				}
+			}
 			dragData.parent = undefined;
 		}
 
@@ -78,13 +89,15 @@
 		return options.fn(node, options);
 	};
 
-	const cloneData = (data?: FabledClass | FabledSkill) => {
+	const cloneData = (data?: FabledClass | FabledSkill | FabledAttribute) => {
 		if (!data) return;
 
 		if (data instanceof FabledClass) {
 			cloneClass(data);
-		} else {
+		} else if (data instanceof FabledSkill) {
 			cloneSkill(data);
+		} else if (data instanceof FabledAttribute) {
+			cloneAttribute(data);
 		}
 	};
 </script>
@@ -120,11 +133,11 @@
 				</a>
 			{/if}
 			<div on:click|preventDefault|stopPropagation={() => saveData(data)}
-					 on:keypress|preventDefault|stopPropagation={(event) => { if (event?.key === 'Enter') saveData(data); }}
+					 on:keypress|preventDefault|stopPropagation={(event) => {if (event?.key === 'Enter') saveData(data);}}
 					 tabindex='0'
 					 role='button'
 					 class='download'
-					 title="Save {data.dataType === 'skill' ? 'Skill' : 'Class'}">
+					 title='Save {data.dataType.substring(0, 1).toUpperCase()+data.dataType.substring(1)}'>
         <span class='material-symbols-rounded'>
           save
         </span>
@@ -134,7 +147,7 @@
 					 tabindex='0'
 					 role='button'
 					 class='clone'
-					 title="Clone {data.dataType === 'skill' ? 'Skill' : 'Class'}">
+					 title='Clone {data.dataType.substring(0, 1).toUpperCase()+data.dataType.substring(1)}'>
         <span class='material-symbols-rounded'>
           content_copy
         </span>
@@ -160,7 +173,7 @@
 					 tabindex='0'
 					 role='button'
 					 class='delete'
-					 title="Delete {data.dataType === 'skill' ? 'Skill' : 'Class'}">
+					 title='Delete {data.dataType.substring(0, 1).toUpperCase()+data.dataType.substring(1)}'>
         <span class='material-symbols-rounded'>
           delete
         </span>

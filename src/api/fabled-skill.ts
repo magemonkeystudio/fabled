@@ -1,5 +1,5 @@
 import type { Icon, ProSkillData, Serializable, SkillYamlData, YamlComponentData } from './types';
-import { FabledAttribute }                                                         from './fabled-attribute';
+import { Attribute }                                                         from './stat';
 import { getSkill, isSaving }                                                      from '../data/skill-store';
 import ProTrigger                                                                  from './components/triggers';
 import type ProComponent                                                           from '$api/components/procomponent';
@@ -24,14 +24,14 @@ export default class FabledSkill implements Serializable {
 	maxLevel                                 = 5;
 	skillReq?: FabledSkill;
 	skillReqLevel                            = 0;
-	attributeRequirements: FabledAttribute[] = [];
+	attributeRequirements: Attribute[] = [];
 	permission: boolean                      = false;
-	levelReq: FabledAttribute                = new FabledAttribute('level', 1, 0);
-	cost: FabledAttribute                    = new FabledAttribute('cost', 1, 0);
-	cooldown: FabledAttribute                = new FabledAttribute('cooldown', 0, 0);
+	levelReq: Attribute                = new Attribute('level', 1, 0);
+	cost: Attribute                    = new Attribute('cost', 1, 0);
+	cooldown: Attribute                = new Attribute('cooldown', 0, 0);
 	cooldownMessage: boolean                 = true;
-	mana: FabledAttribute                    = new FabledAttribute('mana', 0, 0);
-	minSpent: FabledAttribute                = new FabledAttribute('points-spent-req', 0, 0);
+	mana: Attribute                    = new Attribute('mana', 0, 0);
+	minSpent: Attribute                = new Attribute('points-spent-req', 0, 0);
 	castMessage                              = '&6{player} &2has cast &6{skill}';
 	combo                                    = '';
 	icon: Icon                               = {
@@ -62,7 +62,7 @@ export default class FabledSkill implements Serializable {
 		if (data.maxLevel) this.maxLevel = data.maxLevel;
 		if (data.skillReq) this.skillReq = data.skillReq;
 		if (data.skillReqLevel) this.skillReqLevel = data.skillReqLevel;
-		if (data.attributeRequirements) this.attributeRequirements = data.attributeRequirements.map(a => new FabledAttribute(a.name, a.base, a.scale));
+		if (data.attributeRequirements) this.attributeRequirements = data.attributeRequirements.map(a => new Attribute(a.name, a.base, a.scale));
 		if (data.permission) this.permission = data.permission;
 		if (data.levelReq) this.levelReq = data.levelReq;
 		if (data.cost) this.cost = data.cost;
@@ -163,38 +163,40 @@ export default class FabledSkill implements Serializable {
 	};
 
 	public load = async (yaml: SkillYamlData) => {
-		this.name            = yaml.name;
-		this.type            = yaml.type;
-		this.maxLevel        = yaml['max-level'];
-		this.skillReqStr     = yaml['skill-req'];
-		this.skillReqLevel   = yaml['skill-req-lvl'];
-		this.permission      = yaml['needs-permission'];
-		this.cooldownMessage = yaml['cooldown-message'];
-		this.castMessage     = yaml.msg;
-		this.combo           = yaml.combo;
+		if (yaml.name) this.name = yaml.name;
+		if (yaml.type) this.type = yaml.type;
+		if (yaml['max-level']) this.maxLevel = yaml['max-level'];
+		if (yaml['skill-req']) this.skillReqStr = yaml['skill-req'];
+		if (yaml['skill-req-lvl']) this.skillReqLevel = yaml['skill-req-lvl'];
+		if (yaml['needs-permission']) this.permission = yaml['needs-permission'];
+		if (yaml['cooldown-message']) this.cooldownMessage = yaml['cooldown-message'];
+		if (yaml.msg) this.castMessage = yaml.msg;
+		if (yaml.combo) this.combo = yaml.combo;
 
-		const attributes = yaml.attributes;
-		this.levelReq    = new FabledAttribute('level', attributes['level-base'], attributes['level-scale']);
-		this.cost        = new FabledAttribute('cost', attributes['cost-base'], attributes['cost-scale']);
-		this.cooldown    = new FabledAttribute('cooldown', attributes['cooldown-base'], attributes['cooldown-scale']);
-		this.mana        = new FabledAttribute('mana', attributes['mana-base'], attributes['mana-scale']);
-		this.minSpent    = new FabledAttribute('points-spent-req', attributes['points-spent-req-base'], attributes['points-spent-req-scale']);
-		this.incompStr   = attributes.incompatible;
+		if (yaml.attributes) {
+			const attributes = yaml.attributes;
+			this.levelReq    = new Attribute('level', attributes['level-base'], attributes['level-scale']);
+			this.cost        = new Attribute('cost', attributes['cost-base'], attributes['cost-scale']);
+			this.cooldown    = new Attribute('cooldown', attributes['cooldown-base'], attributes['cooldown-scale']);
+			this.mana        = new Attribute('mana', attributes['mana-base'], attributes['mana-scale']);
+			this.minSpent    = new Attribute('points-spent-req', attributes['points-spent-req-base'], attributes['points-spent-req-scale']);
+			this.incompStr   = attributes.incompatible;
 
-		const reserved             = ['level', 'cost', 'cooldown', 'mana', 'points-spent-req', 'incompatible'];
-		const names                = new Set(Object.keys(attributes).map(k => k.replace(/-(base|scale)/i, '')).filter(name => !reserved.includes(name)));
-		this.attributeRequirements = [...names].map(name => new FabledAttribute(name, attributes[`${name}-base`], attributes[`${name}-scale`]));
+			const reserved             = ['level', 'cost', 'cooldown', 'mana', 'points-spent-req', 'incompatible'];
+			const names                = new Set(Object.keys(attributes).map(k => k.replace(/-(base|scale)/i, '')).filter(name => !reserved.includes(name)));
+			this.attributeRequirements = [...names].map(name => new Attribute(name, attributes[`${name}-base`], attributes[`${name}-scale`]));
+		}
 
-		this.icon.material        = toEditorCase(yaml.icon);
-		this.icon.customModelData = yaml['icon-data'];
-		this.icon.lore            = yaml['icon-lore'];
+		if (yaml.icon) this.icon.material = toEditorCase(yaml.icon);
+		if (yaml['icon-data']) this.icon.customModelData = yaml['icon-data'];
+		if (yaml['icon-lore']) this.icon.lore = yaml['icon-lore'];
 
 		let unsub: Unsubscriber | undefined = undefined;
 
 		return new Promise<void>((resolve) => {
 			unsub = initialized.subscribe(init => {
 				if (!init) return;
-				this.triggers = <ProTrigger[]>Registry.deserializeComponents(yaml.components);
+				if (yaml.components) this.triggers = <ProTrigger[]>Registry.deserializeComponents(yaml.components);
 
 				if (unsub) {
 					unsub();

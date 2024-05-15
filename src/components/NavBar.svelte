@@ -1,10 +1,10 @@
 <script lang='ts'>
 	import { active, activeType, setImporting, toggleSidebar } from '../data/store';
 	import { get }                                             from 'svelte/store';
-	import { createPaste } from '$api/hastebin';
-	import FabledClass from '$api/fabled-class';
-	import FabledSkill from '$api/fabled-skill';
-	import YAML        from 'yaml';
+	import { createPaste }                                     from '$api/hastebin';
+	import FabledClass                                         from '$api/fabled-class';
+	import FabledSkill                                         from '$api/fabled-skill';
+	import YAML                                                from 'yaml';
 
 	const haste = () => {
 		let act: FabledClass | FabledSkill | undefined = get(active);
@@ -68,8 +68,8 @@
 								 haste();
 							 }
 						 }}
-						 title="Share {$activeType === 'class' ? 'Class' : 'Skill'}">
-					Share {$activeType === 'class' ? 'Class' : 'Skill'}
+						 title='Share {$activeType.substring(0, 1).toUpperCase() + $activeType.substring(1)}'>
+					Share {$activeType.substring(0, 1).toUpperCase() + $activeType.substring(1)}
 				</div>
 			{/if}
 		</div>

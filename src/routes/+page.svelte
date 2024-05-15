@@ -10,7 +10,7 @@
   <title>Fabled Dynamic Editor</title>
 </svelte:head>
 
-<div class="start">Select/Add a class/skill on the left to get started!</div>
+<div class="start">Select/Add an item on the left to get started!</div>
 
 <style>
     .start {
