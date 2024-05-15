@@ -246,6 +246,19 @@ class SocketService {
 		});
 	}
 
+	public getAttributeYaml(name: string): Promise<string> {
+		if (!this.socket || !get(socketTrusted)) return Promise.reject('No socket');
+		this.socket.emit('getAttributeYaml', { name, to: this.serverId });
+		return new Promise((resolve, reject) => {
+			this.socket?.on('attributeYaml', ({ content }) => {
+				this.socket?.off('attributeYaml');
+				resolve(content);
+			});
+
+			setTimeout(() => reject('Timeout'), 3000);
+		});
+	}
+
 	public async saveSkillToServer(name: string, yaml: string): Promise<boolean> {
 		if (!this.socket || !get(socketTrusted)) return Promise.reject('No socket');
 		try {

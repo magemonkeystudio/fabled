@@ -1,4 +1,4 @@
-import { socketService }                               from '$api/socket/socket-connector';
+import { socketService }                                                       from '$api/socket/socket-connector';
 import type FabledClass                                                        from '$api/fabled-class';
 import type FabledSkill                                                        from '$api/fabled-skill';
 import { active, shownTab }                                                    from '../../../../../data/store';
@@ -12,7 +12,6 @@ import {
 	getAttributeNames
 }                                                                              from '../../../../../data/attribute-store';
 import type { MultiAttributeYamlData, MultiClassYamlData, MultiSkillYamlData } from '$api/types';
-import YAML                                                                    from 'yaml';
 import FabledAttribute                                                         from '$api/fabled-attribute';
 import { Tab }                                                                 from '$api/tab';
 import { parseYaml }                                                           from '$api/yaml';
@@ -26,9 +25,9 @@ export async function load({ params }) {
 	const isSkill = params.type === 'skill';
 
 	let data: FabledClass | FabledSkill | FabledAttribute | undefined;
-	let fallback: FabledClass | FabledSkill | FabledAttribute | undefined;
+	let fallback: FabledClass | FabledSkill | FabledAttribute | undefined = undefined;
 	switch (params.type) {
-		case 'skill': {
+		case 'skill':
 			for (const c of get(skills)) {
 				if (!fallback) fallback = c;
 
@@ -38,8 +37,7 @@ export async function load({ params }) {
 				}
 			}
 			break;
-		}
-		case 'attribute': {
+		case 'attribute':
 			for (const c of get(attributes)) {
 				if (!fallback) fallback = c;
 
@@ -49,8 +47,7 @@ export async function load({ params }) {
 				}
 			}
 			break;
-		}
-		default: {
+		default:
 			for (const c of get(classes)) {
 				if (!fallback) fallback = c;
 
@@ -60,7 +57,6 @@ export async function load({ params }) {
 				}
 			}
 			break;
-		}
 	}
 	if (data) {
 		let classOrSkill = false;
@@ -71,17 +67,17 @@ export async function load({ params }) {
 					const text = localStorage.getItem('attribs') || '';
 					if (text.split('\n').length > 2 || text.charAt(0) == '{') { // New format
 						yamlData = <MultiAttributeYamlData>parseYaml(text);
-					}else {
+					} else {
 						yamlData = {};
 					}
 				} else {
-					classOrSkill   = true;
-					yamlData = <MultiSkillYamlData | MultiClassYamlData>parseYaml(localStorage.getItem(`sapi.${isSkill ? 'skill' : 'class'}.${data.name}`) || '');
+					classOrSkill = true;
+					yamlData     = <MultiSkillYamlData | MultiClassYamlData>parseYaml(localStorage.getItem(`sapi.${isSkill ? 'skill' : 'class'}.${data.name}`) || '');
 				}
 			} else {
 				let yaml: string;
 				if (params.type == 'class') yaml = await socketService.getClassYaml(data.name);
-				else if(params.type === 'skill') yaml = await socketService.getSkillYaml(data.name);
+				else if (params.type === 'skill') yaml = await socketService.getSkillYaml(data.name);
 				else yaml = await socketService.getAttributeYaml(data.name);
 
 				yamlData = <MultiSkillYamlData | MultiClassYamlData | MultiAttributeYamlData>parseYaml(yaml);
@@ -89,7 +85,7 @@ export async function load({ params }) {
 
 
 			if (yamlData && Object.keys(yamlData).length > 0) {
-				if(data instanceof FabledAttribute) {
+				if (data instanceof FabledAttribute) {
 					data.load((<MultiAttributeYamlData>yamlData)[data.name]);
 				} else {
 					data.load(Object.values(yamlData)[0]);
