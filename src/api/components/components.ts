@@ -150,6 +150,23 @@ class CleanupTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
+class ConsumeTrigger extends ProTrigger {
+	public constructor() {
+		super({
+			name:         'Consume',
+			description:  'Applies skill effects when a player consumes an item',
+			data:         [
+				...itemConditionOptions(new DropdownSelect('Material', 'material', getAnyConsumable, 'Any')
+					.setTooltip('The type of item that the player has consumed.')
+					.requireValue('check-mat', [true]))
+			],
+			summaryItems: ['material', 'potion']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class CrouchTrigger extends ProTrigger {
 	public constructor() {
 		super({
@@ -288,6 +305,24 @@ class FishingReelTrigger extends ProTrigger {
 		super({
 			name:        'Fishing Reel',
 			description: 'Applies skill effects when a player reels in a fishing rod out of water or air with no fish on the rod'
+		});
+	}
+
+	public static override new = () => new this();
+}
+
+class HealTrigger extends ProTrigger {
+	public constructor() {
+		super({
+			name:         'Heal',
+			description:  'Applies skill effects when the player receives heal from any source. Use {api-heal} to get heal value',
+			data:         [
+				new DoubleSelect('Min Heal', 'heal-min', 0)
+					.setTooltip('The minimum health that needs to be received'),
+				new DoubleSelect('Max Heal', 'heal-max', 999)
+					.setTooltip('The maximum health that needs to be received')
+			],
+			summaryItems: ['heal-min', 'heal-max']
 		});
 	}
 
@@ -556,43 +591,6 @@ class TookSkillTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class ConsumeTrigger extends ProTrigger {
-	public constructor() {
-		super({
-			name:         'Consume',
-			description:  'Applies skill effects when a player consumes an item',
-			data:         [
-				new DropdownSelect('Material', 'material', getAnyConsumable, 'Any')
-					.setTooltip('The type of item that the player has consumed.'),
-				new DropdownSelect('Potion', 'potion', getAnyPotion, 'Any')
-					.requireValue('material', ['Potion'])
-					.setTooltip('The type of potion effect to apply')
-			],
-			summaryItems: ['material', 'potion']
-		});
-	}
-
-	public static override new = () => new this();
-}
-
-class HealTrigger extends ProTrigger {
-	public constructor() {
-		super({
-			name:         'Heal',
-			description:  'Applies skill effects when the player receives heal from any source. Use {api-heal} to get heal value',
-			data:         [
-				new DoubleSelect('Min Heal', 'heal-min', 0)
-					.setTooltip('The minimum health that needs to be received'),
-				new DoubleSelect('Max Heal', 'heal-max', 999)
-					.setTooltip('The maximum health that needs to be received')
-			],
-			summaryItems: ['heal-min', 'heal-max']
-		});
-	}
-
-	public static override new = () => new this();
-}
-
 class ShieldTrigger extends ProTrigger {
 	public constructor() {
 		super({
@@ -627,6 +625,26 @@ class SignalTrigger extends ProTrigger {
 					.setTooltip('Name of signal want to receive.')
 			],
 			summaryItems: ['target', 'signal']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
+class WorldChangeTrigger extends ProTrigger {
+	public constructor() {
+		super({
+			name:         'World Change',
+			description:  'Applies skill effects when a player changes worlds',
+			data:         [
+				new StringListSelect('Worlds', 'worlds', ['Any'])
+					.setTooltip('The worlds to check for, "Any" will trigger regardless of world'),
+				new BooleanSelect('Inverse', 'inverse', false)
+					.setTooltip('Whether to trigger when NOT changing to the specified worlds'),
+				new DropdownSelect('Direction', 'direction', ['To', 'From', 'Both'], 'To')
+					.setTooltip('The direction of the world change to be considered')
+			],
+			summaryItems: ['worlds', 'inverse', 'direction']
 		});
 	}
 
@@ -975,13 +993,16 @@ class WorldTarget extends ProTarget {
 /**
  * Adds the options for item-check related effects to the component
  */
-const itemConditionOptions = (): ComponentOption[] => {
+const itemConditionOptions = (matOption: ComponentOption = new MaterialSelect(false, 'Arrow')
+	.requireValue('check-mat', [true])
+	.setTooltip('The type the item needs to be')): ComponentOption[] => {
 	const data: ComponentOption[] = [
 		new BooleanSelect('Check Material', 'check-mat', true)
 			.setTooltip('Whether the item needs to be a certain type'),
-		new MaterialSelect(false, 'Arrow')
-			.requireValue('check-mat', [true])
-			.setTooltip('The type the item needs to be'),
+		matOption,
+		new DropdownSelect('Potion', 'potion', getAnyPotion, 'Any')
+			.requireValue('material', ['Potion', 'Lingering potion', 'Splash potion'])
+			.setTooltip('The type of potion being consumed'),
 		new BooleanSelect('Check Data', 'check-data', false)
 			.setTooltip('Whether the item needs to have a certain data value'),
 		new IntSelect('Data', 'data')
@@ -5091,9 +5112,10 @@ export const initComponents = () => {
 		PROJ_HIT:      { name: 'Projectile Hit', component: ProjectileHitTrigger },
 		PROJ_LAUNCH:   { name: 'Projectile Launch', alias: 'Launch', component: LaunchTrigger },
 		PROJ_TICK:     { name: 'Projectile Tick', component: ProjectileTickTrigger },
-		SIGNAL:        { name: 'Signal', component: SignalTrigger },
 		SHIELD:        { name: 'Shield', component: ShieldTrigger },
+		SIGNAL:        { name: 'Signal', component: SignalTrigger },
 		SKILL_CAST:    { name: 'Skill Cast', component: SkillCastTrigger },
+		WORLD_CHANGE:  { name: 'World Change', component: WorldChangeTrigger },
 
 		ARMOR_EQUIP: { name: 'Armor Equip', component: ArmorEquipTrigger, section: 'Item' },
 		CONSUME:     { name: 'Consume', component: ConsumeTrigger, section: 'Item' },
