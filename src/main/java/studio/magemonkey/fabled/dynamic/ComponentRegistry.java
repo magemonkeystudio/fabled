@@ -36,7 +36,6 @@ public class ComponentRegistry {
     private static final Map<Trigger<?>, EventExecutor> EXECUTORS = new HashMap<>();
 
     static {
-
         // Triggers
         register(new ArmorEquipTrigger());
         register(new AttributeChangeTrigger());
@@ -45,6 +44,7 @@ public class ComponentRegistry {
         register(new ChatTrigger());
         register(new ClickLeftTrigger());
         register(new ClickRightTrigger());
+        register(new ConsumeTrigger());
         register(new CrouchTrigger());
         register(new DeathTrigger());
         register(new DropItemTrigger());
@@ -71,7 +71,7 @@ public class ComponentRegistry {
         register(new ShieldTrigger());
         register(new SignalTrigger());
         register(new SkillCastTrigger());
-        register(new ConsumeTrigger());
+        register(new WorldChangeTrigger());
 
         // Targets
         register(new AreaTarget());

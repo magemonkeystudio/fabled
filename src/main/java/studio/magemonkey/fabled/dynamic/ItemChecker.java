@@ -26,16 +26,20 @@
  */
 package studio.magemonkey.fabled.dynamic;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.Settings;
-import studio.magemonkey.codex.mccore.config.parse.NumberParser;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionType;
+import studio.magemonkey.codex.mccore.config.parse.NumberParser;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.Settings;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -136,15 +140,27 @@ public class ItemChecker {
         boolean regex       = settings.getBool(REGEX, false);
 
         // Values to compare to
-        String material   = settings.getString(MATERIAL, "ARROW").toUpperCase(Locale.US).replace(" ", "_");
-        int    dur        = settings.getInt(DATA, 0);
-        int    customData = settings.getInt(CUSTOM_DATA, 0);
-        String text       = settings.getString(LORE, "");
-        String display    = settings.getString(NAME, "");
+        String  material    = settings.getString(MATERIAL, "ARROW").toUpperCase(Locale.US).replace(" ", "_");
+        boolean anyMaterial = material.equals("ANY");
+        String  potion      = settings.getString("potion", "Any").toUpperCase(Locale.US).replace(" ", "_");
+        boolean anyPotion   = potion.equals("ANY");
+        int     dur         = settings.getInt(DATA, 0);
+        int     customData  = settings.getInt(CUSTOM_DATA, 0);
+        String  text        = settings.getString(LORE, "");
+        String  display     = settings.getString(NAME, "");
+
+        List<String> potionTypes = new ArrayList<>();
+        if (item != null && item.hasItemMeta() && item.getItemMeta() instanceof PotionMeta) {
+            PotionType pType = ((PotionMeta) item.getItemMeta()).getBasePotionType();
+            for (PotionEffect potionEffect : pType.getPotionEffects()) {
+                potionTypes.add(potionEffect.getType().getName());
+            }
+        }
 
         return (item == null && material.equals("AIR"))
                 || item != null
-                && (!mat || item.getType().name().equals(material))
+                && (!mat || anyMaterial || item.getType().name().equals(material))
+                && (!material.contains("POTION") || anyPotion || potionTypes.contains(potion))
                 && (!data || item.getDurability() == dur)
                 && (!checkCustom || (item.hasItemMeta() && item.getItemMeta().hasCustomModelData()
                 && item.getItemMeta().getCustomModelData() == customData))
