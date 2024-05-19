@@ -10,9 +10,29 @@ import { parseYaml }                   from '$api/yaml';
 import { active, saveError }           from './store';
 import { base }                        from '$app/paths';
 import { goto }                        from '$app/navigation';
+import { socketService }               from '$api/socket/socket-connector';
 
 const tooBig: Writable<boolean>       = writable(false);
 const acknowledged: Writable<boolean> = writable(false);
+
+const loadAttributesFromServer = async () => {
+	let serverAttributes: string = '';
+	try {
+		serverAttributes = await socketService.getAttributeYaml();
+	} catch (_) {
+		return;
+	}
+
+	loadAttributesText(serverAttributes, 'server');
+};
+
+const removeServerAttributes = () => {
+	const tempAttributes = get(attributes);
+	attributes.set(tempAttributes.filter((attr) => attr.location !== 'server'));
+};
+
+socketService.onConnect(loadAttributesFromServer);
+socketService.onDisconnect(removeServerAttributes);
 
 const setupAttributeStore = <T extends FabledAttribute[]>(
 	key: string,
@@ -115,29 +135,29 @@ export const loadAttributes = (e: ProgressEvent<FileReader>) => {
  * Loads attribute data from a file
  * e - event details
  */
-export const loadAttributesText = (text: string) => {
-    const yaml = <MultiAttributeYamlData>parseYaml(text);
-    if (!yaml) return;
+export const loadAttributesText = (text: string, location: 'local' | 'server' = 'local') => {
+	const yaml = <MultiAttributeYamlData>parseYaml(text);
+	if (!yaml) return;
 
-    // Get the current attributes
-    const currentAttributes = get(attributes);
-    // Create a map of current attributes for easy lookup
-    const currentAttributesMap = new Map(currentAttributes.map(attr => [attr.name, attr]));
+	// Get the current attributes
+	const currentAttributes    = get(attributes);
+	// Create a map of current attributes for easy lookup
+	const currentAttributesMap = new Map(currentAttributes.map(attr => [attr.name, attr]));
 
-    // Merge the current attributes with the new ones
-    const mergedAttributes = [...currentAttributes];
-    Object.keys(yaml).forEach((key: string) => {
-			// If the attribute already exists, ignore it
-			if (!currentAttributesMap.has(key)) {
-				// Otherwise, create a new attribute
-				const newAttribute = new FabledAttribute({ name: key });
-				newAttribute.load(yaml[key]);
-				mergedAttributes.push(newAttribute);
-			}
-		});
+	// Merge the current attributes with the new ones
+	const mergedAttributes = [...currentAttributes];
+	Object.keys(yaml).forEach((key: string) => {
+		// If the attribute already exists, ignore it
+		if (!currentAttributesMap.has(key)) {
+			// Otherwise, create a new attribute
+			const newAttribute = new FabledAttribute({ name: key, location });
+			newAttribute.load(yaml[key]);
+			mergedAttributes.push(newAttribute);
+		}
+	});
 
-    attributes.set(mergedAttributes);
-    refreshAttributes();
+	attributes.set(mergedAttributes);
+	refreshAttributes();
 };
 
 export const loadAttribute = (data: FabledAttribute) => {
@@ -148,8 +168,6 @@ export const loadAttribute = (data: FabledAttribute) => {
 		if (!yamlData) return;
 		const attrib = yamlData[data.name];
 		data.load(attrib);
-	} else {
-		// TODO Load data from server
 	}
 };
 

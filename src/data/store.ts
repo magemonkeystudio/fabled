@@ -14,8 +14,8 @@ import {
 	refreshClasses,
 	refreshClassFolders
 }                                                                                 from './class-store';
-import { localStore }                                                             from '$api/api';
-import { deleteAttribute, loadAttributes, loadAttributesText, refreshAttributes } from './attribute-store';
+import { localStore }                                                                         from '$api/api';
+import { attributes, deleteAttribute, loadAttributes, loadAttributesText, refreshAttributes } from './attribute-store';
 import {
 	deleteSkill,
 	deleteSkillFolder,
@@ -27,10 +27,10 @@ import {
 	refreshSkills,
 	skillFolders,
 	skills
-}                                                                                 from './skill-store';
-import type ProComponent                                                          from '$api/components/procomponent';
-import type { MultiClassYamlData, MultiSkillYamlData }                            from '$api/types';
-import { socketService }                                                          from '$api/socket/socket-connector';
+}                                                                                             from './skill-store';
+import type ProComponent                                                       from '$api/components/procomponent';
+import type { MultiAttributeYamlData, MultiClassYamlData, MultiSkillYamlData } from '$api/types';
+import { socketService }                                                       from '$api/socket/socket-connector';
 import YAML                                                                       from 'yaml';
 import FabledAttribute                                                            from '$api/fabled-attribute';
 import { parseYaml }                                                              from '$api/yaml';
@@ -219,7 +219,13 @@ export const getAttributeYaml = async () => {
 		}
 	}
 
-	text += YAML.stringify(parseYaml(localStorage.getItem('attribs') || ''), { lineWidth: 0 });
+	const attributeYaml: MultiAttributeYamlData = {};
+	for (const attr of get(attributes)) {
+		attributeYaml[attr.name] = attr.serializeYaml();
+	}
+	const yaml = YAML.stringify(attributeYaml, { lineWidth: 0 });
+
+	text += yaml;
 	return text;
 };
 
@@ -230,6 +236,10 @@ export const saveAttributes = async () => {
 export const saveDataToServer = async (data?: FabledSkill | FabledClass | FabledAttribute) => {
 	const act = data || get(active);
 	if (!act) return false;
+
+	if (act instanceof FabledAttribute) {
+		return await socketService.saveAttributesToServer(await getAttributeYaml());
+	}
 
 	const yaml = YAML.stringify({ [act.name]: act.serializeYaml() });
 
@@ -243,8 +253,6 @@ export const saveDataToServer = async (data?: FabledSkill | FabledClass | Fabled
 		return await socketService.saveSkillToServer(path + act.name, yaml);
 	} else if (act instanceof FabledClass) {
 		return await socketService.saveClassToServer(path + act.name, yaml);
-	} else if (act instanceof FabledAttribute) {
-		return await socketService.saveAttributesToServer(await getAttributeYaml(), yaml);
 	}
 };
 
@@ -289,8 +297,9 @@ export const getAllClassYaml = async (): Promise<MultiClassYamlData> => {
 export const saveAllToServer = async () => {
 	const skillYaml = await getAllSkillYaml();
 	const classYaml = await getAllClassYaml();
+	const attributeYaml = await getAttributeYaml();
 
-	return await socketService.exportAll(classYaml.toString(), skillYaml.toString());
+	return await socketService.exportAll(classYaml.toString(), skillYaml.toString(), attributeYaml.toString());
 };
 
 export const saveAll = async () => {

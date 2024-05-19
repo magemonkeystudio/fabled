@@ -105,6 +105,12 @@ export const webSocketServer = {
 							.then((args) => callback(args))
 							.catch((err: string) => callback(err));
 					})
+					.on('saveAttributes', ({ to, yaml }: { to: string, name: string; yaml: string; }, callback) => {
+						console.log('Saving attributes to server');
+						socket.to(to).timeout(2500).emitWithAck('saveAttributes', { yaml, from: socket.clientId })
+							.then((args) => callback(args))
+							.catch((err: string) => callback(err));
+					})
 					.on('exportAll', ({ to, classYaml, skillYaml }: {
 						to: string,
 						classYaml: string,
@@ -141,7 +147,14 @@ export const webSocketServer = {
 					})
 					.onAny((event: string, args: { message: never; to: string }) => {
 						// no-op
-						if (event === 'setTimeout' || event === 'disconnect' || event === 'reload' || event === 'saveSkill' || event === 'saveClass' || event === 'exportAll' || event === 'trust') return;
+						if (event === 'setTimeout'
+							|| event === 'disconnect'
+							|| event === 'reload'
+							|| event === 'saveSkill'
+							|| event === 'saveClass'
+							|| event === 'saveAttributes'
+							|| event === 'exportAll'
+							|| event === 'trust') return;
 
 						console.log(event, args);
 						const relay = {

@@ -246,9 +246,9 @@ class SocketService {
 		});
 	}
 
-	public getAttributeYaml(name: string): Promise<string> {
+	public getAttributeYaml(): Promise<string> {
 		if (!this.socket || !get(socketTrusted)) return Promise.reject('No socket');
-		this.socket.emit('getAttributeYaml', { name, to: this.serverId });
+		this.socket.emit('getAttributeYaml', { to: this.serverId });
 		return new Promise((resolve, reject) => {
 			this.socket?.on('attributeYaml', ({ content }) => {
 				this.socket?.off('attributeYaml');
@@ -295,11 +295,14 @@ class SocketService {
 		}
 	}
 
-	public async saveAttributesToServer(name: string, yaml: string): Promise<boolean> {
-		if (!this.socket || !get(socketTrusted)) return Promise.reject('No socket');
+	public async saveAttributesToServer(yaml: string): Promise<boolean> {
+		if (!this.socket || !get(socketTrusted)) {
+			console.log('socket not connected');
+			return Promise.reject('No socket');
+		}
 		try {
-			const response = await this.socket.timeout(3000).emitWithAck('saveAttribute', { name, yaml, to: this.serverId });
-			const match    = response && response[0] === name;
+			const response = await this.socket.timeout(3000).emitWithAck('saveAttributes', { yaml, to: this.serverId });
+			const match    = response && response[0] === 'attributes';
 			if (!match) {
 				console.log('Error saving attribute', response);
 			}
@@ -313,13 +316,14 @@ class SocketService {
 		}
 	}
 
-	public async exportAll(classYaml: string, skillYaml: string): Promise<boolean> {
+	public async exportAll(classYaml: string, skillYaml: string, attributeYaml: string): Promise<boolean> {
 		if (!this.socket || !get(socketTrusted)) return Promise.reject('No socket');
 		try {
 			const response = await this.socket.timeout(4500).emitWithAck('exportAll', {
 				to: this.serverId,
 				classYaml,
-				skillYaml
+				skillYaml,
+				attributeYaml
 			});
 			if (response && !!response[0]) return !!response[0];
 
