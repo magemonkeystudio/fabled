@@ -72,5 +72,5 @@ permissions:
       fabled.reload: true
       fabled.class: true
       fabled.skill: true
-      skillapi.lore: true
-      skillapi.gui: true
+      fabled.lore: true
+      fabled.gui: true
