@@ -5,6 +5,7 @@ import type { AttributeYamlData, Icon, ProAttributeData, Serializable } from './
 import { conditions, mechanics, type RegistryData, targets }            from './components/registry';
 import type ProComponent                                                from './components/procomponent';
 import AttributeSelect                                                  from './options/attributeselect';
+import type { ComponentOption }                                         from '$api/options/options';
 
 export default class FabledAttribute implements Serializable {
 	dataType                     = 'attribute';
@@ -87,7 +88,10 @@ export class AttributeSection {
 	public attribute: FabledAttribute;
 	public components: Writable<AttributeComponent[]> = writable([]);
 	public availableComponents: Readable<string[]>    = derived(this.components, components =>
-		Object.values(get(this.registry)).map(entry => entry.name).filter(name => !components.some(comp => get(comp.name) === name)));
+		Object.values(get(this.registry))
+			.filter(entry => entry.component.new().data.some((option: ComponentOption) => option instanceof AttributeSelect))
+			.map(entry => entry.name)
+			.filter(name => !components.some(comp => get(comp.name) === name)));
 
 	constructor(registry: Readable<RegistryData>, attribute: FabledAttribute, data?: AttributeComponent[]) {
 		this.registry  = registry;

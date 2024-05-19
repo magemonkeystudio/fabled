@@ -6,6 +6,7 @@
 	import Modal                                              from '$components/Modal.svelte';
 	import { classes, classFolders }                          from '../../data/class-store';
 	import { skillFolders, skills }                           from '../../data/skill-store';
+	import { attributes } from '../../data/attribute-store';
 
 	let modalOpen = true;
 
@@ -16,6 +17,7 @@
 		classFolders.set([]);
 		skills.set([]);
 		skillFolders.set([]);
+		attributes.set([]);
 	};
 </script>
 
