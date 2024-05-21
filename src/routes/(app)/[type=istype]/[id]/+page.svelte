@@ -1,17 +1,16 @@
 <script lang='ts'>
-	import type FabledSkill from '$api/fabled-skill';
-	import ComponentWidget  from '$components/ComponentWidget.svelte';
+	import ComponentWidget                                from '$components/ComponentWidget.svelte';
 	import Modal                                          from '$components/Modal.svelte';
 	import type { Unsubscriber }                          from 'svelte/store';
 	import { get }                                        from 'svelte/store';
 	import ProInput                                       from '$input/ProInput.svelte';
-	import { skills }                                     from '../../../../data/skill-store';
 	import { filterParams, initialized, triggerSections } from '$api/components/registry';
 	import { onMount }                                    from 'svelte';
 	import type ProTrigger                                from '$api/components/triggers';
 	import { base }                                       from '$app/paths';
 	import ComponentSection                               from '$components/modal/component/ComponentSection.svelte';
 	import ProComponent                                   from '$api/components/procomponent';
+	import FabledSkill, { skillStore }                    from '../../../../data/skill-store';
 
 	export let data: { data: FabledSkill };
 	let skill: FabledSkill;
@@ -41,9 +40,9 @@
 	};
 
 	const save = () => {
-		skills.set([...get(skills)]);
+		skillStore.skills.set([...get(skillStore.skills)]);
 		skill.save();
-	}
+	};
 </script>
 
 <svelte:head>

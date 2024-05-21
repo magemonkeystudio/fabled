@@ -42,8 +42,8 @@ import IntSelect                                                 from '$api/opti
 import ColorSelect                                               from '$api/options/colorselect';
 import { get }                                                   from 'svelte/store';
 import type ProComponent                                         from '$api/components/procomponent';
-import { getAttributeNames }                                     from '../../data/attribute-store';
 import EnchantSelect                                             from '$api/options/enchantselect';
+import { attributeStore }                                        from '../../data/attribute-store';
 
 // TRIGGERS
 
@@ -2235,7 +2235,7 @@ class AttributeMechanic extends ProMechanic {
 			name:         'Attribute',
 			description:  'Gives a player bonus attributes temporarily',
 			data:         [
-				new DropdownSelect('Attribute', 'key', () => getAttributeNames(), ['Intelligence'], true)
+				new DropdownSelect('Attribute', 'key', () => attributeStore.getAttributeNames(), ['Intelligence'], true)
 					.setTooltip('The attribute to add to'),
 				new DropdownSelect('Operation', 'operation', ['ADD_NUMBER', 'MULTIPLY_PERCENTAGE'], 'ADD_NUMBER')
 					.setTooltip('The operation on the original value by amount, ADD_NUMBER: Scalar adding, MULTIPLY_PERCENTAGE: Multiply the value by amount'),

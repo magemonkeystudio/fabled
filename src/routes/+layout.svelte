@@ -16,7 +16,6 @@
 	import ImportModal                                                       from '$components/ImportModal.svelte';
 	import NavBar                                                            from '$components/NavBar.svelte';
 	import HeaderBar                                                         from '$components/HeaderBar.svelte';
-	import { isSaving, skills }                                              from '../data/skill-store';
 	import { fly }                                                           from 'svelte/transition';
 	import { derived, get, type Readable, type Unsubscriber, type Writable } from 'svelte/store';
 	import Sidebar                                                           from '$components/sidebar/Sidebar.svelte';
@@ -26,6 +25,9 @@
 	import { dcWarning, socketConnected, socketService, socketTrusted }      from '$api/socket/socket-connector';
 	import { quadInOut }                                                     from 'svelte/easing';
 	import Modal                                                             from '$components/Modal.svelte';
+	import { skillStore }                                                    from '../data/skill-store.js';
+
+	const isSaving = skillStore.isSaving;
 
 	let dragging    = false;
 	let displaySave = false;
@@ -68,7 +70,7 @@
 		document.addEventListener('dragover', dragover);
 		document.addEventListener('drop', loadFiles);
 
-		saveSub = isSaving.subscribe(saving => {
+		saveSub = skillStore.isSaving.subscribe(saving => {
 			if (!saving) {
 				setTimeout(() => displaySave = false, 1000);
 				return;
@@ -116,7 +118,7 @@
 	};
 
 	const save = () => {
-		skills.set([...get(skills)]);
+		skillStore.skills.set([...get(skillStore.skills)]);
 		get(active)?.save();
 	};
 

@@ -1,11 +1,11 @@
 import { derived, get, type Readable, writable, type Writable }         from 'svelte/store';
-import { saveAll }                                                      from '../data/attribute-store';
 import { Attribute }                                                    from './stat';
 import type { AttributeYamlData, Icon, ProAttributeData, Serializable } from './types';
 import { conditions, mechanics, type RegistryData, targets }            from './components/registry';
 import type ProComponent                                                from './components/procomponent';
 import AttributeSelect                                                  from './options/attributeselect';
 import type { ComponentOption }                                         from '$api/options/options';
+import { attributeStore }                                               from '../data/attribute-store';
 
 export default class FabledAttribute implements Serializable {
 	dataType                     = 'attribute';
@@ -81,7 +81,7 @@ export default class FabledAttribute implements Serializable {
 		if (this.location === 'server') {
 			return;
 		}
-		saveAll();
+		attributeStore.saveAll();
 	};
 }
 

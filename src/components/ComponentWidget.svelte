@@ -8,7 +8,6 @@
 	import { slide }                                     from 'svelte/transition';
 	import { backOut }                                   from 'svelte/easing';
 	import { draggingComponent }                         from '../data/store';
-	import type FabledSkill                              from '$api/fabled-skill';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 	import type { Unsubscriber }                         from 'svelte/store';
 	import { get }                                       from 'svelte/store';
@@ -19,14 +18,16 @@
 	import PreviewModal                                  from '$components/modal/PreviewModal.svelte';
 	import Registry                                      from '$api/components/registry';
 	import Control                                       from '$components/control/Control.svelte';
-	import { skills }                                    from '../data/skill-store';
 	import type { YamlComponentData }                    from '$api/types';
+	import FabledSkill, { skillStore }                   from '../data/skill-store';
 
 	export let skill: FabledSkill;
 	export let component: ProComponent;
 	let wrapper: HTMLElement;
 	let children: HTMLElement;
 	let childrenList: ProComponent[] = [];
+
+	const skills = skillStore.skills;
 
 	const dispatch = createEventDispatcher();
 

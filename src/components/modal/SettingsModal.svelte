@@ -4,20 +4,20 @@
 	import ProInput                                           from '$input/ProInput.svelte';
 	import Toggle                                             from '$input/Toggle.svelte';
 	import Modal                                              from '$components/Modal.svelte';
-	import { classes, classFolders }                          from '../../data/class-store';
-	import { skillFolders, skills }                           from '../../data/skill-store';
-	import { attributes } from '../../data/attribute-store';
+	import { skillStore }                                     from '../../data/skill-store.js';
+	import { classStore }                                     from '../../data/class-store';
+	import { attributeStore }                                 from '../../data/attribute-store.js';
 
 	let modalOpen = true;
 
 	const clearData = () => {
 		if (!confirm('Are you sure you want to clear all data?')) return;
 
-		classes.set([]);
-		classFolders.set([]);
-		skills.set([]);
-		skillFolders.set([]);
-		attributes.set([]);
+		classStore.classes.set([]);
+		classStore.classFolders.set([]);
+		skillStore.skills.set([]);
+		skillStore.skillFolders.set([]);
+		attributeStore.attributes.set([]);
 	};
 </script>
 

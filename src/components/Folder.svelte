@@ -1,15 +1,14 @@
 <script lang='ts'>
-	import FabledFolder                                                                    from '$api/fabled-folder';
-	import { slide }                                                                       from 'svelte/transition';
-	import { deleteFolder, dragging, getFolder, removeFolder, sidebarOpen, updateFolders } from '../data/store';
-	import FabledClass                                                                     from '$api/fabled-class';
-	import FabledSkill                                                                     from '$api/fabled-skill';
-	import { get }                                                                         from 'svelte/store';
-	import SidebarEntry
-																																												 from '$components/sidebar/SidebarEntry.svelte';
-	import { goto }                                                                        from '$app/navigation';
-	import { base }                                                                        from '$app/paths';
-	import type FabledAttribute                                                            from '$api/fabled-attribute';
+	import { slide }                     from 'svelte/transition';
+	import { dragging, sidebarOpen }     from '../data/store';
+	import { get }                       from 'svelte/store';
+	import SidebarEntry                  from '$components/sidebar/SidebarEntry.svelte';
+	import { goto }                      from '$app/navigation';
+	import { base }                      from '$app/paths';
+	import type FabledAttribute          from '$api/fabled-attribute';
+	import type FabledClass              from '../data/class-store';
+	import type FabledSkill              from '../data/skill-store';
+	import { FabledFolder, folderStore } from '../data/folder-store.js';
 
 	export let folder: FabledFolder;
 	let elm: HTMLElement;
@@ -36,13 +35,13 @@
 	};
 
 	const deleteF = () => {
-		deleteFolder(folder);
+		folderStore.deleteFolder(folder);
 	};
 
 	const addFolder = () => {
 		folder.createFolder();
 		folder.open = true;
-		updateFolders();
+		folderStore.updateFolders();
 	};
 
 
@@ -58,11 +57,11 @@
 		if (!dragData) return;
 		if (folder.data.includes(dragData)) return;
 
-		const containing = getFolder(dragData);
+		const containing = folderStore.getFolder(dragData);
 		if (containing) containing.remove(dragData);
 
 		if (dragData instanceof FabledFolder) {
-			removeFolder(dragData);
+			folderStore.removeFolder(dragData);
 			dragData.parent = folder;
 		}
 
@@ -218,9 +217,9 @@
         margin-left: 0.5rem;
     }
 
-		.name.server::after {
-				content: '*';
-		}
+    .name.server::after {
+        content: '*';
+    }
 
     .icon {
         display: flex;

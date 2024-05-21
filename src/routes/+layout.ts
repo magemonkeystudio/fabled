@@ -1,12 +1,11 @@
-import type { LayoutLoad }                  from './$types';
-import { createPaste, getHaste }            from '$api/hastebin';
-import { base }                             from '$app/paths';
-import { socketService }                    from '$api/socket/socket-connector';
-import { initComponents }                   from '$api/components/components';
-import { get }                              from 'svelte/store';
-import YAML                                 from 'yaml';
-import { parseYaml }                        from '$api/yaml';
-import type { MultiSkillYamlData }          from '$api/types';
+import type { LayoutLoad }         from './$types';
+import { getHaste }                from '$api/hastebin';
+import { base }                    from '$app/paths';
+import { socketService }           from '$api/socket/socket-connector';
+import { initComponents }          from '$api/components/components';
+import YAML                        from 'yaml';
+import { parseYaml }               from '$api/yaml';
+import type { MultiSkillYamlData } from '$api/types';
 
 export const ssr = false;
 
@@ -14,7 +13,6 @@ const expectedHost = ['fabled.magemonkey.studio', 'synthesis.travja.dev'];
 const separator    = '\n\n\n~~~~~\n\n\n';
 
 export const load: LayoutLoad = async ({ url }) => {
-	console.log('layout load')
 	initComponents();
 	if (url.searchParams.has('session')) {
 		// Attempt to connect to the socket.io server

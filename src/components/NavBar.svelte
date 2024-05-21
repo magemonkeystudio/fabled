@@ -2,9 +2,9 @@
 	import { active, activeType, setImporting, toggleSidebar } from '../data/store';
 	import { get }                                             from 'svelte/store';
 	import { createPaste }                                     from '$api/hastebin';
-	import FabledClass                                         from '$api/fabled-class';
-	import FabledSkill                                         from '$api/fabled-skill';
 	import YAML                                                from 'yaml';
+	import type FabledClass                                    from '../data/class-store';
+	import type FabledSkill                                    from '../data/skill-store';
 
 	const haste = () => {
 		let act: FabledClass | FabledSkill | undefined = get(active);

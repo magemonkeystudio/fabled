@@ -1,28 +1,17 @@
 <script lang='ts'>
-	import {
-		active,
-		deleteProData,
-		dragging,
-		getFolder,
-		saveData,
-		shownTab,
-		sidebarOpen,
-		updateFolders
-	}                                     from '../../data/store';
-	import FabledSkill                    from '$api/fabled-skill';
-	import FabledClass                    from '$api/fabled-class';
-	import FabledAttribute                from '$api/fabled-attribute';
-	import { get }                        from 'svelte/store';
-	import FabledFolder                   from '$api/fabled-folder';
-	import { fly, type TransitionConfig } from 'svelte/transition';
-	import Modal                          from '../Modal.svelte';
-	import { addClassFolder, cloneClass } from '../../data/class-store';
-	import { addSkillFolder, cloneSkill } from '../../data/skill-store';
-	import { animationEnabled }           from '../../data/settings';
-	import { base }                       from '$app/paths';
-	import { createEventDispatcher }      from 'svelte';
-	import { cloneAttribute }             from '../../data/attribute-store';
-	import { Tab }                        from '$api/tab';
+	import { active, deleteProData, dragging, saveData, shownTab, sidebarOpen } from '../../data/store';
+	import FabledAttribute                                                      from '$api/fabled-attribute';
+	import { get }                                                              from 'svelte/store';
+	import { fly, type TransitionConfig }                                       from 'svelte/transition';
+	import Modal                                                                from '../Modal.svelte';
+	import { animationEnabled }                                                 from '../../data/settings';
+	import { base }                                                             from '$app/paths';
+	import { createEventDispatcher }                                            from 'svelte';
+	import { Tab }                                                              from '$api/tab';
+	import FabledSkill, { skillStore }                                          from '../../data/skill-store';
+	import FabledClass, { classStore }                                          from '../../data/class-store';
+	import { FabledFolder, folderStore }                                        from '../../data/folder-store.js';
+	import { attributeStore }                                                   from '../../data/attribute-store';
 
 	export let delay                                                         = 0;
 	export let direction: 'right' | 'left'                                   = 'left';
@@ -45,25 +34,25 @@
 		const dragData: FabledClass | FabledSkill | FabledAttribute | FabledFolder = get(dragging);
 		let targetFolder;
 		if (data) {
-			targetFolder = getFolder(data);
+			targetFolder = folderStore.getFolder(data);
 		}
 
-		const containing = getFolder(dragData);
+		const containing = folderStore.getFolder(dragData);
 		if (containing) containing.remove(dragData);
 		if (targetFolder) {
 			targetFolder.add(dragData);
 			over = false;
-			updateFolders();
+			folderStore.updateFolders();
 			return;
 		}
 		if (dragData instanceof FabledFolder) {
 			switch (get(shownTab)) {
 				case Tab.CLASSES: {
-					addClassFolder(dragData);
+					classStore.addClassFolder(dragData);
 					break;
 				}
 				case Tab.SKILLS: {
-					addSkillFolder(dragData);
+					skillStore.addSkillFolder(dragData);
 					break;
 				}
 			}
@@ -93,11 +82,11 @@
 		if (!data) return;
 
 		if (data instanceof FabledClass) {
-			cloneClass(data);
+			classStore.cloneClass(data);
 		} else if (data instanceof FabledSkill) {
-			cloneSkill(data);
+			skillStore.cloneSkill(data);
 		} else if (data instanceof FabledAttribute) {
-			cloneAttribute(data);
+			attributeStore.cloneAttribute(data);
 		}
 	};
 </script>
@@ -106,7 +95,7 @@
 <div class='sidebar-entry'
 		 class:over
 		 class:active={data && $active === data}
-		 class:in-folder={!!getFolder(data)}
+		 class:in-folder={!!folderStore.getFolder(data)}
 		 draggable='{!!data}'
 		 on:dragstart={startDrag}
 		 on:drop|preventDefault|stopPropagation={drop}

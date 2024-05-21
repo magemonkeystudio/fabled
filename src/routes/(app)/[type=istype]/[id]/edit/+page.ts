@@ -1,20 +1,17 @@
 import { socketService }                                                       from '$api/socket/socket-connector';
-import type FabledClass                                                        from '$api/fabled-class';
-import type FabledSkill                                                        from '$api/fabled-skill';
 import { active, shownTab }                                                    from '../../../../../data/store';
 import { get }                                                                 from 'svelte/store';
 import { redirect }                                                            from '@sveltejs/kit';
-import { classes }                                                             from '../../../../../data/class-store';
-import { skills }                                                              from '../../../../../data/skill-store';
 import { Attribute }                                                           from '$api/stat';
-import {
-	attributes,
-	getAttributeNames
-}                                                                              from '../../../../../data/attribute-store';
 import type { MultiAttributeYamlData, MultiClassYamlData, MultiSkillYamlData } from '$api/types';
 import FabledAttribute                                                         from '$api/fabled-attribute';
 import { Tab }                                                                 from '$api/tab';
 import { parseYaml }                                                           from '$api/yaml';
+import FabledSkill, { skillStore }                                             from '../../../../../data/skill-store';
+import FabledClass, { classStore }                                             from '../../../../../data/class-store';
+import {
+	attributeStore
+}                                                                              from '../../../../../data/attribute-store';
 
 export const ssr = false;
 
@@ -28,7 +25,7 @@ export async function load({ params }) {
 	let fallback: FabledClass | FabledSkill | FabledAttribute | undefined = undefined;
 	switch (params.type) {
 		case 'skill':
-			for (const c of get(skills)) {
+			for (const c of get(skillStore.skills)) {
 				if (!fallback) fallback = c;
 
 				if (c.name == name) {
@@ -38,7 +35,7 @@ export async function load({ params }) {
 			}
 			break;
 		case 'attribute':
-			for (const c of get(attributes)) {
+			for (const c of get(attributeStore.attributes)) {
 				if (!fallback) fallback = c;
 
 				if (c.name == name) {
@@ -48,7 +45,7 @@ export async function load({ params }) {
 			}
 			break;
 		default:
-			for (const c of get(classes)) {
+			for (const c of get(classStore.classes)) {
 				if (!fallback) fallback = c;
 
 				if (c.name == name) {
@@ -78,7 +75,7 @@ export async function load({ params }) {
 				let yaml: string;
 				if (params.type == 'class') yaml = await socketService.getClassYaml(data.name);
 				else if (params.type === 'skill') yaml = await socketService.getSkillYaml(data.name);
-				else yaml = await socketService.getAttributeYaml(data.name);
+				else yaml = await socketService.getAttributeYaml();
 
 				yamlData = <MultiSkillYamlData | MultiClassYamlData | MultiAttributeYamlData>parseYaml(yaml);
 			}
@@ -120,7 +117,7 @@ export async function load({ params }) {
 }
 
 const updateClassAttributes = (clazz: FabledClass) => {
-	for (const a of getAttributeNames()) {
+	for (const a of attributeStore.getAttributeNames()) {
 		if (clazz.attributes.find(b => b.name === a))
 			continue;
 

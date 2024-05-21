@@ -1,10 +1,10 @@
-import FabledSkill from './fabled-skill';
-import FabledClass         from './fabled-class';
-import { Attribute } from './stat';
-import ProTrigger          from './components/triggers';
-import ProComponent     from '$api/components/procomponent';
-import ComponentOption  from './options/options';
-import type { AttributeComponent, AttributeStat, AttributeStats } from './fabled-attribute';
+import { Attribute }                              from './stat';
+import ProTrigger                                 from './components/triggers';
+import ProComponent                               from '$api/components/procomponent';
+import ComponentOption                            from './options/options';
+import type { AttributeComponent, AttributeStat } from './fabled-attribute';
+import type FabledClass                           from '../data/class-store';
+import type FabledSkill                           from '../data/skill-store';
 
 export interface ProClassData {
 	name: string;
@@ -156,7 +156,7 @@ export interface ClassYamlData {
 	'icon-lore': string[];
 	'exp-source': number;
 
-	'combo-starters': ComboStarters
+	'combo-starters': ComboStarters;
 }
 
 export interface SkillYamlData {
@@ -199,13 +199,13 @@ export interface AttributeYamlData {
 	'icon-data': number;
 	'icon-lore': string[];
 	global: {
-		target: {[key: string]: string}
-		condition: {[key: string]: string}
-		mechanic: {[key: string]: string}
-	}
+		target: { [key: string]: string }
+		condition: { [key: string]: string }
+		mechanic: { [key: string]: string }
+	};
 	stats: {
 		[key: string]: string
-	}
+	};
 }
 
 export interface YamlComponentData {

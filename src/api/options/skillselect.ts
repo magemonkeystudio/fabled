@@ -1,17 +1,15 @@
-import type { ComponentOption } from '$api/options/options';
-import { Requirements }         from '$api/options/options';
-import SkillSelectOption from '$components/options/SkillSelectOption.svelte';
-import FabledSkill       from '$api/fabled-skill';
-import type { Unknown }  from '$api/types';
-import { getSkill }             from '../../data/skill-store';
+import { type ComponentOption, Requirements } from '$api/options/options';
+import SkillSelectOption                      from '$components/options/SkillSelectOption.svelte';
+import type { Unknown }                       from '$api/types';
+import FabledSkill, { skillStore }            from '../../data/skill-store';
 
 export default class SkillSelect extends Requirements implements ComponentOption {
-	component                                       = SkillSelectOption;
+	component                                             = SkillSelectOption;
 	name: string;
 	key: string;
 	data: FabledSkill[] | FabledSkill | string[] | string = [];
 	tooltip: string | undefined                           = undefined;
-	multiple                                        = true;
+	multiple                                              = true;
 
 	constructor(name: string, key: string, multiple = true) {
 		super();
@@ -53,9 +51,9 @@ export default class SkillSelect extends Requirements implements ComponentOption
 
 		// Let's attempt to get the skill from the skill store before creating a dummy skill for display
 		if (skillName instanceof Array) {
-			this.data = skillName.map(skill => getSkill(skill) || new FabledSkill({ name: skill }));
+			this.data = skillName.map(skill => skillStore.getSkill(skill) || new FabledSkill({ name: skill }));
 		} else if (skillName)
-			this.data = getSkill(skillName) || new FabledSkill({ name: skillName });
+			this.data = skillStore.getSkill(skillName) || new FabledSkill({ name: skillName });
 		else
 			this.data = this.multiple ? [] : '';
 	};

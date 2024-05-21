@@ -1,11 +1,11 @@
 <script lang='ts'>
-	import FabledClass  from '$api/fabled-class';
-	import FabledSkill  from '$api/fabled-skill';
-	import ClassDetails from '$components/ClassDetails.svelte';
-	import SkillDetails from '$components/SkillDetails.svelte';
+	import ClassDetails     from '$components/ClassDetails.svelte';
+	import SkillDetails     from '$components/SkillDetails.svelte';
 	import AttributeDetails from '$components/AttributeDetails.svelte';
-	import { base }     from '$app/paths';
-	import FabledAttribute from '$api/fabled-attribute';
+	import { base }         from '$app/paths';
+	import FabledAttribute  from '$api/fabled-attribute';
+	import FabledClass      from '../../../../../data/class-store';
+	import FabledSkill      from '../../../../../data/skill-store';
 
 	export let data: { data: FabledClass | FabledSkill | FabledAttribute };
 </script>
