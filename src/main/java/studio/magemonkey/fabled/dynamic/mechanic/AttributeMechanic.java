@@ -26,19 +26,21 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.enums.Operation;
-import studio.magemonkey.fabled.api.player.PlayerAttributeModifier;
-import studio.magemonkey.fabled.api.player.PlayerData;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.enums.Operation;
+import studio.magemonkey.fabled.api.player.PlayerAttributeModifier;
+import studio.magemonkey.fabled.api.player.PlayerData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Applies a flag to each target
@@ -66,19 +68,28 @@ public class AttributeMechanic extends MechanicComponent {
     }
 
     /**
-     * Executes the component
-     *
-     * @param caster  caster of the skill
-     * @param level   level of the skill
-     * @param targets targets to apply to
-     * @param force
-     * @return true if applied to something, false otherwise
+     * {@inheritDoc}
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        String key = settings.getString(KEY, "");
-        if (targets.isEmpty() || Fabled.getAttributeManager().getAttribute(key) == null) {
+        if (targets.isEmpty()) {
             return false;
+        }
+
+        List<String> keys;
+        if (!settings.getStringList(KEY).isEmpty()) {
+            keys = settings.getStringList(KEY)
+                    .stream()
+                    .filter(key -> Fabled.getAttributeManager().getAttribute(key) != null)
+                    .collect(Collectors.toList());
+        } else {
+            // Attempt to read it as a string, optionally comma separated
+            String data = settings.getString(KEY);
+            if (data == null || data.isBlank() || data.equals("[]")) {
+                keys = new ArrayList<>();
+            } else {
+                keys = List.of(settings.getString(KEY).split(","));
+            }
         }
 
         final Map<String, AttribTask> casterTasks = tasks.computeIfAbsent(caster.getEntityId(), HashMap::new);
@@ -98,15 +109,14 @@ public class AttributeMechanic extends MechanicComponent {
                         Operation.valueOf(operation),
                         false);
 
+
                 if (casterTasks.containsKey(data.getPlayerName()) && !stackable) {
                     final AttribTask old = casterTasks.remove(data.getPlayerName());
-
                     data.removeAttributeModifier(old.modifier.getUUID(), false);
-
-                    data.addAttributeModifier(key, modifier, true);
-
                     old.cancel();
-                } else {
+                }
+
+                for (String key : keys) {
                     data.addAttributeModifier(key, modifier, true);
                 }
 
