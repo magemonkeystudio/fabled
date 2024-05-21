@@ -2,7 +2,7 @@ import { browser }       from '$app/environment';
 import type { Writable } from 'svelte/store';
 import { writable }      from 'svelte/store';
 
-export const synthesisEnabled = true;
+export const synthesisEnabled = false;
 
 export const showSummaryItems: Writable<boolean> = ((): Writable<boolean> => {
 	let saved = true;
