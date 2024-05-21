@@ -25,6 +25,8 @@ export default class FabledAttribute implements Serializable {
 	public mechanics: AttributeSection = new AttributeSection(mechanics, this);
 	public stats: AttributeStats = new AttributeStats(this);
 
+	key = {};
+
 	constructor(data?: ProAttributeData) {
         this.name = data ? data.name : "Attribute";
 		this.display = data?.display ? data.display : this.name;

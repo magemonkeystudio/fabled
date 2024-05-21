@@ -1,14 +1,15 @@
 <script lang='ts'>
-	import FabledFolder from '$api/fabled-folder';
-	import { slide }    from 'svelte/transition';
+	import FabledFolder                                                                    from '$api/fabled-folder';
+	import { slide }                                                                       from 'svelte/transition';
 	import { deleteFolder, dragging, getFolder, removeFolder, sidebarOpen, updateFolders } from '../data/store';
-	import FabledClass from '$api/fabled-class';
-	import FabledSkill from '$api/fabled-skill';
-	import { get }     from 'svelte/store';
+	import FabledClass                                                                     from '$api/fabled-class';
+	import FabledSkill                                                                     from '$api/fabled-skill';
+	import { get }                                                                         from 'svelte/store';
 	import SidebarEntry
 																																												 from '$components/sidebar/SidebarEntry.svelte';
 	import { goto }                                                                        from '$app/navigation';
 	import { base }                                                                        from '$app/paths';
+	import type FabledAttribute                                                            from '$api/fabled-attribute';
 
 	export let folder: FabledFolder;
 	let elm: HTMLElement;
@@ -52,8 +53,8 @@
 	};
 
 	const drop = () => {
-		over                                            = false;
-		const dragData: FabledClass | FabledSkill | FabledFolder = get(dragging);
+		over                                                                       = false;
+		const dragData: FabledClass | FabledSkill | FabledAttribute | FabledFolder = get(dragging);
 		if (!dragData) return;
 		if (folder.data.includes(dragData)) return;
 
@@ -150,7 +151,7 @@
 
 {#if folder.open}
 	<div class='folder-content' transition:slide>
-		{#each folder.data as data (data.key)}
+		{#each folder.data as data (data?.key)}
 			{#if data instanceof FabledFolder}
 				<svelte:self folder={data} />
 			{:else}

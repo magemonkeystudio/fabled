@@ -1,12 +1,14 @@
 import type { LayoutLoad }                  from './$types';
 import { createPaste, getHaste }            from '$api/hastebin';
 import { base }                             from '$app/paths';
-import { loadSkillText, skills }            from '../data/skill-store';
+// import { loadSkillText, skills }            from '../data/skill-store';
 import { getAllClassYaml, getAllSkillYaml } from '../data/store';
 import { get }                              from 'svelte/store';
-import { loadClassText }                    from '../data/class-store';
+// import { loadClassText }                    from '../data/class-store';
 import YAML                                 from 'yaml';
 import { initComponents }                   from '$api/components/components';
+import { parseYaml }                        from '$api/yaml';
+import type { MultiSkillYamlData }          from '$api/types';
 
 export const ssr = false;
 
@@ -29,10 +31,12 @@ export const load: LayoutLoad = async ({ url }) => {
 				const classFolders = data.split(separator)[3];
 				const attributes   = data.split(separator)[4]
 
-
-				loadSkillText(skillData).then(() => {
-				});
-				loadClassText(classData);
+				parseYaml(skillData).forEach((skill: MultiSkillYamlData) => {
+					localStorage.setItem('sapi.skill.' + skill.name, YAML.stringify(skill));
+				})
+				parseYaml(classData).forEach((cls: MultiSkillYamlData) => {
+					localStorage.setItem('sapi.class.' + cls.name, YAML.stringify(cls));
+				})
 				localStorage.setItem('skillFolders', skillFolders);
 				localStorage.setItem('classFolders', classFolders);
 				localStorage.setItem('attribs',      attributes);

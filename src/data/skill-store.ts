@@ -125,7 +125,8 @@ export const skillFolders: Writable<FabledFolder[]> = setupSkillStore<FabledFold
 				return value;
 			});
 		} catch (e) {
-			notify('Error loading skill folders. Folder data: ' + data);
+			console.error('Error loading skill folders. Folder data: ' + data, e);
+			notify('Error loading skill folders. ' + JSON.stringify(e) + '\nFolder data: ' + data);
 			return [];
 		}
 	},
