@@ -1,6 +1,7 @@
 import { io, type Socket }              from 'socket.io-client';
 import { get, type Writable, writable } from 'svelte/store';
 import { v4 as uuid }                   from 'uuid';
+import { synthesisEnabled }             from '../../data/settings';
 
 type SocketMessage = {
 	id: object;
@@ -58,6 +59,7 @@ class SocketService {
 	}
 
 	public connect(sessionId: string, clientName: string | undefined | null = undefined) {
+		if (!synthesisEnabled) return null;
 		if (this.socket) return this.socket;
 		if (!sessionId) return null;
 

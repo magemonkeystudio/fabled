@@ -6,6 +6,7 @@ import { initComponents }          from '$api/components/components';
 import YAML                        from 'yaml';
 import { parseYaml }               from '$api/yaml';
 import type { MultiSkillYamlData } from '$api/types';
+import { synthesisEnabled }        from '../data/settings';
 
 export const ssr = false;
 
@@ -14,7 +15,7 @@ const separator    = '\n\n\n~~~~~\n\n\n';
 
 export const load: LayoutLoad = async ({ url }) => {
 	initComponents();
-	if (url.searchParams.has('session')) {
+	if (synthesisEnabled && url.searchParams.has('session')) {
 		// Attempt to connect to the socket.io server
 		const sessionId = url.searchParams.get('session');
 		if (sessionId) {
