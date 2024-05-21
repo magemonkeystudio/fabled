@@ -1,8 +1,12 @@
-import type { LayoutLoad }       from './$types';
-import { createPaste, getHaste } from '$api/hastebin';
-import { base }                  from '$app/paths';
-import { socketService }         from '$api/socket/socket-connector';
-import { initComponents }        from '$api/components/components';
+import type { LayoutLoad }                  from './$types';
+import { createPaste, getHaste }            from '$api/hastebin';
+import { base }                             from '$app/paths';
+import { socketService }                    from '$api/socket/socket-connector';
+import { initComponents }                   from '$api/components/components';
+import { get }                              from 'svelte/store';
+import YAML                                 from 'yaml';
+import { parseYaml }                        from '$api/yaml';
+import type { MultiSkillYamlData }          from '$api/types';
 
 export const ssr = false;
 
@@ -10,6 +14,7 @@ const expectedHost = ['fabled.magemonkey.studio', 'synthesis.travja.dev'];
 const separator    = '\n\n\n~~~~~\n\n\n';
 
 export const load: LayoutLoad = async ({ url }) => {
+	console.log('layout load')
 	initComponents();
 	if (url.searchParams.has('session')) {
 		// Attempt to connect to the socket.io server
@@ -31,15 +36,17 @@ export const load: LayoutLoad = async ({ url }) => {
 				const classData    = data.split(separator)[1];
 				const skillFolders = data.split(separator)[2];
 				const classFolders = data.split(separator)[3];
-				const attributes   = data.split(separator)[4]
+				const attributes   = data.split(separator)[4];
 
-
-				loadSkillText(skillData).then(() => {
+				parseYaml(skillData).forEach((skill: MultiSkillYamlData) => {
+					localStorage.setItem('sapi.skill.' + skill.name, YAML.stringify(skill));
 				});
-				loadClassText(classData);
+				parseYaml(classData).forEach((cls: MultiSkillYamlData) => {
+					localStorage.setItem('sapi.class.' + cls.name, YAML.stringify(cls));
+				});
 				localStorage.setItem('skillFolders', skillFolders);
 				localStorage.setItem('classFolders', classFolders);
-				localStorage.setItem('attribs',      attributes);
+				localStorage.setItem('attribs', attributes);
 
 				window.location.href = `https://${expectedHost}${base}`;
 			})
@@ -48,22 +55,22 @@ export const load: LayoutLoad = async ({ url }) => {
 		return;
 	}
 
-	if (expectedHost.includes(url.host) || get(skills).length == 0) return;
-
-	alert('We\'re migrating to a new URL. You\'re now going to be redirected. Your skills/classes should remain in tact.');
-
-	const skillYaml    = YAML.stringify(await getAllSkillYaml(), { lineWidth: 0 });
-	const classYaml    = YAML.stringify(getAllClassYaml(), { lineWidth: 0 });
-	const skillFolders = localStorage.getItem('skillFolders');
-	const classFolders = localStorage.getItem('classFolders');
-	const attributes   = localStorage.getItem('attribs');
-
-	const qualifiedData = skillYaml + separator
-		+ classYaml + separator
-		+ skillFolders + separator
-		+ classFolders + separator
-		+ attributes;
-
-	createPaste(qualifiedData)
-		.then((url: string) => window.location.href = `https://${expectedHost}?migrationData=${url}`);
+	// if (expectedHost.includes(url.host) || get(skills).length == 0) return;
+	//
+	// alert('We\'re migrating to a new URL. You\'re now going to be redirected. Your skills/classes should remain in tact.');
+	//
+	// const skillYaml    = YAML.stringify(await getAllSkillYaml(), { lineWidth: 0 });
+	// const classYaml    = YAML.stringify(getAllClassYaml(), { lineWidth: 0 });
+	// const skillFolders = localStorage.getItem('skillFolders');
+	// const classFolders = localStorage.getItem('classFolders');
+	// const attributes   = localStorage.getItem('attribs');
+	//
+	// const qualifiedData = skillYaml + separator
+	// 	+ classYaml + separator
+	// 	+ skillFolders + separator
+	// 	+ classFolders + separator
+	// 	+ attributes;
+	//
+	// createPaste(qualifiedData)
+	// 	.then((url: string) => window.location.href = `https://${expectedHost}?migrationData=${url}`);
 };

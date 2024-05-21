@@ -174,7 +174,8 @@ export const classFolders: Writable<FabledFolder[]> = setupClassStore<FabledFold
 				return value;
 			});
 		} catch (e) {
-			notify('Error loading class folders. Folder data: ' + data);
+			console.error('Error loading class folders. Folder data: ' + data, e);
+			notify('Error loading class folders. ' + JSON.stringify(e) + '\nFolder data: ' + data);
 			return [];
 		}
 	},
