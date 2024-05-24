@@ -53,7 +53,7 @@ public class DurabilityMechanic extends MechanicComponent {
 
         Damageable im         = (Damageable) itemMeta;
         int        durability = item.getType().getMaxDurability() - im.getDamage();
-        if (durability <= -amount) {
+        if (amount > 0 && durability <= amount) {
             if (offhand && VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
                 player.getInventory().setItemInOffHand(null);
             } else {
