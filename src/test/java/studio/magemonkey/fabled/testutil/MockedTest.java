@@ -4,6 +4,16 @@ import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.*;
+import org.mockito.MockedStatic;
 import studio.magemonkey.codex.CodexEngine;
 import studio.magemonkey.codex.core.config.CoreLang;
 import studio.magemonkey.codex.hooks.HookManager;
@@ -19,16 +29,6 @@ import studio.magemonkey.codex.util.reflection.Reflection_1_17;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.util.DamageLoreRemover;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.*;
-import org.mockito.MockedStatic;
 
 import java.io.*;
 import java.util.*;
@@ -280,12 +280,12 @@ public abstract class MockedTest {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(Objects.requireNonNull(this.getClass()
                     .getClassLoader()
                     .getResourceAsStream("classes" + File.separator + c + ".yml"))));
-                 FileWriter writer = new FileWriter(classFile);) {
+                 FileWriter writer = new FileWriter(classFile)) {
                 String str;
                 while ((str = in.readLine()) != null) {
                     writer.write(str + "\n");
                 }
-                log.info("Saved class file " + c);
+                log.info("Saved class file {}", c);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
