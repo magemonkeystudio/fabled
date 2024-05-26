@@ -1,25 +1,25 @@
-<script lang="ts">
+<script lang='ts'>
 
-  export let value = 273;
-  export let data: string[];
+	export let value = 273;
+	export let data: string[];
 
 </script>
 
-<div class="input">
-  {#each data as entry, i}
-    <div class="entry"
-         tabindex='0'
-         role='menuitem'
-         on:click={() => value = value ^ Math.pow(2, i)}
-         on:keypress={(e) => {
+<div class='input'>
+	{#each data as entry, i}
+		<div class='entry'
+				 tabindex='0'
+				 role='menuitem'
+				 on:click={() => value = value ^ Math.pow(2, i)}
+				 on:keypress={(e) => {
            if (e.key === 'Enter') {
              value = value ^ Math.pow(2, i);
            }
          }}
-         class:selected={value & Math.pow(2, i)}>
-      {entry}
-    </div>
-  {/each}
+				 class:selected={value & Math.pow(2, i)}>
+			{entry}
+		</div>
+	{/each}
 </div>
 
 <style>

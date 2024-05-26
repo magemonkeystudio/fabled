@@ -4,8 +4,8 @@ interface SquishParams {
 }
 
 export const squish = (node: Element, {
-  delay = 0,
-  duration = 500
+	delay = 0,
+	duration = 500
 }: SquishParams = {}) => {
 	const width   = getComputedStyle(node).width;
 	const matcher = width.match(/([\d.]+)(.*)/);

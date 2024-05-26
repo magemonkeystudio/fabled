@@ -235,7 +235,7 @@ class AttributeStore {
 		for (const attr of get(this.attributes)) {
 			attributeYaml[attr.name] = attr.serializeYaml();
 		}
-		const yaml = YAML.stringify(attributeYaml, { lineWidth: 0 });
+		const yaml = YAML.stringify(attributeYaml, { lineWidth: 0, aliasDuplicateObjects: false });
 
 		try {
 			localStorage.setItem('attribs', yaml);

@@ -44,7 +44,14 @@ export default class DropdownSelect extends Requirements implements ComponentOpt
 		return this;
 	};
 
-	clone = (): DropdownSelect => new DropdownSelect(this.name, this.key, [...this.data.value], this.data.selected);
+	clone = (): DropdownSelect => {
+		return new DropdownSelect(
+			this.name,
+			this.key,
+			this.dataSource || [...this.data.value],
+			this.data.multiple ? [...this.data.selected] : this.data.selected,
+			this.data.multiple);
+	};
 
 	getData = (): { [key: string]: unknown } => {
 		const data: { [key: string]: unknown } = {};
@@ -63,5 +70,5 @@ export default class DropdownSelect extends Requirements implements ComponentOpt
 		// If selected is not a list and multiple is true, convert it to a list
 		if (this.data.multiple && !(this.data.selected instanceof Array)) this.data.selected = [this.data.selected];
 		else if (!this.data.multiple && this.data.selected instanceof Array) this.data.selected = this.data.selected[0];
-	}
+	};
 }

@@ -119,7 +119,10 @@ export const saveData = (data?: FabledSkill | FabledClass | FabledAttribute) => 
 		return;
 	}
 
-	saveToFile(act.name + '.yml', YAML.stringify({ [act.name]: act.serializeYaml() }, { lineWidth: 0 }));
+	saveToFile(act.name + '.yml', YAML.stringify({ [act.name]: act.serializeYaml() }, {
+		lineWidth:             0,
+		aliasDuplicateObjects: false
+	}));
 };
 
 export const getAttributeYaml = async () => {
@@ -136,7 +139,7 @@ export const getAttributeYaml = async () => {
 	for (const attr of get(attributeStore.attributes)) {
 		attributeYaml[attr.name] = attr.serializeYaml();
 	}
-	const yaml = YAML.stringify(attributeYaml, { lineWidth: 0 });
+	const yaml = YAML.stringify(attributeYaml, { lineWidth: 0, aliasDuplicateObjects: false });
 
 	text += yaml;
 	return text;
@@ -154,7 +157,7 @@ export const saveDataToServer = async (data?: FabledSkill | FabledClass | Fabled
 		return await socketService.saveAttributesToServer(await getAttributeYaml());
 	}
 
-	const yaml = YAML.stringify({ [act.name]: act.serializeYaml() });
+	const yaml = YAML.stringify({ [act.name]: act.serializeYaml() }, { lineWidth: 0, aliasDuplicateObjects: false });
 
 	const folder = folderStore.getFolder(act);
 	let path     = '';
@@ -220,8 +223,8 @@ export const saveAll = async () => {
 	const skillYaml = await getAllSkillYaml();
 	const classYaml = await getAllClassYaml();
 
-	saveToFile('skills.yml', YAML.stringify(skillYaml, { lineWidth: 0 }));
-	saveToFile('classes.yml', YAML.stringify(classYaml, { lineWidth: 0 }));
+	saveToFile('skills.yml', YAML.stringify(skillYaml, { lineWidth: 0, aliasDuplicateObjects: false }));
+	saveToFile('classes.yml', YAML.stringify(classYaml, { lineWidth: 0, aliasDuplicateObjects: false }));
 	await saveAttributes();
 	skillStore.isSaving.set(false);
 };

@@ -118,7 +118,12 @@ export const webSocketServer = {
 						attributeYaml: string
 					}, callback) => {
 						console.log('Exporting all to server:', to);
-						socket.to(to).timeout(4000).emitWithAck('exportAll', { classYaml, skillYaml, attributeYaml, from: socket.clientId })
+						socket.to(to).timeout(4000).emitWithAck('exportAll', {
+							classYaml,
+							skillYaml,
+							attributeYaml,
+							from: socket.clientId
+						})
 							.then((args) => callback(args))
 							.catch((err: string) => callback(err));
 					})

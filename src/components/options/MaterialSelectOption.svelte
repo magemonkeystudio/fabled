@@ -1,9 +1,9 @@
 <script lang='ts'>
-  import MaterialSelect            from '$input/MaterialSelect.svelte';
-  import ProInput                  from '$input/ProInput.svelte';
-  import { createEventDispatcher } from 'svelte';
+	import MaterialSelect            from '$input/MaterialSelect.svelte';
+	import ProInput                  from '$input/ProInput.svelte';
+	import { createEventDispatcher } from 'svelte';
 
-  export let data: { material: string, any?: boolean };
+	export let data: { material: string, any?: boolean };
 	export let tooltip: string | undefined = undefined;
 
 	const dispatch = createEventDispatcher();

@@ -74,7 +74,7 @@ export const getDamageTypes = () => {
 
 export const getAnyDamageTypes = () => {
 	return ['Any', ...get(versionData).DAMAGE_TYPES];
-}
+};
 
 export const getPotionTypes = () => {
 	return get(versionData).POTIONS;

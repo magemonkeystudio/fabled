@@ -12,5 +12,5 @@
 </script>
 
 <ProInput label='Enchant' tooltip='[enchant] {tooltip}'>
-	<EnchantSelect bind:selected={data.enchants} multiple/>
+	<EnchantSelect bind:selected={data.enchants} multiple />
 </ProInput>

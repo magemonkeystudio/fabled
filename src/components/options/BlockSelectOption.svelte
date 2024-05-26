@@ -1,5 +1,5 @@
 <script lang='ts'>
-	import BlockSelect            from '$input/BlockSelect.svelte';
+	import BlockSelect               from '$input/BlockSelect.svelte';
 	import ProInput                  from '$input/ProInput.svelte';
 	import { createEventDispatcher } from 'svelte';
 

@@ -4,8 +4,8 @@
 	import AttributeInput       from './input/AttributeInput.svelte';
 	import ProInput             from './input/ProInput.svelte';
 	import type FabledAttribute from '$api/fabled-attribute';
-	import AttributeSection from './attributes/AttributeSection.svelte';
-	import AttributeStats from './attributes/AttributeStats.svelte';
+	import AttributeSection     from './attributes/AttributeSection.svelte';
+	import AttributeStats       from './attributes/AttributeStats.svelte';
 
 	export let data: FabledAttribute;
 
@@ -26,9 +26,9 @@
 						tooltip='How many attribute points it costs to upgrade the attribute, increasing with the level of the attribute'>
 		<AttributeInput bind:value={data.cost} />
 	</ProInput>
-    <IconInput bind:icon={data.icon} />
-    <AttributeSection name={'Target'} bind:section={data.targets} />
-    <AttributeSection name={'Condition'} bind:section={data.conditions}/>
-    <AttributeSection name={'Mechanic'} bind:section={data.mechanics}/>
-	<AttributeStats bind:stats={data.stats}/>
+	<IconInput bind:icon={data.icon} />
+	<AttributeSection name={'Target'} bind:section={data.targets} />
+	<AttributeSection name={'Condition'} bind:section={data.conditions} />
+	<AttributeSection name={'Mechanic'} bind:section={data.mechanics} />
+	<AttributeStats bind:stats={data.stats} />
 {/if}

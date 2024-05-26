@@ -248,7 +248,7 @@ export default class FabledClass implements Serializable {
 			return;
 		}
 
-		const yaml = YAML.stringify({ [this.name]: this.serializeYaml() }, { lineWidth: 0 });
+		const yaml = YAML.stringify({ [this.name]: this.serializeYaml() }, { lineWidth: 0, aliasDuplicateObjects: false });
 
 		if (this.previousName && this.previousName !== this.name) {
 			localStorage.removeItem('sapi.class.' + this.previousName);

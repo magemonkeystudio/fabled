@@ -1,8 +1,8 @@
 <script lang='ts'>
 
-	import ProInput         from '$input/ProInput.svelte';
-	import AttributeInput      from '$input/AttributeInput.svelte';
-	import { Attribute } from '$api/stat';
+	import ProInput       from '$input/ProInput.svelte';
+	import AttributeInput from '$input/AttributeInput.svelte';
+	import { Attribute }  from '$api/stat';
 
 	export let value: Attribute[] = [];
 

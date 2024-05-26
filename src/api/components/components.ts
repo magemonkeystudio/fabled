@@ -67,7 +67,7 @@ class AttributeChangeTrigger extends ProTrigger {
 			name:         'Attribute Change',
 			description:  'Applies skill effects when a player\'s attribute changes. <code>api-attribute</code> is the attribute name, '
 											+ '<code>api-change</code> is the change, and <code>api-value</code> is the new value',
-			data:         [new DropdownSelect('Attribute', 'attr', () => ['Any', ...getAttributeNames()], ['Any'], true)
+			data:         [new DropdownSelect('Attribute', 'attr', () => ['Any', ...attributeStore.getAttributeNames()], ['Any'], true)
 				.setTooltip('The attribute to check for')],
 			summaryItems: ['attr']
 		});

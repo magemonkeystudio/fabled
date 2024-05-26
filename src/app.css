@@ -121,9 +121,11 @@ hr {
     user-select: none;
     -webkit-user-select: none;
 }
+
 a {
     color: #0083ef;
 }
+
 .clear {
     clear: both;
 }

@@ -5,12 +5,13 @@
 	import YAML                                                from 'yaml';
 	import type FabledClass                                    from '../data/class-store';
 	import type FabledSkill                                    from '../data/skill-store';
+	import type FabledAttribute                                from '$api/fabled-attribute';
 
 	const haste = () => {
-		let act: FabledClass | FabledSkill | undefined = get(active);
+		let act: FabledClass | FabledSkill | FabledAttribute | undefined = get(active);
 		if (!act) return;
 
-		let data = YAML.stringify({ [act.name]: act.serializeYaml() }, { lineWidth: 0 });
+		let data = YAML.stringify({ [act.name]: act.serializeYaml() }, { lineWidth: 0, aliasDuplicateObjects: false });
 		createPaste(data)
 			.then((urlToPaste) => {
 				navigator?.clipboard?.writeText(urlToPaste);

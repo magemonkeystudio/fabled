@@ -1,23 +1,23 @@
 <script lang='ts'>
-    export let title = '';
-    export let icon = '';
-    export let color = 'red';
+	export let title = '';
+	export let icon  = '';
+	export let color = 'red';
 
-    const keypress = (e: KeyboardEvent) => e.key === 'Enter' && (<HTMLElement>e.target).click();
+	const keypress = (e: KeyboardEvent) => e.key === 'Enter' && (<HTMLElement>e.target).click();
 </script>
 
 <div class='control'
-     style:--color={color}
-     {title}
-     tabindex='0'
-     role='button'
-     on:click|stopPropagation
-     on:keypress|stopPropagation={keypress}
+		 style:--color={color}
+		 {title}
+		 tabindex='0'
+		 role='button'
+		 on:click|stopPropagation
+		 on:keypress|stopPropagation={keypress}
 >
-    {#if icon}
-        <span class='material-symbols-rounded'>{icon}</span>
-    {/if}
-    <slot></slot>
+	{#if icon}
+		<span class='material-symbols-rounded'>{icon}</span>
+	{/if}
+	<slot></slot>
 </div>
 
 <style>

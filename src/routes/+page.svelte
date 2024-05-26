@@ -1,16 +1,16 @@
 <!-- suppress CssUnusedSymbol -->
-<script lang="ts">
-  import { onMount } from "svelte";
-  import { active }  from "../data/store";
+<script lang='ts'>
+	import { onMount } from 'svelte';
+	import { active }  from '../data/store';
 
-  onMount(() => active.set(undefined));
+	onMount(() => active.set(undefined));
 </script>
 
 <svelte:head>
-  <title>Fabled Dynamic Editor</title>
+	<title>Fabled Dynamic Editor</title>
 </svelte:head>
 
-<div class="start">Select/Add an item on the left to get started!</div>
+<div class='start'>Select/Add an item on the left to get started!</div>
 
 <style>
     .start {

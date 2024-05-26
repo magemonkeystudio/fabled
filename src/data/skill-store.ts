@@ -266,7 +266,10 @@ export default class FabledSkill implements Serializable {
 		this.previousName = this.name;
 
 		try {
-			const yaml = YAML.stringify({ [this.name]: this.serializeYaml() });
+			const yaml = YAML.stringify({ [this.name]: this.serializeYaml() }, {
+				lineWidth:             0,
+				aliasDuplicateObjects: false
+			});
 			localStorage.setItem('sapi.skill.' + this.name, yaml);
 			this.tooBig = false;
 		} catch (e: any) {

@@ -10,4 +10,4 @@ export class NameTransformer implements Transformer<FabledSkill | FabledClass | 
 		if (typeof value === 'string') return value;
 		return value.name;
 	}
-};
+}

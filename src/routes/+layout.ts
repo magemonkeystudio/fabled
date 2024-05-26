@@ -38,10 +38,16 @@ export const load: LayoutLoad = async ({ url }) => {
 				const attributes   = data.split(separator)[4];
 
 				parseYaml(skillData).forEach((skill: MultiSkillYamlData) => {
-					localStorage.setItem('sapi.skill.' + skill.name, YAML.stringify(skill));
+					localStorage.setItem('sapi.skill.' + skill.name, YAML.stringify(skill, {
+						lineWidth:             0,
+						aliasDuplicateObjects: false
+					}));
 				});
 				parseYaml(classData).forEach((cls: MultiSkillYamlData) => {
-					localStorage.setItem('sapi.class.' + cls.name, YAML.stringify(cls));
+					localStorage.setItem('sapi.class.' + cls.name, YAML.stringify(cls, {
+						lineWidth:             0,
+						aliasDuplicateObjects: false
+					}));
 				});
 				localStorage.setItem('skillFolders', skillFolders);
 				localStorage.setItem('classFolders', classFolders);
@@ -58,8 +64,8 @@ export const load: LayoutLoad = async ({ url }) => {
 	//
 	// alert('We\'re migrating to a new URL. You\'re now going to be redirected. Your skills/classes should remain in tact.');
 	//
-	// const skillYaml    = YAML.stringify(await getAllSkillYaml(), { lineWidth: 0 });
-	// const classYaml    = YAML.stringify(getAllClassYaml(), { lineWidth: 0 });
+	// const skillYaml    = YAML.stringify(await getAllSkillYaml(), { lineWidth: 0, aliasDuplicateObjects: false });
+	// const classYaml    = YAML.stringify(getAllClassYaml(), { lineWidth: 0, aliasDuplicateObjects: false });
 	// const skillFolders = localStorage.getItem('skillFolders');
 	// const classFolders = localStorage.getItem('classFolders');
 	// const attributes   = localStorage.getItem('attribs');

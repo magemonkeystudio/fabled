@@ -1,20 +1,20 @@
-<script lang="ts">
-  import type { Attribute } from "$api/stat";
+<script lang='ts'>
+	import type { Attribute } from '$api/stat';
 
-  export let value: Attribute;
+	export let value: Attribute;
 </script>
 
-<div class="wrap">
-  <input class="base"
-         bind:value={value.base}
-         placeholder="0" />
-  +(
-  <input class="modifier"
-         bind:value={value.scale}
-         placeholder="0" />
-<!--         type="number"-->
-<!--         use:numberOnly={{intMode: false, enabled: true}}-->
-  )
+<div class='wrap'>
+	<input class='base'
+				 bind:value={value.base}
+				 placeholder='0' />
+	+(
+	<input class='modifier'
+				 bind:value={value.scale}
+				 placeholder='0' />
+	<!--         type="number"-->
+	<!--         use:numberOnly={{intMode: false, enabled: true}}-->
+	)
 </div>
 
 <style>

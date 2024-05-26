@@ -1,8 +1,8 @@
 import type { ComponentOption } from '$api/options/options';
 import { Requirements }         from '$api/options/options';
-import AttributeSelectOption from '$components/options/AttributeSelectOption.svelte';
-import { Attribute }   from '$api/stat';
-import type { Unknown }      from '$api/types';
+import AttributeSelectOption    from '$components/options/AttributeSelectOption.svelte';
+import { Attribute }            from '$api/stat';
+import type { Unknown }         from '$api/types';
 
 export default class AttributeSelect extends Requirements implements ComponentOption {
 	component                   = AttributeSelectOption;

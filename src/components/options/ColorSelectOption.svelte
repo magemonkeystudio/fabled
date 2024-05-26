@@ -1,20 +1,20 @@
-<script lang="ts">
-  import ProInput                  from "$input/ProInput.svelte";
-  import { createEventDispatcher } from "svelte";
+<script lang='ts'>
+	import ProInput                  from '$input/ProInput.svelte';
+	import { createEventDispatcher } from 'svelte';
 
-  export let data: string;
-  export let name: string | undefined    = "";
-  export let tooltip: string | undefined = undefined;
+	export let data: string;
+	export let name: string | undefined    = '';
+	export let tooltip: string | undefined = undefined;
 
-  const dispatch = createEventDispatcher();
-  $: if (data || !data) dispatch("save");
+	const dispatch = createEventDispatcher();
+	$: if (data || !data) dispatch('save');
 </script>
 
 <ProInput label={name} {tooltip}>
-  <div class="wrap">
-    <input bind:value={data} class="text" />
-    <input type="color" bind:value={data} />
-  </div>
+	<div class='wrap'>
+		<input bind:value={data} class='text' />
+		<input type='color' bind:value={data} />
+	</div>
 </ProInput>
 
 <style>

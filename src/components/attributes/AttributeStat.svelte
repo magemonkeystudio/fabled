@@ -1,27 +1,27 @@
 <script lang='ts'>
-    import ProInput        from '$input/ProInput.svelte';
-	import StringSelectOption from '$components/options/StringSelectOption.svelte';
+	import StringSelectOption                     from '$components/options/StringSelectOption.svelte';
 	import type { AttributeStat, AttributeStats } from '$api/fabled-attribute';
-	import Control from '$components/control/Control.svelte';
-	import { updateSidebar } from '../../data/store';
+	import Control                                from '$components/control/Control.svelte';
+	import { updateSidebar }                      from '../../data/store';
 
-    export let stats: AttributeStats;
-    export let stat: AttributeStat;
+	export let stats: AttributeStats;
+	export let stat: AttributeStat;
 	$: selected = stat.key;
-    $: {
-        if ($selected && stat.formula && stats.attribute?.name) updateSidebar();
-        stats.attribute.save();
-    }
+	$: {
+		if ($selected && stat.formula && stats.attribute?.name) updateSidebar();
+		stats.attribute.save();
+	}
 </script>
 
 <div class='stat'>
-    <div class='btn-del'>
-        <Control title='Delete stat' icon='delete' color='red'
-            on:click={() => stats.removeStat(stat)}
-            on:keypress={() => stats.removeStat(stat)}/>
-    </div>
-    <StringSelectOption bind:data={$selected} name={'Stat'} tooltip={'Attribute option to modify based on attribute value'}/>
-    <StringSelectOption bind:data={stat.formula} name={'Formula'} tooltip='Formula to modify the option by'/>
+	<div class='btn-del'>
+		<Control title='Delete stat' icon='delete' color='red'
+						 on:click={() => stats.removeStat(stat)}
+						 on:keypress={() => stats.removeStat(stat)} />
+	</div>
+	<StringSelectOption bind:data={$selected} name={'Stat'}
+											tooltip={'Attribute option to modify based on attribute value'} />
+	<StringSelectOption bind:data={stat.formula} name={'Formula'} tooltip='Formula to modify the option by' />
 </div>
 
 <style>
