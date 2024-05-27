@@ -215,7 +215,10 @@ export const saveAllToServer = async () => {
 	const classYaml     = await getAllClassYaml();
 	const attributeYaml = await getAttributeYaml();
 
-	return await socketService.exportAll(classYaml.toString(), skillYaml.toString(), attributeYaml.toString());
+	return await socketService.exportAll(
+		YAML.stringify(classYaml, { lineWidth: 0, aliasDuplicateObjects: false }),
+		YAML.stringify(skillYaml, { lineWidth: 0, aliasDuplicateObjects: false }),
+		attributeYaml.toString());
 };
 
 export const saveAll = async () => {
