@@ -296,7 +296,7 @@ class ClassStore {
 			// If we already have this class, don't add it
 			if (tempClasses.find(cl => cl.name === c)) return;
 
-			const clazz = new FabledClass({ name: c, location: 'server' });
+			const clazz = new FabledClass({ name, location: 'server' });
 			if (folder) folder.add(clazz);
 			tempClasses.push(clazz);
 		});
