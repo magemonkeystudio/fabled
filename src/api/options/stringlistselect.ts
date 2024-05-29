@@ -32,7 +32,7 @@ export default class StringListSelect extends Requirements implements ComponentO
 		return data;
 	};
 
-	getSummary = (): string => this.data.value.join(', ');
+	getSummary = (): string => this.data?.value ? this.data.value.join(', ') : '';
 
 	deserialize = (yaml: Unknown) => this.data.value = <string[]>yaml[this.key] || [];
 }
