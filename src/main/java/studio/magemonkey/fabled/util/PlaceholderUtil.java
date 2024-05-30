@@ -1,5 +1,12 @@
 package studio.magemonkey.fabled.util;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.LivingEntity;
+import org.jetbrains.annotations.NotNull;
+import studio.magemonkey.codex.util.StringUT;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.api.classes.FabledClass;
@@ -12,13 +19,6 @@ import studio.magemonkey.fabled.api.util.FlagManager;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.hook.PlaceholderAPIHook;
 import studio.magemonkey.fabled.hook.PluginChecker;
-import studio.magemonkey.codex.util.StringUT;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.LivingEntity;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,9 @@ public class PlaceholderUtil {
         while (matcher.find()) {
             String match = matcher.group(1);
             String value = replace(player, match);
-            formattedLine = formattedLine.replace("%fabled_" + match + "%", value);
+            if (value != null) {
+                formattedLine = formattedLine.replace("%fabled_" + match + "%", value);
+            }
         }
         return StringUT.color(formattedLine);
     }
