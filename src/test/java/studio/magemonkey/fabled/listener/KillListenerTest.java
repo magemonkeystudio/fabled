@@ -42,7 +42,7 @@ public class KillListenerTest extends MockedTest {
     @Test
     public void onDeath() {
         EntityDeathEvent event = new EntityDeathEvent(target, new ArrayList<>());
-        event.callEvent();
+        killListener.onKill(event);
 
         verify(killListener, times(1)).giveExp(any(), any(), anyInt());
     }

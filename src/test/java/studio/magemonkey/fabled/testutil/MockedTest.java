@@ -57,7 +57,6 @@ public abstract class MockedTest {
     protected HookManager    hookManager;
     protected NMS            nms;
     protected ActionsManager actionsManager;
-    protected CoreLang       coreLang;
 
     protected ReflectionUtil                  reflectionMock;
     protected Reflection_1_17                 reflection17Mock;
@@ -193,13 +192,6 @@ public abstract class MockedTest {
         reflectionManager = mockStatic(ReflectionManager.class);
         reflectionManager.when(ReflectionManager::getReflectionUtil).thenReturn(reflectionMock);
 
-        coreLang = mock(CoreLang.class);
-        when(coreLang.getEnum(any()))
-                .thenAnswer(args -> {
-                    Enum<?> e = args.getArgument(0);
-                    return e.getClass().getSimpleName() + "." + e.name();
-                });
-
         hookManager = mock(HookManager.class);
         actionsManager = mock(ActionsManager.class);
         nms = mock(NMS.class);
@@ -208,19 +200,10 @@ public abstract class MockedTest {
         when(nms.toBase64(any())).thenReturn("");
         when(nms.fromBase64(any())).thenReturn(new ItemStack(Material.AIR));
 
-        engine = mock(CodexEngine.class);
-        codexEngine = mockStatic(CodexEngine.class);
-        codexEngine.when(CodexEngine::get).thenReturn(engine);
-        when(engine.getDescription()).thenReturn(new PluginDescriptionFile("Codex",
-                coreVersion,
-                CodexEngine.class.getName()));
-        when(engine.getHooksManager()).thenReturn(hookManager);
-        when(engine.getActionsManager()).thenReturn(actionsManager);
-        when(engine.getNMS()).thenReturn(nms);
-        when(engine.lang()).thenReturn(coreLang);
-        when(engine.getLogger()).thenReturn(Logger.getLogger("Codex"));
-        doReturn(server.getPluginManager())
-                .when(engine).getPluginManager();
+        engine = spy(MockBukkit.load(CodexEngine.class));
+        doReturn(hookManager).when(engine).getHooksManager();
+        doReturn(actionsManager).when(engine).getActionsManager();
+        doReturn(nms).when(engine).getNMS();
         ItemUT.setEngine(engine);
 //        itemUT.when(() -> ItemUT.getEngine())
 //                        .thenReturn(engine);
@@ -241,13 +224,11 @@ public abstract class MockedTest {
 
     @AfterAll
     public void destroy() {
-        CommandManager.unregisterAll();
-
-        reflex.close();
-        reflectionManager.close();
-        codexEngine.close();
-        board.close();
-        damageLoreRemover.close();
+        if (reflex != null) reflex.close();
+        if (reflectionManager != null) reflectionManager.close();
+        if (codexEngine != null) codexEngine.close();
+        if (board != null) board.close();
+        if (damageLoreRemover != null) damageLoreRemover.close();
 //        itemUT.close();
 //        itemSerializer.close();
         MockBukkit.unmock();

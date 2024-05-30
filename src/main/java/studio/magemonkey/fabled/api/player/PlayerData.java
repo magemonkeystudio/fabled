@@ -1983,11 +1983,14 @@ public class PlayerData {
     }
 
     private void updateMCAttribute(Player player, Attribute attribute, String attribKey, double min, double max) {
-
-        AttributeInstance instance = player.getAttribute(attribute);
-        double            def      = instance.getDefaultValue();
-        double            modified = this.scaleStat(attribKey, def, min, max);
-        instance.setBaseValue(/*def + */modified);
+        try {
+            AttributeInstance instance = player.getAttribute(attribute);
+            double            def      = instance.getDefaultValue();
+            double            modified = this.scaleStat(attribKey, def, min, max);
+            instance.setBaseValue(/*def + */modified);
+        } catch (Exception e) {
+            Logger.log("Failed to update attribute " + attribute.name() + " for " + player.getName());
+        }
     }
 
     /**
