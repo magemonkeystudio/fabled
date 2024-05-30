@@ -26,9 +26,6 @@
  */
 package studio.magemonkey.fabled.api.particle;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.Settings;
-import studio.magemonkey.fabled.api.enums.Direction;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -36,6 +33,9 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.BoundingBox;
 import org.jetbrains.annotations.Nullable;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.Settings;
+import studio.magemonkey.fabled.api.enums.Direction;
 
 import java.util.*;
 
@@ -340,11 +340,11 @@ public final class ParticleHelper {
                                     Color toColor,
                                     float dustSize) {
         Object object = null;
-        switch (particle) {
-            case REDSTONE:
+        switch (particle.getKey().getKey()) {
+            case "dust": // REDSTONE/REDSTONE_DUST/DUST
                 object = new Particle.DustOptions(dustColor, dustSize);
                 break;
-            case ITEM_CRACK:
+            case "item": // ITEM_CRACK/ITEM
                 ItemStack item = new ItemStack(material);
                 ItemMeta meta = Objects.requireNonNull(item.getItemMeta());
                 meta.setCustomModelData(cmd);
@@ -354,13 +354,12 @@ public final class ParticleHelper {
                 item.setItemMeta(meta);
                 object = item;
                 break;
-            case BLOCK_CRACK:
-            case BLOCK_DUST:
-            case FALLING_DUST:
-            case BLOCK_MARKER:
+            case "block": // BLOCK_CRACK/BLOCK_DUST/BLOCK
+            case "falling_dust":
+            case "block_marker":
                 object = material.createBlockData();
                 break;
-            case DUST_COLOR_TRANSITION:
+            case "dust_color_transition":
                 object = new Particle.DustTransition(dustColor, toColor, dustSize);
                 break;
         }

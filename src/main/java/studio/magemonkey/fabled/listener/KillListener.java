@@ -26,6 +26,14 @@
  */
 package studio.magemonkey.fabled.listener;
 
+import org.bukkit.GameMode;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import studio.magemonkey.codex.util.reflection.ReflectionManager;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.enums.ExpSource;
 import studio.magemonkey.fabled.api.event.PhysicalDamageEvent;
@@ -35,14 +43,6 @@ import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.util.BuffManager;
 import studio.magemonkey.fabled.api.util.FlagManager;
 import studio.magemonkey.fabled.data.Permissions;
-import studio.magemonkey.codex.util.reflection.ReflectionManager;
-import org.bukkit.GameMode;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 
 /**
  * Tracks who kills what entities and awards experience accordingly
@@ -51,7 +51,7 @@ public class KillListener extends FabledListener {
     private static final String S_TYPE  = "sType";
     private static final int    SPAWNER = 0, EGG = 1;
 
-    public static void giveExp(LivingEntity entity, Player killer, int exp) {
+    public void giveExp(LivingEntity entity, Player killer, int exp) {
 
         // Disabled world
         if (!Fabled.getSettings().isWorldEnabled(entity.getWorld()))

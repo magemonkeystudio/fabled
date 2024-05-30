@@ -26,7 +26,6 @@
  */
 package studio.magemonkey.fabled.dynamic.condition;
 
-import studio.magemonkey.codex.mccore.util.VersionManager;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -67,18 +66,8 @@ public class PotionCondition extends ConditionComponent {
 
     private boolean has(LivingEntity target, PotionEffectType type, int min, int max) {
         int rank;
-        if (VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
-            if (!target.hasPotionEffect(type))
-                return false;
-            rank = target.getPotionEffect(type).getAmplifier();
-        } else {
-            rank = target.getActivePotionEffects().stream()
-                    .filter(effect -> effect.getType() == type)
-                    .findFirst()
-                    .map(PotionEffect::getAmplifier)
-                    .orElse(-1);
-            if (rank == -1) return false;
-        }
+        if (!target.hasPotionEffect(type)) return false;
+        rank = target.getPotionEffect(type).getAmplifier();
         return rank >= min && rank <= max;
     }
 

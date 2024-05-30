@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import studio.magemonkey.codex.mccore.util.VersionManager;
 
 import java.util.List;
 
@@ -34,13 +33,7 @@ public class DurabilityMechanic extends MechanicComponent {
         final boolean offhand = settings.getBool(OFFHAND, false);
         final short   amount  = (short) (parseValues(caster, AMOUNT, level, 1) * targets.size());
 
-        final ItemStack item;
-        if (offhand && VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
-            item = player.getInventory().getItemInOffHand();
-        } else {
-            //noinspection deprecation
-            item = player.getInventory().getItemInHand();
-        }
+        final ItemStack item = player.getInventory().getItemInOffHand();
 
         if (item.getType().isAir() || item.getType().getMaxDurability() == 0) {
             return false;
@@ -54,7 +47,7 @@ public class DurabilityMechanic extends MechanicComponent {
         Damageable im         = (Damageable) itemMeta;
         int        durability = item.getType().getMaxDurability() - im.getDamage();
         if (amount > 0 && durability <= amount) {
-            if (offhand && VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
+            if (offhand) {
                 player.getInventory().setItemInOffHand(null);
             } else {
                 player.getInventory().setItemInMainHand(null);

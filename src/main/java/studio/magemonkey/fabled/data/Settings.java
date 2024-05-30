@@ -46,7 +46,6 @@ import studio.magemonkey.codex.mccore.config.CommentedConfig;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.codex.mccore.config.parse.NumberParser;
 import studio.magemonkey.codex.mccore.util.TextFormatter;
-import studio.magemonkey.codex.mccore.util.VersionManager;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.*;
@@ -1155,9 +1154,6 @@ public class Settings {
         attrPost = temp.substring(index + 6);
 
         List<String> slotList = config.getList(ITEM_SLOTS);
-        if (!VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
-            slotList.remove("40");
-        }
         slots = new int[slotList.size()];
         for (int i = 0; i < slots.length; i++) {
             slots[i] = NumberParser.parseInt(slotList.get(i));

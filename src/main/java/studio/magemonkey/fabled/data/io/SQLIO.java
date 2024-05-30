@@ -26,6 +26,7 @@
  */
 package studio.magemonkey.fabled.data.io;
 
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
@@ -33,7 +34,6 @@ import studio.magemonkey.codex.mccore.config.parse.YAMLParser;
 import studio.magemonkey.codex.mccore.sql.ColumnType;
 import studio.magemonkey.codex.mccore.sql.direct.SQLDatabase;
 import studio.magemonkey.codex.mccore.sql.direct.SQLTable;
-import studio.magemonkey.codex.mccore.util.VersionManager;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerAccounts;
 import studio.magemonkey.fabled.data.Settings;
@@ -74,11 +74,11 @@ public class SQLIO extends IOManager {
     }
 
     @Override
-    public HashMap<String, PlayerAccounts> loadAll() {
+    public Map<String, PlayerAccounts> loadAll() {
         SQLConnection connection = openConnection();
 
-        HashMap<String, PlayerAccounts> result = new HashMap<String, PlayerAccounts>();
-        for (Player player : VersionManager.getOnlinePlayers()) {
+        Map<String, PlayerAccounts> result = new HashMap<>();
+        for (Player player : Bukkit.getOnlinePlayers()) {
             result.put(player.getUniqueId().toString().toLowerCase(), load(connection, player));
         }
 

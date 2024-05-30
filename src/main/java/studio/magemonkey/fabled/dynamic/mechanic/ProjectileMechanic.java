@@ -244,7 +244,7 @@ public class ProjectileMechanic extends MechanicComponent {
             ItemMeta meta = itemStack.getItemMeta();
             if (meta != null) {
                 if (settings.getBool(ENCHANTED, false)) {
-                    meta.addEnchant(Enchantment.DURABILITY, 1, false);
+                    meta.addEnchant(Enchantment.getByName("unbreaking"), 1, false); // UNBREAKING/DURABILITY
                 }
                 meta.setCustomModelData(settings.getInt(CMD, 0));
                 if (meta instanceof Damageable) {

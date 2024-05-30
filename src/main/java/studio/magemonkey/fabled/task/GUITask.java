@@ -26,6 +26,12 @@
  */
 package studio.magemonkey.fabled.task;
 
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import studio.magemonkey.codex.mccore.config.FilterType;
+import studio.magemonkey.codex.mccore.util.TextFormatter;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerClass;
 import studio.magemonkey.fabled.api.player.PlayerData;
@@ -37,13 +43,6 @@ import studio.magemonkey.fabled.log.LogType;
 import studio.magemonkey.fabled.log.Logger;
 import studio.magemonkey.fabled.manager.ComboManager;
 import studio.magemonkey.fabled.thread.RepeatThreadTask;
-import studio.magemonkey.codex.mccore.config.FilterType;
-import studio.magemonkey.codex.mccore.util.TextFormatter;
-import studio.magemonkey.codex.mccore.util.VersionManager;
-import studio.magemonkey.codex.util.MsgUT;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.entity.Player;
 
 /**
  * Task that handles updating GUI elements such as level bar,
@@ -100,8 +99,8 @@ public class GUITask extends RepeatThreadTask {
      */
     @Override
     public void run() {
-        Logger.log(LogType.GUI, 1, "Updating GUI (" + VersionManager.getOnlinePlayers().length + " players)...");
-        for (Player player : VersionManager.getOnlinePlayers()) {
+        Logger.log(LogType.GUI, 1, "Updating GUI (" + Bukkit.getOnlinePlayers().size() + " players)...");
+        for (Player player : Bukkit.getOnlinePlayers()) {
             if (!Fabled.getSettings().isWorldEnabled(player.getWorld())) continue;
             if (!Fabled.hasPlayerData(player)) continue;
 
@@ -194,11 +193,7 @@ public class GUITask extends RepeatThreadTask {
                     filtered = PlaceholderAPIHook.format(filtered, player);
                 }
 
-                if (VersionManager.isVersionAtLeast(11000)) {
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(filtered));
-                } else {
-                    MsgUT.sendActionBar(player, filtered);
-                }
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(filtered));
             }
         }
     }

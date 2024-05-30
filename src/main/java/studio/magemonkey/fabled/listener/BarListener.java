@@ -26,19 +26,6 @@
  */
 package studio.magemonkey.fabled.listener;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.event.*;
-import studio.magemonkey.fabled.api.player.PlayerData;
-import studio.magemonkey.fabled.api.player.PlayerSkillBar;
-import studio.magemonkey.fabled.api.skills.Skill;
-import studio.magemonkey.fabled.gui.handlers.SkillHandler;
-import studio.magemonkey.fabled.gui.map.SkillDetailMenu;
-import studio.magemonkey.fabled.gui.map.SkillListMenu;
-import studio.magemonkey.fabled.hook.CitizensHook;
-import studio.magemonkey.codex.mccore.gui.MapData;
-import studio.magemonkey.codex.mccore.gui.MapMenu;
-import studio.magemonkey.codex.mccore.gui.MapMenuManager;
-import studio.magemonkey.codex.mccore.util.VersionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -50,6 +37,18 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
+import studio.magemonkey.codex.mccore.gui.MapData;
+import studio.magemonkey.codex.mccore.gui.MapMenu;
+import studio.magemonkey.codex.mccore.gui.MapMenuManager;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.event.*;
+import studio.magemonkey.fabled.api.player.PlayerData;
+import studio.magemonkey.fabled.api.player.PlayerSkillBar;
+import studio.magemonkey.fabled.api.skills.Skill;
+import studio.magemonkey.fabled.gui.handlers.SkillHandler;
+import studio.magemonkey.fabled.gui.map.SkillDetailMenu;
+import studio.magemonkey.fabled.gui.map.SkillListMenu;
+import studio.magemonkey.fabled.hook.CitizensHook;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -65,7 +64,7 @@ public class BarListener extends FabledListener {
     public void init() {
         MainListener.registerJoin(this::onJoin);
         MainListener.registerClear(this::handleClear);
-        for (Player player : VersionManager.getOnlinePlayers()) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
             if (Fabled.getSettings().isWorldEnabled(player.getWorld())) {
                 PlayerData data = Fabled.getData(player);
                 if (data.hasClass())

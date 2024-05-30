@@ -27,10 +27,10 @@
 package studio.magemonkey.fabled.dynamic.mechanic;
 
 import com.google.common.collect.ImmutableSet;
-import studio.magemonkey.fabled.api.util.FlagManager;
-import studio.magemonkey.fabled.api.util.StatusFlag;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffectType;
+import studio.magemonkey.fabled.api.util.FlagManager;
+import studio.magemonkey.fabled.api.util.StatusFlag;
 
 import java.util.HashSet;
 import java.util.List;
@@ -43,12 +43,12 @@ import java.util.Set;
 public class CleanseMechanic extends MechanicComponent {
     private static final Set<PotionEffectType> POTIONS = ImmutableSet.of(
             PotionEffectType.BLINDNESS,
-            PotionEffectType.CONFUSION,
+            PotionEffectType.getByName("nausea"), // CONFUSION/NAUSEA
             PotionEffectType.HUNGER,
             PotionEffectType.LEVITATION,
             PotionEffectType.POISON,
-            PotionEffectType.SLOW,
-            PotionEffectType.SLOW_DIGGING,
+            PotionEffectType.getByName("slowness"), // SLOW/SLOWNESS
+            PotionEffectType.getByName("mining_fatigue"), // SLOW_DIGGING/MINING_FATIGUE
             PotionEffectType.UNLUCK,
             PotionEffectType.WEAKNESS,
             PotionEffectType.WITHER

@@ -49,7 +49,6 @@ import studio.magemonkey.codex.api.meta.NBTAttribute;
 import studio.magemonkey.codex.mccore.config.Filter;
 import studio.magemonkey.codex.mccore.config.FilterType;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import studio.magemonkey.codex.mccore.util.VersionManager;
 import studio.magemonkey.codex.util.EntityUT;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.classes.FabledClass;
@@ -1897,19 +1896,15 @@ public class PlayerData {
         }
 
         // Others stats
-        if (VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
-            this.updateMCAttribute(player, Attribute.GENERIC_ATTACK_SPEED, AttributeManager.ATTACK_SPEED, 0, 1024);
-            this.updateMCAttribute(player, Attribute.GENERIC_ARMOR, AttributeManager.ARMOR, 0, 30);
-            this.updateMCAttribute(player, Attribute.GENERIC_LUCK, AttributeManager.LUCK, -1024, 1024);
-            this.updateMCAttribute(player,
-                    Attribute.GENERIC_KNOCKBACK_RESISTANCE,
-                    AttributeManager.KNOCKBACK_RESIST,
-                    0,
-                    1.0);
-        }
-        if (VersionManager.isVersionAtLeast(110200)) {
-            this.updateMCAttribute(player, Attribute.GENERIC_ARMOR_TOUGHNESS, AttributeManager.ARMOR_TOUGHNESS, 0, 20);
-        }
+        this.updateMCAttribute(player, Attribute.GENERIC_ATTACK_SPEED, AttributeManager.ATTACK_SPEED, 0, 1024);
+        this.updateMCAttribute(player, Attribute.GENERIC_ARMOR, AttributeManager.ARMOR, 0, 30);
+        this.updateMCAttribute(player, Attribute.GENERIC_LUCK, AttributeManager.LUCK, -1024, 1024);
+        this.updateMCAttribute(player,
+                Attribute.GENERIC_KNOCKBACK_RESISTANCE,
+                AttributeManager.KNOCKBACK_RESIST,
+                0,
+                1.0);
+        this.updateMCAttribute(player, Attribute.GENERIC_ARMOR_TOUGHNESS, AttributeManager.ARMOR_TOUGHNESS, 0, 20);
     }
 
     /**

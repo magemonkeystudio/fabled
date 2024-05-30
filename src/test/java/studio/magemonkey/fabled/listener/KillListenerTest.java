@@ -6,33 +6,28 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
 
 import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.*;
 
-public class DeathListenerTest extends MockedTest {
+public class KillListenerTest extends MockedTest {
 
     private PlayerMock                 player;
     private PlayerMock                 target;
-    private DeathListener              deathListener;
-    private MockedStatic<KillListener> killListener;
+    private KillListener              killListener;
 
     @BeforeEach
     public void setup() {
         player = genPlayer("Travja");
         target = genPlayer("goflish");
-        killListener = mockStatic(KillListener.class);
-        deathListener = spy(new DeathListener());
+        killListener = spy(new KillListener());
     }
 
     @AfterEach
     public void teardown() {
-        killListener.close();
         killListener = null;
     }
 
@@ -49,7 +44,6 @@ public class DeathListenerTest extends MockedTest {
         EntityDeathEvent event = new EntityDeathEvent(target, new ArrayList<>());
         event.callEvent();
 
-        killListener
-                .verify(() -> KillListener.giveExp(any(), any(), anyInt()));
+        verify(killListener, times(1)).giveExp(any(), any(), anyInt());
     }
 }

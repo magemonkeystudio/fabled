@@ -1,10 +1,9 @@
 package studio.magemonkey.fabled.dynamic.trigger;
 
-import studio.magemonkey.fabled.api.CastData;
-import studio.magemonkey.fabled.api.Settings;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import studio.magemonkey.fabled.api.CastData;
+import studio.magemonkey.fabled.api.Settings;
 
 public class FishingGroundTrigger implements Trigger<ProjectileHitEvent> {
 
@@ -29,12 +28,9 @@ public class FishingGroundTrigger implements Trigger<ProjectileHitEvent> {
      */
     @Override
     public boolean shouldTrigger(ProjectileHitEvent event, int level, Settings settings) {
-
-        if (event.getEntityType() == EntityType.FISHING_HOOK && event.getHitEntity() == null
-                && event.getHitBlock() != null) {
-            return true;
-        }
-        return false;
+        // FISHING_BOBBER/FISHING_HOOK
+        return event.getEntityType().getKey().getKey().equals("fishing_bobber") && event.getHitEntity() == null
+                && event.getHitBlock() != null;
     }
 
     /**

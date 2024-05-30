@@ -27,15 +27,6 @@
 package studio.magemonkey.fabled.listener;
 
 import com.google.common.collect.ImmutableSet;
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.DefaultCombatProtection;
-import studio.magemonkey.fabled.api.event.PlayerClassChangeEvent;
-import studio.magemonkey.fabled.api.player.PlayerData;
-import studio.magemonkey.fabled.data.PlayerEquips;
-import studio.magemonkey.fabled.language.ErrorNodes;
-import studio.magemonkey.codex.api.armor.ArmorEquipEvent;
-import studio.magemonkey.codex.mccore.config.FilterType;
-import studio.magemonkey.codex.mccore.util.VersionManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -51,6 +42,14 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
+import studio.magemonkey.codex.api.armor.ArmorEquipEvent;
+import studio.magemonkey.codex.mccore.config.FilterType;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.DefaultCombatProtection;
+import studio.magemonkey.fabled.api.event.PlayerClassChangeEvent;
+import studio.magemonkey.fabled.api.player.PlayerData;
+import studio.magemonkey.fabled.data.PlayerEquips;
+import studio.magemonkey.fabled.language.ErrorNodes;
 
 import java.util.Set;
 
@@ -255,7 +254,7 @@ public class ItemListener extends FabledListener {
                 event.setCancelled(true);
             }
         }
-        if (event.getEntity() instanceof Player && VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
+        if (event.getEntity() instanceof Player) {
             Player        player   = (Player) event.getEntity();
             final boolean blocking = event.getDamage(EntityDamageEvent.DamageModifier.BLOCKING) < 0;
             if (blocking && !Fabled.getData(player).getEquips().canBlock()) {

@@ -26,12 +26,11 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.codex.mccore.config.parse.NumberParser;
-import studio.magemonkey.codex.mccore.util.VersionManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
+import studio.magemonkey.codex.mccore.config.parse.NumberParser;
 
 import java.util.List;
 import java.util.Locale;
@@ -68,11 +67,10 @@ public class DamageLoreMechanic extends MechanicComponent {
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         String regex = settings.getString(REGEX, "Damage: {value}");
         regex = regex.replace("{value}", "([0-9]+)");
-        Pattern pattern = Pattern.compile(regex);
-        double  m       = parseValues(caster, MULTIPLIER, level, 1.0);
-        boolean worked  = false;
-        boolean offhand = VersionManager.isVersionAtLeast(VersionManager.V1_9_0)
-                && settings.getString(HAND).equalsIgnoreCase("offhand");
+        Pattern pattern        = Pattern.compile(regex);
+        double  m              = parseValues(caster, MULTIPLIER, level, 1.0);
+        boolean worked         = false;
+        boolean offhand        = settings.getString(HAND).equalsIgnoreCase("offhand");
         boolean trueDmg        = settings.getBool(TRUE, false);
         String  classification = settings.getString(CLASSIFIER, "default");
 

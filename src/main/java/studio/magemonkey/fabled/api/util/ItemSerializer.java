@@ -28,14 +28,13 @@ package studio.magemonkey.fabled.api.util;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
-import studio.magemonkey.codex.mccore.util.VersionManager;
-import studio.magemonkey.codex.util.Reflex;
-import studio.magemonkey.codex.util.reflection.ReflectionManager;
-import studio.magemonkey.fabled.Fabled;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import studio.magemonkey.codex.util.Reflex;
+import studio.magemonkey.codex.util.reflection.ReflectionManager;
+import studio.magemonkey.fabled.Fabled;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
@@ -265,15 +264,9 @@ public class ItemSerializer {
                 builder.append(i);
                 builder.append('#');
 
-                if (VersionManager.isVersionAtLeast(11605)) {
-                    String isType = String.valueOf(is.getType());
-                    builder.append("t@");
-                    builder.append(isType);
-                } else {
-                    String isType = String.valueOf(is.getType().getId());
-                    builder.append("t@");
-                    builder.append(isType);
-                }
+                String isType = String.valueOf(is.getType());
+                builder.append("t@");
+                builder.append(isType);
 
                 if (is.getDurability() != 0) {
                     String isDurability = String.valueOf(is.getDurability());
@@ -340,18 +333,10 @@ public class ItemSerializer {
             for (String itemInfo : serializedItemStack) {
                 String[] itemAttribute = itemInfo.split("@");
                 if (itemAttribute[0].equals("t")) {
-                    if (VersionManager.isVersionAtLeast(11605)) {
-                        String         id  = String.valueOf(itemAttribute[1]);
-                        final Material mat = Material.getMaterial(id);
-                        is = new ItemStack(mat);
-                        createdItemStack = true;
-                    } else {
-                        int id = Integer.valueOf(itemAttribute[1]);
-                        if (id >= 2256) id -= 2267 - Material.values().length;
-                        final Material mat = Material.values()[id];
-                        is = new ItemStack(mat);
-                        createdItemStack = true;
-                    }
+                    String         id  = String.valueOf(itemAttribute[1]);
+                    final Material mat = Material.getMaterial(id);
+                    is = new ItemStack(mat);
+                    createdItemStack = true;
                 } else if (itemAttribute[0].equals("d") && createdItemStack) {
                     is.setDurability(Short.valueOf(itemAttribute[1]));
                 } else if (itemAttribute[0].equals("a") && createdItemStack) {

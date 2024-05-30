@@ -26,8 +26,8 @@
  */
 package studio.magemonkey.fabled.log;
 
-import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
+import studio.magemonkey.fabled.Fabled;
 
 import java.util.HashMap;
 
@@ -98,6 +98,14 @@ public class Logger {
      */
     public static void bug(String message) {
         Fabled.inst().getLogger().severe(message);
+    }
+
+    public static void bug(String message, Throwable e) {
+        StringBuilder stackTrace = new StringBuilder(e.getMessage());
+        for (StackTraceElement stackTraceElement : e.getStackTrace()) {
+            stackTrace.append("\n").append(stackTraceElement.toString()).append("\n");
+        }
+        Fabled.inst().getLogger().severe(message + "\n\n" + stackTrace);
     }
 
     /**

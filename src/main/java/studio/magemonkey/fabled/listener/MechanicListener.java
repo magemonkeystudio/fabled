@@ -26,20 +26,6 @@
  */
 package studio.magemonkey.fabled.listener;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.enums.ExpSource;
-import studio.magemonkey.fabled.api.event.FlagApplyEvent;
-import studio.magemonkey.fabled.api.event.FlagExpireEvent;
-import studio.magemonkey.fabled.api.event.PlayerExperienceGainEvent;
-import studio.magemonkey.fabled.api.event.PlayerLandEvent;
-import studio.magemonkey.fabled.api.player.PlayerData;
-import studio.magemonkey.fabled.api.projectile.ItemProjectile;
-import studio.magemonkey.fabled.dynamic.mechanic.*;
-import studio.magemonkey.fabled.hook.DisguiseHook;
-import studio.magemonkey.fabled.hook.PluginChecker;
-import studio.magemonkey.fabled.hook.VaultHook;
-import studio.magemonkey.fabled.task.RemoveTask;
-import studio.magemonkey.codex.mccore.util.VersionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -58,6 +44,19 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.util.BoundingBox;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.enums.ExpSource;
+import studio.magemonkey.fabled.api.event.FlagApplyEvent;
+import studio.magemonkey.fabled.api.event.FlagExpireEvent;
+import studio.magemonkey.fabled.api.event.PlayerExperienceGainEvent;
+import studio.magemonkey.fabled.api.event.PlayerLandEvent;
+import studio.magemonkey.fabled.api.player.PlayerData;
+import studio.magemonkey.fabled.api.projectile.ItemProjectile;
+import studio.magemonkey.fabled.dynamic.mechanic.*;
+import studio.magemonkey.fabled.hook.DisguiseHook;
+import studio.magemonkey.fabled.hook.PluginChecker;
+import studio.magemonkey.fabled.hook.VaultHook;
+import studio.magemonkey.fabled.task.RemoveTask;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -346,7 +345,7 @@ public class MechanicListener extends FabledListener {
     @EventHandler(priority = EventPriority.LOW)
     public void onSummonDamage(EntityDamageByEntityEvent event) {
         if (event.getDamager().hasMetadata(SUMMON_DAMAGE))
-            VersionManager.setDamage(event, Fabled.getMetaDouble(event.getDamager(), SUMMON_DAMAGE));
+            event.setDamage(Fabled.getMetaDouble(event.getDamager(), SUMMON_DAMAGE));
     }
 
     /**

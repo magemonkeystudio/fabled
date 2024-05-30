@@ -26,10 +26,9 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.fabled.api.event.SkillHealEvent;
-import studio.magemonkey.codex.mccore.util.VersionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.fabled.api.event.SkillHealEvent;
 
 import java.util.List;
 
@@ -74,7 +73,7 @@ public class HealMechanic extends MechanicComponent {
             SkillHealEvent event = new SkillHealEvent(caster, target, amount);
             Bukkit.getPluginManager().callEvent(event);
             if (!event.isCancelled()) {
-                VersionManager.heal(target, event.getAmount());
+                target.setHealth(Math.min(target.getHealth() + event.getAmount(), target.getMaxHealth()));
             }
         }
         return targets.size() > 0;

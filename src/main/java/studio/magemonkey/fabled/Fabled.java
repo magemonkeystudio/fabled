@@ -43,7 +43,6 @@ import studio.magemonkey.codex.CodexEngine;
 import studio.magemonkey.codex.manager.api.menu.YAMLMenu;
 import studio.magemonkey.codex.mccore.config.CommentedConfig;
 import studio.magemonkey.codex.mccore.config.CommentedLanguageConfig;
-import studio.magemonkey.codex.mccore.util.VersionManager;
 import studio.magemonkey.codex.migration.MigrationUtil;
 import studio.magemonkey.codex.registry.attribute.AttributeProvider;
 import studio.magemonkey.codex.registry.attribute.AttributeRegistry;
@@ -621,7 +620,7 @@ public class Fabled extends SkillAPI {
         ClassBoardManager.clearAll();
 
         // Clear skill bars and stop passives before disabling
-        for (Player player : VersionManager.getOnlinePlayers()) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
             MainListener.unload(player);
         }
 
@@ -718,36 +717,31 @@ public class Fabled extends SkillAPI {
             switch (settings.getCastMode()) {
                 case ITEM -> {
                     listen(new CastItemListener(), true);
-                    listen(new CastOffhandListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
+                    listen(new CastOffhandListener(), true);
                 }
                 case BARS -> {
                     listen(new CastBarsListener(), true);
-                    listen(new CastOffhandListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
+                    listen(new CastOffhandListener(), true);
                 }
                 case COMBAT -> {
                     listen(new CastCombatListener(), true);
-                    listen(new CastOffhandListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
+                    listen(new CastOffhandListener(), true);
                 }
                 case ACTION_BAR, TITLE, SUBTITLE, CHAT -> listen(new CastTextListener(settings.getCastMode()), true);
             }
         }
-        listen(new DeathListener(), !VersionManager.isVersionAtLeast(11000));
-        listen(new LingeringPotionListener(), VersionManager.isVersionAtLeast(VersionManager.V1_9_0));
+        listen(new LingeringPotionListener(), true);
         listen(new ExperienceListener(), settings.isYieldsEnabled());
         listen(new PluginChecker(), true);
 
         // Set up tasks
         if (settings.isManaEnabled()) {
-            if (VersionManager.isVersionAtLeast(11400)) {
-                manaTask = Bukkit.getScheduler().runTaskTimer(
-                        (JavaPlugin) this,
-                        new ManaTask(),
-                        Fabled.getSettings().getGainFreq(),
-                        Fabled.getSettings().getGainFreq()
-                );
-            } else {
-                MainThread.register(new ManaTask());
-            }
+            manaTask = Bukkit.getScheduler().runTaskTimer(
+                    this,
+                    new ManaTask(),
+                    Fabled.getSettings().getGainFreq(),
+                    Fabled.getSettings().getGainFreq()
+            );
         }
         if (settings.isSkillBarCooldowns()) {
             MainThread.register(new CooldownTask());

@@ -26,7 +26,6 @@
  */
 package studio.magemonkey.fabled.gui.tool;
 
-import studio.magemonkey.codex.mccore.util.VersionManager;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -47,8 +46,7 @@ public class InventoryData {
     public InventoryData(Player player) {
         main = player.getInventory().getContents();
         armor = player.getInventory().getArmorContents();
-        if (VersionManager.isVersionAtLeast(VersionManager.V1_9_0))
-            sidearm = player.getInventory().getItemInOffHand();
+        sidearm = player.getInventory().getItemInOffHand();
     }
 
     /**
@@ -59,7 +57,6 @@ public class InventoryData {
     public void restore(Player player) {
         player.getInventory().setContents(main);
         player.getInventory().setArmorContents(armor);
-        if (VersionManager.isVersionAtLeast(VersionManager.V1_9_0))
-            player.getInventory().setItemInOffHand(sidearm);
+        player.getInventory().setItemInOffHand(sidearm);
     }
 }

@@ -26,11 +26,10 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic.value;
 
-import studio.magemonkey.fabled.dynamic.ItemChecker;
-import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
-import studio.magemonkey.codex.mccore.util.VersionManager;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
+import studio.magemonkey.fabled.dynamic.ItemChecker;
+import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
 
 import java.util.List;
 
@@ -74,7 +73,7 @@ public class ValueLoreMechanic extends MechanicComponent {
         }
 
         ItemStack hand;
-        if (offhand && VersionManager.isVersionAtLeast(VersionManager.V1_9_0)) {
+        if (offhand) {
             hand = caster.getEquipment().getItemInOffHand();
         } else {
             hand = caster.getEquipment().getItemInHand();

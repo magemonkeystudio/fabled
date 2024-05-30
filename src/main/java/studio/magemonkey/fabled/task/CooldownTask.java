@@ -26,11 +26,11 @@
  */
 package studio.magemonkey.fabled.task;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.thread.RepeatThreadTask;
-import studio.magemonkey.codex.mccore.util.VersionManager;
-import org.bukkit.entity.Player;
 
 /**
  * Handles updating cooldown values on skill bars for players
@@ -50,7 +50,7 @@ public class CooldownTask extends RepeatThreadTask {
      */
     @Override
     public void run() {
-        for (Player player : VersionManager.getOnlinePlayers()) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
             if (!Fabled.hasPlayerData(player)) continue;
 
             PlayerData data = Fabled.getData(player);

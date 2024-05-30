@@ -33,7 +33,6 @@ import studio.magemonkey.fabled.api.util.StatusFlag;
 import studio.magemonkey.fabled.data.TitleType;
 import studio.magemonkey.fabled.language.RPGFilter;
 import studio.magemonkey.fabled.manager.TitleManager;
-import studio.magemonkey.codex.mccore.util.VersionManager;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -136,7 +135,8 @@ public class StatusListener extends FabledListener {
                 || event.getFlag().equals(StatusFlag.ROOT)
                 || event.getFlag().equals(StatusFlag.CHANNELING)) {
             if (!(event.getEntity() instanceof Player)) {
-                event.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, event.getTicks(), 100));
+                event.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.getByName("slowness"), event.getTicks(), 100));
+                // SLOW/SLOWNESS
             }
         }
     }
@@ -220,7 +220,7 @@ public class StatusListener extends FabledListener {
      */
     private void checkAbsorbAndInvincible(LivingEntity entity, Cancellable event, double damage) {
         if (check(event, entity, null, StatusFlag.ABSORB))
-            VersionManager.heal(entity, damage);
+            entity.setHealth(entity.getHealth() + damage);
         else
             check(event, entity, null, StatusFlag.INVINCIBLE);
     }

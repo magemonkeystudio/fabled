@@ -26,7 +26,20 @@
  */
 package studio.magemonkey.fabled.api.skills;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
 import studio.magemonkey.codex.mccore.config.Filter;
 import studio.magemonkey.codex.mccore.config.FilterType;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
@@ -53,19 +66,6 @@ import studio.magemonkey.fabled.language.RPGFilter;
 import studio.magemonkey.fabled.language.SkillNodes;
 import studio.magemonkey.fabled.listener.MechanicListener;
 import studio.magemonkey.fabled.log.Logger;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.util.Vector;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -853,7 +853,6 @@ public abstract class Skill implements IconHolder {
         int ticks = target.getNoDamageTicks();
         target.setNoDamageTicks(0);
         skillDamage = true;
-        //Modified code from studio.magemonkey.codex.mccore.util.VersionManager.damage() (MCCore)
 
         if (knockback) {
             if (!DamageRegistry.dealDamage(target, damage, classification, source))

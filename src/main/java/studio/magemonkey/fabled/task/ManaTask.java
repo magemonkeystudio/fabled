@@ -26,13 +26,13 @@
  */
 package studio.magemonkey.fabled.task;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.log.LogType;
 import studio.magemonkey.fabled.log.Logger;
 import studio.magemonkey.fabled.thread.RepeatThreadTask;
-import studio.magemonkey.codex.mccore.util.VersionManager;
-import org.bukkit.entity.Player;
 
 /**
  * <p>Restores mana to all players over time.</p>
@@ -56,9 +56,8 @@ public class ManaTask extends RepeatThreadTask {
      * <p>Checks all players for mana regeneration each interval</p>
      */
     public void run() {
-        Player[] players = VersionManager.getOnlinePlayers();
-        Logger.log(LogType.MANA, 1, "Applying mana regen for " + players.length + " players");
-        for (Player player : players) {
+        Logger.log(LogType.MANA, 1, "Applying mana regen for " + Bukkit.getOnlinePlayers().size() + " players");
+        for (Player player : Bukkit.getOnlinePlayers()) {
             PlayerData data = Fabled.getData(player);
             data.regenMana();
         }

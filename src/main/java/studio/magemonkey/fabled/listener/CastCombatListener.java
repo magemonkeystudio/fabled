@@ -161,7 +161,7 @@ public class CastCombatListener extends FabledListener {
         if (data.getSkillBar().isSetup()) data.getSkillBar().clear(player);
         else data.getSkillBar().setup(player);
 
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < items.length; i++) {
             if (items[i] == null) continue;
             player.getInventory().setItem(i, items[i]);
         }

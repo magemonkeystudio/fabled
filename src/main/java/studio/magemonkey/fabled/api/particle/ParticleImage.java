@@ -26,8 +26,6 @@
  */
 package studio.magemonkey.fabled.api.particle;
 
-import studio.magemonkey.fabled.data.Point3D;
-import studio.magemonkey.fabled.data.formula.Formula;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Color;
@@ -35,6 +33,8 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import studio.magemonkey.fabled.data.Point3D;
+import studio.magemonkey.fabled.data.formula.Formula;
 
 import java.util.Set;
 
@@ -89,7 +89,13 @@ public class ParticleImage implements IParticleEffect {
             for (Player player : players) {
                 if (player.getLocation().distance(location) > view) continue;
 
-                player.spawnParticle(Particle.REDSTONE,
+                Particle particle;
+                try {
+                    particle = Particle.DUST;
+                } catch (IllegalArgumentException e) {
+                    particle = Particle.valueOf("REDSTONE");
+                }
+                player.spawnParticle(particle,
                         location,
                         1,
                         0,

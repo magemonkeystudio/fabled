@@ -95,7 +95,7 @@ public abstract class IOManager {
      *
      * @return loaded player data
      */
-    public abstract HashMap<String, PlayerAccounts> loadAll();
+    public abstract Map<String, PlayerAccounts> loadAll();
 
     /**
      * Loads data for the player

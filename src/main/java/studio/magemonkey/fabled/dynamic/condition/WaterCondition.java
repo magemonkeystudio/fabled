@@ -26,7 +26,6 @@
  */
 package studio.magemonkey.fabled.dynamic.condition;
 
-import studio.magemonkey.codex.mccore.util.VersionManager;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Waterlogged;
@@ -46,11 +45,9 @@ public class WaterCondition extends ConditionComponent {
         final Block b             = target.getLocation().getBlock();
         boolean     isWaterLogged = false;
 
-        if (VersionManager.isVersionAtLeast(11300)) {
-            if (b.getBlockData() instanceof Waterlogged) {
-                Waterlogged wl = (Waterlogged) b.getBlockData();
-                isWaterLogged = wl.isWaterlogged();
-            }
+        if (b.getBlockData() instanceof Waterlogged) {
+            Waterlogged wl = (Waterlogged) b.getBlockData();
+            isWaterLogged = wl.isWaterlogged();
         }
 
         boolean inWater = block.name().contains("WATER") || isWaterLogged;
