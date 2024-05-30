@@ -27,6 +27,7 @@
 package studio.magemonkey.fabled.dynamic.mechanic;
 
 import com.google.common.collect.ImmutableSet;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffectType;
 import studio.magemonkey.fabled.api.util.FlagManager;
@@ -44,15 +45,15 @@ public class PurgeMechanic extends MechanicComponent {
     private static final Set<PotionEffectType> POTIONS = ImmutableSet.of(
             PotionEffectType.ABSORPTION,
             PotionEffectType.CONDUIT_POWER,
-            PotionEffectType.getByName("resistance"), // DAMAGE_RESISTANCE/RESISTANCE
+            PotionEffectType.getByKey(NamespacedKey.minecraft("resistance")), // DAMAGE_RESISTANCE/RESISTANCE
             PotionEffectType.DOLPHINS_GRACE,
-            PotionEffectType.getByName("haste"), // HASTE/FAST_DIGGING
+            PotionEffectType.getByKey(NamespacedKey.minecraft("haste")), // HASTE/FAST_DIGGING
             PotionEffectType.FIRE_RESISTANCE,
             PotionEffectType.GLOWING,
             PotionEffectType.HEALTH_BOOST,
-            PotionEffectType.getByName("strength"), // STRENGTH/INCREASE_DAMAGE
+            PotionEffectType.getByKey(NamespacedKey.minecraft("strength")), // STRENGTH/INCREASE_DAMAGE
             PotionEffectType.INVISIBILITY,
-            PotionEffectType.getByName("jump_boost"), // JUMP_BOOST/JUMP
+            PotionEffectType.getByKey(NamespacedKey.minecraft("jump_boost")), // JUMP_BOOST/JUMP
             PotionEffectType.LUCK,
             PotionEffectType.NIGHT_VISION,
             PotionEffectType.REGENERATION,

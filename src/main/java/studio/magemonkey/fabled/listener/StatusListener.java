@@ -26,13 +26,7 @@
  */
 package studio.magemonkey.fabled.listener;
 
-import studio.magemonkey.fabled.api.DefaultCombatProtection;
-import studio.magemonkey.fabled.api.event.*;
-import studio.magemonkey.fabled.api.util.FlagManager;
-import studio.magemonkey.fabled.api.util.StatusFlag;
-import studio.magemonkey.fabled.data.TitleType;
-import studio.magemonkey.fabled.language.RPGFilter;
-import studio.magemonkey.fabled.manager.TitleManager;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -46,6 +40,13 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.api.DefaultCombatProtection;
+import studio.magemonkey.fabled.api.event.*;
+import studio.magemonkey.fabled.api.util.FlagManager;
+import studio.magemonkey.fabled.api.util.StatusFlag;
+import studio.magemonkey.fabled.data.TitleType;
+import studio.magemonkey.fabled.language.RPGFilter;
+import studio.magemonkey.fabled.manager.TitleManager;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -135,7 +136,10 @@ public class StatusListener extends FabledListener {
                 || event.getFlag().equals(StatusFlag.ROOT)
                 || event.getFlag().equals(StatusFlag.CHANNELING)) {
             if (!(event.getEntity() instanceof Player)) {
-                event.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.getByName("slowness"), event.getTicks(), 100));
+                event.getEntity()
+                        .addPotionEffect(new PotionEffect(PotionEffectType.getByKey(NamespacedKey.minecraft("slowness")),
+                                event.getTicks(),
+                                100));
                 // SLOW/SLOWNESS
             }
         }
