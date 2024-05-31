@@ -116,7 +116,6 @@ public class RegistrationManager {
      * configuration files and other plugins.
      */
     public void initialize() {
-
         // Make sure dynamic files are created
         if (!skillConfig.getConfigFile().exists()) {
             skillConfig.save();

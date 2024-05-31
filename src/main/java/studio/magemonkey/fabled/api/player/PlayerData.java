@@ -42,6 +42,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Nullable;
 import studio.magemonkey.codex.CodexEngine;
@@ -2411,6 +2412,31 @@ public class PlayerData {
      * @param player player to set the passive skills up for
      */
     public void startPassives(Player player) {
+        if (player == null) {
+            return;
+        }
+
+        if (player.isValid()) {
+            _startPassives(player);
+        } else {
+            // Wait for the player to be valid and start passives
+            new BukkitRunnable() {
+                int tries = 0;
+
+                @Override
+                public void run() {
+                    if (player.isValid()) {
+                        _startPassives(player);
+                        this.cancel();
+                    }
+
+                    if (++tries > 10) this.cancel();
+                }
+            }.runTaskTimer(Fabled.inst(), 20L, 20L);
+        }
+    }
+
+    private void _startPassives(Player player) {
         if (player == null) {
             return;
         }

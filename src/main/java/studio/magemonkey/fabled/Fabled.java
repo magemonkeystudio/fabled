@@ -411,7 +411,7 @@ public class Fabled extends SkillAPI {
             return;
         }
 
-        singleton.getServer().getScheduler().runTaskAsynchronously((Plugin) singleton, () -> {
+        singleton.getServer().getScheduler().runTaskAsynchronously(singleton, () -> {
             PlayerAccounts accounts = getPlayerAccounts(player);
             if (!skipSaving) {
                 singleton.io.saveData(accounts);
@@ -470,7 +470,7 @@ public class Fabled extends SkillAPI {
      * @param delay    the delay in ticks
      */
     public static BukkitTask schedule(BukkitRunnable runnable, int delay) {
-        return runnable.runTaskLater((JavaPlugin) inst(), delay);
+        return runnable.runTaskLater(inst(), delay);
     }
 
     /**
@@ -480,7 +480,7 @@ public class Fabled extends SkillAPI {
      * @param delay    the delay in ticks
      */
     public static BukkitTask schedule(Runnable runnable, int delay) {
-        return Bukkit.getScheduler().runTaskLater((JavaPlugin) singleton, runnable, delay);
+        return Bukkit.getScheduler().runTaskLater(singleton, runnable, delay);
     }
 
     /**
@@ -491,7 +491,7 @@ public class Fabled extends SkillAPI {
      * @param period   how often to run in ticks
      */
     public static BukkitTask schedule(BukkitRunnable runnable, int delay, int period) {
-        return runnable.runTaskTimer((JavaPlugin) inst(), delay, period);
+        return runnable.runTaskTimer(inst(), delay, period);
     }
 
     /**
@@ -502,7 +502,7 @@ public class Fabled extends SkillAPI {
      * @param value  value to store
      */
     public static void setMeta(Metadatable target, String key, Object value) {
-        target.setMetadata(key, new FixedMetadataValue((JavaPlugin) inst(), value));
+        target.setMetadata(key, new FixedMetadataValue(inst(), value));
     }
 
     /**
@@ -547,7 +547,7 @@ public class Fabled extends SkillAPI {
      * @param key    key metadata was stored under
      */
     public static void removeMeta(Metadatable target, String key) {
-        target.removeMetadata(key, (JavaPlugin) inst());
+        target.removeMetadata(key, inst());
     }
 
     /**
@@ -557,7 +557,7 @@ public class Fabled extends SkillAPI {
      * @return config data
      */
     public static CommentedConfig getConfig(String name) {
-        return new CommentedConfig((JavaPlugin) singleton, name);
+        return new CommentedConfig(singleton, name);
     }
 
     /**
@@ -567,7 +567,7 @@ public class Fabled extends SkillAPI {
         Fabled inst = inst();
         inst.onDisable();
         inst.onEnable();
-        YAMLMenu.reloadMenus((JavaPlugin) inst);
+        YAMLMenu.reloadMenus(inst);
     }
 
     @Override
@@ -630,7 +630,7 @@ public class Fabled extends SkillAPI {
         classes.clear();
         players.clear();
 
-        HandlerList.unregisterAll((JavaPlugin) this);
+        HandlerList.unregisterAll(this);
         cmd.clear();
 
         loaded = false;
@@ -653,7 +653,7 @@ public class Fabled extends SkillAPI {
         if (!DependencyRequirement.meetsVersion(DependencyRequirement.MIN_CORE_VERSION, coreVersion)) {
             getLogger().warning("Missing required Codex version. " + coreVersion + " installed. "
                     + DependencyRequirement.MIN_CORE_VERSION + " required. Disabling.");
-            Bukkit.getPluginManager().disablePlugin((JavaPlugin) this);
+            Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
 
@@ -666,7 +666,7 @@ public class Fabled extends SkillAPI {
         // Load settings
         settings = new Settings(this);
         settings.reload();
-        language = new CommentedLanguageConfig((JavaPlugin) this, "language");
+        language = new CommentedLanguageConfig(this, "language");
         language.checkDefaults();
         language.trim();
         language.save();
@@ -783,7 +783,7 @@ public class Fabled extends SkillAPI {
                     iterator.remove();
                 }
             }
-            Bukkit.getPluginManager().registerEvents(listener, (JavaPlugin) this);
+            Bukkit.getPluginManager().registerEvents(listener, this);
             this.listeners.add(listener);
         }
     }

@@ -86,7 +86,7 @@ public class PassiveMechanic extends MechanicComponent {
             this.caster = caster;
             this.level = level;
 
-            Fabled.schedule(this, 0, period);
+            Fabled.schedule(this, 5, period);
         }
 
         @Override
