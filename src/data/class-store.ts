@@ -474,6 +474,11 @@ class ClassStore {
 			yamlData = <MultiClassYamlData>YAML.parse(yaml);
 		}
 
+		if (yamlData === null || Object.values(yamlData).length == 0) {
+			console.warn(`Failed to parse yaml for class ${data.name}`, localStorage.getItem(`sapi.class.${data.name}`));
+			return;
+		}
+
 		const clazz = Object.values(yamlData)[0];
 		data.load(clazz);
 
