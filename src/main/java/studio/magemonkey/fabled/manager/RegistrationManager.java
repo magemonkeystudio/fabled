@@ -116,6 +116,7 @@ public class RegistrationManager {
      * configuration files and other plugins.
      */
     public void initialize() {
+        long start = System.currentTimeMillis();
         // Make sure dynamic files are created
         if (!skillConfig.getConfigFile().exists()) {
             skillConfig.save();
@@ -336,6 +337,7 @@ public class RegistrationManager {
         Logger.log(LogType.REGISTRATION, 0, "Registration complete");
         Logger.log(LogType.REGISTRATION, 0, " - " + Fabled.getSkills().size() + " skills");
         Logger.log(LogType.REGISTRATION, 0, " - " + Fabled.getClasses().size() + " classes");
+        Logger.log(LogType.REGISTRATION, 0, " Took " + (System.currentTimeMillis() - start) + "ms");
     }
 
     private String getQualifiedFileName(Path root, Path path) {
