@@ -9,9 +9,13 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --plugin-search-dir . --check . && eslint .",
-    "format": "prettier --plugin-search-dir . --write ."
+    "format": "prettier --plugin-search-dir . --write .",
+    "test:integration": "playwright test",
+    "test:unit": "vitest"
   },
   "devDependencies": {
+    "@playwright/experimental-ct-svelte": "^1.44.1",
+    "@playwright/test": "^1.44.1",
     "@sveltejs/adapter-auto": "^3.2.1",
     "@sveltejs/adapter-static": "^3.0.1",
     "@sveltejs/kit": "^2.5.10",
@@ -19,17 +23,20 @@
     "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^7.11.0",
     "@typescript-eslint/parser": "^7.11.0",
+    "@vitest/ui": "^1.6.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-svelte": "^2.39.0",
+    "playwright": "^1.44.1",
     "prettier": "^3.2.5",
     "prettier-plugin-svelte": "^3.2.3",
-    "eslint-plugin-svelte": "^2.39.0",
     "svelte": "^4.2.17",
     "svelte-check": "^3.7.1",
     "svelte-preprocess": "^5.1.4",
     "tslib": "^2.6.2",
     "typescript": "^5.4.5",
-    "vite": "^5.2.11"
+    "vite": "^5.2.11",
+    "vitest": "^1.6.0"
   },
   "type": "module",
   "dependencies": {

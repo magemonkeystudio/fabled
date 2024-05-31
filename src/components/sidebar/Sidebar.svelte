@@ -113,7 +113,8 @@
 			<SidebarEntry
 				delay={200 + 100*($classes.length+1)}>
 				<div class='new'>
-					<span tabindex='0'
+					<span class='new-class-btn'
+								tabindex='0'
 								role='button'
 								on:click={() => classStore.addClass()}
 								on:keypress={(e) => e.key === 'Enter' && classStore.addClass()}>New Class</span>
