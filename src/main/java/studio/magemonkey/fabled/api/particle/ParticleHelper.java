@@ -340,11 +340,14 @@ public final class ParticleHelper {
                                     Color toColor,
                                     float dustSize) {
         Object object = null;
-        switch (particle.getKey().getKey()) {
-            case "dust": // REDSTONE/REDSTONE_DUST/DUST
+        switch (particle.name().toLowerCase(Locale.US)) {
+            case "dust":
+            case "redstone":
+            case "redstone_dust":
                 object = new Particle.DustOptions(dustColor, dustSize);
                 break;
-            case "item": // ITEM_CRACK/ITEM
+            case "item":
+            case "item_crack":
                 ItemStack item = new ItemStack(material);
                 ItemMeta meta = Objects.requireNonNull(item.getItemMeta());
                 meta.setCustomModelData(cmd);
@@ -354,7 +357,8 @@ public final class ParticleHelper {
                 item.setItemMeta(meta);
                 object = item;
                 break;
-            case "block": // BLOCK_CRACK/BLOCK_DUST/BLOCK
+            case "block":
+            case "block_crack":
             case "falling_dust":
             case "block_marker":
                 object = material.createBlockData();

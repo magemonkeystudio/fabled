@@ -26,7 +26,6 @@
  */
 package studio.magemonkey.fabled.listener;
 
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -38,8 +37,8 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+import studio.magemonkey.codex.util.NamespaceResolver;
 import studio.magemonkey.fabled.api.DefaultCombatProtection;
 import studio.magemonkey.fabled.api.event.*;
 import studio.magemonkey.fabled.api.util.FlagManager;
@@ -137,7 +136,7 @@ public class StatusListener extends FabledListener {
                 || event.getFlag().equals(StatusFlag.CHANNELING)) {
             if (!(event.getEntity() instanceof Player)) {
                 event.getEntity()
-                        .addPotionEffect(new PotionEffect(PotionEffectType.getByKey(NamespacedKey.minecraft("slowness")),
+                        .addPotionEffect(new PotionEffect(NamespaceResolver.getPotion("SLOWNESS", "SLOW"),
                                 event.getTicks(),
                                 100));
                 // SLOW/SLOWNESS

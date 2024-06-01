@@ -29,8 +29,6 @@ package studio.magemonkey.fabled.dynamic.mechanic;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -38,6 +36,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+import studio.magemonkey.codex.util.NamespaceResolver;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.api.particle.EffectPlayer;
@@ -245,7 +244,7 @@ public class ProjectileMechanic extends MechanicComponent {
             ItemMeta meta = itemStack.getItemMeta();
             if (meta != null) {
                 if (settings.getBool(ENCHANTED, false)) {
-                    meta.addEnchant(Enchantment.getByKey(NamespacedKey.minecraft("unbreaking")),
+                    meta.addEnchant(NamespaceResolver.getEnchantment("UNBREAKING", "DURABILITY"),
                             1,
                             false); // UNBREAKING/DURABILITY
                 }

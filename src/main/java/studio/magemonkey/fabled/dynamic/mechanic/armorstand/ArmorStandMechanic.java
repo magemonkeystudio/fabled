@@ -98,8 +98,9 @@ public class ArmorStandMechanic extends MechanicComponent {
                     () -> target.getWorld().spawn(loc, ArmorStand.class, onSpawn),
                     () -> {
                         // 1.20.1: remove this block if the deprecated interface has removed.
+                        Class<?> regionAccessor = Class.forName("org.bukkit.RegionAccessor");
                         //noinspection JavaReflectionMemberAccess,deprecation
-                        Method method = RegionAccessor.class.getDeclaredMethod("spawn", Location.class, Class.class, org.bukkit.util.Consumer.class);
+                        Method method = regionAccessor.getDeclaredMethod("spawn", Location.class, Class.class, org.bukkit.util.Consumer.class);
                         //noinspection deprecation
                         return (ArmorStand) method.invoke(target.getWorld(), loc, ArmorStand.class,
                                 (org.bukkit.util.Consumer<ArmorStand>) onSpawn::accept);

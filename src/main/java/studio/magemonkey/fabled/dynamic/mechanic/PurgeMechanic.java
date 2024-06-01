@@ -27,16 +27,13 @@
 package studio.magemonkey.fabled.dynamic.mechanic;
 
 import com.google.common.collect.ImmutableSet;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffectType;
+import studio.magemonkey.codex.util.NamespaceResolver;
 import studio.magemonkey.fabled.api.util.FlagManager;
 import studio.magemonkey.fabled.api.util.StatusFlag;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Purges a target of positive potion or status effects
@@ -45,15 +42,15 @@ public class PurgeMechanic extends MechanicComponent {
     private static final Set<PotionEffectType> POTIONS = ImmutableSet.of(
             PotionEffectType.ABSORPTION,
             PotionEffectType.CONDUIT_POWER,
-            PotionEffectType.getByKey(NamespacedKey.minecraft("resistance")), // DAMAGE_RESISTANCE/RESISTANCE
+            NamespaceResolver.getPotion("DAMAGE_RESISTANCE", "RESISTANCE"),
             PotionEffectType.DOLPHINS_GRACE,
-            PotionEffectType.getByKey(NamespacedKey.minecraft("haste")), // HASTE/FAST_DIGGING
+            NamespaceResolver.getPotion("FAST_DIGGING", "HASTE"),
             PotionEffectType.FIRE_RESISTANCE,
             PotionEffectType.GLOWING,
             PotionEffectType.HEALTH_BOOST,
-            PotionEffectType.getByKey(NamespacedKey.minecraft("strength")), // STRENGTH/INCREASE_DAMAGE
+            NamespaceResolver.getPotion("STRENGTH", "INCREASE_DAMAGE"),
             PotionEffectType.INVISIBILITY,
-            PotionEffectType.getByKey(NamespacedKey.minecraft("jump_boost")), // JUMP_BOOST/JUMP
+            NamespaceResolver.getPotion("JUMP", "JUMP_BOOST"),
             PotionEffectType.LUCK,
             PotionEffectType.NIGHT_VISION,
             PotionEffectType.REGENERATION,
@@ -72,13 +69,7 @@ public class PurgeMechanic extends MechanicComponent {
     }
 
     /**
-     * Executes the component
-     *
-     * @param caster  caster of the skill
-     * @param level   level of the skill
-     * @param targets targets to apply to
-     * @param force
-     * @return true if applied to something, false otherwise
+     * {@inheritDoc}
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
@@ -86,9 +77,7 @@ public class PurgeMechanic extends MechanicComponent {
         Set<String> statusSet = new HashSet<>();
         for (String string : settings.getStringList(STATUS)) {
             if (string.equalsIgnoreCase("All")) {
-                for (String status : StatusFlag.POSITIVE) {
-                    statusSet.add(status);
-                }
+                Collections.addAll(statusSet, StatusFlag.POSITIVE);
                 break;
             }
             statusSet.add(string.toLowerCase());
