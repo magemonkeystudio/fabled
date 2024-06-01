@@ -1,8 +1,10 @@
 package studio.magemonkey.fabled;
 
+import be.seeseemelk.mockbukkit.MockBukkit;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.Server;
 import org.bukkit.Sound;
 import org.bukkit.block.Biome;
 import org.bukkit.enchantments.Enchantment;
@@ -26,16 +28,14 @@ public class DataGenerator {
             throw new IllegalArgumentException();
         }
 
-        String version;
-        {
-            String[]  splitVersion       = args[0].split("\\.");
-            version = splitVersion[0]+(splitVersion.length >= 2 ? '_'+splitVersion[1] : "");
-        }
+        String[] splitVersion = args[0].split("\\.");
+        String   version      = splitVersion[0] + (splitVersion.length >= 2 ? '_' + splitVersion[1] : "");
 
         boolean useTypescript = Arrays.stream(args).noneMatch(Predicate.isEqual("js"));
         File    file          = new File("output/" + version.replace("_", ".") + "." + (useTypescript ? "ts" : "js"));
         file.delete();
         file.getParentFile().mkdirs();
+        Server server = MockBukkit.mock();
 
         String dataVersion = "DATA_" + version;
 
@@ -157,6 +157,8 @@ public class DataGenerator {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        MockBukkit.unmock();
     }
 
     public static void writeEnumConstant(OutputStream out, Enum<?> enumConstant) throws IOException {
