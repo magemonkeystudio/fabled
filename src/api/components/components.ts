@@ -737,6 +737,8 @@ class ConeTarget extends ProTarget {
 					.setTooltip('The max distance away any target can be in blocks'),
 				new AttributeSelect('Angle', 'angle', 90)
 					.setTooltip('The angle of the cone arc in degrees'),
+				new AttributeSelect('Rotation', 'rotation', 0)
+					.setTooltip('The rotation of the cone in degrees'),
 				new BooleanSelect('Reset Y', 'reset-y', true)
 					.setTooltip('Whether to remove the Y component of the caster/target when determining targets'),
 				...targetOptions()
