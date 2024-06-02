@@ -1447,7 +1447,10 @@ public class PlayerData {
         PlayerClass c = classes.remove(fabledClass.getGroup());
         if (c != null) {
             List<Skill> skTemp =
-                    c.getPlayerData().getSkills().stream().map(PlayerSkill::getData).collect(Collectors.toList());
+                    c.getPlayerData().getSkills().stream()
+                            .filter(skill -> skill.getPlayerClass().getData().getGroup().equals(fabledClass.getGroup()))
+                            .map(PlayerSkill::getData)
+                            .collect(Collectors.toList());
             for (Skill skill : skTemp) {
                 String      nm = skill.getName().toLowerCase();
                 PlayerSkill ps = this.skills.get(nm);
