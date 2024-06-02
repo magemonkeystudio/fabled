@@ -95,11 +95,11 @@ export default class FabledSkill implements Serializable {
 		if (data.skillReq) this.skillReq = data.skillReq;
 		if (data.skillReqLevel) this.skillReqLevel = data.skillReqLevel;
 		if (data.attributeRequirements) this.attributeRequirements = data.attributeRequirements.map(a => new Attribute(a.name, a.base, a.scale));
-		if (data.permission) this.permission = data.permission;
+		if (data.permission !== undefined) this.permission = data.permission;
 		if (data.levelReq) this.levelReq = data.levelReq;
 		if (data.cost) this.cost = data.cost;
 		if (data.cooldown) this.cooldown = data.cooldown;
-		if (data.cooldownMessage) this.cooldownMessage = data.cooldownMessage;
+		if (data.cooldownMessage !== undefined) this.cooldownMessage = data.cooldownMessage;
 		if (data.mana) this.mana = data.mana;
 		if (data.minSpent) this.minSpent = data.minSpent;
 		if (data.castMessage) this.castMessage = data.castMessage;
@@ -200,8 +200,8 @@ export default class FabledSkill implements Serializable {
 		if (yaml['max-level']) this.maxLevel = yaml['max-level'];
 		if (yaml['skill-req']) this.skillReqStr = yaml['skill-req'];
 		if (yaml['skill-req-lvl']) this.skillReqLevel = yaml['skill-req-lvl'];
-		if (yaml['needs-permission']) this.permission = yaml['needs-permission'];
-		if (yaml['cooldown-message']) this.cooldownMessage = yaml['cooldown-message'];
+		if (yaml['needs-permission'] !== undefined) this.permission = yaml['needs-permission'];
+		if (yaml['cooldown-message'] !== undefined) this.cooldownMessage = yaml['cooldown-message'];
 		if (yaml.msg) this.castMessage = yaml.msg;
 		if (yaml.combo) this.combo = yaml.combo;
 

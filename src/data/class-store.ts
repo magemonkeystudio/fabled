@@ -81,7 +81,7 @@ export default class FabledClass implements Serializable {
 		if (data?.manaName) this.manaName = data.manaName;
 		if (data?.maxLevel) this.maxLevel = data.maxLevel;
 		if (data?.parent) this.parent = data.parent;
-		if (data?.permission) this.permission = data.permission;
+		if (data?.permission !== undefined) this.permission = data.permission;
 		if (data?.expSources) this.expSources = data.expSources;
 		if (data?.health) this.health = data.health;
 		if (data?.mana) this.mana = data.mana;
@@ -94,13 +94,13 @@ export default class FabledClass implements Serializable {
 		if (data?.actionBar) this.actionBar = data.actionBar;
 
 		// Combo starters
-		if (data?.lInverted) this.lInverted = data.lInverted;
-		if (data?.rInverted) this.rInverted = data.rInverted;
-		if (data?.lsInverted) this.lsInverted = data.lsInverted;
-		if (data?.rsInverted) this.rsInverted = data.rsInverted;
-		if (data?.pInverted) this.pInverted = data.pInverted;
-		if (data?.qInverted) this.qInverted = data.qInverted;
-		if (data?.fInverted) this.fInverted = data.fInverted;
+		if (data?.lInverted !== undefined) this.lInverted = data.lInverted;
+		if (data?.rInverted !== undefined) this.rInverted = data.rInverted;
+		if (data?.lsInverted !== undefined) this.lsInverted = data.lsInverted;
+		if (data?.rsInverted !== undefined) this.rsInverted = data.rsInverted;
+		if (data?.pInverted !== undefined) this.pInverted = data.pInverted;
+		if (data?.qInverted !== undefined) this.qInverted = data.qInverted;
+		if (data?.fInverted !== undefined) this.fInverted = data.fInverted;
 		if (data?.lWhitelist) this.lWhitelist = data.lWhitelist;
 		if (data?.rWhitelist) this.rWhitelist = data.rWhitelist;
 		if (data?.lsWhitelist) this.lsWhitelist = data.lsWhitelist;
@@ -472,6 +472,11 @@ class ClassStore {
 			const yaml = await socketService.getClassYaml(data.name);
 			if (!yaml) return;
 			yamlData = <MultiClassYamlData>YAML.parse(yaml);
+		}
+
+		if (yamlData === null || Object.values(yamlData).length == 0) {
+			console.warn(`Failed to parse yaml for class ${data.name}`, localStorage.getItem(`sapi.class.${data.name}`));
+			return;
 		}
 
 		const clazz = Object.values(yamlData)[0];

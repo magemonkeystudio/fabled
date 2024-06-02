@@ -4251,7 +4251,6 @@ export const DATA_1_20: VersionData = {
 		'Heart',
 		'Item crack',
 		'Block crack',
-		'Block dust',
 		'Water drop',
 		'Mob appearance',
 		'Dragon breath',
