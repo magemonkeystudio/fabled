@@ -59,6 +59,7 @@ public abstract class IOManager {
             BINDS          = "binds",
             LEVEL          = "level",
             EXP            = "exp",
+            SHARED_POINTS  = "shared-points",
             POINTS         = "points",
             SKILL_BAR      = "bar",
             HOVER          = "hover",
@@ -161,7 +162,6 @@ public abstract class IOManager {
                         int         levels    = classData.getInt(LEVEL);
                         if (levels > 0)
                             c.setLevel(levels);
-                        c.setPoints(classData.getInt(POINTS));
                         if (classData.has("total-exp"))
                             c.setExp(classData.getDouble("total-exp") - c.getTotalExp());
                         else
@@ -179,6 +179,59 @@ public abstract class IOManager {
                     if (skillData != null) {
                         skillData.setLevel(skill.getInt(LEVEL));
                         skillData.addCooldown(skill.getInt(COOLDOWN, 0));
+                    }
+                }
+            }
+
+            // Load skill points
+            if (Fabled.getSettings().isSharedSkillPoints()) {
+                if (account.has(SHARED_POINTS)) {
+                    acc.setPoints(account.getInt(SHARED_POINTS, 0));
+                    for (String classKey : classes.keys()) {
+                        FabledClass fabledClass = Fabled.getClass(classKey);
+                        if (fabledClass != null) {
+                            acc.getClass(fabledClass.getGroup()).setEarnedPoints(classes.getSection(classKey).getInt(POINTS, 0));
+                        }
+                    }
+                } else {
+                    // shared-skill-points was just enabled
+                    int shared = 0;
+                    for (String classKey : classes.keys()) {
+                        FabledClass fabledClass = Fabled.getClass(classKey);
+                        if (fabledClass != null) {
+                            int current = classes.getSection(classKey).getInt(POINTS, 0);
+                            shared += current;
+                            PlayerClass playerClass = acc.getClass(fabledClass.getGroup());
+                            playerClass.setEarnedPoints(current+acc.getSkills().stream()
+                                    .filter(skill -> skill.getPlayerClass() == playerClass)
+                                    .map(PlayerSkill::getInvestedCost)
+                                    .reduce(Integer::sum).orElse(0));
+                        }
+                    }
+                    acc.setPoints(shared);
+                }
+            } else {
+                if (account.has(SHARED_POINTS)) {
+                    // shared-skill-points was just disabled,
+                    Map<String,Integer> points = new HashMap<>();
+                    for (String classKey : classes.keys()) {
+                        FabledClass fabledClass = Fabled.getClass(classKey);
+                        if (fabledClass != null) {
+                            PlayerClass playerClass = acc.getClass(fabledClass.getGroup());
+                            int current = classes.getSection(classKey).getInt(POINTS, 0) - acc.getSkills().stream()
+                                    .filter(skill -> skill.getPlayerClass() == playerClass)
+                                    .map(PlayerSkill::getInvestedCost)
+                                    .reduce(Integer::sum).orElse(0);
+                            playerClass.setPoints(current);
+                            points.put(fabledClass.getGroup(), current);
+                        }
+                    }
+                } else {
+                    for (String classKey : classes.keys()) {
+                        FabledClass fabledClass = Fabled.getClass(classKey);
+                        if (fabledClass != null) {
+                            acc.getClass(fabledClass.getGroup()).setPoints(classes.getSection(classKey).getInt(POINTS, 0));
+                        }
                     }
                 }
             }
@@ -297,12 +350,19 @@ public abstract class IOManager {
                 DataSection account = accounts.createSection(ACCOUNT_PREFIX + entry.getKey());
                 PlayerData  acc     = entry.getValue();
 
+                if (Fabled.getSettings().isSharedSkillPoints()) {
+                    account.set(SHARED_POINTS, acc.getPoints());
+                } else {
+                    account.remove(SHARED_POINTS);
+                }
+
                 // Save classes
                 DataSection classes = account.createSection(CLASSES);
                 for (PlayerClass c : acc.getClasses()) {
                     DataSection classSection = classes.createSection(c.getData().getName());
                     classSection.set(LEVEL, c.getLevel());
-                    classSection.set(POINTS, c.getPoints());
+                    if (Fabled.getSettings().isSharedSkillPoints()) classSection.set(POINTS, c.getEarnedPoints());
+                    else classSection.set(POINTS, c.getPoints());
                     classSection.set(EXP, c.getExp());
                 }
 

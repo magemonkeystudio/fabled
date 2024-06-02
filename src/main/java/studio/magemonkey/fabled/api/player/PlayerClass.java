@@ -27,6 +27,8 @@
 package studio.magemonkey.fabled.api.player;
 
 import com.google.common.base.Preconditions;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import studio.magemonkey.codex.mccore.config.Filter;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.classes.FabledClass;
@@ -34,13 +36,12 @@ import studio.magemonkey.fabled.api.enums.ExpSource;
 import studio.magemonkey.fabled.api.enums.PointSource;
 import studio.magemonkey.fabled.api.event.*;
 import studio.magemonkey.fabled.api.skills.Skill;
+import studio.magemonkey.fabled.data.Settings;
 import studio.magemonkey.fabled.data.TitleType;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.language.NotificationNodes;
 import studio.magemonkey.fabled.language.RPGFilter;
 import studio.magemonkey.fabled.manager.TitleManager;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 /**
  * <p>Represents a player's class progress.</p>
@@ -55,7 +56,11 @@ public class PlayerClass {
     private final PlayerData  player;
     private       FabledClass classData;
     private       int         level;
+
+    // If shared-skill-points is enabled, this tracks the points gained (not lost) by each class,
+    // so that if it is later disabled, points can be distributed properly
     private       int         points;
+
     private       double      exp;
 
     ///////////////////////////////////////////////////////
@@ -76,7 +81,7 @@ public class PlayerClass {
         this.player = player;
         this.classData = classData;
         this.level = 1;
-        this.points = Fabled.getSettings().getGroupSettings(classData.getGroup()).getStartingPoints();
+        this.points = 0;
         this.exp = 0;
 
         for (Skill skill : classData.getSkills()) {
@@ -178,7 +183,7 @@ public class PlayerClass {
      * @return number of available skill points
      */
     public int getPoints() {
-        return points;
+        return Fabled.getSettings().isSharedSkillPoints() ? this.getPlayerData().getPoints() : this.points;
     }
 
     /**
@@ -197,7 +202,34 @@ public class PlayerClass {
         }*/
 
         // Set the points
-        points = amount;
+        if (Fabled.getSettings().isSharedSkillPoints()) {
+            this.getPlayerData().setPoints(amount);
+        } else {
+            points = amount;
+        }
+    }
+
+    /**
+     * When {@link Settings#isSharedSkillPoints() is enabled} sets the amount of skill points
+     * this class has earned. Used if the shared skill points option is later disabled,
+     * to correctly redistribute the points across all classes
+     */
+    public void setEarnedPoints(int amount) {
+        if (!Fabled.getSettings().isSharedSkillPoints())
+            throw new IllegalStateException("'shared-skill-points' is not enabled");
+        this.points = amount;
+    }
+
+
+    /**
+     * When {@link Settings#isSharedSkillPoints() is enabled} gets the amount of skill points
+     * this class has earned. Used if the shared skill points option is later disabled,
+     * to correctly redistribute the points across all classes
+     */
+    public int getEarnedPoints() {
+        if (!Fabled.getSettings().isSharedSkillPoints())
+            throw new IllegalStateException("'shared-skill-points' is not enabled");
+        return this.points;
     }
 
     ///////////////////////////////////////////////////////
@@ -269,7 +301,10 @@ public class PlayerClass {
 
         // Add the points if not cancelled
         if (!event.isCancelled()) {
-            points += event.getAmount();
+            if (Fabled.getSettings().isSharedSkillPoints()) {
+                this.getPlayerData().setPoints((int) (this.getPlayerData().getPoints()+event.getAmount()));
+            }
+            if (!Fabled.getSettings().isSharedSkillPoints() || source != PointSource.REFUND) points += event.getAmount();
         }
     }
 
@@ -285,12 +320,16 @@ public class PlayerClass {
         }
 
         // Cannot use more points than obtained
-        if (amount > points) {
+        if (amount > this.getPoints()) {
             throw new IllegalArgumentException("Invalid points amount - more than current total");
         }
 
         // Use the points
-        points -= amount;
+        if (Fabled.getSettings().isSharedSkillPoints()) {
+            this.getPlayerData().setPoints(this.getPlayerData().getPoints()-amount);
+        } else {
+            this.points -= amount;
+        }
     }
 
     /**
@@ -425,7 +464,7 @@ public class PlayerClass {
                         NotificationNodes.LVL,
                         RPGFilter.LEVEL.setReplacement(level + ""),
                         RPGFilter.CLASS.setReplacement(classData.getName()),
-                        RPGFilter.POINTS.setReplacement(points + ""),
+                        RPGFilter.POINTS.setReplacement(getPoints() + ""),
                         Filter.AMOUNT.setReplacement(levels + "")
                 );
             }
@@ -456,7 +495,7 @@ public class PlayerClass {
                     NotificationNodes.LVL_LOSE,
                     RPGFilter.LEVEL.setReplacement(level + ""),
                     RPGFilter.CLASS.setReplacement(classData.getName()),
-                    RPGFilter.POINTS.setReplacement(points + ""),
+                    RPGFilter.POINTS.setReplacement(getPoints() + ""),
                     Filter.AMOUNT.setReplacement(levels + ""));
         }
     }
@@ -479,7 +518,7 @@ public class PlayerClass {
         amount = Math.min(amount, classData.getMaxLevel() - level);
         if (amount <= 0) return;
         level += amount;
-        points += classData.getGroupSettings().getPointsForLevels(level, level - amount);
+        this.givePoints(classData.getGroupSettings().getPointsForLevels(level, level - amount), PointSource.LEVEL);
         getPlayerData().giveAttribPoints(classData.getGroupSettings().getAttribsForLevels(level, level - amount));
 
         // Update health/mana
@@ -512,7 +551,7 @@ public class PlayerClass {
             return;
         }
         level -= amount;
-        points += classData.getGroupSettings().getPointsForLevels(level, level + amount);
+        this.givePoints(classData.getGroupSettings().getPointsForLevels(level, level + amount), PointSource.LEVEL);
         getPlayerData().giveAttribPoints(classData.getGroupSettings().getAttribsForLevels(level, level + amount));
 
         // Update health/mana

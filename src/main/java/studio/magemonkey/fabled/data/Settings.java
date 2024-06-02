@@ -28,6 +28,21 @@ package studio.magemonkey.fabled.data;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.entity.*;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.permissions.PermissionAttachmentInfo;
+import studio.magemonkey.codex.mccore.config.CommentedConfig;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
+import studio.magemonkey.codex.mccore.config.parse.NumberParser;
+import studio.magemonkey.codex.mccore.util.TextFormatter;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.CombatProtection;
 import studio.magemonkey.fabled.api.DefaultCombatProtection;
@@ -39,21 +54,6 @@ import studio.magemonkey.fabled.data.formula.value.CustomValue;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.gui.tool.GUITool;
 import studio.magemonkey.fabled.log.Logger;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-import studio.magemonkey.codex.mccore.config.CommentedConfig;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import studio.magemonkey.codex.mccore.config.parse.NumberParser;
-import studio.magemonkey.codex.mccore.util.TextFormatter;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.entity.*;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import java.util.*;
 
@@ -86,6 +86,7 @@ public class Settings {
     DEFAULT_YIELD                  = "default",
             ACCOUNT_BASE           = "Accounts.",
             ACCOUNT_MAIN           = ACCOUNT_BASE + "main-class-group",
+            ACCOUNT_SHARED_SP      = ACCOUNT_BASE + "shared-skill-points",
             ACCOUNT_EACH           = ACCOUNT_BASE + "one-per-class",
             ACCOUNT_MAX            = ACCOUNT_BASE + "max-accounts",
             ACCOUNT_PERM           = ACCOUNT_BASE + "perm-accounts",
@@ -208,6 +209,8 @@ public class Settings {
      */
     @Getter
     private String              mainGroup;
+    @Getter
+    private boolean             sharedSkillPoints;
     /**
      * Retrieves the max accounts allowed for most players
      *
@@ -807,6 +810,7 @@ public class Settings {
 
     private void loadAccountSettings() {
         mainGroup = config.getString(ACCOUNT_MAIN);
+        sharedSkillPoints = config.getBoolean(ACCOUNT_SHARED_SP);
         onePerClass = config.getBoolean(ACCOUNT_EACH);
         maxAccounts = config.getInt(ACCOUNT_MAX);
 

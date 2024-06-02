@@ -10,6 +10,19 @@ Accounts:
   # The main class group used for GUI displays
   main-class-group: class
   #
+  # When enabled, a single skill point pool will be used across all class groups
+  # When disabled, each class group will have its own skill points, used for its corresponding skills
+  # WARNING, if you had this option enabled and then disabled, the separate skill points for each class will be
+  # recalculated like this:
+  # - The starting points of each class will be added
+  # - The leveling-up points of each class will be added
+  # - The points invested in skills of each class will be subtracted from that class. This means that,
+  #   if a class had more invested skill points that it could afford on its own, achieved via skill points gained
+  #   with a different class, they will remain missing from that class, potentially leaving negative points.
+  # - Any points gained/lost via other mediums (i.e. gifted via commands or mechanics from other plugins)
+  #   will be removed/readded respectively, since it is not determined to which class they should go
+  shared-skill-points: false
+  #
   # Allows one "account" per class, providing the "/class switch"
   # command to change between them. This is an alternative to
   # using "/class acc <id>" which professes as a class at the same

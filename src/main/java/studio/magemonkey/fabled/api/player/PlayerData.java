@@ -179,6 +179,7 @@ public class PlayerData {
     @Setter
     private double     lastHealth;
     private double     maxHealth;
+    private int        points; // Only used if shared-skill-points is enabled. Otherwise stored in PlayerClass
     /**
      * -- GETTER --
      * The hunger value here is not representative of the player's total hunger,
@@ -1434,9 +1435,7 @@ public class PlayerData {
     }
 
     /**
-     * Sets the professed class for the player for the corresponding group. This
-     * will not save any skills, experience, or levels of the previous class if
-     * there was any. The new class will start at level 1 with 0 experience.
+     * Sets the professed class for the player for the corresponding group.
      *
      * @param previous    the previously professed class, if any
      * @param fabledClass class to assign to the player
@@ -1445,6 +1444,7 @@ public class PlayerData {
      */
     public PlayerClass setClass(@Nullable FabledClass previous, FabledClass fabledClass, boolean reset) {
         PlayerClass c = classes.remove(fabledClass.getGroup());
+        int skillPoints = 0;
         if (c != null) {
             List<Skill> skTemp =
                     c.getPlayerData().getSkills().stream()
@@ -1460,7 +1460,7 @@ public class PlayerData {
                     GroupSettings group = Fabled.getSettings().getGroupSettings(fabledClass.getGroup());
                     if (group.isProfessReset()) {
                         if (group.isProfessRefundSkills() && ps.getInvestedCost() > 0)
-                            c.givePoints(ps.getInvestedCost(), PointSource.REFUND);
+                            skillPoints += ps.getInvestedCost();
 
                         if (group.isProfessRefundAttributes())
                             resetAttribs();
@@ -1471,7 +1471,7 @@ public class PlayerData {
                 } else {
                     if (!reset && Fabled.getSettings().isRefundOnClassChange() && skills.containsKey(nm)) {
                         if (ps.getInvestedCost() > 0)
-                            c.givePoints(ps.getInvestedCost(), PointSource.REFUND);
+                            skillPoints += ps.getInvestedCost();
                         skills.remove(nm);
                         comboData.removeSkill(ps.getData());
                     }
@@ -1491,7 +1491,12 @@ public class PlayerData {
         if (!reset && c != null) {
             classData.setLevel(c.getLevel());
             classData.setExp(c.getExp());
-            classData.setPoints(c.getPoints());
+            if (Fabled.getSettings().isSharedSkillPoints()) {
+                classData.setEarnedPoints(c.getPoints());
+                this.points += skillPoints;
+            } else {
+                classData.setPoints(c.getPoints()+skillPoints);
+            }
         }
         classes.put(fabledClass.getGroup(), classData);
 
@@ -1597,9 +1602,11 @@ public class PlayerData {
                     ((PassiveSkill) ps.getData()).stopEffects(getPlayer(), ps.getLevel());
                 }
 
-                if (settings.isProfessRefundSkills() && toSubclass) points += ps.getInvestedCost();
+                points += ps.getInvestedCost();
                 comboData.removeSkill(skill);
             }
+            if (Fabled.getSettings().isSharedSkillPoints())
+                this.points += points - playerClass.getEarnedPoints();
 
             // Update GUI features
             updateScoreboard();
@@ -1622,7 +1629,7 @@ public class PlayerData {
         resetAttribs(); //Should reset attribute points to 0.
         attribPoints += aPoints;
 
-        return points;
+        return settings.isProfessRefundSkills() && toSubclass ? points : 0;
     }
 
     /**
@@ -1634,6 +1641,7 @@ public class PlayerData {
         for (String key : keys) {
             reset(key, false);
         }
+        this.points = 0;
     }
 
     /**
@@ -1691,7 +1699,7 @@ public class PlayerData {
                     previous != null && fabledClass.getParent().getName().equals(previous.getName());
             int skillPoints = isResetting
                     ? reset(fabledClass.getGroup(), isSubclass)
-                    : -1;
+                    : 0;
 
             // Inherit previous class data if any
             final PlayerClass current;
@@ -1699,7 +1707,6 @@ public class PlayerData {
                 current = new PlayerClass(this, fabledClass);
                 classes.put(fabledClass.getGroup(), current);
                 attribPoints += fabledClass.getGroupSettings().getStartingAttribs();
-                if (skillPoints == -1) skillPoints = current.getPoints();
             } else {
                 current = previousData;
                 previousData.setClassData(fabledClass);
@@ -1715,9 +1722,8 @@ public class PlayerData {
             }
 
             Bukkit.getPluginManager().callEvent(new PlayerClassChangeEvent(current, previous, current.getData()));
-            if (skillPoints < 0 || (isResetting && skillPoints == 0))
-                skillPoints = fabledClass.getGroupSettings().getStartingPoints();
-            current.setPoints(skillPoints);
+            if (fabledClass.getParent() == null || isResetting) skillPoints += fabledClass.getGroupSettings().getStartingPoints();
+            current.givePoints(skillPoints);
             updateScoreboard();
             updatePlayerStat(getPlayer());
             return true;
@@ -1808,6 +1814,18 @@ public class PlayerData {
                 .forEach(playerClass -> playerClass.loseLevels(amount));
     }
 
+    public int getPoints() {
+        if (Fabled.getSettings().isSharedSkillPoints()) {
+            return this.points;
+        } else {
+            PlayerClass clazz = this.getMainClass();
+            if (clazz == null) {
+                clazz = this.classes.values().stream().findFirst().orElse(null);
+            }
+            return clazz == null ? 0 : clazz.getPoints();
+        }
+    }
+
     /**
      * Gives skill points to the player for all classes matching the experience source
      *
@@ -1817,9 +1835,13 @@ public class PlayerData {
      */
     @Deprecated
     public void givePoints(int amount, ExpSource source) {
-        for (PlayerClass playerClass : classes.values()) {
-            if (playerClass.getData().receivesExp(source)) {
-                playerClass.givePoints(amount);
+        if (Fabled.getSettings().isSharedSkillPoints()) {
+            this.points += amount;
+        } else {
+            for (PlayerClass playerClass : classes.values()) {
+                if (playerClass.getData().receivesExp(source)) {
+                    playerClass.givePoints(amount);
+                }
             }
         }
     }
@@ -1831,8 +1853,12 @@ public class PlayerData {
      * @param source source of the levels
      */
     public void givePoints(int amount, PointSource source) {
-        for (PlayerClass playerClass : classes.values()) {
-            playerClass.givePoints(amount, source);
+        if (Fabled.getSettings().isSharedSkillPoints()) {
+            this.points += amount;
+        } else {
+            for (PlayerClass playerClass : classes.values()) {
+                playerClass.givePoints(amount, source);
+            }
         }
     }
 
@@ -1842,8 +1868,12 @@ public class PlayerData {
      * @param amount amount of levels to set to
      */
     public void setPoints(int amount) {
-        for (PlayerClass playerClass : classes.values()) {
-            playerClass.setPoints(amount);
+        if (Fabled.getSettings().isSharedSkillPoints()) {
+            this.points = amount;
+        } else {
+            for (PlayerClass playerClass : classes.values()) {
+                playerClass.setPoints(amount);
+            }
         }
     }
 

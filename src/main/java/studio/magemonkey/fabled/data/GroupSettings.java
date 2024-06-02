@@ -27,12 +27,12 @@
 package studio.magemonkey.fabled.data;
 
 import com.google.common.collect.ImmutableList;
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.classes.FabledClass;
-import studio.magemonkey.fabled.log.Logger;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.classes.FabledClass;
+import studio.magemonkey.fabled.log.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -276,7 +276,9 @@ public class GroupSettings {
         config.setComments(PROFESS_REFUND_SKILLS, ImmutableList.of(
                 "",
                 " If " + PROFESS_RESET + " is true, this determines if skill points are refunded",
-                " or just deleted"));
+                " or just deleted. Take into account that the skill points corresponding to those skills",
+                " can be regained normally by leveling up the new class, so enabling this option",
+                " effectively creates new skill points that seemingly come from nowhere"));
         config.set(PROFESS_REFUND_SKILLS, professRefundSkills);
 
         config.setComments(PROFESS_REFUND_ATTRIBUTES, ImmutableList.of(
