@@ -254,6 +254,11 @@ public abstract class IOManager {
                             final List<String> slots = skillBar.getList(SLOTS);
                             for (final String slot : slots) {
                                 int i = Integer.parseInt(slot);
+                                if (i < 1 || i > locked.length - 1) {
+                                    Logger.invalid("Invalid skill bar slot: " + i);
+                                    continue;
+                                }
+
                                 if (!locked[i - 1])
                                     bar.getData().put(i, UNASSIGNED);
                             }
