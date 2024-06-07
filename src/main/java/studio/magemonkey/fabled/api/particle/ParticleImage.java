@@ -92,7 +92,7 @@ public class ParticleImage implements IParticleEffect {
                 Particle particle;
                 try {
                     particle = Particle.DUST;
-                } catch (Exception e) {
+                } catch (NoSuchFieldError e) {
                     particle = Particle.valueOf("REDSTONE");
                 }
                 player.spawnParticle(particle,
