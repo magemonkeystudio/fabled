@@ -34,7 +34,9 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Adds to a cast data value
@@ -64,7 +66,26 @@ public class ValueAttributeMechanic extends MechanicComponent {
             return false;
         }
 
-        String   key  = settings.getString(KEY);
+        List<String> keys;
+        if (!settings.getStringList(KEY).isEmpty()) {
+            keys = settings.getStringList(KEY)
+                    .stream()
+                    .filter(key -> Fabled.getAttributeManager().getAttribute(key) != null)
+                    .collect(Collectors.toList());
+        } else {
+            // Attempt to read it as a string, optionally comma separated
+            String data = settings.getString(KEY);
+            if (data == null || data.isBlank() || data.equals("[]")) {
+                keys = new ArrayList<>();
+            } else {
+                keys = List.of(settings.getString(KEY).split(","));
+            }
+        }
+        String key = keys.get(0);
+        if(key == null) {
+            return false;
+        }
+
         String   attr = settings.getString(ATTR);
         CastData data = DynamicSkill.getCastData(caster);
         data.put(key, (double) Fabled.getData((Player) targets.get(0)).getAttribute(attr));
