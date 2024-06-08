@@ -4526,7 +4526,7 @@ class ValueAttributeMechanic extends ProMechanic {
 			data:         [
 				new StringSelect('Key', 'key', 'attribute')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
-				new DropdownSelect('Attribute', 'attribute', attributeStore.getAttributeNames, ['Vitality'], true)
+				new DropdownSelect('Attribute', 'attribute', attributeStore.getAttributeNames, 'Vitality', false)
 					.setTooltip('The attribute you are loading the value of'),
 				new BooleanSelect('Save', 'save', false)
 					.setTooltip('If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account')
