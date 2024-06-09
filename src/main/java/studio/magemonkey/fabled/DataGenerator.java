@@ -51,18 +51,21 @@ public class DataGenerator {
             ).getBytes());
             out.write(("\n    MATERIALS: [\n").getBytes());
             for (Material material : Material.values()) {
+                if (material.isLegacy()) continue;
                 if (material.isItem()) {
                     writeEnumConstant(out, material);
                 }
             }
             out.write(("    ],\n    BLOCKS: [\n").getBytes());
             for (Material material : Material.values()) {
+                if (material.isLegacy()) continue;
                 if (material.isBlock()) {
                     writeEnumConstant(out, material);
                 }
             }
             out.write(("    ],\n    DAMAGEABLE_MATERIALS: [\n").getBytes());
             for (Material material : Material.values()) {
+                if (material.isLegacy()) continue;
                 if (material.getMaxDurability() > 0) {
                     writeEnumConstant(out, material);
                 }
@@ -115,6 +118,7 @@ public class DataGenerator {
             }
             out.write(("    ],\n    CONSUMABLE: [\n").getBytes());
             for (Material material : Material.values()) {
+                if (material.isLegacy()) continue;
                 if (material.isEdible()) {
                     writeEnumConstant(out, material);
                 }
@@ -157,7 +161,6 @@ public class DataGenerator {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         MockBukkit.unmock();
     }
 
