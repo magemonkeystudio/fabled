@@ -36,7 +36,7 @@
     "eslint-plugin-svelte": "^2.39.3",
     "socket.io": "^4.7.3",
     "socket.io-client": "^4.7.3",
-    "uuid": "^9.0.1",
+    "uuid": "^10.0.0",
     "yaml": "^2.4.5"
   }
 }
