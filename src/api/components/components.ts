@@ -1925,7 +1925,7 @@ const warpOptions = (): ComponentOption[] => {
 const particleOptions = (): ComponentOption[] => {
 	return [
 		new SectionMarker('Particle Options'),
-		new DropdownSelect('Particle', 'particle', getParticles, 'Villager happy')
+		new DropdownSelect('Particle', 'particle', getParticles, getParticles()[0])
 			.setTooltip('The type of particle to display'),
 
 		new DropdownSelect('Material', 'material', (() => [...getMaterials()]), 'Arrow')
@@ -2096,7 +2096,7 @@ const effectOptions = (optional: boolean): ComponentOption[] => {
 		opt(new IntSelect('View Range', '-view-range', 25)
 			.setTooltip('How far away the effect can be seen from.')),
 
-		opt(new DropdownSelect('Particle', '-particle-type', getParticles, 'Villager happy')
+		opt(new DropdownSelect('Particle', '-particle-type', getParticles, getParticles()[0])
 			.setTooltip('The type of particle to use.')),
 		opt(new DropdownSelect('Material', '-particle-material', getMaterials, 'Dirt')
 			.requireValue('-particle-type', ['Item crack'])
