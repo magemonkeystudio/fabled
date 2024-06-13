@@ -6,9 +6,8 @@ import studio.magemonkey.fabled.api.armorstand.ArmorStandManager;
 import studio.magemonkey.fabled.dynamic.TempEntity;
 import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
 import studio.magemonkey.fabled.listener.MechanicListener;
-import studio.magemonkey.fabled.task.RemoveTask;
+import studio.magemonkey.fabled.task.RemoveEntitiesTask;
 import org.bukkit.Location;
-import org.bukkit.RegionAccessor;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -123,7 +122,7 @@ public class ArmorStandMechanic extends MechanicComponent {
             ArmorStandManager.register(instance, target, key);
         }
         executeChildren(caster, level, armorStands, force);
-        new RemoveTask(armorStands, duration);
+        new RemoveEntitiesTask(armorStands, duration);
         return targets.size() > 0;
     }
 

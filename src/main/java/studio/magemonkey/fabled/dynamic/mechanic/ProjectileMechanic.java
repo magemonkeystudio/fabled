@@ -51,7 +51,7 @@ import studio.magemonkey.fabled.api.util.Nearby;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.TempEntity;
 import studio.magemonkey.fabled.listener.MechanicListener;
-import studio.magemonkey.fabled.task.RemoveTask;
+import studio.magemonkey.fabled.task.RemoveEntitiesTask;
 import studio.magemonkey.fabled.task.RepeatingEntityTask;
 
 import java.lang.reflect.InvocationTargetException;
@@ -320,7 +320,7 @@ public class ProjectileMechanic extends MechanicComponent {
         }
 
         new RepeatingEntityTask<>(projectiles, proj -> ParticleHelper.play(proj.getLocation(), settings));
-        new RemoveTask(projectiles, (int) parseValues(caster, LIFESPAN, level, 9999) * 20) {
+        new RemoveEntitiesTask(projectiles, (int) parseValues(caster, LIFESPAN, level, 9999) * 20) {
             @Override
             public void run() {
                 super.run();

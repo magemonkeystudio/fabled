@@ -40,10 +40,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.List;
 
 /**
- * A simple task for removing an entity after a duration
+ * A simple task for removing some entities after a duration
  */
-public class RemoveTask extends BukkitRunnable {
-    private List<? extends Entity> entities;
+public class RemoveEntitiesTask extends BukkitRunnable {
+    private final List<? extends Entity> entities;
 
     /**
      * Initializes a new task to remove the entity after the
@@ -52,7 +52,7 @@ public class RemoveTask extends BukkitRunnable {
      * @param entities entities to remove
      * @param ticks    ticks to wait before removing the entity
      */
-    public RemoveTask(List<? extends Entity> entities, int ticks) {
+    public RemoveEntitiesTask(List<? extends Entity> entities, int ticks) {
         this.entities = entities;
         Fabled.schedule(this, ticks);
     }
