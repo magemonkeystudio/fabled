@@ -31,7 +31,7 @@ import studio.magemonkey.fabled.api.skills.PassiveSkill;
 import studio.magemonkey.fabled.api.skills.Skill;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.listener.MechanicListener;
-import studio.magemonkey.fabled.task.RemoveTask;
+import studio.magemonkey.fabled.task.RemoveEntitiesTask;
 import studio.magemonkey.codex.mccore.util.TextFormatter;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.LivingEntity;
@@ -55,7 +55,7 @@ public class WolfMechanic extends MechanicComponent {
     private static final String AMOUNT     = "amount";
     private static final String SITTING    = "sitting";
 
-    private final Map<Integer, RemoveTask> tasks = new HashMap<>();
+    private final Map<Integer, RemoveEntitiesTask> tasks = new HashMap<>();
 
     /**
      * Executes the component
@@ -132,7 +132,7 @@ public class WolfMechanic extends MechanicComponent {
             }
         }
 
-        final RemoveTask task = new RemoveTask(wolves, ticks);
+        final RemoveEntitiesTask task = new RemoveEntitiesTask(wolves, ticks);
         tasks.put(caster.getEntityId(), task);
 
         // Apply children to the wolves
@@ -150,7 +150,7 @@ public class WolfMechanic extends MechanicComponent {
 
     @Override
     public void cleanUp(final LivingEntity caster) {
-        final RemoveTask task = tasks.remove(caster.getEntityId());
+        final RemoveEntitiesTask task = tasks.remove(caster.getEntityId());
         if (task != null) {
             task.cancel();
             task.run();

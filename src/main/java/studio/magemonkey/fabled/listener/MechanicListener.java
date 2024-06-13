@@ -56,7 +56,7 @@ import studio.magemonkey.fabled.dynamic.mechanic.*;
 import studio.magemonkey.fabled.hook.DisguiseHook;
 import studio.magemonkey.fabled.hook.PluginChecker;
 import studio.magemonkey.fabled.hook.VaultHook;
-import studio.magemonkey.fabled.task.RemoveTask;
+import studio.magemonkey.fabled.task.RemoveEntitiesTask;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -440,7 +440,7 @@ public class MechanicListener extends FabledListener {
             }
         }
         if (!entities.isEmpty()) {
-            new RemoveTask(entities, 1);
+            new RemoveEntitiesTask(entities, 1);
         }
     }
 }
