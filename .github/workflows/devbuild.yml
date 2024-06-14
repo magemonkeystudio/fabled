@@ -32,7 +32,7 @@ jobs:
         uses: s4u/maven-settings-action@v2.8.0
         with:
           githubServer: false
-          servers: '[{"id": "ossrh", "username": "Travja", "password": "${{ secrets.SONATYPE_DEPLOY_KEY }}"}]'
+          servers: '[{"id": "ossrh", "username": "${{ secrets.SONATYPE_USERNAME }}", "password": "${{ secrets.SONATYPE_DEPLOY_KEY }}"}]'
       - name: Publish to Maven Central
         env:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}

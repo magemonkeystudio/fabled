@@ -30,7 +30,7 @@ jobs:
         uses: s4u/maven-settings-action@v2.8.0
         with:
           githubServer: false
-          servers: '[{"id": "ossrh", "username": "Travja", "password": "${{ secrets.SONATYPE_DEPLOY_KEY }}"}, {"id": "central", "username": "Travja", "password": "${{ secrets.SONATYPE_DEPLOY_KEY }}"}]'
+          servers: '[{"id": "ossrh", "username": "Travja", "password": "${{ secrets.SONATYPE_DEPLOY_KEY }}"}, {"id": "central", "username": "${{ secrets.SONATYPE_USERNAME }}", "password": "${{ secrets.SONATYPE_DEPLOY_KEY }}"}]'
       - name: Update version
         run: python ./.github/update_version.py false true
       - name: Publish to Maven Central
