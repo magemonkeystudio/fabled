@@ -21,7 +21,7 @@ import Registry, {
 import type {
 	Icon,
 	MultiSkillYamlData,
-	ProSkillData,
+	FabledSkillData,
 	Serializable,
 	SkillYamlData,
 	YamlComponentData
@@ -86,7 +86,7 @@ export default class FabledSkill implements Serializable {
 	private skillReqStr         = '';
 	private incompStr: string[] = [];
 
-	constructor(data?: ProSkillData) {
+	constructor(data?: FabledSkillData) {
 		this.name = data?.name || 'Skill';
 		if (!data) return;
 		if (data.location) this.location = data.location;
