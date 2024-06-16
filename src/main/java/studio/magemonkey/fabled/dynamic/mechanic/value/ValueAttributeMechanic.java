@@ -26,13 +26,13 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic.value;
 
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +82,7 @@ public class ValueAttributeMechanic extends MechanicComponent {
             }
         }
         String key = keys.get(0);
-        if(key == null) {
+        if (key == null) {
             return false;
         }
 
