@@ -1,6 +1,6 @@
 import type { VersionData } from '$api/types';
 
-export const DATA_1_20: VersionData = {
+export const DATA_1_20_6: VersionData = {
 	MATERIALS:            [
 		'Air',
 		'Stone',
@@ -4701,17 +4701,17 @@ export const DATA_1_20: VersionData = {
 	]
 };
 
-DATA_1_20.MATERIALS.sort();
-DATA_1_20.DAMAGEABLE_MATERIALS.sort();
-DATA_1_20.SOUNDS.sort();
-DATA_1_20.ENTITIES.sort();
-DATA_1_20.BIOMES.sort();
-DATA_1_20.POTIONS.sort();
-DATA_1_20.PARTICLES.sort();
-DATA_1_20.DAMAGE_TYPES.sort();
-DATA_1_20.PROJECTILES.sort();
-DATA_1_20.MOB_DISGUISES.sort();
-DATA_1_20.MISC_DISGUISES.sort();
-DATA_1_20.CONSUMABLE.sort();
-DATA_1_20.ENCHANTS.sort();
-DATA_1_20.ANY_POTION = DATA_1_20.POTIONS.slice().splice(0, 0, 'Any');
+DATA_1_20_6.MATERIALS.sort();
+DATA_1_20_6.DAMAGEABLE_MATERIALS.sort();
+DATA_1_20_6.SOUNDS.sort();
+DATA_1_20_6.ENTITIES.sort();
+DATA_1_20_6.BIOMES.sort();
+DATA_1_20_6.POTIONS.sort();
+DATA_1_20_6.PARTICLES.sort();
+DATA_1_20_6.DAMAGE_TYPES.sort();
+DATA_1_20_6.PROJECTILES.sort();
+DATA_1_20_6.MOB_DISGUISES.sort();
+DATA_1_20_6.MISC_DISGUISES.sort();
+DATA_1_20_6.CONSUMABLE.sort();
+DATA_1_20_6.ENCHANTS.sort();
+DATA_1_20_6.ANY_POTION = DATA_1_20_6.POTIONS.slice().splice(0, 0, 'Any');
