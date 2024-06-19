@@ -74,6 +74,10 @@
                     <groupId>org.projectlombok</groupId>
                     <artifactId>lombok</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.github.dmulloy2</groupId>
+                    <artifactId>ProtocolLib</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
     </dependencies>
