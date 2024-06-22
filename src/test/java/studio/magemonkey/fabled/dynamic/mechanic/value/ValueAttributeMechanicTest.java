@@ -33,20 +33,20 @@ class ValueAttributeMechanicTest extends MockedTest {
     }
 
     @Test
-    void getKey_parsesSingleString() {
+    void getAttribute_parsesSingleString() {
         data.set("attribute", "vitality");
         mechanic.load(skill, config);
 
-        String key = mechanic.getAttributeKey();
+        String key = mechanic.getAttribute();
         assertEquals("vitality", key);
     }
 
     @Test
-    void getKey_parsesStringList() {
+    void getAttribute_parsesStringList() {
         data.set("attribute", List.of("vitality", "strength"));
         mechanic.load(skill, config);
 
-        String key = mechanic.getAttributeKey();
+        String key = mechanic.getAttribute();
         assertEquals("vitality", key);
     }
 }

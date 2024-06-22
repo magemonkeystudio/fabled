@@ -61,10 +61,10 @@ public class ValueAttributeMechanic extends MechanicComponent {
             return false;
         }
 
-        String key = getAttributeKey();
-        if (key == null) return false;
+        String attr = getAttribute();
+        if (attr == null) return false;
 
-        String   attr = settings.getString(ATTR);
+        String   key = settings.getString(KEY);
         CastData data = DynamicSkill.getCastData(caster);
         data.put(key, (double) Fabled.getData((Player) targets.get(0)).getAttribute(attr));
         if (settings.getBool(SAVE, false))
@@ -72,10 +72,10 @@ public class ValueAttributeMechanic extends MechanicComponent {
         return true;
     }
 
-    @Nullable String getAttributeKey() {
-        List<String> keys;
+    @Nullable String getAttribute() {
+        List<String> attrs;
         if (!settings.getStringList(ATTR).isEmpty()) {
-            keys = settings.getStringList(ATTR)
+            attrs = settings.getStringList(ATTR)
                     .stream()
                     .filter(key -> Fabled.getAttributeManager().getAttribute(key) != null)
                     .collect(Collectors.toList());
@@ -83,13 +83,13 @@ public class ValueAttributeMechanic extends MechanicComponent {
             // Attempt to read it as a string, optionally comma separated
             String data = settings.getString(ATTR);
             if (data == null || data.isBlank() || data.equals("[]")) {
-                keys = new ArrayList<>();
+                attrs = new ArrayList<>();
             } else {
-                keys = List.of(settings.getString(ATTR).split(","));
+                attrs = List.of(settings.getString(ATTR).split(","));
             }
         }
         String key = null;
-        if (!keys.isEmpty()) key = keys.get(0);
+        if (!attrs.isEmpty()) key = attrs.get(0);
         return key;
     }
 }
