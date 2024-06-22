@@ -26,11 +26,13 @@
  */
 package studio.magemonkey.fabled.dynamic;
 
+import lombok.Getter;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.CastData;
@@ -61,7 +63,13 @@ public abstract class EffectComponent {
     public final         ArrayList<EffectComponent> children         = new ArrayList<>();
     /**
      * The settings for the component
+     * -- GETTER --
+     *  Retrieves the settings of the dynamic component
+     *
+     * @return settings of the dynamic component
+
      */
+    @Getter
     protected final      Settings                   settings         = new Settings();
     /**
      * Whether the component should display preview effects
@@ -75,6 +83,13 @@ public abstract class EffectComponent {
      * Parent class of the component
      */
     protected            DynamicSkill               skill;
+    /**
+     * -- GETTER --
+     *  Retrieves the config key for the component
+     *
+     * @return config key of the component
+     */
+    @Getter
     private              String                     instanceKey;
 
     private static String filterSpecialChars(String string) {
@@ -109,15 +124,6 @@ public abstract class EffectComponent {
         return builder.toString();
     }
 
-    /**
-     * Retrieves the config key for the component
-     *
-     * @return config key of the component
-     */
-    public String getInstanceKey() {
-        return instanceKey;
-    }
-
     public abstract String getKey();
 
     /**
@@ -126,15 +132,6 @@ public abstract class EffectComponent {
      * @return component type
      */
     public abstract ComponentType getType();
-
-    /**
-     * Retrieves the settings of the dynamic component
-     *
-     * @return settings of the dynamic component
-     */
-    public Settings getSettings() {
-        return settings;
-    }
 
     /**
      * @return true if the component or its children should play their preview effects, or false otherwise
@@ -220,10 +217,13 @@ public abstract class EffectComponent {
      * @param caster  caster of the skill
      * @param level   level of the skill
      * @param targets targets to execute on
-     * @param force
+     * @param force whether skill should be forced
      * @return true if executed, false if conditions not met
      */
-    protected boolean executeChildren(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
+    protected boolean executeChildren(LivingEntity caster,
+                                      int level,
+                                      @NotNull List<LivingEntity> targets,
+                                      boolean force) {
         if (targets.isEmpty()) {
             return false;
         }
@@ -400,7 +400,7 @@ public abstract class EffectComponent {
         settings.load(config.getSection("data"));
         if (settings.has(ICON_KEY)) {
             String key = settings.getString(ICON_KEY);
-            if (!key.equals("")) {
+            if (!key.isBlank()) {
                 skill.setAttribKey(key, this);
             }
         }
@@ -427,6 +427,7 @@ public abstract class EffectComponent {
                 } catch (Exception ex) {
                     // Failed to create the component, just don't add it
                     Logger.bug("Failed to create " + type + " component: " + key);
+                    ex.printStackTrace();
                 }
             }
         }

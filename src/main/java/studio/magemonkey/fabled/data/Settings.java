@@ -225,6 +225,13 @@ public class Settings {
     private boolean             playerAlly;
     private boolean             affectNpcs;
     private boolean             affectArmorStands;
+    /**
+     * -- SETTER --
+     *  Swaps out the default combat protection for a custom one
+     *
+     * @param combatProtection combat protection to use
+     */
+    @Setter
     private CombatProtection    combatProtection = new DefaultCombatProtection();
     private boolean             auto;
     private boolean             useSql;
@@ -253,9 +260,30 @@ public class Settings {
     private String              sqlDatabase;
     private String              sqlUser;
     private String              sqlPass;
+    /**
+     * -- GETTER --
+     *  Checks whether Fabled should modify the max health of players
+     *
+     * @return true if enabled, false otherwise
+     */
+    @Getter
     private boolean             modifyHealth;
+    /**
+     * -- GETTER --
+     *  <p>Retrieves the default health for players that do not have a class.</p>
+     *
+     * @return default health for classless players
+     */
+    @Getter
     private int                 defaultHealth;
     private boolean             showAutoSkills;
+    /**
+     * -- GETTER --
+     *  Checks whether attributes are enabled
+     *
+     * @return true if enabled, false otherwise
+     */
+    @Getter
     private boolean             attributesEnabled;
     /**
      * Checks whether attribute points can be refunded
@@ -906,15 +934,6 @@ public class Settings {
                 && (!target.getType().name().equals("ARMOR_STAND") || affectArmorStands);
     }
 
-    /**
-     * Swaps out the default combat protection for a custom one
-     *
-     * @param combatProtection combat protection to use
-     */
-    public void setCombatProtection(final CombatProtection combatProtection) {
-        this.combatProtection = combatProtection;
-    }
-
     private void loadTargetingSettings() {
         if (config.isList(TARGET_MONSTER)) {
             monsterWorlds.addAll(config.getList(TARGET_MONSTER));
@@ -1011,39 +1030,12 @@ public class Settings {
     }
 
     /**
-     * Checks whether Fabled should modify the max health of players
-     *
-     * @return true if enabled, false otherwise
-     */
-    public boolean isModifyHealth() {
-        return modifyHealth;
-    }
-
-    /**
-     * <p>Retrieves the default health for players that do not have a class.</p>
-     *
-     * @return default health for classless players
-     */
-    public int getDefaultHealth() {
-        return defaultHealth;
-    }
-
-    /**
      * Checks whether auto-leveled skills are to be shown.
      *
      * @return true if shown, false otherwise
      */
     public boolean isShowingAutoSkills() {
         return showAutoSkills;
-    }
-
-    /**
-     * Checks whether attributes are enabled
-     *
-     * @return true if enabled, false otherwise
-     */
-    public boolean isAttributesEnabled() {
-        return attributesEnabled;
     }
 
     /**

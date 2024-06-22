@@ -26,6 +26,8 @@
  */
 package studio.magemonkey.fabled.api.skills;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -88,6 +90,15 @@ public abstract class Skill implements IconHolder {
     private static final String            DESC             = "desc";
     private static final String            ATTR             = "attributes";
     private static final String            COMBO            = "combo";
+    /**
+     * -- GETTER --
+     *  Checks whether the current damage event is due to
+     *  skills damaging an entity. This method is used by the API
+     *  and shouldn't be used by other plugins.
+     *
+     * @return true if caused by a skill, false otherwise
+     */
+    @Getter
     private static       boolean           skillDamage      = false;
     /**
      * The settings for the skill which include configurable stats
@@ -97,17 +108,86 @@ public abstract class Skill implements IconHolder {
     protected final      Settings          settings         = new Settings();
     private final        ArrayList<String> description      = new ArrayList<>();
     private final        ReadOnlySettings  readOnlySettings = new ReadOnlySettings(settings);
+    /**
+     * -- GETTER --
+     *  Retrieves the configuration key for the skill
+     *
+     * @return configuration key for the skill
+     */
+    @Getter
     private final        String            key;
     private              List<String>      iconLore;
+    /**
+     * -- GETTER --
+     *  Retrieves the indicator representing the skill for menus
+     *
+     * @return indicator for the skill
+     */
+    @Getter
     private              ItemStack         indicator;
+    /**
+     * -- GETTER --
+     *  Retrieves the name of the skill
+     *
+     * @return skill name
+     */
+    @Getter
     private              String            name;
+    /**
+     * -- GETTER --
+     *  Retrieves the descriptive type of the skill
+     *
+     * @return descriptive type of the skill
+     */
+    @Getter
     private              String            type;
+    /**
+     * -- GETTER --
+     *  Retrieves the message for the skill to display when cast.
+     *
+     * @return cast message of the skill
+     */
+    @Getter
     private              String            message;
+    /**
+     * -- GETTER --
+     *  Retrieves the skill required to be upgraded before this one
+     *
+     * @return required skill
+     */
+    @Getter
     private              String            skillReq;
+    /**
+     * -- GETTER --
+     *  Retrieves the max level the skill can reach
+     *
+     * @return max skill level
+     */
+    @Getter
     private              int               maxLevel;
+    /**
+     * -- GETTER --
+     *  Retrieves the level of the required skill needed to be obtained
+     *  before this one can be upgraded.
+     *
+     * @return required skill level
+     */
+    @Getter
     private              int               skillReqLevel;
     private              boolean           needsPermission;
     private              boolean           cooldownMessage;
+    /**
+     * -- GETTER --
+     *  Retrieves the ID of the skill's combo
+     *
+     * @return combo ID
+     * -- SETTER --
+     *  Sets the click combo for the skill
+     *
+     * @param combo new combo
+     */
+    @Setter
+    @Getter
     private              int               combo;
 
     /**
@@ -221,17 +301,6 @@ public abstract class Skill implements IconHolder {
     }
 
     /**
-     * Checks whether the current damage event is due to
-     * skills damaging an entity. This method is used by the API
-     * and shouldn't be used by other plugins.
-     *
-     * @return true if caused by a skill, false otherwise
-     */
-    public static boolean isSkillDamage() {
-        return skillDamage;
-    }
-
-    /**
      * Checks whether the skill has been assigned
      * a click combination.
      *
@@ -253,33 +322,6 @@ public abstract class Skill implements IconHolder {
     }
 
     /**
-     * Retrieves the configuration key for the skill
-     *
-     * @return configuration key for the skill
-     */
-    public String getKey() {
-        return key;
-    }
-
-    /**
-     * Retrieves the name of the skill
-     *
-     * @return skill name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Retrieves the max level the skill can reach
-     *
-     * @return max skill level
-     */
-    public int getMaxLevel() {
-        return maxLevel;
-    }
-
-    /**
      * Checks whether the skill has a message to display when cast.
      *
      * @return true if has a message, false otherwise
@@ -289,38 +331,11 @@ public abstract class Skill implements IconHolder {
     }
 
     /**
-     * Retrieves the ID of the skill's combo
-     *
-     * @return combo ID
-     */
-    public int getCombo() {
-        return combo;
-    }
-
-    /**
-     * Sets the click combo for the skill
-     *
-     * @param combo new combo
-     */
-    public void setCombo(int combo) {
-        this.combo = combo;
-    }
-
-    /**
      * Clears the set combo for the skill.
      * Only the API should call this.
      */
     public void clearCombo() {
         combo = -1;
-    }
-
-    /**
-     * Retrieves the message for the skill to display when cast.
-     *
-     * @return cast message of the skill
-     */
-    public String getMessage() {
-        return message;
     }
 
     /**
@@ -333,49 +348,12 @@ public abstract class Skill implements IconHolder {
     }
 
     /**
-     * Retrieves the indicator representing the skill for menus
-     *
-     * @return indicator for the skill
-     */
-    public ItemStack getIndicator() {
-        return indicator;
-    }
-
-    /**
-     * Retrieves the descriptive type of the skill
-     *
-     * @return descriptive type of the skill
-     */
-    public String getType() {
-        return type;
-    }
-
-    /**
      * Checks whether the skill requires another before leveling up
      *
-     * @return true if requires another skill, false otherwise
+     * @return true if the skill requires another skill, false otherwise
      */
     public boolean hasSkillReq() {
         return Fabled.getSkill(skillReq) != null && skillReqLevel > 0;
-    }
-
-    /**
-     * Retrieves the skill required to be upgraded before this one
-     *
-     * @return required skill
-     */
-    public String getSkillReq() {
-        return skillReq;
-    }
-
-    /**
-     * Retrieves the level of the required skill needed to be obtained
-     * before this one can be upgraded.
-     *
-     * @return required skill level
-     */
-    public int getSkillReqLevel() {
-        return skillReqLevel;
     }
 
     /**
@@ -701,7 +679,7 @@ public abstract class Skill implements IconHolder {
             lore.add(Fabled.getSettings().getBindText().replace("{material}", type));
         }
 
-        if (lore.size() > 0) meta.setDisplayName(lore.remove(0));
+        if (!lore.isEmpty()) meta.setDisplayName(lore.remove(0));
 
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -931,7 +909,7 @@ public abstract class Skill implements IconHolder {
      */
     public void softSave(DataSection config) {
 
-        boolean neededOnly = config.keys().size() > 0;
+        boolean neededOnly = !config.keys().isEmpty();
         if (!neededOnly) {
             save(config);
         }
@@ -948,7 +926,7 @@ public abstract class Skill implements IconHolder {
         indicator = Data.parseIcon(config);
         maxLevel = config.getInt(MAX, maxLevel);
         skillReq = config.getString(REQ);
-        if (skillReq == null || skillReq.length() == 0) skillReq = null;
+        if (skillReq == null || skillReq.isEmpty()) skillReq = null;
         skillReqLevel = config.getInt(REQLVL, skillReqLevel);
         message = TextFormatter.colorString(config.getString(MSG, message));
         needsPermission = config.getString(PERM, needsPermission + "").equalsIgnoreCase("true");
