@@ -120,7 +120,7 @@ public class CmdForcePoints implements IFunction, TabCompleter {
                 cmd.sendMessage(sender, NOT_NUMBER, ChatColor.RED + "That is not a valid skill point amount");
                 return;
             }
-            group = args[3].toLowerCase();
+            group = args[3];
             if (!Fabled.getGroups().contains(group)) {
                 cmd.sendMessage(sender, NOT_GROUP, ChatColor.RED + "That is not a valid class group");
                 return;
