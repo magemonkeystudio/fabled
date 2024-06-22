@@ -34,6 +34,7 @@ import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,13 +53,7 @@ public class ValueAttributeMechanic extends MechanicComponent {
     }
 
     /**
-     * Executes the component
-     *
-     * @param caster  caster of the skill
-     * @param level   level of the skill
-     * @param targets targets to apply to
-     * @param force
-     * @return true if applied to something, false otherwise
+     * {@inheritDoc}
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
@@ -66,25 +61,8 @@ public class ValueAttributeMechanic extends MechanicComponent {
             return false;
         }
 
-        List<String> keys;
-        if (!settings.getStringList(KEY).isEmpty()) {
-            keys = settings.getStringList(KEY)
-                    .stream()
-                    .filter(key -> Fabled.getAttributeManager().getAttribute(key) != null)
-                    .collect(Collectors.toList());
-        } else {
-            // Attempt to read it as a string, optionally comma separated
-            String data = settings.getString(KEY);
-            if (data == null || data.isBlank() || data.equals("[]")) {
-                keys = new ArrayList<>();
-            } else {
-                keys = List.of(settings.getString(KEY).split(","));
-            }
-        }
-        String key = keys.get(0);
-        if (key == null) {
-            return false;
-        }
+        String key = getAttributeKey();
+        if (key == null) return false;
 
         String   attr = settings.getString(ATTR);
         CastData data = DynamicSkill.getCastData(caster);
@@ -92,5 +70,26 @@ public class ValueAttributeMechanic extends MechanicComponent {
         if (settings.getBool(SAVE, false))
             Fabled.getData((OfflinePlayer) caster).setPersistentData(key, data.getRaw(key));
         return true;
+    }
+
+    @Nullable String getAttributeKey() {
+        List<String> keys;
+        if (!settings.getStringList(ATTR).isEmpty()) {
+            keys = settings.getStringList(ATTR)
+                    .stream()
+                    .filter(key -> Fabled.getAttributeManager().getAttribute(key) != null)
+                    .collect(Collectors.toList());
+        } else {
+            // Attempt to read it as a string, optionally comma separated
+            String data = settings.getString(ATTR);
+            if (data == null || data.isBlank() || data.equals("[]")) {
+                keys = new ArrayList<>();
+            } else {
+                keys = List.of(settings.getString(ATTR).split(","));
+            }
+        }
+        String key = null;
+        if (!keys.isEmpty()) key = keys.get(0);
+        return key;
     }
 }
