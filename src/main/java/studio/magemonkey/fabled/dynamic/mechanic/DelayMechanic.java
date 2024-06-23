@@ -26,17 +26,24 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import org.bukkit.scheduler.BukkitTask;
 import studio.magemonkey.fabled.Fabled;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.fabled.dynamic.EffectComponent;
+import studio.magemonkey.fabled.task.RemoveEntitiesTask;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Executes child components after a delay
  */
 public class DelayMechanic extends MechanicComponent {
     private static final String SECONDS = "delay";
+
+    private final Map<Integer, BukkitTask> tasks = new HashMap<>();
 
     @Override
     public String getKey() {
@@ -61,11 +68,21 @@ public class DelayMechanic extends MechanicComponent {
             return false;
         }
         double seconds = parseValues(caster, SECONDS, level, 2.0);
-        Bukkit.getScheduler().runTaskLater(
-                Fabled.inst(),
-                () -> executeChildren(caster, level, targets, force),
-                (long) (seconds * 20)
+        this.tasks.put(caster.getEntityId(),
+                Bukkit.getScheduler().runTaskLater(
+                        Fabled.inst(),
+                        () -> executeChildren(caster, level, targets, force),
+                        (long) (seconds * 20)
+                )
         );
         return true;
+    }
+
+    @Override
+    protected void doCleanUp(LivingEntity caster) {
+        BukkitTask task = this.tasks.remove(caster.getEntityId());
+        if (task != null && !task.isCancelled()) {
+            task.cancel();
+        }
     }
 }
