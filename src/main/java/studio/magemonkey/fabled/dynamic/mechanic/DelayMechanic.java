@@ -43,7 +43,7 @@ import java.util.Map;
 public class DelayMechanic extends MechanicComponent {
     private static final String SECONDS = "delay";
 
-    private final Map<Integer, BukkitTask> tasks = new HashMap<>();
+    private BukkitTask task;
 
     @Override
     public String getKey() {
@@ -68,19 +68,15 @@ public class DelayMechanic extends MechanicComponent {
             return false;
         }
         double seconds = parseValues(caster, SECONDS, level, 2.0);
-        this.tasks.put(caster.getEntityId(),
-                Bukkit.getScheduler().runTaskLater(
+        this.task = Bukkit.getScheduler().runTaskLater(
                         Fabled.inst(),
                         () -> executeChildren(caster, level, targets, force),
-                        (long) (seconds * 20)
-                )
-        );
+                        (long) (seconds * 20));
         return true;
     }
 
     @Override
     protected void doCleanUp(LivingEntity caster) {
-        BukkitTask task = this.tasks.remove(caster.getEntityId());
         if (task != null && !task.isCancelled()) {
             task.cancel();
         }
