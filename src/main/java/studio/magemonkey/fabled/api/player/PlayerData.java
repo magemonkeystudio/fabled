@@ -2012,7 +2012,7 @@ public class PlayerData {
             player.setHealthScaled(false);
 
         if (player.getHealth() > modifiedMax)
-            player.setHealth(this.maxHealth);
+            player.setHealth(modifiedMax);
 
     }
 
