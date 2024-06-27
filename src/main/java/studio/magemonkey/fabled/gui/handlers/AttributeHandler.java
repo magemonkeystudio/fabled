@@ -26,14 +26,14 @@
  */
 package studio.magemonkey.fabled.gui.handlers;
 
+import org.antlr.v4.runtime.tree.ErrorNode;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.gui.tool.GUIHolder;
 import studio.magemonkey.fabled.hook.VaultHook;
+import studio.magemonkey.fabled.language.ErrorNodes;
 import studio.magemonkey.fabled.manager.ProAttribute;
 
 public class AttributeHandler extends GUIHolder<ProAttribute> {
-    private static final String NO_MONEY = "attribute-no-money";
-
     @Override
     public void onClick(ProAttribute type, int slot, boolean left, boolean shift) {
         if (left) {
@@ -58,7 +58,7 @@ public class AttributeHandler extends GUIHolder<ProAttribute> {
                 return;
             } else if (VaultHook.isEconomyValid() && !VaultHook.hasBalance(player.getPlayer(),
                     Fabled.getSettings().getAttributesDowngradePrice())) {
-                Fabled.getLanguage().sendMessage(NO_MONEY, player.getPlayer());
+                Fabled.getLanguage().sendMessage(ErrorNodes.NO_MONEY, player.getPlayer());
                 return;
             }
 

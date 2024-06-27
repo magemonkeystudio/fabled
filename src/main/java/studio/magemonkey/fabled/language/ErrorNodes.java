@@ -35,5 +35,6 @@ public class ErrorNodes {
             COOLDOWN   = BASE + "on-cooldown",
             MANA       = BASE + "no-mana",
             NO_SKILLS  = BASE + "no-skills",
-            CANNOT_USE = BASE + "cannot-use";
+            CANNOT_USE = BASE + "cannot-use",
+            NO_MONEY = BASE + "attribute-no-money";
 }
