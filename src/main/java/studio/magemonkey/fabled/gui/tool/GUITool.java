@@ -50,7 +50,7 @@ import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.skills.Skill;
 import studio.magemonkey.fabled.api.util.DamageLoreRemover;
 import studio.magemonkey.fabled.log.Logger;
-import studio.magemonkey.fabled.manager.ProAttribute;
+import studio.magemonkey.fabled.manager.FabledAttribute;
 import studio.magemonkey.fabled.tree.basic.CustomTree;
 
 import java.util.*;
@@ -491,8 +491,8 @@ public class GUITool implements ToolMenu {
         i = 9;
         GUIPage page = guiData.getPage();
         for (String key : Fabled.getAttributeManager().getKeys()) {
-            ProAttribute attr  = Fabled.getAttributeManager().getAttribute(key);
-            int          index = page.getIndex(attr.getKey());
+            FabledAttribute attr  = Fabled.getAttributeManager().getAttribute(key);
+            int             index = page.getIndex(attr.getKey());
             if (index != -1)
                 inventoryContents[index] = attr.getToolIcon();
             else if (!guiData.has(attr.getKey()) && i < playerContents.length) {

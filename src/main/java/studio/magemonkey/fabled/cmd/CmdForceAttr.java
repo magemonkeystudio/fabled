@@ -108,7 +108,7 @@ public class CmdForceAttr implements IFunction, TabCompleter {
 
         // Reset a specific attribute
         if (args.length == 2) {
-            boolean success = data.refundAttributes(args[1]);
+            boolean success = data.refundAttributeAll(args[1]);
             if (!success) {
                 cmd.sendMessage(sender,
                         RESET_ONE_FAIL,

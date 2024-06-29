@@ -78,19 +78,20 @@ public class CmdRefund implements IFunction {
                 PlayerData    playerData = Fabled.getData(player1);
 
                 int current = playerData.getInvestedAttribute(args[2].toLowerCase());
+                int refundAmount = Math.min(current, Integer.parseInt(args[3]));
 
                 if (current > 0) {
-                    boolean success = playerData.refundAttribute(args[2].toLowerCase());
+                    boolean success = playerData.refundAttribute(args[2].toLowerCase(), refundAmount);
 
                     if (success) {
                         cmd.sendMessage(sender,
                                 REFUNDED_OTHER,
-                                "&6" + args[3] + " " + args[2] + " &2attribute points have been refunded for &6"
+                                "&6" + refundAmount + " " + args[2] + " &2attribute points have been refunded for &6"
                                         + args[0]);
                     } else {
                         cmd.sendMessage(sender,
                                 REFUNDED_OTHER_FAIL,
-                                "&6" + args[3] + " " + args[2] + " &cattribute points could not be refunded for &6"
+                                "&6" + refundAmount + " " + args[2] + " &cattribute points could not be refunded for &6"
                                         + args[0]);
                     }
                 }

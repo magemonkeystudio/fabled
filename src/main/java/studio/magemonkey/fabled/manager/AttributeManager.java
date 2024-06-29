@@ -74,10 +74,10 @@ public class AttributeManager implements IAttributeManager {
      * you know exactly what you are doing.
      */
     @Getter
-    private final Map<String, ProAttribute>       attributes  = new LinkedHashMap<>();
-    private final Map<String, ProAttribute>       lookup      = new HashMap<>();
-    private final Map<String, List<ProAttribute>> byStat      = new HashMap<>();
-    private final Map<String, List<ProAttribute>> byComponent = new HashMap<>();
+    private final Map<String, FabledAttribute>       attributes  = new LinkedHashMap<>();
+    private final Map<String, FabledAttribute>       lookup      = new HashMap<>();
+    private final Map<String, List<FabledAttribute>> byStat      = new HashMap<>();
+    private final Map<String, List<FabledAttribute>> byComponent = new HashMap<>();
 
     /**
      * Retrieves an attribute template
@@ -85,15 +85,15 @@ public class AttributeManager implements IAttributeManager {
      * @param key attribute key
      * @return template for the attribute
      */
-    public ProAttribute getAttribute(String key) {
+    public FabledAttribute getAttribute(String key) {
         return lookup.get(key.toLowerCase());
     }
 
-    public List<ProAttribute> forStat(final String key) {
+    public List<FabledAttribute> forStat(final String key) {
         return byStat.get(key.toLowerCase());
     }
 
-    public List<ProAttribute> forComponent(final EffectComponent component, final String key) {
+    public List<FabledAttribute> forComponent(final EffectComponent component, final String key) {
         return byComponent.get(component.getKey() + "-" + key.toLowerCase());
     }
 
@@ -106,11 +106,11 @@ public class AttributeManager implements IAttributeManager {
     }
 
     public String normalize(String key) {
-        final ProAttribute proAttribute = lookup.get(key.toLowerCase());
-        if (proAttribute == null) {
+        final FabledAttribute fabledAttribute = lookup.get(key.toLowerCase());
+        if (fabledAttribute == null) {
             throw new IllegalArgumentException("Invalid attribute - " + key);
         }
-        return proAttribute.getKey();
+        return fabledAttribute.getKey();
     }
 
     /**
@@ -126,10 +126,10 @@ public class AttributeManager implements IAttributeManager {
         Logger.log(LogType.ATTRIBUTE_LOAD, 1, "Loading attributes...");
         for (String key : data.keys()) {
             Logger.log(LogType.ATTRIBUTE_LOAD, 2, "  - " + key);
-            ProAttribute proAttribute = new ProAttribute(data.getSection(key), key);
-            attributes.put(proAttribute.getKey(), proAttribute);
-            lookup.put(proAttribute.getKey(), proAttribute);
-            lookup.put(proAttribute.getName().toLowerCase(), proAttribute);
+            FabledAttribute fabledAttribute = new FabledAttribute(data.getSection(key), key);
+            attributes.put(fabledAttribute.getKey(), fabledAttribute);
+            lookup.put(fabledAttribute.getKey(), fabledAttribute);
+            lookup.put(fabledAttribute.getName().toLowerCase(), fabledAttribute);
         }
 
         GUIData attribs = GUITool.getAttributesMenu();
@@ -145,11 +145,11 @@ public class AttributeManager implements IAttributeManager {
         }
     }
 
-    public void addByComponent(String key, ProAttribute proAttribute) {
-        byComponent.computeIfAbsent(key, k -> new ArrayList<>()).add(proAttribute);
+    public void addByComponent(String key, FabledAttribute fabledAttribute) {
+        byComponent.computeIfAbsent(key, k -> new ArrayList<>()).add(fabledAttribute);
     }
 
-    public void addByStat(String key, ProAttribute proAttribute) {
-        byStat.computeIfAbsent(key, k -> new ArrayList<>()).add(proAttribute);
+    public void addByStat(String key, FabledAttribute fabledAttribute) {
+        byStat.computeIfAbsent(key, k -> new ArrayList<>()).add(fabledAttribute);
     }
 }

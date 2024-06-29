@@ -26,16 +26,15 @@
  */
 package studio.magemonkey.fabled.gui.handlers;
 
-import org.antlr.v4.runtime.tree.ErrorNode;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.gui.tool.GUIHolder;
 import studio.magemonkey.fabled.hook.VaultHook;
 import studio.magemonkey.fabled.language.ErrorNodes;
-import studio.magemonkey.fabled.manager.ProAttribute;
+import studio.magemonkey.fabled.manager.FabledAttribute;
 
-public class AttributeHandler extends GUIHolder<ProAttribute> {
+public class AttributeHandler extends GUIHolder<FabledAttribute> {
     @Override
-    public void onClick(ProAttribute type, int slot, boolean left, boolean shift) {
+    public void onClick(FabledAttribute type, int slot, boolean left, boolean shift) {
         if (left) {
             if (player.upAttribute(type.getKey())) setPage(page);
         } else if (Fabled.getSettings().isAttributesDowngrade() && player.getAttribute(type.getKey()) > 0) {
@@ -50,7 +49,7 @@ public class AttributeHandler extends GUIHolder<ProAttribute> {
 
             if (Fabled.getSettings().getAttributesDowngradePrice() > 0 && VaultHook.isEconomyValid()
                     && VaultHook.hasBalance(player.getPlayer(), Fabled.getSettings().getAttributesDowngradePrice())) {
-                if (player.refundAttribute(type.getKey())) {
+                if (player.refundAttribute(type.getKey(), 1)) {
                     VaultHook.withdraw(player.getPlayer(),
                             Double.parseDouble(String.valueOf(Fabled.getSettings().getAttributesDowngradePrice())));
                     setPage(page);
@@ -62,7 +61,7 @@ public class AttributeHandler extends GUIHolder<ProAttribute> {
                 return;
             }
 
-            if (player.refundAttribute(type.getKey())) {
+            if (player.refundAttribute(type.getKey(), 1)) {
                 setPage(page);
             }
         }

@@ -78,8 +78,8 @@ import studio.magemonkey.fabled.language.RPGFilter;
 import studio.magemonkey.fabled.log.LogType;
 import studio.magemonkey.fabled.log.Logger;
 import studio.magemonkey.fabled.manager.AttributeManager;
+import studio.magemonkey.fabled.manager.FabledAttribute;
 import studio.magemonkey.fabled.manager.IAttributeManager;
-import studio.magemonkey.fabled.manager.ProAttribute;
 import studio.magemonkey.fabled.task.ScoreboardTask;
 
 import java.util.*;
@@ -422,10 +422,10 @@ public class PlayerData {
      */
     public boolean upAttribute(String key) {
         key = key.toLowerCase();
-        ProAttribute proAttribute = Fabled.getAttributeManager().getAttribute(key);
-        if (proAttribute == null) return false;
+        FabledAttribute fabledAttribute = Fabled.getAttributeManager().getAttribute(key);
+        if (fabledAttribute == null) return false;
 
-        int max          = proAttribute.getMax();
+        int max          = fabledAttribute.getMax();
         int currentStage = getInvestedAttributeStage(key);
 
         if (currentStage >= max) {
@@ -462,8 +462,8 @@ public class PlayerData {
      * @return calculated cost of single attribute upgrade
      */
     public int getAttributeUpCost(String key) {
-        ProAttribute proAttribute = Fabled.getAttributeManager().getAttribute(key);
-        if (proAttribute == null) return 0;
+        FabledAttribute fabledAttribute = Fabled.getAttributeManager().getAttribute(key);
+        if (fabledAttribute == null) return 0;
 
         int currentStage = getInvestedAttributeStage(key);
         return getAttributeUpCost(key, currentStage, currentStage + 1);
@@ -483,8 +483,8 @@ public class PlayerData {
      * @return calculated cost of single attribute upgrade
      */
     public int getAttributeUpCost(String key, Integer modifier) {
-        ProAttribute proAttribute = Fabled.getAttributeManager().getAttribute(key);
-        if (proAttribute == null) return 0;
+        FabledAttribute fabledAttribute = Fabled.getAttributeManager().getAttribute(key);
+        if (fabledAttribute == null) return 0;
 
         int currentStage  = getInvestedAttributeStage(key);
         int selectedStage = currentStage + modifier;
@@ -506,8 +506,8 @@ public class PlayerData {
      * @return calculated cost of single attribute upgrade
      */
     public int getAttributeUpCost(String key, Integer from, Integer to) {
-        ProAttribute proAttribute = Fabled.getAttributeManager().getAttribute(key);
-        if (proAttribute == null) return 0;
+        FabledAttribute fabledAttribute = Fabled.getAttributeManager().getAttribute(key);
+        if (fabledAttribute == null) return 0;
 
         int     totalCost = 0;
         boolean reverse   = false;
@@ -519,7 +519,7 @@ public class PlayerData {
         }
         for (int i = from + 1; i <= to; i++) { // iomatix: so if from = 2 then first upgrade is from 2 to 3 (from+1)
             totalCost += Math.max(0,
-                    proAttribute.getCostBase() + (int) Math.floor((i - 1) * proAttribute.getCostModifier()));
+                    fabledAttribute.getCostBase() + (int) Math.floor((i - 1) * fabledAttribute.getCostModifier()));
         }
         return totalCost * (reverse ? -1 : 1);
     }
@@ -533,8 +533,14 @@ public class PlayerData {
      */
     public boolean giveAttribute(String key, int amount) {
         key = key.toLowerCase();
-        ProAttribute proAttribute = Fabled.getAttributeManager().getAttribute(key);
-        if (proAttribute == null) return false;
+        FabledAttribute fabledAttribute = Fabled.getAttributeManager().getAttribute(key);
+        if (fabledAttribute == null) return false;
+
+        int max          = fabledAttribute.getMax();
+        int currentStage = getInvestedAttributeStage(key);
+        int invested = getInvestedAttribute(key);
+        if (amount + currentStage > max) amount = max - currentStage;
+        if (amount == 0) return false;
 
         PlayerAttributeChangeEvent event = new PlayerAttributeChangeEvent(this, key, amount);
         Bukkit.getPluginManager().callEvent(event);
@@ -543,9 +549,6 @@ public class PlayerData {
         }
 
         amount = event.getChange();
-        int currentStage = getInvestedAttributeStage(key);
-        int invested     = getInvestedAttribute(key);
-        int max          = proAttribute.getMax();
 
         int newStage = Math.min(amount + currentStage, max);
         int cost     = getAttributeUpCost(key, currentStage, newStage);
@@ -623,21 +626,30 @@ public class PlayerData {
     }
 
     /**
+     * Refunds all invested attribute points for the given attribute
+     * @param key attribute key
+     * @return true if successful, false otherwise
+     */
+    public boolean refundAttributeAll(String key) {
+        return refundAttribute(key, getInvestedAttributeStage(key));
+    }
+
+    /**
      * Refunds an attribute point from the given attribute
      * if there are any points invested in it. If there are
      * none, this will do nothing.
      *
      * @param key attribute key
+     * @param refundAmount the number of points to refund
      */
-    public boolean refundAttribute(String key) {
+    public boolean refundAttribute(String key, int refundAmount) {
         key = key.toLowerCase();
         int current = getInvestedAttributeStage(key); // iomatix: get current stage
         if (current <= 0) {
             return false;
         }
 
-        // TODO Replace this with just PlayerAttributeChangeEvent
-        PlayerRefundAttributeEvent event = new PlayerRefundAttributeEvent(this, key, -1);
+        PlayerAttributeChangeEvent event = new PlayerAttributeChangeEvent(this, key, -refundAmount);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return false;
@@ -660,8 +672,10 @@ public class PlayerData {
      * Refunds all spent attribute points for a specific attribute
      *
      * @param key attribute key
+     * @param refund whether to refund the points
+     * @return true if successful, false otherwise
      */
-    public boolean refundAttributes(String key) {
+    public boolean resetAttribute(String key, boolean refund) {
         key = key.toLowerCase();
         int change = -getInvestedAttributeStage(key);
         if (change == 0) return true;
@@ -674,16 +688,18 @@ public class PlayerData {
 
         int currentStage = getInvestedAttributeStage(key);
         int newStage     = Math.max(0, currentStage + event.getChange());
-        // This _should_ be positive as we should be giving points back to the user, but could potentially
-        // be negative if someone set the change to a positive number in the event.
-        // If it's negative, we'll need to check if they have enough points to purchase the upgrade
+        // This _should_ be negative as we should be giving points back to the user, but could potentially
+        // be positive if someone set the change to a positive number in the event.
+        // If it's positive, we'll need to check if they have enough points to purchase the upgrade
         int refundAmount = getAttributeUpCost(key, currentStage, newStage);
 
         if (event.getChange() > 0 && attribPoints < refundAmount) {
             return false;
         }
 
-        attribPoints -= refundAmount;
+        if (refund) {
+            attribPoints -= refundAmount;
+        }
         attributes.put(key, getInvestedAttribute(key) + refundAmount);
         attrUpStages.put(key, newStage);
 
@@ -696,7 +712,7 @@ public class PlayerData {
      */
     public List<String> refundAttributes() {
         return attributes.keySet().stream()
-                .filter(this::refundAttributes)
+                .filter(this::refundAttributeAll)
                 .collect(Collectors.toList());
     }
 
@@ -754,13 +770,13 @@ public class PlayerData {
 
         double modified = defaultValue;
 
-        final List<ProAttribute> matches = manager.forStat(stat);
+        final List<FabledAttribute> matches = manager.forStat(stat);
         if (matches != null) {
 
-            for (final ProAttribute proAttribute : matches) {
-                int amount = this.getAttribute(proAttribute.getKey());
+            for (final FabledAttribute fabledAttribute : matches) {
+                int amount = this.getAttribute(fabledAttribute.getKey());
                 if (amount > 0) {
-                    modified = proAttribute.modifyStat(stat, modified, amount);
+                    modified = fabledAttribute.modifyStat(stat, modified, amount);
                 }
             }
 
@@ -804,15 +820,15 @@ public class PlayerData {
             return value;
         }
 
-        final List<ProAttribute> matches = manager.forComponent(component, key);
+        final List<FabledAttribute> matches = manager.forComponent(component, key);
         if (matches == null) {
             return value;
         }
 
-        for (final ProAttribute proAttribute : matches) {
-            int amount = getAttribute(proAttribute.getKey());
+        for (final FabledAttribute fabledAttribute : matches) {
+            int amount = getAttribute(fabledAttribute.getKey());
             if (amount > 0) {
-                value = proAttribute.modify(component, key, value, amount);
+                value = fabledAttribute.modify(component, key, value, amount);
             }
         }
         return value;
@@ -1443,8 +1459,8 @@ public class PlayerData {
      * @return the player-specific data for the new class
      */
     public PlayerClass setClass(@Nullable FabledClass previous, FabledClass fabledClass, boolean reset) {
-        PlayerClass c = classes.remove(fabledClass.getGroup());
-        int skillPoints = 0;
+        PlayerClass c           = classes.remove(fabledClass.getGroup());
+        int         skillPoints = 0;
         if (c != null) {
             List<Skill> skTemp =
                     c.getPlayerData().getSkills().stream()
@@ -1463,7 +1479,7 @@ public class PlayerData {
                             skillPoints += ps.getInvestedCost();
 
                         if (group.isProfessRefundAttributes())
-                            resetAttribs();
+                            resetAttribs(true);
 
                         skills.remove(nm);
                         comboData.removeSkill(ps.getData());
@@ -1480,7 +1496,7 @@ public class PlayerData {
                         skills.remove(nm);
                         comboData.removeSkill(ps.getData());
                     }
-                    resetAttribs();
+                    resetAttribs(true);
                 }
             }
         } else {
@@ -1495,7 +1511,7 @@ public class PlayerData {
                 classData.setEarnedPoints(c.getPoints());
                 this.points += skillPoints;
             } else {
-                classData.setPoints(c.getPoints()+skillPoints);
+                classData.setPoints(c.getPoints() + skillPoints);
             }
         }
         classes.put(fabledClass.getGroup(), classData);
@@ -1621,14 +1637,7 @@ public class PlayerData {
             setClass(null, fabledClass, true);
         }
 
-        int aPoints = 0;
-        if (settings.isProfessRefundAttributes() && toSubclass) {
-            aPoints += attribPoints;
-            for (Entry<String, Integer> entry : attributes.entrySet()) aPoints += entry.getValue();
-        }
-        resetAttribs(); //Should reset attribute points to 0.
-        attribPoints += aPoints;
-
+        resetAttribs(settings.isProfessRefundAttributes() && toSubclass);
         return settings.isProfessRefundSkills() && toSubclass ? points : 0;
     }
 
@@ -1637,19 +1646,28 @@ public class PlayerData {
      * has, leaving no remaining data until the player professes again to a starting class.
      */
     public void resetAll() {
-        ArrayList<String> keys = new ArrayList<>(classes.keySet());
-        for (String key : keys) {
-            reset(key, false);
+        ArrayList<String> classNames = new ArrayList<>(classes.keySet());
+        for (String clazz : classNames) {
+            reset(clazz, false);
         }
+
+        if (classNames.isEmpty()) {
+            this.resetAttribs(false);
+        }
+
         this.points = 0;
     }
 
     /**
      * Resets attributes for the player. If refunds are cancelled for any
      * specific attribute, that attribute will not be reset.
+     *
+     * @param refund whether to refund the points for the reset attributes
      */
-    public void resetAttribs() {
-        attribPoints = 0;
+    public void resetAttribs(boolean refund) {
+        if (!refund) {
+            attribPoints = 0;
+        }
 
         for (PlayerClass c : classes.values()) {
             GroupSettings s = c.getData().getGroupSettings();
@@ -1658,7 +1676,7 @@ public class PlayerData {
 
         Set<String> toRemove = new HashSet<>();
         for (String attr : attributes.keySet()) {
-            boolean refunded = refundAttributes(attr);
+            boolean refunded = resetAttribute(attr, refund);
             if (refunded) toRemove.add(attr);
         }
 
@@ -1722,7 +1740,8 @@ public class PlayerData {
             }
 
             Bukkit.getPluginManager().callEvent(new PlayerClassChangeEvent(current, previous, current.getData()));
-            if (fabledClass.getParent() == null || isResetting) skillPoints += fabledClass.getGroupSettings().getStartingPoints();
+            if (fabledClass.getParent() == null || isResetting)
+                skillPoints += fabledClass.getGroupSettings().getStartingPoints();
             current.givePoints(skillPoints);
             updateScoreboard();
             updatePlayerStat(getPlayer());

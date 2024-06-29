@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 public interface IAttributeManager {
-    Map<String, ProAttribute> getAttributes();
+    Map<String, FabledAttribute> getAttributes();
 
     /**
      * Retrieves an attribute template
@@ -15,11 +15,11 @@ public interface IAttributeManager {
      * @param key attribute key
      * @return template for the attribute
      */
-    ProAttribute getAttribute(String key);
+    FabledAttribute getAttribute(String key);
 
-    List<ProAttribute> forStat(final String key);
+    List<FabledAttribute> forStat(final String key);
 
-    List<ProAttribute> forComponent(final EffectComponent component, final String key);
+    List<FabledAttribute> forComponent(final EffectComponent component, final String key);
 
     /**
      * Retrieves the available attribute keys. This
@@ -46,7 +46,7 @@ public interface IAttributeManager {
      */
     String normalize(String key);
 
-    void addByComponent(String key, ProAttribute proAttribute);
+    void addByComponent(String key, FabledAttribute fabledAttribute);
 
-    void addByStat(String key, ProAttribute proAttribute);
+    void addByStat(String key, FabledAttribute fabledAttribute);
 }
