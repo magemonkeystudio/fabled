@@ -67,7 +67,6 @@ public interface PassiveSkill {
      * other lasting effects you use.</p>
      *
      * @param user  user to stop the effects for
-     * @param level skill level
      */
-    void stopEffects(LivingEntity user, int level);
+    void stopEffects(LivingEntity user);
 }

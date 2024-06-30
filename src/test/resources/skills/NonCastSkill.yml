@@ -1,0 +1,55 @@
+NonCastSkill:
+  name: NonCastSkill
+  type: Dynamic
+  max-level: 5
+  skill-req-lvl: 0
+  needs-permission: false
+  cooldown-message: true
+  msg: "&6{player} &2has cast &6{skill}"
+  combo: ""
+  icon: Pumpkin
+  icon-data: 0
+  icon-lore:
+    - "&d{name} &7({level}/{max})"
+    - "&2Type: &6{type}"
+    - ""
+    - "{req:level}Level: {attr:level}"
+    - "{req:cost}Cost: {attr:cost}"
+    - ""
+    - "&2Mana: {attr:mana}"
+    - "&2Cooldown: {attr:cooldown}"
+  attributes:
+    level-base: 1
+    level-scale: 0
+    cost-base: 1
+    cost-scale: 0
+    cooldown-base: 0
+    cooldown-scale: 0
+    mana-base: 0
+    mana-scale: 0
+    points-spent-req-base: 0
+    points-spent-req-scale: 0
+    incompatible: []
+  components:
+    Block Break:
+      type: trigger
+      comment: ""
+      data:
+        mana: false
+        cooldown: false
+        material:
+          - Any
+        data: -1
+      children:
+        Item:
+          type: mechanic
+          comment: ""
+          data:
+            icon-key: ""
+            counts: true
+            material: Potato
+            amount: 1
+            byte: 0
+            hide-flags: []
+            custom: false
+            enchants: []

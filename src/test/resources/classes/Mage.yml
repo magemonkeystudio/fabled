@@ -1,0 +1,34 @@
+Mage:
+  name: 'Mage'
+  action-bar: ''
+  prefix: '&3&lMage'
+  group: 'class'
+  mana: '&9Mana'
+  max-level: 50
+  parent: ''
+  needs-permission: 'false'
+  attributes:
+    health-base: '30'
+    health-scale: '5'
+    mana-base: '160'
+    mana-scale: '43'
+    vitality-base: '8'
+    vitality-scale: '7'
+    spirit-base: '6'
+    spirit-scale: '7'
+    intelligence-base: '5'
+    intelligence-scale: '5'
+    dexterity-base: '6'
+    dexterity-scale: '6'
+    strength-base: '7'
+    strength-scale: '7'
+  mana-regen: 17.5
+  tree: 'REQUIREMENT'
+  blacklist: []
+  skills: []
+  icon: 'STICK'
+  icon-data: 0
+  icon-durability: 0
+  icon-lore:
+    - '&3&lMage'
+  exp-source: 273

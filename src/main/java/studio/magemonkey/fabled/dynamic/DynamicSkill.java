@@ -224,10 +224,9 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
      * Removes active users from the map
      *
      * @param user  user to stop the effects for
-     * @param level skill level
      */
     @Override
-    public void stopEffects(final LivingEntity user, final int level) {
+    public void stopEffects(final LivingEntity user) {
         active.remove(user.getEntityId());
         if (forced.contains(user.getEntityId())) forced.remove(Integer.valueOf(user.getEntityId()));
         for (final TriggerHandler triggerHandler : triggers) {

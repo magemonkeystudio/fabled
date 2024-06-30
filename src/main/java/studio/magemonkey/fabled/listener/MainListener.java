@@ -98,7 +98,7 @@ public class MainListener extends FabledListener {
         if (Fabled.getSettings().isWorldEnabled(player.getWorld())) {
             data.setOnPreviewStop(null);
             data.record(player);
-            data.stopPassives(player);
+            data.stopSkills(player);
         }
 
         FlagManager.clearFlags(player);
@@ -195,7 +195,7 @@ public class MainListener extends FabledListener {
 
         PlayerData data = Fabled.getData(event.getEntity());
         if (data.hasClass() && Fabled.getSettings().isWorldEnabled(event.getEntity().getWorld())) {
-            data.stopPassives(event.getEntity());
+            data.stopSkills(event.getEntity());
             if (!Fabled.getSettings().shouldIgnoreExpLoss(event.getEntity().getWorld())) {
                 data.loseExp();
             }
@@ -452,7 +452,7 @@ public class MainListener extends FabledListener {
 
         PlayerData data = Fabled.getData(event.getPlayer());
         data.clearAllModifiers();
-        data.stopPassives(event.getPlayer());
+        data.stopSkills(event.getPlayer());
         ClassBoardManager.clear(event.getPlayer());
         if (Fabled.getSettings().isModifyHealth()) {
             event.getPlayer().setMaxHealth(Fabled.getSettings().getDefaultHealth());

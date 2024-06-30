@@ -41,7 +41,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Nullable;
@@ -65,6 +64,7 @@ import studio.magemonkey.fabled.cast.PlayerCastBars;
 import studio.magemonkey.fabled.cast.PlayerTextCastingData;
 import studio.magemonkey.fabled.data.GroupSettings;
 import studio.magemonkey.fabled.data.PlayerEquips;
+import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.EffectComponent;
 import studio.magemonkey.fabled.dynamic.TempEntity;
 import studio.magemonkey.fabled.gui.handlers.AttributeHandler;
@@ -538,7 +538,7 @@ public class PlayerData {
 
         int max          = fabledAttribute.getMax();
         int currentStage = getInvestedAttributeStage(key);
-        int invested = getInvestedAttribute(key);
+        int invested     = getInvestedAttribute(key);
         if (amount + currentStage > max) amount = max - currentStage;
         if (amount == 0) return false;
 
@@ -1230,7 +1230,7 @@ public class PlayerData {
         Player player = getPlayer();
         if (player != null && skill.getData() instanceof PassiveSkill) {
             if (skill.getLevel() == 0) {
-                ((PassiveSkill) skill.getData()).stopEffects(player, 1);
+                ((PassiveSkill) skill.getData()).stopEffects(player);
             } else {
                 ((PassiveSkill) skill.getData()).update(player, skill.getLevel() + amount, skill.getLevel());
             }
@@ -1254,7 +1254,7 @@ public class PlayerData {
         skill.setLevel(0);
 
         if (player != null && (skill.getData() instanceof PassiveSkill)) {
-            ((PassiveSkill) skill.getData()).stopEffects(player, 1);
+            ((PassiveSkill) skill.getData()).stopEffects(player);
         }
     }
 
@@ -1615,7 +1615,7 @@ public class PlayerData {
             for (Skill skill : data.getSkills()) {
                 PlayerSkill ps = skills.remove(skill.getName().toLowerCase());
                 if (ps != null && ps.isUnlocked() && ps.getData() instanceof PassiveSkill) {
-                    ((PassiveSkill) ps.getData()).stopEffects(getPlayer(), ps.getLevel());
+                    ((PassiveSkill) ps.getData()).stopEffects(getPlayer());
                 }
 
                 points += ps.getInvestedCost();
@@ -2501,22 +2501,23 @@ public class PlayerData {
     }
 
     /**
-     * Stops passive abilities for the player if they are online. This is already
-     * called by the API and shouldn't be called by other plugins.
+     * Stops passive abilities and events from triggering for the player if they are online.
+     * This is already called by the API and shouldn't be called by other plugins.
      *
      * @param player player to stop the passive skills for
      */
-    public void stopPassives(Player player) {
+    public void stopSkills(Player player) {
         if (player == null) {
             return;
         }
+
         passive = false;
         for (PlayerSkill skill : skills.values()) {
-            if (skill.isUnlocked() && (skill.getData() instanceof PassiveSkill)) {
+            if (skill.isUnlocked() && (skill.getData() instanceof DynamicSkill)) {
                 try {
-                    ((PassiveSkill) skill.getData()).stopEffects(player, skill.getLevel());
+                    ((DynamicSkill) skill.getData()).stopEffects(player);
                 } catch (Exception ex) {
-                    Logger.bug("Failed to stop passive skill " + skill.getData().getName());
+                    Logger.bug("Failed to stop skill " + skill.getData().getName());
                     ex.printStackTrace();
                 }
             }
@@ -2620,7 +2621,7 @@ public class PlayerData {
     }
 
     private boolean applyUse(final Player player, final PlayerSkill skill, final double manaCost) {
-        player.setMetadata("custom-cooldown", new FixedMetadataValue((JavaPlugin) Fabled.inst(), 1));
+        player.setMetadata("custom-cooldown", new FixedMetadataValue(Fabled.inst(), 1));
         skill.startCooldown();
         if (Fabled.getSettings().isShowSkillMessages()) {
             skill.getData().sendMessage(player, Fabled.getSettings().getMessageRadius());
@@ -2633,8 +2634,8 @@ public class PlayerData {
             if (!removeTimer.isCancelled()) removeTimer.cancel();
         }
         removeTimer = Bukkit.getScheduler()
-                .runTaskLater((JavaPlugin) Fabled.inst(),
-                        () -> player.removeMetadata("custom-cooldown", (JavaPlugin) Fabled.inst()),
+                .runTaskLater(Fabled.inst(),
+                        () -> player.removeMetadata("custom-cooldown", Fabled.inst()),
                         20L);
         return true;
     }
@@ -2671,7 +2672,7 @@ public class PlayerData {
                                 RPGFilter.COOLDOWN.setReplacement(skill.getCooldownLeft() + ""),
                                 RPGFilter.SKILL.setReplacement(skill.getData().getName()));
                 onCooldown.add(getUUID());
-                Bukkit.getScheduler().runTaskLater((JavaPlugin) Fabled.inst(), () -> onCooldown.remove(getUUID()), 40L);
+                Bukkit.getScheduler().runTaskLater(Fabled.inst(), () -> onCooldown.remove(getUUID()), 40L);
             }
             return PlayerSkillCastFailedEvent.invoke(skill, Cause.ON_COOLDOWN);
         }

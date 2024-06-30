@@ -525,7 +525,7 @@ public class PlayerData {
     }
 
     public void stopPassives(Player player) {
-        _data.stopPassives(player);
+        _data.stopSkills(player);
     }
 
     public boolean cast(String skillName) {

@@ -67,11 +67,10 @@ public class RemoveEntitiesTask extends BukkitRunnable {
         for (Entity entity : entities) {
             if (entity.hasMetadata(WolfMechanic.SKILL_META)) {
                 final List<String> skills = (List<String>) Fabled.getMeta(entity, WolfMechanic.SKILL_META);
-                final int          level  = Fabled.getMetaInt(entity, WolfMechanic.LEVEL);
                 for (final String skillName : skills) {
                     final Skill skill = Fabled.getSkill(skillName);
                     if (skill instanceof PassiveSkill) {
-                        ((PassiveSkill) skill).stopEffects((LivingEntity) entity, level);
+                        ((PassiveSkill) skill).stopEffects((LivingEntity) entity);
                     }
                 }
 

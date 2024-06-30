@@ -80,7 +80,7 @@ public class TriggerHandler implements Listener {
                         this,
                         EventPriority.HIGHEST,
                         getExecutor(trigger),
-                        (Plugin) plugin,
+                        plugin,
                         !trigger.getEvent().getTypeName().equals("org.bukkit.event.player.PlayerInteractEvent")
                                 && !trigger.getEvent()
                                 .getTypeName()
@@ -106,7 +106,7 @@ public class TriggerHandler implements Listener {
             // This effectively means that ChatTriggers won't be able to cancel the original
             // AsyncPlayerChatEvent.
             Bukkit.getScheduler()
-                    .runTask((Plugin) Fabled.inst(),
+                    .runTask(Fabled.inst(),
                             () -> {
                                 Bukkit.getPluginManager()
                                         .callEvent(new DynamicTriggerEvent(caster,

@@ -47,7 +47,7 @@ public class CmdChangeClass implements IFunction, TabCompleter {
         PlayerData data = Fabled.getData(player);
         if (Fabled.getSettings().isWorldEnabled(player.getWorld())) {
             data.record(player);
-            data.stopPassives(player);
+            data.stopSkills(player);
         }
 
         FlagManager.clearFlags(player);
@@ -69,73 +69,76 @@ public class CmdChangeClass implements IFunction, TabCompleter {
      */
     @Override
     public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
-        if (args.length >= 3) {
-            final String playerName = args[0];
-            final String groupName  = args[1];
-            String       className  = args[2];
-            for (int i = 3; i < args.length; i++) className += ' ' + args[i];
+        if (args.length < 3) {
+            cmd.displayHelp(sender);
+            return;
+        }
 
-            OfflinePlayer player = Bukkit.getPlayer(playerName);
-            if (player == null) {
-                player = Bukkit.getOfflinePlayer(playerName);
-                if (!player.hasPlayedBefore()) {
-                    cmd.sendMessage(sender,
-                            INVALID_PLAYER,
-                            ChatColor.DARK_RED + "{player} is not online, nor have they played before.",
-                            Filter.PLAYER.setReplacement(playerName));
-                    return;
-                }
-            }
+        final String  playerName = args[0];
+        final String  groupName  = args[1];
+        StringBuilder className  = new StringBuilder(args[2]);
+        for (int i = 3; i < args.length; i++) className.append(' ').append(args[i]);
 
-            final PlayerData  data  = Fabled.getData(player);
-            final PlayerClass clazz = data.getClass(groupName);
-            if (clazz == null) {
-                cmd.sendMessage(sender, INVALID_GROUP, "{player} does not have a {class}",
-                        Filter.PLAYER.setReplacement(player.getName()),
-                        RPGFilter.GROUP.setReplacement(groupName),
-                        RPGFilter.CLASS.setReplacement(className));
+        OfflinePlayer player = Bukkit.getPlayer(playerName);
+        if (player == null) {
+            player = Bukkit.getOfflinePlayer(playerName);
+            if (!player.hasPlayedBefore()) {
+                cmd.sendMessage(sender,
+                        INVALID_PLAYER,
+                        ChatColor.DARK_RED + "{player} is not online, nor have they played before.",
+                        Filter.PLAYER.setReplacement(playerName));
                 return;
             }
+        }
 
-            final String      original = clazz.getData().getName();
-            final FabledClass target   = Fabled.getClass(className);
-            if (target == null) {
-                cmd.sendMessage(sender, INVALID_TARGET, "{class} is not a valid class to change to",
-                        RPGFilter.CLASS.setReplacement(className));
-                return;
-            }
-
-            boolean bar = data.getSkillBar().isEnabled() && Fabled.getSettings().isSkillBarEnabled();
-            if (bar) {
-                PlayerSkillBar skillBar = data.getSkillBar();
-                skillBar.toggleEnabled();
-                skillBar.reset();
-                data.getSkillBar().toggleEnabled();
-            }
-
-            clazz.setClassData(target);
-            if (player.isOnline()) {
-                unload((Player) player);
-                Fabled.getPlayerAccounts(player).getActiveData().init((Player) player);
-            }
-            if (bar)
-                Fabled.getData(player).getSkillBar().toggleEnabled();
-
-
-            cmd.sendMessage(sender, SUCCESS, "You have changed {player} from a {name} to a {class}",
+        final PlayerData  data  = Fabled.getData(player);
+        final PlayerClass clazz = data.getClass(groupName);
+        if (clazz == null) {
+            cmd.sendMessage(sender, INVALID_GROUP, "{player} does not have a {class}",
                     Filter.PLAYER.setReplacement(player.getName()),
                     RPGFilter.GROUP.setReplacement(groupName),
-                    RPGFilter.CLASS.setReplacement(className),
-                    RPGFilter.NAME.setReplacement(original));
+                    RPGFilter.CLASS.setReplacement(className.toString()));
+            return;
+        }
 
-            if (sender != player && player.isOnline()) {
-                cmd.sendMessage((Player) player, NOTIFICATION, "You have changed from a {name} to a {class}",
-                        RPGFilter.GROUP.setReplacement(groupName),
-                        RPGFilter.CLASS.setReplacement(className),
-                        RPGFilter.NAME.setReplacement(original));
-            }
+        final String      original = clazz.getData().getName();
+        final FabledClass target   = Fabled.getClass(className.toString());
+        if (target == null) {
+            cmd.sendMessage(sender, INVALID_TARGET, "{class} is not a valid class to change to",
+                    RPGFilter.CLASS.setReplacement(className.toString()));
+            return;
+        }
+
+        boolean bar = data.getSkillBar().isEnabled() && Fabled.getSettings().isSkillBarEnabled();
+        if (bar) {
+            PlayerSkillBar skillBar = data.getSkillBar();
+            skillBar.toggleEnabled();
+            skillBar.reset();
+            data.getSkillBar().toggleEnabled();
+        }
+
+        if (player.isOnline()) {
+            unload((Player) player);
+            clazz.setClassData(target);
+            Fabled.getPlayerAccounts(player).getActiveData().init((Player) player);
         } else {
-            cmd.displayHelp(sender);
+            clazz.setClassData(target);
+        }
+        if (bar)
+            Fabled.getData(player).getSkillBar().toggleEnabled();
+
+
+        cmd.sendMessage(sender, SUCCESS, "You have changed {player} from a {name} to a {class}",
+                Filter.PLAYER.setReplacement(player.getName()),
+                RPGFilter.GROUP.setReplacement(groupName),
+                RPGFilter.CLASS.setReplacement(className.toString()),
+                RPGFilter.NAME.setReplacement(original));
+
+        if (sender != player && player.isOnline()) {
+            cmd.sendMessage((Player) player, NOTIFICATION, "You have changed from a {name} to a {class}",
+                    RPGFilter.GROUP.setReplacement(groupName),
+                    RPGFilter.CLASS.setReplacement(className.toString()),
+                    RPGFilter.NAME.setReplacement(original));
         }
     }
 
