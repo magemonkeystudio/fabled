@@ -42,7 +42,7 @@ import java.util.UUID;
 public class DelayMechanic extends MechanicComponent {
     private static final String SECONDS = "delay";
     private static final String CANCEL_WHILE_CLEANED = "cancel-while-cleaned";
-
+    private static final String CANCEL_UNCOMPLETED = "cancel-uncompleted";
     private final Map<UUID, BukkitTask> tasks = new HashMap<>();
 
     @Override
@@ -74,7 +74,14 @@ public class DelayMechanic extends MechanicComponent {
                 (long) (seconds * 20));
 
         if (settings.getBool(CANCEL_WHILE_CLEANED, false)) {
-            tasks.put(caster.getUniqueId(), task);
+            tasks.compute(caster.getUniqueId(), (k, v) -> {
+                if (v != null && !v.isCancelled()) {
+                    if (settings.getBool(CANCEL_UNCOMPLETED, false)) {
+                        v.cancel();
+                    }
+                }
+                return task;
+            });
         }
         return true;
     }
