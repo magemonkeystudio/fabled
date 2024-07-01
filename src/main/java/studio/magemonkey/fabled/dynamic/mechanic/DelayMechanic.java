@@ -26,22 +26,19 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import org.bukkit.scheduler.BukkitTask;
-import studio.magemonkey.fabled.Fabled;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
-import studio.magemonkey.fabled.dynamic.EffectComponent;
-import studio.magemonkey.fabled.task.RemoveEntitiesTask;
+import org.bukkit.scheduler.BukkitTask;
+import studio.magemonkey.fabled.Fabled;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Executes child components after a delay
  */
 public class DelayMechanic extends MechanicComponent {
     private static final String SECONDS = "delay";
+    private static final String CANCEL_WHILE_CLEANED = "cancel-while-cleaned";
 
     private BukkitTask task;
 
@@ -64,11 +61,11 @@ public class DelayMechanic extends MechanicComponent {
                            final int level,
                            final List<LivingEntity> targets,
                            boolean force) {
-        if (targets.size() == 0) {
+        if (targets.isEmpty()) {
             return false;
         }
         double seconds = parseValues(caster, SECONDS, level, 2.0);
-        this.task = Bukkit.getScheduler().runTaskLater(
+        task = Bukkit.getScheduler().runTaskLater(
                         Fabled.inst(),
                         () -> executeChildren(caster, level, targets, force),
                         (long) (seconds * 20));
@@ -77,7 +74,7 @@ public class DelayMechanic extends MechanicComponent {
 
     @Override
     protected void doCleanUp(LivingEntity caster) {
-        if (task != null && !task.isCancelled()) {
+        if (settings.getBool(CANCEL_WHILE_CLEANED, false) && task != null && !task.isCancelled()) {
             task.cancel();
         }
     }
