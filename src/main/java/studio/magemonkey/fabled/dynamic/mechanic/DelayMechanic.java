@@ -31,7 +31,10 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitTask;
 import studio.magemonkey.fabled.Fabled;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Executes child components after a delay
@@ -40,7 +43,7 @@ public class DelayMechanic extends MechanicComponent {
     private static final String SECONDS = "delay";
     private static final String CANCEL_WHILE_CLEANED = "cancel-while-cleaned";
 
-    private BukkitTask task;
+    private final Map<UUID, BukkitTask> tasks = new HashMap<>();
 
     @Override
     public String getKey() {
@@ -65,17 +68,24 @@ public class DelayMechanic extends MechanicComponent {
             return false;
         }
         double seconds = parseValues(caster, SECONDS, level, 2.0);
-        task = Bukkit.getScheduler().runTaskLater(
-                        Fabled.inst(),
-                        () -> executeChildren(caster, level, targets, force),
-                        (long) (seconds * 20));
+        BukkitTask task = Bukkit.getScheduler().runTaskLater(
+                Fabled.inst(),
+                () -> executeChildren(caster, level, targets, force),
+                (long) (seconds * 20));
+
+        if (settings.getBool(CANCEL_WHILE_CLEANED, false)) {
+            tasks.put(caster.getUniqueId(), task);
+        }
         return true;
     }
 
     @Override
     protected void doCleanUp(LivingEntity caster) {
-        if (settings.getBool(CANCEL_WHILE_CLEANED, false) && task != null && !task.isCancelled()) {
-            task.cancel();
+        if (settings.getBool(CANCEL_WHILE_CLEANED, false)) {
+            BukkitTask task = tasks.remove(caster.getUniqueId());
+            if (task != null && !task.isCancelled()) {
+                task.cancel();
+            }
         }
     }
 }
