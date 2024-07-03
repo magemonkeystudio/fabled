@@ -2,7 +2,7 @@ import type { Readable, Writable }                                             f
 import { derived, get, writable }                                              from 'svelte/store';
 import { localStore }                                                          from '$api/api';
 import { attributeStore }                                                      from './attribute-store';
-import type ProComponent                                                       from '$api/components/procomponent';
+import type FabledComponent                                                    from '$api/components/fabled-component';
 import type { MultiAttributeYamlData, MultiClassYamlData, MultiSkillYamlData } from '$api/types';
 import { socketService }                                                       from '$api/socket/socket-connector';
 import YAML                                                                    from 'yaml';
@@ -28,7 +28,7 @@ export const activeType: Readable<'class' | 'skill' | 'attribute' | ''>         
 	}
 );
 export const dragging: Writable<FabledClass | FabledSkill | FabledAttribute | FabledFolder> = writable();
-export const draggingComponent: Writable<ProComponent | undefined>                          = writable();
+export const draggingComponent: Writable<FabledComponent | undefined>                       = writable();
 export const showSidebar: Writable<boolean>                                                 = localStore('sidebarOpen', true);
 export const sidebarOpen: Writable<boolean>                                                 = writable(true);
 export const shownTab: Writable<Tab>                                                        = writable(Tab.CLASSES);

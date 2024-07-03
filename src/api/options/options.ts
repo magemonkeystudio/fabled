@@ -1,12 +1,12 @@
-import type ProComponent from '$api/components/procomponent';
+import type FabledComponent from '$api/components/fabled-component';
 
 export interface ComponentOption extends Cloneable<ComponentOption> {
 	key: string;
 	getData: () => { [key: string]: unknown };
 	deserialize: (yaml: { [key: string]: unknown }) => void;
 	setTooltip: (tooltip: string) => this;
-	meetsRequirements: (comp: ProComponent) => boolean;
-	meetsPreviewRequirements: (comp: ProComponent) => boolean;
+	meetsRequirements: (comp: FabledComponent) => boolean;
+	meetsPreviewRequirements: (comp: FabledComponent) => boolean;
 	getSummary: () => string;
 }
 
@@ -21,14 +21,14 @@ export abstract class Requirements {
 		return this;
 	};
 
-	meetsRequirements = (comp: ProComponent): boolean => {
+	meetsRequirements = (comp: FabledComponent): boolean => {
 		for (const key in this.requirements) {
 			if (!this.requirements[key].includes(comp.getData(true)[key])) return false;
 		}
 		return true;
 	};
 
-	meetsPreviewRequirements = (comp: ProComponent): boolean => {
+	meetsPreviewRequirements = (comp: FabledComponent): boolean => {
 		for (const key in this.requirements) {
 			if (!this.requirements[key].includes(comp.getRawPreviewData()[key])) return false;
 		}

@@ -14,11 +14,11 @@
 		filteredTargets,
 		filterParams,
 		mechanicSections
-	}                                from '$api/components/registry';
-	import type ProComponent         from '$api/components/procomponent';
-	import ComponentSection          from '$components/modal/component/ComponentSection.svelte';
+	}                           from '$api/components/registry';
+	import type FabledComponent from '$api/components/fabled-component';
+	import ComponentSection     from '$components/modal/component/ComponentSection.svelte';
 
-	export let data: ProComponent;
+	export let data: FabledComponent;
 
 	let targetsShown    = true;
 	let conditionsShown = true;
@@ -27,7 +27,7 @@
 	const dispatch = createEventDispatcher();
 
 	const addComponent =
-					(comp: { new: () => { defaultOpen: () => ProComponent } }) => {
+					(comp: { new: () => { defaultOpen: () => FabledComponent } }) => {
 						data.addComponent(comp.new().defaultOpen());
 						filterParams.set('');
 						dispatch('save');

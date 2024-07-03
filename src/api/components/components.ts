@@ -1,9 +1,9 @@
 import FabledMechanic                                            from '$api/components/mechanics';
 import BlockSelect                                               from '$api/options/blockselect';
-import ProCondition                                              from '$api/components/conditions';
+import FabledCondition                                              from '$api/components/conditions';
 import DropdownSelect                                            from '$api/options/dropdownselect';
-import ProTrigger                                                from '$api/components/triggers';
-import ProTarget                                                 from '$api/components/targets';
+import FabledTrigger                                                from '$api/components/triggers';
+import FabledTarget                                                 from '$api/components/targets';
 import MaterialSelect                                            from '$api/options/materialselect';
 import {
 	getAnyConsumable,
@@ -40,14 +40,14 @@ import ClassSelect                                               from '$api/opti
 import SkillSelect                                               from '$api/options/skillselect';
 import IntSelect                                                 from '$api/options/intselect';
 import ColorSelect                                               from '$api/options/colorselect';
-import { get }                                                   from 'svelte/store';
-import type ProComponent                                         from '$api/components/procomponent';
-import EnchantSelect                                             from '$api/options/enchantselect';
+import { get }              from 'svelte/store';
+import type FabledComponent from '$api/components/fabled-component';
+import EnchantSelect        from '$api/options/enchantselect';
 import { attributeStore }                                        from '../../data/attribute-store';
 
 // TRIGGERS
 
-class ArmorEquipTrigger extends ProTrigger {
+class ArmorEquipTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Armor Equip',
@@ -61,7 +61,7 @@ class ArmorEquipTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class AttributeChangeTrigger extends ProTrigger {
+class AttributeChangeTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Attribute Change',
@@ -76,7 +76,7 @@ class AttributeChangeTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class BlockBreakTrigger extends ProTrigger {
+class BlockBreakTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Block Break',
@@ -92,7 +92,7 @@ class BlockBreakTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class BlockPlaceTrigger extends ProTrigger {
+class BlockPlaceTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Block Place',
@@ -108,7 +108,7 @@ class BlockPlaceTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class CastTrigger extends ProTrigger {
+class CastTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Cast',
@@ -119,7 +119,7 @@ class CastTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class ChatTrigger extends ProTrigger {
+class ChatTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Chat',
@@ -139,7 +139,7 @@ class ChatTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class CleanupTrigger extends ProTrigger {
+class CleanupTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Cleanup',
@@ -150,7 +150,7 @@ class CleanupTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class ConsumeTrigger extends ProTrigger {
+class ConsumeTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Consume',
@@ -167,7 +167,7 @@ class ConsumeTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class CrouchTrigger extends ProTrigger {
+class CrouchTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Crouch',
@@ -182,7 +182,7 @@ class CrouchTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class DeathTrigger extends ProTrigger {
+class DeathTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Death',
@@ -193,7 +193,7 @@ class DeathTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class DropItemTrigger extends ProTrigger {
+class DropItemTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Drop Item',
@@ -209,7 +209,7 @@ class DropItemTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class EntityTargetTrigger extends ProTrigger {
+class EntityTargetTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Entity Target',
@@ -229,7 +229,7 @@ class EntityTargetTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class EnvironmentDamageTrigger extends ProTrigger {
+class EnvironmentDamageTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Environment Damage',
@@ -245,7 +245,7 @@ class EnvironmentDamageTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class FishingTrigger extends ProTrigger {
+class FishingTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Fishing',
@@ -256,7 +256,7 @@ class FishingTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class FishingBiteTrigger extends ProTrigger {
+class FishingBiteTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Fishing Bite',
@@ -267,7 +267,7 @@ class FishingBiteTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class FishingFailTrigger extends ProTrigger {
+class FishingFailTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Fishing Fail',
@@ -278,7 +278,7 @@ class FishingFailTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class FishingGrabTrigger extends ProTrigger {
+class FishingGrabTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Fishing Grab',
@@ -289,7 +289,7 @@ class FishingGrabTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class FishingGroundTrigger extends ProTrigger {
+class FishingGroundTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Fishing Ground',
@@ -300,7 +300,7 @@ class FishingGroundTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class FishingReelTrigger extends ProTrigger {
+class FishingReelTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Fishing Reel',
@@ -311,7 +311,7 @@ class FishingReelTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class HealTrigger extends ProTrigger {
+class HealTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Heal',
@@ -329,7 +329,7 @@ class HealTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class InitializeTrigger extends ProTrigger {
+class InitializeTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Initialize',
@@ -340,7 +340,7 @@ class InitializeTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class ItemSwapTrigger extends ProTrigger {
+class ItemSwapTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Item Swap',
@@ -356,7 +356,7 @@ class ItemSwapTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class KillTrigger extends ProTrigger {
+class KillTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Kill',
@@ -372,7 +372,7 @@ class KillTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class LandTrigger extends ProTrigger {
+class LandTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Land',
@@ -386,7 +386,7 @@ class LandTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class LaunchTrigger extends ProTrigger {
+class LaunchTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Launch',
@@ -400,7 +400,7 @@ class LaunchTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class LeftClickTrigger extends ProTrigger {
+class LeftClickTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Left Click',
@@ -414,7 +414,7 @@ class LeftClickTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class MoveTrigger extends ProTrigger {
+class MoveTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Move',
@@ -425,7 +425,7 @@ class MoveTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class PhysicalDamageTrigger extends ProTrigger {
+class PhysicalDamageTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Physical Damage',
@@ -447,7 +447,7 @@ class PhysicalDamageTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class ProjectileHitTrigger extends ProTrigger {
+class ProjectileHitTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Projectile Hit',
@@ -467,7 +467,7 @@ class ProjectileHitTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class ProjectileTickTrigger extends ProTrigger {
+class ProjectileTickTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Projectile Tick',
@@ -489,7 +489,7 @@ class ProjectileTickTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class RightClickTrigger extends ProTrigger {
+class RightClickTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Right Click',
@@ -505,7 +505,7 @@ class RightClickTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class SkillCastTrigger extends ProTrigger {
+class SkillCastTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Skill Cast',
@@ -525,7 +525,7 @@ class SkillCastTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class SkillDamageTrigger extends ProTrigger {
+class SkillDamageTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Skill Damage',
@@ -547,7 +547,7 @@ class SkillDamageTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class TookPhysicalTrigger extends ProTrigger {
+class TookPhysicalTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Took Physical Damage',
@@ -569,7 +569,7 @@ class TookPhysicalTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class TookSkillTrigger extends ProTrigger {
+class TookSkillTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Took Skill Damage',
@@ -591,7 +591,7 @@ class TookSkillTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class ShieldTrigger extends ProTrigger {
+class ShieldTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Shield',
@@ -613,7 +613,7 @@ class ShieldTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class SignalTrigger extends ProTrigger {
+class SignalTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Signal',
@@ -631,7 +631,7 @@ class SignalTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class WorldChangeTrigger extends ProTrigger {
+class WorldChangeTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'World Change',
@@ -691,7 +691,7 @@ const particlesAtTargetPreviewOptions = (): ComponentOption[] => {
 	];
 };
 
-class AreaTarget extends ProTarget {
+class AreaTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Area',
@@ -727,7 +727,7 @@ class AreaTarget extends ProTarget {
 	public static override new = () => new this();
 }
 
-class ConeTarget extends ProTarget {
+class ConeTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Cone',
@@ -773,7 +773,7 @@ class ConeTarget extends ProTarget {
 	public static override new = () => new this();
 }
 
-class LinearTarget extends ProTarget {
+class LinearTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Linear',
@@ -815,7 +815,7 @@ class LinearTarget extends ProTarget {
 	public static override new = () => new this();
 }
 
-class LocationTarget extends ProTarget {
+class LocationTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Location',
@@ -842,7 +842,7 @@ class LocationTarget extends ProTarget {
 	public static override new = () => new this();
 }
 
-class NearestTarget extends ProTarget {
+class NearestTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Nearest',
@@ -876,7 +876,7 @@ class NearestTarget extends ProTarget {
 	public static override new = () => new this();
 }
 
-class OffsetTarget extends ProTarget {
+class OffsetTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Offset',
@@ -900,7 +900,7 @@ class OffsetTarget extends ProTarget {
 	public static override new = () => new this();
 }
 
-class RememberTarget extends ProTarget {
+class RememberTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Remember',
@@ -919,7 +919,7 @@ class RememberTarget extends ProTarget {
 	public static override new = () => new this();
 }
 
-class SelfTarget extends ProTarget {
+class SelfTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:        'Self',
@@ -930,7 +930,7 @@ class SelfTarget extends ProTarget {
 	public static override new = () => new this();
 }
 
-class SingleTarget extends ProTarget {
+class SingleTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Single',
@@ -975,7 +975,7 @@ class SingleTarget extends ProTarget {
 	public static override new = () => new this();
 }
 
-class WorldTarget extends ProTarget {
+class WorldTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'World',
@@ -1032,7 +1032,7 @@ const itemConditionOptions = (matOption: ComponentOption = new MaterialSelect(fa
 	return data;
 };
 
-class AltitudeCondition extends ProCondition {
+class AltitudeCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Altitude',
@@ -1050,7 +1050,7 @@ class AltitudeCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class ArmorCondition extends ProCondition {
+class ArmorCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Armor',
@@ -1067,7 +1067,7 @@ class ArmorCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class AttributeCondition extends ProCondition {
+class AttributeCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Attribute',
@@ -1087,7 +1087,7 @@ class AttributeCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class BiomeCondition extends ProCondition {
+class BiomeCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Biome',
@@ -1106,7 +1106,7 @@ class BiomeCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class BlockCondition extends ProCondition {
+class BlockCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Block',
@@ -1125,7 +1125,7 @@ class BlockCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class BurningCondition extends ProCondition {
+class BurningCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Burning',
@@ -1141,7 +1141,7 @@ class BurningCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class CeilingCondition extends ProCondition {
+class CeilingCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Ceiling',
@@ -1159,7 +1159,7 @@ class CeilingCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class ChanceCondition extends ProCondition {
+class ChanceCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Chance',
@@ -1175,7 +1175,7 @@ class ChanceCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class ClassCondition extends ProCondition {
+class ClassCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Class',
@@ -1193,7 +1193,7 @@ class ClassCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class ClassLevelCondition extends ProCondition {
+class ClassLevelCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Class Level',
@@ -1211,7 +1211,7 @@ class ClassLevelCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class CombatCondition extends ProCondition {
+class CombatCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Combat',
@@ -1229,7 +1229,7 @@ class CombatCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class CrouchCondition extends ProCondition {
+class CrouchCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Crouch',
@@ -1245,7 +1245,7 @@ class CrouchCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class DirectionCondition extends ProCondition {
+class DirectionCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Direction',
@@ -1263,7 +1263,7 @@ class DirectionCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class DistanceCondition extends ProCondition {
+class DistanceCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Distance',
@@ -1281,7 +1281,7 @@ class DistanceCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class ElevationCondition extends ProCondition {
+class ElevationCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Elevation',
@@ -1301,7 +1301,7 @@ class ElevationCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class ElseCondition extends ProCondition {
+class ElseCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:        'Else',
@@ -1312,7 +1312,7 @@ class ElseCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class EntityTypeCondition extends ProCondition {
+class EntityTypeCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Entity Type',
@@ -1330,7 +1330,7 @@ class EntityTypeCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class FireCondition extends ProCondition {
+class FireCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Fire',
@@ -1346,7 +1346,7 @@ class FireCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class FlagCondition extends ProCondition {
+class FlagCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Flag',
@@ -1364,7 +1364,7 @@ class FlagCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class FoodCondition extends ProCondition {
+class FoodCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Food',
@@ -1384,7 +1384,7 @@ class FoodCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class GroundCondition extends ProCondition {
+class GroundCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Ground',
@@ -1400,7 +1400,7 @@ class GroundCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class HealthCondition extends ProCondition {
+class HealthCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Health',
@@ -1420,7 +1420,7 @@ class HealthCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class ItemCondition extends ProCondition {
+class ItemCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Item',
@@ -1433,7 +1433,7 @@ class ItemCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class InventoryCondition extends ProCondition {
+class InventoryCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Inventory',
@@ -1450,7 +1450,7 @@ class InventoryCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class LightCondition extends ProCondition {
+class LightCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Light',
@@ -1468,7 +1468,7 @@ class LightCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class ManaCondition extends ProCondition {
+class ManaCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Mana',
@@ -1488,7 +1488,7 @@ class ManaCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class MoneyCondition extends ProCondition {
+class MoneyCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Money',
@@ -1510,7 +1510,7 @@ class MoneyCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class MountedCondition extends ProCondition {
+class MountedCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Mounted',
@@ -1526,7 +1526,7 @@ class MountedCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class MountingCondition extends ProCondition {
+class MountingCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Mounting',
@@ -1542,7 +1542,7 @@ class MountingCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class MythicMobTypeCondition extends ProCondition {
+class MythicMobTypeCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'MythicMob Type',
@@ -1558,7 +1558,7 @@ class MythicMobTypeCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class NameCondition extends ProCondition {
+class NameCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Name',
@@ -1578,7 +1578,7 @@ class NameCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class OffhandCondition extends ProCondition {
+class OffhandCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Offhand',
@@ -1591,7 +1591,7 @@ class OffhandCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class PermissionCondition extends ProCondition {
+class PermissionCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Permission',
@@ -1607,7 +1607,7 @@ class PermissionCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class PotionCondition extends ProCondition {
+class PotionCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Potion',
@@ -1629,7 +1629,7 @@ class PotionCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class SkillLevelCondition extends ProCondition {
+class SkillLevelCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Skill Level',
@@ -1649,7 +1649,7 @@ class SkillLevelCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class SlotCondition extends ProCondition {
+class SlotCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Slot',
@@ -1666,7 +1666,7 @@ class SlotCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class StatusCondition extends ProCondition {
+class StatusCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Status',
@@ -1695,7 +1695,7 @@ class StatusCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class TimeCondition extends ProCondition {
+class TimeCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Time',
@@ -1711,7 +1711,7 @@ class TimeCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class ToolCondition extends ProCondition {
+class ToolCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Tool',
@@ -1735,7 +1735,7 @@ class ToolCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class ValueCondition extends ProCondition {
+class ValueCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Value',
@@ -1755,7 +1755,7 @@ class ValueCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class ValueTextCondition extends ProCondition {
+class ValueTextCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:        'Value Text',
@@ -1774,7 +1774,7 @@ class ValueTextCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class WaterCondition extends ProCondition {
+class WaterCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Water',
@@ -1790,7 +1790,7 @@ class WaterCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class WeatherCondition extends ProCondition {
+class WeatherCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Weather',
@@ -1806,7 +1806,7 @@ class WeatherCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class WorldCondition extends ProCondition {
+class WorldCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'World',
@@ -1824,7 +1824,7 @@ class WorldCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class YawCondition extends ProCondition {
+class YawCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Yaw',
@@ -4438,7 +4438,7 @@ class TriggerMechanic extends FabledMechanic {
 			data:         [
 				new DropdownSelect('Trigger', 'trigger', () => Object.values(get(triggers)).map((trigger: {
 					name: string,
-					component: typeof ProComponent
+					component: typeof FabledComponent
 				}) => trigger.name), 'Death')
 					.setTooltip('The trigger to listen for'),
 				new AttributeSelect('Duration', 'duration', 5)

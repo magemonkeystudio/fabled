@@ -5,12 +5,12 @@
 	import { get }                                        from 'svelte/store';
 	import ProInput                                       from '$input/ProInput.svelte';
 	import { filterParams, initialized, triggerSections } from '$api/components/registry';
-	import { onMount }                                    from 'svelte';
-	import type ProTrigger                                from '$api/components/triggers';
-	import { base }                                       from '$app/paths';
-	import ComponentSection                               from '$components/modal/component/ComponentSection.svelte';
-	import ProComponent                                   from '$api/components/procomponent';
-	import FabledSkill, { skillStore }                    from '../../../../data/skill-store';
+	import { onMount }        from 'svelte';
+	import type FabledTrigger from '$api/components/triggers';
+	import { base }           from '$app/paths';
+	import ComponentSection            from '$components/modal/component/ComponentSection.svelte';
+	import FabledComponent             from '$api/components/fabled-component';
+	import FabledSkill, { skillStore } from '../../../../data/skill-store';
 
 	export let data: { data: FabledSkill };
 	let skill: FabledSkill;
@@ -28,8 +28,8 @@
 		});
 	});
 
-	const onSelectTrigger = (comp: { new: () => { defaultOpen: () => ProComponent } }) => {
-		skill.triggers.push(<ProTrigger>comp.new().defaultOpen());
+	const onSelectTrigger = (comp: { new: () => { defaultOpen: () => FabledComponent } }) => {
+		skill.triggers.push(<FabledTrigger>comp.new().defaultOpen());
 		update();
 		setTimeout(() => triggerModal = false);
 	};

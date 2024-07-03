@@ -32,10 +32,10 @@ import {
 import {
 	notify
 }                                      from '$api/notification-service';
-import { Attribute }                   from '$api/stat';
-import ProTrigger                      from '$api/components/triggers';
-import type ProComponent               from '$api/components/procomponent';
-import YAML                            from 'yaml';
+import { Attribute }        from '$api/stat';
+import FabledTrigger        from '$api/components/triggers';
+import type FabledComponent from '$api/components/fabled-component';
+import YAML                 from 'yaml';
 import {
 	FabledFolder,
 	folderStore
@@ -80,8 +80,8 @@ export default class FabledSkill implements Serializable {
 			'&2Cooldown: {attr:cooldown}'
 		]
 	};
-	incompatible: FabledSkill[]        = [];
-	triggers: ProTrigger[]             = [];
+	incompatible: FabledSkill[] = [];
+	triggers: FabledTrigger[]   = [];
 
 	private skillReqStr         = '';
 	private incompStr: string[] = [];
@@ -109,22 +109,22 @@ export default class FabledSkill implements Serializable {
 		if (data.triggers) this.triggers = data.triggers;
 	}
 
-	public addComponent = (comp: ProComponent) => {
-		if (comp instanceof ProTrigger) {
+	public addComponent = (comp: FabledComponent) => {
+		if (comp instanceof FabledTrigger) {
 			this.triggers = [...this.triggers, comp];
 			return;
 		}
 
 		if (this.triggers.length === 0) {
-			this.triggers.push(<ProTrigger>Registry.getTriggerByName('cast')?.new());
+			this.triggers.push(<FabledTrigger>Registry.getTriggerByName('cast')?.new());
 		}
 
 		this.triggers[0].addComponent(comp);
 		this.triggers = [...this.triggers];
 	};
 
-	public removeComponent = (comp: ProComponent) => {
-		if (comp instanceof ProTrigger && this.triggers.includes(comp)) {
+	public removeComponent = (comp: FabledComponent) => {
+		if (comp instanceof FabledTrigger && this.triggers.includes(comp)) {
 			this.triggers.splice(this.triggers.indexOf(comp), 1);
 			return;
 		}
@@ -228,7 +228,7 @@ export default class FabledSkill implements Serializable {
 		return new Promise<void>((resolve) => {
 			unsub = initialized.subscribe(init => {
 				if (!init) return;
-				if (yaml.components) this.triggers = <ProTrigger[]>Registry.deserializeComponents(yaml.components);
+				if (yaml.components) this.triggers = <FabledTrigger[]>Registry.deserializeComponents(yaml.components);
 
 				if (unsub) {
 					unsub();

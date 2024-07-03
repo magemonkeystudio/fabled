@@ -1,9 +1,9 @@
-import ProComponent                                   from './procomponent';
-import type { ComponentOption }                       from '../options/options';
+import FabledComponent          from './fabled-component';
+import type { ComponentOption } from '../options/options';
 import type { ComponentData, Unknown, YamlComponent } from '$api/types';
 import Registry                                       from '$api/components/registry';
 
-export default class ProCondition extends ProComponent {
+export default class FabledCondition extends FabledComponent {
 	iconKey = '';
 
 	public constructor(data: ComponentData, isDeprecated = false) {
@@ -37,5 +37,5 @@ export default class ProCondition extends ProComponent {
 		}
 	}
 
-	public static override new = (): ProCondition => new ProCondition({ name: 'null' });
+	public static override new = (): FabledCondition => new FabledCondition({ name: 'null' });
 }

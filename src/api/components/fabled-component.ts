@@ -6,21 +6,21 @@ import type { ComponentData, PreviewData, Unknown, YamlComponent, YamlComponentD
 import type { Writable }                                                              from 'svelte/store';
 import { get, writable }                                                              from 'svelte/store';
 
-export default abstract class ProComponent extends Constructable {
+export default abstract class FabledComponent extends Constructable {
 	public type: 'trigger' | 'condition' | 'mechanic' | 'target';
 	public name: string;
 	public description: string;
 	public comment: string;
-	public components: Writable<ProComponent[]> = writable([]);
-	public data: ComponentOption[]              = [];
-	public preview: ComponentOption[]           = [];
-	public enablePreview                        = false;
-	public summaryItems: string[]               = [];
-	public isParent                             = true;
+	public components: Writable<FabledComponent[]> = writable([]);
+	public data: ComponentOption[]                 = [];
+	public preview: ComponentOption[]              = [];
+	public enablePreview                           = false;
+	public summaryItems: string[]                  = [];
+	public isParent                                = true;
 	public isDeprecated                         = false;
 	public id                                   = {};
-	public _defaultOpen                         = false;
-	public parent: ProComponent | undefined;
+	public _defaultOpen                            = false;
+	public parent: FabledComponent | undefined;
 
 	protected constructor(type: 'trigger' | 'condition' | 'mechanic' | 'target', data: ComponentData, isDeprecated = false) {
 		super();
@@ -42,12 +42,12 @@ export default abstract class ProComponent extends Constructable {
 		return comp.getSummary();
 	}
 
-	public setComponents = (comps: ProComponent[]) => {
+	public setComponents = (comps: FabledComponent[]) => {
 		comps.forEach(comp => comp.parent = this);
 		this.components.set([...comps]);
 	};
 
-	public contains = (comp: ProComponent): boolean => {
+	public contains = (comp: FabledComponent): boolean => {
 		const comps = get(this.components);
 		if (comps.includes(comp)) return true;
 
@@ -58,7 +58,7 @@ export default abstract class ProComponent extends Constructable {
 		return false;
 	};
 
-	public addComponent = (comp: ProComponent, index = -1) => {
+	public addComponent = (comp: FabledComponent, index = -1) => {
 		const comps = get(this.components);
 		if (index == -1)
 			comps.push(comp);
@@ -68,7 +68,7 @@ export default abstract class ProComponent extends Constructable {
 		this.setComponents(comps);
 	};
 
-	public removeComponent = (comp: ProComponent) => {
+	public removeComponent = (comp: FabledComponent) => {
 		const comps = get(this.components);
 		if (comps.includes(comp)) {
 			comps.splice(comps.indexOf(comp), 1);
