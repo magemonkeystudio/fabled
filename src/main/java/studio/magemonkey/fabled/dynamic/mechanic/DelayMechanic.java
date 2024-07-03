@@ -28,37 +28,26 @@ package studio.magemonkey.fabled.dynamic.mechanic;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import studio.magemonkey.fabled.Fabled;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Executes child components after a delay
  */
 public class DelayMechanic extends MechanicComponent {
-    private static final String SECONDS = "delay";
-    private static final String CANCEL_WHILE_CLEANED = "cancel-while-cleaned";
-    private static final String CANCEL_UNCOMPLETED = "cancel-uncompleted";
-    private final Map<UUID, BukkitTask> tasks = new HashMap<>();
+    private static final String                   SECONDS         = "delay";
+    private static final String                   CLEANUP         = "cleanup";
+    private static final String                   SINGLE_INSTANCE = "single-instance";
+    final                Map<UUID, List<Integer>> tasks           = new HashMap<>();
 
     @Override
     public String getKey() {
         return "delay";
     }
 
-    /**
-     * Executes the component
-     *
-     * @param caster  caster of the skill
-     * @param level   level of the skill
-     * @param targets targets to apply to
-     * @param force
-     * @return true if applied to something, false otherwise
-     */
     @Override
     public boolean execute(final LivingEntity caster,
                            final int level,
@@ -67,32 +56,43 @@ public class DelayMechanic extends MechanicComponent {
         if (targets.isEmpty()) {
             return false;
         }
-        double seconds = parseValues(caster, SECONDS, level, 2.0);
-        BukkitTask task = Bukkit.getScheduler().runTaskLater(
-                Fabled.inst(),
-                () -> executeChildren(caster, level, targets, force),
-                (long) (seconds * 20));
 
-        if (settings.getBool(CANCEL_WHILE_CLEANED, false)) {
-            tasks.compute(caster.getUniqueId(), (k, v) -> {
-                if (v != null && !v.isCancelled()) {
-                    if (settings.getBool(CANCEL_UNCOMPLETED, false)) {
-                        v.cancel();
-                    }
-                }
-                return task;
-            });
-        }
+        boolean singleInstance = settings.getBool(SINGLE_INSTANCE, false);
+        double  seconds        = parseValues(caster, SECONDS, level, 2.0);
+
+        BukkitTask task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                executeChildren(caster, level, targets, force);
+                tasks.get(caster.getUniqueId()).remove(Integer.valueOf(this.getTaskId()));
+            }
+        }.runTaskLater(Fabled.inst(), (long) (seconds * 20));
+
+        tasks.compute(caster.getUniqueId(), (uuid, list) -> {
+            if (list == null) {
+                list = new ArrayList<>();
+            }
+
+            if (singleInstance) {
+                list.forEach(Bukkit.getScheduler()::cancelTask);
+                list.clear();
+            }
+
+            list.add(task.getTaskId());
+            return list;
+        });
+
         return true;
     }
 
     @Override
     protected void doCleanUp(LivingEntity caster) {
-        if (settings.getBool(CANCEL_WHILE_CLEANED, false)) {
-            BukkitTask task = tasks.remove(caster.getUniqueId());
-            if (task != null && !task.isCancelled()) {
-                task.cancel();
-            }
+        boolean shouldGetCleanedUp = settings.getBool(CLEANUP, true);
+        if (!shouldGetCleanedUp) return;
+
+        List<Integer> taskList = tasks.remove(caster.getUniqueId());
+        if (taskList != null) {
+            taskList.forEach(Bukkit.getScheduler()::cancelTask);
         }
     }
 }

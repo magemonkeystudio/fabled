@@ -13,7 +13,7 @@ public class AbortSkillMechanic extends MechanicComponent {
 
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        skill.stopEffects(caster, level);
+        skill.stopEffects(caster);
         skill.initialize(caster, level);
         return true;
     }
