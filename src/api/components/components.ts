@@ -1,4 +1,4 @@
-import ProMechanic                                               from '$api/components/mechanics';
+import FabledMechanic                                            from '$api/components/mechanics';
 import BlockSelect                                               from '$api/options/blockselect';
 import ProCondition                                              from '$api/components/conditions';
 import DropdownSelect                                            from '$api/options/dropdownselect';
@@ -2134,7 +2134,20 @@ const effectOptions = (optional: boolean): ComponentOption[] => {
 	];
 };
 
-class ArmorMechanic extends ProMechanic {
+class AbortSkillMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Abort Skill',
+			description:  'Cancels current skill mechanics',
+			data:         [],
+			summaryItems: []
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
+class ArmorMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Armor',
@@ -2153,7 +2166,7 @@ class ArmorMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ArmorStandMechanic extends ProMechanic {
+class ArmorStandMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Armor Stand',
@@ -2197,7 +2210,7 @@ class ArmorStandMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ArmorStandPoseMechanic extends ProMechanic {
+class ArmorStandPoseMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:        'Armor Stand Pose',
@@ -2216,7 +2229,7 @@ class ArmorStandPoseMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ArmorStandRemoveMechanic extends ProMechanic {
+class ArmorStandRemoveMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Armor Stand Remove',
@@ -2232,7 +2245,7 @@ class ArmorStandRemoveMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class AttributeMechanic extends ProMechanic {
+class AttributeMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Attribute',
@@ -2256,7 +2269,7 @@ class AttributeMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class BlockMechanic extends ProMechanic {
+class BlockMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Block',
@@ -2313,7 +2326,7 @@ class BlockMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class BuffMechanic extends ProMechanic {
+class BuffMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Buff',
@@ -2346,7 +2359,7 @@ class BuffMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class CancelMechanic extends ProMechanic {
+class CancelMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:        'Cancel',
@@ -2357,7 +2370,7 @@ class CancelMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class CancelEffectMechanic extends ProMechanic {
+class CancelEffectMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Cancel Effect',
@@ -2373,7 +2386,7 @@ class CancelEffectMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ChannelMechanic extends ProMechanic {
+class ChannelMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Channel',
@@ -2391,7 +2404,7 @@ class ChannelMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class CleanseMechanic extends ProMechanic {
+class CleanseMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Cleanse',
@@ -2409,7 +2422,7 @@ class CleanseMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class CommandMechanic extends ProMechanic {
+class CommandMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Command',
@@ -2427,7 +2440,7 @@ class CommandMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class CooldownMechanic extends ProMechanic {
+class CooldownMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Cooldown',
@@ -2447,7 +2460,7 @@ class CooldownMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class DamageMechanic extends ProMechanic {
+class DamageMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Damage',
@@ -2474,7 +2487,7 @@ class DamageMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class DamageBuffMechanic extends ProMechanic {
+class DamageBuffMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Damage Buff',
@@ -2496,7 +2509,7 @@ class DamageBuffMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class DamageLoreMechanic extends ProMechanic {
+class DamageLoreMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Damage Lore',
@@ -2525,7 +2538,7 @@ class DamageLoreMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class DefenseBuffMechanic extends ProMechanic {
+class DefenseBuffMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Defense Buff',
@@ -2547,23 +2560,28 @@ class DefenseBuffMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class DelayMechanic extends ProMechanic {
+class DelayMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Delay',
 			description:  'Applies child components after a delay',
 			data:         [
 				new AttributeSelect('Delay', 'delay', 2)
-					.setTooltip('The amount of time to wait before applying child components in seconds')
+					.setTooltip('The amount of time to wait before applying child components in seconds'),
+				new BooleanSelect('Cleanup', 'cleanup', true)
+					.setTooltip('Whether this delay should be cleaned up on abort or logout/class change'),
+				new BooleanSelect('Single Instance', 'single-instance', false)
+					.setTooltip('Whether to only allow one instance of this delay per player. ' +
+						'When true, this will cancel the previous delay and start the new one in its place.')
 			],
-			summaryItems: ['delay']
+			summaryItems: ['delay', 'cleanup', 'single-instance']
 		}, true);
 	}
 
 	public static override new = () => new this();
 }
 
-class DisguiseMechanic extends ProMechanic {
+class DisguiseMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Disguise',
@@ -2636,7 +2654,7 @@ class DisguiseMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class DurabilityMechanic extends ProMechanic {
+class DurabilityMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Durability',
@@ -2654,7 +2672,7 @@ class DurabilityMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ExperienceMechanic extends ProMechanic {
+class ExperienceMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Experience',
@@ -2677,7 +2695,7 @@ class ExperienceMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ExplosionMechanic extends ProMechanic {
+class ExplosionMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Explosion',
@@ -2697,7 +2715,7 @@ class ExplosionMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class FireMechanic extends ProMechanic {
+class FireMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Fire',
@@ -2715,7 +2733,7 @@ class FireMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class FlagMechanic extends ProMechanic {
+class FlagMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Flag',
@@ -2733,7 +2751,7 @@ class FlagMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class FlagClearMechanic extends ProMechanic {
+class FlagClearMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Flag Clear',
@@ -2749,7 +2767,7 @@ class FlagClearMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class FlagToggleMechanic extends ProMechanic {
+class FlagToggleMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Flag Toggle',
@@ -2765,7 +2783,7 @@ class FlagToggleMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class FoodMechanic extends ProMechanic {
+class FoodMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Food',
@@ -2783,7 +2801,7 @@ class FoodMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ForgetTargetsMechanic extends ProMechanic {
+class ForgetTargetsMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Forget Targets',
@@ -2799,7 +2817,7 @@ class ForgetTargetsMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class HealMechanic extends ProMechanic {
+class HealMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Heal',
@@ -2817,7 +2835,7 @@ class HealMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class HealthSetMechanic extends ProMechanic {
+class HealthSetMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Health Set',
@@ -2833,7 +2851,7 @@ class HealthSetMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class HeldItemMechanic extends ProMechanic {
+class HeldItemMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Held Item',
@@ -2849,7 +2867,7 @@ class HeldItemMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ImmunityMechanic extends ProMechanic {
+class ImmunityMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Immunity',
@@ -2869,7 +2887,7 @@ class ImmunityMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class InterruptMechanic extends ProMechanic {
+class InterruptMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:        'Interrupt',
@@ -2880,7 +2898,7 @@ class InterruptMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class InvisibilityMechanic extends ProMechanic {
+class InvisibilityMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Invisibility',
@@ -2898,7 +2916,7 @@ class InvisibilityMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ItemMechanic extends ProMechanic {
+class ItemMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Item',
@@ -2911,7 +2929,7 @@ class ItemMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ItemDropMechanic extends ProMechanic {
+class ItemDropMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Item Drop',
@@ -2939,7 +2957,7 @@ class ItemDropMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ItemProjectileMechanic extends ProMechanic {
+class ItemProjectileMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Item Projectile',
@@ -3123,7 +3141,7 @@ class ItemProjectileMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ItemRemoveMechanic extends ProMechanic {
+class ItemRemoveMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Item Remove',
@@ -3141,7 +3159,7 @@ class ItemRemoveMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class LaunchMechanic extends ProMechanic {
+class LaunchMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Launch',
@@ -3165,7 +3183,7 @@ class LaunchMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class LightningMechanic extends ProMechanic {
+class LightningMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Lightning',
@@ -3193,7 +3211,7 @@ class LightningMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ManaMechanic extends ProMechanic {
+class ManaMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Mana',
@@ -3211,7 +3229,7 @@ class ManaMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class MessageMechanic extends ProMechanic {
+class MessageMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Message',
@@ -3227,7 +3245,7 @@ class MessageMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class MineMechanic extends ProMechanic {
+class MineMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Mine',
@@ -3276,7 +3294,7 @@ class MineMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class MoneyMechanic extends ProMechanic {
+class MoneyMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Money',
@@ -3296,7 +3314,7 @@ class MoneyMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class MountMechanic extends ProMechanic {
+class MountMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Mount',
@@ -3314,7 +3332,7 @@ class MountMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ParticleMechanic extends ProMechanic {
+class ParticleMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Particle',
@@ -3336,7 +3354,7 @@ class ParticleMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ParticleAnimationMechanic extends ProMechanic {
+class ParticleAnimationMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Particle Animation',
@@ -3381,7 +3399,7 @@ class ParticleAnimationMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ParticleEffectMechanic extends ProMechanic {
+class ParticleEffectMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Particle Effect',
@@ -3396,7 +3414,7 @@ class ParticleEffectMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ParticleImageMechanic extends ProMechanic {
+class ParticleImageMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Particle Image',
@@ -3454,7 +3472,7 @@ class ParticleImageMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ParticleProjectileMechanic extends ProMechanic {
+class ParticleProjectileMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Particle Projectile',
@@ -3646,7 +3664,7 @@ class ParticleProjectileMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class PassiveMechanic extends ProMechanic {
+class PassiveMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Passive',
@@ -3662,7 +3680,7 @@ class PassiveMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class PermissionMechanic extends ProMechanic {
+class PermissionMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Permission',
@@ -3680,7 +3698,7 @@ class PermissionMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class PotionMechanic extends ProMechanic {
+class PotionMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Potion',
@@ -3702,7 +3720,7 @@ class PotionMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class PotionProjectileMechanic extends ProMechanic {
+class PotionProjectileMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Potion Projectile',
@@ -3941,7 +3959,7 @@ class PotionProjectileMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ProjectileMechanic extends ProMechanic {
+class ProjectileMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Projectile',
@@ -4146,7 +4164,7 @@ class ProjectileMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class PurgeMechanic extends ProMechanic {
+class PurgeMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Purge',
@@ -4164,7 +4182,7 @@ class PurgeMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class PushMechanic extends ProMechanic {
+class PushMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Push',
@@ -4184,7 +4202,7 @@ class PushMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class RememberTargetsMechanic extends ProMechanic {
+class RememberTargetsMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Remember Targets',
@@ -4200,7 +4218,7 @@ class RememberTargetsMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class RepeatMechanic extends ProMechanic {
+class RepeatMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Repeat',
@@ -4222,7 +4240,7 @@ class RepeatMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class SignalEmitMechanic extends ProMechanic {
+class SignalEmitMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Signal Emit',
@@ -4242,7 +4260,7 @@ class SignalEmitMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class SkillCastMechanic extends ProMechanic {
+class SkillCastMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Skill cast',
@@ -4262,7 +4280,7 @@ class SkillCastMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class SoundMechanic extends ProMechanic {
+class SoundMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Sound',
@@ -4285,7 +4303,7 @@ class SoundMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class StatMechanic extends ProMechanic {
+class StatMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Stat',
@@ -4332,7 +4350,7 @@ class StatMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class StatusMechanic extends ProMechanic {
+class StatusMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Status',
@@ -4357,7 +4375,7 @@ class StatusMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class SummonMechanic extends ProMechanic {
+class SummonMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Summon',
@@ -4378,7 +4396,7 @@ class SummonMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class TauntMechanic extends ProMechanic {
+class TauntMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Taunt',
@@ -4394,7 +4412,7 @@ class TauntMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ThrowMechanic extends ProMechanic {
+class ThrowMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Throw',
@@ -4412,7 +4430,7 @@ class ThrowMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class TriggerMechanic extends ProMechanic {
+class TriggerMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Trigger',
@@ -4508,7 +4526,7 @@ class TriggerMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueAddMechanic extends ProMechanic {
+class ValueAddMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Add',
@@ -4528,7 +4546,7 @@ class ValueAddMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueAttributeMechanic extends ProMechanic {
+class ValueAttributeMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Attribute',
@@ -4548,7 +4566,7 @@ class ValueAttributeMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueCopyMechanic extends ProMechanic {
+class ValueCopyMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Copy',
@@ -4571,7 +4589,7 @@ class ValueCopyMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueDistanceMechanic extends ProMechanic {
+class ValueDistanceMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Distance',
@@ -4590,7 +4608,7 @@ class ValueDistanceMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueDivideMechanic extends ProMechanic {
+class ValueDivideMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Divide',
@@ -4611,7 +4629,7 @@ class ValueDivideMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueHealthMechanic extends ProMechanic {
+class ValueHealthMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Health',
@@ -4632,7 +4650,7 @@ class ValueHealthMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueLocationMechanic extends ProMechanic {
+class ValueLocationMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Location',
@@ -4651,7 +4669,7 @@ class ValueLocationMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueLoadMechanic extends ProMechanic {
+class ValueLoadMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Load',
@@ -4671,7 +4689,7 @@ class ValueLoadMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueLoreMechanic extends ProMechanic {
+class ValueLoreMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Lore',
@@ -4696,7 +4714,7 @@ class ValueLoreMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueLoreSlotMechanic extends ProMechanic {
+class ValueLoreSlotMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Lore Slot',
@@ -4721,7 +4739,7 @@ class ValueLoreSlotMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueManaMechanic extends ProMechanic {
+class ValueManaMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Mana',
@@ -4742,7 +4760,7 @@ class ValueManaMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueMultiplyMechanic extends ProMechanic {
+class ValueMultiplyMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Multiply',
@@ -4763,7 +4781,7 @@ class ValueMultiplyMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValuePlaceholderMechanic extends ProMechanic {
+class ValuePlaceholderMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Placeholder',
@@ -4786,7 +4804,7 @@ class ValuePlaceholderMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueRandomMechanic extends ProMechanic {
+class ValueRandomMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Random',
@@ -4813,7 +4831,7 @@ class ValueRandomMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueRotationMechanic extends ProMechanic {
+class ValueRotationMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Rotation',
@@ -4834,7 +4852,7 @@ class ValueRotationMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueRoundMechanic extends ProMechanic {
+class ValueRoundMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Round',
@@ -4855,7 +4873,7 @@ class ValueRoundMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueSetMechanic extends ProMechanic {
+class ValueSetMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Set',
@@ -4876,7 +4894,7 @@ class ValueSetMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class WarpMechanic extends ProMechanic {
+class WarpMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Warp',
@@ -4905,7 +4923,7 @@ class WarpMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class WarpLocMechanic extends ProMechanic {
+class WarpLocMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Warp Location',
@@ -4931,7 +4949,7 @@ class WarpLocMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class WarpRandomMechanic extends ProMechanic {
+class WarpRandomMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Warp Random',
@@ -4952,7 +4970,7 @@ class WarpRandomMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class WarpSwapMechanic extends ProMechanic {
+class WarpSwapMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Warp Swap',
@@ -4965,7 +4983,7 @@ class WarpSwapMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class WarpTargetMechanic extends ProMechanic {
+class WarpTargetMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Warp Target',
@@ -4982,7 +5000,7 @@ class WarpTargetMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class WarpValueMechanic extends ProMechanic {
+class WarpValueMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Warp Value',
@@ -5002,7 +5020,7 @@ class WarpValueMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class WolfMechanic extends ProMechanic {
+class WolfMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Wolf',
@@ -5208,6 +5226,7 @@ export const initComponents = () => {
 		YAW:            { name: 'Yaw', component: YawCondition }
 	});
 	mechanics.set({
+		ABORT_SKILL:        { name: 'Abort Skill', component: AbortSkillMechanic },
 		ARMOR:              { name: 'Armor', component: ArmorMechanic },
 		ARMOR_STAND:        { name: 'Armor Stand', component: ArmorStandMechanic },
 		ARMOR_STAND_POSE:   { name: 'Armor Stand Pose', component: ArmorStandPoseMechanic },
