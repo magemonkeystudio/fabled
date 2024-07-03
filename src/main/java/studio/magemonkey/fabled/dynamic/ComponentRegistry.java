@@ -134,6 +134,7 @@ public class ComponentRegistry {
         register(new YawCondition());
 
         // Mechanics
+        register(new AbortSkillMechanic());
         register(new ArmorMechanic());
         register(new ArmorStandMechanic());
         register(new ArmorStandPoseMechanic());

@@ -26,17 +26,17 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import org.bukkit.DyeColor;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Wolf;
+import studio.magemonkey.codex.mccore.util.TextFormatter;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.skills.PassiveSkill;
 import studio.magemonkey.fabled.api.skills.Skill;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.listener.MechanicListener;
 import studio.magemonkey.fabled.task.RemoveEntitiesTask;
-import studio.magemonkey.codex.mccore.util.TextFormatter;
-import org.bukkit.DyeColor;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Wolf;
 
 import java.util.*;
 
@@ -57,15 +57,6 @@ public class WolfMechanic extends MechanicComponent {
 
     private final Map<Integer, RemoveEntitiesTask> tasks = new HashMap<>();
 
-    /**
-     * Executes the component
-     *
-     * @param caster  caster of the skill
-     * @param level   level of the skill
-     * @param targets targets to apply to
-     * @param force
-     * @return true if applied to something, false otherwise
-     */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (!(caster instanceof Player)) {
