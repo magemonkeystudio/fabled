@@ -1,5 +1,15 @@
 package studio.magemonkey.fabled.cmd;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import studio.magemonkey.codex.mccore.commands.CommandManager;
 import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
 import studio.magemonkey.codex.mccore.commands.IFunction;
@@ -11,16 +21,6 @@ import studio.magemonkey.fabled.api.player.PlayerClass;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.language.RPGFilter;
 import studio.magemonkey.fabled.manager.CmdManager;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -113,17 +113,15 @@ public class CmdExp implements IFunction, TabCompleter {
 
                 if (amount > 0) {
                     playerClass.giveExp(amount, ExpSource.COMMAND, showMessage);
-                    if (showMessage) {
-                        if (target != sender) {
-                            cmd.sendMessage(
-                                    sender,
-                                    GAVE_EXP,
-                                    ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD
-                                            + "{player} {exp}{class} experience",
-                                    Filter.PLAYER.setReplacement(target.getName()),
-                                    RPGFilter.EXP.setReplacement("" + amount),
-                                    RPGFilter.CLASS.setReplacement(' ' + playerClass.getData().getGroup()));
-                        }
+                    if (showMessage && target != sender) {
+                        cmd.sendMessage(
+                                sender,
+                                GAVE_EXP,
+                                ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD
+                                        + "{player} {exp}{class} experience",
+                                Filter.PLAYER.setReplacement(target.getName()),
+                                RPGFilter.EXP.setReplacement("" + amount),
+                                RPGFilter.CLASS.setReplacement(' ' + playerClass.getData().getGroup()));
                     }
                 } else {
                     playerClass.loseExp(-amount, false, true);

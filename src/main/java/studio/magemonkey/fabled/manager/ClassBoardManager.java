@@ -26,16 +26,16 @@
  */
 package studio.magemonkey.fabled.manager;
 
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import studio.magemonkey.codex.mccore.chat.Chat;
+import studio.magemonkey.codex.mccore.chat.Prefix;
+import studio.magemonkey.codex.mccore.scoreboard.*;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.data.CustomScoreboardHolder;
 import studio.magemonkey.fabled.util.PlaceholderUtil;
-import studio.magemonkey.codex.mccore.chat.Chat;
-import studio.magemonkey.codex.mccore.chat.Prefix;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import studio.magemonkey.codex.mccore.scoreboard.*;
 
 /**
  * Manages prefixes for classes
@@ -70,10 +70,12 @@ public class ClassBoardManager {
      */
     public static void update(PlayerData player, String prefix, ChatColor braceColor) {
         try {
-            // Give a chat prefix
-            Chat.getPlayerData(player.getPlayerName()).setPluginPrefix(
-                    new Prefix("Fabled", prefix, braceColor)
-            );
+            if (Fabled.getSettings().isShowClassName()) {
+                // Give a chat prefix
+                Chat.getPlayerData(player.getPlayerName()).setPluginPrefix(
+                        new Prefix("Fabled", prefix, braceColor)
+                );
+            }
 
             PlayerBoards boards = BoardManager.getPlayerBoards(player.getPlayerName());
 

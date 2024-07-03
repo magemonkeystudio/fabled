@@ -214,7 +214,7 @@ public class PlayerAccounts {
 
             if (Fabled.getSettings().isWorldEnabled(player.getWorld())) {
                 ClassBoardManager.clear(player);
-                getActiveData().stopPassives(player);
+                getActiveData().stopSkills(player);
                 getActiveData().clearAllModifiers();
                 active = event.getNewID();
                 getActiveData().startPassives(player);

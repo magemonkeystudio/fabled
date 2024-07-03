@@ -156,11 +156,11 @@ public class PlayerData {
     }
 
     public boolean refundAttribute(String key) {
-        return _data.refundAttribute(key);
+        return _data.refundAttribute(key, 1);
     }
 
     public boolean refundAttributes(String key) {
-        return _data.refundAttributes(key);
+        return _data.resetAttribute(key, true);
     }
 
     public List<String> refundAttributes() {
@@ -350,7 +350,7 @@ public class PlayerData {
     }
 
     public void resetAttribs() {
-        _data.resetAttribs();
+        _data.resetAttribs(true);
     }
 
     public boolean profess(FabledClass fabledClass) {
@@ -525,7 +525,7 @@ public class PlayerData {
     }
 
     public void stopPassives(Player player) {
-        _data.stopPassives(player);
+        _data.stopSkills(player);
     }
 
     public boolean cast(String skillName) {

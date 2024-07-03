@@ -27,6 +27,13 @@
 package studio.magemonkey.fabled.dynamic;
 
 import com.google.common.collect.ImmutableList;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.Listener;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
+import studio.magemonkey.codex.mccore.util.TextFormatter;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.api.event.DynamicTriggerEvent;
@@ -36,13 +43,6 @@ import studio.magemonkey.fabled.api.skills.Skill;
 import studio.magemonkey.fabled.api.skills.SkillShot;
 import studio.magemonkey.fabled.dynamic.trigger.TriggerComponent;
 import studio.magemonkey.fabled.log.Logger;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import studio.magemonkey.codex.mccore.util.TextFormatter;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,9 +57,9 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
     private final        List<TriggerHandler>         triggers           = new ArrayList<>();
     private final        Map<String, EffectComponent> attribKeys         = new HashMap<>();
     private final        Map<Integer, Integer>        active             = new HashMap<>();
-    private final        List<Integer>          forced             = new ArrayList<>();
-    private              List<TriggerComponent> castTriggers       = new ArrayList<>();
-    private              List<TriggerComponent> initializeTriggers = new ArrayList<>();
+    private final        List<Integer>                forced             = new ArrayList<>();
+    private              List<TriggerComponent>       castTriggers       = new ArrayList<>();
+    private              List<TriggerComponent>       initializeTriggers = new ArrayList<>();
     private              List<TriggerComponent>       cleanupTriggers    = new ArrayList<>();
 
     private boolean cancel     = false;
@@ -224,10 +224,9 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
      * Removes active users from the map
      *
      * @param user  user to stop the effects for
-     * @param level skill level
      */
     @Override
-    public void stopEffects(final LivingEntity user, final int level) {
+    public void stopEffects(final LivingEntity user) {
         active.remove(user.getEntityId());
         if (forced.contains(user.getEntityId())) forced.remove(Integer.valueOf(user.getEntityId()));
         for (final TriggerHandler triggerHandler : triggers) {
@@ -395,7 +394,10 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
                 } else if (modified.equalsIgnoreCase("CLEANUP")) {
                     cleanupTriggers.add(loadComponent(settings));
                 } else {
-                    this.triggers.add(new TriggerHandler(this, key, ComponentRegistry.getTrigger(modified), loadComponent(settings)));
+                    this.triggers.add(new TriggerHandler(this,
+                            key,
+                            ComponentRegistry.getTrigger(modified),
+                            loadComponent(settings)));
                 }
             } catch (final Exception ex) {
                 // Invalid trigger

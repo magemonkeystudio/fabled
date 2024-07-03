@@ -26,16 +26,16 @@
  */
 package studio.magemonkey.fabled.gui.tool;
 
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.skills.Skill;
 import studio.magemonkey.fabled.hook.PlaceholderAPIHook;
 import studio.magemonkey.fabled.hook.PluginChecker;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -144,7 +144,7 @@ public class GUIPage {
                     ? holder.getIcon(player)
                     : GUITool.getIcon(entry.getValue());
 
-            if (item == null) {
+            if ((holder == null || holder.isAllowed(bukkitPlayer)) && item == null) {
                 Fabled.inst()
                         .getLogger()
                         .warning("Could not find GUI item for " + entry.getValue()

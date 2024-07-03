@@ -1,20 +1,20 @@
 package studio.magemonkey.fabled.api.player;
 
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.enums.Operation;
-import studio.magemonkey.fabled.api.event.PlayerAttributeChangeEvent;
-import studio.magemonkey.fabled.manager.ProAttribute;
-import studio.magemonkey.fabled.testutil.MockedTest;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.enums.Operation;
+import studio.magemonkey.fabled.api.event.PlayerAttributeChangeEvent;
+import studio.magemonkey.fabled.manager.FabledAttribute;
+import studio.magemonkey.fabled.testutil.MockedTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class PlayerDataTest extends MockedTest implements Listener {
-    private PlayerMock attacker;
     private PlayerData playerData;
 
     private String cancelEvent;
@@ -24,8 +24,8 @@ public class PlayerDataTest extends MockedTest implements Listener {
     public void setup() {
         cancelEvent = null;
         modifier = 0;
-        attacker = genPlayer("Travja");
-        playerData = Fabled.getData(attacker);
+        PlayerMock player = genPlayer("Travja");
+        playerData = Fabled.getData(player);
         playerData.resetAll();
         playerData.giveAttribPoints(Integer.MAX_VALUE);
 
@@ -62,7 +62,7 @@ public class PlayerDataTest extends MockedTest implements Listener {
 
     @Test
     void giveAttributes_costModifierWorksNormally() {
-        ProAttribute attribute = Fabled.getAttributeManager().getAttribute("spirit");
+        FabledAttribute attribute = Fabled.getAttributeManager().getAttribute("spirit");
         attribute.setCostModifier(1.5);
 
         assertEquals(1, playerData.getAttributeUpCost("spirit"));
@@ -88,7 +88,7 @@ public class PlayerDataTest extends MockedTest implements Listener {
 
     @Test
     void giveAttributes_costModifierWorksWithAttributeModifiers() {
-        ProAttribute attribute = Fabled.getAttributeManager().getAttribute("spirit");
+        FabledAttribute attribute = Fabled.getAttributeManager().getAttribute("spirit");
         attribute.setCostModifier(1.5);
 
         playerData.addAttributeModifier("spirit",
@@ -118,7 +118,7 @@ public class PlayerDataTest extends MockedTest implements Listener {
 
     @Test
     void getAttributeUpCost_worksGoingBackwards() {
-        ProAttribute attribute = Fabled.getAttributeManager().getAttribute("spirit");
+        FabledAttribute attribute = Fabled.getAttributeManager().getAttribute("spirit");
         attribute.setCostModifier(1.5);
 
         // 1, 2, 4, 5, 7
@@ -155,14 +155,14 @@ public class PlayerDataTest extends MockedTest implements Listener {
 
         playerData.setAttribPoints(0);
 
-        playerData.refundAttribute("spirit");
+        playerData.refundAttribute("spirit", 1);
         assertEventFired(PlayerAttributeChangeEvent.class,
                 event -> event.getChange() == -1 && event.getAttribute().equals("spirit") && !event.isCancelled());
         assertEquals(4, playerData.getAttribute("spirit"));
         assertEquals(4, playerData.getInvestedAttribute("spirit"));
         assertEquals(1, playerData.getAttributePoints());
 
-        playerData.refundAttribute("spirit");
+        playerData.refundAttribute("spirit", 1);
         assertEventFired(PlayerAttributeChangeEvent.class,
                 event -> event.getChange() == -1 && event.getAttribute().equals("spirit") && !event.isCancelled());
         assertEquals(3, playerData.getAttribute("spirit"));
@@ -179,7 +179,7 @@ public class PlayerDataTest extends MockedTest implements Listener {
         playerData.setAttribPoints(0);
 
         cancelEvent = "spirit";
-        playerData.refundAttribute("spirit");
+        playerData.refundAttribute("spirit", 1);
         assertEventFired(PlayerAttributeChangeEvent.class,
                 event -> event.getChange() == -1 && event.getAttribute().equals("spirit") && event.isCancelled());
         assertEquals(5, playerData.getAttribute("spirit"));
@@ -189,7 +189,7 @@ public class PlayerDataTest extends MockedTest implements Listener {
 
     @Test
     void refundAttribute_modifier() {
-        ProAttribute attribute = Fabled.getAttributeManager().getAttribute("spirit");
+        FabledAttribute attribute = Fabled.getAttributeManager().getAttribute("spirit");
         attribute.setCostModifier(1.5);
 
         playerData.giveAttribute("spirit", 5);
@@ -198,7 +198,7 @@ public class PlayerDataTest extends MockedTest implements Listener {
 
         playerData.setAttribPoints(0);
 
-        playerData.refundAttribute("spirit");
+        playerData.refundAttribute("spirit", 1);
         assertEventFired(PlayerAttributeChangeEvent.class,
                 event -> event.getChange() == -1 && event.getAttribute().equals("spirit") && !event.isCancelled());
         assertEquals(4, playerData.getAttribute("spirit"));
@@ -206,7 +206,7 @@ public class PlayerDataTest extends MockedTest implements Listener {
         assertEquals(7, playerData.getAttributePoints());
 
         modifier = -2;
-        playerData.refundAttribute("spirit");
+        playerData.refundAttribute("spirit", 1);
         assertEventFired(PlayerAttributeChangeEvent.class,
                 event -> event.getChange() == -2 && event.getAttribute().equals("spirit") && !event.isCancelled());
         assertEquals(2, playerData.getAttribute("spirit"));
@@ -215,14 +215,14 @@ public class PlayerDataTest extends MockedTest implements Listener {
     }
 
     @Test
-    void refundAttributes() {
+    void refundAttributeAll() {
         playerData.giveAttribute("spirit", 5);
         assertEquals(5, playerData.getAttribute("spirit"));
         assertEquals(5, playerData.getInvestedAttribute("spirit"));
 
         playerData.setAttribPoints(0);
 
-        playerData.refundAttributes("spirit");
+        playerData.refundAttributeAll("spirit");
         assertEventFired(PlayerAttributeChangeEvent.class,
                 event -> event.getChange() == -5 && event.getAttribute().equals("spirit") && !event.isCancelled());
         assertEquals(0, playerData.getAttribute("spirit"));
@@ -231,7 +231,7 @@ public class PlayerDataTest extends MockedTest implements Listener {
     }
 
     @Test
-    void refundAttributes_modifier() {
+    void refundAttributeAll_modifier() {
         playerData.giveAttribute("spirit", 5);
         assertEquals(5, playerData.getAttribute("spirit"));
         assertEquals(5, playerData.getInvestedAttribute("spirit"));
@@ -239,7 +239,7 @@ public class PlayerDataTest extends MockedTest implements Listener {
         playerData.setAttribPoints(0);
 
         modifier = -2;
-        playerData.refundAttributes("spirit");
+        playerData.refundAttributeAll("spirit");
         assertEventFired(PlayerAttributeChangeEvent.class,
                 event -> event.getChange() == -2 && event.getAttribute().equals("spirit") && !event.isCancelled());
         assertEquals(3, playerData.getAttribute("spirit"));
@@ -248,7 +248,7 @@ public class PlayerDataTest extends MockedTest implements Listener {
     }
 
     @Test
-    void refundAttributes_cancelled() {
+    void refundAttributeAll_cancelled() {
         playerData.giveAttribute("spirit", 5);
         assertEquals(5, playerData.getAttribute("spirit"));
         assertEquals(5, playerData.getInvestedAttribute("spirit"));
@@ -256,7 +256,7 @@ public class PlayerDataTest extends MockedTest implements Listener {
         playerData.setAttribPoints(0);
 
         cancelEvent = "spirit";
-        playerData.refundAttributes("spirit");
+        playerData.refundAttributeAll("spirit");
         assertEventFired(PlayerAttributeChangeEvent.class,
                 event -> event.getChange() == -5 && event.getAttribute().equals("spirit") && event.isCancelled());
         assertEquals(5, playerData.getAttribute("spirit"));
@@ -265,7 +265,7 @@ public class PlayerDataTest extends MockedTest implements Listener {
     }
 
     @Test
-    void refundAttributes_noParam() {
+    void refundAttribute_noParam() {
         playerData.giveAttribute("spirit", 5);
         playerData.giveAttribute("strength", 5);
         assertEquals(5, playerData.getAttribute("spirit"));
@@ -297,12 +297,37 @@ public class PlayerDataTest extends MockedTest implements Listener {
         assertEquals(5, playerData.getInvestedAttribute("vitality"));
 
         cancelEvent = "spirit";
-        playerData.resetAttribs();
+        playerData.resetAttribs(false);
         assertEquals(5, playerData.getInvestedAttribute("spirit"));
         assertEquals(0, playerData.getInvestedAttribute("strength"));
         assertEquals(0, playerData.getInvestedAttribute("intelligence"));
         assertEquals(0, playerData.getInvestedAttribute("vitality"));
-        assertEquals(15, playerData.getAttributePoints());
+        assertEquals(0, playerData.getAttributePoints());
+        assertEventFired(PlayerAttributeChangeEvent.class,
+                event -> event.getChange() == -5 && event.getAttribute().equals("spirit") && event.isCancelled());
+        assertEventFired(PlayerAttributeChangeEvent.class,
+                event -> event.getChange() == -5 && event.getAttribute().equals("strength") && !event.isCancelled());
+    }
+
+    @Test
+    void resetAttribs_refund() {
+        playerData.giveAttribute("spirit", 5);
+        playerData.giveAttribute("strength", 5);
+        playerData.giveAttribute("intelligence", 5);
+        playerData.giveAttribute("vitality", 5);
+        assertEquals(5, playerData.getInvestedAttribute("spirit"));
+        assertEquals(5, playerData.getInvestedAttribute("strength"));
+        assertEquals(5, playerData.getInvestedAttribute("intelligence"));
+        assertEquals(5, playerData.getInvestedAttribute("vitality"));
+
+        cancelEvent = "spirit";
+        playerData.setAttribPoints(5);
+        playerData.resetAttribs(true);
+        assertEquals(5, playerData.getInvestedAttribute("spirit"));
+        assertEquals(0, playerData.getInvestedAttribute("strength"));
+        assertEquals(0, playerData.getInvestedAttribute("intelligence"));
+        assertEquals(0, playerData.getInvestedAttribute("vitality"));
+        assertEquals(20, playerData.getAttributePoints());
         assertEventFired(PlayerAttributeChangeEvent.class,
                 event -> event.getChange() == -5 && event.getAttribute().equals("spirit") && event.isCancelled());
         assertEventFired(PlayerAttributeChangeEvent.class,
@@ -322,15 +347,67 @@ public class PlayerDataTest extends MockedTest implements Listener {
 
         cancelEvent = "spirit";
         modifier = -2;
-        playerData.resetAttribs();
+        playerData.resetAttribs(false);
         assertEquals(5, playerData.getInvestedAttribute("spirit"));
         assertEquals(3, playerData.getInvestedAttribute("strength"));
         assertEquals(3, playerData.getInvestedAttribute("intelligence"));
         assertEquals(3, playerData.getInvestedAttribute("vitality"));
-        assertEquals(6, playerData.getAttributePoints());
+        assertEquals(0, playerData.getAttributePoints());
         assertEventFired(PlayerAttributeChangeEvent.class,
                 event -> event.getChange() == -2 && event.getAttribute().equals("spirit") && event.isCancelled());
         assertEventFired(PlayerAttributeChangeEvent.class,
                 event -> event.getChange() == -2 && event.getAttribute().equals("strength") && !event.isCancelled());
+    }
+
+    @Test
+    void resetAttribs_modifier_refund() {
+        playerData.giveAttribute("spirit", 5);
+        playerData.giveAttribute("strength", 5);
+        playerData.giveAttribute("intelligence", 5);
+        playerData.giveAttribute("vitality", 5);
+        assertEquals(5, playerData.getInvestedAttribute("spirit"));
+        assertEquals(5, playerData.getInvestedAttribute("strength"));
+        assertEquals(5, playerData.getInvestedAttribute("intelligence"));
+        assertEquals(5, playerData.getInvestedAttribute("vitality"));
+
+        cancelEvent = "spirit";
+        modifier = -2;
+        playerData.setAttribPoints(3);
+        playerData.resetAttribs(true);
+        assertEquals(5, playerData.getInvestedAttribute("spirit"));
+        assertEquals(3, playerData.getInvestedAttribute("strength"));
+        assertEquals(3, playerData.getInvestedAttribute("intelligence"));
+        assertEquals(3, playerData.getInvestedAttribute("vitality"));
+        assertEquals(9, playerData.getAttributePoints());
+        assertEventFired(PlayerAttributeChangeEvent.class,
+                event -> event.getChange() == -2 && event.getAttribute().equals("spirit") && event.isCancelled());
+        assertEventFired(PlayerAttributeChangeEvent.class,
+                event -> event.getChange() == -2 && event.getAttribute().equals("strength") && !event.isCancelled());
+    }
+
+    @Test
+    void resetAll_resetsAttributePointsToZero() {
+        playerData.setAttribPoints(20);
+        for (int i = 0; i < 5; i++) {
+            playerData.upAttribute("spirit");
+            playerData.upAttribute("strength");
+            playerData.upAttribute("intelligence");
+        }
+
+        assertEquals(5, playerData.getAttributePoints());
+
+        playerData.resetAll();
+        assertEquals(0, playerData.getAttributePoints());
+    }
+
+    @Test
+    void upAttribute_doesNotExceedMax() {
+        FabledAttribute attribute = Fabled.getAttributeManager().getAttribute("spirit");
+        attribute.setMax(5);
+
+        playerData.giveAttribute("spirit", 5);
+        boolean upgraded = playerData.upAttribute("spirit");
+        assertFalse(upgraded);
+        assertEquals(5, playerData.getAttribute("spirit"));
     }
 }

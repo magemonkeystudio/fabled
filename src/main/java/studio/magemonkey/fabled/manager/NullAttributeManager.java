@@ -8,22 +8,22 @@ import java.util.Set;
 
 public class NullAttributeManager implements IAttributeManager {
     @Override
-    public Map<String, ProAttribute> getAttributes() {
+    public Map<String, FabledAttribute> getAttributes() {
         return Map.of();
     }
 
     @Override
-    public ProAttribute getAttribute(String key) {
+    public FabledAttribute getAttribute(String key) {
         return null;
     }
 
     @Override
-    public List<ProAttribute> forStat(String key) {
+    public List<FabledAttribute> forStat(String key) {
         return List.of();
     }
 
     @Override
-    public List<ProAttribute> forComponent(EffectComponent component, String key) {
+    public List<FabledAttribute> forComponent(EffectComponent component, String key) {
         return List.of();
     }
 
@@ -43,8 +43,8 @@ public class NullAttributeManager implements IAttributeManager {
     }
 
     @Override
-    public void addByComponent(String key, ProAttribute proAttribute) {}
+    public void addByComponent(String key, FabledAttribute fabledAttribute) {}
 
     @Override
-    public void addByStat(String key, ProAttribute proAttribute) {}
+    public void addByStat(String key, FabledAttribute fabledAttribute) {}
 }

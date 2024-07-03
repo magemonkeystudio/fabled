@@ -27,12 +27,7 @@ Honor Guard:
   blacklist: [ ]
   skills:
     - 'Brilliance Strike'
-    - 'Test'
-    - 'Item'
-    - 'Forcecast'
-    - 'ValAdd'
-    - 'Tir Rapide'
-    - 'Whee'
+    - 'NonCastSkill'
   icon: 'DIAMOND_CHESTPLATE'
   icon-data: 0
   icon-durability: 0

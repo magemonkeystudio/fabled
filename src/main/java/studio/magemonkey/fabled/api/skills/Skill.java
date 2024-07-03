@@ -341,7 +341,7 @@ public abstract class Skill implements IconHolder {
     /**
      * Checks whether the skill needs a permission for a player to use it.
      *
-     * @return true if requires a permission, false otherwise
+     * @return true if the skill requires a permission to use
      */
     public boolean needsPermission() {
         return needsPermission;

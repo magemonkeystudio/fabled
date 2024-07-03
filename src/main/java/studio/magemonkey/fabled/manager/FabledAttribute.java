@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 /**
  * A single attribute template
  */
-public class ProAttribute implements IconHolder {
+public class FabledAttribute implements IconHolder {
     private static final String DISPLAY   = "display";
     private static final String GLOBAL    = "global";
     private static final String CONDITION = "condition";
@@ -47,11 +47,16 @@ public class ProAttribute implements IconHolder {
     private String    display;
     private ItemStack icon;
     /**
+     * --- GETTER ---
      * Retrieves the max amount the attribute can be raised to
      *
      * @return max attribute amount
+     *
+     * --- SETTER ---
+     * Sets the max level for the attribute
      */
     @Getter
+    @Setter
     private int       max;
     /**
      * Retrieves the starting cost of the attribute upgrade.
@@ -83,7 +88,7 @@ public class ProAttribute implements IconHolder {
      * @param data config data to load from
      * @param key  the key the attribute was labeled under
      */
-    public ProAttribute(DataSection data, String key) {
+    public FabledAttribute(DataSection data, String key) {
         this.key = key.toLowerCase();
         this.display = data.getString(DISPLAY, key);
         this.icon = Data.parseIcon(data);
