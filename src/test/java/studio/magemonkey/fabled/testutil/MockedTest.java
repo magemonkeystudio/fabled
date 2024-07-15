@@ -6,20 +6,16 @@ import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
 import org.mockito.MockedStatic;
 import studio.magemonkey.codex.CodexEngine;
-import studio.magemonkey.codex.core.config.CoreLang;
 import studio.magemonkey.codex.hooks.HookManager;
-import studio.magemonkey.codex.mccore.commands.CommandManager;
 import studio.magemonkey.codex.mccore.scoreboard.Board;
-import studio.magemonkey.codex.nms.NMS;
+import studio.magemonkey.codex.nms.packets.PacketManager;
 import studio.magemonkey.codex.util.ItemUT;
 import studio.magemonkey.codex.util.Reflex;
 import studio.magemonkey.codex.util.actions.ActionsManager;
@@ -33,7 +29,6 @@ import studio.magemonkey.fabled.api.util.DamageLoreRemover;
 import java.io.*;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -55,14 +50,12 @@ public abstract class MockedTest {
     protected Fabled      plugin;
 
     protected HookManager    hookManager;
-    protected NMS            nms;
     protected ActionsManager actionsManager;
 
     protected ReflectionUtil                  reflectionMock;
     protected Reflection_1_17                 reflection17Mock;
     protected MockedStatic<ReflectionManager> reflectionManager;
     protected MockedStatic<Reflex>            reflex;
-    protected MockedStatic<CodexEngine>       codexEngine;
     protected MockedStatic<Board>             board;
     protected MockedStatic<DamageLoreRemover> damageLoreRemover;
 
@@ -190,33 +183,17 @@ public abstract class MockedTest {
         reflectionMock = mock(ReflectionUtil.class);
         reflection17Mock = mock(Reflection_1_17.class);
         reflectionManager = mockStatic(ReflectionManager.class);
+        when(reflectionMock.fixColors(anyString()))
+                .thenAnswer(args -> args.getArgument(0));
         reflectionManager.when(ReflectionManager::getReflectionUtil).thenReturn(reflectionMock);
 
         hookManager = mock(HookManager.class);
         actionsManager = mock(ActionsManager.class);
-        nms = mock(NMS.class);
-        when(nms.fixColors(anyString()))
-                .thenAnswer(args -> args.getArgument(0));
-        when(nms.toBase64(any())).thenReturn("");
-        when(nms.fromBase64(any())).thenReturn(new ItemStack(Material.AIR));
 
         engine = spy(MockBukkit.load(CodexEngine.class));
         doReturn(hookManager).when(engine).getHooksManager();
         doReturn(actionsManager).when(engine).getActionsManager();
-        doReturn(nms).when(engine).getNMS();
         ItemUT.setEngine(engine);
-//        itemUT.when(() -> ItemUT.getEngine())
-//                        .thenReturn(engine);
-//        itemUT.when(() -> ItemUT.fromBase64(anyList()))
-//                .thenReturn(new ItemStack[0]);
-//        itemUT.when(() -> ItemUT.toBase64(any(ItemStack.class)))
-//                        .thenReturn(null);
-//        itemUT.when(() -> ItemUT.toBase64(anyList()))
-//                        .thenReturn(List.of());
-//        itemUT.when(() -> ItemUT.toBase64(any(ItemStack[].class)))
-//                        .thenReturn(List.of());
-//        itemSerializer.when(() -> ItemSerializer.fromBase64(anyString()))
-//                .thenReturn(new ItemStack[0]);
 
         plugin = MockBukkit.load(Fabled.class);
         log.info("Plugin loaded");
@@ -226,7 +203,6 @@ public abstract class MockedTest {
     public void destroy() {
         if (reflex != null) reflex.close();
         if (reflectionManager != null) reflectionManager.close();
-        if (codexEngine != null) codexEngine.close();
         if (board != null) board.close();
         if (damageLoreRemover != null) damageLoreRemover.close();
 //        itemUT.close();
