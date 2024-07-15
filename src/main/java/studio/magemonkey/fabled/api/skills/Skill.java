@@ -822,7 +822,7 @@ public abstract class Skill implements IconHolder {
 
         damage = event.getDamage();
         knockback = event.isKnockback();
-        target.setMetadata(MechanicListener.DAMAGE_CAUSE, new FixedMetadataValue((JavaPlugin) Fabled.inst(), cause));
+        target.setMetadata(MechanicListener.DAMAGE_CAUSE, new FixedMetadataValue(Fabled.inst(), cause));
         if (source instanceof Player) {
             if (PluginChecker.isNoCheatActive()) NoCheatHook.exempt((Player) source);
         }
