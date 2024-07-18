@@ -1,15 +1,5 @@
 package studio.magemonkey.fabled.listener;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.event.PlayerClassChangeEvent;
-import studio.magemonkey.fabled.api.event.PlayerSkillUnlockEvent;
-import studio.magemonkey.fabled.api.player.PlayerData;
-import studio.magemonkey.fabled.api.player.PlayerSkill;
-import studio.magemonkey.fabled.api.skills.Skill;
-import studio.magemonkey.fabled.cast.CastMode;
-import studio.magemonkey.fabled.cast.PlayerTextCastingData;
-import studio.magemonkey.fabled.gui.handlers.SkillHandler;
-import studio.magemonkey.fabled.gui.tool.GUITool;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -23,10 +13,20 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
+import studio.magemonkey.codex.util.InventoryUtil;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.event.PlayerClassChangeEvent;
+import studio.magemonkey.fabled.api.event.PlayerSkillUnlockEvent;
+import studio.magemonkey.fabled.api.player.PlayerData;
+import studio.magemonkey.fabled.api.player.PlayerSkill;
+import studio.magemonkey.fabled.api.skills.Skill;
+import studio.magemonkey.fabled.cast.CastMode;
+import studio.magemonkey.fabled.cast.PlayerTextCastingData;
+import studio.magemonkey.fabled.gui.handlers.SkillHandler;
+import studio.magemonkey.fabled.gui.tool.GUITool;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -117,9 +117,9 @@ public class CastTextListener extends FabledListener {
         Player player = ((Player) event.getWhoClicked());
         if (!isWorldEnabled(player)) return;
 
-        InventoryView view             = event.getView();
-        Inventory     topInventory     = view.getTopInventory();
-        Inventory     clickedInventory = event.getClickedInventory();
+        Inventory topInventory     = InventoryUtil.getTopInventory(event);
+        Inventory bottomInventory  = InventoryUtil.getBottomInventory(event);
+        Inventory clickedInventory = event.getClickedInventory();
 
         if (topInventory.getHolder() instanceof SkillHandler) {
             if (clickedInventory == topInventory && event.getClick() == ClickType.NUMBER_KEY) {
@@ -130,7 +130,7 @@ public class CastTextListener extends FabledListener {
                             .assign(skill.getName(), event.getHotbarButton());
                     refresh(player);
                 }
-            } else if (clickedInventory == view.getBottomInventory()
+            } else if (clickedInventory == bottomInventory
                     && event.getSlotType() == InventoryType.SlotType.QUICKBAR) {
                 Fabled.getData(player).getTextCastingData().assign(null, event.getSlot());
                 refresh(player);

@@ -40,6 +40,7 @@ import org.bukkit.event.player.*;
 import studio.magemonkey.codex.mccore.gui.MapData;
 import studio.magemonkey.codex.mccore.gui.MapMenu;
 import studio.magemonkey.codex.mccore.gui.MapMenuManager;
+import studio.magemonkey.codex.util.InventoryUtil;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.event.*;
 import studio.magemonkey.fabled.api.player.PlayerData;
@@ -252,7 +253,7 @@ public class BarListener extends FabledListener {
 
         // Prevent moving skill icons
         int slot = event.getSlot();
-        if (event.getSlot() < 9 && event.getRawSlot() > event.getView().getTopInventory().getSize()) {
+        if (event.getSlot() < 9 && event.getRawSlot() > InventoryUtil.getTopInventory(event).getSize()) {
             if (event.getClick() == ClickType.LEFT || event.getClick() == ClickType.SHIFT_LEFT)
                 event.setCancelled(!skillBar.isWeaponSlot(slot));
             else if ((event.getClick() == ClickType.RIGHT || event.getClick() == ClickType.SHIFT_RIGHT)

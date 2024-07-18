@@ -26,11 +26,6 @@
  */
 package studio.magemonkey.fabled.listener;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.event.PlayerClassChangeEvent;
-import studio.magemonkey.fabled.api.event.PlayerSkillUnlockEvent;
-import studio.magemonkey.fabled.cast.PlayerCastBars;
-import studio.magemonkey.fabled.gui.tool.GUITool;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -44,6 +39,12 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
+import studio.magemonkey.codex.util.InventoryUtil;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.event.PlayerClassChangeEvent;
+import studio.magemonkey.fabled.api.event.PlayerSkillUnlockEvent;
+import studio.magemonkey.fabled.cast.PlayerCastBars;
+import studio.magemonkey.fabled.gui.tool.GUITool;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -160,7 +161,7 @@ public class CastBarsListener extends FabledListener {
     public void onClick(InventoryClickEvent event) {
         if (Fabled.getSettings().isWorldEnabled(event.getWhoClicked().getWorld())) {
             int slot = Fabled.getSettings().getCastSlot();
-            if ((event.getView().getTopInventory().getHolder() instanceof PlayerCastBars // Organizer menu
+            if ((InventoryUtil.getTopInventory(event).getHolder() instanceof PlayerCastBars // Organizer menu
                     && event.getClickedInventory() instanceof PlayerInventory
                     && event.getSlot() == slot + 27)
                     || (event.getSlot() == slot

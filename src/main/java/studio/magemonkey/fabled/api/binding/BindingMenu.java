@@ -1,14 +1,5 @@
 package studio.magemonkey.fabled.api.binding;
 
-import studio.magemonkey.codex.manager.api.menu.Menu;
-import studio.magemonkey.codex.manager.api.menu.Slot;
-import studio.magemonkey.codex.manager.api.menu.YAMLMenu;
-import studio.magemonkey.codex.mccore.util.TextFormatter;
-import studio.magemonkey.codex.util.StringUT;
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.player.PlayerData;
-import studio.magemonkey.fabled.api.player.PlayerSkill;
-import studio.magemonkey.fabled.listener.BindListener;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -16,10 +7,21 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import studio.magemonkey.codex.manager.api.menu.Menu;
+import studio.magemonkey.codex.manager.api.menu.Slot;
+import studio.magemonkey.codex.manager.api.menu.YAMLMenu;
+import studio.magemonkey.codex.mccore.util.TextFormatter;
+import studio.magemonkey.codex.util.InventoryUtil;
+import studio.magemonkey.codex.util.StringUT;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.player.PlayerData;
+import studio.magemonkey.fabled.api.player.PlayerSkill;
+import studio.magemonkey.fabled.listener.BindListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -164,7 +166,8 @@ public class BindingMenu extends Menu {
         registerListener(new Listener() {
             @EventHandler
             public void onInventoryClick(InventoryClickEvent event) {
-                if (event.getView().getTopInventory().getHolder() != BindingMenu.this) return;
+                Inventory top = InventoryUtil.getTopInventory(event);
+                if (top.getHolder() != BindingMenu.this) return;
                 if (event.getSlotType() == InventoryType.SlotType.QUICKBAR) {
                     event.setCancelled(true);
                 } else switch (event.getClick()) {

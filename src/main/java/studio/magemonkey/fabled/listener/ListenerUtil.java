@@ -26,14 +26,14 @@
  */
 package studio.magemonkey.fabled.listener;
 
-import studio.magemonkey.codex.util.Reflex;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
+import studio.magemonkey.codex.util.InventoryUtil;
+import studio.magemonkey.codex.util.Reflex;
 
 /**
  * Helper class for listeners
@@ -60,14 +60,14 @@ public class ListenerUtil {
     }
 
     public static Inventory getClickedInventory(InventoryClickEvent event) {
-        int           slot = event.getRawSlot();
-        InventoryView view = event.getView();
+        int       slot = event.getRawSlot();
+        Inventory top  = InventoryUtil.getTopInventory(event);
         if (slot < 0) {
             return null;
-        } else if ((view.getTopInventory() != null) && (slot < view.getTopInventory().getSize())) {
-            return view.getTopInventory();
+        } else if ((top != null) && (slot < top.getSize())) {
+            return top;
         } else {
-            return view.getBottomInventory();
+            return InventoryUtil.getBottomInventory(event);
         }
     }
 
