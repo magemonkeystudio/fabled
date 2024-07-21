@@ -1,6 +1,7 @@
 package studio.magemonkey.fabled.listener;
 
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
+import org.junit.jupiter.api.Disabled;
 import studio.magemonkey.fabled.testutil.MockedTest;
 import org.bukkit.Location;
 import org.bukkit.entity.Sheep;

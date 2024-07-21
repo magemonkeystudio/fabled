@@ -6,6 +6,7 @@ import org.bukkit.damage.DamageType;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import studio.magemonkey.fabled.testutil.MockedTest;
 

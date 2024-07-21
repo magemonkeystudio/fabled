@@ -1,12 +1,13 @@
 package studio.magemonkey.fabled.dynamic.condition;
 
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
-import studio.magemonkey.fabled.testutil.MockedTest;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
+import studio.magemonkey.fabled.testutil.MockedTest;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

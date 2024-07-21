@@ -1,5 +1,6 @@
 package studio.magemonkey.fabled.dataload;
 
+import org.junit.jupiter.api.Disabled;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.testutil.MockedTest;
 import org.junit.jupiter.api.Test;

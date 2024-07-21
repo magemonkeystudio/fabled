@@ -1,6 +1,7 @@
 package studio.magemonkey.fabled.hook;
 
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
+import org.junit.jupiter.api.Disabled;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.testutil.MockedTest;
 import me.clip.placeholderapi.PlaceholderAPI;

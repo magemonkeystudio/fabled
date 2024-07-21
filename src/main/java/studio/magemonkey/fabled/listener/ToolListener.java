@@ -26,14 +26,15 @@
  */
 package studio.magemonkey.fabled.listener;
 
-import studio.magemonkey.fabled.gui.tool.GUIHolder;
-import studio.magemonkey.fabled.gui.tool.ToolMenu;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.Inventory;
+import studio.magemonkey.codex.util.InventoryUtil;
+import studio.magemonkey.fabled.gui.tool.GUIHolder;
+import studio.magemonkey.fabled.gui.tool.ToolMenu;
 
 public class ToolListener extends FabledListener {
     @EventHandler
@@ -66,12 +67,10 @@ public class ToolListener extends FabledListener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        InventoryView view = event.getPlayer().getOpenInventory();
-        if (view != null
-                && view.getTopInventory() != null
-                && view.getTopInventory().getHolder() instanceof ToolMenu) {
+        Inventory top = InventoryUtil.getTopInventory(event.getPlayer().getOpenInventory());
+        if (top != null && top.getHolder() instanceof ToolMenu) {
             event.getPlayer().setItemOnCursor(null);
-            ((ToolMenu) view.getTopInventory().getHolder()).restore();
+            ((ToolMenu) top.getHolder()).restore();
         }
     }
 }

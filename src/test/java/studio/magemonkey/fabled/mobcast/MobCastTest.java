@@ -1,5 +1,6 @@
 package studio.magemonkey.fabled.mobcast;
 
+import org.junit.jupiter.api.Disabled;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.skills.SkillShot;
 import studio.magemonkey.fabled.testutil.MockedTest;

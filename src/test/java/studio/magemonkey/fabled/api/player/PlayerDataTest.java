@@ -4,6 +4,7 @@ import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.enums.Operation;

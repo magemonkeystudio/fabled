@@ -3,6 +3,7 @@ package studio.magemonkey.fabled.util;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import studio.magemonkey.fabled.testutil.MockedTest;
 
