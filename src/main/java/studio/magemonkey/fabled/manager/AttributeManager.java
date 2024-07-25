@@ -90,7 +90,7 @@ public class AttributeManager implements IAttributeManager {
     }
 
     public List<FabledAttribute> forStat(final String key) {
-        return byStat.get(key.toLowerCase());
+        return byStat.get(key);
     }
 
     public List<FabledAttribute> forComponent(final EffectComponent component, final String key) {
