@@ -1,9 +1,9 @@
 import { derived, get, type Readable, writable, type Writable }         from 'svelte/store';
 import { Attribute }                                                    from './stat';
 import type { AttributeYamlData, Icon, ProAttributeData, Serializable } from './types';
-import { conditions, mechanics, type RegistryData, targets }            from './components/registry';
-import type ProComponent                                                from './components/procomponent';
-import AttributeSelect                                                  from './options/attributeselect';
+import { conditions, mechanics, type RegistryData, targets } from './components/registry';
+import type FabledComponent                                  from './components/fabled-component';
+import AttributeSelect                                       from './options/attributeselect';
 import type { ComponentOption }                                         from '$api/options/options';
 import { attributeStore }                                               from '../data/attribute-store';
 
@@ -151,12 +151,12 @@ export class AttributeComponent {
 	section: AttributeSection;
 	public name: Writable<string>                        = writable('');
 	registry: Readable<RegistryData>;
-	public component: Readable<ProComponent | undefined> = derived(this.name, (name: string): ProComponent | undefined => {
-		const newComponent: ProComponent | undefined = Object.values(get(this.registry)).find(entry => entry.name === name)?.component.new();
+	public component: Readable<FabledComponent | undefined> = derived(this.name, (name: string): FabledComponent | undefined => {
+		const newComponent: FabledComponent | undefined = Object.values(get(this.registry)).find(entry => entry.name === name)?.component.new();
 		if (newComponent) this.stats.set(get(this.stats).filter(stat => newComponent.data.some(option => option.key === get(stat.key))));
 		return newComponent;
 	});
-	public stats: Writable<AttributeStat[]>              = writable([]);
+	public stats: Writable<AttributeStat[]>                 = writable([]);
 	public availableStats: Readable<string[]>            = derived([this.component, this.stats], ([component, stats]) => {
 		if (component) {
 			return component.data.filter(option => option instanceof AttributeSelect && !stats.some(stat => get(stat.key) === option.key)).map(option => option.key);

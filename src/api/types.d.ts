@@ -1,12 +1,12 @@
-import { Attribute }                              from './stat';
-import ProTrigger                                 from './components/triggers';
-import ProComponent                               from '$api/components/procomponent';
-import ComponentOption                            from './options/options';
+import { Attribute }   from './stat';
+import FabledTrigger   from './components/triggers';
+import FabledComponent from '$api/components/fabled-component';
+import ComponentOption from './options/options';
 import type { AttributeComponent, AttributeStat } from './fabled-attribute';
 import type FabledClass                           from '../data/class-store';
 import type FabledSkill                           from '../data/skill-store';
 
-export interface ProClassData {
+export interface FabledClassData {
 	name: string;
 	location?: 'local' | 'server';
 	prefix?: string;
@@ -41,7 +41,7 @@ export interface ProClassData {
 	fWhitelist?: string[];
 }
 
-export interface ProSkillData {
+export interface FabledSkillData {
 	name: string;
 	location?: 'local' | 'server';
 	type?: string;
@@ -62,7 +62,7 @@ export interface ProSkillData {
 	icon?: Icon;
 	incompatible?: FabledSkill[];
 
-	triggers?: ProTrigger[];
+	triggers?: FabledTrigger[];
 }
 
 export interface ProAttributeData {
@@ -88,7 +88,7 @@ export interface ComponentData {
 	name: string;
 	data?: ComponentOption[];
 	preview?: ComponentOption[];
-	components?: ProComponent[];
+	components?: FabledComponent[];
 	summaryItems?: string[];
 	description?: string;
 	comment?: string;

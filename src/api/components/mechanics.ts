@@ -1,9 +1,9 @@
-import ProComponent                                   from './procomponent';
-import type { ComponentOption }                       from '../options/options';
+import FabledComponent          from './fabled-component';
+import type { ComponentOption } from '../options/options';
 import type { ComponentData, Unknown, YamlComponent } from '$api/types';
 import Registry                                       from '$api/components/registry';
 
-export default class ProMechanic extends ProComponent {
+export default class FabledMechanic extends FabledComponent {
 	iconKey      = '';
 	countsAsCast = true;
 

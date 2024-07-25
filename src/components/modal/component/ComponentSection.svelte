@@ -1,11 +1,11 @@
 <script lang='ts'>
 	import { squash }             from '../../../data/squish';
 	import type { RegistryEntry } from '$api/components/registry';
-	import type ProComponent      from '$api/components/procomponent';
+	import type FabledComponent   from '$api/components/fabled-component';
 
 	export let sectionName                 = '';
 	export let components: RegistryEntry[] = [];
-	export let addComponent: (comp: { new: () => { defaultOpen: () => ProComponent } }) => void;
+	export let addComponent: (comp: { new: () => { defaultOpen: () => FabledComponent } }) => void;
 
 	let expanded = true;
 </script>

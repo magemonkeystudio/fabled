@@ -1,19 +1,21 @@
-import type { Writable }                                                            from 'svelte/store';
-import { get, writable }                                                            from 'svelte/store';
-import { active }                                                                   from './store';
-import { parseBool, sort, toEditorCase, toProperCase }                              from '$api/api';
-import { parseYaml }                                                                from '$api/yaml';
-import { browser }                                                                  from '$app/environment';
-import { goto }                                                                     from '$app/navigation';
-import { base }                                                                     from '$app/paths';
-import type { ClassYamlData, Icon, MultiClassYamlData, ProClassData, Serializable } from '$api/types';
-import YAML                                                                         from 'yaml';
-import { socketService }                                                            from '$api/socket/socket-connector';
-import { notify }                                                                   from '$api/notification-service';
-import { Attribute }                                                                from '$api/stat';
-import type { SkillTree }                                                           from '$api/SkillTree';
-import FabledSkill, { skillStore }                                                  from './skill-store';
-import { FabledFolder, folderStore }                                                from './folder-store';
+import type { Writable }                                                               from 'svelte/store';
+import { get, writable }                                                               from 'svelte/store';
+import { active }                                                                      from './store';
+import { parseBool, sort, toEditorCase, toProperCase }                                 from '$api/api';
+import { parseYaml }                                                                   from '$api/yaml';
+import { browser }                                                                     from '$app/environment';
+import { goto }                                                                        from '$app/navigation';
+import { base }                                                                        from '$app/paths';
+import type { ClassYamlData, FabledClassData, Icon, MultiClassYamlData, Serializable } from '$api/types';
+import YAML                                                                            from 'yaml';
+import {
+	socketService
+}                                                                                      from '$api/socket/socket-connector';
+import { notify }                                                                      from '$api/notification-service';
+import { Attribute }                                                                   from '$api/stat';
+import type { SkillTree }                                                              from '$api/SkillTree';
+import FabledSkill, { skillStore }                                                     from './skill-store';
+import { FabledFolder, folderStore }                                                   from './folder-store';
 
 export default class FabledClass implements Serializable {
 	dataType                     = 'class';
@@ -72,7 +74,7 @@ export default class FabledClass implements Serializable {
 	qWhitelist: string[]  = [];
 	fWhitelist: string[]  = [];
 
-	constructor(data?: ProClassData) {
+	constructor(data?: FabledClassData) {
 		this.name   = data?.name || 'Class';
 		this.prefix = data?.prefix || '&6' + this.name;
 		if (!data) return;
@@ -178,9 +180,9 @@ export default class FabledClass implements Serializable {
 
 	public load = (yaml: ClassYamlData) => {
 		if (yaml.name) this.name = yaml.name;
-		if (yaml['action-bar']) this.actionBar = yaml['action-bar'];
-		if (yaml.mana) this.manaName = yaml.mana;
-		if (yaml.prefix) this.prefix = yaml.prefix;
+		if (yaml['action-bar'] !== undefined) this.actionBar = yaml['action-bar'];
+		if (yaml.mana !== undefined) this.manaName = yaml.mana;
+		if (yaml.prefix !== undefined) this.prefix = yaml.prefix;
 		if (yaml.group) this.group = yaml.group;
 		if (yaml['max-level']) this.maxLevel = yaml['max-level'];
 		if (yaml.parent) this.parentStr = yaml.parent;
@@ -212,7 +214,7 @@ export default class FabledClass implements Serializable {
 		if (yaml.icon) this.icon.material = toEditorCase(yaml.icon);
 		if (yaml['icon-data']) this.icon.customModelData = yaml['icon-data'];
 		if (yaml['icon-lore']) this.icon.lore = yaml['icon-lore'];
-		if (yaml['exp-source']) this.expSources = yaml['exp-source'];
+		if (yaml['exp-source'] !== null) this.expSources = yaml['exp-source'];
 
 		if (yaml['combo-starters']) {
 			// Combo starters

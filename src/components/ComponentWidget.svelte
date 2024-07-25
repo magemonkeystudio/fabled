@@ -1,11 +1,11 @@
 <!--suppress CssUnresolvedCustomProperty -->
 <script lang='ts'>
-	import type ProComponent                             from '$api/components/procomponent';
-	import ProTrigger                                    from '$api/components/triggers';
-	import ProCondition                                  from '$api/components/conditions';
-	import ProTarget                                     from '$api/components/targets';
-	import ProMechanic                                   from '$api/components/mechanics';
-	import { slide }                                     from 'svelte/transition';
+	import type FabledComponent from '$api/components/fabled-component';
+	import FabledTrigger   from '$api/components/triggers';
+	import FabledCondition from '$api/components/conditions';
+	import FabledTarget    from '$api/components/targets';
+	import FabledMechanic  from '$api/components/mechanics';
+	import { slide }      from 'svelte/transition';
 	import { backOut }                                   from 'svelte/easing';
 	import { draggingComponent }                         from '../data/store';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
@@ -22,10 +22,10 @@
 	import FabledSkill, { skillStore }                   from '../data/skill-store';
 
 	export let skill: FabledSkill;
-	export let component: ProComponent;
+	export let component: FabledComponent;
 	let wrapper: HTMLElement;
 	let children: HTMLElement;
-	let childrenList: ProComponent[] = [];
+	let childrenList: FabledComponent[] = [];
 
 	const skills = skillStore.skills;
 
@@ -46,7 +46,7 @@
 
 	onMount(() => {
 		childCompsSub = component.components
-			.subscribe((comps: ProComponent[]) => childrenList = comps);
+			.subscribe((comps: FabledComponent[]) => childrenList = comps);
 
 		if (component._defaultOpen) {
 			openCompModal();
@@ -60,24 +60,24 @@
 
 	const getName = (symbols = false) => {
 		if (symbols) {
-			if (component instanceof ProTrigger) {
+			if (component instanceof FabledTrigger) {
 				return '🚩';
-			} else if (component instanceof ProCondition) {
+			} else if (component instanceof FabledCondition) {
 				return '⚠';
-			} else if (component instanceof ProTarget) {
+			} else if (component instanceof FabledTarget) {
 				return '🎯';
-			} else if (component instanceof ProMechanic) {
+			} else if (component instanceof FabledMechanic) {
 				return '🔧';
 			}
 		}
 
-		if (component instanceof ProTrigger) {
+		if (component instanceof FabledTrigger) {
 			return 'Trigger';
-		} else if (component instanceof ProCondition) {
+		} else if (component instanceof FabledCondition) {
 			return 'Condition';
-		} else if (component instanceof ProTarget) {
+		} else if (component instanceof FabledTarget) {
 			return 'Target';
-		} else if (component instanceof ProMechanic) {
+		} else if (component instanceof FabledMechanic) {
 			return 'Mechanic';
 		}
 
@@ -85,13 +85,13 @@
 	};
 
 	const getColor = () => {
-		if (component instanceof ProTrigger) {
+		if (component instanceof FabledTrigger) {
 			return '#0083ef';
-		} else if (component instanceof ProCondition) {
+		} else if (component instanceof FabledCondition) {
 			return '#feac00';
-		} else if (component instanceof ProTarget) {
+		} else if (component instanceof FabledTarget) {
 			return '#04af38';
-		} else if (component instanceof ProMechanic) {
+		} else if (component instanceof FabledMechanic) {
 			return '#ff3a3a';
 		}
 
@@ -112,7 +112,7 @@
 	const move = (e: DragEvent) => {
 		if (component == get(draggingComponent)) return;
 		over = true;
-		if (component instanceof ProTrigger) return;
+		if (component instanceof FabledTrigger) return;
 		const rect = wrapper.getBoundingClientRect();
 
 		top    = e.clientY < (rect.height / 2) + rect.top;
@@ -138,7 +138,7 @@
 		clearStatus();
 	};
 
-	const addSkill = (e: { detail: { comp: ProComponent, relativeTo: ProComponent, above: ProComponent } }) => {
+	const addSkill = (e: { detail: { comp: FabledComponent, relativeTo: FabledComponent, above: FabledComponent } }) => {
 		let comp       = e.detail.comp;
 		let relativeTo = e.detail.relativeTo;
 		let above      = e.detail.above;
@@ -152,7 +152,7 @@
 	const clone = () => {
 		const yamlData: YamlComponentData  = {};
 		yamlData[`${component.name}-copy`] = component.toYamlObj();
-		const cloned: ProComponent[]       = Registry.deserializeComponents(yamlData);
+		const cloned: FabledComponent[] = Registry.deserializeComponents(yamlData);
 
 		if (component.parent) {
 			cloned.forEach(c => component.parent?.addComponent(c));

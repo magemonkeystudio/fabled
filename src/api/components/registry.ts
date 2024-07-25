@@ -1,16 +1,16 @@
 import type { Readable, Writable } from 'svelte/store';
-import { derived, get, writable }  from 'svelte/store';
-import type ProComponent           from '$api/components/procomponent';
-import type ProTrigger             from '$api/components/triggers';
-import type ProTarget              from '$api/components/targets';
-import type ProCondition           from '$api/components/conditions';
-import type ProMechanic            from '$api/components/mechanics';
-import type { YamlComponentData }  from '$api/types';
+import { derived, get, writable } from 'svelte/store';
+import type FabledComponent from '$api/components/fabled-component';
+import type FabledTrigger   from '$api/components/triggers';
+import type FabledTarget    from '$api/components/targets';
+import type FabledCondition from '$api/components/conditions';
+import type FabledMechanic        from '$api/components/mechanics';
+import type { YamlComponentData } from '$api/types';
 
 export type RegistryEntry = {
 	name: string,
 	alias?: string,
-	component: typeof ProComponent,
+	component: typeof FabledComponent,
 	section?: string
 };
 export type RegistryData = {
@@ -85,57 +85,57 @@ export const mechanicSections = derived(filteredMechanics, (mechanics) => {
 });
 
 export default class Registry {
-	public static getTriggerByName = (name: string): typeof ProTrigger | undefined => {
+	public static getTriggerByName = (name: string): typeof FabledTrigger | undefined => {
 		const val = Object.values(get(triggers))
 			.find(trig => trig.name.toLowerCase() === name.toLowerCase() || trig.alias?.toLowerCase() === name.toLowerCase())?.component;
-		return <typeof ProTrigger><unknown>val;
+		return <typeof FabledTrigger><unknown>val;
 	};
 
-	public static getTargetByName = (name: string): typeof ProTarget | undefined => {
+	public static getTargetByName = (name: string): typeof FabledTarget | undefined => {
 		const val = Object.values(get(targets))
 			.find(target => target.name.toLowerCase() === name.toLowerCase() || target.alias?.toLowerCase() === name.toLowerCase())?.component;
-		return <typeof ProTarget><unknown>val;
+		return <typeof FabledTarget><unknown>val;
 	};
 
-	public static getConditionByName = (name: string): typeof ProCondition | undefined => {
+	public static getConditionByName = (name: string): typeof FabledCondition | undefined => {
 		const val = Object.values(get(conditions))
 			.find(condition => condition.name.toLowerCase() === name.toLowerCase() || condition.alias?.toLowerCase() === name.toLowerCase())?.component;
-		return <typeof ProCondition><unknown>val;
+		return <typeof FabledCondition><unknown>val;
 	};
 
-	public static getMechanicByName = (name: string): typeof ProMechanic | undefined => {
+	public static getMechanicByName = (name: string): typeof FabledMechanic | undefined => {
 		const val = Object.values(get(mechanics))
 			.find(mechanic => mechanic.name.toLowerCase() === name.toLowerCase() || mechanic.alias?.toLowerCase() === name.toLowerCase())?.component;
-		return <typeof ProMechanic><unknown>val;
+		return <typeof FabledMechanic><unknown>val;
 	};
 
-	public static deserializeComponents = (yaml: YamlComponentData): ProComponent[] => {
+	public static deserializeComponents = (yaml: YamlComponentData): FabledComponent[] => {
 		if (!yaml) return [];
-		const comps: ProComponent[] = [];
+		const comps: FabledComponent[] = [];
 
 		const keys: string[] = Object.keys(yaml);
 		for (const key of keys) {
-			let comp: ProComponent | undefined = undefined;
-			const data                         = yaml[key];
-			const type                         = data.type;
+			let comp: FabledComponent | undefined = undefined;
+			const data                            = yaml[key];
+			const type                            = data.type;
 
 			if (type === 'trigger') {
-				const trigger: typeof ProTrigger | undefined = Registry.getTriggerByName(key.split('-')[0]);
+				const trigger: typeof FabledTrigger | undefined = Registry.getTriggerByName(key.split('-')[0]);
 				if (trigger) {
 					comp = trigger.new();
 				}
 			} else if (type === 'target') {
-				const target: typeof ProTarget | undefined = Registry.getTargetByName(key.split('-')[0]);
+				const target: typeof FabledTarget | undefined = Registry.getTargetByName(key.split('-')[0]);
 				if (target) {
 					comp = target.new();
 				}
 			} else if (type === 'condition') {
-				const condition: typeof ProCondition | undefined = Registry.getConditionByName(key.split('-')[0]);
+				const condition: typeof FabledCondition | undefined = Registry.getConditionByName(key.split('-')[0]);
 				if (condition) {
 					comp = condition.new();
 				}
 			} else if (type === 'mechanic') {
-				const mechanic: typeof ProMechanic | undefined = Registry.getMechanicByName(key.split('-')[0]);
+				const mechanic: typeof FabledMechanic | undefined = Registry.getMechanicByName(key.split('-')[0]);
 				if (mechanic) {
 					comp = mechanic.new();
 				}

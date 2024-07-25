@@ -1,9 +1,9 @@
-import ProMechanic                                               from '$api/components/mechanics';
+import FabledMechanic                                            from '$api/components/mechanics';
 import BlockSelect                                               from '$api/options/blockselect';
-import ProCondition                                              from '$api/components/conditions';
+import FabledCondition                                              from '$api/components/conditions';
 import DropdownSelect                                            from '$api/options/dropdownselect';
-import ProTrigger                                                from '$api/components/triggers';
-import ProTarget                                                 from '$api/components/targets';
+import FabledTrigger                                                from '$api/components/triggers';
+import FabledTarget                                                 from '$api/components/targets';
 import MaterialSelect                                            from '$api/options/materialselect';
 import {
 	getAnyConsumable,
@@ -40,14 +40,14 @@ import ClassSelect                                               from '$api/opti
 import SkillSelect                                               from '$api/options/skillselect';
 import IntSelect                                                 from '$api/options/intselect';
 import ColorSelect                                               from '$api/options/colorselect';
-import { get }                                                   from 'svelte/store';
-import type ProComponent                                         from '$api/components/procomponent';
-import EnchantSelect                                             from '$api/options/enchantselect';
+import { get }              from 'svelte/store';
+import type FabledComponent from '$api/components/fabled-component';
+import EnchantSelect        from '$api/options/enchantselect';
 import { attributeStore }                                        from '../../data/attribute-store';
 
 // TRIGGERS
 
-class ArmorEquipTrigger extends ProTrigger {
+class ArmorEquipTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Armor Equip',
@@ -61,7 +61,7 @@ class ArmorEquipTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class AttributeChangeTrigger extends ProTrigger {
+class AttributeChangeTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Attribute Change',
@@ -76,7 +76,7 @@ class AttributeChangeTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class BlockBreakTrigger extends ProTrigger {
+class BlockBreakTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Block Break',
@@ -92,7 +92,7 @@ class BlockBreakTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class BlockPlaceTrigger extends ProTrigger {
+class BlockPlaceTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Block Place',
@@ -108,7 +108,7 @@ class BlockPlaceTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class CastTrigger extends ProTrigger {
+class CastTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Cast',
@@ -119,7 +119,7 @@ class CastTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class ChatTrigger extends ProTrigger {
+class ChatTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Chat',
@@ -139,7 +139,7 @@ class ChatTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class CleanupTrigger extends ProTrigger {
+class CleanupTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Cleanup',
@@ -150,7 +150,7 @@ class CleanupTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class ConsumeTrigger extends ProTrigger {
+class ConsumeTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Consume',
@@ -167,7 +167,7 @@ class ConsumeTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class CrouchTrigger extends ProTrigger {
+class CrouchTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Crouch',
@@ -182,7 +182,7 @@ class CrouchTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class DeathTrigger extends ProTrigger {
+class DeathTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Death',
@@ -193,7 +193,7 @@ class DeathTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class DropItemTrigger extends ProTrigger {
+class DropItemTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Drop Item',
@@ -209,7 +209,7 @@ class DropItemTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class EntityTargetTrigger extends ProTrigger {
+class EntityTargetTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Entity Target',
@@ -229,7 +229,7 @@ class EntityTargetTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class EnvironmentDamageTrigger extends ProTrigger {
+class EnvironmentDamageTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Environment Damage',
@@ -245,7 +245,7 @@ class EnvironmentDamageTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class FishingTrigger extends ProTrigger {
+class FishingTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Fishing',
@@ -256,7 +256,7 @@ class FishingTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class FishingBiteTrigger extends ProTrigger {
+class FishingBiteTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Fishing Bite',
@@ -267,7 +267,7 @@ class FishingBiteTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class FishingFailTrigger extends ProTrigger {
+class FishingFailTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Fishing Fail',
@@ -278,7 +278,7 @@ class FishingFailTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class FishingGrabTrigger extends ProTrigger {
+class FishingGrabTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Fishing Grab',
@@ -289,7 +289,7 @@ class FishingGrabTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class FishingGroundTrigger extends ProTrigger {
+class FishingGroundTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Fishing Ground',
@@ -300,7 +300,7 @@ class FishingGroundTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class FishingReelTrigger extends ProTrigger {
+class FishingReelTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Fishing Reel',
@@ -311,7 +311,7 @@ class FishingReelTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class HealTrigger extends ProTrigger {
+class HealTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Heal',
@@ -329,7 +329,7 @@ class HealTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class InitializeTrigger extends ProTrigger {
+class InitializeTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Initialize',
@@ -340,7 +340,7 @@ class InitializeTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class ItemSwapTrigger extends ProTrigger {
+class ItemSwapTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Item Swap',
@@ -356,7 +356,7 @@ class ItemSwapTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class KillTrigger extends ProTrigger {
+class KillTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Kill',
@@ -372,7 +372,7 @@ class KillTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class LandTrigger extends ProTrigger {
+class LandTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Land',
@@ -386,7 +386,7 @@ class LandTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class LaunchTrigger extends ProTrigger {
+class LaunchTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Launch',
@@ -400,7 +400,7 @@ class LaunchTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class LeftClickTrigger extends ProTrigger {
+class LeftClickTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Left Click',
@@ -414,7 +414,7 @@ class LeftClickTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class MoveTrigger extends ProTrigger {
+class MoveTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Move',
@@ -425,7 +425,7 @@ class MoveTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class PhysicalDamageTrigger extends ProTrigger {
+class PhysicalDamageTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Physical Damage',
@@ -447,7 +447,7 @@ class PhysicalDamageTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class ProjectileHitTrigger extends ProTrigger {
+class ProjectileHitTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Projectile Hit',
@@ -467,7 +467,7 @@ class ProjectileHitTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class ProjectileTickTrigger extends ProTrigger {
+class ProjectileTickTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Projectile Tick',
@@ -489,7 +489,7 @@ class ProjectileTickTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class RightClickTrigger extends ProTrigger {
+class RightClickTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Right Click',
@@ -505,7 +505,7 @@ class RightClickTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class SkillCastTrigger extends ProTrigger {
+class SkillCastTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Skill Cast',
@@ -525,7 +525,7 @@ class SkillCastTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class SkillDamageTrigger extends ProTrigger {
+class SkillDamageTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Skill Damage',
@@ -547,7 +547,7 @@ class SkillDamageTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class TookPhysicalTrigger extends ProTrigger {
+class TookPhysicalTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Took Physical Damage',
@@ -569,7 +569,7 @@ class TookPhysicalTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class TookSkillTrigger extends ProTrigger {
+class TookSkillTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Took Skill Damage',
@@ -591,7 +591,7 @@ class TookSkillTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class ShieldTrigger extends ProTrigger {
+class ShieldTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Shield',
@@ -613,7 +613,7 @@ class ShieldTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class SignalTrigger extends ProTrigger {
+class SignalTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Signal',
@@ -631,7 +631,7 @@ class SignalTrigger extends ProTrigger {
 	public static override new = () => new this();
 }
 
-class WorldChangeTrigger extends ProTrigger {
+class WorldChangeTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'World Change',
@@ -691,7 +691,7 @@ const particlesAtTargetPreviewOptions = (): ComponentOption[] => {
 	];
 };
 
-class AreaTarget extends ProTarget {
+class AreaTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Area',
@@ -727,7 +727,7 @@ class AreaTarget extends ProTarget {
 	public static override new = () => new this();
 }
 
-class ConeTarget extends ProTarget {
+class ConeTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Cone',
@@ -773,7 +773,7 @@ class ConeTarget extends ProTarget {
 	public static override new = () => new this();
 }
 
-class LinearTarget extends ProTarget {
+class LinearTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Linear',
@@ -815,7 +815,7 @@ class LinearTarget extends ProTarget {
 	public static override new = () => new this();
 }
 
-class LocationTarget extends ProTarget {
+class LocationTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Location',
@@ -842,7 +842,7 @@ class LocationTarget extends ProTarget {
 	public static override new = () => new this();
 }
 
-class NearestTarget extends ProTarget {
+class NearestTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Nearest',
@@ -876,7 +876,7 @@ class NearestTarget extends ProTarget {
 	public static override new = () => new this();
 }
 
-class OffsetTarget extends ProTarget {
+class OffsetTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Offset',
@@ -900,7 +900,7 @@ class OffsetTarget extends ProTarget {
 	public static override new = () => new this();
 }
 
-class RememberTarget extends ProTarget {
+class RememberTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Remember',
@@ -919,7 +919,7 @@ class RememberTarget extends ProTarget {
 	public static override new = () => new this();
 }
 
-class SelfTarget extends ProTarget {
+class SelfTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:        'Self',
@@ -930,7 +930,7 @@ class SelfTarget extends ProTarget {
 	public static override new = () => new this();
 }
 
-class SingleTarget extends ProTarget {
+class SingleTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Single',
@@ -975,7 +975,7 @@ class SingleTarget extends ProTarget {
 	public static override new = () => new this();
 }
 
-class WorldTarget extends ProTarget {
+class WorldTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'World',
@@ -1032,7 +1032,7 @@ const itemConditionOptions = (matOption: ComponentOption = new MaterialSelect(fa
 	return data;
 };
 
-class AltitudeCondition extends ProCondition {
+class AltitudeCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Altitude',
@@ -1050,7 +1050,7 @@ class AltitudeCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class ArmorCondition extends ProCondition {
+class ArmorCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Armor',
@@ -1067,7 +1067,7 @@ class ArmorCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class AttributeCondition extends ProCondition {
+class AttributeCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Attribute',
@@ -1087,7 +1087,7 @@ class AttributeCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class BiomeCondition extends ProCondition {
+class BiomeCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Biome',
@@ -1106,7 +1106,7 @@ class BiomeCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class BlockCondition extends ProCondition {
+class BlockCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Block',
@@ -1125,7 +1125,7 @@ class BlockCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class BurningCondition extends ProCondition {
+class BurningCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Burning',
@@ -1141,7 +1141,7 @@ class BurningCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class CeilingCondition extends ProCondition {
+class CeilingCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Ceiling',
@@ -1159,7 +1159,7 @@ class CeilingCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class ChanceCondition extends ProCondition {
+class ChanceCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Chance',
@@ -1175,7 +1175,7 @@ class ChanceCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class ClassCondition extends ProCondition {
+class ClassCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Class',
@@ -1193,7 +1193,7 @@ class ClassCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class ClassLevelCondition extends ProCondition {
+class ClassLevelCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Class Level',
@@ -1211,7 +1211,7 @@ class ClassLevelCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class CombatCondition extends ProCondition {
+class CombatCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Combat',
@@ -1229,7 +1229,7 @@ class CombatCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class CrouchCondition extends ProCondition {
+class CrouchCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Crouch',
@@ -1245,7 +1245,7 @@ class CrouchCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class DirectionCondition extends ProCondition {
+class DirectionCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Direction',
@@ -1263,7 +1263,7 @@ class DirectionCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class DistanceCondition extends ProCondition {
+class DistanceCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Distance',
@@ -1281,7 +1281,7 @@ class DistanceCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class ElevationCondition extends ProCondition {
+class ElevationCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Elevation',
@@ -1301,7 +1301,7 @@ class ElevationCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class ElseCondition extends ProCondition {
+class ElseCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:        'Else',
@@ -1312,7 +1312,7 @@ class ElseCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class EntityTypeCondition extends ProCondition {
+class EntityTypeCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Entity Type',
@@ -1330,7 +1330,7 @@ class EntityTypeCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class FireCondition extends ProCondition {
+class FireCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Fire',
@@ -1346,7 +1346,7 @@ class FireCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class FlagCondition extends ProCondition {
+class FlagCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Flag',
@@ -1364,7 +1364,7 @@ class FlagCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class FoodCondition extends ProCondition {
+class FoodCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Food',
@@ -1384,7 +1384,7 @@ class FoodCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class GroundCondition extends ProCondition {
+class GroundCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Ground',
@@ -1400,7 +1400,7 @@ class GroundCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class HealthCondition extends ProCondition {
+class HealthCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Health',
@@ -1420,7 +1420,7 @@ class HealthCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class ItemCondition extends ProCondition {
+class ItemCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Item',
@@ -1433,7 +1433,7 @@ class ItemCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class InventoryCondition extends ProCondition {
+class InventoryCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Inventory',
@@ -1450,7 +1450,7 @@ class InventoryCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class LightCondition extends ProCondition {
+class LightCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Light',
@@ -1468,7 +1468,7 @@ class LightCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class ManaCondition extends ProCondition {
+class ManaCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Mana',
@@ -1488,7 +1488,7 @@ class ManaCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class MoneyCondition extends ProCondition {
+class MoneyCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Money',
@@ -1510,7 +1510,7 @@ class MoneyCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class MountedCondition extends ProCondition {
+class MountedCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Mounted',
@@ -1526,7 +1526,7 @@ class MountedCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class MountingCondition extends ProCondition {
+class MountingCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Mounting',
@@ -1542,7 +1542,7 @@ class MountingCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class MythicMobTypeCondition extends ProCondition {
+class MythicMobTypeCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'MythicMob Type',
@@ -1558,7 +1558,7 @@ class MythicMobTypeCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class NameCondition extends ProCondition {
+class NameCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Name',
@@ -1578,7 +1578,7 @@ class NameCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class OffhandCondition extends ProCondition {
+class OffhandCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Offhand',
@@ -1591,7 +1591,7 @@ class OffhandCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class PermissionCondition extends ProCondition {
+class PermissionCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Permission',
@@ -1607,7 +1607,7 @@ class PermissionCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class PotionCondition extends ProCondition {
+class PotionCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Potion',
@@ -1629,7 +1629,7 @@ class PotionCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class SkillLevelCondition extends ProCondition {
+class SkillLevelCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Skill Level',
@@ -1649,7 +1649,7 @@ class SkillLevelCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class SlotCondition extends ProCondition {
+class SlotCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Slot',
@@ -1666,7 +1666,7 @@ class SlotCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class StatusCondition extends ProCondition {
+class StatusCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Status',
@@ -1695,7 +1695,7 @@ class StatusCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class TimeCondition extends ProCondition {
+class TimeCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Time',
@@ -1711,7 +1711,7 @@ class TimeCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class ToolCondition extends ProCondition {
+class ToolCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Tool',
@@ -1735,7 +1735,7 @@ class ToolCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class ValueCondition extends ProCondition {
+class ValueCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Value',
@@ -1755,7 +1755,7 @@ class ValueCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class ValueTextCondition extends ProCondition {
+class ValueTextCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:        'Value Text',
@@ -1774,7 +1774,7 @@ class ValueTextCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class WaterCondition extends ProCondition {
+class WaterCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Water',
@@ -1790,7 +1790,7 @@ class WaterCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class WeatherCondition extends ProCondition {
+class WeatherCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Weather',
@@ -1806,7 +1806,7 @@ class WeatherCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class WorldCondition extends ProCondition {
+class WorldCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'World',
@@ -1824,7 +1824,7 @@ class WorldCondition extends ProCondition {
 	public static override new = () => new this();
 }
 
-class YawCondition extends ProCondition {
+class YawCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Yaw',
@@ -1925,33 +1925,34 @@ const warpOptions = (): ComponentOption[] => {
 const particleOptions = (): ComponentOption[] => {
 	return [
 		new SectionMarker('Particle Options'),
-		new DropdownSelect('Particle', 'particle', getParticles, 'Villager happy')
+		new DropdownSelect('Particle', 'particle', getParticles, getParticles()[0])
 			.setTooltip('The type of particle to display'),
 
 		new DropdownSelect('Material', 'material', (() => [...getMaterials()]), 'Arrow')
-			.requireValue('particle', ['Item crack'])
+			.requireValue('particle', ['Item crack', 'Item'])
 			.setTooltip('The material to use for the particles'),
 		new DropdownSelect('Material', 'material', (() => [...getBlocks()]), 'Dirt')
 			.requireValue('particle', [
 				'Block crack',
 				'Block dust',
+				'Block',
 				'Falling dust',
 				'Block marker'])
 			.setTooltip('The block to use for the particles'),
 		new IntSelect('Durability', 'durability', 0)
-			.requireValue('particle', ['Item crack'])
+			.requireValue('particle', ['Item crack', 'Item'])
 			.setTooltip('The durability to be reduced from the item used to make the particles'),
 		new IntSelect('CustomModelData', 'type', 0)
-			.requireValue('particle', ['Item crack'])
+			.requireValue('particle', ['Item crack', 'item'])
 			.setTooltip('The CustomModelData of the item used to make the particles'),
 		new ColorSelect('Dust Color', 'dust-color', '#FF0000')
-			.requireValue('particle', ['Redstone', 'Dust color transition'])
+			.requireValue('particle', ['Redstone', 'Dust', 'Dust color transition'])
 			.setTooltip('The color of the dust particles in hex RGB'),
 		new ColorSelect('Final Dust Color', 'final-dust-color', '#FF0000')
 			.requireValue('particle', ['Dust color transition'])
 			.setTooltip('The color to transition to, in hex RGB'),
 		new DoubleSelect('Dust Size', 'dust-size', 1)
-			.requireValue('particle', ['Redstone', 'Dust color transition'])
+			.requireValue('particle', ['Redstone', 'Dust', 'Dust color transition'])
 			.setTooltip('The size of the dust particles'),
 
 		new DropdownSelect('Arrangement', 'arrangement', ['Sphere', 'Circle', 'Hemisphere'], 'Sphere')
@@ -2096,25 +2097,25 @@ const effectOptions = (optional: boolean): ComponentOption[] => {
 		opt(new IntSelect('View Range', '-view-range', 25)
 			.setTooltip('How far away the effect can be seen from.')),
 
-		opt(new DropdownSelect('Particle', '-particle-type', getParticles, 'Villager happy')
+		opt(new DropdownSelect('Particle', '-particle-type', getParticles, getParticles()[0])
 			.setTooltip('The type of particle to use.')),
 		opt(new DropdownSelect('Material', '-particle-material', getMaterials, 'Dirt')
-			.requireValue('-particle-type', ['Item crack'])
+			.requireValue('-particle-type', ['Item crack', 'Item'])
 			.setTooltip('The material to use for the particle.')),
 		opt(new DropdownSelect('Material', '-particle-material', getBlocks, 'Dirt')
-			.requireValue('-particle-type', ['Block crack', 'Block dust', 'Falling dust', 'Block marker'])
+			.requireValue('-particle-type', ['Block crack', 'Block dust', 'Block', 'Falling dust', 'Block marker'])
 			.setTooltip('The block to use for the particle.')),
 		opt(new IntSelect('Durability', '-particle-durability')
-			.requireValue('particle', ['Item crack'])
+			.requireValue('particle', ['Item crack', 'Item'])
 			.setTooltip('The durability to be reduced from the item used to make the particles')),
 		opt(new IntSelect('CustomModelData', '-particle-data')
-			.requireValue('-particle-type', ['Item crack'])
+			.requireValue('-particle-type', ['Item crack', 'Item'])
 			.setTooltip('The data value for the material used by the particle. For 1.14+ determines the CustomModelData of the item.')),
-		new ColorSelect('Dust Color', '-particle-dust-color', '#FF0000').requireValue('-particle-type', ['Redstone', 'Dust color transition'])
+		new ColorSelect('Dust Color', '-particle-dust-color', '#FF0000').requireValue('-particle-type', ['Redstone', 'Dust', 'Dust color transition'])
 			.setTooltip('The color of the dust particles in hex RGB'),
 		new ColorSelect('Final Dust Color', '-particle-final-dust-color', '#FF0000').requireValue('-particle-type', ['Dust color transition'])
 			.setTooltip('The color to transition to, in hex RGB'),
-		new DoubleSelect('Dust Size', '-particle-dust-size', 1).requireValue('-particle-type', ['Redstone', 'Dust color transition'])
+		new DoubleSelect('Dust Size', '-particle-dust-size', 1).requireValue('-particle-type', ['Redstone', 'Dust', 'Dust color transition'])
 			.setTooltip('The size of the dust particles'),
 		opt(new IntSelect('Amount', '-particle-amount', 1)
 			.setTooltip('Number of particles to play per point. For "Spell mob" and "Spell mob ambient" particles, set to 0 to control the particle color.')),
@@ -2133,7 +2134,20 @@ const effectOptions = (optional: boolean): ComponentOption[] => {
 	];
 };
 
-class ArmorMechanic extends ProMechanic {
+class AbortSkillMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Abort Skill',
+			description:  'Cancels current skill mechanics',
+			data:         [],
+			summaryItems: []
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
+class ArmorMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Armor',
@@ -2152,7 +2166,7 @@ class ArmorMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ArmorStandMechanic extends ProMechanic {
+class ArmorStandMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Armor Stand',
@@ -2196,7 +2210,7 @@ class ArmorStandMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ArmorStandPoseMechanic extends ProMechanic {
+class ArmorStandPoseMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:        'Armor Stand Pose',
@@ -2215,7 +2229,7 @@ class ArmorStandPoseMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ArmorStandRemoveMechanic extends ProMechanic {
+class ArmorStandRemoveMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Armor Stand Remove',
@@ -2231,7 +2245,7 @@ class ArmorStandRemoveMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class AttributeMechanic extends ProMechanic {
+class AttributeMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Attribute',
@@ -2255,7 +2269,7 @@ class AttributeMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class BlockMechanic extends ProMechanic {
+class BlockMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Block',
@@ -2312,7 +2326,7 @@ class BlockMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class BuffMechanic extends ProMechanic {
+class BuffMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Buff',
@@ -2345,7 +2359,7 @@ class BuffMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class CancelMechanic extends ProMechanic {
+class CancelMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:        'Cancel',
@@ -2356,7 +2370,7 @@ class CancelMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class CancelEffectMechanic extends ProMechanic {
+class CancelEffectMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Cancel Effect',
@@ -2372,7 +2386,7 @@ class CancelEffectMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ChannelMechanic extends ProMechanic {
+class ChannelMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Channel',
@@ -2390,7 +2404,7 @@ class ChannelMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class CleanseMechanic extends ProMechanic {
+class CleanseMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Cleanse',
@@ -2408,7 +2422,7 @@ class CleanseMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class CommandMechanic extends ProMechanic {
+class CommandMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Command',
@@ -2426,7 +2440,7 @@ class CommandMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class CooldownMechanic extends ProMechanic {
+class CooldownMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Cooldown',
@@ -2446,7 +2460,7 @@ class CooldownMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class DamageMechanic extends ProMechanic {
+class DamageMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Damage',
@@ -2473,7 +2487,7 @@ class DamageMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class DamageBuffMechanic extends ProMechanic {
+class DamageBuffMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Damage Buff',
@@ -2495,7 +2509,7 @@ class DamageBuffMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class DamageLoreMechanic extends ProMechanic {
+class DamageLoreMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Damage Lore',
@@ -2524,7 +2538,7 @@ class DamageLoreMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class DefenseBuffMechanic extends ProMechanic {
+class DefenseBuffMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Defense Buff',
@@ -2546,23 +2560,28 @@ class DefenseBuffMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class DelayMechanic extends ProMechanic {
+class DelayMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Delay',
 			description:  'Applies child components after a delay',
 			data:         [
 				new AttributeSelect('Delay', 'delay', 2)
-					.setTooltip('The amount of time to wait before applying child components in seconds')
+					.setTooltip('The amount of time to wait before applying child components in seconds'),
+				new BooleanSelect('Cleanup', 'cleanup', true)
+					.setTooltip('Whether this delay should be cleaned up on abort or logout/class change'),
+				new BooleanSelect('Single Instance', 'single-instance', false)
+					.setTooltip('Whether to only allow one instance of this delay per player. ' +
+						'When true, this will cancel the previous delay and start the new one in its place.')
 			],
-			summaryItems: ['delay']
+			summaryItems: ['delay', 'cleanup', 'single-instance']
 		}, true);
 	}
 
 	public static override new = () => new this();
 }
 
-class DisguiseMechanic extends ProMechanic {
+class DisguiseMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Disguise',
@@ -2635,7 +2654,7 @@ class DisguiseMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class DurabilityMechanic extends ProMechanic {
+class DurabilityMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Durability',
@@ -2653,7 +2672,7 @@ class DurabilityMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ExperienceMechanic extends ProMechanic {
+class ExperienceMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Experience',
@@ -2676,7 +2695,7 @@ class ExperienceMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ExplosionMechanic extends ProMechanic {
+class ExplosionMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Explosion',
@@ -2696,7 +2715,7 @@ class ExplosionMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class FireMechanic extends ProMechanic {
+class FireMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Fire',
@@ -2714,7 +2733,7 @@ class FireMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class FlagMechanic extends ProMechanic {
+class FlagMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Flag',
@@ -2732,7 +2751,7 @@ class FlagMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class FlagClearMechanic extends ProMechanic {
+class FlagClearMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Flag Clear',
@@ -2748,7 +2767,7 @@ class FlagClearMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class FlagToggleMechanic extends ProMechanic {
+class FlagToggleMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Flag Toggle',
@@ -2764,7 +2783,7 @@ class FlagToggleMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class FoodMechanic extends ProMechanic {
+class FoodMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Food',
@@ -2782,7 +2801,7 @@ class FoodMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ForgetTargetsMechanic extends ProMechanic {
+class ForgetTargetsMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Forget Targets',
@@ -2798,7 +2817,7 @@ class ForgetTargetsMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class HealMechanic extends ProMechanic {
+class HealMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Heal',
@@ -2816,7 +2835,7 @@ class HealMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class HealthSetMechanic extends ProMechanic {
+class HealthSetMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Health Set',
@@ -2832,7 +2851,7 @@ class HealthSetMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class HeldItemMechanic extends ProMechanic {
+class HeldItemMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Held Item',
@@ -2848,7 +2867,7 @@ class HeldItemMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ImmunityMechanic extends ProMechanic {
+class ImmunityMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Immunity',
@@ -2868,7 +2887,7 @@ class ImmunityMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class InterruptMechanic extends ProMechanic {
+class InterruptMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:        'Interrupt',
@@ -2879,7 +2898,7 @@ class InterruptMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class InvisibilityMechanic extends ProMechanic {
+class InvisibilityMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Invisibility',
@@ -2897,7 +2916,7 @@ class InvisibilityMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ItemMechanic extends ProMechanic {
+class ItemMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Item',
@@ -2910,7 +2929,7 @@ class ItemMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ItemDropMechanic extends ProMechanic {
+class ItemDropMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Item Drop',
@@ -2938,7 +2957,7 @@ class ItemDropMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ItemProjectileMechanic extends ProMechanic {
+class ItemProjectileMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Item Projectile',
@@ -2967,27 +2986,28 @@ class ItemProjectileMechanic extends ProMechanic {
 					.setTooltip('The type of particle to display')
 					.requireValue('per-target', [true]),
 				new DropdownSelect('Material', 'per-target-material', (() => [...getMaterials()]), 'Arrow')
-					.requireValue('per-target-particle', ['Item crack'])
+					.requireValue('per-target-particle', ['Item crack', 'Item'])
 					.requireValue('per-target', [true])
 					.setTooltip('The material to use for the particles'),
 				new DropdownSelect('Material', 'per-target-material', (() => [...getBlocks()]), 'Dirt')
 					.requireValue('per-target-particle', [
 						'Block crack',
 						'Block dust',
+						'Block',
 						'Falling dust',
 						'Block marker'])
 					.requireValue('per-target', [true])
 					.setTooltip('The block to use for the particles'),
 				new IntSelect('Durability', 'per-target-durability', 0)
-					.requireValue('per-target-particle', ['Item crack'])
+					.requireValue('per-target-particle', ['Item crack', 'Item'])
 					.requireValue('per-target', [true])
 					.setTooltip('The durability to be reduced from the item used to make the particles'),
 				new IntSelect('CustomModelData', 'per-target-type', 0)
-					.requireValue('per-target-particle', ['Item crack'])
+					.requireValue('per-target-particle', ['Item crack', 'Item'])
 					.requireValue('per-target', [true])
 					.setTooltip('The CustomModelData of the item used to make the particles'),
 				new ColorSelect('Dust Color', 'per-target-dust-color', '#FF0000')
-					.requireValue('per-target-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('per-target-particle', ['Redstone', 'Dust', 'Dust color transition'])
 					.requireValue('per-target', [true])
 					.setTooltip('The color of the dust particles in hex RGB'),
 				new ColorSelect('Final Dust Color', 'per-target-final-dust-color', '#FF0000')
@@ -2995,7 +3015,7 @@ class ItemProjectileMechanic extends ProMechanic {
 					.requireValue('per-target', [true])
 					.setTooltip('The color to transition to, in hex RGB'),
 				new DoubleSelect('Dust Size', 'per-target-dust-size', 1)
-					.requireValue('per-target-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('per-target-particle', ['Redstone', 'Dust', 'Dust color transition'])
 					.requireValue('per-target', [true])
 					.setTooltip('The size of the dust particles'),
 
@@ -3053,27 +3073,28 @@ class ItemProjectileMechanic extends ProMechanic {
 					.setTooltip('The type of particle to display')
 					.requireValue('path', [true]),
 				new DropdownSelect('Material', 'path-material', (() => [...getMaterials()]), 'Arrow')
-					.requireValue('path-particle', ['Item crack'])
+					.requireValue('path-particle', ['Item crack', 'Item'])
 					.requireValue('path', [true])
 					.setTooltip('The material to use for the particles'),
 				new DropdownSelect('Material', 'path-material', (() => [...getBlocks()]), 'Dirt')
 					.requireValue('path-particle', [
 						'Block crack',
 						'Block dust',
+						'Block',
 						'Falling dust',
 						'Block marker'])
 					.requireValue('path', [true])
 					.setTooltip('The block to use for the particles'),
 				new IntSelect('Durability', 'path-durability', 0)
-					.requireValue('path-particle', ['Item crack'])
+					.requireValue('path-particle', ['Item crack', 'Item'])
 					.requireValue('path', [true])
 					.setTooltip('The durability to be reduced from the item used to make the particles'),
 				new IntSelect('CustomModelData', 'path-type', 0)
-					.requireValue('path-particle', ['Item crack'])
+					.requireValue('path-particle', ['Item crack', 'Item'])
 					.requireValue('path', [true])
 					.setTooltip('The CustomModelData of the item used to make the particles'),
 				new ColorSelect('Dust Color', 'path-dust-color', '#FF0000')
-					.requireValue('path-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('path-particle', ['Redstone', 'Dust', 'Dust color transition'])
 					.requireValue('path', [true])
 					.setTooltip('The color of the dust particles in hex RGB'),
 				new ColorSelect('Final Dust Color', 'path-final-dust-color', '#FF0000')
@@ -3081,7 +3102,7 @@ class ItemProjectileMechanic extends ProMechanic {
 					.requireValue('path', [true])
 					.setTooltip('The color to transition to, in hex RGB'),
 				new DoubleSelect('Dust Size', 'path-dust-size', 1)
-					.requireValue('path-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('path-particle', ['Redstone', 'Dust', 'Dust color transition'])
 					.requireValue('path', [true])
 					.setTooltip('The size of the dust particles'),
 
@@ -3120,7 +3141,7 @@ class ItemProjectileMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ItemRemoveMechanic extends ProMechanic {
+class ItemRemoveMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Item Remove',
@@ -3138,7 +3159,7 @@ class ItemRemoveMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class LaunchMechanic extends ProMechanic {
+class LaunchMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Launch',
@@ -3162,7 +3183,7 @@ class LaunchMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class LightningMechanic extends ProMechanic {
+class LightningMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Lightning',
@@ -3190,7 +3211,7 @@ class LightningMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ManaMechanic extends ProMechanic {
+class ManaMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Mana',
@@ -3208,7 +3229,7 @@ class ManaMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class MessageMechanic extends ProMechanic {
+class MessageMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Message',
@@ -3224,7 +3245,7 @@ class MessageMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class MineMechanic extends ProMechanic {
+class MineMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Mine',
@@ -3273,7 +3294,7 @@ class MineMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class MoneyMechanic extends ProMechanic {
+class MoneyMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Money',
@@ -3293,7 +3314,7 @@ class MoneyMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class MountMechanic extends ProMechanic {
+class MountMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Mount',
@@ -3311,7 +3332,7 @@ class MountMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ParticleMechanic extends ProMechanic {
+class ParticleMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Particle',
@@ -3333,7 +3354,7 @@ class ParticleMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ParticleAnimationMechanic extends ProMechanic {
+class ParticleAnimationMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Particle Animation',
@@ -3378,7 +3399,7 @@ class ParticleAnimationMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ParticleEffectMechanic extends ProMechanic {
+class ParticleEffectMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Particle Effect',
@@ -3393,7 +3414,7 @@ class ParticleEffectMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ParticleImageMechanic extends ProMechanic {
+class ParticleImageMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Particle Image',
@@ -3451,7 +3472,7 @@ class ParticleImageMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ParticleProjectileMechanic extends ProMechanic {
+class ParticleProjectileMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Particle Projectile',
@@ -3488,27 +3509,28 @@ class ParticleProjectileMechanic extends ProMechanic {
 					.setTooltip('The type of particle to display')
 					.requireValue('per-target', [true]),
 				new DropdownSelect('Material', 'per-target-material', (() => [...getMaterials()]), 'Arrow')
-					.requireValue('per-target-particle', ['Item crack'])
+					.requireValue('per-target-particle', ['Item crack', 'Item'])
 					.requireValue('per-target', [true])
 					.setTooltip('The material to use for the particles'),
 				new DropdownSelect('Material', 'per-target-material', (() => [...getBlocks()]), 'Dirt')
 					.requireValue('per-target-particle', [
 						'Block crack',
 						'Block dust',
+						'Block',
 						'Falling dust',
 						'Block marker'])
 					.requireValue('per-target', [true])
 					.setTooltip('The block to use for the particles'),
 				new IntSelect('Durability', 'per-target-durability', 0)
-					.requireValue('per-target-particle', ['Item crack'])
+					.requireValue('per-target-particle', ['Item crack', 'Item'])
 					.requireValue('per-target', [true])
 					.setTooltip('The durability to be reduced from the item used to make the particles'),
 				new IntSelect('CustomModelData', 'per-target-type', 0)
-					.requireValue('per-target-particle', ['Item crack'])
+					.requireValue('per-target-particle', ['Item crack', 'Item'])
 					.requireValue('per-target', [true])
 					.setTooltip('The CustomModelData of the item used to make the particles'),
 				new ColorSelect('Dust Color', 'per-target-dust-color', '#FF0000')
-					.requireValue('per-target-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('per-target-particle', ['Redstone', 'Dust', 'Dust color transition'])
 					.requireValue('per-target', [true])
 					.setTooltip('The color of the dust particles in hex RGB'),
 				new ColorSelect('Final Dust Color', 'per-target-final-dust-color', '#FF0000')
@@ -3516,7 +3538,7 @@ class ParticleProjectileMechanic extends ProMechanic {
 					.requireValue('per-target', [true])
 					.setTooltip('The color to transition to, in hex RGB'),
 				new DoubleSelect('Dust Size', 'per-target-dust-size', 1)
-					.requireValue('per-target-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('per-target-particle', ['Redstone', 'Dust', 'Dust color transition'])
 					.requireValue('per-target', [true])
 					.setTooltip('The size of the dust particles'),
 
@@ -3574,27 +3596,28 @@ class ParticleProjectileMechanic extends ProMechanic {
 					.setTooltip('The type of particle to display')
 					.requireValue('path', [true]),
 				new DropdownSelect('Material', 'path-material', (() => [...getMaterials()]), 'Arrow')
-					.requireValue('path-particle', ['Item crack'])
+					.requireValue('path-particle', ['Item crack', 'Item'])
 					.requireValue('path', [true])
 					.setTooltip('The material to use for the particles'),
 				new DropdownSelect('Material', 'path-material', (() => [...getBlocks()]), 'Dirt')
 					.requireValue('path-particle', [
 						'Block crack',
 						'Block dust',
+						'Block',
 						'Falling dust',
 						'Block marker'])
 					.requireValue('path', [true])
 					.setTooltip('The block to use for the particles'),
 				new IntSelect('Durability', 'path-durability', 0)
-					.requireValue('path-particle', ['Item crack'])
+					.requireValue('path-particle', ['Item crack', 'Item'])
 					.requireValue('path', [true])
 					.setTooltip('The durability to be reduced from the item used to make the particles'),
 				new IntSelect('CustomModelData', 'path-type', 0)
-					.requireValue('path-particle', ['Item crack'])
+					.requireValue('path-particle', ['Item crack', 'Item'])
 					.requireValue('path', [true])
 					.setTooltip('The CustomModelData of the item used to make the particles'),
 				new ColorSelect('Dust Color', 'path-dust-color', '#FF0000')
-					.requireValue('path-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('path-particle', ['Redstone', 'Dust', 'Dust color transition'])
 					.requireValue('path', [true])
 					.setTooltip('The color of the dust particles in hex RGB'),
 				new ColorSelect('Final Dust Color', 'path-final-dust-color', '#FF0000')
@@ -3602,7 +3625,7 @@ class ParticleProjectileMechanic extends ProMechanic {
 					.requireValue('path', [true])
 					.setTooltip('The color to transition to, in hex RGB'),
 				new DoubleSelect('Dust Size', 'path-dust-size', 1)
-					.requireValue('path-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('path-particle', ['Redstone', 'Dust', 'Dust color transition'])
 					.requireValue('path', [true])
 					.setTooltip('The size of the dust particles'),
 
@@ -3641,7 +3664,7 @@ class ParticleProjectileMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class PassiveMechanic extends ProMechanic {
+class PassiveMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Passive',
@@ -3657,7 +3680,7 @@ class PassiveMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class PermissionMechanic extends ProMechanic {
+class PermissionMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Permission',
@@ -3675,7 +3698,7 @@ class PermissionMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class PotionMechanic extends ProMechanic {
+class PotionMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Potion',
@@ -3697,7 +3720,7 @@ class PotionMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class PotionProjectileMechanic extends ProMechanic {
+class PotionProjectileMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Potion Projectile',
@@ -3739,29 +3762,30 @@ class PotionProjectileMechanic extends ProMechanic {
 					.setTooltip('The type of particle the cloud is composed of')
 					.requireValue('linger', [true]),
 				new DropdownSelect('Material', 'cloud-material', (() => [...getMaterials()]), 'Arrow')
-					.requireValue('cloud-particle', ['Item crack'])
+					.requireValue('cloud-particle', ['Item crack', 'Item'])
 					.setTooltip('The material to use for the particles'),
 				new DropdownSelect('Material', 'cloud-material', (() => [...getBlocks()]), 'Dirt')
 					.requireValue('cloud-particle', [
 						'Block crack',
 						'Block dust',
+						'Block',
 						'Falling dust',
 						'Block marker'])
 					.setTooltip('The block to use for the particles'),
 				new IntSelect('Durability', 'cloud-durability', 0)
-					.requireValue('cloud-particle', ['Item crack'])
+					.requireValue('cloud-particle', ['Item crack', 'Item'])
 					.setTooltip('The durability to be reduced from the item used to make the particles'),
 				new IntSelect('CustomModelData', 'cloud-type', 0)
-					.requireValue('cloud-particle', ['Item crack'])
+					.requireValue('cloud-particle', ['Item crack', 'Item'])
 					.setTooltip('The CustomModelData of the item used to make the particles'),
 				new ColorSelect('Dust Color', 'cloud-dust-color', '#FF0000')
-					.requireValue('cloud-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('cloud-particle', ['Redstone', 'Dust', 'Dust color transition'])
 					.setTooltip('The color of the dust particles in hex RGB'),
 				new ColorSelect('Final Dust Color', 'cloud-final-dust-color', '#FF0000')
 					.requireValue('cloud-particle', ['Dust color transition'])
 					.setTooltip('The color to transition to, in hex RGB'),
 				new DoubleSelect('Dust Size', 'cloud-dust-size', 1)
-					.requireValue('cloud-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('cloud-particle', ['Redstone', 'Dust', 'Dust color transition'])
 					.setTooltip('The size of the dust particles'),
 
 				...homingOptions(),
@@ -3780,27 +3804,28 @@ class PotionProjectileMechanic extends ProMechanic {
 					.setTooltip('The type of particle to display')
 					.requireValue('per-target', [true]),
 				new DropdownSelect('Material', 'per-target-material', (() => [...getMaterials()]), 'Arrow')
-					.requireValue('per-target-particle', ['Item crack'])
+					.requireValue('per-target-particle', ['Item crack', 'Item'])
 					.requireValue('per-target', [true])
 					.setTooltip('The material to use for the particles'),
 				new DropdownSelect('Material', 'per-target-material', (() => [...getBlocks()]), 'Dirt')
 					.requireValue('per-target-particle', [
 						'Block crack',
 						'Block dust',
+						'Block',
 						'Falling dust',
 						'Block marker'])
 					.requireValue('per-target', [true])
 					.setTooltip('The block to use for the particles'),
 				new IntSelect('Durability', 'per-target-durability', 0)
-					.requireValue('per-target-particle', ['Item crack'])
+					.requireValue('per-target-particle', ['Item crack', 'Item'])
 					.requireValue('per-target', [true])
 					.setTooltip('The durability to be reduced from the item used to make the particles'),
 				new IntSelect('CustomModelData', 'per-target-type', 0)
-					.requireValue('per-target-particle', ['Item crack'])
+					.requireValue('per-target-particle', ['Item crack', 'Item'])
 					.requireValue('per-target', [true])
 					.setTooltip('The CustomModelData of the item used to make the particles'),
 				new ColorSelect('Dust Color', 'per-target-dust-color', '#FF0000')
-					.requireValue('per-target-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('per-target-particle', ['Redstone', 'Dust', 'Dust color transition'])
 					.requireValue('per-target', [true])
 					.setTooltip('The color of the dust particles in hex RGB'),
 				new ColorSelect('Final Dust Color', 'per-target-final-dust-color', '#FF0000')
@@ -3808,7 +3833,7 @@ class PotionProjectileMechanic extends ProMechanic {
 					.requireValue('per-target', [true])
 					.setTooltip('The color to transition to, in hex RGB'),
 				new DoubleSelect('Dust Size', 'per-target-dust-size', 1)
-					.requireValue('per-target-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('per-target-particle', ['Redstone', 'Dust', 'Dust color transition'])
 					.requireValue('per-target', [true])
 					.setTooltip('The size of the dust particles'),
 
@@ -3866,27 +3891,28 @@ class PotionProjectileMechanic extends ProMechanic {
 					.setTooltip('The type of particle to display')
 					.requireValue('path', [true]),
 				new DropdownSelect('Material', 'path-material', (() => [...getMaterials()]), 'Arrow')
-					.requireValue('path-particle', ['Item crack'])
+					.requireValue('path-particle', ['Item crack', 'Item'])
 					.requireValue('path', [true])
 					.setTooltip('The material to use for the particles'),
 				new DropdownSelect('Material', 'path-material', (() => [...getBlocks()]), 'Dirt')
 					.requireValue('path-particle', [
 						'Block crack',
 						'Block dust',
+						'Block',
 						'Falling dust',
 						'Block marker'])
 					.requireValue('path', [true])
 					.setTooltip('The block to use for the particles'),
 				new IntSelect('Durability', 'path-durability', 0)
-					.requireValue('path-particle', ['Item crack'])
+					.requireValue('path-particle', ['Item crack', 'Item'])
 					.requireValue('path', [true])
 					.setTooltip('The durability to be reduced from the item used to make the particles'),
 				new IntSelect('CustomModelData', 'path-type', 0)
-					.requireValue('path-particle', ['Item crack'])
+					.requireValue('path-particle', ['Item crack', 'Item'])
 					.requireValue('path', [true])
 					.setTooltip('The CustomModelData of the item used to make the particles'),
 				new ColorSelect('Dust Color', 'path-dust-color', '#FF0000')
-					.requireValue('path-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('path-particle', ['Redstone', 'Dust', 'Dust color transition'])
 					.requireValue('path', [true])
 					.setTooltip('The color of the dust particles in hex RGB'),
 				new ColorSelect('Final Dust Color', 'path-final-dust-color', '#FF0000')
@@ -3894,7 +3920,7 @@ class PotionProjectileMechanic extends ProMechanic {
 					.requireValue('path', [true])
 					.setTooltip('The color to transition to, in hex RGB'),
 				new DoubleSelect('Dust Size', 'path-dust-size', 1)
-					.requireValue('path-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('path-particle', ['Redstone', 'Dust', 'Dust color transition'])
 					.requireValue('path', [true])
 					.setTooltip('The size of the dust particles'),
 
@@ -3933,7 +3959,7 @@ class PotionProjectileMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ProjectileMechanic extends ProMechanic {
+class ProjectileMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Projectile',
@@ -3983,27 +4009,28 @@ class ProjectileMechanic extends ProMechanic {
 					.setTooltip('The type of particle to display')
 					.requireValue('per-target', [true]),
 				new DropdownSelect('Material', 'per-target-material', (() => [...getMaterials()]), 'Arrow')
-					.requireValue('per-target-particle', ['Item crack'])
+					.requireValue('per-target-particle', ['Item crack', 'Item'])
 					.requireValue('per-target', [true])
 					.setTooltip('The material to use for the particles'),
 				new DropdownSelect('Material', 'per-target-material', (() => [...getBlocks()]), 'Dirt')
 					.requireValue('per-target-particle', [
 						'Block crack',
 						'Block dust',
+						'Block',
 						'Falling dust',
 						'Block marker'])
 					.requireValue('per-target', [true])
 					.setTooltip('The block to use for the particles'),
 				new IntSelect('Durability', 'per-target-durability', 0)
-					.requireValue('per-target-particle', ['Item crack'])
+					.requireValue('per-target-particle', ['Item crack', 'Item'])
 					.requireValue('per-target', [true])
 					.setTooltip('The durability to be reduced from the item used to make the particles'),
 				new IntSelect('CustomModelData', 'per-target-type', 0)
-					.requireValue('per-target-particle', ['Item crack'])
+					.requireValue('per-target-particle', ['Item crack', 'Item'])
 					.requireValue('per-target', [true])
 					.setTooltip('The CustomModelData of the item used to make the particles'),
 				new ColorSelect('Dust Color', 'per-target-dust-color', '#FF0000')
-					.requireValue('per-target-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('per-target-particle', ['Redstone', 'Dust', 'Dust color transition'])
 					.requireValue('per-target', [true])
 					.setTooltip('The color of the dust particles in hex RGB'),
 				new ColorSelect('Final Dust Color', 'per-target-final-dust-color', '#FF0000')
@@ -4011,7 +4038,7 @@ class ProjectileMechanic extends ProMechanic {
 					.requireValue('per-target', [true])
 					.setTooltip('The color to transition to, in hex RGB'),
 				new DoubleSelect('Dust Size', 'per-target-dust-size', 1)
-					.requireValue('per-target-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('per-target-particle', ['Redstone', 'Dust', 'Dust color transition'])
 					.requireValue('per-target', [true])
 					.setTooltip('The size of the dust particles'),
 
@@ -4069,27 +4096,28 @@ class ProjectileMechanic extends ProMechanic {
 					.setTooltip('The type of particle to display')
 					.requireValue('path', [true]),
 				new DropdownSelect('Material', 'path-material', (() => [...getMaterials()]), 'Arrow')
-					.requireValue('path-particle', ['Item crack'])
+					.requireValue('path-particle', ['Item crack', 'Item'])
 					.requireValue('path', [true])
 					.setTooltip('The material to use for the particles'),
 				new DropdownSelect('Material', 'path-material', (() => [...getBlocks()]), 'Dirt')
 					.requireValue('path-particle', [
 						'Block crack',
 						'Block dust',
+						'Block',
 						'Falling dust',
 						'Block marker'])
 					.requireValue('path', [true])
 					.setTooltip('The block to use for the particles'),
 				new IntSelect('Durability', 'path-durability', 0)
-					.requireValue('path-particle', ['Item crack'])
+					.requireValue('path-particle', ['Item crack', 'Item'])
 					.requireValue('path', [true])
 					.setTooltip('The durability to be reduced from the item used to make the particles'),
 				new IntSelect('CustomModelData', 'path-type', 0)
-					.requireValue('path-particle', ['Item crack'])
+					.requireValue('path-particle', ['Item crack', 'Item'])
 					.requireValue('path', [true])
 					.setTooltip('The CustomModelData of the item used to make the particles'),
 				new ColorSelect('Dust Color', 'path-dust-color', '#FF0000')
-					.requireValue('path-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('path-particle', ['Redstone', 'Dust', 'Dust color transition'])
 					.requireValue('path', [true])
 					.setTooltip('The color of the dust particles in hex RGB'),
 				new ColorSelect('Final Dust Color', 'path-final-dust-color', '#FF0000')
@@ -4097,7 +4125,7 @@ class ProjectileMechanic extends ProMechanic {
 					.requireValue('path', [true])
 					.setTooltip('The color to transition to, in hex RGB'),
 				new DoubleSelect('Dust Size', 'path-dust-size', 1)
-					.requireValue('path-particle', ['Redstone', 'Dust color transition'])
+					.requireValue('path-particle', ['Redstone', 'Dust', 'Dust color transition'])
 					.requireValue('path', [true])
 					.setTooltip('The size of the dust particles'),
 
@@ -4136,7 +4164,7 @@ class ProjectileMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class PurgeMechanic extends ProMechanic {
+class PurgeMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Purge',
@@ -4154,7 +4182,7 @@ class PurgeMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class PushMechanic extends ProMechanic {
+class PushMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Push',
@@ -4174,7 +4202,7 @@ class PushMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class RememberTargetsMechanic extends ProMechanic {
+class RememberTargetsMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Remember Targets',
@@ -4190,7 +4218,7 @@ class RememberTargetsMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class RepeatMechanic extends ProMechanic {
+class RepeatMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Repeat',
@@ -4212,7 +4240,7 @@ class RepeatMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class SignalEmitMechanic extends ProMechanic {
+class SignalEmitMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Signal Emit',
@@ -4232,7 +4260,7 @@ class SignalEmitMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class SkillCastMechanic extends ProMechanic {
+class SkillCastMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Skill cast',
@@ -4252,7 +4280,7 @@ class SkillCastMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class SoundMechanic extends ProMechanic {
+class SoundMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Sound',
@@ -4275,7 +4303,7 @@ class SoundMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class StatMechanic extends ProMechanic {
+class StatMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Stat',
@@ -4322,7 +4350,7 @@ class StatMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class StatusMechanic extends ProMechanic {
+class StatusMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Status',
@@ -4347,7 +4375,7 @@ class StatusMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class SummonMechanic extends ProMechanic {
+class SummonMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Summon',
@@ -4368,7 +4396,7 @@ class SummonMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class TauntMechanic extends ProMechanic {
+class TauntMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Taunt',
@@ -4384,7 +4412,7 @@ class TauntMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ThrowMechanic extends ProMechanic {
+class ThrowMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Throw',
@@ -4402,7 +4430,7 @@ class ThrowMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class TriggerMechanic extends ProMechanic {
+class TriggerMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Trigger',
@@ -4410,7 +4438,7 @@ class TriggerMechanic extends ProMechanic {
 			data:         [
 				new DropdownSelect('Trigger', 'trigger', () => Object.values(get(triggers)).map((trigger: {
 					name: string,
-					component: typeof ProComponent
+					component: typeof FabledComponent
 				}) => trigger.name), 'Death')
 					.setTooltip('The trigger to listen for'),
 				new AttributeSelect('Duration', 'duration', 5)
@@ -4498,7 +4526,7 @@ class TriggerMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueAddMechanic extends ProMechanic {
+class ValueAddMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Add',
@@ -4518,7 +4546,7 @@ class ValueAddMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueAttributeMechanic extends ProMechanic {
+class ValueAttributeMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Attribute',
@@ -4526,7 +4554,7 @@ class ValueAttributeMechanic extends ProMechanic {
 			data:         [
 				new StringSelect('Key', 'key', 'attribute')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
-				new DropdownSelect('Attribute', 'attribute', attributeStore.getAttributeNames, ['Vitality'], true)
+				new DropdownSelect('Attribute', 'attribute', attributeStore.getAttributeNames, 'Vitality', false)
 					.setTooltip('The attribute you are loading the value of'),
 				new BooleanSelect('Save', 'save', false)
 					.setTooltip('If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account')
@@ -4538,7 +4566,7 @@ class ValueAttributeMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueCopyMechanic extends ProMechanic {
+class ValueCopyMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Copy',
@@ -4561,7 +4589,7 @@ class ValueCopyMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueDistanceMechanic extends ProMechanic {
+class ValueDistanceMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Distance',
@@ -4580,7 +4608,7 @@ class ValueDistanceMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueDivideMechanic extends ProMechanic {
+class ValueDivideMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Divide',
@@ -4601,7 +4629,7 @@ class ValueDivideMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueHealthMechanic extends ProMechanic {
+class ValueHealthMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Health',
@@ -4622,7 +4650,7 @@ class ValueHealthMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueLocationMechanic extends ProMechanic {
+class ValueLocationMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Location',
@@ -4641,7 +4669,7 @@ class ValueLocationMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueLoadMechanic extends ProMechanic {
+class ValueLoadMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Load',
@@ -4661,7 +4689,7 @@ class ValueLoadMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueLoreMechanic extends ProMechanic {
+class ValueLoreMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Lore',
@@ -4686,7 +4714,7 @@ class ValueLoreMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueLoreSlotMechanic extends ProMechanic {
+class ValueLoreSlotMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Lore Slot',
@@ -4711,7 +4739,7 @@ class ValueLoreSlotMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueManaMechanic extends ProMechanic {
+class ValueManaMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Mana',
@@ -4732,7 +4760,7 @@ class ValueManaMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueMultiplyMechanic extends ProMechanic {
+class ValueMultiplyMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Multiply',
@@ -4753,7 +4781,7 @@ class ValueMultiplyMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValuePlaceholderMechanic extends ProMechanic {
+class ValuePlaceholderMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Placeholder',
@@ -4776,7 +4804,7 @@ class ValuePlaceholderMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueRandomMechanic extends ProMechanic {
+class ValueRandomMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Random',
@@ -4803,7 +4831,7 @@ class ValueRandomMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueRotationMechanic extends ProMechanic {
+class ValueRotationMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Rotation',
@@ -4824,7 +4852,7 @@ class ValueRotationMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueRoundMechanic extends ProMechanic {
+class ValueRoundMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Round',
@@ -4845,7 +4873,7 @@ class ValueRoundMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class ValueSetMechanic extends ProMechanic {
+class ValueSetMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Set',
@@ -4866,7 +4894,7 @@ class ValueSetMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class WarpMechanic extends ProMechanic {
+class WarpMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Warp',
@@ -4895,7 +4923,7 @@ class WarpMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class WarpLocMechanic extends ProMechanic {
+class WarpLocMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Warp Location',
@@ -4921,7 +4949,7 @@ class WarpLocMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class WarpRandomMechanic extends ProMechanic {
+class WarpRandomMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Warp Random',
@@ -4942,7 +4970,7 @@ class WarpRandomMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class WarpSwapMechanic extends ProMechanic {
+class WarpSwapMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Warp Swap',
@@ -4955,7 +4983,7 @@ class WarpSwapMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class WarpTargetMechanic extends ProMechanic {
+class WarpTargetMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Warp Target',
@@ -4972,7 +5000,7 @@ class WarpTargetMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class WarpValueMechanic extends ProMechanic {
+class WarpValueMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Warp Value',
@@ -4992,7 +5020,7 @@ class WarpValueMechanic extends ProMechanic {
 	public static override new = () => new this();
 }
 
-class WolfMechanic extends ProMechanic {
+class WolfMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Wolf',
@@ -5031,27 +5059,28 @@ const particlePreviewOptions = (key: string): ComponentOption[] => {
 			.setTooltip('The type of particle to display')
 			.requireValue(key, [true]),
 		new DropdownSelect('Material', key + '-material', (() => [...getMaterials()]), 'Arrow')
-			.requireValue(key + '-particle', ['Item crack'])
+			.requireValue(key + '-particle', ['Item crack', 'Item'])
 			.requireValue(key, [true])
 			.setTooltip('The material to use for the particles'),
 		new DropdownSelect('Material', key + '-material', (() => [...getBlocks()]), 'Dirt')
 			.requireValue(key + '-particle', [
 				'Block crack',
 				'Block dust',
+				'Block',
 				'Falling dust',
 				'Block marker'])
 			.requireValue(key, [true])
 			.setTooltip('The block to use for the particles'),
 		new IntSelect('Durability', key + '-durability', 0)
-			.requireValue(key + '-particle', ['Item crack'])
+			.requireValue(key + '-particle', ['Item crack', 'Item'])
 			.requireValue(key, [true])
 			.setTooltip('The durability to be reduced from the item used to make the particles'),
 		new IntSelect('CustomModelData', key + '-type', 0)
-			.requireValue(key + '-particle', ['Item crack'])
+			.requireValue(key + '-particle', ['Item crack', 'Item'])
 			.requireValue(key, [true])
 			.setTooltip('The CustomModelData of the item used to make the particles'),
 		new ColorSelect('Dust Color', key + '-dust-color', '#FF0000')
-			.requireValue(key + '-particle', ['Redstone', 'Dust color transition'])
+			.requireValue(key + '-particle', ['Redstone', 'Dust', 'Dust color transition'])
 			.requireValue(key, [true])
 			.setTooltip('The color of the dust particles in hex RGB'),
 		new ColorSelect('Final Dust Color', key + '-final-dust-color', '#FF0000')
@@ -5059,7 +5088,7 @@ const particlePreviewOptions = (key: string): ComponentOption[] => {
 			.requireValue(key, [true])
 			.setTooltip('The color to transition to, in hex RGB'),
 		new DoubleSelect('Dust Size', key + '-dust-size', 1)
-			.requireValue(key + '-particle', ['Redstone', 'Dust color transition'])
+			.requireValue(key + '-particle', ['Redstone', 'Dust', 'Dust color transition'])
 			.requireValue(key, [true])
 			.setTooltip('The size of the dust particles'),
 
@@ -5197,6 +5226,7 @@ export const initComponents = () => {
 		YAW:            { name: 'Yaw', component: YawCondition }
 	});
 	mechanics.set({
+		ABORT_SKILL:        { name: 'Abort Skill', component: AbortSkillMechanic },
 		ARMOR:              { name: 'Armor', component: ArmorMechanic },
 		ARMOR_STAND:        { name: 'Armor Stand', component: ArmorStandMechanic },
 		ARMOR_STAND_POSE:   { name: 'Armor Stand Pose', component: ArmorStandPoseMechanic },

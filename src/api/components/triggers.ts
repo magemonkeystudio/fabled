@@ -1,11 +1,11 @@
 import type { TriggerData, Unknown, YamlComponent } from '../types';
-import ProComponent                                 from './procomponent';
+import FabledComponent                              from './fabled-component';
 import type { ComponentOption }                     from '../options/options';
 import Registry                                     from '$api/components/registry';
 import { get }                                      from 'svelte/store';
 import { parseBool }                                from '$api/api';
 
-export default class ProTrigger extends ProComponent {
+export default class FabledTrigger extends FabledComponent {
 	public mana     = false;
 	public cooldown = false;
 
@@ -15,8 +15,8 @@ export default class ProTrigger extends ProComponent {
 		this.cooldown = data.cooldown || false;
 	}
 
-	public clone = (): ProTrigger => {
-		return new ProTrigger({
+	public clone = (): FabledTrigger => {
+		return new FabledTrigger({
 			name:         this.name,
 			components:   [...get(this.components)],
 			mana:         this.mana,
@@ -61,5 +61,5 @@ export default class ProTrigger extends ProComponent {
 		}
 	}
 
-	public static new = (): ProTrigger => new ProTrigger({ name: 'null' });
+	public static new = (): FabledTrigger => new FabledTrigger({ name: 'null' });
 }

@@ -1,9 +1,9 @@
-import ProComponent                                   from './procomponent';
-import type { ComponentOption }                       from '../options/options';
+import FabledComponent          from './fabled-component';
+import type { ComponentOption } from '../options/options';
 import type { ComponentData, Unknown, YamlComponent } from '$api/types';
 import Registry                                       from '$api/components/registry';
 
-export default class ProTarget extends ProComponent {
+export default class FabledTarget extends FabledComponent {
 	iconKey = '';
 
 	public constructor(data: ComponentData, isDeprecated = false) {
@@ -38,5 +38,5 @@ export default class ProTarget extends ProComponent {
 		}
 	}
 
-	public static override new = (): ProTarget => new ProTarget({ name: 'null' });
+	public static override new = (): FabledTarget => new FabledTarget({ name: 'null' });
 }

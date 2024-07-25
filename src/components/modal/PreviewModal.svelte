@@ -1,12 +1,12 @@
 <script lang='ts'>
-	import Modal                    from '$components/Modal.svelte';
-	import type ProComponent        from '$api/components/procomponent';
-	import type DropdownSelect      from '$api/options/dropdownselect';
+	import Modal                from '$components/Modal.svelte';
+	import type FabledComponent from '$api/components/fabled-component';
+	import type DropdownSelect  from '$api/options/dropdownselect';
 	import type { ComponentOption } from '$api/options/options';
 	import Toggle                   from '$input/Toggle.svelte';
 	import ProInput                 from '$input/ProInput.svelte';
 
-	export let data: ProComponent;
+	export let data: FabledComponent;
 	let modalOpen = true;
 
 	$: if (modalOpen && data) {
