@@ -2473,11 +2473,11 @@ class DamageMechanic extends FabledMechanic {
 				new BooleanSelect('True Damage', 'true')
 					.setTooltip('Whether to deal true damage. True damage ignores armor and all plugin checks, and doesn not have a damage animation nor knockback'),
 				new StringSelect('Damage Type', 'classifier', 'default')
-					.setTooltip('The type of damage to deal. Can act as elemental damage or fake physical damage. Supports Damage types from ProRPGItems like "PRORPGITEMS_magical"'),
+					.setTooltip('The type of damage to deal. Can act as elemental damage or fake physical damage. Supports Damage types from Divinity like "DIVINITY_magical"'),
 				new BooleanSelect('Apply Knockback', 'knockback', true)
 					.setTooltip('Whether the damage will inflict knockback. Ignored if it is True Damage'),
 				new DropdownSelect('Damage Cause', 'cause', ['Contact', 'Custom', 'Entity Attack', 'Entity Sweep Attack', 'Projectile', 'Suffocation', 'Fall', 'Fire', 'Fire Tick', 'Melting', 'Lava', 'Drowning', 'Block Explosion', 'Entity Explosion', 'Void', 'Lightning', 'Suicide', 'Starvation', 'Poison', 'Magic', 'Wither', 'Falling Block', 'Thorns', 'Dragon Breath', 'Fly Into Wall', 'Hot Floor', 'Cramming', 'Dryout', 'Freeze', 'Sonic Boom'], 'Custom')
-					.setTooltip('Damage Cause considered by the server. This will have influence over the death message and ProRPGItems\' defenses')
+					.setTooltip('Damage Cause considered by the server. This will have influence over the death message and Divinity\' defenses')
 					.requireValue('true', [false])
 			],
 			summaryItems: ['value', 'true', 'knockback']
@@ -2528,7 +2528,7 @@ class DamageLoreMechanic extends FabledMechanic {
 				new BooleanSelect('Apply Knockback', 'knockback', true)
 					.setTooltip('Whether the damage will inflict knockback. Ignored if it is True Damage'),
 				new DropdownSelect('Damage Cause', 'cause', ['Contact', 'Entity Attack', 'Entity Sweep Attack', 'Projectile', 'Suffocation', 'Fall', 'Fire', 'Fire Tick', 'Melting', 'Lava', 'Drowning', 'Block Explosion', 'Entity Explosion', 'Void', 'Lightning', 'Suicide', 'Starvation', 'Poison', 'Magic', 'Wither', 'Falling Block', 'Thorns', 'Dragon Breath', 'Custom', 'Fly Into Wall', 'Hot Floor', 'Cramming', 'Dryout', 'Freeze', 'Sonic Boom'], 'Entity Attack')
-					.setTooltip('Damage Cause considered by the server. This will have influence over the death message and ProRPGItems\' defenses')
+					.setTooltip('Damage Cause considered by the server. This will have influence over the death message and Divinity\' defenses')
 					.requireValue('true', [false])
 			],
 			summaryItems: ['hand', 'multiplier', 'true', 'knockback']
