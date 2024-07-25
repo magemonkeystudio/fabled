@@ -13,7 +13,7 @@
 	>
 		<h1 class='accent'>Fabled</h1>
 		<h2>Dynamic Editor</h2>
-		<div class='copy'>&copy; ProMCTeam {new Date().getFullYear()}</div>
+		<div class='copy'>&copy; MageMonkeyStudio {new Date().getFullYear()}</div>
 	</div>
 
 	<div class='socials'>
