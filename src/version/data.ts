@@ -1,19 +1,21 @@
 import type { VersionData } from '$api/types';
 import type { Writable }    from 'svelte/store';
 import { get, writable }    from 'svelte/store';
+import { localStore }       from '$api/api';
 import { DATA_1_19 }        from './1.19';
 import { DATA_1_18 }        from './1.18';
 import { DATA_1_17 }        from './1.17';
 import { DATA_1_16 }        from './1.16';
-import { localStore }       from '$api/api';
-import { DATA_1_20_6 }      from './1.20.6';
 import { DATA_1_20_4 }      from './1.20.4';
+import { DATA_1_20_6 }      from './1.20.6';
+import { DATA_1_21 }        from './1.21';
 
 export const expSources = ['Mob', 'Block Break', 'Block Place', 'Craft', 'Command', 'Special', 'Exp Bottle', 'Smelt', 'Quest'];
 
-type Versions = '20.4' | '19' | '18' | '17' | '16';
+type Versions = '21' | '20.6' | '20.4' | '19' | '18' | '17' | '16';
 
 export const VERSIONS                           = {
+	'21':   DATA_1_21,
 	'20.6': DATA_1_20_6,
 	'20.4': DATA_1_20_4,
 	'19':   DATA_1_19,

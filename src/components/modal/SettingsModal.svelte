@@ -27,7 +27,7 @@
 	<div class='settings-container'>
 		<ProInput label='Server' tooltip='This should match your target Spigot server version'>
 			<select bind:value={$version}>
-				{#each Object.keys(VERSIONS).reverse() as opt}
+				{#each Object.keys(VERSIONS).sort((a,b) => Number.parseFloat(b) - Number.parseFloat(a)) as opt}
 					<option value={opt}>1.{opt}</option>
 				{/each}
 			</select>
