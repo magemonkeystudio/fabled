@@ -26,6 +26,13 @@
  */
 package studio.magemonkey.fabled.tree.basic;
 
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import studio.magemonkey.codex.mccore.config.Filter;
+import studio.magemonkey.codex.mccore.config.FilterType;
+import studio.magemonkey.codex.mccore.items.InventoryManager;
+import studio.magemonkey.codex.util.InventoryUtil;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.exception.SkillTreeException;
@@ -35,13 +42,6 @@ import studio.magemonkey.fabled.gui.tool.GUITool;
 import studio.magemonkey.fabled.language.GUINodes;
 import studio.magemonkey.fabled.language.RPGFilter;
 import studio.magemonkey.fabled.tree.SkillTree;
-import studio.magemonkey.codex.mccore.config.Filter;
-import studio.magemonkey.codex.mccore.config.FilterType;
-import studio.magemonkey.codex.mccore.items.InventoryManager;
-import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -199,9 +199,9 @@ public abstract class InventoryTree extends SkillTree {
      * @param player player
      */
     public void update(PlayerData player) {
-        InventoryView view = player.getPlayer().getOpenInventory();
+        Object view = player.getPlayer().getOpenInventory();
         for (Map.Entry<Integer, Skill> skills : skillSlots.entrySet()) {
-            view.setItem(skills.getKey(),
+            InventoryUtil.setItem(view, skills.getKey(),
                     skills.getValue().getIndicator(player.getSkill(skills.getValue().getName()), false));
         }
     }
