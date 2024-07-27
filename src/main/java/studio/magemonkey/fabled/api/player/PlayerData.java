@@ -34,22 +34,17 @@ import lombok.Setter;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Nullable;
 import studio.magemonkey.codex.CodexEngine;
-import studio.magemonkey.codex.api.meta.NBTAttribute;
 import studio.magemonkey.codex.mccore.config.Filter;
 import studio.magemonkey.codex.mccore.config.FilterType;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import studio.magemonkey.codex.util.EntityUT;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.enums.*;
@@ -1978,30 +1973,6 @@ public class PlayerData {
 
     }
 
-    private double getModifiedMaxHealth(Player player) {
-        final double baseMaxHealth = this.maxHealth;
-        double       modifiedMax   = this.maxHealth;
-        // Actually apply other modifiers (Like from RPGItems
-        for (ItemStack equipment : EntityUT.getEquipment(player)) {
-            if (equipment == null || equipment.getType().isAir() || equipment.getItemMeta() == null) continue;
-
-            ItemMeta meta = equipment.getItemMeta();
-            if (!meta.hasAttributeModifiers()
-                    || meta.getAttributeModifiers(NBTAttribute.MAX_HEALTH.getAttribute()) == null)
-                continue;
-
-            for (AttributeModifier modifier : Objects.requireNonNull(meta.getAttributeModifiers(NBTAttribute.MAX_HEALTH.getAttribute()))) {
-                if (modifier.getOperation() == AttributeModifier.Operation.MULTIPLY_SCALAR_1) {
-                    modifiedMax += baseMaxHealth * modifier.getAmount();
-                } else {
-                    modifiedMax += modifier.getAmount();
-                }
-            }
-        }
-
-        return modifiedMax;
-    }
-
     /**
      * Updates health of a player based on their current attributes and apply
      *
@@ -2014,10 +1985,8 @@ public class PlayerData {
             this.maxHealth = Fabled.getSettings().getDefaultHealth();
         }
 
-        double modifiedMax = getModifiedMaxHealth(player);
-
         final AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-        attribute.setBaseValue(this.maxHealth);
+        Objects.requireNonNull(attribute).setBaseValue(this.maxHealth);
 
         // Health scaling is available starting with 1.6.2
         if (Fabled.getSettings().isOldHealth()) {
@@ -2029,10 +1998,6 @@ public class PlayerData {
             }
         } else
             player.setHealthScaled(false);
-
-        if (player.getHealth() > modifiedMax)
-            player.setHealth(modifiedMax);
-
     }
 
     private void updateMCAttribute(Player player, Attribute attribute, String attribKey, double min, double max) {
