@@ -26,20 +26,31 @@
  */
 package studio.magemonkey.fabled.api.event;
 
+import lombok.Getter;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 import studio.magemonkey.fabled.api.enums.ExpSource;
 import studio.magemonkey.fabled.api.player.PlayerClass;
 import studio.magemonkey.fabled.api.player.PlayerData;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
 /**
  * Event called when a player gains class experience
  */
-public class PlayerExperienceGainEvent extends Event implements Cancellable {
-    private static final HandlerList handlers = new HandlerList();
+public class PlayerExperienceGainEvent extends com.sucy.skill.api.event.PlayerExperienceGainEvent {
+    /**
+     * -- GETTER --
+     *
+     * @return player's class that is receiving the experience
+     */
+    @Getter
     private              PlayerClass playerClass;
-    private              boolean     cancelled;
+    /**
+     * -- GETTER --
+     *
+     * @return where the experience came from
+     */
+    @Getter
     private              ExpSource   source;
     private              double      amount;
 
@@ -54,7 +65,7 @@ public class PlayerExperienceGainEvent extends Event implements Cancellable {
         this.playerClass = playerClass;
         this.amount = amount;
         this.source = source;
-        cancelled = false;
+        setCancelled(false);
     }
 
     /**
@@ -65,24 +76,10 @@ public class PlayerExperienceGainEvent extends Event implements Cancellable {
     }
 
     /**
-     * @return player's class that is receiving the experience
-     */
-    public PlayerClass getPlayerClass() {
-        return playerClass;
-    }
-
-    /**
      * @return amount of experience being gained
      */
     public double getExp() {
         return amount;
-    }
-
-    /**
-     * @return where the experience came from
-     */
-    public ExpSource getSource() {
-        return source;
     }
 
     /**
@@ -104,7 +101,7 @@ public class PlayerExperienceGainEvent extends Event implements Cancellable {
      */
     @Override
     public boolean isCancelled() {
-        return cancelled;
+        return super.isCancelled();
     }
 
     /**
@@ -114,21 +111,22 @@ public class PlayerExperienceGainEvent extends Event implements Cancellable {
      */
     @Override
     public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
+        super.setCancelled(cancelled);
     }
 
     /**
      * @return gets the handlers for the event
      */
+    @NotNull
     @Override
     public HandlerList getHandlers() {
-        return handlers;
+        return super.getHandlers();
     }
 
     /**
      * @return gets the handlers for the event
      */
     public static HandlerList getHandlerList() {
-        return handlers;
+        return com.sucy.skill.api.event.PlayerExperienceGainEvent.getHandlerList();
     }
 }

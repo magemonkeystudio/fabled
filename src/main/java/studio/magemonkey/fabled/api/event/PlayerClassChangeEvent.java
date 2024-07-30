@@ -26,17 +26,15 @@
  */
 package studio.magemonkey.fabled.api.event;
 
+import org.bukkit.event.HandlerList;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.player.PlayerClass;
 import studio.magemonkey.fabled.api.player.PlayerData;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
 /**
  * Event called when a player changes classes
  */
-public class PlayerClassChangeEvent extends Event {
-    private static final HandlerList handlers = new HandlerList();
+public class PlayerClassChangeEvent extends com.sucy.skill.api.event.PlayerClassChangeEvent {
     private final        PlayerClass playerClass;
     private final        FabledClass previousClass;
     private final        FabledClass newClass;
@@ -86,13 +84,13 @@ public class PlayerClassChangeEvent extends Event {
      * @return gets the handlers for the event
      */
     public HandlerList getHandlers() {
-        return handlers;
+        return super.getHandlers();
     }
 
     /**
      * @return gets the handlers for the event
      */
     public static HandlerList getHandlerList() {
-        return handlers;
+        return com.sucy.skill.api.event.PlayerClassChangeEvent.getHandlerList();
     }
 }
