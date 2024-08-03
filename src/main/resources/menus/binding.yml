@@ -3,32 +3,32 @@ rows: 6
 items:
   empty:
     display-name: ""
-    lore: []
+    lore: [ ]
     material: "air"
     amount: 1
     custom-model-data: 0
   clear:
     display-name: "&cClear"
-    lore: []
+    lore: [ ]
     material: "barrier"
     amount: 1
     custom-model-data: 0
   bound-title:
     display-name: "&3Bound Skills"
-    lore: []
+    lore: [ ]
     material: "enchanted_book"
     amount: 1
     custom-model-data: 0
   bound-prev-page:
     display-name: "&3Previous Bound Page"
-    lore: []
+    lore: [ ]
     material: "player_head"
     skull-texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWE0YTliNzBhMjVhMjdkODE4OWU2MGQyN2VhOGNjOTYzMmMzNmI0NjkyODE1NWRlNzc1NWYzNjZlZjA0Yzg3NyJ9fX0="
     amount: 1
     custom-model-data: 0
   bound-next-page:
     display-name: "&3Next Bound Page"
-    lore: []
+    lore: [ ]
     material: "player_head"
     skull-texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTkxNTJjMmU5MWY0NzA0ODViZTIyMmRiNWQyYTg5NWNhZGM5MDMzMjZmNWM2NzFiZjhhNTU5MTQ5NjczYmU4MCJ9fX0="
     amount: 1
@@ -45,20 +45,20 @@ items:
     custom-model-data: "%custom-model-data%"
   not-bound-title:
     display-name: "&3Not Bound Skills"
-    lore: []
+    lore: [ ]
     material: "book"
     amount: 1
     custom-model-data: 0
   not-bound-prev-page:
     display-name: "&3Previous Not Bound Page"
-    lore: []
+    lore: [ ]
     material: "player_head"
     skull-texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWE0YTliNzBhMjVhMjdkODE4OWU2MGQyN2VhOGNjOTYzMmMzNmI0NjkyODE1NWRlNzc1NWYzNjZlZjA0Yzg3NyJ9fX0="
     amount: 1
     custom-model-data: 0
   not-bound-next-page:
     display-name: "&3Next Not Bound Page"
-    lore: []
+    lore: [ ]
     material: "player_head"
     skull-texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTkxNTJjMmU5MWY0NzA0ODViZTIyMmRiNWQyYTg5NWNhZGM5MDMzMjZmNWM2NzFiZjhhNTU5MTQ5NjczYmU4MCJ9fX0="
     amount: 1

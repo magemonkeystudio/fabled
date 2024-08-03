@@ -5,7 +5,7 @@ import sys
 
 is_dev = len(sys.argv) >= 3 and bool(sys.argv[2])
 search_string = \
-    r'Uploaded to (ossrh|central): (https:\/\/s01\.oss\.sonatype\.org(:443)?\/.*?\/com\/promcteam\/(.*?)\/(.*?)\/(' \
+    r'Uploaded to (ossrh|central): (https:\/\/s01\.oss\.sonatype\.org(:443)?\/.*?\/studio\/magemonkey\/(.*?)\/(.*?)\/(' \
     r'.*?)(?<!sources|javadoc)\.jar(?!\.asc)) '
 
 
@@ -25,17 +25,17 @@ if is_dev:
     version = '-'.join(split)
 if not is_dev:
     url = re.sub(
-        'https:\/\/s01\.oss\.sonatype\.org:443\/service\/local\/staging\/deployByRepositoryId\/compromcteam-\d+',
+        'https:\/\/s01\.oss\.sonatype\.org:443\/service\/local\/staging\/deployByRepositoryId\/studiomagemonkey-\d+',
         'https://s01.oss.sonatype.org/service/local/repositories/releases/content',
         url)
 embed = {
-    'username': 'Build Bot',
+    'username': 'Dev Mage',
     'author': {
         'name': 'New ' + ('Dev ' if is_dev else '') + 'Build Available!',
         'url': 'https://github.com/promcteam/' + name
     },
     'image': {
-        'url': 'https://promcteam.github.io/proskillapi/' + ('dev_build.gif' if is_dev else 'release_build.gif')
+        'url': 'https://fabled.magemonkey.studio/' + ('dev_build.gif' if is_dev else 'release_build.gif')
     },
     'title': version,
     'description': 'Click the link above to download the new build!',

@@ -1,32 +1,32 @@
-[![Build](https://github.com/promcteam/proskillapi/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/promcteam/promccore/packages/1203744)
-[![Build](https://github.com/promcteam/proskillapi/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/promcteam/promccore/packages/1203744)
-[![Build](https://github.com/promcteam/proskillapi/actions/workflows/devbuild.yml/badge.svg?branch=dev)](https://github.com/promcteam/promccore/packages/1203744)
+[![Build](https://github.com/promcteam/fabled/actions/workflows/release.yml/badge.svg?branch=main)](https://s01.oss.sonatype.org/content/repositories/snapshots/studio/magemonkey/fabled/)
+[![Build](https://github.com/promcteam/fabled/actions/workflows/devbuild.yml/badge.svg?branch=dev)](https://s01.oss.sonatype.org/content/repositories/snapshots/studio/magemonkey/fabled/1.0.0-R0.57-SNAPSHOT/)
+[![Discord](https://dcbadge.vercel.app/api/server/6UzkTe6RvW?style=flat)](https://discord.gg/6UzkTe6RvW)
 
-# ProSkillAPI
+# Fabled
 
-Our fork is based on the original skillapi and the forked skillapi by Sentropic.
+Our fork is based on the original SkillAPI and the forked SkillAPI by Sentropic.
 
-* Includes all premium features from the original premium version of Skillapi found on spigot.
+* Includes all premium features from the original premium version of SkillAPI found on spigot.
 
-## New dynamic editor
+## New Dynamic editor
 
-You'll need to use this editor in order for your classes and skills to be compatible with ProSkillAPI.
+You'll need to use this editor in order for your classes and skills to be compatible with Fabled.
 
-* Online Editor: https://promcteam.github.io/proskillapi/
+* Online Editor: https://fabled.magemonkey.studio/
 
 ## Downloads
 
-You can download ProSkillAPI from our marketplace
+You can download Fabled from our marketplace
 
-* https://promcteam.com/resources/
+* https://magemonkey.studio/resources/
 
-## PROMCTEAM:
+## MageMonkeyStudio:
 
-* Discord | https://discord.gg/6UzkTe6RvW
+[![Discord](https://dcbadge.vercel.app/api/server/6UzkTe6RvW?style=flat)](https://discord.gg/6UzkTe6RvW)
 
 # Development
 
-If you wish to use ProSkillAPI as a dependency in your projects, ProSkillAPI is available through Maven Central
+If you wish to use Fabled as a dependency in your projects, Fabled is available through Maven Central
 or snapshots through Sonatype.
 
 ```xml
@@ -36,12 +36,14 @@ or snapshots through Sonatype.
 </repository>
 ...
 <dependency>
-    <groupId>com.promcteam</groupId>
-    <artifactId>proskillapi</artifactId>
-    <version>1.3.1-R0.9-SNAPSHOT</version>
+    <groupId>studio.magemonkey</groupId>
+    <artifactId>fabled</artifactId>
+    <version>1.0.0-R0.57-SNAPSHOT</version>
 </dependency>
 ```
+
 ### A huge thanks to our contributors
-<a href="https://github.com/promcteam/proskillapi/graphs/contributors">
-<img src="https://contrib.rocks/image?repo=promcteam/proskillapi" />
+
+<a href="https://github.com/promcteam/fabled/graphs/contributors">
+<img src="https://contrib.rocks/image?repo=promcteam/fabled" />
 </a>

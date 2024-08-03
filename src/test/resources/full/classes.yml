@@ -11,17 +11,17 @@ Barbarian:
   mana-regen: 1
   tree: 'Requirement'
   skills:
-  - 'Maelstrom'
-  - 'Stomp'
-  - 'Stampede'
-  - 'Roar'
-  - 'Pulverize'
-  - 'WarpStrike'
+    - 'Maelstrom'
+    - 'Stomp'
+    - 'Stampede'
+    - 'Roar'
+    - 'Pulverize'
+    - 'WarpStrike'
   icon: 'Red banner'
   icon-data: 0
   icon-lore:
-  - '&4Barbarian'
-  blacklist: []
+    - '&4Barbarian'
+  blacklist: [ ]
   action-bar: ''
   attributes:
     health-base: 60
@@ -52,16 +52,16 @@ BattleBrand:
   mana-regen: 1
   tree: 'Requirement'
   skills:
-  - 'Bandage'
-  - 'Needles'
-  - 'Bringforth'
-  - 'Spellbane'
-  - 'Invincible'
+    - 'Bandage'
+    - 'Needles'
+    - 'Bringforth'
+    - 'Spellbane'
+    - 'Invincible'
   icon: 'White banner'
   icon-data: 0
   icon-lore:
-  - '&fBattleBrand'
-  blacklist: []
+    - '&fBattleBrand'
+  blacklist: [ ]
   action-bar: ''
   attributes:
     health-base: 60
@@ -92,16 +92,16 @@ Deadeye:
   mana-regen: 1
   tree: 'Requirement'
   skills:
-  - 'Puncture'
-  - 'ExplosiveArrow'
-  - 'ExploitWeakness'
-  - 'TrueShot'
-  - 'Salvo'
+    - 'Puncture'
+    - 'ExplosiveArrow'
+    - 'ExploitWeakness'
+    - 'TrueShot'
+    - 'Salvo'
   icon: 'Acacia boat'
   icon-data: 2
   icon-lore:
-  - '&dClass 1'
-  blacklist: []
+    - '&dClass 1'
+  blacklist: [ ]
   action-bar: ''
   attributes:
     health-base: 60
@@ -132,16 +132,16 @@ FireMage:
   mana-regen: 1
   tree: 'Requirement'
   skills:
-  - 'AttunementToFire'
-  - 'Fireball'
-  - 'DragonsBreath'
-  - 'MagmaBomb'
-  - 'HeatStroke'
+    - 'AttunementToFire'
+    - 'Fireball'
+    - 'DragonsBreath'
+    - 'MagmaBomb'
+    - 'HeatStroke'
   icon: 'Acacia boat'
   icon-data: 2
   icon-lore:
-  - '&dFireMage'
-  blacklist: []
+    - '&dFireMage'
+  blacklist: [ ]
   action-bar: ''
   attributes:
     health-base: 60
@@ -172,16 +172,16 @@ AirMage:
   mana-regen: 1
   tree: 'Requirement'
   skills:
-  - 'AttunementToAir'
-  - 'Thunderbolt'
-  - 'LightningStorm'
-  - 'Whirlwind'
-  - 'StaticField'
+    - 'AttunementToAir'
+    - 'Thunderbolt'
+    - 'LightningStorm'
+    - 'Whirlwind'
+    - 'StaticField'
   icon: 'Acacia boat'
   icon-data: 2
   icon-lore:
-  - '&dClass 1'
-  blacklist: []
+    - '&dClass 1'
+  blacklist: [ ]
   action-bar: ''
   attributes:
     health-base: 60
@@ -212,16 +212,16 @@ LifeMage:
   mana-regen: 1
   tree: 'Requirement'
   skills:
-  - 'Sacrifice'
-  - 'Consecrate'
-  - 'HealingBlast'
-  - 'SpiritBond'
-  - 'Divinebolt'
+    - 'Sacrifice'
+    - 'Consecrate'
+    - 'HealingBlast'
+    - 'SpiritBond'
+    - 'Divinebolt'
   icon: 'Acacia boat'
   icon-data: 2
   icon-lore:
-  - '&dClass 1'
-  blacklist: []
+    - '&dClass 1'
+  blacklist: [ ]
   action-bar: ''
   attributes:
     health-base: 60
@@ -252,16 +252,16 @@ FaithMage:
   mana-regen: 1
   tree: 'Requirement'
   skills:
-  - 'VirtuousWrath'
-  - 'Invigoration'
-  - 'Bastion'
-  - 'PrimalSurge'
-  - 'WallOfForce'
+    - 'VirtuousWrath'
+    - 'Invigoration'
+    - 'Bastion'
+    - 'PrimalSurge'
+    - 'WallOfForce'
   icon: 'Acacia boat'
   icon-data: 2
   icon-lore:
-  - '&dClass 1'
-  blacklist: []
+    - '&dClass 1'
+  blacklist: [ ]
   action-bar: ''
   attributes:
     health-base: 60
@@ -292,16 +292,16 @@ Duelist:
   mana-regen: 1
   tree: 'Requirement'
   skills:
-  - 'Flurry'
-  - 'Lacerate'
-  - 'Lunge'
-  - 'Pummel'
-  - 'ExtremeFocus'
+    - 'Flurry'
+    - 'Lacerate'
+    - 'Lunge'
+    - 'Pummel'
+    - 'ExtremeFocus'
   icon: 'Acacia boat'
   icon-data: 2
   icon-lore:
-  - '&dClass 1'
-  blacklist: []
+    - '&dClass 1'
+  blacklist: [ ]
   action-bar: ''
   attributes:
     health-base: 60

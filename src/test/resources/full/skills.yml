@@ -13,14 +13,14 @@ AttunementToAir:
   icon: 'Acacia boat'
   icon-data: 2
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -33,7 +33,7 @@ AttunementToAir:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -80,14 +80,14 @@ AttunementToFire:
   icon: 'Acacia boat'
   icon-data: 0
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -100,7 +100,7 @@ AttunementToFire:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -194,15 +194,15 @@ Bandage:
   icon: 'Paper'
   icon-data: 15
   icon-lore:
-  - '&f{name} &e({level}/{max})'
-  - '&7Recover health to repair'
-  - '&7your wounds.'
-  - ''
-  - '&3Mana: {attr:mana}'
-  - '&3Cooldown: {attr:cooldown}'
-  - ''
-  - '&2Unlock this skill at {req:level}level {attr:level}'
-  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+    - '&f{name} &e({level}/{max})'
+    - '&7Recover health to repair'
+    - '&7your wounds.'
+    - ''
+    - '&3Mana: {attr:mana}'
+    - '&3Cooldown: {attr:cooldown}'
+    - ''
+    - '&2Unlock this skill at {req:level}level {attr:level}'
+    - '&2Each point {req:cost}costs {attr:cost} &2SP'
   attributes:
     level-base: 5
     level-scale: 0
@@ -215,7 +215,7 @@ Bandage:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -254,14 +254,14 @@ Bastion:
   icon: 'Acacia boat'
   icon-data: 0
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -274,7 +274,7 @@ Bastion:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -325,15 +325,15 @@ Bringforth:
   icon: 'Paper'
   icon-data: 14
   icon-lore:
-  - '&f{name} &e({level}/{max})'
-  - '&7Pull your enemies towards'
-  - '&7you.'
-  - ''
-  - '&3Mana: {attr:mana}'
-  - '&3Cooldown: {attr:cooldown}'
-  - ''
-  - '&2Unlock this skill at {req:level}level {attr:level}'
-  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+    - '&f{name} &e({level}/{max})'
+    - '&7Pull your enemies towards'
+    - '&7you.'
+    - ''
+    - '&3Mana: {attr:mana}'
+    - '&3Cooldown: {attr:cooldown}'
+    - ''
+    - '&2Unlock this skill at {req:level}level {attr:level}'
+    - '&2Each point {req:cost}costs {attr:cost} &2SP'
   attributes:
     level-base: 25
     level-scale: 0
@@ -346,7 +346,7 @@ Bringforth:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -403,14 +403,14 @@ Consecrate:
   icon: 'Acacia boat'
   icon-data: 0
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -423,7 +423,7 @@ Consecrate:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -507,7 +507,7 @@ Consecrate:
                         counts: 'True'
                         type: 'Percent'
                         value-base: 5
-                        value-scale:  {}
+                        value-scale: { }
 Divinebolt:
   name: 'Divinebolt'
   type: ''
@@ -522,14 +522,14 @@ Divinebolt:
   icon: 'Acacia boat'
   icon-data: 0
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -542,7 +542,7 @@ Divinebolt:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -679,14 +679,14 @@ DragonsBreath:
   icon: 'Acacia boat'
   icon-data: 0
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -699,7 +699,7 @@ DragonsBreath:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -800,15 +800,15 @@ ExploitWeakness:
   icon: 'Paper'
   icon-data: 27
   icon-lore:
-  - '&f{name} &e({level}/{max})'
-  - '&7Magical arrow that lowers'
-  - "&7your enemy's defense."
-  - ''
-  - '&3Mana: {attr:mana}'
-  - '&3Cooldown: {attr:cooldown}'
-  - ''
-  - '&2Unlock this skill at {req:level}level {attr:level}'
-  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+    - '&f{name} &e({level}/{max})'
+    - '&7Magical arrow that lowers'
+    - "&7your enemy's defense."
+    - ''
+    - '&3Mana: {attr:mana}'
+    - '&3Cooldown: {attr:cooldown}'
+    - ''
+    - '&2Unlock this skill at {req:level}level {attr:level}'
+    - '&2Each point {req:cost}costs {attr:cost} &2SP'
   attributes:
     level-base: 1
     level-scale: 0
@@ -821,7 +821,7 @@ ExploitWeakness:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -894,16 +894,16 @@ ExplosiveArrow:
   icon: 'Paper'
   icon-data: 26
   icon-lore:
-  - '&f{name} &e({level}/{max})'
-  - '&7Magical arrow that explodes'
-  - '&7on impact damaging anyone'
-  - '&7close by.'
-  - ''
-  - '&3Mana: {attr:mana}'
-  - '&3Cooldown: {attr:cooldown}'
-  - ''
-  - '&2Unlock this skill at {req:level}level {attr:level}'
-  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+    - '&f{name} &e({level}/{max})'
+    - '&7Magical arrow that explodes'
+    - '&7on impact damaging anyone'
+    - '&7close by.'
+    - ''
+    - '&3Mana: {attr:mana}'
+    - '&3Cooldown: {attr:cooldown}'
+    - ''
+    - '&2Unlock this skill at {req:level}level {attr:level}'
+    - '&2Each point {req:cost}costs {attr:cost} &2SP'
   attributes:
     level-base: 1
     level-scale: 0
@@ -916,7 +916,7 @@ ExplosiveArrow:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -1002,14 +1002,14 @@ ExtremeFocus:
   icon: 'Acacia boat'
   icon-data: 0
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -1022,7 +1022,7 @@ ExtremeFocus:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -1103,14 +1103,14 @@ Fireball:
   icon: 'Acacia boat'
   icon-data: 0
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -1123,7 +1123,7 @@ Fireball:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -1296,14 +1296,14 @@ Flurry:
   icon: 'Acacia boat'
   icon-data: 0
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -1316,7 +1316,7 @@ Flurry:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -1371,14 +1371,14 @@ HealingBlast:
   icon: 'Acacia boat'
   icon-data: 0
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -1391,7 +1391,7 @@ HealingBlast:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -1511,14 +1511,14 @@ HeatStroke:
   icon: 'Acacia boat'
   icon-data: 0
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -1531,7 +1531,7 @@ HeatStroke:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -1735,14 +1735,14 @@ Invigoration:
   icon: 'Acacia boat'
   icon-data: 0
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -1755,7 +1755,7 @@ Invigoration:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -1800,15 +1800,15 @@ Invincible:
   icon: 'Paper'
   icon-data: 17
   icon-lore:
-  - '&f{name} &e({level}/{max})'
-  - '&7Become invincible to all'
-  - '&7damage.'
-  - ''
-  - '&3Mana: {attr:mana}'
-  - '&3Cooldown: {attr:cooldown}'
-  - ''
-  - '&2Unlock this skill at {req:level}level {attr:level}'
-  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+    - '&f{name} &e({level}/{max})'
+    - '&7Become invincible to all'
+    - '&7damage.'
+    - ''
+    - '&3Mana: {attr:mana}'
+    - '&3Cooldown: {attr:cooldown}'
+    - ''
+    - '&2Unlock this skill at {req:level}level {attr:level}'
+    - '&2Each point {req:cost}costs {attr:cost} &2SP'
   attributes:
     level-base: 75
     level-scale: 0
@@ -1821,7 +1821,7 @@ Invincible:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -1893,14 +1893,14 @@ Lacerate:
   icon: 'Acacia boat'
   icon-data: 0
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -1913,7 +1913,7 @@ Lacerate:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -1967,14 +1967,14 @@ LifeDrain:
   icon: 'Acacia boat'
   icon-data: 2
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -1987,7 +1987,7 @@ LifeDrain:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
 LightningStorm:
   name: 'LightningStorm'
   type: ''
@@ -2002,14 +2002,14 @@ LightningStorm:
   icon: 'Acacia boat'
   icon-data: 2
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -2022,7 +2022,7 @@ LightningStorm:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -2179,14 +2179,14 @@ Lunge:
   icon: 'Acacia boat'
   icon-data: 0
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -2199,7 +2199,7 @@ Lunge:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -2298,15 +2298,15 @@ Maelstrom:
   icon: 'Paper'
   icon-data: 19
   icon-lore:
-  - '&f{name} &e({level}/{max})'
-  - '&7Damage enemies in a V shape'
-  - '&7in front of you.'
-  - ''
-  - '&3Mana: {attr:mana}'
-  - '&3Cooldown: {attr:cooldown}'
-  - ''
-  - '&2Unlock this skill at {req:level}level {attr:level}'
-  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+    - '&f{name} &e({level}/{max})'
+    - '&7Damage enemies in a V shape'
+    - '&7in front of you.'
+    - ''
+    - '&3Mana: {attr:mana}'
+    - '&3Cooldown: {attr:cooldown}'
+    - ''
+    - '&2Unlock this skill at {req:level}level {attr:level}'
+    - '&2Each point {req:cost}costs {attr:cost} &2SP'
   attributes:
     level-base: 5
     level-scale: 0
@@ -2319,7 +2319,7 @@ Maelstrom:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -2376,14 +2376,14 @@ MagmaBomb:
   icon: 'Acacia boat'
   icon-data: 2
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -2396,7 +2396,7 @@ MagmaBomb:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -2568,15 +2568,15 @@ Needles:
   icon: 'Paper'
   icon-data: 18
   icon-lore:
-  - '&f{name} &e({level}/{max})'
-  - '&7Return damage back to'
-  - '&7your attacker.'
-  - ''
-  - '&3Mana: {attr:mana}'
-  - '&3Cooldown: {attr:cooldown}'
-  - ''
-  - '&2Unlock this skill at {req:level}level {attr:level}'
-  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+    - '&f{name} &e({level}/{max})'
+    - '&7Return damage back to'
+    - '&7your attacker.'
+    - ''
+    - '&3Mana: {attr:mana}'
+    - '&3Cooldown: {attr:cooldown}'
+    - ''
+    - '&2Unlock this skill at {req:level}level {attr:level}'
+    - '&2Each point {req:cost}costs {attr:cost} &2SP'
   attributes:
     level-base: 15
     level-scale: 0
@@ -2589,7 +2589,7 @@ Needles:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -2688,14 +2688,14 @@ PrimalSurge:
   icon: 'Acacia boat'
   icon-data: 0
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -2708,7 +2708,7 @@ PrimalSurge:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -2753,16 +2753,16 @@ Pulverize:
   icon: 'Paper'
   icon-data: 23
   icon-lore:
-  - '&f{name} &e({level}/{max})'
-  - '&7Damages enemies, push'
-  - '&7players back and cause'
-  - '&7blindness.'
-  - ''
-  - '&3Mana: {attr:mana}'
-  - '&3Cooldown: {attr:cooldown}'
-  - ''
-  - '&2Unlock this skill at {req:level}level {attr:level}'
-  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+    - '&f{name} &e({level}/{max})'
+    - '&7Damages enemies, push'
+    - '&7players back and cause'
+    - '&7blindness.'
+    - ''
+    - '&3Mana: {attr:mana}'
+    - '&3Cooldown: {attr:cooldown}'
+    - ''
+    - '&2Unlock this skill at {req:level}level {attr:level}'
+    - '&2Each point {req:cost}costs {attr:cost} &2SP'
   attributes:
     level-base: 75
     level-scale: 0
@@ -2775,7 +2775,7 @@ Pulverize:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -2855,14 +2855,14 @@ Pummel:
   icon: 'Acacia boat'
   icon-data: 0
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -2875,7 +2875,7 @@ Pummel:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -2929,16 +2929,16 @@ Puncture:
   icon: 'Paper'
   icon-data: 25
   icon-lore:
-  - '&f{name} &e({level}/{max})'
-  - '&7Magical arrow that peirces'
-  - '&7through all enemies in a'
-  - '&7line.'
-  - ''
-  - '&3Mana: {attr:mana}'
-  - '&3Cooldown: {attr:cooldown}'
-  - ''
-  - '&2Unlock this skill at {req:level}level {attr:level}'
-  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+    - '&f{name} &e({level}/{max})'
+    - '&7Magical arrow that peirces'
+    - '&7through all enemies in a'
+    - '&7line.'
+    - ''
+    - '&3Mana: {attr:mana}'
+    - '&3Cooldown: {attr:cooldown}'
+    - ''
+    - '&2Unlock this skill at {req:level}level {attr:level}'
+    - '&2Each point {req:cost}costs {attr:cost} &2SP'
   attributes:
     level-base: 1
     level-scale: 0
@@ -2951,7 +2951,7 @@ Puncture:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -3018,14 +3018,14 @@ Roar:
   icon: 'Paper'
   icon-data: 22
   icon-lore:
-  - '&f{name} &e({level}/{max})'
-  - '&7Debuff enemies attributes.'
-  - ''
-  - '&3Mana: {attr:mana}'
-  - '&3Cooldown: {attr:cooldown}'
-  - ''
-  - '&2Unlock this skill at {req:level}level {attr:level}'
-  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+    - '&f{name} &e({level}/{max})'
+    - '&7Debuff enemies attributes.'
+    - ''
+    - '&3Mana: {attr:mana}'
+    - '&3Cooldown: {attr:cooldown}'
+    - ''
+    - '&2Unlock this skill at {req:level}level {attr:level}'
+    - '&2Each point {req:cost}costs {attr:cost} &2SP'
   attributes:
     level-base: 50
     level-scale: 0
@@ -3038,7 +3038,7 @@ Roar:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -3131,14 +3131,14 @@ Sacrifice:
   icon: 'Acacia boat'
   icon-data: 0
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -3151,7 +3151,7 @@ Sacrifice:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -3274,17 +3274,17 @@ Salvo:
   icon: 'Paper'
   icon-data: 29
   icon-lore:
-  - '&f{name} &e({level}/{max})'
-  - '&7Launch a salvo of magical'
-  - '&7arrows that rain from above'
-  - '&7causing damage and slow'
-  - '&7speed.'
-  - ''
-  - '&3Mana: {attr:mana}'
-  - '&3Cooldown: {attr:cooldown}'
-  - ''
-  - '&2Unlock this skill at {req:level}level {attr:level}'
-  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+    - '&f{name} &e({level}/{max})'
+    - '&7Launch a salvo of magical'
+    - '&7arrows that rain from above'
+    - '&7causing damage and slow'
+    - '&7speed.'
+    - ''
+    - '&3Mana: {attr:mana}'
+    - '&3Cooldown: {attr:cooldown}'
+    - ''
+    - '&2Unlock this skill at {req:level}level {attr:level}'
+    - '&2Each point {req:cost}costs {attr:cost} &2SP'
   attributes:
     level-base: 1
     level-scale: 0
@@ -3297,7 +3297,7 @@ Salvo:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -3407,15 +3407,15 @@ Spellbane:
   icon: 'Paper'
   icon-data: 16
   icon-lore:
-  - '&f{name} &e({level}/{max})'
-  - '&7Give yourself resistance'
-  - '&7to all magic.'
-  - ''
-  - '&3Mana: {attr:mana}'
-  - '&3Cooldown: {attr:cooldown}'
-  - ''
-  - '&2Unlock this skill at {req:level}level {attr:level}'
-  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+    - '&f{name} &e({level}/{max})'
+    - '&7Give yourself resistance'
+    - '&7to all magic.'
+    - ''
+    - '&3Mana: {attr:mana}'
+    - '&3Cooldown: {attr:cooldown}'
+    - ''
+    - '&2Unlock this skill at {req:level}level {attr:level}'
+    - '&2Each point {req:cost}costs {attr:cost} &2SP'
   attributes:
     level-base: 50
     level-scale: 0
@@ -3428,7 +3428,7 @@ Spellbane:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -3491,14 +3491,14 @@ SpiritBond:
   icon: 'Acacia boat'
   icon-data: 0
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -3511,7 +3511,7 @@ SpiritBond:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -3645,16 +3645,16 @@ Stampede:
   icon: 'Paper'
   icon-data: 21
   icon-lore:
-  - '&f{name} &e({level}/{max})'
-  - '&7Increases your speed, push'
-  - '&7players back and cause'
-  - '&7damage to enemies.'
-  - ''
-  - '&3Mana: {attr:mana}'
-  - '&3Cooldown: {attr:cooldown}'
-  - ''
-  - '&2Unlock this skill at {req:level}level {attr:level}'
-  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+    - '&f{name} &e({level}/{max})'
+    - '&7Increases your speed, push'
+    - '&7players back and cause'
+    - '&7damage to enemies.'
+    - ''
+    - '&3Mana: {attr:mana}'
+    - '&3Cooldown: {attr:cooldown}'
+    - ''
+    - '&2Unlock this skill at {req:level}level {attr:level}'
+    - '&2Each point {req:cost}costs {attr:cost} &2SP'
   attributes:
     level-base: 25
     level-scale: 0
@@ -3667,7 +3667,7 @@ Stampede:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -3769,14 +3769,14 @@ StaticField:
   icon: 'Acacia boat'
   icon-data: 0
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -3789,7 +3789,7 @@ StaticField:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -3951,16 +3951,16 @@ Stomp:
   icon: 'Paper'
   icon-data: 20
   icon-lore:
-  - '&f{name} &e({level}/{max})'
-  - '&7Push players back and cause'
-  - '&7damage to enemies in a V'
-  - '&7shape in front of you.'
-  - ''
-  - '&3Mana: {attr:mana}'
-  - '&3Cooldown: {attr:cooldown}'
-  - ''
-  - '&2Unlock this skill at {req:level}level {attr:level}'
-  - '&2Each point {req:cost}costs {attr:cost} &2SP'
+    - '&f{name} &e({level}/{max})'
+    - '&7Push players back and cause'
+    - '&7damage to enemies in a V'
+    - '&7shape in front of you.'
+    - ''
+    - '&3Mana: {attr:mana}'
+    - '&3Cooldown: {attr:cooldown}'
+    - ''
+    - '&2Unlock this skill at {req:level}level {attr:level}'
+    - '&2Each point {req:cost}costs {attr:cost} &2SP'
   attributes:
     level-base: 15
     level-scale: 0
@@ -3973,7 +3973,7 @@ Stomp:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -4041,14 +4041,14 @@ Thunderbolt:
   icon: 'Acacia boat'
   icon-data: 2
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -4061,7 +4061,7 @@ Thunderbolt:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -4218,15 +4218,15 @@ TrueShot:
   icon: 'PAPER'
   icon-data: 28
   icon-lore:
-  - '&f&f{name} &e({level}/{max})'
-  - '&f&7Magical arrow that pierces'
-  - '&f&7your enemies armor.'
-  - '&f'
-  - '&f&3Mana: {attr:mana}'
-  - '&f&3Cooldown: {attr:cooldown}'
-  - '&f'
-  - '&f&2Unlock this skill at {req:level}level {attr:level}'
-  - '&f&2Each point {req:cost}costs {attr:cost} &2SP'
+    - '&f&f{name} &e({level}/{max})'
+    - '&f&7Magical arrow that pierces'
+    - '&f&7your enemies armor.'
+    - '&f'
+    - '&f&3Mana: {attr:mana}'
+    - '&f&3Cooldown: {attr:cooldown}'
+    - '&f'
+    - '&f&2Unlock this skill at {req:level}level {attr:level}'
+    - '&f&2Each point {req:cost}costs {attr:cost} &2SP'
   attributes:
     level-base: 1
     level-scale: 0
@@ -4239,7 +4239,7 @@ TrueShot:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -4302,14 +4302,14 @@ VirtuousWrath:
   icon: 'JACK_O_LANTERN'
   icon-data: 0
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -4322,7 +4322,7 @@ VirtuousWrath:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -4479,14 +4479,14 @@ WallOfForce:
   icon: 'JACK_O_LANTERN'
   icon-data: 0
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -4499,7 +4499,7 @@ WallOfForce:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -4660,14 +4660,14 @@ Whirlwind:
   icon: 'ACACIA_BOAT'
   icon-data: 0
   icon-lore:
-  - '&d{name} &7({level}/{max})'
-  - '&2Type: &6{type}'
-  - ''
-  - '{req:level}Level: {attr:level}'
-  - '{req:cost}Cost: {attr:cost}'
-  - ''
-  - '&2Mana: {attr:mana}'
-  - '&2Cooldown: {attr:cooldown}'
+    - '&d{name} &7({level}/{max})'
+    - '&2Type: &6{type}'
+    - ''
+    - '{req:level}Level: {attr:level}'
+    - '{req:cost}Cost: {attr:cost}'
+    - ''
+    - '&2Mana: {attr:mana}'
+    - '&2Cooldown: {attr:cooldown}'
   attributes:
     level-base: 1
     level-scale: 0
@@ -4680,7 +4680,7 @@ Whirlwind:
     points-spent-req-base: 0
     points-spent-req-scale: 0
     incompatible:
-    - ''
+      - ''
   components:
     Cast-a:
       type: 'trigger'
@@ -4737,7 +4737,7 @@ Whirlwind:
             icon-key: ''
             counts: 'True'
             repetitions-base: 20
-            repetitions-scale:  {}
+            repetitions-scale: { }
             period: 0.05
             delay: 0
             stop-on-fail: 'False'
@@ -4748,7 +4748,7 @@ Whirlwind:
                 icon-key: ''
                 counts: 'True'
                 repetitions-base: 1
-                repetitions-scale:  {}
+                repetitions-scale: { }
                 period: 1
                 delay: 0
                 stop-on-fail: 'False'
