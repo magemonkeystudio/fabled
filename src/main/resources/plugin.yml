@@ -1,8 +1,8 @@
 name: ${project.name}
-main: com.sucy.skill.SkillAPI
+main: studio.magemonkey.fabled.Fabled
 version: ${project.version}
 authors: [ Travja, goflish, Eniripsa96, Sentropic ]
-depend: [ ProMCCore ]
+depend: [ Codex ]
 softdepend:
   - Vault
   - Citizens
@@ -14,63 +14,63 @@ softdepend:
   - WorldEdit
   - Mimic
   - ProtocolLib
-loadbefore: [ ProRPGItems, Quests, TAB ]
-provides: [ SkillAPI ]
-api-version: 1.14
+loadbefore: [ Divinity, Quests, TAB ]
+provides: [ SkillAPI, ProSkillAPI ]
+api-version: 1.16
 
 permissions:
-  skillapi.basic:
+  fabled.basic:
     description: access to skill trees and using skills
     default: true
-  skillapi.reset:
+  fabled.reset:
     description: access to resetting your class
     default: true
-  skillapi.exp:
+  fabled.exp:
     description: access to gaining exp
     default: true
-  skillapi.level:
+  fabled.level:
     description: access to using the level and exp commands
     default: op
-  skillapi.mana:
+  fabled.mana:
     description: access to using the mana command
     default: op
-  skillapi.points:
+  fabled.points:
     description: access to using the points command
     default: op
-  skillapi.reload:
+  fabled.reload:
     description: access to using the reload command
     default: op
-  skillapi.class:
+  fabled.class:
     description: access to all classes
     default: op
-  skillapi.skill:
+  fabled.skill:
     description: access to all skills
     default: op
-  skillapi.lore:
+  fabled.lore:
     description: access to all lore commands
     default: op
-  skillapi.force:
+  fabled.force:
     description: access to force commands
     default: op
-  skillapi.attrib:
+  fabled.attrib:
     description: access to giving attribute points
     default: op
-  skillapi.gui:
+  fabled.gui:
     description: access to GUI editor menu
     default: op
 
-  skillapi.*:
+  fabled.*:
     description: access to all commands and features
     default: op
     children:
-      skillapi.basic: true
-      skillapi.reset: true
-      skillapi.exp: true
-      skillapi.level: true
-      skillapi.mana: true
-      skillapi.points: true
-      skillapi.reload: true
-      skillapi.class: true
-      skillapi.skill: true
-      skillapi.lore: true
-      skillapi.gui: true
+      fabled.basic: true
+      fabled.reset: true
+      fabled.exp: true
+      fabled.level: true
+      fabled.mana: true
+      fabled.points: true
+      fabled.reload: true
+      fabled.class: true
+      fabled.skill: true
+      fabled.lore: true
+      fabled.gui: true
