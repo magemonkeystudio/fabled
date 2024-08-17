@@ -1,9 +1,9 @@
 import FabledMechanic                                            from '$api/components/mechanics';
 import BlockSelect                                               from '$api/options/blockselect';
-import FabledCondition                                              from '$api/components/conditions';
+import FabledCondition                                           from '$api/components/conditions';
 import DropdownSelect                                            from '$api/options/dropdownselect';
-import FabledTrigger                                                from '$api/components/triggers';
-import FabledTarget                                                 from '$api/components/targets';
+import FabledTrigger                                             from '$api/components/triggers';
+import FabledTarget                                              from '$api/components/targets';
 import MaterialSelect                                            from '$api/options/materialselect';
 import {
 	getAnyConsumable,
@@ -40,9 +40,9 @@ import ClassSelect                                               from '$api/opti
 import SkillSelect                                               from '$api/options/skillselect';
 import IntSelect                                                 from '$api/options/intselect';
 import ColorSelect                                               from '$api/options/colorselect';
-import { get }              from 'svelte/store';
-import type FabledComponent from '$api/components/fabled-component';
-import EnchantSelect        from '$api/options/enchantselect';
+import { get }                                                   from 'svelte/store';
+import type FabledComponent                                      from '$api/components/fabled-component';
+import EnchantSelect                                             from '$api/options/enchantselect';
 import { attributeStore }                                        from '../../data/attribute-store';
 
 // TRIGGERS
@@ -2285,8 +2285,11 @@ class BlockMechanic extends FabledMechanic {
 					.setTooltip('The block data to apply, mostly applicable for things like signs, woods, steps, or the similar'),
 				new BooleanSelect('Reset Yaw', 'reset-yaw', false)
 					.setTooltip('Whether the target\'s yaw should be reset, effectively making the offsets cardinally aligned'),
+				new BooleanSelect('Permanent', 'permanent', false)
+					.setTooltip('Whether the blocks should stay changed indefinitely'),
 				new AttributeSelect('Seconds', 'seconds', 5)
-					.setTooltip('How long the blocks should be replaced for'),
+					.setTooltip('How long the blocks should be replaced for')
+					.requireValue('permanent', [false]),
 
 				// Sphere options
 				new AttributeSelect('Radius', 'radius', 3)
