@@ -4,7 +4,6 @@ import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -12,10 +11,11 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
 import org.mockito.MockedStatic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import studio.magemonkey.codex.CodexEngine;
 import studio.magemonkey.codex.hooks.HookManager;
 import studio.magemonkey.codex.mccore.scoreboard.Board;
-import studio.magemonkey.codex.nms.packets.PacketManager;
 import studio.magemonkey.codex.util.ItemUT;
 import studio.magemonkey.codex.util.Reflex;
 import studio.magemonkey.codex.util.actions.ActionsManager;
@@ -34,9 +34,9 @@ import java.util.zip.ZipOutputStream;
 
 import static org.mockito.Mockito.*;
 
-@Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class MockedTest {
+    private final Logger                log              = LoggerFactory.getLogger(MockedTest.class);
     protected     List<PlayerMock>      players          = new ArrayList<>();
     protected     Map<UUID, PlayerData> activePlayerData = new HashMap<>();
     private final Set<String>           classesToLoad    = new HashSet<>();
