@@ -26,6 +26,9 @@
  */
 package studio.magemonkey.fabled.manager;
 
+import lombok.Getter;
+import studio.magemonkey.codex.mccore.config.CommentedConfig;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.dynamic.EffectComponent;
 import studio.magemonkey.fabled.gui.tool.GUIData;
@@ -33,9 +36,6 @@ import studio.magemonkey.fabled.gui.tool.GUIPage;
 import studio.magemonkey.fabled.gui.tool.GUITool;
 import studio.magemonkey.fabled.log.LogType;
 import studio.magemonkey.fabled.log.Logger;
-import lombok.Getter;
-import studio.magemonkey.codex.mccore.config.CommentedConfig;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
 
 import java.util.*;
 
@@ -97,10 +97,12 @@ public class AttributeManager implements IAttributeManager {
         return byComponent.get(component.getKey() + "-" + key.toLowerCase());
     }
 
+    @Override
     public Set<String> getKeys() {
         return attributes.keySet();
     }
 
+    @Override
     public Set<String> getLookupKeys() {
         return lookup.keySet();
     }

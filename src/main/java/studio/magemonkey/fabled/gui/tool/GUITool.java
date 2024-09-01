@@ -491,8 +491,8 @@ public class GUITool implements ToolMenu {
     private String populateAttributes() {
         i = 9;
         GUIPage page = guiData.getPage();
-        for (String key : Fabled.getAttributeManager().getKeys()) {
-            FabledAttribute attr  = Fabled.getAttributeManager().getAttribute(key);
+        for (String key : Fabled.getAttributesManager().getKeys()) {
+            FabledAttribute attr  = Fabled.getAttributesManager().getAttribute(key);
             int             index = page.getIndex(attr.getKey());
             if (index != -1)
                 inventoryContents[index] = attr.getToolIcon();

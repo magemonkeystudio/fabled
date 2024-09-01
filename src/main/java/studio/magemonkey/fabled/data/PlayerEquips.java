@@ -329,13 +329,13 @@ public class PlayerEquips {
 
                     // Attribute requirements
                     if (attributes && !done) {
-                        for (String attr : Fabled.getAttributeManager().getLookupKeys()) {
+                        for (String attr : Fabled.getAttributesManager().getLookupKeys()) {
                             String text = settings.getAttrReqText(attr);
                             if (lower.startsWith(text)) {
                                 if (attrReq == null)
                                     attrReq = new HashMap<>();
 
-                                String normalized = Fabled.getAttributeManager().normalize(attr);
+                                String normalized = Fabled.getAttributesManager().normalize(attr);
                                 attrReq.put(normalized, NumberParser.parseInt(lower.substring(text.length())));
                                 break;
                             }
@@ -345,7 +345,7 @@ public class PlayerEquips {
                                 if (attribs == null)
                                     attribs = new HashMap<>();
 
-                                String normalized = Fabled.getAttributeManager().normalize(attr);
+                                String normalized = Fabled.getAttributesManager().normalize(attr);
                                 int    current    = attribs.containsKey(attr) ? attribs.get(attr) : 0;
                                 int extra =
                                         NumberParser.parseInt(lower.substring(text.length()).replace("%", ""));

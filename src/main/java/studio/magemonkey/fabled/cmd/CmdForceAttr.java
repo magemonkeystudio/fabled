@@ -98,7 +98,7 @@ public class CmdForceAttr implements IFunction, TabCompleter {
         }
 
         // Validate the attribute
-        if (Fabled.getAttributeManager().getAttribute(args[1]) == null) {
+        if (Fabled.getAttributesManager().getAttribute(args[1]) == null) {
             cmd.sendMessage(sender,
                     NOT_ATTR,
                     ChatColor.GOLD + "{name}" + ChatColor.RED + " is not a valid attribute name",
@@ -165,7 +165,7 @@ public class CmdForceAttr implements IFunction, TabCompleter {
         if (args.length == 1) {
             return ConfigurableCommand.getPlayerTabCompletions(commandSender, args[0]);
         } else if (args.length > 1) {
-            return ConfigurableCommand.getTabCompletions(Fabled.getAttributeManager().getKeys(),
+            return ConfigurableCommand.getTabCompletions(Fabled.getAttributesManager().getKeys(),
                     Arrays.copyOfRange(args, 1, args.length));
         }
         return null;

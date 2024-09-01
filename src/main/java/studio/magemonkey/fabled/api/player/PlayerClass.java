@@ -367,6 +367,7 @@ public class PlayerClass {
         PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this, amount, source);
         event.setCancelled(!classData.receivesExp(source) || level >= classData.getMaxLevel());
         Bukkit.getPluginManager().callEvent(event);
+        Bukkit.getPluginManager().callEvent(new com.sucy.skill.api.event.PlayerExperienceGainEvent(new com.sucy.skill.api.player.PlayerClass(this), amount, source));
 
         int rounded = (int) Math.ceil(event.getExp());
 

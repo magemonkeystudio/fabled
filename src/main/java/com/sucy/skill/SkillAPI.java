@@ -2,6 +2,7 @@ package com.sucy.skill;
 
 import com.sucy.skill.api.player.PlayerAccounts;
 import com.sucy.skill.api.player.PlayerData;
+import com.sucy.skill.manager.AttributeManager;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.Metadatable;
@@ -20,7 +21,6 @@ import studio.magemonkey.fabled.api.skills.Skill;
 import studio.magemonkey.fabled.data.Settings;
 import studio.magemonkey.fabled.exception.FabledNotEnabledException;
 import studio.magemonkey.fabled.manager.ComboManager;
-import studio.magemonkey.fabled.manager.IAttributeManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -112,11 +112,11 @@ public class SkillAPI extends JavaPlugin {
      * Retrieves the attribute manager for Fabled
      *
      * @return attribute manager
-     * @deprecated use {@link Fabled#getAttributeManager()}
+     * @deprecated use {@link Fabled#getAttributesManager()}
      */
     @Deprecated(forRemoval = true)
-    public static IAttributeManager getAttributeManager() {
-        return Fabled.getAttributeManager();
+    public static AttributeManager getAttributeManager() {
+        return new AttributeManager(Fabled.getAttributesManager());
     }
 
     /**

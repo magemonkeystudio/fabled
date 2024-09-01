@@ -23,9 +23,18 @@ import studio.magemonkey.fabled.dynamic.EffectComponent;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Player data wrapper for Fabled
+ * @deprecated Use {@link studio.magemonkey.fabled.api.player.PlayerData} instead
+ */
 @RequiredArgsConstructor
+@Deprecated(forRemoval = true)
 public class PlayerData {
     private final studio.magemonkey.fabled.api.player.PlayerData _data;
+
+    public studio.magemonkey.fabled.api.player.PlayerData getActual() {
+        return _data;
+    }
 
     public Player getPlayer() {
         return _data.getPlayer();

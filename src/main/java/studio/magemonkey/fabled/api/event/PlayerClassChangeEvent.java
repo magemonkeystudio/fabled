@@ -26,6 +26,8 @@
  */
 package studio.magemonkey.fabled.api.event;
 
+import lombok.Getter;
+import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.player.PlayerClass;
@@ -34,10 +36,17 @@ import studio.magemonkey.fabled.api.player.PlayerData;
 /**
  * Event called when a player changes classes
  */
-public class PlayerClassChangeEvent extends com.sucy.skill.api.event.PlayerClassChangeEvent {
-    private final        PlayerClass playerClass;
-    private final        FabledClass previousClass;
-    private final        FabledClass newClass;
+@Getter
+public class PlayerClassChangeEvent extends Event {
+    private static final HandlerList handlers = new HandlerList();
+
+    private final PlayerClass playerClass;
+    private final FabledClass previousClass;
+    /**
+     * -- GETTER --
+     * @return new class of the player
+     */
+    private final FabledClass newClass;
 
     /**
      * Constructor
@@ -53,13 +62,6 @@ public class PlayerClassChangeEvent extends com.sucy.skill.api.event.PlayerClass
     }
 
     /**
-     * @return modified player class
-     */
-    public PlayerClass getPlayerClass() {
-        return playerClass;
-    }
-
-    /**
      * @return Data of the player changing classes
      */
     public PlayerData getPlayerData() {
@@ -67,30 +69,16 @@ public class PlayerClassChangeEvent extends com.sucy.skill.api.event.PlayerClass
     }
 
     /**
-     * @return previous class of the player
-     */
-    public FabledClass getPreviousClass() {
-        return previousClass;
-    }
-
-    /**
-     * @return new class of the player
-     */
-    public FabledClass getNewClass() {
-        return newClass;
-    }
-
-    /**
      * @return gets the handlers for the event
      */
     public HandlerList getHandlers() {
-        return super.getHandlers();
+        return handlers;
     }
 
     /**
      * @return gets the handlers for the event
      */
     public static HandlerList getHandlerList() {
-        return com.sucy.skill.api.event.PlayerClassChangeEvent.getHandlerList();
+        return handlers;
     }
 }

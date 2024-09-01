@@ -77,7 +77,7 @@ public class ValueAttributeMechanic extends MechanicComponent {
         if (!settings.getStringList(ATTR).isEmpty()) {
             attrs = settings.getStringList(ATTR)
                     .stream()
-                    .filter(key -> Fabled.getAttributeManager().getAttribute(key) != null)
+                    .filter(key -> Fabled.getAttributesManager().getAttribute(key) != null)
                     .collect(Collectors.toList());
         } else {
             // Attempt to read it as a string, optionally comma separated

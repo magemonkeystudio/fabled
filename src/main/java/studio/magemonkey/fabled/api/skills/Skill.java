@@ -40,7 +40,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 import studio.magemonkey.codex.mccore.config.Filter;
 import studio.magemonkey.codex.mccore.config.FilterType;
@@ -401,7 +400,7 @@ public abstract class Skill implements IconHolder {
      * @return true if requires, false otherwise
      */
     private boolean doesRequireAttributes(int level) {
-        Set<String> attributes = Fabled.getAttributeManager().getKeys();
+        Set<String> attributes = Fabled.getAttributesManager().getKeys();
         for (String key : attributes) {
             if (settings.getAttr(key, level, 0) != 0) return true;
         }
@@ -528,7 +527,7 @@ public abstract class Skill implements IconHolder {
     }
 
     public boolean hasEnoughAttributes(final PlayerData playerData) {
-        Set<String> attributes = Fabled.getAttributeManager().getKeys();
+        Set<String> attributes = Fabled.getAttributesManager().getKeys();
         for (String attr : attributes) {
             if (!checkSingleAttribute(playerData, attr)) return false;
         }
@@ -583,7 +582,7 @@ public abstract class Skill implements IconHolder {
         final String        skillReq             = isCompatible(skillData.getPlayerData()) ? MET : NOT_MET;
         final String        attrReq              = hasEnoughAttributes(skillData.getPlayerData()) ? MET : NOT_MET;
         Map<String, String> attributeSpecificReq = new HashMap<>();
-        for (String key : Fabled.getAttributeManager().getKeys()) {
+        for (String key : Fabled.getAttributesManager().getKeys()) {
             attributeSpecificReq.put(key, checkSingleAttribute(skillData.getPlayerData(), key) ? MET : NOT_MET);
         }
 

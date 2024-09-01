@@ -264,7 +264,7 @@ public class FabledAttribute implements IconHolder {
                 values[i++] = new AttributeValue(formula);
             }
             target.put(lower, values);
-            Fabled.getAttributeManager().addByComponent(lower, this);
+            Fabled.getAttributesManager().addByComponent(lower, this);
         }
     }
 
@@ -281,7 +281,7 @@ public class FabledAttribute implements IconHolder {
                     key,
                     new Formula(data.getString(key, "v"), new CustomValue("v"), new CustomValue("a")));
 
-            Fabled.getAttributeManager().addByStat(key, this);
+            Fabled.getAttributesManager().addByStat(key, this);
         }
     }
 }

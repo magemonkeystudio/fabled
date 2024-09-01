@@ -80,7 +80,7 @@ public class AttributeMechanic extends MechanicComponent {
         if (!settings.getStringList(KEY).isEmpty()) {
             keys = settings.getStringList(KEY)
                     .stream()
-                    .filter(key -> Fabled.getAttributeManager().getAttribute(key) != null)
+                    .filter(key -> Fabled.getAttributesManager().getAttribute(key) != null)
                     .collect(Collectors.toList());
         } else {
             // Attempt to read it as a string, optionally comma separated

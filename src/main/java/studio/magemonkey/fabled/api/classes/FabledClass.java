@@ -503,7 +503,7 @@ public abstract class FabledClass implements IconHolder {
     /**
      * Checks whether this class has mana regeneration
      *
-     * @return true if has mana regeneration, false otherwise
+     * @return true if the class has mana regeneration, false otherwise
      */
     public boolean hasManaRegen() {
         return manaRegen > 0;
@@ -620,9 +620,9 @@ public abstract class FabledClass implements IconHolder {
         settings.save(config.createSection(ATTR));
         config.set(REGEN, manaRegen);
         config.set(TREE, tree.toString());
-        config.set(BLACKLIST, new ArrayList<Material>(blacklist));
+        config.set(BLACKLIST, new ArrayList<>(blacklist));
 
-        ArrayList<String> skillNames = new ArrayList<String>();
+        ArrayList<String> skillNames = new ArrayList<>();
         for (Skill skill : skills) {
             skillNames.add(skill.getName());
         }

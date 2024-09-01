@@ -27,6 +27,7 @@
 package studio.magemonkey.fabled.api.player;
 
 import com.google.common.base.Preconditions;
+import com.sucy.skill.api.classes.RPGClass;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -295,7 +296,7 @@ public class PlayerData {
      */
     public HashMap<String, Integer> getAttributes() {
         HashMap<String, Integer> map = new HashMap<>();
-        for (String key : Fabled.getAttributeManager().getKeys()) {
+        for (String key : Fabled.getAttributesManager().getKeys()) {
             map.put(key, getAttribute(key));
         }
         return map;
@@ -417,7 +418,7 @@ public class PlayerData {
      */
     public boolean upAttribute(String key) {
         key = key.toLowerCase();
-        FabledAttribute fabledAttribute = Fabled.getAttributeManager().getAttribute(key);
+        FabledAttribute fabledAttribute = Fabled.getAttributesManager().getAttribute(key);
         if (fabledAttribute == null) return false;
 
         int max          = fabledAttribute.getMax();
@@ -457,7 +458,7 @@ public class PlayerData {
      * @return calculated cost of single attribute upgrade
      */
     public int getAttributeUpCost(String key) {
-        FabledAttribute fabledAttribute = Fabled.getAttributeManager().getAttribute(key);
+        FabledAttribute fabledAttribute = Fabled.getAttributesManager().getAttribute(key);
         if (fabledAttribute == null) return 0;
 
         int currentStage = getInvestedAttributeStage(key);
@@ -478,7 +479,7 @@ public class PlayerData {
      * @return calculated cost of single attribute upgrade
      */
     public int getAttributeUpCost(String key, Integer modifier) {
-        FabledAttribute fabledAttribute = Fabled.getAttributeManager().getAttribute(key);
+        FabledAttribute fabledAttribute = Fabled.getAttributesManager().getAttribute(key);
         if (fabledAttribute == null) return 0;
 
         int currentStage  = getInvestedAttributeStage(key);
@@ -501,7 +502,7 @@ public class PlayerData {
      * @return calculated cost of single attribute upgrade
      */
     public int getAttributeUpCost(String key, Integer from, Integer to) {
-        FabledAttribute fabledAttribute = Fabled.getAttributeManager().getAttribute(key);
+        FabledAttribute fabledAttribute = Fabled.getAttributesManager().getAttribute(key);
         if (fabledAttribute == null) return 0;
 
         int     totalCost = 0;
@@ -528,7 +529,7 @@ public class PlayerData {
      */
     public boolean giveAttribute(String key, int amount) {
         key = key.toLowerCase();
-        FabledAttribute fabledAttribute = Fabled.getAttributeManager().getAttribute(key);
+        FabledAttribute fabledAttribute = Fabled.getAttributesManager().getAttribute(key);
         if (fabledAttribute == null) return false;
 
         int max          = fabledAttribute.getMax();
@@ -596,7 +597,7 @@ public class PlayerData {
      * @param update   calculate player stat immediately and apply to him
      */
     public void addAttributeModifier(String key, PlayerAttributeModifier modifier, boolean update) {
-        key = Fabled.getAttributeManager().normalize(key);
+        key = Fabled.getAttributesManager().normalize(key);
         List<PlayerAttributeModifier> modifiers = this.getAttributeModifiers(key);
         modifiers.add(modifier);
         this.attributesModifiers.put(key, modifiers);
@@ -758,7 +759,7 @@ public class PlayerData {
             }
         }
 
-        final IAttributeManager manager = Fabled.getAttributeManager();
+        final IAttributeManager manager = Fabled.getAttributesManager();
         if (manager == null) {
             return defaultValue;
         }
@@ -810,7 +811,7 @@ public class PlayerData {
      * @return the modified value
      */
     public double scaleDynamic(EffectComponent component, String key, double value) {
-        final IAttributeManager manager = Fabled.getAttributeManager();
+        final IAttributeManager manager = Fabled.getAttributesManager();
         if (manager == null) {
             return value;
         }
@@ -850,7 +851,7 @@ public class PlayerData {
                                     true,
                                     FilterType.COLOR, RPGFilter.POINTS.setReplacement(attribPoints + ""),
                                     Filter.PLAYER.setReplacement(player.getName())
-                            ).get(0), Fabled.getAttributeManager().getAttributes()
+                            ).get(0), Fabled.getAttributesManager().getAttributes()
                     );
             return true;
         }
@@ -1624,6 +1625,8 @@ public class PlayerData {
 
             // Call the event
             Bukkit.getPluginManager().callEvent(new PlayerClassChangeEvent(playerClass, data, null));
+            Bukkit.getPluginManager().callEvent(new com.sucy.skill.api.event.PlayerClassChangeEvent(new com.sucy.skill.api.player.PlayerClass(playerClass),
+                    new RPGClass(data), null));
         }
 
         // Restore default class if applicable
@@ -1735,6 +1738,8 @@ public class PlayerData {
             }
 
             Bukkit.getPluginManager().callEvent(new PlayerClassChangeEvent(current, previous, current.getData()));
+            Bukkit.getPluginManager().callEvent(new com.sucy.skill.api.event.PlayerClassChangeEvent(new com.sucy.skill.api.player.PlayerClass(current),
+                    previous == null ? null : new RPGClass(previous), new RPGClass(current.getData())));
             if (fabledClass.getParent() == null || isResetting)
                 skillPoints += fabledClass.getGroupSettings().getStartingPoints();
             current.givePoints(skillPoints);

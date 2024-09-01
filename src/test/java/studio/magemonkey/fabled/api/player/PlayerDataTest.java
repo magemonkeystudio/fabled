@@ -4,7 +4,6 @@ import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.enums.Operation;
@@ -63,7 +62,7 @@ public class PlayerDataTest extends MockedTest implements Listener {
 
     @Test
     void giveAttributes_costModifierWorksNormally() {
-        FabledAttribute attribute = Fabled.getAttributeManager().getAttribute("spirit");
+        FabledAttribute attribute = Fabled.getAttributesManager().getAttribute("spirit");
         attribute.setCostModifier(1.5);
 
         assertEquals(1, playerData.getAttributeUpCost("spirit"));
@@ -89,7 +88,7 @@ public class PlayerDataTest extends MockedTest implements Listener {
 
     @Test
     void giveAttributes_costModifierWorksWithAttributeModifiers() {
-        FabledAttribute attribute = Fabled.getAttributeManager().getAttribute("spirit");
+        FabledAttribute attribute = Fabled.getAttributesManager().getAttribute("spirit");
         attribute.setCostModifier(1.5);
 
         playerData.addAttributeModifier("spirit",
@@ -119,7 +118,7 @@ public class PlayerDataTest extends MockedTest implements Listener {
 
     @Test
     void getAttributeUpCost_worksGoingBackwards() {
-        FabledAttribute attribute = Fabled.getAttributeManager().getAttribute("spirit");
+        FabledAttribute attribute = Fabled.getAttributesManager().getAttribute("spirit");
         attribute.setCostModifier(1.5);
 
         // 1, 2, 4, 5, 7
@@ -190,7 +189,7 @@ public class PlayerDataTest extends MockedTest implements Listener {
 
     @Test
     void refundAttribute_modifier() {
-        FabledAttribute attribute = Fabled.getAttributeManager().getAttribute("spirit");
+        FabledAttribute attribute = Fabled.getAttributesManager().getAttribute("spirit");
         attribute.setCostModifier(1.5);
 
         playerData.giveAttribute("spirit", 5);
@@ -403,7 +402,7 @@ public class PlayerDataTest extends MockedTest implements Listener {
 
     @Test
     void upAttribute_doesNotExceedMax() {
-        FabledAttribute attribute = Fabled.getAttributeManager().getAttribute("spirit");
+        FabledAttribute attribute = Fabled.getAttributesManager().getAttribute("spirit");
         attribute.setMax(5);
 
         playerData.giveAttribute("spirit", 5);
