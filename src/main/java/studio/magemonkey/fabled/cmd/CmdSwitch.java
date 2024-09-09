@@ -29,6 +29,7 @@ package studio.magemonkey.fabled.cmd;
 import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
 import studio.magemonkey.codex.mccore.commands.IFunction;
 import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.PlayerLoader;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.player.PlayerAccounts;
 import studio.magemonkey.fabled.api.player.PlayerClass;
@@ -80,7 +81,7 @@ public class CmdSwitch implements IFunction, TabCompleter {
 
         // Switch accounts if valid number
         else {
-            PlayerAccounts player = Fabled.getPlayerAccounts((Player) sender);
+            PlayerAccounts player = PlayerLoader.getPlayerAccounts((Player) sender);
 
             FabledClass fabledClass = getRoot(Fabled.getClass(args[0]));
             if (fabledClass != null) {

@@ -30,6 +30,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.PlayerLoader;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.player.*;
 import studio.magemonkey.fabled.api.skills.Skill;
@@ -38,10 +39,7 @@ import studio.magemonkey.fabled.listener.MainListener;
 import studio.magemonkey.fabled.log.Logger;
 import studio.magemonkey.fabled.manager.ComboManager;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Base class for managers that handle saving and loading player data
@@ -87,7 +85,7 @@ public abstract class IOManager {
      *
      * @param api Fabled reference
      */
-    IOManager(Fabled api) {
+    protected IOManager(Fabled api) {
         this.api = api;
     }
 
@@ -96,7 +94,7 @@ public abstract class IOManager {
      *
      * @return loaded player data
      */
-    public abstract Map<String, PlayerAccounts> loadAll();
+    public abstract Map<UUID, PlayerAccounts> loadAll();
 
     /**
      * Loads data for the player
@@ -117,7 +115,7 @@ public abstract class IOManager {
      * Saves all player data
      */
     public void saveAll() {
-        for (PlayerAccounts data : Fabled.getPlayerAccounts().values()) {
+        for (PlayerAccounts data : PlayerLoader.getAllPlayerAccounts().values()) {
             if (data.isLoaded() && !MainListener.loadingPlayers.containsKey(data.getOfflinePlayer().getUniqueId())) {
                 saveData(data);
             }
@@ -131,7 +129,7 @@ public abstract class IOManager {
      * @param file   DataSection containing the account info
      * @return the loaded player account data
      */
-    protected PlayerAccounts load(OfflinePlayer player, DataSection file) {
+    public static PlayerAccounts load(OfflinePlayer player, DataSection file) {
         PlayerAccounts data     = new PlayerAccounts(player);
         DataSection    accounts = file.getSection(ACCOUNTS);
         if (accounts == null) {
@@ -343,7 +341,7 @@ public abstract class IOManager {
         return data;
     }
 
-    protected DataSection save(PlayerAccounts data) {
+    public static DataSection save(PlayerAccounts data) {
         try {
             DataSection file = new DataSection();
             file.set(LIMIT, data.getAccountLimit());

@@ -30,6 +30,7 @@ import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
 import studio.magemonkey.codex.mccore.commands.IFunction;
 import studio.magemonkey.codex.mccore.config.Filter;
 import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.PlayerLoader;
 import studio.magemonkey.fabled.api.player.PlayerAccounts;
 import studio.magemonkey.fabled.language.RPGFilter;
 import org.bukkit.Bukkit;
@@ -78,7 +79,7 @@ public class CmdForceAccount implements IFunction, TabCompleter {
                 return;
             }
 
-            PlayerAccounts accounts = Fabled.getPlayerAccounts(player);
+            PlayerAccounts accounts = PlayerLoader.getPlayerAccounts(player);
             try {
                 int id = Integer.parseInt(args[1]);
 

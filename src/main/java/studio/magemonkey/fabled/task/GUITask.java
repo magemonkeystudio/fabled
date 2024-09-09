@@ -33,6 +33,7 @@ import org.bukkit.entity.Player;
 import studio.magemonkey.codex.mccore.config.FilterType;
 import studio.magemonkey.codex.mccore.util.TextFormatter;
 import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.PlayerLoader;
 import studio.magemonkey.fabled.api.player.PlayerClass;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
@@ -102,7 +103,7 @@ public class GUITask extends RepeatThreadTask {
         Logger.log(LogType.GUI, 1, "Updating GUI (" + Bukkit.getOnlinePlayers().size() + " players)...");
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (!Fabled.getSettings().isWorldEnabled(player.getWorld())) continue;
-            if (!Fabled.hasPlayerData(player)) continue;
+            if (!PlayerLoader.hasPlayerAccounts(player)) continue;
 
             PlayerData data = Fabled.getData(player);
 

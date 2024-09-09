@@ -32,12 +32,14 @@ import org.bukkit.entity.Player;
 import studio.magemonkey.codex.mccore.config.CommentedConfig;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.PlayerLoader;
 import studio.magemonkey.fabled.api.player.PlayerAccounts;
 import studio.magemonkey.fabled.log.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * IO manager that saves/loads to a .yml configuration file
@@ -52,10 +54,10 @@ public class ConfigIO extends IOManager {
         super(plugin);
     }
 
-    public Map<String, PlayerAccounts> loadAll() {
-        Map<String, PlayerAccounts> result = new HashMap<>();
+    public Map<UUID, PlayerAccounts> loadAll() {
+        Map<UUID, PlayerAccounts> result = new HashMap<>();
         for (Player player : Bukkit.getOnlinePlayers()) {
-            result.put(player.getUniqueId().toString().toLowerCase(), loadData(player));
+            result.put(player.getUniqueId(), loadData(player));
         }
         return result;
     }
@@ -68,8 +70,8 @@ public class ConfigIO extends IOManager {
      */
     @Override
     public PlayerAccounts loadData(OfflinePlayer player) {
-        String          playerKey  = player.getUniqueId().toString().toLowerCase();
-        CommentedConfig config     = new CommentedConfig(api, "players/" + playerKey);
+        String playerKey = player.getUniqueId().toString().toLowerCase();
+        CommentedConfig config = new CommentedConfig(api, "players/" + playerKey);
         CommentedConfig nameConfig = new CommentedConfig(api, "players/" + player.getName());
         if (!playerKey.equals(player.getName()) && nameConfig.getConfigFile().exists()) {
             DataSection old = nameConfig.getConfig();
@@ -110,9 +112,9 @@ public class ConfigIO extends IOManager {
      */
     @Override
     public void saveAll() {
-        Map<String, PlayerAccounts> data = Fabled.getPlayerAccounts();
-        ArrayList<String>           keys = new ArrayList<String>(data.keySet());
-        for (String key : keys)
+        Map<UUID, PlayerAccounts> data = PlayerLoader.getAllPlayerAccounts();
+        ArrayList<UUID> keys = new ArrayList<>(data.keySet());
+        for (UUID key : keys)
             saveData(data.get(key));
     }
 }
