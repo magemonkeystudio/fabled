@@ -578,8 +578,6 @@ public class Fabled extends SkillAPI {
         }
 
         MimicHook.init(this);
-        fabledProvider = new FabledAttributeProvider(this);
-        AttributeRegistry.registerProvider(fabledProvider);
     }
 
     /**
@@ -767,6 +765,9 @@ public class Fabled extends SkillAPI {
         if (Bukkit.getServer().getPluginManager().getPlugin("Quests") != null) {
             ResourceManager.copyQuestsModule();
         }
+
+        fabledProvider = new FabledAttributeProvider();
+        AttributeRegistry.registerProvider(fabledProvider);
 
         loaded = true;
     }
