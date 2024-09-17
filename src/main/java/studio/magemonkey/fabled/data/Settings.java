@@ -234,8 +234,21 @@ public class Settings {
     @Setter
     private CombatProtection    combatProtection = new DefaultCombatProtection();
     private boolean             auto;
+    /**
+     * -- GETTER --
+     *  Checks whether the plugin is using SQL Database saving
+     *
+     * @return true if enabled, false otherwise
+     */
+    @Getter
     private boolean             useSql;
     private int                 minutes;
+    /**
+     * -- GETTER --
+     *
+     * @return time in milliseconds to wait before loading SQL data
+     */
+    @Getter
     private int                 sqlDelay;
     /**
      * Retrieves the host IP for the database
@@ -258,7 +271,21 @@ public class Settings {
      */
     @Getter
     private String              sqlDatabase;
+    /**
+     * -- GETTER --
+     *  Retrieves the username for the database credentials
+     *
+     * @return SQL database username
+     */
+    @Getter
     private String              sqlUser;
+    /**
+     * -- GETTER --
+     *  Retrieves the password for the database credentials
+     *
+     * @return SQL database password
+     */
+    @Getter
     private String              sqlPass;
     /**
      * -- GETTER --
@@ -978,40 +1005,6 @@ public class Settings {
         return minutes * 60 * 20;
     }
 
-    /**
-     * Checks whether the plugin is using SQL Database saving
-     *
-     * @return true if enabled, false otherwise
-     */
-    public boolean isUseSql() {
-        return useSql;
-    }
-
-    /**
-     * Retrieves the username for the database credentials
-     *
-     * @return SQL database username
-     */
-    public String getSqlUser() {
-        return sqlUser;
-    }
-
-    /**
-     * Retrieves the password for the database credentials
-     *
-     * @return SQL database password
-     */
-    public String getSqlPass() {
-        return sqlPass;
-    }
-
-    /**
-     * @return time in milliseconds to wait before loading SQL data
-     */
-    public int getSqlDelay() {
-        return sqlDelay;
-    }
-
     private void loadSaveSettings() {
         auto = config.getBoolean(SAVE_AUTO);
         minutes = config.getInt(SAVE_MINS);
@@ -1238,7 +1231,10 @@ public class Settings {
 
         enabledClicks = new boolean[Click.values().length + 1];
         for (int i = 1; i <= Click.values().length; i++) {
-            final String key = COMBO_CLICK + Click.getById(i).name().toLowerCase().replace('_', '-');
+            Click click = Click.getById(i);
+            if (click == null) continue;
+
+            final String key = COMBO_CLICK + click.name().toLowerCase().replace('_', '-');
             enabledClicks[i] = config.getBoolean(key);
         }
 
@@ -1306,7 +1302,7 @@ public class Settings {
                 for (String line : levelsConfig.getConfig().getList("level-exp")) {
                     levelsExp.add(Integer.parseInt(line));
                 }
-                if (levelsExp.size() < 1) {
+                if (levelsExp.isEmpty()) {
                     throw new IndexOutOfBoundsException();
                 }
                 this.levelsExp = levelsExp;

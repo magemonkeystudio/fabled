@@ -78,10 +78,7 @@ public class GUIPage {
 
     public int getIndex(String item) {
         item = item.toLowerCase();
-        if (!slots.containsKey(item))
-            return -1;
-        else
-            return slots.get(item);
+        return slots.getOrDefault(item, -1);
     }
 
     public void fill(ItemStack[] data) {
@@ -174,6 +171,6 @@ public class GUIPage {
     }
 
     public boolean isValid() {
-        return slots.size() > 0;
+        return !slots.isEmpty();
     }
 }
