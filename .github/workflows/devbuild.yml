@@ -74,5 +74,5 @@ jobs:
         run: |
           cd app
           python -m venv .venv
-          .venv/bin/pip install simplejson
+          .venv/bin/pip install simplejson requests
           .venv/bin/python ./.github/notify_published.py ${{ secrets.WEBHOOK_URL }} true
