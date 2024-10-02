@@ -26,5 +26,3 @@ jobs:
           githubServer: false
       - name: Build with Maven
         run: mvn clean package -e
-        env:
-          GITHUB_TOKEN_REF: ${{ secrets.GH_PAT_FOR_ACTIONS_TOKEN }}

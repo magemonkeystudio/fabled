@@ -63,4 +63,7 @@ jobs:
           git commit -m "[ci skip] Update version for development"
           git push
       - name: Notify Discord
-        run: pip install simplejson && python ./.github/notify_published.py ${{ secrets.WEBHOOK_URL }}
+        run: |
+          python -m venv .venv
+          .venv/bin/pip install simplejson
+          .venv/bin/python ./.github/notify_published.py ${{ secrets.WEBHOOK_URL }}
