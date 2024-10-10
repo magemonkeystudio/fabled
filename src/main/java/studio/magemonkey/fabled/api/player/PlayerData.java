@@ -1956,6 +1956,7 @@ public class PlayerData {
         this.updateMCAttribute(player, Attribute.GENERIC_KNOCKBACK_RESISTANCE, AttributeManager.KNOCKBACK_RESIST, 0, 1.0);
         this.updateMCAttribute(player, Attribute.GENERIC_ARMOR_TOUGHNESS, AttributeManager.ARMOR_TOUGHNESS, 0, 20);
         // Stats added in 1.21+
+        
         this.updateMCAttribute(player, Attribute.GENERIC_ATTACK_DAMAGE, AttributeManager.ATTACK_DAMAGE, 0.0f, 2048.0f);
         this.updateMCAttribute(player, Attribute.GENERIC_ATTACK_KNOCKBACK, AttributeManager.ATTACK_KNOCKBACK, 0.0f, 5.0f);
         this.updateMCAttribute(player, Attribute.GENERIC_FLYING_SPEED, AttributeManager.FLYING_SPEED, 0.0f, 1024.0f);
