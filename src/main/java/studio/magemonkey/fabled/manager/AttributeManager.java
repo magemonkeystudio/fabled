@@ -45,27 +45,53 @@ import java.util.*;
  */
 public class AttributeManager implements IAttributeManager {
     // Keys for supported stat modifiers
-    public static final String HEALTH             = "health";
-    public static final String MANA               = "mana";
-    public static final String MANA_REGEN         = "mana-regen";
-    public static final String PHYSICAL_DAMAGE    = "physical-damage";
-    public static final String MELEE_DAMAGE       = "melee-damage";
-    public static final String PROJECTILE_DAMAGE  = "projectile-damage";
-    public static final String PHYSICAL_DEFENSE   = "physical-defense";
-    public static final String MELEE_DEFENSE      = "melee-defense";
-    public static final String PROJECTILE_DEFENSE = "projectile-defense";
-    public static final String SKILL_DAMAGE       = "skill-damage";
-    public static final String SKILL_DEFENSE      = "skill-defense";
-    public static final String MOVE_SPEED         = "move-speed";
-    public static final String ATTACK_SPEED       = "attack-speed";
-    public static final String ARMOR              = "armor";
-    public static final String LUCK               = "luck";
-    public static final String ARMOR_TOUGHNESS    = "armor-toughness";
-    public static final String EXPERIENCE         = "exp";
-    public static final String HUNGER             = "hunger";
-    public static final String HUNGER_HEAL        = "hunger-heal";
-    public static final String COOLDOWN           = "cooldown";
-    public static final String KNOCKBACK_RESIST   = "knockback-resist";
+    public static final String HEALTH                         = "health";
+    public static final String MANA                           = "mana";
+    public static final String MANA_REGEN                     = "mana-regen";
+    public static final String PHYSICAL_DAMAGE                = "physical-damage";
+    public static final String MELEE_DAMAGE                   = "melee-damage";
+    public static final String PROJECTILE_DAMAGE              = "projectile-damage";
+    public static final String PHYSICAL_DEFENSE               = "physical-defense";
+    public static final String MELEE_DEFENSE                  = "melee-defense";
+    public static final String PROJECTILE_DEFENSE             = "projectile-defense";
+    public static final String SKILL_DAMAGE                   = "skill-damage";
+    public static final String SKILL_DEFENSE                  = "skill-defense";
+    public static final String MOVE_SPEED                     = "move-speed";
+    public static final String ATTACK_SPEED                   = "attack-speed";
+    public static final String ARMOR                          = "armor";
+    public static final String LUCK                           = "luck";
+    public static final String ARMOR_TOUGHNESS                = "armor-toughness";
+    public static final String EXPERIENCE                     = "exp";
+    public static final String HUNGER                         = "hunger";
+    public static final String HUNGER_HEAL                    = "hunger-heal";
+    public static final String COOLDOWN                       = "cooldown";
+    public static final String KNOCKBACK_RESIST               = "knockback-resist";
+    // Attributes as of in 1.21+
+    // https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html
+    public static final String ATTACK_DAMAGE                  = "attack-damage";
+    public static final String ATTACK_KNOCKBACK               = "attack-knockback";
+    public static final String FLYING_SPEED                   = "flying-speed";
+    public static final String FOLLOW_RANGE                   = "follow-range";
+    public static final String ABSORPTION                     = "absorption";  
+    public static final String SCALE                          = "scale";
+    public static final String STEP_HEIGHT                    = "step-height";
+    public static final String JUMP_STRENGTH                  = "jump-strength";
+    public static final String GRAVITY                        = "gravity";
+    public static final String SAFE_FALL_DISTANCE             = "safe-fall-distance";
+    public static final String FALL_DAMAGE_MULTIPLIER         = "fall-damage-multiplier";
+    public static final String BURNING_TIME                   = "burning-time";
+    public static final String EXPLOSION_KNOCKBACK_RESISTANCE = "explosion-knockback-resistance";
+    public static final String MOVEMENT_EFFICIENCY            = "movement-efficiency";
+    public static final String OXYGEN_BONUS                   = "oxygen-bonus";
+    public static final String WATER_MOVEMENT_EFFICIENCY      = "water-movement-efficiency";
+    // Player only stats 1.21+
+    public static final String BLOCK_INTERACTION_RANGE        = "block-interaction-range";
+    public static final String ENTITY_INTERACTION_RANGE       = "entity-interaction-range";
+    public static final String BLOCK_BREAK_SPEED              = "block-break-speed";
+    public static final String MINING_EFFICIENCY              = "mining-efficiency";
+    public static final String SNEAKING_SPEED                 = "sneaking-speed";
+    public static final String SUBMERGED_MINING_SPEED         = "submerged-mining-speed";
+    public static final String SWEEPING_DAMAGE_RATIO          = "sweeping-damage-ratio";
 
     /**
      * Unsafe getter for the attribute data.

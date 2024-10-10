@@ -1952,12 +1952,34 @@ public class PlayerData {
         this.updateMCAttribute(player, Attribute.GENERIC_ATTACK_SPEED, AttributeManager.ATTACK_SPEED, 0, 1024);
         this.updateMCAttribute(player, Attribute.GENERIC_ARMOR, AttributeManager.ARMOR, 0, 30);
         this.updateMCAttribute(player, Attribute.GENERIC_LUCK, AttributeManager.LUCK, -1024, 1024);
-        this.updateMCAttribute(player,
-                Attribute.GENERIC_KNOCKBACK_RESISTANCE,
-                AttributeManager.KNOCKBACK_RESIST,
-                0,
-                1.0);
+        this.updateMCAttribute(player, Attribute.GENERIC_KNOCKBACK_RESISTANCE, AttributeManager.KNOCKBACK_RESIST, 0, 1.0);
         this.updateMCAttribute(player, Attribute.GENERIC_ARMOR_TOUGHNESS, AttributeManager.ARMOR_TOUGHNESS, 0, 20);
+        // Stats added in 1.21+
+        this.updateMCAttribute(player, Attribute.GENERIC_ATTACK_DAMAGE, AttributeManager.ATTACK_DAMAGE, 0.0f, 1.0f);
+        this.updateMCAttribute(player, Attribute.GENERIC_ATTACK_KNOCKBACK, AttributeManager.ATTACK_KNOCKBACK, 0.0f, 1.0f);
+        this.updateMCAttribute(player, Attribute.GENERIC_FLYING_SPEED, AttributeManager.FLYING_SPEED, 0.0f, 1.0f);
+        this.updateMCAttribute(player, Attribute.GENERIC_FOLLOW_RANGE, AttributeManager.FOLLOW_RANGE, 0.0f, 1.0f);
+        this.updateMCAttribute(player, Attribute.GENERIC_MAX_ABSORPTION, AttributeManager.ABSORPTION, 0.0f, 1.0f);
+        this.updateMCAttribute(player, Attribute.GENERIC_SCALE, AttributeManager.SCALE, 0.0f, 1.0f);
+        this.updateMCAttribute(player, Attribute.GENERIC_STEP_HEIGHT, AttributeManager.STEP_HEIGHT, 0.0f, 1.0f);
+        this.updateMCAttribute(player, Attribute.GENERIC_JUMP_STRENGTH, AttributeManager.JUMP_STRENGTH, 0.0f, 1.0f);
+        this.updateMCAttribute(player, Attribute.GENERIC_GRAVITY, AttributeManager.GRAVITY, 0.0f, 1.0f);
+        this.updateMCAttribute(player, Attribute.GENERIC_SAFE_FALL_DISTANCE, AttributeManager.SAFE_FALL_DISTANCE, 0.0f, 1.0f);
+        this.updateMCAttribute(player, Attribute.GENERIC_FALL_DAMAGE_MULTIPLIER, AttributeManager.FALL_DAMAGE_MULTIPLIER, 0.0f, 1.0f);
+        this.updateMCAttribute(player, Attribute.GENERIC_BURNING_TIME, AttributeManager.BURNING_TIME, 0.0f, 1.0f);
+        this.updateMCAttribute(player, Attribute.GENERIC_EXPLOSION_KNOCKBACK_RESISTANCE, AttributeManager.EXPLOSION_KNOCKBACK_RESISTANCE, 0.0f, 1.0f);
+        this.updateMCAttribute(player, Attribute.GENERIC_MOVEMENT_EFFICIENCY, AttributeManager.MOVEMENT_EFFICIENCY, 0.0f, 1.0f);
+        this.updateMCAttribute(player, Attribute.GENERIC_OXYGEN_BONUS, AttributeManager.OXYGEN_BONUS, 0.0f, 1.0f);
+        this.updateMCAttribute(player, Attribute.GENERIC_WATER_MOVEMENT_EFFICIENCY, AttributeManager.WATER_MOVEMENT_EFFICIENCY, 0.0f, 1.0f);
+        // Player only stats 1.21+
+        this.updateMCAttribute(player, Attribute.PLAYER_BLOCK_INTERACTION_RANGE, AttributeManager.BLOCK_INTERACTION_RANGE, 0.0f, 1.0f);
+        this.updateMCAttribute(player, Attribute.PLAYER_ENTITY_INTERACTION_RANGE, AttributeManager.ENTITY_INTERACTION_RANGE, 0.0f, 1.0f);
+        this.updateMCAttribute(player, Attribute.PLAYER_BLOCK_BREAK_SPEED, AttributeManager.BLOCK_BREAK_SPEED, 0.0f, 1.0f);
+        this.updateMCAttribute(player, Attribute.PLAYER_MINING_EFFICIENCY, AttributeManager.MINING_EFFICIENCY, 0.0f, 1.0f);
+        this.updateMCAttribute(player, Attribute.PLAYER_SNEAKING_SPEED, AttributeManager.SNEAKING_SPEED, 0.0f, 1.0f);
+        this.updateMCAttribute(player, Attribute.PLAYER_SUBMERGED_MINING_SPEED, AttributeManager.SUBMERGED_MINING_SPEED, 0.0f, 1.0f);
+        this.updateMCAttribute(player, Attribute.PLAYER_SWEEPING_DAMAGE_RATIO, AttributeManager.SWEEPING_DAMAGE_RATIO, 0.0f, 1.0f);
+
     }
 
     /**
