@@ -2479,6 +2479,8 @@ class DamageMechanic extends FabledMechanic {
 					.setTooltip('The type of damage to deal. Can act as elemental damage or fake physical damage. Supports Damage types from Divinity like "DIVINITY_magical"'),
 				new BooleanSelect('Apply Knockback', 'knockback', true)
 					.setTooltip('Whether the damage will inflict knockback. Ignored if it is True Damage'),
+				new BooleanSelect('Ignore Divinity', 'ignore-divinity', false)
+					.setTooltip('Whether to ignore Divinity\'s defenses and damage calculations'),
 				new DropdownSelect('Damage Cause', 'cause', ['Contact', 'Custom', 'Entity Attack', 'Entity Sweep Attack', 'Projectile', 'Suffocation', 'Fall', 'Fire', 'Fire Tick', 'Melting', 'Lava', 'Drowning', 'Block Explosion', 'Entity Explosion', 'Void', 'Lightning', 'Suicide', 'Starvation', 'Poison', 'Magic', 'Wither', 'Falling Block', 'Thorns', 'Dragon Breath', 'Fly Into Wall', 'Hot Floor', 'Cramming', 'Dryout', 'Freeze', 'Sonic Boom'], 'Custom')
 					.setTooltip('Damage Cause considered by the server. This will have influence over the death message and Divinity\' defenses')
 					.requireValue('true', [false])
@@ -2530,6 +2532,8 @@ class DamageLoreMechanic extends FabledMechanic {
 					.setTooltip('The type of damage to deal. Can act as elemental damage or fake physical damage'),
 				new BooleanSelect('Apply Knockback', 'knockback', true)
 					.setTooltip('Whether the damage will inflict knockback. Ignored if it is True Damage'),
+				new BooleanSelect('Ignore Divinity', 'ignore-divinity', false)
+					.setTooltip('Whether to ignore Divinity\'s defenses and damage calculations'),
 				new DropdownSelect('Damage Cause', 'cause', ['Contact', 'Entity Attack', 'Entity Sweep Attack', 'Projectile', 'Suffocation', 'Fall', 'Fire', 'Fire Tick', 'Melting', 'Lava', 'Drowning', 'Block Explosion', 'Entity Explosion', 'Void', 'Lightning', 'Suicide', 'Starvation', 'Poison', 'Magic', 'Wither', 'Falling Block', 'Thorns', 'Dragon Breath', 'Custom', 'Fly Into Wall', 'Hot Floor', 'Cramming', 'Dryout', 'Freeze', 'Sonic Boom'], 'Entity Attack')
 					.setTooltip('Damage Cause considered by the server. This will have influence over the death message and Divinity\' defenses')
 					.requireValue('true', [false])
