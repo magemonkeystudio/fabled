@@ -36,12 +36,13 @@ import java.util.Locale;
  * Deals damage to each target
  */
 public class DamageMechanic extends MechanicComponent {
-    private static final String TYPE       = "type";
-    private static final String DAMAGE     = "value";
-    private static final String TRUE       = "true";
-    private static final String CLASSIFIER = "classifier";
-    private static final String KNOCKBACK  = "knockback";
-    private static final String CAUSE      = "cause";
+    private static final String TYPE            = "type";
+    private static final String DAMAGE          = "value";
+    private static final String TRUE            = "true";
+    private static final String CLASSIFIER      = "classifier";
+    private static final String KNOCKBACK       = "knockback";
+    private static final String IGNORE_DIVINITY = "ignore-divinity";
+    private static final String CAUSE           = "cause";
 
     @Override
     public String getKey() {
@@ -57,6 +58,7 @@ public class DamageMechanic extends MechanicComponent {
         boolean trueDmg        = settings.getBool(TRUE, false);
         double  damage         = parseValues(caster, DAMAGE, level, 1.0);
         boolean knockback      = settings.getBool(KNOCKBACK, true);
+        boolean ignoreDivinity = settings.getBool(IGNORE_DIVINITY, false);
         String  classification = settings.getString(CLASSIFIER, "default");
         if (damage < 0) {
             return false;
@@ -82,6 +84,7 @@ public class DamageMechanic extends MechanicComponent {
                         caster,
                         classification,
                         knockback,
+                        ignoreDivinity,
                         EntityDamageEvent.DamageCause.valueOf(settings.getString(CAUSE, "Entity Attack")
                                 .toUpperCase(Locale.US)
                                 .replace(' ', '_')));

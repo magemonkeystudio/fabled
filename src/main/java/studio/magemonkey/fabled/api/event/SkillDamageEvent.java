@@ -26,13 +26,13 @@
  */
 package studio.magemonkey.fabled.api.event;
 
-import studio.magemonkey.fabled.api.skills.Skill;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import studio.magemonkey.fabled.api.skills.Skill;
 
 /**
  * An event for when an entity is damaged by
@@ -61,10 +61,24 @@ public class SkillDamageEvent extends Event implements Cancellable {
      */
     @Getter
     private final        Skill        skill;
+    /**
+     * -- GETTER --
+     *  Retrieves the amount of damage dealt
+     *
+     * @return amount of damage dealt
+     * -- SETTER --
+     *  Sets the amount of damage dealt
+     *
+     * @param damage amount of damage dealt
+     */
+    @Setter
+    @Getter
     private              double       damage;
     @Getter
     @Setter
     private              boolean      knockback;
+    @Getter
+    private              boolean      ignoreDivinity;
     private              boolean      cancelled = false;
 
     /**
@@ -74,34 +88,19 @@ public class SkillDamageEvent extends Event implements Cancellable {
      * @param damager        entity dealing the damage
      * @param target         entity receiving the damage
      * @param damage         the amount of damage dealt
-     * @param classification
+     * @param classification the damage type to use
+     * @param knockback      whether to apply knockback to the target
+     * @param ignoreDivinity whether to ignore divinity
      */
     public SkillDamageEvent(Skill skill, LivingEntity damager, LivingEntity target, double damage,
-                            String classification, boolean knockback) {
+                            String classification, boolean knockback, boolean ignoreDivinity) {
         this.skill = skill;
         this.damager = damager;
         this.target = target;
         this.damage = damage;
         this.classification = classification;
         this.knockback = knockback;
-    }
-
-    /**
-     * Retrieves the amount of damage dealt
-     *
-     * @return amount of damage dealt
-     */
-    public double getDamage() {
-        return damage;
-    }
-
-    /**
-     * Sets the amount of damage dealt
-     *
-     * @param amount amount of damage dealt
-     */
-    public void setDamage(double amount) {
-        damage = amount;
+        this.ignoreDivinity = ignoreDivinity;
     }
 
     /**

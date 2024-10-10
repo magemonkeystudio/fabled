@@ -41,13 +41,14 @@ import java.util.regex.Pattern;
  * Deals damage based on a held item's lore to each target
  */
 public class DamageLoreMechanic extends MechanicComponent {
-    private static final String REGEX      = "regex";
-    private static final String MULTIPLIER = "multiplier";
-    private static final String HAND       = "hand";
-    private static final String TRUE       = "true";
-    private static final String CLASSIFIER = "classifier";
-    private static final String KNOCKBACK  = "knockback";
-    private static final String CAUSE      = "cause";
+    private static final String REGEX           = "regex";
+    private static final String MULTIPLIER      = "multiplier";
+    private static final String HAND            = "hand";
+    private static final String TRUE            = "true";
+    private static final String CLASSIFIER      = "classifier";
+    private static final String KNOCKBACK       = "knockback";
+    private static final String IGNORE_DIVINITY = "ignore-divinity";
+    private static final String CAUSE           = "cause";
 
     @Override
     public String getKey() {
@@ -111,6 +112,7 @@ public class DamageLoreMechanic extends MechanicComponent {
                                         caster,
                                         classification,
                                         settings.getBool(KNOCKBACK, true),
+                                        settings.getBool(IGNORE_DIVINITY, false),
                                         EntityDamageEvent.DamageCause.valueOf(settings.getString(CAUSE, "Entity Attack")
                                                 .toUpperCase(Locale.US)
                                                 .replace(' ', '_')));

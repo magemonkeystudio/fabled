@@ -174,8 +174,7 @@
                 <version>3.10.1</version>
                 <configuration>
                     <sourcepath>${delombok.dir}</sourcepath>
-                    <reportOutputDirectory>${project.basedir}</reportOutputDirectory>
-                    <destDir>gh-pages/javadocs</destDir>
+                    <outputDirectory>gh-pages</outputDirectory>
                     <doclint>all,-missing</doclint>
                 </configuration>
                 <executions>
