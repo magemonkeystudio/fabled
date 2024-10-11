@@ -998,7 +998,7 @@ class WorldTarget extends FabledTarget {
 const itemConditionOptions = (matOption: ComponentOption = new MaterialSelect(false, 'Arrow')
 	.requireValue('check-mat', [true])
 	.setTooltip('The type the item needs to be')): ComponentOption[] => {
-	const data: ComponentOption[] = [
+	return [
 		new BooleanSelect('Check Material', 'check-mat', true)
 			.setTooltip('Whether the item needs to be a certain type'),
 		matOption,
@@ -1028,8 +1028,6 @@ const itemConditionOptions = (matOption: ComponentOption = new MaterialSelect(fa
 		new BooleanSelect('Regex', 'regex', false)
 			.setTooltip('Whether the name and lore checks are regex strings. If you do not know what regex is, leave this option alone')
 	];
-
-	return data;
 };
 
 class AltitudeCondition extends FabledCondition {
@@ -2000,9 +1998,9 @@ const projectileOptions = (): ComponentOption[] => {
 		new AttributeSelect('Velocity', 'velocity', 3)
 			.setTooltip('How fast the projectile is launched, in meters per second. A negative value fires it in the opposite direction.'),
 		new AttributeSelect('Lifespan', 'lifespan', 5)
-			.setTooltip('How long in secods before the projectile will expire in case it doesn\'t hit anything.'),
+			.setTooltip('How long in seconds before the projectile will expire in case it doesn\'t hit anything.'),
 		new BooleanSelect('On Expire', 'on-expire', false)
-			.setTooltip('Whether to add the projectile\'s expire location as one of the targets. You can filter out this target with EntityTypeContidion: Location'),
+			.setTooltip('Whether to add the projectile\'s expire location as one of the targets. You can filter out this target with EntityTypeCondition: Location'),
 		new DropdownSelect('Spread', 'spread', ['Cone', 'Horizontal Cone', 'Rain'], 'Cone')
 			.setTooltip('The orientation for firing projectiles. Cone will fire arrows in a cone centered on your reticle. Horizontal cone does the same as cone, just locked to the XZ axis (parallel to the ground). Rain drops the projectiles from above the target. For firing one arrow straight, use "Cone"'),
 		new AttributeSelect('Amount', 'amount', 1)
@@ -2398,7 +2396,7 @@ class ChannelMechanic extends FabledMechanic {
 				new BooleanSelect('Still', 'still', true)
 					.setTooltip('Whether to hold the player in place while channeling'),
 				new AttributeSelect('Time', 'time', 3)
-					.setTooltip('The amouont of time, in seconds, to channel for')
+					.setTooltip('The amount of time, in seconds, to channel for')
 			],
 			summaryItems: ['still', 'time']
 		}, true);
@@ -2474,7 +2472,7 @@ class DamageMechanic extends FabledMechanic {
 				new AttributeSelect('Value', 'value', 3, 1)
 					.setTooltip('The amount of damage to deal'),
 				new BooleanSelect('True Damage', 'true')
-					.setTooltip('Whether to deal true damage. True damage ignores armor and all plugin checks, and doesn not have a damage animation nor knockback'),
+					.setTooltip('Whether to deal true damage. True damage ignores armor and all plugin checks, and does not have a damage animation nor knockback'),
 				new StringSelect('Damage Type', 'classifier', 'default')
 					.setTooltip('The type of damage to deal. Can act as elemental damage or fake physical damage. Supports Damage types from Divinity like "DIVINITY_magical"'),
 				new BooleanSelect('Apply Knockback', 'knockback', true)
@@ -2503,7 +2501,7 @@ class DamageBuffMechanic extends FabledMechanic {
 				new BooleanSelect('Skill Damage', 'skill')
 					.setTooltip('Whether to buff skill damage. If false, it will affect physical damage'),
 				new AttributeSelect('Value', 'value', 1)
-					.setTooltip('The amount to increase/decrease the damage by. A negative amoutn with the "Flat" type will decrease damage, similar to a number less than 1 for the multiplier'),
+					.setTooltip('The amount to increase/decrease the damage by. A negative amount with the "Flat" type will decrease damage, similar to a number less than 1 for the multiplier'),
 				new AttributeSelect('Seconds', 'seconds', 3)
 					.setTooltip('The duration of the buff in seconds')
 			],
@@ -2973,7 +2971,7 @@ class ItemProjectileMechanic extends FabledMechanic {
 				new DropdownSelect('Group', 'group', ['Ally', 'Enemy'], 'Enemy')
 					.setTooltip('The alignment of targets to hit'),
 				new BooleanSelect('Wall Collisions', 'walls', true)
-					.setTooltip('Wheter to account for wall collisions. If false, the item will just slide through them.'),
+					.setTooltip('Whether to account for wall collisions. If false, the item will just slide through them.'),
 				new AttributeSelect('Collision Radius', 'collision-radius', 0.2)
 					.setTooltip('The radius of the projectile considered when calculating collisions.'),
 
