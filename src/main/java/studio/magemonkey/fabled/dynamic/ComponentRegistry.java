@@ -161,6 +161,7 @@ public class ComponentRegistry {
         register(new FlagMechanic());
         register(new FlagClearMechanic());
         register(new FlagToggleMechanic());
+        register(new FlyMechanic());
         register(new FoodMechanic());
         register(new ForgetTargetsMechanic());
         register(new HealMechanic());
