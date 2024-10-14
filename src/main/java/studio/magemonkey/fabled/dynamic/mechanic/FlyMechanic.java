@@ -9,8 +9,8 @@ import java.util.List;
  * Allows target to fly 
  */
 public class FlyMechanic extends MechanicComponent{
-    // public static final String FLYSPEED = "flyspeed";
-    // public static final String SECONDS = "duration";
+    public static final String FLYSPEED = "flyspeed";
+    public static final String SECONDS = "seconds";
 
     @Override
     public String getKey() {
@@ -28,16 +28,16 @@ public class FlyMechanic extends MechanicComponent{
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (!(caster instanceof Player)) {
-            return false;
+        double flyspeed = parseValues(caster, FLYSPEED, level, 5);
+        double seconds = parseValues(caster, SECONDS, level, 3.0);
+        
+        for (LivingEntity target : targets) {
+            if (target instanceof Player){
+                Player player = (Player) target;
+                player.setFlying(true);
+            }
         }
 
-        cleanUp(caster);
-
-        final Player player = (Player) caster;
-
-        player.setFlying(true);
-
-        return true;
+        return targets.size() > 0;
     }
 }
