@@ -36,7 +36,7 @@ public class FlyMechanic extends MechanicComponent {
                 Player player = (Player) target;
                 player.setAllowFlight(true);
                 player.setFlying(true);
-                player.setFlySpeed(0.2f);
+                player.setFlySpeed(0.0002f);
             }
         }
 
