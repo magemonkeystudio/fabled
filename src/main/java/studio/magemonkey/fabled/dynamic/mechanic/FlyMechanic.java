@@ -2,16 +2,15 @@ package studio.magemonkey.fabled.dynamic.mechanic;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-
 import java.util.List;
 
 /**
- * Grants or takes away creative level flight to a player.
+ * Sets the flight state and flight speed of a player.
  * Does not persist on logout. 
  */
 public class FlyMechanic extends MechanicComponent {
     private static final String FLYSPEED = "flyspeed";
-    private static final String SECONDS = "seconds";
+    private static final String FLYING = "flying"; 
 
 
     @Override
@@ -30,26 +29,19 @@ public class FlyMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        float flyspeed = (float) parseValues(caster, FLYSPEED, level, 0.6);
-        double seconds = parseValues(caster, SECONDS, level, 3.0);
+        float flyspeed = (float) parseValues(caster, FLYSPEED, level, 0.1);
+        boolean flying = settings.getString(FLYING, "true").equalsIgnoreCase("false");
         
         for (LivingEntity target : targets) {
             if (target instanceof Player){
                 Player player = (Player) target;
-                /*
-
-                Cause realistically you're doing this tomorrow:
-                    - Allow players to set flyspeed, must be a float. (Between -1,1)
-                    - Duration, how long can fly.
-                    - Set a default fallback speed!
-
-                */ 
-                player.setAllowFlight(true);
-                player.setFlying(true);
-                player.setFlySpeed(flyspeed);
+                player.setAllowFlight(flying);
+                player.setFlying(flying);
+                if (flying){
+                    player.setFlySpeed(flyspeed);
+                }
             }
         }
-
         return targets.size() > 0;
     }
 }
