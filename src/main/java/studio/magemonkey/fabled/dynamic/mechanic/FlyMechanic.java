@@ -8,9 +8,9 @@ import java.util.List;
 /**
  * Allows target to fly 
  */
-public class FlyMechanic extends MechanicComponent{
-    public static final String FLYSPEED = "flyspeed";
-    public static final String SECONDS = "seconds";
+public class FlyMechanic extends MechanicComponent {
+    private static final String FLYSPEED = "flyspeed";
+    private static final String SECONDS = "seconds";
 
     @Override
     public String getKey() {
@@ -34,6 +34,7 @@ public class FlyMechanic extends MechanicComponent{
         for (LivingEntity target : targets) {
             if (target instanceof Player){
                 Player player = (Player) target;
+                player.setAllowFlight(true);
                 player.setFlying(true);
             }
         }
