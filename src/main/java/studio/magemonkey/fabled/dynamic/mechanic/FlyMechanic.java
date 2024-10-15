@@ -29,7 +29,7 @@ public class FlyMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        boolean flying = settings.getString(FLYING, "true").equalsIgnoreCase("false");
+        boolean flying = settings.getString(FLYING, "false").equalsIgnoreCase("true");
         float flyspeed = (float) parseValues(caster, FLYSPEED, level, 0.1);       
 
         for (LivingEntity target : targets) {
