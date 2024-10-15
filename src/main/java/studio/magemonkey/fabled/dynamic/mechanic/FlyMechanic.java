@@ -2,15 +2,16 @@ package studio.magemonkey.fabled.dynamic.mechanic;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-
 import java.util.List;
 
 /**
- * Allows target to fly 
+ * Sets the flight state and flight speed of a player.
+ * Does not persist on logout. 
  */
-public class FlyMechanic extends MechanicComponent{
-    // public static final String FLYSPEED = "flyspeed";
-    // public static final String SECONDS = "duration";
+public class FlyMechanic extends MechanicComponent {
+    private static final String FLYSPEED = "flyspeed";
+    private static final String FLYING = "flying"; 
+
 
     @Override
     public String getKey() {
@@ -28,16 +29,27 @@ public class FlyMechanic extends MechanicComponent{
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (!(caster instanceof Player)) {
-            return false;
+        boolean flying = settings.getString(FLYING, "false").equalsIgnoreCase("true");
+        float flyspeed = (float) parseValues(caster, FLYSPEED, level, 0.1);       
+
+        for (LivingEntity target : targets) {
+            // Only target players.
+            if (target instanceof Player){
+                Player player = (Player) target;
+                player.setAllowFlight(flying);
+                player.setFlying(flying);
+                if (flying){
+                    // Flightspeed cannot be greater than 1 or less than -1.
+                    if (flyspeed > 1){
+                        flyspeed = 1.0f;
+                    }
+                    else if (flyspeed < -1){
+                        flyspeed = -1.0f;
+                    }
+                    player.setFlySpeed(flyspeed);
+                }
+            }
         }
-
-        cleanUp(caster);
-
-        final Player player = (Player) caster;
-
-        player.setFlying(true);
-
-        return true;
+        return targets.size() > 0;
     }
 }
