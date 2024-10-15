@@ -28,7 +28,7 @@ public class FlyMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        double flyspeed = parseValues(caster, FLYSPEED, level, 5);
+        double flyspeed = parseValues(caster, FLYSPEED, level, 0.6);
         double seconds = parseValues(caster, SECONDS, level, 3.0);
         
         for (LivingEntity target : targets) {
@@ -36,6 +36,7 @@ public class FlyMechanic extends MechanicComponent {
                 Player player = (Player) target;
                 player.setAllowFlight(true);
                 player.setFlying(true);
+                player.setFlySpeed(0.2f);
             }
         }
 
