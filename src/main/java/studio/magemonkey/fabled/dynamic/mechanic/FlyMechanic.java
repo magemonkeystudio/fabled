@@ -29,15 +29,23 @@ public class FlyMechanic extends MechanicComponent {
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        float flyspeed = (float) parseValues(caster, FLYSPEED, level, 0.1);
         boolean flying = settings.getString(FLYING, "true").equalsIgnoreCase("false");
-        
+        float flyspeed = (float) parseValues(caster, FLYSPEED, level, 0.1);       
+
         for (LivingEntity target : targets) {
+            // Only target players.
             if (target instanceof Player){
                 Player player = (Player) target;
                 player.setAllowFlight(flying);
                 player.setFlying(flying);
                 if (flying){
+                    // Flightspeed cannot be greater than 1 or less than -1.
+                    if (flyspeed > 1){
+                        flyspeed = 1.0f;
+                    }
+                    else if (flyspeed < -1){
+                        flyspeed = -1.0f;
+                    }
                     player.setFlySpeed(flyspeed);
                 }
             }
