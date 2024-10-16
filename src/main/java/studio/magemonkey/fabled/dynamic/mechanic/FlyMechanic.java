@@ -1,5 +1,6 @@
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import org.bukkit.GameMode;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -58,34 +59,36 @@ public class FlyMechanic extends MechanicComponent {
             // Only target players.
             if (target instanceof Player){
                 Player player = (Player) target;
-                final PlayerData data = Fabled.getData((Player) target);
-                // Bound Flightspeed as it cannot be greater than 1 or less than -1.
-                if (flyspeed > 1){
-                    flyspeed = 1.0f;
-                }
-                else if (flyspeed < -1){
-                    flyspeed = -1.0f;
-                }
-                // Set player flight based on given boolean.
-                player.setAllowFlight(flying);
-                player.setFlying(flying);
-                player.setFlySpeed(flyspeed);
+                if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
+                    final PlayerData data = Fabled.getData((Player) target);
+                    // Bound Flightspeed as it cannot be greater than 1 or less than -1.
+                    if (flyspeed > 1){
+                        flyspeed = 1.0f;
+                    }
+                    else if (flyspeed < -1){
+                        flyspeed = -1.0f;
+                    }
+                    // Set player flight based on given boolean.
+                    player.setAllowFlight(flying);
+                    player.setFlying(flying);
+                    player.setFlySpeed(flyspeed);
 
-                /* 
-                / Cancel previous tasks if one already exists.
-                / This allows flight to be extended if players cast multiple skills.
-                / Without this players may fall too early or unexpectedly.
-                */
-                if (casterTasks.containsKey(data.getPlayerName())){
-                    final FlyTask oldTask = casterTasks.remove(data.getPlayerName());
-                    oldTask.cancel();
-                }
-                // Only create a new task and schedule if the players wants flight, otherwise do nothing.
-                if (flying) {
-                    final FlyTask task = new FlyTask(caster.getEntityId(), data);
-                    casterTasks.put(data.getPlayerName(), task);
-                    if (ticks >= 0){
-                        Fabled.schedule(task, ticks);
+                    /* 
+                    / Cancel previous tasks if one already exists.
+                    / This allows flight to be extended if players cast multiple skills.
+                    / Without this players may fall too early or unexpectedly.
+                    */
+                    if (casterTasks.containsKey(data.getPlayerName())){
+                        final FlyTask oldTask = casterTasks.remove(data.getPlayerName());
+                        oldTask.cancel();
+                    }
+                    // Only create a new task and schedule if the players wants flight, otherwise do nothing.
+                    if (flying) {
+                        final FlyTask task = new FlyTask(caster.getEntityId(), data);
+                        casterTasks.put(data.getPlayerName(), task);
+                        if (ticks >= 0){
+                            Fabled.schedule(task, ticks);
+                        }
                     }
                 }
             }
@@ -126,6 +129,7 @@ public class FlyMechanic extends MechanicComponent {
             Player player = data.getPlayer();
             player.setFlying(false);
             player.setAllowFlight(false);
+            player.setFlySpeed(0.1f);
             if (tasks.containsKey(id)) {
                 tasks.get(id).remove(data.getPlayerName());
             }
