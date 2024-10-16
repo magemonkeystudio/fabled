@@ -67,7 +67,7 @@ public class FlyMechanic extends MechanicComponent {
                 else if (flyspeed < -1){
                     flyspeed = -1.0f;
                 }
-                final FlyTask task = new FlyTask(caster.getEntityId(), data);
+                final FlyTask task = new FlyTask(player, target.getEntityId(), data);
                 player.setFlySpeed(flyspeed);
                 if (ticks >= 0){
                     Fabled.schedule(task, ticks);
@@ -79,12 +79,14 @@ public class FlyMechanic extends MechanicComponent {
 
     private class FlyTask extends BukkitRunnable {
 
+        private final Player             player;
         private final PlayerData         data;
         private final int                id;
         private       boolean            running = false;
         private       boolean            stopped = false;
 
-        FlyTask(int id, PlayerData data) {
+        FlyTask(Player player, int id, PlayerData data) {
+            this.player = player;
             this.id = id;
             this.data = data;
         }
@@ -108,6 +110,7 @@ public class FlyMechanic extends MechanicComponent {
         @Override
         public void run() {
             if (tasks.containsKey(id)) {
+                player.setAllowFlight(false);
                 tasks.get(id).remove(data.getPlayerName());
             }
             running = false;
