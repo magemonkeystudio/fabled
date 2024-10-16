@@ -8,7 +8,6 @@ import org.bukkit.scheduler.BukkitTask;
 
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerData;
-import studio.magemonkey.fabled.api.player.PlayerStatModifier;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +20,7 @@ import java.util.Map;
 public class FlyMechanic extends MechanicComponent {
     private static final String SECONDS = "seconds";
     private static final String FLYSPEED = "flyspeed";
-    private static final String FLYING = "flying"; 
+    private static final String FLYING = "flying";
 
     private final Map<Integer, Map<String, FlyTask>> tasks = new HashMap<>();
 
@@ -51,15 +50,15 @@ public class FlyMechanic extends MechanicComponent {
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         final double    seconds  = parseValues(caster, SECONDS, level, 3.0);
         final int       ticks    = (int) (seconds * 20);
-        float           flyspeed = (float) parseValues(caster, FLYSPEED, level, 0.1);       
+        float           flyspeed = (float) parseValues(caster, FLYSPEED, level, 0.1);
+        boolean         flying   = settings.getString(FLYING, "false").equalsIgnoreCase("true");
+        final Map<String, FlyTask> casterTasks = tasks.computeIfAbsent(caster.getEntityId(), HashMap::new);
 
         for (LivingEntity target : targets) {
             // Only target players.
             if (target instanceof Player){
                 Player player = (Player) target;
                 final PlayerData data = Fabled.getData((Player) target);
-                player.setAllowFlight(true);
-                player.setFlying(true);
                 // Flightspeed cannot be greater than 1 or less than -1.
                 if (flyspeed > 1){
                     flyspeed = 1.0f;
@@ -67,8 +66,16 @@ public class FlyMechanic extends MechanicComponent {
                 else if (flyspeed < -1){
                     flyspeed = -1.0f;
                 }
-                final FlyTask task = new FlyTask(player, target.getEntityId(), data);
+                player.setAllowFlight(flying);
+                player.setFlying(flying);
                 player.setFlySpeed(flyspeed);
+
+                //Overrite previous task to extend flight.
+                if (casterTasks.containsKey(data.getPlayerName())){
+                    final FlyTask oldTask = casterTasks.remove(data.getPlayerName());
+                    oldTask.cancel();
+                }
+                final FlyTask task = new FlyTask(caster.getEntityId(), data);
                 if (ticks >= 0){
                     Fabled.schedule(task, ticks);
                 }
@@ -79,14 +86,12 @@ public class FlyMechanic extends MechanicComponent {
 
     private class FlyTask extends BukkitRunnable {
 
-        private final Player             player;
         private final PlayerData         data;
         private final int                id;
         private       boolean            running = false;
         private       boolean            stopped = false;
 
-        FlyTask(Player player, int id, PlayerData data) {
-            this.player = player;
+        FlyTask(int id, PlayerData data) {
             this.id = id;
             this.data = data;
         }
@@ -109,8 +114,10 @@ public class FlyMechanic extends MechanicComponent {
 
         @Override
         public void run() {
+            Player player = data.getPlayer();
+            player.setFlying(false);
+            player.setAllowFlight(false);
             if (tasks.containsKey(id)) {
-                player.setAllowFlight(false);
                 tasks.get(id).remove(data.getPlayerName());
             }
             running = false;
