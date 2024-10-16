@@ -80,7 +80,6 @@ public class FlyMechanic extends MechanicComponent {
     private class FlyTask extends BukkitRunnable {
 
         private final PlayerData         data;
-        private final PlayerStatModifier modifier;
         private final int                id;
         private       boolean            running = false;
         private       boolean            stopped = false;
@@ -88,7 +87,6 @@ public class FlyMechanic extends MechanicComponent {
         FlyTask(int id, PlayerData data) {
             this.id = id;
             this.data = data;
-            this.modifier = null;
         }
 
         public void stop() {
@@ -109,7 +107,6 @@ public class FlyMechanic extends MechanicComponent {
 
         @Override
         public void run() {
-            data.removeStatModifier(modifier.getUUID(), true);
             if (tasks.containsKey(id)) {
                 tasks.get(id).remove(data.getPlayerName());
             }
