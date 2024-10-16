@@ -83,6 +83,7 @@ public class FlyMechanic extends MechanicComponent {
                 // Only create a new task and schedule if the players wants flight, otherwise do nothing.
                 if (flying) {
                     final FlyTask task = new FlyTask(caster.getEntityId(), data);
+                    casterTasks.put(data.getPlayerName(), task);
                     if (ticks >= 0){
                         Fabled.schedule(task, ticks);
                     }
