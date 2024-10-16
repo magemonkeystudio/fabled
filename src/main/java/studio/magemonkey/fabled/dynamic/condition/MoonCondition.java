@@ -22,14 +22,14 @@ public class MoonCondition extends ConditionComponent {
     // Array containing all Minecraft Moon Phases
     // Can be found here: https://minecraft.fandom.com/wiki/Moon#Effects_on_mobs
     private final String[] phaseNames = {
-            "FULL_MOON", 
-            "WANING_GIBBOUS", 
-            "LAST_QUARTER",
-            "WANING_CRESCENT",
-            "NEW_MOON",
-            "WAXING_CRESCENT",
-            "FIRST_QUARTER",
-            "WAXING_GIBBOUS"
+            "FULL MOON", 
+            "WANING GIBBOUS", 
+            "LAST QUARTER",
+            "WANING CRESCENT",
+            "NEW MOON",
+            "WAXING CRESCENT",
+            "FIRST QUARTER",
+            "WAXING GIBBOUS"
         };
     
     @Override
@@ -40,9 +40,8 @@ public class MoonCondition extends ConditionComponent {
     @Override
     public void load(DynamicSkill skill, DataSection config){
         super.load(skill, config);
-        phases = settings.getStringList(PHASES).stream()
-                .map(s -> s.toUpperCase(Locale.US).replace(' ', '_'))
-                .collect(Collectors.toSet());
+
+        phases = settings.getStringList(PHASES).stream().map(s -> s.toUpperCase(Locale.US)).collect(Collectors.toSet());
         blacklist = settings.getString(BLACKLIST).equalsIgnoreCase("True");
     }
 
@@ -65,7 +64,7 @@ public class MoonCondition extends ConditionComponent {
     @Override
     boolean test(final LivingEntity caster, final int level, final LivingEntity target){
         final World world = target.getWorld();
-        final int day = ((int) (world.getFullTime() / 24000L) % 8 );
+        final int day = ((int) (world.getFullTime() / 24000L) % 8);
         final String currentPhase = phaseNames[day];
         return phases.contains(currentPhase) != blacklist;
     }
