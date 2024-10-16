@@ -59,6 +59,7 @@ public class FlyMechanic extends MechanicComponent {
             // Only target players.
             if (target instanceof Player){
                 Player player = (Player) target;
+                // Do not set flying to false if player is in spectator or creative.
                 if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
                     final PlayerData data = Fabled.getData((Player) target);
                     // Bound Flightspeed as it cannot be greater than 1 or less than -1.
@@ -127,8 +128,12 @@ public class FlyMechanic extends MechanicComponent {
         @Override
         public void run() {
             Player player = data.getPlayer();
-            player.setFlying(false);
-            player.setAllowFlight(false);
+            // Do not set flying to false if player is in spectator or creative.
+            if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE){
+                player.setFlying(false);
+                player.setAllowFlight(false);
+            }
+            // Set player back to default fly speed.
             player.setFlySpeed(0.1f);
             if (tasks.containsKey(id)) {
                 tasks.get(id).remove(data.getPlayerName());
