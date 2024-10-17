@@ -1508,6 +1508,26 @@ class MoneyCondition extends FabledCondition {
 	public static override new = () => new this();
 }
 
+class MoonCondition extends FabledCondition {
+	public constructor() {
+		super({
+			name:         'Moon',
+			description:  'Applies child components if the target is in a world with a moon phase that matches.',
+			data:         [
+				new DropdownSelect('Phases', 'phases', ['Full Moon', 'Waning Gibbous', 'Last Quarter', 'Waning Crescent', 'New Moon', 'Waxing Crescent', 'First Quarter', 'Waxing Gibbous'], [], true)
+					.setTooltip('The entity types to target'),
+				new BooleanSelect('Blacklist', 'blacklist', false)
+					.setTooltip('Whether to consider the listed types as a blacklist, meaning only phases that do NOT match one of them will trigger.')
+			],
+			summaryItems: ['phases', 'blacklist']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
+
+
 class MountedCondition extends FabledCondition {
 	public constructor() {
 		super({
@@ -2782,6 +2802,26 @@ class FlagToggleMechanic extends FabledMechanic {
 					.setTooltip('The unique string for the flag. Use the same key when checking it in a Flag Condition')
 			],
 			summaryItems: ['key']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
+class FlyMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Fly',
+			description:  'Grants creative flight to a target for a set duration.',
+			data:         [
+				new AttributeSelect('Seconds', 'seconds', 3, 1)
+					.setTooltip('The duration of the flight in seconds'),
+				new AttributeSelect('Flyspeed', 'flyspeed', 0.1, 0)
+					.setTooltip('How fast the player should be able to fly. NOTE: The value should be between -1 and 1. Values higher than this may show no change in speed.'),
+				new BooleanSelect('Flying', 'flying', true)
+					.setTooltip('If the player should be able to fly. Setting this to false will revoke flight regardless of time left. If set to false, the seconds value is ignored.')
+			],
+			summaryItems: ['seconds', 'flyspeed', 'flying']
 		});
 	}
 
@@ -5211,6 +5251,7 @@ export const initComponents = () => {
 		LIGHT:          { name: 'Light', component: LightCondition },
 		MANA:           { name: 'Mana', component: ManaCondition },
 		MONEY:          { name: 'Money', component: MoneyCondition },
+		MOON:           { name: 'Moon', component: MoonCondition },
 		MOUNTED:        { name: 'Mounted', component: MountedCondition },
 		MOUNTING:       { name: 'Mounting', component: MountingCondition },
 		MYTHICMOB_TYPE: { name: 'MythicMob Type', component: MythicMobTypeCondition },
@@ -5254,6 +5295,7 @@ export const initComponents = () => {
 		EXPERIENCE:         { name: 'Experience', component: ExperienceMechanic },
 		EXPLOSION:          { name: 'Explosion', component: ExplosionMechanic },
 		FIRE:               { name: 'Fire', component: FireMechanic },
+		FLY:                { name: 'Fly', component: FlyMechanic },
 		FOOD:               { name: 'Food', component: FoodMechanic },
 		FORGET_TARGETS:     { name: 'Forget Targets', component: ForgetTargetsMechanic },
 		HEAL:               { name: 'Heal', component: HealMechanic },
