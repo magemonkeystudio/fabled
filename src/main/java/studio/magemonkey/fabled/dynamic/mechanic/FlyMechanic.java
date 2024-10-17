@@ -29,7 +29,7 @@ public class FlyMechanic extends MechanicComponent {
     public String getKey() {
         return "fly";
     }
-    
+
     @Override
     protected void doCleanUp(final LivingEntity user) {
         final Map<String, FlyTask> casterTasks = tasks.remove(user.getEntityId());
