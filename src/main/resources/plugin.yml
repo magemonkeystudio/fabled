@@ -2,7 +2,7 @@ name: ${project.name}
 main: studio.magemonkey.fabled.Fabled
 version: ${project.version}
 authors: [ Travja, goflish, Eniripsa96, Sentropic ]
-depend: [ Codex ]
+depend: [ CodexCore ]
 softdepend:
   - Vault
   - Citizens

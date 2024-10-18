@@ -22,7 +22,7 @@
 
     <properties>
         <java.version>14</java.version>
-        <codex.version>1.0.1-R0.1-SNAPSHOT</codex.version>
+        <codex.version>1.0.1-R0.8-SNAPSHOT</codex.version>
 
         <delombok.dir>${project.build.directory}/javadoc-delombok</delombok.dir>
     </properties>
