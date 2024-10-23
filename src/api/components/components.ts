@@ -45,6 +45,8 @@ import type FabledComponent                                      from '$api/comp
 import EnchantSelect                                             from '$api/options/enchantselect';
 import { attributeStore }                                        from '../../data/attribute-store';
 
+// This file holds all the component configurations and setup
+
 // TRIGGERS
 
 class ArmorEquipTrigger extends FabledTrigger {
