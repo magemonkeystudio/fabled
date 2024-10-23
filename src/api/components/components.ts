@@ -45,7 +45,7 @@ import type FabledComponent                                      from '$api/comp
 import EnchantSelect                                             from '$api/options/enchantselect';
 import { attributeStore }                                        from '../../data/attribute-store';
 
-// This file holds all the component configurations and setup
+// This file holds all the component configurations and setup. Please add new components/options here
 
 // TRIGGERS
 
