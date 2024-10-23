@@ -1527,7 +1527,6 @@ class MoonCondition extends FabledCondition {
 }
 
 
-
 class MountedCondition extends FabledCondition {
 	public constructor() {
 		super({
