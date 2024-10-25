@@ -3,13 +3,11 @@ package studio.magemonkey.fabled.dynamic.trigger;
 import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.api.Settings;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 import org.bukkit.entity.Player;
-import org.bukkit.Location;
+import org.bukkit.Statistic;
 
-public class JumpTrigger implements Trigger<PlayerMoveEvent> {
-
-    final double STILL = -0.0784000015258789;
+public class JumpTrigger implements Trigger<PlayerStatisticIncrementEvent> {
 
     @Override
     public String getKey() {
@@ -17,29 +15,28 @@ public class JumpTrigger implements Trigger<PlayerMoveEvent> {
     }
 
     @Override
-    public Class<PlayerMoveEvent> getEvent() {
-        return PlayerMoveEvent.class;
+    public Class<PlayerStatisticIncrementEvent> getEvent() {
+        return PlayerStatisticIncrementEvent.class;
     }
 
     @Override
-    public boolean shouldTrigger(PlayerMoveEvent event, int level, Settings settings) {
-        Player player = event.getPlayer();
-        return player.getVelocity().getY() > STILL;
+    public boolean shouldTrigger(PlayerStatisticIncrementEvent event, int level, Settings settings) {
+        Statistic statistic = event.getStatistic();
+        return statistic == Statistic.JUMP;
+    }
+
+    @Override
+    public void setValues(PlayerStatisticIncrementEvent event, final CastData data) {
 
     }
 
     @Override
-    public void setValues(PlayerMoveEvent event, final CastData data) {
-
-    }
-
-    @Override
-    public LivingEntity getCaster(PlayerMoveEvent event) {
+    public LivingEntity getCaster(PlayerStatisticIncrementEvent event) {
         return event.getPlayer();
     }
 
     @Override
-    public LivingEntity getTarget(PlayerMoveEvent event, Settings settings) {
+    public LivingEntity getTarget(PlayerStatisticIncrementEvent event, Settings settings) {
         return event.getPlayer();
     }
 }
