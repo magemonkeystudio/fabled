@@ -9,6 +9,8 @@ import org.bukkit.Location;
 
 public class JumpTrigger implements Trigger<PlayerMoveEvent> {
 
+    final double STILL = -0.0784000015258789;
+
     @Override
     public String getKey() {
         return "JUMP";
@@ -21,13 +23,9 @@ public class JumpTrigger implements Trigger<PlayerMoveEvent> {
 
     @Override
     public boolean shouldTrigger(PlayerMoveEvent event, int level, Settings settings) {
-        Location from = event.getFrom();
-        Location to = event.getTo();
         Player player = event.getPlayer();
-        if (from.getBlockY() < to.getBlockY() && !player.isSwimming() && !player.isFlying()){
-            return true;
-        }
-        return false;
+        return player.getVelocity().getY() > STILL;
+
     }
 
     @Override
