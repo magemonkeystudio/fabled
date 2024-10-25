@@ -21,6 +21,10 @@ public class JumpTrigger implements Trigger<PlayerStatisticIncrementEvent> {
 
     @Override
     public boolean shouldTrigger(PlayerStatisticIncrementEvent event, int level, Settings settings) {
+        Player player = event.getPlayer();
+        if (player.isClimbing()) {
+            return false;
+        }
         Statistic statistic = event.getStatistic();
         return statistic == Statistic.JUMP;
     }
