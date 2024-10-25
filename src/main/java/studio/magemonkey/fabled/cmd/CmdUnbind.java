@@ -26,18 +26,21 @@
  */
 package studio.magemonkey.fabled.cmd;
 
-import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
-import studio.magemonkey.codex.mccore.commands.IFunction;
-import studio.magemonkey.codex.mccore.util.TextFormatter;
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.player.PlayerData;
-import studio.magemonkey.fabled.api.player.PlayerSkill;
-import studio.magemonkey.fabled.language.RPGFilter;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
+import studio.magemonkey.codex.mccore.commands.IFunction;
+import studio.magemonkey.codex.mccore.util.TextFormatter;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.player.PlayerData;
+import studio.magemonkey.fabled.language.RPGFilter;
+import studio.magemonkey.fabled.listener.BindListener;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Command to bind a skill to an item
@@ -74,16 +77,18 @@ public class CmdUnbind implements IFunction {
             }
 
             PlayerData player = Fabled.getData((Player) sender);
-
-            if (!player.isBound(item.getType())) {
+            List<String> bound = BindListener.getBoundSkills(item);
+            if (bound.isEmpty()) {
                 command.sendMessage(sender, NOT_BOUND, "&4There are no skills bound to the held item");
             } else {
-                PlayerSkill skill = player.getBoundSkill(item.getType());
-                player.clearBind(item.getType());
+                BindListener.setBoundSkills(item, List.of());
+                bound = bound.stream()
+                        .map(skillName -> player.getSkill(skillName).getData().getName())
+                        .collect(Collectors.toList());
                 command.sendMessage(sender,
                         SKILL_BOUND,
                         "&6{skill} &2has been unbound from &6{item}",
-                        RPGFilter.SKILL.setReplacement(skill.getData().getName()),
+                        RPGFilter.SKILL.setReplacement(String.join(", ", bound)),
                         RPGFilter.ITEM.setReplacement(TextFormatter.format(item.getType().name())));
             }
         }

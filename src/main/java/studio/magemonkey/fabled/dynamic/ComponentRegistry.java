@@ -113,6 +113,7 @@ public class ComponentRegistry {
         register(new LightCondition());
         register(new LoreCondition());
         register(new ManaCondition());
+        register(new MoonCondition());
         register(new MoneyCondition());
         register(new MountedCondition());
         register(new MountingCondition());
@@ -161,6 +162,7 @@ public class ComponentRegistry {
         register(new FlagMechanic());
         register(new FlagClearMechanic());
         register(new FlagToggleMechanic());
+        register(new FlyMechanic());
         register(new FoodMechanic());
         register(new ForgetTargetsMechanic());
         register(new HealMechanic());
@@ -207,6 +209,7 @@ public class ComponentRegistry {
         register(new ValueAttributeMechanic());
         register(new ValueCopyMechanic());
         register(new ValueDistanceMechanic());
+        register(new ValueDivideMechanic());
         register(new ValueHealthMechanic());
         register(new ValueLoadMechanic());
         register(new ValueLocationMechanic());
