@@ -4,7 +4,6 @@ import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.api.Settings;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.player.PlayerStatisticIncrementEvent;
-import org.bukkit.entity.Player;
 import org.bukkit.Statistic;
 
 public class JumpTrigger implements Trigger<PlayerStatisticIncrementEvent> {
@@ -21,8 +20,11 @@ public class JumpTrigger implements Trigger<PlayerStatisticIncrementEvent> {
 
     @Override
     public boolean shouldTrigger(PlayerStatisticIncrementEvent event, int level, Settings settings) {
-        Player player = event.getPlayer();
+        LivingEntity player = (LivingEntity) event.getPlayer();
         if (player.isClimbing()) {
+            return false;
+        }
+        if (!player.isOnGround()){
             return false;
         }
         Statistic statistic = event.getStatistic();
