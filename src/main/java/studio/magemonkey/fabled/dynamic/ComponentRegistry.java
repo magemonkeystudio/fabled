@@ -58,6 +58,7 @@ public class ComponentRegistry {
         register(new FishingReelTrigger());
         register(new HealTrigger());
         register(new ItemSwapTrigger());
+        register(new JumpTrigger());
         register(new KillTrigger());
         register(new LandTrigger());
         register(new LaunchTrigger());
