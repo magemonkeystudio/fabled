@@ -147,7 +147,7 @@ public abstract class EffectComponent {
      * @param fallback default value for the attribute
      * @return the value with attribute modifications if applicable
      */
-    protected double parseValues(LivingEntity caster, String key, int level, double fallback) {
+    public double parseValues(LivingEntity caster, String key, int level, double fallback) {
         double base  = getNum(caster, key + "-base", fallback);
         double scale = getNum(caster, key + "-scale", 0);
         double value = base + (level - 1) * scale;
