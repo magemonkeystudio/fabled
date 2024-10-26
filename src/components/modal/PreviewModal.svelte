@@ -1,36 +1,37 @@
-<script lang='ts'>
-	import { run } from 'svelte/legacy';
-
-	import Modal                from '$components/Modal.svelte';
+<script lang="ts">
+	import Modal from '$components/Modal.svelte';
 	import type FabledComponent from '$api/components/fabled-component';
-	import type DropdownSelect  from '$api/options/dropdownselect';
-	import type { ComponentOption } from '$api/options/options';
-	import Toggle                   from '$input/Toggle.svelte';
-	import ProInput                 from '$input/ProInput.svelte';
+	import DropdownSelect from '$api/options/dropdownselect';
+	import Toggle from '$input/Toggle.svelte';
+	import ProInput from '$input/ProInput.svelte';
 
 	interface Props {
 		data: FabledComponent;
 	}
 
-	let { data = $bindable() }: Props = $props();
+	let { data }: Props = $props();
 	let modalOpen = $state(true);
 
-	run(() => {
+	$effect.pre(() => {
 		if (modalOpen && data) {
-			data.preview.filter((dat: ComponentOption) => (dat['dataSource'])).forEach((dat: DropdownSelect) => dat.init());
+			data.preview.forEach((dat) => {
+				if (dat instanceof DropdownSelect) dat.init();
+			});
 		}
 	});
 </script>
 
-<Modal bind:open={modalOpen} on:close width='70%'>
+<Modal bind:open={modalOpen} on:close width="70%">
 	<h2 class:deprecated={data.isDeprecated}><span>{data.name} - Preview</span></h2>
 	{#if data.description}
-		<div class='modal-desc'>{data.description}</div>
+		<div class="modal-desc">{data.description}</div>
 	{/if}
 	<hr />
-	<div class='component-entry'>
-		<ProInput label='Enable Preview'
-							tooltip={'[enabled] Whether this component will show its preview while casting. Requires a compatible casting mode: Item, Bars (hover bar only), Action bar, Title, Subtitle or Chat'}>
+	<div class="component-entry">
+		<ProInput
+			label="Enable Preview"
+			tooltip={'[enabled] Whether this component will show its preview while casting. Requires a compatible casting mode: Item, Bars (hover bar only), Action bar, Title, Subtitle or Chat'}
+		>
 			<Toggle bind:data={data.enablePreview} />
 		</ProInput>
 		{#if data.enablePreview}
@@ -41,7 +42,8 @@
 						name={datum.name}
 						tooltip="{datum.key ? '[' + datum.key + '] ' : ''}{datum.tooltip}"
 						multiple={datum.multiple}
-						on:save />
+						on:save
+					/>
 				{/if}
 			{/each}
 		{/if}
@@ -49,42 +51,42 @@
 </Modal>
 
 <style>
-    .deprecated {
-        align-items: center;
-        display: flex;
-    }
+	.deprecated {
+		align-items: center;
+		display: flex;
+	}
 
-    .deprecated > span {
-        text-decoration: line-through;
-    }
+	.deprecated > span {
+		text-decoration: line-through;
+	}
 
-    .deprecated::after {
-        text-decoration: unset;
-        margin-left: 0.5rem;
-        content: 'deprecated';
-        font-size: 0.6em;
-        color: goldenrod;
-    }
+	.deprecated::after {
+		text-decoration: unset;
+		margin-left: 0.5rem;
+		content: 'deprecated';
+		font-size: 0.6em;
+		color: goldenrod;
+	}
 
-    .component-entry {
-        display: grid;
-        grid-template-columns: calc(50% - 3rem) calc(50% + 3rem);
-        width: 100%;
-        padding-inline: 0.5rem;
-        padding-top: 0.25rem;
-    }
+	.component-entry {
+		display: grid;
+		grid-template-columns: calc(50% - 3rem) calc(50% + 3rem);
+		width: 100%;
+		padding-inline: 0.5rem;
+		padding-top: 0.25rem;
+	}
 
-    .component-entry {
-        display: grid;
-        grid-template-columns: calc(50% - 3rem) calc(50% + 3rem);
-        width: 100%;
-        padding-inline: 0.5rem;
-        padding-top: 0.25rem;
-    }
+	.component-entry {
+		display: grid;
+		grid-template-columns: calc(50% - 3rem) calc(50% + 3rem);
+		width: 100%;
+		padding-inline: 0.5rem;
+		padding-top: 0.25rem;
+	}
 
-    .modal-desc {
-        max-width: 100%;
-        white-space: break-spaces;
-        text-align: center;
-    }
+	.modal-desc {
+		max-width: 100%;
+		white-space: break-spaces;
+		text-align: center;
+	}
 </style>

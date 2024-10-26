@@ -1,4 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token `>`. Did you mean `&gt;` or `{">"}`? -->
 <script lang='ts'>
 	import '../app.css';
 	import {
@@ -27,22 +26,27 @@
 	import { quadInOut }                                                     from 'svelte/easing';
 	import Modal                                                             from '$components/Modal.svelte';
 	import { skillStore }                                                    from '../data/skill-store.js';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 
 	const isSaving = skillStore.isSaving;
 
-	let dragging    = false;
-	let displaySave = false;
+	let dragging    = $state(false);
+	let displaySave = $state(false);
 	let saveTask: number;
 	let saveSub: Unsubscriber;
 
-	let button                                 = '';
-	let serverSaveStatus                       = 'NONE';
+	let button                                 = $state('');
+	let serverSaveStatus                       = $state('NONE');
 	const statusMap: { [key: string]: string } = {
 		'SAVING': 'hourglass_empty',
 		'SAVED':  'check',
 		'ERROR':  'error'
 	};
-	let copied                                 = false;
+	let copied                                 = $state(false);
 
 	const passphrase = socketService.keyphrase;
 	let numButtons   = derived<Writable<boolean>, number>(socketConnected, (connected, set) => set(connected ? 6 : 3));
@@ -166,6 +170,8 @@
 		copied = true;
 		setTimeout(() => copied = false, 2000);
 	};
+
+	const SvelteComponent = $derived($activeModal);
 </script>
 
 <HeaderBar />
@@ -175,7 +181,7 @@
 		<Sidebar />
 	{/if}
 	<div id='body' class:centered={!$active}>
-		<slot />
+		{@render children?.()}
 	</div>
 </div>
 <!--<SocketPanel />-->
@@ -186,8 +192,8 @@
 			 role='button'
 			 style:--rotation='{$rotation}deg'
 			 style:--distance='{$distance}rem'
-			 on:click={saveAll}
-			 on:keypress={(e) => e.key === 'Enter' && saveAll()}
+			 onclick={saveAll}
+			 onkeypress={(e) => e.key === 'Enter' && saveAll()}
 	>
 		<span class='material-symbols-rounded'>cloud_download</span>
 	</div>
@@ -196,8 +202,8 @@
 			 role='button'
 			 style:--rotation='{$rotation * 3}deg'
 			 style:--distance='{$distance}rem'
-			 on:click={() => saveData()}
-			 on:keypress={(e) => { if (e.key === 'Enter') saveData() }}
+			 onclick={() => saveData()}
+			 onkeypress={(e) => { if (e.key === 'Enter') saveData() }}
 	>
 		<span class='material-symbols-rounded'>save</span>
 	</div>
@@ -210,8 +216,8 @@
 				 style:--rotation='{$rotation * 5}deg'
 				 style:--distance='{$distance}rem'
 				 transition:fly={{x: 100, easing: quadInOut}}
-				 on:click={() => saveServerInfo()}
-				 on:keypress={(e) => { if (e.key === 'Enter') saveServerInfo() }}
+				 onclick={() => saveServerInfo()}
+				 onkeypress={(e) => { if (e.key === 'Enter') saveServerInfo() }}
 		>
 			{#if button === 'save' && serverSaveStatus !== 'NONE'}
 				<span class='material-symbols-rounded' transition:fly={{y: -20}}>{statusMap[serverSaveStatus]}</span>
@@ -226,8 +232,8 @@
 				 style:--rotation='{$rotation * 7}deg'
 				 style:--distance='{$distance}rem'
 				 transition:fly={{x: 100, easing: quadInOut}}
-				 on:click={() => exportAllToServer()}
-				 on:keypress={(e) => { if (e.key === 'Enter') exportAllToServer() }}
+				 onclick={() => exportAllToServer()}
+				 onkeypress={(e) => { if (e.key === 'Enter') exportAllToServer() }}
 		>
 			{#if button === 'export' && serverSaveStatus !== 'NONE'}
 				<span class='material-symbols-rounded' transition:fly={{y: -20}}>{statusMap[serverSaveStatus]}</span>
@@ -242,8 +248,8 @@
 				 style:--rotation='{$rotation * 9}deg'
 				 style:--distance='{$distance}rem'
 				 transition:fly={{x: 100, easing: quadInOut}}
-				 on:click={() => reload()}
-				 on:keypress={(e) => { if (e.key === 'Enter') reload() }}
+				 onclick={() => reload()}
+				 onkeypress={(e) => { if (e.key === 'Enter') reload() }}
 		>
 			{#if button === 'reload' && serverSaveStatus !== 'NONE'}
 				<span class='material-symbols-rounded' transition:fly={{y: -20}}>{statusMap[serverSaveStatus]}</span>
@@ -257,8 +263,8 @@
 			 role='button'
 			 style:--rotation='60deg'
 			 style:--distance='1rem'
-			 on:click={() => openModal(SettingsModal)}
-			 on:keypress={(e) => e.key === 'Enter' && openModal(SettingsModal)}
+			 onclick={() => openModal(SettingsModal)}
+			 onkeypress={(e) => e.key === 'Enter' && openModal(SettingsModal)}
 	>
 		<span class='material-symbols-rounded'>settings</span>
 	</div>
@@ -277,16 +283,15 @@
 		<div class='acknowledge button'
 				 tabindex='0'
 				 role='button'
-				 on:click={() => { acknowledgeSaveError() }}
-				 on:keypress={(e) => { if (e.key === 'Enter') { acknowledgeSaveError() }}}
+				 onclick={() => { acknowledgeSaveError() }}
+				 onkeypress={(e) => { if (e.key === 'Enter') { acknowledgeSaveError() }}}
 		>I Understand
 		</div>
 	</div>
 {/if}
 
 <!-- Display our active modal -->
-<svelte:component
-	this={$activeModal}
+<SvelteComponent
 	data={$modalData}
 	on:close={closeModal}
 	on:save={save} />
@@ -296,7 +301,7 @@
 {/if}
 
 {#if dragging}
-	<div class='dragging' role='form' on:dragleave={dragleave}>
+	<div class='dragging' role='form' ondragleave={dragleave}>
 		Drop to Import
 	</div>
 {/if}
@@ -308,8 +313,8 @@
 				 class:copied
 				 tabindex='0'
 				 role='button'
-				 on:click={copyText}
-				 on:keypress={(e) => { if (e.key === 'Enter') copyText() }}
+				 onclick={copyText}
+				 onkeypress={(e) => { if (e.key === 'Enter') copyText() }}
 		>
 			/synth trust {$passphrase}
 		</div>
@@ -323,8 +328,8 @@
 		<div class='button'
 				 tabindex='0'
 				 role='button'
-				 on:click={() => socketService.ping()}
-				 on:keypress={(e) => { if (e.key === 'Enter') socketService.ping() }}
+				 onclick={() => socketService.ping()}
+				 onkeypress={(e) => { if (e.key === 'Enter') socketService.ping() }}
 		>Click to remain connected
 		</div>
 	</div>

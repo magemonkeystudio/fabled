@@ -1,4 +1,3 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token `>`. Did you mean `&gt;` or `{">"}`? -->
 <script lang='ts'>
 	import ComponentWidget                                from '$components/ComponentWidget.svelte';
 	import Modal                                          from '$components/Modal.svelte';
@@ -13,10 +12,13 @@
 	import FabledComponent             from '$api/components/fabled-component';
 	import FabledSkill, { skillStore } from '../../../../data/skill-store';
 
-	export let data: { data: FabledSkill };
-	let skill: FabledSkill;
-	$: if (data) skill = data.data;
-	let triggerModal = false;
+	interface Props {
+		data: { data: FabledSkill };
+	}
+
+	let { data }: Props = $props();
+	let skill: FabledSkill = $derived(data?.data);
+	let triggerModal = $state(false);
 
 	onMount(() => {
 		// This is by far my least favorite implementation... But with enough things going on,
@@ -58,8 +60,8 @@
 					title='Add Trigger'
 					tabindex='0'
 					role='button'
-					on:click={() => triggerModal = true}
-					on:keypress={(e) => e.key === 'Enter' && (triggerModal = true)}>
+					onclick={() => triggerModal = true}
+					onkeypress={(e) => e.key === 'Enter' && (triggerModal = true)}>
 			<span class='material-symbols-rounded'>
 				new_label
 			</span>
@@ -80,7 +82,7 @@
 
 <Modal bind:open={triggerModal}>
 	<div class='modal-header-wrapper'>
-		<div />
+		<div></div>
 		<h2 class='modal-header'>Select New Trigger</h2>
 		<div class='search-bar'>
 			<ProInput bind:value={$filterParams} placeholder='Search...' autofocus />
@@ -96,8 +98,8 @@
 		{/each}
 	</div>
 	<hr />
-	<div class='cancel' on:click={() => triggerModal = false}
-			 on:keypress={(e) => e.key === 'Enter' && (triggerModal = false)}
+	<div class='cancel' onclick={() => triggerModal = false}
+			 onkeypress={(e) => e.key === 'Enter' && (triggerModal = false)}
 			 tabindex='0'
 			 role='button'
 	>Cancel

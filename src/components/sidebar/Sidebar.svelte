@@ -1,45 +1,51 @@
-<!-- @migration-task Error while migrating Svelte code: Can't migrate code with beforeUpdate. Please migrate by hand. -->
-<!--suppress CssUnresolvedCustomProperty -->
-<script lang='ts'>
+<script lang="ts">
 	import { closeSidebar, shownTab, sidebarOpen } from '../../data/store';
-	import SidebarEntry                            from './SidebarEntry.svelte';
-	import { squish }                              from '../../data/squish';
-	import { goto }                                from '$app/navigation';
-	import { beforeUpdate, onDestroy, onMount }    from 'svelte';
-	import type { Unsubscriber }                   from 'svelte/store';
-	import { get }                                 from 'svelte/store';
-	import Folder                                  from '../Folder.svelte';
-	import { fly }                                 from 'svelte/transition';
-	import { clickOutside }                        from '$api/clickoutside';
-	import { browser }                             from '$app/environment';
-	import Tabs                                    from '../input/Tabs.svelte';
-	import { base }                                from '$app/paths';
-	import { socketService }                       from '$api/socket/socket-connector';
-	import { Tab }                                 from '$api/tab';
-	import FabledSkill, { skillStore }             from '../../data/skill-store.js';
-	import type FabledAttribute                    from '$api/fabled-attribute';
-	import FabledClass, { classStore }             from '../../data/class-store';
-	import { attributeStore }                      from '../../data/attribute-store.js';
-	import { FabledFolder }                        from '../../data/folder-store';
+	import SidebarEntry from './SidebarEntry.svelte';
+	import { squish } from '../../data/squish';
+	import { goto } from '$app/navigation';
+	import { onDestroy, onMount } from 'svelte';
+	import type { Unsubscriber } from 'svelte/store';
+	import { get } from 'svelte/store';
+	import Folder from '../Folder.svelte';
+	import { fly } from 'svelte/transition';
+	import { clickOutside } from '$api/clickoutside';
+	import { browser } from '$app/environment';
+	import Tabs from '../input/Tabs.svelte';
+	import { base } from '$app/paths';
+	import { socketService } from '$api/socket/socket-connector';
+	import { Tab } from '$api/tab';
+	import FabledSkill, { skillStore } from '../../data/skill-store.js';
+	import type FabledAttribute from '$api/fabled-attribute';
+	import FabledClass, { classStore } from '../../data/class-store';
+	import { attributeStore } from '../../data/attribute-store.js';
+	import { FabledFolder } from '../../data/folder-store';
 
-	let folders: FabledFolder[]                         = [];
+	let folders: FabledFolder[] = [];
 	let classSub: Unsubscriber;
 	let skillSub: Unsubscriber;
-	let classIncluded: Array<FabledClass | FabledSkill> = [];
-	let skillIncluded: Array<FabledClass | FabledSkill> = [];
+	let classIncluded: Array<FabledClass | FabledSkill> = $state([]);
+	let skillIncluded: Array<FabledClass | FabledSkill> = $state([]);
 
-	let width: number;
-	let height: number;
-	let scrollY: number;
+	let width: number = $state(0);
+	let height: number = $state(0);
+	let scrollY: number = $state(0);
 
-	const skills       = skillStore.skills;
+	const skills = skillStore.skills;
 	const skillFolders = skillStore.skillFolders;
-	const classes      = classStore.classes;
+	const classes = classStore.classes;
 	const classFolders = classStore.classFolders;
-	const attributes   = attributeStore.attributes;
+	const attributes = attributeStore.attributes;
 
-	const appendIncluded = (item: Array<FabledFolder | FabledClass | FabledSkill | FabledAttribute> | FabledFolder | FabledClass | FabledSkill | FabledAttribute, include: Array<FabledClass | FabledSkill>) => {
-		if (item instanceof Array) item.forEach(fold => appendIncluded(fold, include));
+	const appendIncluded = (
+		item:
+			| Array<FabledFolder | FabledClass | FabledSkill | FabledAttribute>
+			| FabledFolder
+			| FabledClass
+			| FabledSkill
+			| FabledAttribute,
+		include: Array<FabledClass | FabledSkill>
+	) => {
+		if (item instanceof Array) item.forEach((fold) => appendIncluded(fold, include));
 		if (item instanceof FabledFolder) appendIncluded(item.data, include);
 		else if (item instanceof FabledClass || item instanceof FabledSkill) include.push(item);
 	};
@@ -47,13 +53,13 @@
 	const rebuildFolders = (fold?: FabledFolder[]) => {
 		switch (get(shownTab)) {
 			case Tab.CLASSES: {
-				folders       = fold || get(classFolders);
+				folders = fold || get(classFolders);
 				classIncluded = [];
 				appendIncluded(folders, classIncluded);
 				break;
 			}
 			case Tab.SKILLS: {
-				folders       = fold || get(skillStore.skillFolders);
+				folders = fold || get(skillStore.skillFolders);
 				skillIncluded = [];
 				appendIncluded(folders, skillIncluded);
 				break;
@@ -68,7 +74,7 @@
 		skillSub = skillStore.skillFolders.subscribe(rebuildFolders);
 	});
 
-	beforeUpdate(rebuildFolders);
+	$effect.pre(rebuildFolders);
 
 	onDestroy(() => {
 		if (classSub) classSub();
@@ -83,102 +89,118 @@
 	};
 </script>
 
-<svelte:window bind:innerWidth={width} bind:innerHeight={height} bind:scrollY={scrollY}
-							 on:beforeunload={() => socketService.disconnect()} />
+<svelte:window
+	bind:innerWidth={width}
+	bind:innerHeight={height}
+	bind:scrollY
+	onbeforeunload={() => socketService.disconnect()}
+/>
 
-<div id='sidebar'
-		 transition:squish
-		 on:introend={() => sidebarOpen.set(true)}
-		 on:outroend={() => sidebarOpen.set(false)}
-		 use:clickOutside={clickOut}
-		 style:--height='calc({height}px - 6rem + min(3rem, {scrollY}px))'>
-	<div class='type-wrap'>
-		<Tabs bind:selectedTab={$shownTab} data={["Classes", "Skills", "Attributes"]} color='#111' inline={false} />
+<div
+	id="sidebar"
+	transition:squish
+	onintroend={() => sidebarOpen.set(true)}
+	onoutroend={() => sidebarOpen.set(false)}
+	use:clickOutside={clickOut}
+	style:--height="calc({height}px - 6rem + min(3rem, {scrollY}px))"
+>
+	<div class="type-wrap">
+		<Tabs
+			bind:selectedTab={$shownTab}
+			data={['Classes', 'Skills', 'Attributes']}
+			color="#111"
+			inline={false}
+		/>
 		<hr />
 	</div>
 	{#if $shownTab === Tab.CLASSES}
-		<div class='items'
-				 in:fly={{x: -100}}
-				 out:fly={{x: -100}}>
+		<div class="items" in:fly={{ x: -100 }} out:fly={{ x: -100 }}>
 			{#each $classFolders as cf}
 				<Folder folder={cf} />
 			{/each}
-			{#each $classes.filter(c => !classIncluded.includes(c)) as cl, i (cl.key)}
+			{#each $classes.filter((c) => !classIncluded.includes(c)) as cl, i (cl.key)}
 				<SidebarEntry
 					data={cl}
-					delay={200 + 100*i}
-					on:click={() => goto(`${base}/class/${cl.name}/edit`)}>
+					delay={200 + 100 * i}
+					on:click={() => goto(`${base}/class/${cl.name}/edit`)}
+				>
 					{cl.name}{cl.location === 'server' ? '*' : ''}
 				</SidebarEntry>
 			{/each}
-			<SidebarEntry
-				delay={200 + 100*($classes.length+1)}>
-				<div class='new'>
-					<span tabindex='0'
-								role='button'
-								on:click={() => classStore.addClass()}
-								on:keypress={(e) => e.key === 'Enter' && classStore.addClass()}>New Class</span>
-					<span class='new-folder'
-								tabindex='0'
-								role='button'
-								on:click={() => classStore.addClassFolder(new FabledFolder())}
-								on:keypress={(e) => e.key === 'Enter' && classStore.addClassFolder(new FabledFolder())}>New Folder</span>
+			<SidebarEntry delay={200 + 100 * ($classes.length + 1)}>
+				<div class="new">
+					<span
+						tabindex="0"
+						role="button"
+						onclick={() => classStore.addClass()}
+						onkeypress={(e) => e.key === 'Enter' && classStore.addClass()}>New Class</span
+					>
+					<span
+						class="new-folder"
+						tabindex="0"
+						role="button"
+						onclick={() => classStore.addClassFolder(new FabledFolder())}
+						onkeypress={(e) => e.key === 'Enter' && classStore.addClassFolder(new FabledFolder())}
+						>New Folder</span
+					>
 				</div>
 			</SidebarEntry>
 		</div>
 	{:else if $shownTab === Tab.SKILLS}
-		<div class='items'
-				 in:fly={{ x: 100 }}
-				 out:fly={{ x: 100 }}>
+		<div class="items" in:fly={{ x: 100 }} out:fly={{ x: 100 }}>
 			{#each $skillFolders as sk}
 				<Folder folder={sk} />
 			{/each}
-			{#each $skills.filter(s => !skillIncluded.includes(s)) as sk, i (sk.key)}
+			{#each $skills.filter((s) => !skillIncluded.includes(s)) as sk, i (sk.key)}
 				<SidebarEntry
 					data={sk}
-					direction='right'
-					delay={200 + 100*i}
-					on:click={() => goto(`${base}/skill/${sk.name}`)}>
+					direction="right"
+					delay={200 + 100 * i}
+					on:click={() => goto(`${base}/skill/${sk.name}`)}
+				>
 					{sk.name}{sk.location === 'server' ? '*' : ''}
 				</SidebarEntry>
 			{/each}
-			<SidebarEntry
-				delay={200 + 100*($skills.length+1)}
-				direction='right'>
-				<div class='new'>
-					<span tabindex='0'
-								role='button'
-								on:click={() => skillStore.addSkill()}
-								on:keypress={(e) => e.key === 'Enter' && skillStore.addSkill()}>New Skill</span>
-					<span class='new-folder'
-								tabindex='0'
-								role='button'
-								on:click={() => skillStore.addSkillFolder(new FabledFolder())}
-								on:keypress={(e) => e.key === 'Enter' && skillStore.addSkillFolder(new FabledFolder())}>New Folder</span>
+			<SidebarEntry delay={200 + 100 * ($skills.length + 1)} direction="right">
+				<div class="new">
+					<span
+						tabindex="0"
+						role="button"
+						onclick={() => skillStore.addSkill()}
+						onkeypress={(e) => e.key === 'Enter' && skillStore.addSkill()}>New Skill</span
+					>
+					<span
+						class="new-folder"
+						tabindex="0"
+						role="button"
+						onclick={() => skillStore.addSkillFolder(new FabledFolder())}
+						onkeypress={(e) => e.key === 'Enter' && skillStore.addSkillFolder(new FabledFolder())}
+						>New Folder</span
+					>
 				</div>
 			</SidebarEntry>
 		</div>
 	{:else if $shownTab === Tab.ATTRIBUTES}
-		<div class='items'
-				 in:fly={{ x: 100 }}
-				 out:fly={{ x: 100 }}>
+		<div class="items" in:fly={{ x: 100 }} out:fly={{ x: 100 }}>
 			{#each $attributes as att, i (att.name)}
 				<SidebarEntry
 					data={att}
-					direction='right'
-					delay={200 + 100*i}
-					on:click={() => goto(`${base}/attribute/${att.name}/edit`)}>
+					direction="right"
+					delay={200 + 100 * i}
+					on:click={() => goto(`${base}/attribute/${att.name}/edit`)}
+				>
 					{att.name}{att.location === 'server' ? '*' : ''}
 				</SidebarEntry>
 			{/each}
-			<SidebarEntry
-				delay={200 + 100*($attributes.length+1)}
-				direction='right'>
-				<div class='new'>
-					<span tabindex='0'
-								role='button'
-								on:click={() => attributeStore.addAttribute()}
-								on:keypress={(e) => e.key === 'Enter' && attributeStore.addAttribute()}>New Attribute</span>
+			<SidebarEntry delay={200 + 100 * ($attributes.length + 1)} direction="right">
+				<div class="new">
+					<span
+						tabindex="0"
+						role="button"
+						onclick={() => attributeStore.addAttribute()}
+						onkeypress={(e) => e.key === 'Enter' && attributeStore.addAttribute()}
+						>New Attribute</span
+					>
 				</div>
 			</SidebarEntry>
 		</div>
@@ -186,74 +208,74 @@
 </div>
 
 <style>
-    #sidebar {
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 30;
-        background-color: #222;
-        max-height: var(--height);
-        height: var(--height);
-        overflow-y: auto;
-        width: 75%;
-    }
+	#sidebar {
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 30;
+		background-color: #222;
+		max-height: var(--height);
+		height: var(--height);
+		overflow-y: auto;
+		width: 75%;
+	}
 
-    hr {
-        margin-bottom: 0;
-    }
+	hr {
+		margin-bottom: 0;
+	}
 
-    .type-wrap {
-        position: sticky;
-        z-index: 2;
-        top: 0;
-        background-color: #222;
-        padding: 0.4rem;
-        user-select: none;
-        -webkit-user-select: none;
-    }
+	.type-wrap {
+		position: sticky;
+		z-index: 2;
+		top: 0;
+		background-color: #222;
+		padding: 0.4rem;
+		user-select: none;
+		-webkit-user-select: none;
+	}
 
-    .items {
-        position: absolute;
-        width: 100%;
-    }
+	.items {
+		position: absolute;
+		width: 100%;
+	}
 
-    .new {
-        width: 100%;
-        display: flex;
-        justify-content: space-around;
-        margin: 0.3rem;
-    }
+	.new {
+		width: 100%;
+		display: flex;
+		justify-content: space-around;
+		margin: 0.3rem;
+	}
 
-    .new span {
-        display: grid;
-        place-items: center;
-        flex: 1;
-        border-radius: 100vw;
-        text-align: center;
-        padding: 0.4rem 0.6rem;
-        background-color: #333;
-    }
+	.new span {
+		display: grid;
+		place-items: center;
+		flex: 1;
+		border-radius: 100vw;
+		text-align: center;
+		padding: 0.4rem 0.6rem;
+		background-color: #333;
+	}
 
-    .new span:first-child {
-        margin-right: 0.5rem;
-    }
+	.new span:first-child {
+		margin-right: 0.5rem;
+	}
 
-    .new span:last-child {
-        margin-left: 0.5rem;
-    }
+	.new span:last-child {
+		margin-left: 0.5rem;
+	}
 
-    .new span:hover {
-        background-color: #0083ef;
-    }
+	.new span:hover {
+		background-color: #0083ef;
+	}
 
-    @media screen and (min-width: 500px) {
-        #sidebar {
-            position: sticky;
-            top: 3rem;
-            width: 15rem;
-            min-width: 10rem;
-            overflow-x: hidden;
-            overflow-y: auto;
-        }
-    }
+	@media screen and (min-width: 500px) {
+		#sidebar {
+			position: sticky;
+			top: 3rem;
+			width: 15rem;
+			min-width: 10rem;
+			overflow-x: hidden;
+			overflow-y: auto;
+		}
+	}
 </style>

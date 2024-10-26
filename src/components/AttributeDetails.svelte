@@ -1,6 +1,4 @@
 <script lang='ts'>
-	import { run } from 'svelte/legacy';
-
 	import IconInput            from './input/IconInput.svelte';
 	import { updateSidebar }    from '../data/store';
 	import AttributeInput       from './input/AttributeInput.svelte';
@@ -15,7 +13,7 @@
 
 	let { data = $bindable() }: Props = $props();
 
-	run(() => {
+	$effect.pre(() => {
 		if (data?.name) updateSidebar();
 		data.save();
 	});
@@ -25,7 +23,7 @@
 	<ProInput label='Name'
 						tooltip='The name of the attribute. This should not contain color codes'
 						bind:value={data.name} />
-	<ProInput label='Max' type='number'
+	<ProInput label='Max'
 						tooltip='The maximum points of this attribute that a player can have'
 						bind:value={data.max} />
 	<ProInput label='Cost'
@@ -33,8 +31,8 @@
 		<AttributeInput bind:value={data.cost} />
 	</ProInput>
 	<IconInput bind:icon={data.icon} />
-	<AttributeSection name={'Target'} bind:section={data.targets} />
-	<AttributeSection name={'Condition'} bind:section={data.conditions} />
-	<AttributeSection name={'Mechanic'} bind:section={data.mechanics} />
+	<AttributeSection name='Target' section={data.targets} />
+	<AttributeSection name='Condition' section={data.conditions} />
+	<AttributeSection name='Mechanic' section={data.mechanics} />
 	<AttributeStats bind:stats={data.stats} />
 {/if}

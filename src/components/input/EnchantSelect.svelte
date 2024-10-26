@@ -1,17 +1,26 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<script lang='ts'>
+<script lang="ts">
 	import SearchableSelect from './SearchableSelect.svelte';
-	import { versionData }  from '../../version/data';
+	import { versionData } from '../../version/data';
 	import type { Enchant } from '$api/options/enchantselect';
-	import ProInput         from '$input/ProInput.svelte';
+	import ProInput from '$input/ProInput.svelte';
 
-	export let id: string | undefined                    = undefined;
-	export let placeholder                               = '';
-	export let multiple                                  = false;
-	export let any                                       = false;
-	export let selected: Enchant[] | Enchant | undefined = undefined;
+	interface Props {
+		id?: string | undefined;
+		placeholder?: string;
+		multiple?: boolean;
+		any?: boolean;
+		selected?: Enchant[] | Enchant | undefined;
+	}
 
-	let input: SearchableSelect;
+	let {
+		id = undefined,
+		placeholder = '',
+		multiple = false,
+		any = false,
+		selected = $bindable(undefined)
+	}: Props = $props();
+
+	let input: SearchableSelect | undefined = $state();
 
 	const handleSelect = (e: CustomEvent<string>, index = -1) => {
 		if (multiple) {
@@ -23,7 +32,7 @@
 				(<Enchant[]>selected).push({ name: e.detail, level: 1 });
 			}
 
-			input.focus();
+			input?.focus();
 
 			e.preventDefault();
 		} else {
@@ -50,17 +59,13 @@
 			<SearchableSelect
 				{id}
 				{placeholder}
-				selected='{value.name}'
+				selected={value.name}
 				on:select={(e) => handleSelect(e, i)}
 				on:remove={() => handleRemove(i)}
-				data={any ? ["Any", ...$versionData.ENCHANTS] : $versionData.ENCHANTS}
+				data={any ? ['Any', ...$versionData.ENCHANTS] : $versionData.ENCHANTS}
 			/>
-			<div class='enchant'>
-				<ProInput
-					label='Level'
-					type='number'
-					bind:value={value.level}
-				/>
+			<div class="enchant">
+				<ProInput label="Level" bind:value={value.level} />
 			</div>
 		{/each}
 	{/if}
@@ -69,20 +74,20 @@
 		{id}
 		{placeholder}
 		on:select={handleSelect}
-		data={any ? ["Any", ...$versionData.ENCHANTS] : $versionData.ENCHANTS}
+		data={any ? ['Any', ...$versionData.ENCHANTS] : $versionData.ENCHANTS}
 	/>
 {:else}
 	<SearchableSelect
 		{id}
 		{placeholder}
-		bind:selected={selected}
-		data={any ? ["Any", ...$versionData.ENCHANTS] : $versionData.ENCHANTS}
+		bind:selected
+		data={any ? ['Any', ...$versionData.ENCHANTS] : $versionData.ENCHANTS}
 	/>
 {/if}
 
 <style>
-    .enchant {
-        display: grid;
-        grid-template-columns: 1fr 0.5fr;
-    }
+	.enchant {
+		display: grid;
+		grid-template-columns: 1fr 0.5fr;
+	}
 </style>

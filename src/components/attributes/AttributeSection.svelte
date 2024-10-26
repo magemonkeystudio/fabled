@@ -1,21 +1,21 @@
 <script lang='ts'>
-	import { run } from 'svelte/legacy';
-
 	import type { AttributeSection } from '$api/fabled-attribute';
 	import AttributeComponentSvelte  from '$components/attributes/AttributeComponent.svelte';
 	import Control                   from '$components/control/Control.svelte';
 	import { updateSidebar }         from '../../data/store';
 
-	let color: string = name === 'Target' ? '#04af38' : name === 'Condition' ? '#feac00' : '#ff3a3a';
 	interface Props {
 		name: 'Target' | 'Condition' | 'Mechanic';
 		section: AttributeSection;
 	}
 
 	let { name, section }: Props = $props();
-	let components = $derived(section.components);
+	let color: string            = name === 'Target' ? '#04af38' : name === 'Condition' ? '#feac00' : '#ff3a3a';
+
+	let components          = $derived(section.components);
 	let availableComponents = $derived(section.availableComponents);
-	run(() => {
+
+	$effect.pre(() => {
 		if ($components && section.attribute?.name) updateSidebar();
 		section.attribute.save();
 	});
@@ -24,8 +24,9 @@
 <div class='section'>
 	<div class='header'>{name} modifiers</div>
 	{#each $components as component}
-		<AttributeComponentSvelte color={color}
-															bind:component={component} section={section} />
+		<AttributeComponentSvelte {color}
+															{component}
+															{section} />
 	{/each}
 	{#if $availableComponents.length > 0}
 		<div class='btn'>

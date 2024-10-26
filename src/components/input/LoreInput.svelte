@@ -1,7 +1,12 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang='ts'>
-	export let value: string[] = [];
-	$: if (!value) value = [];
+	interface Props {
+		value: string[];
+	}
+
+	let { value }: Props = $props();
+	$effect.pre(() => {
+		if (!value) value = [];
+	});
 
 	const press = (e: KeyboardEvent) => {
 		const split = (<HTMLTextAreaElement>e.target).value.split(/\r?\n/g);
@@ -13,7 +18,7 @@
 	};
 </script>
 
-<textarea on:keyup={press} rows='5'>
+<textarea onkeyup={press} rows='5'>
 	{value.join("\r\n")}
 </textarea>
 

@@ -1,6 +1,4 @@
 <script lang='ts'>
-	import { run } from 'svelte/legacy';
-
 	import ProInput                                      from '$input/ProInput.svelte';
 	import SearchableSelect                              from '$input/SearchableSelect.svelte';
 	import AttributeComponentStatSvelte                  from './AttributeComponentStat.svelte';
@@ -19,7 +17,8 @@
 	let stats = $derived(component.stats);
 	let availableComponents = $derived(section.availableComponents);
 	let availableStats = $derived(component.availableStats);
-	run(() => {
+
+	$effect.pre(() => {
 		if ($stats && component.section.attribute?.name) updateSidebar();
 		component.section.attribute.save();
 	});
@@ -32,7 +31,7 @@
 		</ProInput>
 	</div>
 	{#each $stats as stat}
-		<AttributeComponentStatSvelte bind:stat={stat} component={component} />
+		<AttributeComponentStatSvelte {stat} {component} />
 	{/each}
 	<div class='controls'>
 		{#if $availableStats.length > 0}
