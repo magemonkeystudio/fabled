@@ -1,22 +1,32 @@
 <!--suppress CssUnresolvedCustomProperty -->
 <script lang='ts'>
-	export let data: boolean;
-	export let left   = 'True';
-	export let right  = 'False';
-	export let color  = '#222';
-	export let inline = true;
+    interface Props {
+        data: boolean;
+        left?: string;
+        right?: string;
+        color?: string;
+        inline?: boolean;
+    }
+
+    let {
+        data = $bindable(),
+        left = 'True',
+        right = 'False',
+        color = '#222',
+        inline = true
+    }: Props = $props();
 </script>
 
 <input type='checkbox' class='hidden' id='permission' bind:checked={data} />
 <div class='toggle' class:selected={data} style:--color={color} class:inline>
-	<div on:click={() => data = true}
-			 on:keypress={(e) => { if(e.key === 'Enter') data = true }}
+	<div onclick={() => data = true}
+			 onkeypress={(e) => { if(e.key === 'Enter') data = true }}
 			 tabindex='0'
 			 role='radio'
 			 aria-checked='{data}'
 	>{left}</div>
-	<div on:click={() => data = false}
-			 on:keypress={(e) => { if(e.key === 'Enter') data = false }}
+	<div onclick={() => data = false}
+			 onkeypress={(e) => { if(e.key === 'Enter') data = false }}
 			 tabindex='0'
 			 role='radio'
 			 aria-checked='{!data}'

@@ -1,4 +1,6 @@
 <script lang='ts'>
+	import { stopPropagation } from 'svelte/legacy';
+
 	import { active, activeType, setImporting, toggleSidebar } from '../data/store';
 	import { get }                                             from 'svelte/store';
 	import { createPaste }                                     from '$api/hastebin';
@@ -30,8 +32,8 @@
 		<div class='chip hamburger'
 				 tabindex='0'
 				 role='button'
-				 on:click|stopPropagation={toggleSidebar}
-				 on:keypress={(e) => {
+				 onclick={stopPropagation(toggleSidebar)}
+				 onkeypress={(e) => {
 					 if (e.key === 'Enter') {
              e.stopPropagation();
              toggleSidebar();
@@ -41,14 +43,14 @@
 			<span class='material-symbols-rounded'>menu</span>
 		</div>
 
-		<div />
+		<div></div>
 
 		<div class='transfer'>
 			<div class='chip import'
 					 tabindex='0'
 					 role='button'
-					 on:click|stopPropagation={openImport}
-					 on:keypress={(e) => {
+					 onclick={stopPropagation(openImport)}
+					 onkeypress={(e) => {
 						 if (e.key === 'Enter') {
 							 e.stopPropagation();
 							 openImport();
@@ -62,8 +64,8 @@
 				<div class='chip share'
 						 tabindex='0'
 						 role='button'
-						 on:click|stopPropagation={haste}
-						 on:keypress={(e) => {
+						 onclick={stopPropagation(haste)}
+						 onkeypress={(e) => {
 							 if (e.key === 'Enter') {
 								 e.stopPropagation();
 								 haste();

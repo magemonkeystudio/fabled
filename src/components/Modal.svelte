@@ -4,8 +4,13 @@
 	import { clickOutside }          from '$api/clickoutside';
 	import { createEventDispatcher } from 'svelte';
 
-	export let width = 'auto';
-	export let open  = false;
+    interface Props {
+        width?: string;
+        open?: boolean;
+        children?: import('svelte').Snippet;
+    }
+
+    let { width = 'auto', open = $bindable(false), children }: Props = $props();
 
 	const dispatch = createEventDispatcher();
 
@@ -24,7 +29,7 @@
 	};
 </script>
 
-<svelte:window on:keyup={checkClose} />
+<svelte:window onkeyup={checkClose} />
 {#if open}
 	<div class='backdrop' transition:fade>
 		<div class='modal-content'
@@ -32,7 +37,7 @@
 				 transition:fly={{y: -200}}
 				 style:--width={width}>
 			<div class='wrapper'>
-				<slot />
+				{@render children?.()}
 			</div>
 		</div>
 	</div>

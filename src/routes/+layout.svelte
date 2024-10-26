@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token `>`. Did you mean `&gt;` or `{">"}`? -->
 <script lang='ts'>
 	import '../app.css';
 	import {

@@ -1,4 +1,7 @@
 <script lang='ts'>
+	import { preventDefault, stopPropagation, createBubbler } from 'svelte/legacy';
+
+	const bubble = createBubbler();
 	import { active, deleteProData, dragging, saveData, shownTab, sidebarOpen } from '../../data/store';
 	import FabledAttribute                                                      from '$api/fabled-attribute';
 	import { get }                                                              from 'svelte/store';
@@ -13,12 +16,22 @@
 	import { FabledFolder, folderStore }                                        from '../../data/folder-store.js';
 	import { attributeStore }                                                   from '../../data/attribute-store';
 
-	export let delay                                                         = 0;
-	export let direction: 'right' | 'left'                                   = 'left';
-	export let data: FabledSkill | FabledClass | FabledAttribute | undefined = undefined;
+	interface Props {
+		delay?: number;
+		direction?: 'right' | 'left';
+		data?: FabledSkill | FabledClass | FabledAttribute | undefined;
+		children?: import('svelte').Snippet;
+	}
 
-	let over     = false;
-	let deleting = false;
+	let {
+		delay = 0,
+		direction = 'left',
+		data = undefined,
+		children
+	}: Props = $props();
+
+	let over     = $state(false);
+	let deleting = $state(false);
 
 	const dispatch = createEventDispatcher();
 
@@ -97,19 +110,19 @@
 		 class:active={data && $active === data}
 		 class:in-folder={!!folderStore.getFolder(data)}
 		 draggable='{!!data}'
-		 on:dragstart={startDrag}
-		 on:drop|preventDefault|stopPropagation={drop}
-		 on:dragover|preventDefault={dragOver}
-		 on:dragleave={() => over = false}
-		 on:click
-		 on:keypress={(e) => {
+		 ondragstart={startDrag}
+		 ondrop={stopPropagation(preventDefault(drop))}
+		 ondragover={preventDefault(dragOver)}
+		 ondragleave={() => over = false}
+		 onclick={bubble('click')}
+		 onkeypress={(e) => {
 			 if (e.key === 'Enter') dispatch('click');
 		 }}
 		 tabindex='0'
 		 role='menuitem'
 		 in:maybe={{fn: fly, x: (direction === "left" ? -100 : 100), duration: 500, delay: $sidebarOpen ? 0 : delay}}
 		 out:fly={{x: (direction === "left" ? -100 : 100), duration: 500}}>
-	<slot />
+	{@render children?.()}
 	{#if data}
 		<div class='buttons'>
 			{#if data instanceof FabledSkill}
@@ -121,8 +134,8 @@
           </span>
 				</a>
 			{/if}
-			<div on:click|preventDefault|stopPropagation={() => saveData(data)}
-					 on:keypress|preventDefault|stopPropagation={(event) => {if (event?.key === 'Enter') saveData(data);}}
+			<div onclick={stopPropagation(preventDefault(() => saveData(data)))}
+					 onkeypress={stopPropagation(preventDefault((event) => {if (event?.key === 'Enter') saveData(data);}))}
 					 tabindex='0'
 					 role='button'
 					 class='download'
@@ -131,8 +144,8 @@
           save
         </span>
 			</div>
-			<div on:click|preventDefault|stopPropagation={() => cloneData(data)}
-					 on:keypress|preventDefault|stopPropagation={(event) => { if (event?.key === 'Enter') cloneData(data); }}
+			<div onclick={stopPropagation(preventDefault(() => cloneData(data)))}
+					 onkeypress={stopPropagation(preventDefault((event) => { if (event?.key === 'Enter') cloneData(data); }))}
 					 tabindex='0'
 					 role='button'
 					 class='clone'
@@ -141,15 +154,15 @@
           content_copy
         </span>
 			</div>
-			<div on:click|preventDefault|stopPropagation={(event) => {
+			<div onclick={stopPropagation(preventDefault((event) => {
 						// If holding shift, delete without confirmation
 						if (event?.shiftKey) {
 							deleteProData(data);
 							return;
 						}
 						deleting = true
-					}}
-					 on:keypress|preventDefault|stopPropagation={(event) => {
+					}))}
+					 onkeypress={stopPropagation(preventDefault((event) => {
 						 if (event?.key === 'Enter') {
 							 // If holding shift, delete without confirmation
 							 if (event?.shiftKey) {
@@ -158,7 +171,7 @@
 							 }
 							 deleting = true;
 						 }
-					 }}
+					 }))}
 					 tabindex='0'
 					 role='button'
 					 class='delete'
@@ -174,14 +187,14 @@
 <Modal bind:open={deleting}>
 	<h3>Do you really want to delete {data?.name}?</h3>
 	<div class='modal-buttons'>
-		<div class='button' on:click={() => deleting = false}
-				 on:keypress={(event) => { if (event?.key === 'Enter') deleting = false; }}
+		<div class='button' onclick={() => deleting = false}
+				 onkeypress={(event) => { if (event?.key === 'Enter') deleting = false; }}
 				 tabindex='0'
 				 role='button'
 		>Cancel
 		</div>
-		<div class='button modal-delete' on:click={() => deleteProData(data)}
-				 on:keypress={(event) => { if (event?.key === 'Enter') deleteProData(data); }}
+		<div class='button modal-delete' onclick={() => deleteProData(data)}
+				 onkeypress={(event) => { if (event?.key === 'Enter') deleteProData(data); }}
 				 tabindex='0'
 				 role='button'
 		>Delete

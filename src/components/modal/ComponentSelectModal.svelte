@@ -18,11 +18,15 @@
 	import type FabledComponent from '$api/components/fabled-component';
 	import ComponentSection     from '$components/modal/component/ComponentSection.svelte';
 
-	export let data: FabledComponent;
+	interface Props {
+		data: FabledComponent;
+	}
 
-	let targetsShown    = true;
-	let conditionsShown = true;
-	let mechanicsShown  = true;
+	let { data }: Props = $props();
+
+	let targetsShown    = $state(true);
+	let conditionsShown = $state(true);
+	let mechanicsShown  = $state(true);
 
 	const dispatch = createEventDispatcher();
 
@@ -39,7 +43,7 @@
 			 open={true}
 			 on:close={closeModal}>
 	<div class='modal-header-wrapper'>
-		<div />
+		<div></div>
 		<h2>Add a Component</h2>
 		<div class='search-bar'>
 			<ProInput bind:value={$filterParams} placeholder='Search...' autofocus />
@@ -48,8 +52,8 @@
 	{#if $filteredTargets.length > 0}
 		<hr />
 		<div class='comp-modal-header'
-				 on:click={() => targetsShown = !targetsShown}
-				 on:keypress={(e) => {
+				 onclick={() => targetsShown = !targetsShown}
+				 onkeypress={(e) => {
 									 if (e.key === 'Enter') targetsShown = !targetsShown;
 				 }}>
 			<h3>Targets
@@ -61,8 +65,8 @@
 		{#if targetsShown}
 			<div class='component-section' transition:squash={{duration: 200}}>
 				{#each $filteredTargets as target}
-					<div class='comp-select' on:click={() => addComponent(target.component)}
-							 on:keypress={(e) => {
+					<div class='comp-select' onclick={() => addComponent(target.component)}
+							 onkeypress={(e) => {
                        if (e.key === 'Enter') addComponent(target.component);
                      }}>
 						{#if target.component.new().isDeprecated}<s>{target.name}</s>{:else}{target.name}{/if}
@@ -74,8 +78,8 @@
 	{#if $filteredConditions.length > 0}
 		<hr />
 		<div class='comp-modal-header'
-				 on:click={() => conditionsShown = !conditionsShown}
-				 on:keypress={(e) => {
+				 onclick={() => conditionsShown = !conditionsShown}
+				 onkeypress={(e) => {
 									 if (e.key === 'Enter') conditionsShown = !conditionsShown;
 				 }}>
 			<h3>Conditions
@@ -87,8 +91,8 @@
 		{#if conditionsShown}
 			<div class='component-section' transition:squash={{duration: 200}}>
 				{#each $filteredConditions as condition}
-					<div class='comp-select' on:click={() => addComponent(condition.component)}
-							 on:keypress={(e) => {
+					<div class='comp-select' onclick={() => addComponent(condition.component)}
+							 onkeypress={(e) => {
                   if (e.key === 'Enter') addComponent(condition.component);
                 }}
 					>
@@ -101,8 +105,8 @@
 	{#if $filteredMechanics.length > 0}
 		<hr />
 		<div class='comp-modal-header'
-				 on:click={() => mechanicsShown = !mechanicsShown}
-				 on:keypress={(e) => {
+				 onclick={() => mechanicsShown = !mechanicsShown}
+				 onkeypress={(e) => {
 									 if (e.key === 'Enter') mechanicsShown = !mechanicsShown;
 				 }}>
 			<h3>Mechanics
@@ -124,8 +128,8 @@
 		{/if}
 	{/if}
 	<hr />
-	<div class='cancel' on:click={closeModal}
-			 on:keypress={(e) => {
+	<div class='cancel' onclick={closeModal}
+			 onkeypress={(e) => {
            if (e.key === 'Enter') closeModal();
          }}>
 		Cancel

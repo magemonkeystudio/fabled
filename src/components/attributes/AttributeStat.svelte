@@ -1,16 +1,22 @@
 <script lang='ts'>
+	import { run } from 'svelte/legacy';
+
 	import StringSelectOption                     from '$components/options/StringSelectOption.svelte';
 	import type { AttributeStat, AttributeStats } from '$api/fabled-attribute';
 	import Control                                from '$components/control/Control.svelte';
 	import { updateSidebar }                      from '../../data/store';
 
-	export let stats: AttributeStats;
-	export let stat: AttributeStat;
-	$: selected = stat.key;
-	$: {
+	interface Props {
+		stats: AttributeStats;
+		stat: AttributeStat;
+	}
+
+	let { stats, stat = $bindable() }: Props = $props();
+	let selected = $derived(stat.key);
+	run(() => {
 		if ($selected && stat.formula && stats.attribute?.name) updateSidebar();
 		stats.attribute.save();
-	}
+	});
 </script>
 
 <div class='stat'>

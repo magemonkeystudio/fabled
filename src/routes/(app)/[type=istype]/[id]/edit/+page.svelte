@@ -7,7 +7,11 @@
 	import FabledClass      from '../../../../../data/class-store';
 	import FabledSkill      from '../../../../../data/skill-store';
 
-	export let data: { data: FabledClass | FabledSkill | FabledAttribute };
+    interface Props {
+        data: { data: FabledClass | FabledSkill | FabledAttribute };
+    }
+
+    let { data = $bindable() }: Props = $props();
 </script>
 
 <svelte:head>

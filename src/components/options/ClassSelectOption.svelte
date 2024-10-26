@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token `}`. Did you mean `&rbrace;` or `{"}"}`? -->
 <script lang='ts'>
 	import ProInput                    from '$input/ProInput.svelte';
 	import { createEventDispatcher }   from 'svelte';

@@ -1,4 +1,7 @@
 <script lang='ts'>
+	import Folder from './Folder.svelte';
+	import { preventDefault, stopPropagation } from 'svelte/legacy';
+
 	import { slide }                     from 'svelte/transition';
 	import { dragging, sidebarOpen }     from '../data/store';
 	import { get }                       from 'svelte/store';
@@ -10,8 +13,12 @@
 	import type FabledSkill              from '../data/skill-store';
 	import { FabledFolder, folderStore } from '../data/folder-store.js';
 
-	export let folder: FabledFolder;
-	let elm: HTMLElement;
+	interface Props {
+		folder: FabledFolder;
+	}
+
+	let { folder = $bindable() }: Props = $props();
+	let elm: HTMLElement = $state();
 
 	let focus = () => {
 		elm.contentEditable = 'true';
@@ -45,7 +52,7 @@
 	};
 
 
-	let over = false;
+	let over = $state(false);
 
 	const startDrag = () => {
 		dragging.set(folder);
@@ -79,12 +86,12 @@
 		 draggable='true'
 		 tabindex='0'
 		 role='menuitem'
-		 on:dragstart={startDrag}
-		 on:drop|preventDefault|stopPropagation={drop}
-		 on:dragover|preventDefault={dragOver}
-		 on:dragleave={() => over = false}
-		 on:click={() => folder.open = !folder.open}
-		 on:keypress={(e) => {
+		 ondragstart={startDrag}
+		 ondrop={stopPropagation(preventDefault(drop))}
+		 ondragover={preventDefault(dragOver)}
+		 ondragleave={() => over = false}
+		 onclick={() => folder.open = !folder.open}
+		 onkeypress={(e) => {
        if (e.key === "Enter") {
          e.stopPropagation();
          folder.open = !folder.open;
@@ -100,15 +107,15 @@
 				role='textbox'
 				class:server={folder.location === 'server'}
 				bind:this={elm}
-				on:blur={() => elm.contentEditable = "false"}
+				onblur={() => elm.contentEditable = "false"}
 				bind:textContent={folder.name}
-				on:keydown={keydown} />
+				onkeydown={keydown}></span>
 	<div class='buttons'>
 		<div class='icon add' title='Add Folder'
 				 tabindex='0'
 				 role='button'
-				 on:click|stopPropagation={addFolder}
-				 on:keypress={(e) => {
+				 onclick={stopPropagation(addFolder)}
+				 onkeypress={(e) => {
             if (e.key === "Enter") {
               e.stopPropagation();
               addFolder();
@@ -121,8 +128,8 @@
 		<div class='icon' title='Rename'
 				 tabindex='0'
 				 role='button'
-				 on:click|stopPropagation={focus}
-				 on:keypress={(e) => {
+				 onclick={stopPropagation(focus)}
+				 onkeypress={(e) => {
               if (e.key === "Enter") {
                 e.stopPropagation();
                 focus();
@@ -135,8 +142,8 @@
 		<div class='icon delete' title='Delete Folder'
 				 tabindex='0'
 				 role='button'
-				 on:click|stopPropagation={deleteF}
-				 on:keypress={(e) => {
+				 onclick={stopPropagation(deleteF)}
+				 onkeypress={(e) => {
 							if (e.key === "Enter") {
 								e.stopPropagation();
 								deleteF();
@@ -153,7 +160,7 @@
 	<div class='folder-content' transition:slide>
 		{#each folder.data as data (data?.key)}
 			{#if data instanceof FabledFolder}
-				<svelte:self folder={data} />
+				<Folder folder={data} />
 			{:else}
 				<SidebarEntry {data}
 											on:click={() => goto(`${base}/${data.dataType === 'class' ? 'class' : 'skill'}/${data.name}${data.dataType === 'class' ? '/edit' : ''}`)}>

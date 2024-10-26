@@ -1,15 +1,21 @@
 <script lang='ts'>
+    import { run } from 'svelte/legacy';
+
 	import AttributeStatSvelte     from './AttributeStat.svelte';
 	import Control                 from '$components/control/Control.svelte';
 	import type { AttributeStats } from '$api/fabled-attribute';
 	import { updateSidebar }       from '../../data/store';
 
-	export let stats: AttributeStats;
-	$: statArray = stats.stats;
-	$: {
+    interface Props {
+        stats: AttributeStats;
+    }
+
+    let { stats = $bindable() }: Props = $props();
+	let statArray = $derived(stats.stats);
+	run(() => {
 		if ($statArray && stats.attribute?.name) updateSidebar();
 		stats.attribute.save();
-	}
+	});
 </script>
 
 <div class='stats'>

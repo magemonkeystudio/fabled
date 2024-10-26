@@ -1,7 +1,11 @@
 <script lang='ts'>
 	import type { Attribute } from '$api/stat';
 
-	export let value: Attribute;
+    interface Props {
+        value: Attribute;
+    }
+
+    let { value = $bindable() }: Props = $props();
 </script>
 
 <div class='wrap'>

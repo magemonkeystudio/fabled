@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Can't migrate code with beforeUpdate. Please migrate by hand. -->
 <!--suppress CssUnresolvedCustomProperty -->
 <script lang='ts'>
 	import { closeSidebar, shownTab, sidebarOpen } from '../../data/store';

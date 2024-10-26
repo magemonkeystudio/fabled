@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token `}`. Did you mean `&rbrace;` or `{"}"}`? -->
 <script lang='ts'>
 	import FabledTrigger   from '$api/components/triggers';
 	import FabledTarget    from '$api/components/targets';

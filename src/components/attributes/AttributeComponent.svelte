@@ -1,4 +1,6 @@
 <script lang='ts'>
+	import { run } from 'svelte/legacy';
+
 	import ProInput                                      from '$input/ProInput.svelte';
 	import SearchableSelect                              from '$input/SearchableSelect.svelte';
 	import AttributeComponentStatSvelte                  from './AttributeComponentStat.svelte';
@@ -6,17 +8,21 @@
 	import Control                                       from '$components/control/Control.svelte';
 	import { updateSidebar }                             from '../../data/store';
 
-	export let color: string;
-	export let component: AttributeComponent;
-	export let section: AttributeSection;
-	$: selected = component.name;
-	$: stats = component.stats;
-	$: availableComponents = section.availableComponents;
-	$: availableStats = component.availableStats;
-	$: {
+	interface Props {
+		color: string;
+		component: AttributeComponent;
+		section: AttributeSection;
+	}
+
+	let { color, component, section }: Props = $props();
+	let selected = $derived(component.name);
+	let stats = $derived(component.stats);
+	let availableComponents = $derived(section.availableComponents);
+	let availableStats = $derived(component.availableStats);
+	run(() => {
 		if ($stats && component.section.attribute?.name) updateSidebar();
 		component.section.attribute.save();
-	}
+	});
 </script>
 
 <div class='component' style:--comp-color={color}>

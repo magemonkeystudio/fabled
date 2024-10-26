@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--suppress CssUnresolvedCustomProperty -->
 <script lang='ts'>
 	import type FabledComponent from '$api/components/fabled-component';

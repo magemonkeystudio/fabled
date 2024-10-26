@@ -1,10 +1,12 @@
 <script lang='ts'>
+	import { run } from 'svelte/legacy';
+
 	import Modal                               from './Modal.svelte';
 	import { loadFile, loadRaw, setImporting } from '../data/store';
 	import { getHaste }                        from '$api/hastebin';
 
-	let importUrl: string | undefined;
-	let files: File[] | undefined;
+	let importUrl: string | undefined = $state();
+	let files: File[] | undefined = $state();
 
 	const onClose = () => {
 		importUrl = files = undefined;
@@ -23,13 +25,15 @@
 			.catch(console.error);
 	};
 
-	$: if (files && files.length > 0) {
-		for (const file of files) {
-			if (file.name.indexOf('.yml') == -1) continue;
-			loadFile(file);
-			onClose();
+	run(() => {
+		if (files && files.length > 0) {
+			for (const file of files) {
+				if (file.name.indexOf('.yml') == -1) continue;
+				loadFile(file);
+				onClose();
+			}
 		}
-	}
+	});
 </script>
 
 <Modal open={true} on:close={onClose}>
@@ -46,8 +50,8 @@
 			<div class='button'
 					 tabindex='0'
 					 role='button'
-					 on:click={importFromUrl}
-					 on:keypress={e => e.key === "Enter" && importFromUrl()}
+					 onclick={importFromUrl}
+					 onkeypress={e => e.key === "Enter" && importFromUrl()}
 			>Import
 			</div>
 		</div>

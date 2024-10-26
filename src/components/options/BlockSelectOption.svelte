@@ -1,12 +1,20 @@
 <script lang='ts'>
+	import { run } from 'svelte/legacy';
+
 	import BlockSelect               from '$input/BlockSelect.svelte';
 	import ProInput                  from '$input/ProInput.svelte';
 	import { createEventDispatcher } from 'svelte';
 
-	export let data: { material: string[], data: number, materialTooltip: string, dataTooltip: string };
+	interface Props {
+		data: { material: string[], data: number, materialTooltip: string, dataTooltip: string };
+	}
+
+	let { data = $bindable() }: Props = $props();
 
 	const dispatch = createEventDispatcher();
-	$: if (data) dispatch('save');
+	run(() => {
+		if (data) dispatch('save');
+	});
 </script>
 
 <ProInput label='Material' tooltip='[material] {data.materialTooltip}'>

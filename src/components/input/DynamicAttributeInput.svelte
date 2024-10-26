@@ -1,13 +1,22 @@
 <script lang='ts'>
+	import { run } from 'svelte/legacy';
+
 
 	import ProInput       from '$input/ProInput.svelte';
 	import AttributeInput from '$input/AttributeInput.svelte';
 	import { Attribute }  from '$api/stat';
 
-	export let value: Attribute[] = [];
+	interface Props {
+		value?: Attribute[];
+	}
 
-	let name = '';
-	$: attribute = new Attribute(name, 0, 0);
+	let { value = $bindable([]) }: Props = $props();
+
+	let name = $state('');
+	let attribute;
+	run(() => {
+		attribute = new Attribute(name, 0, 0);
+	});
 
 	const addAttribute = (e?: Event) => {
 		if (!name) return;
@@ -25,8 +34,8 @@
 	<div class='wrapper'>
 		{#each value as attribute}
 			<div class='attr'
-					 on:click={() => removeAttribute(attribute)}
-					 on:keypress={() => removeAttribute(attribute)}
+					 onclick={() => removeAttribute(attribute)}
+					 onkeypress={() => removeAttribute(attribute)}
 					 tabindex='0'
 					 role='button'
 					 aria-label='Remove Attribute'
@@ -46,8 +55,8 @@
 
 <div class='btn'
 		 class:disabled={!name}
-		 on:click={addAttribute}
-		 on:keypress={addAttribute}
+		 onclick={addAttribute}
+		 onkeypress={addAttribute}
 		 tabindex='0'
 		 role='button'
 		 aria-label='Add Attribute'

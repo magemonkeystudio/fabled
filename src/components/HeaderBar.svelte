@@ -8,8 +8,8 @@
 	<div class='home'
 			 tabindex='0'
 			 role='button'
-			 on:click={() => goto(`${base}/`)}
-			 on:keypress={(e) => e.key === "Enter" && goto(`${base}/`)}
+			 onclick={() => goto(`${base}/`)}
+			 onkeypress={(e) => e.key === "Enter" && goto(`${base}/`)}
 	>
 		<h1 class='accent'>Fabled</h1>
 		<h2>Dynamic Editor</h2>

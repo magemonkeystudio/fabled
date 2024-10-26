@@ -1,4 +1,6 @@
 <script lang='ts'>
+	import { run } from 'svelte/legacy';
+
 	import Modal                from '$components/Modal.svelte';
 	import type FabledComponent from '$api/components/fabled-component';
 	import type DropdownSelect  from '$api/options/dropdownselect';
@@ -6,12 +8,18 @@
 	import Toggle                   from '$input/Toggle.svelte';
 	import ProInput                 from '$input/ProInput.svelte';
 
-	export let data: FabledComponent;
-	let modalOpen = true;
-
-	$: if (modalOpen && data) {
-		data.preview.filter((dat: ComponentOption) => (dat['dataSource'])).forEach((dat: DropdownSelect) => dat.init());
+	interface Props {
+		data: FabledComponent;
 	}
+
+	let { data = $bindable() }: Props = $props();
+	let modalOpen = $state(true);
+
+	run(() => {
+		if (modalOpen && data) {
+			data.preview.filter((dat: ComponentOption) => (dat['dataSource'])).forEach((dat: DropdownSelect) => dat.init());
+		}
+	});
 </script>
 
 <Modal bind:open={modalOpen} on:close width='70%'>
@@ -28,8 +36,7 @@
 		{#if data.enablePreview}
 			{#each data.preview as datum}
 				{#if datum.meetsPreviewRequirements(data)}
-					<svelte:component
-						this={datum.component}
+					<datum.component
 						bind:data={datum.data}
 						name={datum.name}
 						tooltip="{datum.key ? '[' + datum.key + '] ' : ''}{datum.tooltip}"

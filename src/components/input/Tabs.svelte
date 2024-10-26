@@ -1,16 +1,25 @@
 <!--suppress CssUnresolvedCustomProperty -->
 <script lang='ts'>
-	export let selectedTab: number;
-	export let data: string[] = ['True', 'False'];
-	export let color          = '#222';
-	export let inline         = true;
+    interface Props {
+        selectedTab: number;
+        data?: string[];
+        color?: string;
+        inline?: boolean;
+    }
+
+    let {
+        selectedTab = $bindable(),
+        data = ['True', 'False'],
+        color = '#222',
+        inline = true
+    }: Props = $props();
 </script>
 
 <div class='tabs' class:selected={selectedTab} style:--color={color} style:--count={data.length}
 		 style:--selected={selectedTab} class:inline>
 	{#each data as tab, i}
-		<div on:click={() => selectedTab = i}
-				 on:keypress={(e) => { if(e.key === 'Enter') selectedTab = i }}
+		<div onclick={() => selectedTab = i}
+				 onkeypress={(e) => { if(e.key === 'Enter') selectedTab = i }}
 				 tabindex='0'
 				 role='radio'
 				 aria-checked='{selectedTab == i}'

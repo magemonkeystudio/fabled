@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unterminated JSX contents -->
 <script lang='ts'>
 	export let title = '';
 	export let icon  = '';

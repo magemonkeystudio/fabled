@@ -8,7 +8,7 @@
 	import { classStore }                                     from '../../data/class-store';
 	import { attributeStore }                                 from '../../data/attribute-store.js';
 
-	let modalOpen = true;
+	let modalOpen = $state(true);
 
 	const clearData = () => {
 		if (!confirm('Are you sure you want to clear all data?')) return;
@@ -49,7 +49,7 @@
 		</ProInput>
 		<hr class='span' />
 		<!--		<ProInput label='Clear data' tooltip='Clear all data stored in the editor'>-->
-		<button class='button btn-danger span' on:click={clearData}>Clear Data</button>
+		<button class='button btn-danger span' onclick={clearData}>Clear Data</button>
 		<!--		</ProInput>-->
 	</div>
 </Modal>

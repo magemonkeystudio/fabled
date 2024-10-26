@@ -1,4 +1,6 @@
 <script lang='ts'>
+	import { run } from 'svelte/legacy';
+
 	import IconInput                   from './input/IconInput.svelte';
 	import MaterialSelect              from './input/MaterialSelect.svelte';
 	import SearchableSelect            from './input/SearchableSelect.svelte';
@@ -17,9 +19,13 @@
 	import { skillStore }              from '../data/skill-store';
 	import { attributeStore }          from '../data/attribute-store.js';
 
-	export let data: FabledClass;
+	interface Props {
+		data: FabledClass;
+	}
 
-	let combosShown = false;
+	let { data = $bindable() }: Props = $props();
+
+	let combosShown = $state(false);
 	let sub: Unsubscriber;
 
 	const classes = classStore.classes;
@@ -46,10 +52,10 @@
 		if (sub) sub();
 	});
 
-	$: {
+	run(() => {
 		if (data?.name) updateSidebar();
 		data.save();
-	}
+	});
 </script>
 
 {#if data}
@@ -139,8 +145,8 @@
 	<div class='header combos'
 			 role='button'
 			 tabindex='0'
-			 on:click={() => combosShown = !combosShown}
-			 on:keypress={e => {
+			 onclick={() => combosShown = !combosShown}
+			 onkeypress={e => {
 			 	if (e.key === 'Enter') combosShown = !combosShown;
 			 }}>
 		Combo Starters <span class='material-symbols-rounded'>{combosShown ? 'expand_less' : 'expand_more'}</span>

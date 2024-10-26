@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: Unexpected token `}`. Did you mean `&rbrace;` or `{"}"}`? -->
 <script lang='ts'>
 	import { fly, slide, type TransitionConfig } from 'svelte/transition';
 	import { onMount }                           from 'svelte';

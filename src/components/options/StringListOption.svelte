@@ -1,14 +1,22 @@
 <script lang='ts'>
+	import { run } from 'svelte/legacy';
+
 	import ProInput                  from '$input/ProInput.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import LoreInput                 from '$input/LoreInput.svelte';
 
-	export let data: { value: string[] };
-	export let name: string | undefined    = '';
-	export let tooltip: string | undefined = undefined;
+	interface Props {
+		data: { value: string[] };
+		name?: string | undefined;
+		tooltip?: string | undefined;
+	}
+
+	let { data = $bindable(), name = '', tooltip = undefined }: Props = $props();
 
 	const dispatch = createEventDispatcher();
-	$: if (data) dispatch('save');
+	run(() => {
+		if (data) dispatch('save');
+	});
 </script>
 <ProInput label={name} {tooltip}>
 	<LoreInput bind:value={data.value} />

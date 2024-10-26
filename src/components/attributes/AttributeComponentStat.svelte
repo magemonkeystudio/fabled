@@ -1,4 +1,6 @@
 <script lang='ts'>
+	import { run } from 'svelte/legacy';
+
 	import ProInput                                   from '$input/ProInput.svelte';
 	import SearchableSelect                           from '$input/SearchableSelect.svelte';
 	import StringSelectOption                         from '$components/options/StringSelectOption.svelte';
@@ -6,14 +8,18 @@
 	import Control                                    from '$components/control/Control.svelte';
 	import { updateSidebar }                          from '../../data/store';
 
-	export let stat: AttributeStat;
-	export let component: AttributeComponent;
-	$: selected = stat.key;
-	$: availableStats = component.availableStats;
-	$: {
+	interface Props {
+		stat: AttributeStat;
+		component: AttributeComponent;
+	}
+
+	let { stat = $bindable(), component }: Props = $props();
+	let selected = $derived(stat.key);
+	let availableStats = $derived(component.availableStats);
+	run(() => {
 		if ($selected && stat.formula && component.section.attribute?.name) updateSidebar();
 		component.section.attribute.save();
-	}
+	});
 </script>
 
 <div class='stat'>

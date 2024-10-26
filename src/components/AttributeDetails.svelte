@@ -1,4 +1,6 @@
 <script lang='ts'>
+	import { run } from 'svelte/legacy';
+
 	import IconInput            from './input/IconInput.svelte';
 	import { updateSidebar }    from '../data/store';
 	import AttributeInput       from './input/AttributeInput.svelte';
@@ -7,12 +9,16 @@
 	import AttributeSection     from './attributes/AttributeSection.svelte';
 	import AttributeStats       from './attributes/AttributeStats.svelte';
 
-	export let data: FabledAttribute;
+	interface Props {
+		data: FabledAttribute;
+	}
 
-	$: {
+	let { data = $bindable() }: Props = $props();
+
+	run(() => {
 		if (data?.name) updateSidebar();
 		data.save();
-	}
+	});
 </script>
 
 {#if data}
