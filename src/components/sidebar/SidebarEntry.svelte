@@ -1,7 +1,4 @@
 <script lang='ts'>
-	import { preventDefault, stopPropagation, createBubbler } from 'svelte/legacy';
-
-	const bubble = createBubbler();
 	import { active, deleteProData, dragging, saveData, shownTab, sidebarOpen } from '../../data/store';
 	import FabledAttribute                                                      from '$api/fabled-attribute';
 	import { get }                                                              from 'svelte/store';
@@ -9,31 +6,32 @@
 	import Modal                                                                from '../Modal.svelte';
 	import { animationEnabled }                                                 from '../../data/settings';
 	import { base }                                                             from '$app/paths';
-	import { createEventDispatcher }                                            from 'svelte';
 	import { Tab }                                                              from '$api/tab';
 	import FabledSkill, { skillStore }                                          from '../../data/skill-store';
 	import FabledClass, { classStore }                                          from '../../data/class-store';
 	import { FabledFolder, folderStore }                                        from '../../data/folder-store.js';
 	import { attributeStore }                                                   from '../../data/attribute-store';
 
+
 	interface Props {
 		delay?: number;
 		direction?: 'right' | 'left';
 		data?: FabledSkill | FabledClass | FabledAttribute | undefined;
 		children?: import('svelte').Snippet;
+
+		onclick?: (e: MouseEvent | KeyboardEvent) => void;
 	}
 
 	let {
-		delay = 0,
-		direction = 'left',
-		data = undefined,
-		children
-	}: Props = $props();
+				delay     = 0,
+				direction = 'left',
+				data      = undefined,
+				children,
+				onclick
+			}: Props = $props();
 
 	let over     = $state(false);
 	let deleting = $state(false);
-
-	const dispatch = createEventDispatcher();
 
 	const startDrag = (e: DragEvent) => {
 		if (!data) {
@@ -43,7 +41,9 @@
 		dragging.set(data);
 	};
 
-	const drop = () => {
+	const drop = (e: Event) => {
+		e.stopPropagation();
+		e.preventDefault();
 		const dragData: FabledClass | FabledSkill | FabledAttribute | FabledFolder = get(dragging);
 		let targetFolder;
 		if (data) {
@@ -75,7 +75,8 @@
 		over = false;
 	};
 
-	const dragOver = () => {
+	const dragOver = (e: Event) => {
+		e.preventDefault();
 		const dragData = get(dragging);
 		if (data === dragData) return;
 		over = true;
@@ -91,7 +92,10 @@
 		return options.fn(node, options);
 	};
 
-	const cloneData = (data?: FabledClass | FabledSkill | FabledAttribute) => {
+	const cloneData = (data?: FabledClass | FabledSkill | FabledAttribute, e?: Event) => {
+		e?.preventDefault();
+		e?.stopPropagation();
+
 		if (!data) return;
 
 		if (data instanceof FabledClass) {
@@ -106,22 +110,22 @@
 
 
 <div class='sidebar-entry'
-		 class:over
 		 class:active={data && $active === data}
 		 class:in-folder={!!folderStore.getFolder(data)}
+		 class:over
 		 draggable='{!!data}'
-		 ondragstart={startDrag}
-		 ondrop={stopPropagation(preventDefault(drop))}
-		 ondragover={preventDefault(dragOver)}
-		 ondragleave={() => over = false}
-		 onclick={bubble('click')}
-		 onkeypress={(e) => {
-			 if (e.key === 'Enter') dispatch('click');
-		 }}
-		 tabindex='0'
-		 role='menuitem'
 		 in:maybe={{fn: fly, x: (direction === "left" ? -100 : 100), duration: 500, delay: $sidebarOpen ? 0 : delay}}
-		 out:fly={{x: (direction === "left" ? -100 : 100), duration: 500}}>
+		 {onclick}
+		 ondragleave={() => over = false}
+		 ondragover={dragOver}
+		 ondragstart={startDrag}
+		 ondrop={drop}
+		 onkeypress={(e) => {
+			 if (e.key === 'Enter') onclick?.(e);
+		 }}
+		 out:fly={{x: (direction === "left" ? -100 : 100), duration: 500}}
+		 role='menuitem'
+		 tabindex='0'>
 	{@render children?.()}
 	{#if data}
 		<div class='buttons'>
@@ -134,8 +138,8 @@
           </span>
 				</a>
 			{/if}
-			<div onclick={stopPropagation(preventDefault(() => saveData(data)))}
-					 onkeypress={stopPropagation(preventDefault((event) => {if (event?.key === 'Enter') saveData(data);}))}
+			<div onclick={(e) => saveData(data, e)}
+					 onkeypress={(event) => {if (event?.key === 'Enter') saveData(data, event);}}
 					 tabindex='0'
 					 role='button'
 					 class='download'
@@ -144,8 +148,8 @@
           save
         </span>
 			</div>
-			<div onclick={stopPropagation(preventDefault(() => cloneData(data)))}
-					 onkeypress={stopPropagation(preventDefault((event) => { if (event?.key === 'Enter') cloneData(data); }))}
+			<div onclick={(e) => cloneData(data, e)}
+					 onkeypress={(event) => { if (event?.key === 'Enter') cloneData(data, event); }}
 					 tabindex='0'
 					 role='button'
 					 class='clone'
@@ -154,16 +158,20 @@
           content_copy
         </span>
 			</div>
-			<div onclick={stopPropagation(preventDefault((event) => {
+			<div onclick={(event) => {
+				event.stopPropagation();
+				event.preventDefault();
 						// If holding shift, delete without confirmation
 						if (event?.shiftKey) {
 							deleteProData(data);
 							return;
 						}
 						deleting = true
-					}))}
-					 onkeypress={stopPropagation(preventDefault((event) => {
+					}}
+					 onkeypress={(event) => {
 						 if (event?.key === 'Enter') {
+							 event.stopPropagation();
+							 event.preventDefault();
 							 // If holding shift, delete without confirmation
 							 if (event?.shiftKey) {
 								 deleteProData(data);
@@ -171,7 +179,7 @@
 							 }
 							 deleting = true;
 						 }
-					 }))}
+					 }}
 					 tabindex='0'
 					 role='button'
 					 class='delete'
@@ -189,14 +197,14 @@
 	<div class='modal-buttons'>
 		<div class='button' onclick={() => deleting = false}
 				 onkeypress={(event) => { if (event?.key === 'Enter') deleting = false; }}
-				 tabindex='0'
 				 role='button'
+				 tabindex='0'
 		>Cancel
 		</div>
 		<div class='button modal-delete' onclick={() => deleteProData(data)}
 				 onkeypress={(event) => { if (event?.key === 'Enter') deleteProData(data); }}
-				 tabindex='0'
 				 role='button'
+				 tabindex='0'
 		>Delete
 		</div>
 	</div>
@@ -218,10 +226,6 @@
         user-select: none;
         -webkit-user-select: none;
         margin-inline: 0.4rem;
-    }
-
-    .sidebar-entry:has(.new) {
-        padding: unset;
     }
 
     .sidebar-entry:hover {

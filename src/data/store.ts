@@ -109,7 +109,10 @@ export const loadFile = (file: File) => {
 	reader.readAsText(file);
 };
 
-export const saveData = (data?: FabledSkill | FabledClass | FabledAttribute) => {
+export const saveData = (data?: FabledSkill | FabledClass | FabledAttribute, e?: Event) => {
+	e?.preventDefault();
+	e?.stopPropagation();
+
 	const act = data || get(active);
 	if (!act) return;
 	if (act instanceof FabledAttribute) {

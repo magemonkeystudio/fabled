@@ -17,20 +17,20 @@
 	}
 
 	let {
-		children,
-		labelContent,
-		tooltip = undefined,
-		label = undefined,
-		value = $bindable(undefined),
-		placeholder = undefined,
-		nowrap = false,
-		autofocus = false,
-		disabled = false,
-		disableAnimation = false
-	}: Props = $props();
+				children,
+				labelContent,
+				tooltip          = undefined,
+				label            = undefined,
+				value            = $bindable(undefined),
+				placeholder      = undefined,
+				nowrap           = false,
+				autofocus        = false,
+				disabled         = false,
+				disableAnimation = false
+			}: Props                       = $props();
 	let input: HTMLElement | undefined = $state();
-	let hovered                                   = $state(false);
-	let ypos                                      = $state(0);
+	let hovered                        = $state(false);
+	let ypos                           = $state(0);
 
 	onMount(() => {
 		if (autofocus && input) {
@@ -72,13 +72,13 @@
 					onmouseenter={handleMouseEnter}
 					onmouseleave={() => hovered = false}>
     {label || ''}
-			{@render labelContent()}
+			{@render labelContent?.()}
   </span>
 	</div>
 {/if}
-<div in:maybe={{fn: slide}}
-		 out:maybe={{fn: slide}}
-		 class='input-wrapper' class:labeled={!!label}>
+<div class='input-wrapper'
+		 class:labeled={!!label}
+		 in:maybe={{fn: slide}} out:maybe={{fn: slide}}>
 	<!--{#if type === "number"}-->
 	<!--    <input type="number" bind:value use:numberOnly={{intMode, enabled: type === "number"}}-->
 	<!--           {placeholder} />-->

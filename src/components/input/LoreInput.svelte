@@ -3,7 +3,7 @@
 		value: string[];
 	}
 
-	let { value }: Props = $props();
+	let { value = $bindable() }: Props = $props();
 	$effect.pre(() => {
 		if (!value) value = [];
 	});

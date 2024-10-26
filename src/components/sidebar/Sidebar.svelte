@@ -70,11 +70,10 @@
 	onMount(() => {
 		if (!browser) return;
 
+		rebuildFolders();
 		classSub = classFolders.subscribe(rebuildFolders);
 		skillSub = skillStore.skillFolders.subscribe(rebuildFolders);
 	});
-
-	$effect.pre(rebuildFolders);
 
 	onDestroy(() => {
 		if (classSub) classSub();
@@ -122,7 +121,7 @@
 				<SidebarEntry
 					data={cl}
 					delay={200 + 100 * i}
-					on:click={() => goto(`${base}/class/${cl.name}/edit`)}
+					onclick={() => goto(`${base}/class/${cl.name}/edit`)}
 				>
 					{cl.name}{cl.location === 'server' ? '*' : ''}
 				</SidebarEntry>
@@ -156,7 +155,7 @@
 					data={sk}
 					direction="right"
 					delay={200 + 100 * i}
-					on:click={() => goto(`${base}/skill/${sk.name}`)}
+					onclick={() => goto(`${base}/skill/${sk.name}`)}
 				>
 					{sk.name}{sk.location === 'server' ? '*' : ''}
 				</SidebarEntry>
@@ -187,7 +186,7 @@
 					data={att}
 					direction="right"
 					delay={200 + 100 * i}
-					on:click={() => goto(`${base}/attribute/${att.name}/edit`)}
+					onclick={() => goto(`${base}/attribute/${att.name}/edit`)}
 				>
 					{att.name}{att.location === 'server' ? '*' : ''}
 				</SidebarEntry>

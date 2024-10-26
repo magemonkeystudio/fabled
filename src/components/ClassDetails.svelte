@@ -106,7 +106,7 @@
 	{#each data.attributes as attr (attr.name)}
 		<ProInput label={toProperCase(attr.name)}
 							tooltip='The amount of {attr.name} the class has'>
-			<AttributeInput bind:value={attr} />
+			<AttributeInput value={attr} />
 		</ProInput>
 	{/each}
 

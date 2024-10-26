@@ -163,7 +163,7 @@
 				<Folder folder={data} />
 			{:else}
 				<SidebarEntry {data}
-											on:click={() => goto(`${base}/${data.dataType === 'class' ? 'class' : 'skill'}/${data.name}${data.dataType === 'class' ? '/edit' : ''}`)}>
+											onclick={() => goto(`${base}/${data.dataType === 'class' ? 'class' : 'skill'}/${data.name}${data.dataType === 'class' ? '/edit' : ''}`)}>
 					{data.name}{data.location === 'server' ? '*' : ''}
 				</SidebarEntry>
 			{/if}
