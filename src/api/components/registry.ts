@@ -1,11 +1,12 @@
 import type { Readable, Writable } from 'svelte/store';
-import { derived, get, writable } from 'svelte/store';
-import type FabledComponent from '$api/components/fabled-component';
-import type FabledTrigger   from '$api/components/triggers';
-import type FabledTarget    from '$api/components/targets';
-import type FabledCondition from '$api/components/conditions';
-import type FabledMechanic        from '$api/components/mechanics';
-import type { YamlComponentData } from '$api/types';
+import { derived, get, writable }  from 'svelte/store';
+import type FabledComponent        from '$api/components/fabled-component.svelte';
+import type FabledTrigger          from '$api/components/triggers.svelte';
+import type FabledTarget           from '$api/components/targets.svelte';
+import type FabledCondition        from '$api/components/conditions.svelte';
+import type FabledMechanic         from '$api/components/mechanics.svelte';
+import type { YamlComponentData }  from '$api/types';
+import { deprecated }              from '$api/components/components.svelte';
 
 export type RegistryEntry = {
 	name: string,
@@ -29,7 +30,7 @@ export const filterParams: Writable<string> = writable('');
 export const filteredTriggers: Readable<Array<RegistryEntry>> = derived([triggers, filterParams], ([triggers, filterParams]) => {
 	const filtered = Object.keys(triggers)
 		.filter(key => key.toLowerCase().replace('_', ' ').includes(filterParams.toLowerCase()))
-		.sort((a, b) => (triggers[a].component.new().isDeprecated ? 0 : -1) - (triggers[b].component.new().isDeprecated ? 0 : -1))
+		.sort((a, b) => (deprecated.includes(triggers[a].component) ? 0 : -1) - (deprecated.includes(triggers[b].component) ? 0 : -1))
 		.map(key => triggers[key]);
 
 	return filtered;
@@ -50,7 +51,7 @@ export const triggerSections = derived(filteredTriggers, (triggers) => {
 export const filteredTargets: Readable<Array<RegistryEntry>>    = derived([targets, filterParams], ([targets, filterParams]) => {
 	const filtered = Object.keys(targets)
 		.filter(key => key.toLowerCase().replace('_', ' ').includes(filterParams.toLowerCase()))
-		.sort((a, b) => (targets[a].component.new().isDeprecated ? 0 : -1) - (targets[b].component.new().isDeprecated ? 0 : -1))
+		.sort((a, b) => (deprecated.includes(targets[a].component) ? 0 : -1) - (deprecated.includes(targets[b].component) ? 0 : -1))
 		.map(key => targets[key]);
 
 	return filtered;
@@ -58,7 +59,7 @@ export const filteredTargets: Readable<Array<RegistryEntry>>    = derived([targe
 export const filteredConditions: Readable<Array<RegistryEntry>> = derived([conditions, filterParams], ([conditions, filterParams]) => {
 	const filtered = Object.keys(conditions)
 		.filter(key => key.toLowerCase().replace('_', ' ').includes(filterParams.toLowerCase()))
-		.sort((a, b) => (conditions[a].component.new().isDeprecated ? 0 : -1) - (conditions[b].component.new().isDeprecated ? 0 : -1))
+		.sort((a, b) => (deprecated.includes(conditions[a].component) ? 0 : -1) - (deprecated.includes(conditions[b].component) ? 0 : -1))
 		.map(key => conditions[key]);
 
 	return filtered;
@@ -66,7 +67,7 @@ export const filteredConditions: Readable<Array<RegistryEntry>> = derived([condi
 export const filteredMechanics: Readable<Array<RegistryEntry>>  = derived([mechanics, filterParams], ([mechanics, filterParams]) => {
 	const filtered = Object.keys(mechanics)
 		.filter(key => key.toLowerCase().replace('_', ' ').includes(filterParams.toLowerCase()))
-		.sort((a, b) => (mechanics[a].component.new().isDeprecated ? 0 : -1) - (mechanics[b].component.new().isDeprecated ? 0 : -1))
+		.sort((a, b) => (deprecated.includes(mechanics[a].component) ? 0 : -1) - (deprecated.includes(mechanics[b].component) ? 0 : -1))
 		.map(key => mechanics[key]);
 
 	return filtered;

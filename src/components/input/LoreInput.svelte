@@ -18,9 +18,8 @@
 	};
 </script>
 
-<textarea onkeyup={press} rows='5'>
-	{value.join("\r\n")}
-</textarea>
+<textarea onkeyup={press} rows='5'
+>{value.join('\r\n')}</textarea>
 
 <style>
     textarea {

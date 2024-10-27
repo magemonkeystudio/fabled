@@ -10,11 +10,11 @@ export default class DropdownSelect extends Requirements implements ComponentOpt
 		selected: string | string[],
 		value: string[],
 		multiple: boolean
-	}                           = {
+	}                           = $state({
 		selected: '',
 		value:    [],
 		multiple: false
-	};
+	});
 	name                        = '';
 	key                         = '';
 	tooltip: string | undefined = undefined;
@@ -32,7 +32,7 @@ export default class DropdownSelect extends Requirements implements ComponentOpt
 		this.data.multiple = multiple;
 	}
 
-	init = () => {
+	public init = () => {
 		if (this.dataSource) this.data.value = this.dataSource();
 
 		if (!this.data.selected && this.data.value.length > 0 && !this.data.multiple)

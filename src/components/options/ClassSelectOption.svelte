@@ -1,8 +1,8 @@
-<script lang="ts">
-	import ProInput from '$input/ProInput.svelte';
-	import { createEventDispatcher } from 'svelte';
-	import SearchableSelect from '$input/SearchableSelect.svelte';
-	import FabledClass, { classStore } from '../../data/class-store';
+<script lang='ts'>
+	import ProInput                    from '$input/ProInput.svelte';
+	import { createEventDispatcher }   from 'svelte';
+	import SearchableSelect            from '$input/SearchableSelect.svelte';
+	import FabledClass, { classStore } from '../../data/class-store.svelte';
 
 	interface Props {
 		data?: FabledClass[] | FabledClass | string[] | string;

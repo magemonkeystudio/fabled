@@ -1,9 +1,9 @@
 <script lang='ts'>
-    interface Props {
-        data: string;
-    }
+	interface Props {
+		data: string;
+	}
 
-    let { data }: Props = $props();
+	let { data = $bindable('') }: Props = $props();
 </script>
 
 <div>

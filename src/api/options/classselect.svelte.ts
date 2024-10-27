@@ -2,15 +2,15 @@ import type { ComponentOption } from '$api/options/options';
 import { Requirements }         from '$api/options/options';
 import ClassSelectOption        from '$components/options/ClassSelectOption.svelte';
 import type { Unknown }         from '$api/types';
-import FabledClass              from '../../data/class-store';
+import FabledClass              from '../../data/class-store.svelte';
 
 export default class ClassSelect extends Requirements implements ComponentOption {
 	component                                             = ClassSelectOption;
 	name: string;
 	key: string;
-	data: FabledClass[] | FabledClass | string[] | string = [];
-	tooltip: string | undefined                           = undefined;
-	multiple                                              = true;
+	data: FabledClass[] | FabledClass | string[] | string = $state([]);
+	tooltip: string | undefined                           = $state(undefined);
+	multiple                                              = $state(true);
 
 	constructor(name: string, key: string, multiple = true) {
 		super();

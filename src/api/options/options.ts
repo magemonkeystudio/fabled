@@ -1,5 +1,5 @@
-import type FabledComponent from '$api/components/fabled-component';
-import type { Component } from 'svelte';
+import type FabledComponent from '$api/components/fabled-component.svelte';
+import type { Component }   from 'svelte';
 
 export interface ComponentOption extends Cloneable<ComponentOption> {
 	key: string;
@@ -23,7 +23,7 @@ interface Cloneable<T> {
 
 export abstract class Requirements {
 	private requirements: { [key: string]: any[] } = {};
-	public requireValue = (key: string, value: any[]): this => {
+	public requireValue                            = (key: string, value: any[]): this => {
 		this.requirements[key] = value;
 		return this;
 	};

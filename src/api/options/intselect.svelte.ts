@@ -7,8 +7,8 @@ export default class IntSelect extends Requirements implements ComponentOption {
 	component                   = IntSelectOption;
 	name: string;
 	key: string;
-	data: number;
-	tooltip: string | undefined = undefined;
+	data: number                = $state(0);
+	tooltip: string | undefined = $state();
 
 	constructor(name: string, key: string, def = 0) {
 		super();

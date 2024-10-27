@@ -1,22 +1,22 @@
-<script lang="ts">
-	import ProInput from '$input/ProInput.svelte';
-	import { createEventDispatcher } from 'svelte';
-	import SearchableSelect from '$input/SearchableSelect.svelte';
-	import FabledSkill, { skillStore } from '../../data/skill-store.js';
+<script lang='ts'>
+	import ProInput                    from '$input/ProInput.svelte';
+	import SearchableSelect            from '$input/SearchableSelect.svelte';
+	import FabledSkill, { skillStore } from '../../data/skill-store.svelte.js';
 
 	interface Props {
 		data?: FabledSkill[] | FabledSkill | string[] | string;
 		name?: string | undefined;
 		tooltip?: string | undefined;
 		multiple?: boolean;
+		onsave?: () => void;
 	}
 
-	let { data = $bindable([]), name = '', tooltip = undefined, multiple = true }: Props = $props();
+	let { data = $bindable([]), name = '', tooltip = undefined, multiple = true, onsave }: Props = $props();
 
 	const skills = skillStore.skills;
 
-	const dispatch = createEventDispatcher();
 	$effect.pre(() => {
+		console.log(data);
 		if (!multiple && !data) data = '';
 
 		if (data instanceof Array) {
@@ -34,7 +34,7 @@
 				if (sk) data = sk;
 			}
 		}
-		dispatch('save');
+		onsave?.();
 	});
 </script>
 

@@ -1,18 +1,19 @@
-import FabledComponent          from './fabled-component';
-import type { ComponentOption } from '../options/options';
+import FabledComponent                                from './fabled-component.svelte';
+import type { ComponentOption }                       from '../options/options';
 import type { ComponentData, Unknown, YamlComponent } from '$api/types';
 import Registry                                       from '$api/components/registry';
 
-export default class FabledCondition extends FabledComponent {
-	iconKey = '';
+export default class FabledTarget extends FabledComponent {
+	iconKey = $state('');
 
-	public constructor(data: ComponentData, isDeprecated = false) {
-		super('condition', data, isDeprecated);
+	public constructor(data: ComponentData) {
+		super('target', data);
 	}
 
 	public override getData(raw = false): Unknown {
 		const data: Unknown = {};
-		data['icon-key']    = this.iconKey;
+
+		data['icon-key'] = this.iconKey;
 
 		this.data
 			.filter(opt => raw || opt.meetsRequirements(this))
@@ -37,5 +38,5 @@ export default class FabledCondition extends FabledComponent {
 		}
 	}
 
-	public static override new = (): FabledCondition => new FabledCondition({ name: 'null' });
+	public static override new = (): FabledTarget => new FabledTarget({ name: 'null' });
 }

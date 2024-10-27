@@ -11,21 +11,22 @@
 		saveError,
 		showSidebar
 	}                                                                        from '../data/store';
+	import { closeModal, modalData, ModalService, openModal }                from '../data/modal-service.svelte';
+	import { skillStore }                                                    from '../data/skill-store.svelte.js';
 	import { onDestroy, onMount }                                            from 'svelte';
+	import { derived, get, type Readable, type Unsubscriber, type Writable } from 'svelte/store';
+	import { quadInOut }                                                     from 'svelte/easing';
+	import { fly }                                                           from 'svelte/transition';
 	import { browser }                                                       from '$app/environment';
 	import ImportModal                                                       from '$components/ImportModal.svelte';
 	import NavBar                                                            from '$components/NavBar.svelte';
 	import HeaderBar                                                         from '$components/HeaderBar.svelte';
-	import { fly }                                                           from 'svelte/transition';
-	import { derived, get, type Readable, type Unsubscriber, type Writable } from 'svelte/store';
 	import Sidebar                                                           from '$components/sidebar/Sidebar.svelte';
-	import { activeModal, closeModal, modalData, openModal }                 from '../data/modal-service';
 	import SettingsModal
 																																					 from '$components/modal/SettingsModal.svelte';
-	import { dcWarning, socketConnected, socketService, socketTrusted }      from '$api/socket/socket-connector';
-	import { quadInOut }                                                     from 'svelte/easing';
 	import Modal                                                             from '$components/Modal.svelte';
-	import { skillStore }                                                    from '../data/skill-store.js';
+	import { dcWarning, socketConnected, socketService, socketTrusted }      from '$api/socket/socket-connector';
+
 	interface Props {
 		children?: import('svelte').Snippet;
 	}
@@ -170,40 +171,38 @@
 		copied = true;
 		setTimeout(() => copied = false, 2000);
 	};
-
-	const SvelteComponent = $derived($activeModal);
 </script>
 
 <HeaderBar />
 <NavBar />
-<div id='body-container' class:empty={!$active}>
+<div class:empty={!$active} id='body-container'>
 	{#if $showSidebar}
 		<Sidebar />
 	{/if}
-	<div id='body' class:centered={!$active}>
+	<div class:centered={!$active} id='body'>
 		{@render children?.()}
 	</div>
 </div>
 <!--<SocketPanel />-->
 
 <div id='floating-buttons'>
-	<div class='button backup' title='Backup All Data'
-			 tabindex='0'
-			 role='button'
-			 style:--rotation='{$rotation}deg'
-			 style:--distance='{$distance}rem'
-			 onclick={saveAll}
+	<div class='button backup' onclick={saveAll}
 			 onkeypress={(e) => e.key === 'Enter' && saveAll()}
+			 role='button'
+			 style:--distance='{$distance}rem'
+			 style:--rotation='{$rotation}deg'
+			 tabindex='0'
+			 title='Backup All Data'
 	>
 		<span class='material-symbols-rounded'>cloud_download</span>
 	</div>
-	<div class='button save' title='Save'
-			 tabindex='0'
-			 role='button'
-			 style:--rotation='{$rotation * 3}deg'
-			 style:--distance='{$distance}rem'
-			 onclick={() => saveData()}
+	<div class='button save' onclick={() => saveData()}
 			 onkeypress={(e) => { if (e.key === 'Enter') saveData() }}
+			 role='button'
+			 style:--distance='{$distance}rem'
+			 style:--rotation='{$rotation * 3}deg'
+			 tabindex='0'
+			 title='Save'
 	>
 		<span class='material-symbols-rounded'>save</span>
 	</div>
@@ -258,13 +257,13 @@
 			{/if}
 		</div>
 	{/if}
-	<div class='button settings' title='Change Settings'
-			 tabindex='0'
-			 role='button'
-			 style:--rotation='60deg'
-			 style:--distance='1rem'
-			 onclick={() => openModal(SettingsModal)}
+	<div class='button settings' onclick={() => openModal(SettingsModal)}
 			 onkeypress={(e) => e.key === 'Enter' && openModal(SettingsModal)}
+			 role='button'
+			 style:--distance='1rem'
+			 style:--rotation='60deg'
+			 tabindex='0'
+			 title='Change Settings'
 	>
 		<span class='material-symbols-rounded'>settings</span>
 	</div>
@@ -291,10 +290,13 @@
 {/if}
 
 <!-- Display our active modal -->
-<SvelteComponent
-	data={$modalData}
-	on:close={closeModal}
-	on:save={save} />
+{#if ModalService.activeModal}
+	<ModalService.activeModal
+		data={$modalData}
+		onclose={closeModal}
+		onsave={save}
+	/>
+{/if}
 
 {#if displaySave}
 	<div class='saving' transition:fly={{y: -20}}>{$isSaving ? 'Saving...' : 'Saved!'}</div>
@@ -306,21 +308,23 @@
 	</div>
 {/if}
 
-<Modal open={!!$passphrase && !$socketTrusted}>
-	<h3>Untrusted Connection to Server</h3>
-	<div>Server is not trusted. Please run
-		<div class='code'
-				 class:copied
-				 tabindex='0'
-				 role='button'
-				 onclick={copyText}
-				 onkeypress={(e) => { if (e.key === 'Enter') copyText() }}
-		>
-			/synth trust {$passphrase}
+{#if !!$passphrase && !$socketTrusted}
+	<Modal>
+		<h3>Untrusted Connection to Server</h3>
+		<div>Server is not trusted. Please run
+			<div class='code'
+					 class:copied
+					 onclick={copyText}
+					 onkeypress={(e) => { if (e.key === 'Enter') copyText() }}
+					 role='button'
+					 tabindex='0'
+			>
+				/synth trust {$passphrase}
+			</div>
+			from the server
 		</div>
-		from the server
-	</div>
-</Modal>
+	</Modal>
+{/if}
 
 {#if $dcWarning > 0}
 	<div class='dc-warning' transition:fly={{y: -20}}>

@@ -1,22 +1,18 @@
 <script lang='ts'>
-	import { run } from 'svelte/legacy';
-
 	import IconInput                   from './input/IconInput.svelte';
 	import MaterialSelect              from './input/MaterialSelect.svelte';
 	import SearchableSelect            from './input/SearchableSelect.svelte';
-	import { updateSidebar }           from '../data/store';
 	import AttributeInput              from './input/AttributeInput.svelte';
 	import ByteSelect                  from './input/ByteSelect.svelte';
 	import { expSources }              from '../version/data';
 	import { toProperCase }            from '$api/api';
 	import { onDestroy, onMount }      from 'svelte';
-	import { Attribute }               from '$api/stat';
 	import ProInput                    from './input/ProInput.svelte';
 	import Toggle                      from './input/Toggle.svelte';
 	import LoreInput                   from '$input/LoreInput.svelte';
 	import type { Unsubscriber }       from 'svelte/store';
-	import FabledClass, { classStore } from '../data/class-store';
-	import { skillStore }              from '../data/skill-store';
+	import FabledClass, { classStore } from '../data/class-store.svelte';
+	import { skillStore }              from '../data/skill-store.svelte';
 	import { attributeStore }          from '../data/attribute-store.js';
 
 	interface Props {
@@ -43,7 +39,7 @@
 			});
 
 			for (const attrib of value.filter(attr => !included.includes(attr.name))) {
-				data.attributes.push(new Attribute(attrib.name, 0, 0));
+				data.attributes.push({ name: attrib.name, base: 0, scale: 0 });
 			}
 		});
 	});
@@ -52,10 +48,7 @@
 		if (sub) sub();
 	});
 
-	run(() => {
-		if (data?.name) updateSidebar();
-		data.save();
-	});
+	$effect(() => data.save());
 </script>
 
 {#if data}
@@ -95,11 +88,11 @@
 	</ProInput>
 	<ProInput label='Health'
 						tooltip='The amount of health the class has'>
-		<AttributeInput bind:value={data.health} />
+		<AttributeInput value={data.health} />
 	</ProInput>
 	<ProInput label='Mana'
 						tooltip='The amount of mana the class has'>
-		<AttributeInput bind:value={data.mana} />
+		<AttributeInput value={data.mana} />
 	</ProInput>
 
 	<div class='info'>Drag & Drop your attributes file to use your custom attributes</div>

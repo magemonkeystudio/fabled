@@ -1,27 +1,23 @@
-<!--suppress CssUnresolvedCustomProperty -->
 <script lang='ts'>
-	import { fade, fly }             from 'svelte/transition';
-	import { clickOutside }          from '$api/clickoutside';
-	import { createEventDispatcher } from 'svelte';
+	import { fade, fly }    from 'svelte/transition';
+	import { clickOutside } from '$api/clickoutside';
 
-    interface Props {
-        width?: string;
-        open?: boolean;
-        children?: import('svelte').Snippet;
-    }
+	interface Props {
+		width?: string;
+		children?: import('svelte').Snippet;
+		onclose?: () => void;
+	}
 
-    let { width = 'auto', open = $bindable(false), children }: Props = $props();
+	let { width = 'auto', children, onclose }: Props = $props();
 
-	const dispatch = createEventDispatcher();
 
 	const closeModal = (e?: MouseEvent) => {
-		open = false;
-		dispatch('close');
+		onclose?.();
 		e?.stopPropagation();
 	};
 
 	const checkClose = (e: KeyboardEvent) => {
-		if (e.key == 'Escape') {
+		if (e.key === 'Escape') {
 			e.preventDefault();
 			e.stopPropagation();
 			closeModal();
@@ -30,18 +26,16 @@
 </script>
 
 <svelte:window onkeyup={checkClose} />
-{#if open}
-	<div class='backdrop' transition:fade>
-		<div class='modal-content'
-				 use:clickOutside={closeModal}
-				 transition:fly={{y: -200}}
-				 style:--width={width}>
-			<div class='wrapper'>
-				{@render children?.()}
-			</div>
+<div class='backdrop' transition:fade>
+	<div class='modal-content'
+			 use:clickOutside={closeModal}
+			 transition:fly={{y: -200}}
+			 style:--width={width}>
+		<div class='wrapper'>
+			{@render children?.()}
 		</div>
 	</div>
-{/if}
+</div>
 
 <style>
     .backdrop {

@@ -1,15 +1,16 @@
 <script lang='ts'>
 	import { squash }             from '../../../data/squish';
 	import type { RegistryEntry } from '$api/components/registry';
-	import type FabledComponent   from '$api/components/fabled-component';
+	import type FabledComponent   from '$api/components/fabled-component.svelte';
+	import { deprecated }         from '$api/components/components.svelte';
 
-    interface Props {
-        sectionName?: string;
-        components?: RegistryEntry[];
-        addComponent: (comp: { new: () => { defaultOpen: () => FabledComponent } }) => void;
-    }
+	interface Props {
+		sectionName?: string;
+		components?: RegistryEntry[];
+		addComponent: (comp: { new: () => { defaultOpen: () => FabledComponent } }) => void;
+	}
 
-    let { sectionName = '', components = [], addComponent }: Props = $props();
+	let { sectionName = '', components = [], addComponent }: Props = $props();
 
 	let expanded = $state(true);
 </script>
@@ -27,7 +28,7 @@
 				<div class='comp-select'
 						 onclick={() => addComponent(comp.component)}
 						 onkeypress={(e) => { if (e.key === 'Enter') addComponent(comp.component); }}
-						 class:deprecated={comp.component.new().isDeprecated}>
+						 class:deprecated={deprecated.includes(comp.component)}>
 					{comp.name}
 				</div>
 			{/each}

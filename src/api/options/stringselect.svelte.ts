@@ -7,8 +7,8 @@ export default class StringSelect extends Requirements implements ComponentOptio
 	component                   = StringSelectOption;
 	name: string;
 	key: string;
-	data: string;
-	tooltip: string | undefined = undefined;
+	data: string                = $state('');
+	tooltip: string | undefined = $state();
 
 	constructor(name: string, key: string, def = '') {
 		super();

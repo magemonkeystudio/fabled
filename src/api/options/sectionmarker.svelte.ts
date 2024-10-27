@@ -3,9 +3,9 @@ import { Requirements }         from '$api/options/options';
 import SectionMarkerComponent   from '$input/SectionMarkerComponent.svelte';
 
 export default class SectionMarker extends Requirements implements ComponentOption {
-	key       = 'section-marker';
-	component = SectionMarkerComponent;
-	data: string;
+	key          = 'section-marker';
+	component    = SectionMarkerComponent;
+	data: string = $state('');
 
 	constructor(name: string) {
 		super();

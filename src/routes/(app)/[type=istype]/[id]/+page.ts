@@ -6,7 +6,7 @@ import { socketService }           from '$api/socket/socket-connector';
 import { base }                    from '$app/paths';
 import { parseYaml }               from '$api/yaml';
 import { Tab }                     from '$api/tab';
-import FabledSkill, { skillStore } from '../../../../data/skill-store';
+import FabledSkill, { skillStore } from '../../../../data/skill-store.svelte';
 
 export const ssr = false;
 

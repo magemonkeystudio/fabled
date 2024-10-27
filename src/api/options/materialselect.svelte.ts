@@ -6,8 +6,8 @@ import type { Unknown }         from '$api/types';
 export default class MaterialSelect extends Requirements implements ComponentOption {
 	component                   = MaterialSelectOption;
 	key                         = 'material';
-	data                        = { material: 'Dirt', any: false };
-	tooltip: string | undefined = undefined;
+	data                        = $state({ material: 'Dirt', any: false });
+	tooltip: string | undefined = $state();
 
 	constructor(any = true, def?: string) {
 		super();

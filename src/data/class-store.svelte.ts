@@ -1,78 +1,82 @@
-import type { Writable }                                                               from 'svelte/store';
-import { get, writable }                                                               from 'svelte/store';
-import { active }                                                                      from './store';
-import { parseBool, sort, toEditorCase, toProperCase }                                 from '$api/api';
-import { parseYaml }                                                                   from '$api/yaml';
-import { browser }                                                                     from '$app/environment';
-import { goto }                                                                        from '$app/navigation';
-import { base }                                                                        from '$app/paths';
-import type { ClassYamlData, FabledClassData, Icon, MultiClassYamlData, Serializable } from '$api/types';
-import YAML                                                                            from 'yaml';
+import type { Writable }                                                                           from 'svelte/store';
+import { get, writable }                                                                           from 'svelte/store';
+import { active }                                                                                  from './store';
+import { parseBool, sort, toEditorCase, toProperCase }                                             from '$api/api';
+import { parseYaml }                                                                               from '$api/yaml';
+import {
+	browser
+}                                                                                                  from '$app/environment';
+import {
+	goto
+}                                                                                                  from '$app/navigation';
+import { base }                                                                                    from '$app/paths';
+import type { ClassYamlData, FabledClassData, IAttribute, Icon, MultiClassYamlData, Serializable } from '$api/types';
+import YAML                                                                                        from 'yaml';
 import {
 	socketService
-}                                                                                      from '$api/socket/socket-connector';
-import { notify }                                                                      from '$api/notification-service';
-import { Attribute }                                                                   from '$api/stat';
-import type { SkillTree }                                                              from '$api/SkillTree';
-import FabledSkill, { skillStore }                                                     from './skill-store';
-import { FabledFolder, folderStore }                                                   from './folder-store';
+}                                                                                                  from '$api/socket/socket-connector';
+import {
+	notify
+}                                                                                                  from '$api/notification-service';
+import type {
+	SkillTree
+}                                                                                                  from '$api/SkillTree';
+import FabledSkill, {
+	skillStore
+}                                                                                                  from './skill-store.svelte';
+import {
+	FabledFolder,
+	folderStore
+}                                                                                                  from './folder-store.svelte';
 
 export default class FabledClass implements Serializable {
 	dataType                     = 'class';
 	location: 'local' | 'server' = 'local';
-	loaded                       = false;
+	loaded                       = $state(false);
 
 	isClass              = true;
 	public key           = {};
-	name: string;
+	name: string         = $state('');
 	previousName: string = '';
-	prefix               = '';
-	group                = 'class';
-	manaName             = '&2Mana';
-	maxLevel             = 40;
-	parentStr            = '';
-	_parent?: FabledClass;
-	get parent() {
-		return this._parent;
-	}
+	prefix               = $state('');
+	group                = $state('class');
+	manaName             = $state('&2Mana');
+	maxLevel             = $state(40);
+	parent?: FabledClass = $state();
+	parentStr            = $derived(this.parent?.name);
 
-	set parent(parent: FabledClass | undefined) {
-		this._parent   = parent;
-		this.parentStr = parent ? parent.name : '';
-	}
-
-	permission              = false;
-	expSources              = 273;
-	manaRegen               = 1;
-	health: Attribute       = new Attribute('health', 20, 1);
-	mana: Attribute         = new Attribute('mana', 20, 1);
-	attributes: Attribute[] = [];
-	skillTree: SkillTree    = 'Requirement';
-	skills: FabledSkill[]   = [];
-	icon: Icon              = {
+	permission               = $state(false);
+	expSources               = $state(273);
+	manaRegen                = $state(1);
+	health: IAttribute       = $state({ name: 'health', base: 20, scale: 1 });
+	mana: IAttribute         = $state({ name: 'mana', base: 20, scale: 1 });
+	attributes: IAttribute[] = $state([]);
+	skillTree: SkillTree     = $state('Requirement');
+	skills: FabledSkill[]    = $state([]);
+	icon: Icon               = $state({
 		material:        'Pumpkin',
 		customModelData: 0
-	};
-	unusableItems: string[] = [];
-	actionBar               = '';
+	});
+	unusableItems: string[]  = $state([]);
+	actionBar                = $state('');
 
-	lInverted  = true;
-	rInverted  = true;
-	lsInverted = true;
-	rsInverted = true;
-	sInverted  = true;
-	pInverted  = true;
-	qInverted  = true;
-	fInverted  = true;
+	lInverted  = $state(true);
+	rInverted  = $state(true);
+	lsInverted = $state(true);
+	rsInverted = $state(true);
+	sInverted  = $state(true);
+	pInverted  = $state(true);
+	qInverted  = $state(true);
+	fInverted  = $state(true);
 
-	lWhitelist: string[]  = [];
-	rWhitelist: string[]  = [];
-	lsWhitelist: string[] = [];
-	rsWhitelist: string[] = [];
-	sWhitelist: string[]  = [];
-	pWhitelist: string[]  = [];
-	qWhitelist: string[]  = [];
-	fWhitelist: string[]  = [];
+	lWhitelist: string[]  = $state([]);
+	rWhitelist: string[]  = $state([]);
+	lsWhitelist: string[] = $state([]);
+	rsWhitelist: string[] = $state([]);
+	sWhitelist: string[]  = $state([]);
+	pWhitelist: string[]  = $state([]);
+	qWhitelist: string[]  = $state([]);
+	fWhitelist: string[]  = $state([]);
 
 	constructor(data?: FabledClassData) {
 		this.name   = data?.name || 'Class';
@@ -125,11 +129,46 @@ export default class FabledClass implements Serializable {
 		attribs = attribs.filter(a => !included.includes(a));
 
 		for (const attrib of attribs) {
-			this.attributes.push(new Attribute(attrib, 0, 0));
+			this.attributes.push({ name: attrib, base: 0, scale: 0 });
 		}
 	};
 
 	public serializeYaml = (): ClassYamlData => {
+		const health = {
+			base:  this.health.base,
+			scale: this.health.scale
+		};
+		const mana   = {
+			base:  this.mana.base,
+			scale: this.mana.scale
+		};
+
+		// Attempt to convert health/mana base & scale to numbers, if applicable
+		if (typeof (health.base) === 'string') {
+			const base = parseInt(health.base);
+			if (!isNaN(base)) {
+				health.base = base;
+			}
+		}
+		if (typeof (health.scale) === 'string') {
+			const scale = parseInt(health.scale);
+			if (!isNaN(scale)) {
+				health.scale = scale;
+			}
+		}
+		if (typeof (mana.base) === 'string') {
+			const base = parseInt(mana.base);
+			if (!isNaN(base)) {
+				mana.base = base;
+			}
+		}
+		if (typeof (mana.scale) === 'string') {
+			const scale = parseInt(mana.scale);
+			if (!isNaN(scale)) {
+				mana.scale = scale;
+			}
+		}
+
 		const yaml = <ClassYamlData>{
 			name:               this.name,
 			'action-bar':       this.actionBar,
@@ -140,10 +179,10 @@ export default class FabledClass implements Serializable {
 			parent:             this.parent?.name || '',
 			'needs-permission': this.permission,
 			attributes:         {
-				'health-base':  this.health.base,
-				'health-scale': this.health.scale,
-				'mana-base':    this.mana.base,
-				'mana-scale':   this.mana.scale
+				'health-base':  health.base || 20,
+				'health-scale': health.scale || 0,
+				'mana-base':    mana.base || 20,
+				'mana-scale':   mana.scale || 0
 			},
 			'mana-regen':       this.manaRegen,
 			'skill-tree':       this.skillTree.toUpperCase().replace(/ /g, '_'),
@@ -166,8 +205,21 @@ export default class FabledClass implements Serializable {
 		};
 
 		this.attributes.forEach(attr => {
-			yaml.attributes[`${attr.name.toLowerCase()}-base`]  = attr.base;
-			yaml.attributes[`${attr.name.toLowerCase()}-scale`] = attr.scale;
+			if (typeof attr.base === 'string') {
+				const base = parseInt(attr.base);
+				if (!isNaN(base)) {
+					attr.base = base;
+				}
+			}
+			if (typeof attr.scale === 'string') {
+				const scale = parseInt(attr.scale);
+				if (!isNaN(scale)) {
+					attr.scale = scale;
+				}
+			}
+
+			yaml.attributes[`${attr.name.toLowerCase()}-base`]  = attr.base || 0;
+			yaml.attributes[`${attr.name.toLowerCase()}-scale`] = attr.scale || 0;
 		});
 
 		return yaml;
@@ -190,19 +242,16 @@ export default class FabledClass implements Serializable {
 
 		if (yaml.attributes) {
 			const attributes = yaml.attributes;
-			this.health      = new Attribute('health', attributes['health-base'] || 20, attributes['health-scale'] || 1);
-			this.mana        = new Attribute('mana', attributes['mana-base'] || 20, attributes['mana-scale'] || 1);
+			this.health      = {name: 'health', base: attributes['health-base'] || 20, scale: attributes['health-scale'] || 1};
+			this.mana        = {name: 'mana', base: attributes['mana-base'] || 20, scale: attributes['mana-scale'] || 1};
 
-			const map: { [key: string]: Attribute } = {};
+			const map: { [key: string]: IAttribute } = {};
 			for (const attrId of Object.keys(attributes)) {
 				const split = attrId.split('-');
 				const name  = split[0];
 				if (map[name] || name === 'health' || name === 'mana') continue;
 
-				const attr = new Attribute(name, 0, 0);
-				attr.base  = attributes[`${name}-base`];
-				attr.scale = attributes[`${name}-scale`];
-				map[name]  = attr;
+				map[name]  = { name, base: attributes[`${name}-base`], scale: attributes[`${name}-scale`] };
 			}
 			this.attributes = Object.values(map);
 		}
@@ -260,7 +309,7 @@ export default class FabledClass implements Serializable {
 	};
 }
 
-class ClassStore {
+class ClassStoreSvelte {
 	isLegacy = false;
 
 	private loadClassesFromServer = async () => {
@@ -613,4 +662,4 @@ class ClassStore {
 	};
 }
 
-export const classStore = new ClassStore();
+export const classStore = new ClassStoreSvelte();

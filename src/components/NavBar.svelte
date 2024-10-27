@@ -5,9 +5,9 @@
 	import { get }                                             from 'svelte/store';
 	import { createPaste }                                     from '$api/hastebin';
 	import YAML                                                from 'yaml';
-	import type FabledClass                                    from '../data/class-store';
-	import type FabledSkill                                    from '../data/skill-store';
-	import type FabledAttribute                                from '$api/fabled-attribute';
+	import type FabledClass                                    from '../data/class-store.svelte';
+	import type FabledSkill                                    from '../data/skill-store.svelte';
+	import type FabledAttribute                                from '$api/fabled-attribute.svelte';
 
 	const haste = () => {
 		let act: FabledClass | FabledSkill | FabledAttribute | undefined = get(active);
@@ -30,8 +30,6 @@
 <div class='nav-wrap'>
 	<nav>
 		<div class='chip hamburger'
-				 tabindex='0'
-				 role='button'
 				 onclick={stopPropagation(toggleSidebar)}
 				 onkeypress={(e) => {
 					 if (e.key === 'Enter') {
@@ -39,6 +37,8 @@
              toggleSidebar();
            }
          }}
+				 role='button'
+				 tabindex='0'
 		>
 			<span class='material-symbols-rounded'>menu</span>
 		</div>
@@ -47,8 +47,6 @@
 
 		<div class='transfer'>
 			<div class='chip import'
-					 tabindex='0'
-					 role='button'
 					 onclick={stopPropagation(openImport)}
 					 onkeypress={(e) => {
 						 if (e.key === 'Enter') {
@@ -56,6 +54,8 @@
 							 openImport();
 						 }
 					 }}
+					 role='button'
+					 tabindex='0'
 					 title='Import Data'>
 				Import
 			</div>

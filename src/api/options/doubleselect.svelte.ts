@@ -7,8 +7,8 @@ export default class DoubleSelect extends Requirements implements ComponentOptio
 	component                   = DoubleSelectOption;
 	name: string;
 	key: string;
-	data: number;
-	tooltip: string | undefined = undefined;
+	data: number                = $state(0);
+	tooltip: string | undefined = $state(undefined);
 
 	constructor(name: string, key: string, def = 0) {
 		super();

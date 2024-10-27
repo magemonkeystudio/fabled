@@ -10,19 +10,19 @@ export default abstract class FabledComponent extends Constructable {
 	public type: 'trigger' | 'condition' | 'mechanic' | 'target';
 	public name: string;
 	public description: string;
-	public comment: string;
+	public comment: string                         = $state('');
 	public components: Writable<FabledComponent[]> = writable([]);
-	public data: ComponentOption[]                 = [];
-	public preview: ComponentOption[]              = [];
-	public enablePreview                           = false;
+	public data: ComponentOption[]                 = $state([]);
+	public preview: ComponentOption[]              = $state([]);
+	public enablePreview                           = $state(false);
 	public summaryItems: string[]                  = [];
 	public isParent                                = true;
-	public isDeprecated                         = false;
-	public id                                   = {};
+	public isDeprecated                            = false;
+	public id                                      = {};
 	public _defaultOpen                            = false;
 	public parent: FabledComponent | undefined;
 
-	protected constructor(type: 'trigger' | 'condition' | 'mechanic' | 'target', data: ComponentData, isDeprecated = false) {
+	protected constructor(type: 'trigger' | 'condition' | 'mechanic' | 'target', data: ComponentData) {
 		super();
 		this.type         = type;
 		this.name         = data.name;
@@ -30,12 +30,11 @@ export default abstract class FabledComponent extends Constructable {
 		this.summaryItems = data.summaryItems ?? [];
 		this.comment      = data.comment ?? '';
 		this.setComponents(data.components || []);
-		this.data         = data.data || [];
-		this.preview      = data.preview || [];
-		this.isDeprecated = isDeprecated;
+		this.data    = data.data || [];
+		this.preview = data.preview || [];
 	}
 
-	public getValue(key: string): any {
+	public getValue(key: string): string {
 		const comp: ComponentOption | undefined = this.data?.find(opt => opt.key == key);
 		if (!comp || !comp.meetsRequirements(this)) return '';
 
@@ -140,7 +139,7 @@ export default abstract class FabledComponent extends Constructable {
 		return comp;
 	};
 
-	public abstract getData(raw: boolean): Unknown;
+	public abstract getData(raw?: boolean): Unknown;
 
 	public getRawPreviewData(): Unknown {
 		const data: Unknown = {};

@@ -1,10 +1,3 @@
-import FabledMechanic                                            from '$api/components/mechanics';
-import BlockSelect                                               from '$api/options/blockselect';
-import FabledCondition                                           from '$api/components/conditions';
-import DropdownSelect                                            from '$api/options/dropdownselect';
-import FabledTrigger                                             from '$api/components/triggers';
-import FabledTarget                                              from '$api/components/targets';
-import MaterialSelect                                            from '$api/options/materialselect';
 import {
 	getAnyConsumable,
 	getAnyDamageTypes,
@@ -28,21 +21,28 @@ import {
 	getProjectiles,
 	getSounds
 }                                                                from '../../version/data';
-import BooleanSelect                                             from '$api/options/booleanselect';
-import DoubleSelect                                              from '$api/options/doubleselect';
+import type FabledComponent                                      from '$api/components/fabled-component.svelte';
+import FabledMechanic                                            from '$api/components/mechanics.svelte';
+import FabledCondition                                           from '$api/components/conditions.svelte';
+import FabledTrigger                                             from '$api/components/triggers.svelte';
+import FabledTarget                                              from '$api/components/targets.svelte';
 import { conditions, initialized, mechanics, targets, triggers } from '$api/components/registry';
-import StringListSelect                                          from '$api/options/stringlistselect';
+import AttributeSelect                                           from '$api/options/attributeselect.svelte';
+import BlockSelect                                               from '$api/options/blockselect.svelte';
+import BooleanSelect                                             from '$api/options/booleanselect.svelte';
+import ClassSelect                                               from '$api/options/classselect.svelte';
+import ColorSelect                                               from '$api/options/colorselect.svelte';
+import DoubleSelect                                              from '$api/options/doubleselect.svelte';
+import DropdownSelect                                            from '$api/options/dropdownselect.svelte';
+import EnchantSelect                                             from '$api/options/enchantselect.svelte';
+import IntSelect                                                 from '$api/options/intselect.svelte';
+import MaterialSelect                                            from '$api/options/materialselect.svelte';
+import SectionMarker                                             from '$api/options/sectionmarker.svelte';
+import SkillSelect                                               from '$api/options/skillselect.svelte';
+import StringListSelect                                          from '$api/options/stringlistselect.svelte';
+import StringSelect                                              from '$api/options/stringselect.svelte';
 import type { ComponentOption, Requirements }                    from '$api/options/options';
-import AttributeSelect                                           from '$api/options/attributeselect';
-import SectionMarker                                             from '$api/options/sectionmarker';
-import StringSelect                                              from '$api/options/stringselect';
-import ClassSelect                                               from '$api/options/classselect';
-import SkillSelect                                               from '$api/options/skillselect';
-import IntSelect                                                 from '$api/options/intselect';
-import ColorSelect                                               from '$api/options/colorselect';
 import { get }                                                   from 'svelte/store';
-import type FabledComponent                                      from '$api/components/fabled-component';
-import EnchantSelect                                             from '$api/options/enchantselect';
 import { attributeStore }                                        from '../../data/attribute-store';
 
 // This file holds all the component configurations and setup. Please add new components/options here
@@ -361,9 +361,9 @@ class ItemSwapTrigger extends FabledTrigger {
 class JumpTrigger extends FabledTrigger {
 	public constructor() {
 		super({
-			name:         'Jump',
-			description:  'Applies skill effects whenever a player jumps.',
-			data:         [],
+			name:        'Jump',
+			description: 'Applies skill effects whenever a player jumps.',
+			data:        []
 		});
 	}
 
@@ -1879,7 +1879,7 @@ class YawCondition extends FabledCondition {
  * Adds the options for item related effects to the component
  */
 const itemOptions = (): ComponentOption[] => {
-	const data: ComponentOption[] = [
+	return [
 		new SectionMarker('Item Options'),
 		new MaterialSelect(false, 'Arrow')
 			.setTooltip('The type of item to give to the player'),
@@ -1922,8 +1922,6 @@ const itemOptions = (): ComponentOption[] => {
 		new EnchantSelect()
 			.setTooltip('The enchantment to apply to the item')
 	];
-
-	return data;
 };
 
 const warpOptions = (): ComponentOption[] => {
@@ -5193,7 +5191,7 @@ export const initComponents = () => {
 		ENTITY_TARGET: { name: 'Entity Target', component: EntityTargetTrigger },
 		HEAL:          { name: 'Heal', component: HealTrigger },
 		INIT:          { name: 'Initialize', component: InitializeTrigger },
-		JUMP:		   { name: 'Jump', component: JumpTrigger},
+		JUMP:          { name: 'Jump', component: JumpTrigger },
 		KILL:          { name: 'Kill', component: KillTrigger },
 		LAND:          { name: 'Land', component: LandTrigger },
 		LEFT_CLICK:    { name: 'Left Click', component: LeftClickTrigger },
@@ -5387,3 +5385,6 @@ export const initComponents = () => {
 	});
 	initialized.set(true);
 };
+
+// Add deprecated components to this list
+export const deprecated: (typeof FabledComponent)[] = [];

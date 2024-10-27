@@ -1,31 +1,23 @@
 <script lang='ts'>
-	import { run } from 'svelte/legacy';
-
 	import StringSelectOption                     from '$components/options/StringSelectOption.svelte';
-	import type { AttributeStat, AttributeStats } from '$api/fabled-attribute';
+	import type { AttributeStat, AttributeStats } from '$api/fabled-attribute.svelte';
 	import Control                                from '$components/control/Control.svelte';
-	import { updateSidebar }                      from '../../data/store';
 
 	interface Props {
 		stats: AttributeStats;
 		stat: AttributeStat;
 	}
 
-	let { stats, stat = $bindable() }: Props = $props();
-	let selected = $derived(stat.key);
-	run(() => {
-		if ($selected && stat.formula && stats.attribute?.name) updateSidebar();
-		stats.attribute.save();
-	});
+	let { stats = $bindable(), stat = $bindable() }: Props = $props();
 </script>
 
 <div class='stat'>
 	<div class='btn-del'>
 		<Control title='Delete stat' icon='delete' color='red'
-						 on:click={() => stats.removeStat(stat)}
-						 on:keypress={() => stats.removeStat(stat)} />
+						 onclick={() => stats.removeStat(stat)}
+						 onkeypress={() => stats.removeStat(stat)} />
 	</div>
-	<StringSelectOption bind:data={$selected} name={'Stat'}
+	<StringSelectOption bind:data={stat.key} name={'Stat'}
 											tooltip={'Attribute option to modify based on attribute value'} />
 	<StringSelectOption bind:data={stat.formula} name={'Formula'} tooltip='Formula to modify the option by' />
 </div>
@@ -44,7 +36,7 @@
 
     .btn-del {
         width: fit-content;
-        margin: 0em 0.2em;
+        margin: 0 0.2em;
         position: absolute;
         align-self: center;
     }

@@ -1,11 +1,11 @@
 <script lang='ts'>
 
-    interface Props {
-        value?: number;
-        data: string[];
-    }
+	interface Props {
+		value?: number;
+		data: string[];
+	}
 
-    let { value = $bindable(273), data }: Props = $props();
+	let { value = $bindable(273), data }: Props = $props();
 
 </script>
 

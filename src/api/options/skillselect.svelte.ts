@@ -1,15 +1,15 @@
 import { type ComponentOption, Requirements } from '$api/options/options';
 import SkillSelectOption                      from '$components/options/SkillSelectOption.svelte';
 import type { Unknown }                       from '$api/types';
-import FabledSkill, { skillStore }            from '../../data/skill-store';
+import FabledSkill, { skillStore }            from '../../data/skill-store.svelte';
 
 export default class SkillSelect extends Requirements implements ComponentOption {
 	component                                             = SkillSelectOption;
 	name: string;
 	key: string;
-	data: FabledSkill[] | FabledSkill | string[] | string = [];
-	tooltip: string | undefined                           = undefined;
-	multiple                                              = true;
+	data: FabledSkill[] | FabledSkill | string[] | string = $state([]);
+	tooltip: string | undefined                           = $state();
+	multiple                                              = $state(true);
 
 	constructor(name: string, key: string, multiple = true) {
 		super();

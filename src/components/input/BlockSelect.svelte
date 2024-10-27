@@ -11,12 +11,12 @@
 	}
 
 	let {
-		id = undefined,
-		placeholder = '',
-		multiple = false,
-		any = false,
-		selected = $bindable(undefined)
-	}: Props = $props();
+				id          = undefined,
+				placeholder = '',
+				multiple    = false,
+				any         = false,
+				selected    = $bindable(undefined)
+			}: Props = $props();
 </script>
 
 <SearchableSelect

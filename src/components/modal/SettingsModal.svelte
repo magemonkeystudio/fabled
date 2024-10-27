@@ -4,11 +4,11 @@
 	import ProInput                                           from '$input/ProInput.svelte';
 	import Toggle                                             from '$input/Toggle.svelte';
 	import Modal                                              from '$components/Modal.svelte';
-	import { skillStore }                                     from '../../data/skill-store.js';
-	import { classStore }                                     from '../../data/class-store';
+	import { skillStore }                                     from '../../data/skill-store.svelte.js';
+	import { classStore }                                     from '../../data/class-store.svelte';
 	import { attributeStore }                                 from '../../data/attribute-store.js';
 
-	let modalOpen = $state(true);
+	let { onclose }: { onclose: () => void; } = $props();
 
 	const clearData = () => {
 		if (!confirm('Are you sure you want to clear all data?')) return;
@@ -21,25 +21,25 @@
 	};
 </script>
 
-<Modal bind:open={modalOpen} on:close width='50rem'>
+<Modal {onclose} width='50rem'>
 	<h1>Settings</h1>
 	<hr />
 	<div class='settings-container'>
 		<ProInput label='Server' tooltip='This should match your target Spigot server version'>
 			<select bind:value={$version}>
-				{#each Object.keys(VERSIONS).sort((a,b) => Number.parseFloat(b) - Number.parseFloat(a)) as opt}
+				{#each Object.keys(VERSIONS).sort((a, b) => Number.parseFloat(b) - Number.parseFloat(a)) as opt}
 					<option value={opt}>1.{opt}</option>
 				{/each}
 			</select>
 		</ProInput>
 		<ProInput label='Use Symbols' tooltip='If skill components should use symbols instead of text'>
-			<Toggle left='Symbols' right='Text' bind:data={$useSymbols} />
+			<Toggle bind:data={$useSymbols} left='Symbols' right='Text' />
 		</ProInput>
 		<ProInput
 			label='Show Summary Items'
 			tooltip='If skill components should show a simplified summary on the element'
 		>
-			<Toggle left='True' right='False' bind:data={$showSummaryItems} />
+			<Toggle bind:data={$showSummaryItems} left='True' right='False' />
 		</ProInput>
 		<ProInput
 			label='Waterfall Animation'

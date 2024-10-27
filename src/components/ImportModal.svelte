@@ -6,7 +6,7 @@
 	import { getHaste }                        from '$api/hastebin';
 
 	let importUrl: string | undefined = $state();
-	let files: File[] | undefined = $state();
+	let files: File[] | undefined     = $state();
 
 	const onClose = () => {
 		importUrl = files = undefined;
@@ -36,7 +36,7 @@
 	});
 </script>
 
-<Modal open={true} on:close={onClose}>
+<Modal open={true} onclose={onClose}>
 	<div class='options'>
 		<div class='option'>
 			<div>Upload File</div>

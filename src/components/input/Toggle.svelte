@@ -1,20 +1,20 @@
 <!--suppress CssUnresolvedCustomProperty -->
 <script lang='ts'>
-    interface Props {
-        data: boolean;
-        left?: string;
-        right?: string;
-        color?: string;
-        inline?: boolean;
-    }
+	interface Props {
+		data: boolean;
+		left?: string;
+		right?: string;
+		color?: string;
+		inline?: boolean;
+	}
 
-    let {
-        data = $bindable(),
-        left = 'True',
-        right = 'False',
-        color = '#222',
-        inline = true
-    }: Props = $props();
+	let {
+				data   = $bindable(),
+				left   = 'True',
+				right  = 'False',
+				color  = '#222',
+				inline = true
+			}: Props = $props();
 </script>
 
 <input type='checkbox' class='hidden' id='permission' bind:checked={data} />

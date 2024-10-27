@@ -1,18 +1,18 @@
 <!--suppress CssUnresolvedCustomProperty -->
 <script lang='ts'>
-    interface Props {
-        selectedTab: number;
-        data?: string[];
-        color?: string;
-        inline?: boolean;
-    }
+	interface Props {
+		selectedTab: number;
+		data?: string[];
+		color?: string;
+		inline?: boolean;
+	}
 
-    let {
-        selectedTab = $bindable(),
-        data = ['True', 'False'],
-        color = '#222',
-        inline = true
-    }: Props = $props();
+	let {
+				selectedTab = $bindable(),
+				data        = ['True', 'False'],
+				color       = '#222',
+				inline      = true
+			}: Props = $props();
 </script>
 
 <div class='tabs' class:selected={selectedTab} style:--color={color} style:--count={data.length}

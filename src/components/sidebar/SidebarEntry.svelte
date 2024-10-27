@@ -1,15 +1,15 @@
 <script lang='ts'>
 	import { active, deleteProData, dragging, saveData, shownTab, sidebarOpen } from '../../data/store';
-	import FabledAttribute                                                      from '$api/fabled-attribute';
+	import FabledAttribute                                                      from '$api/fabled-attribute.svelte';
 	import { get }                                                              from 'svelte/store';
 	import { fly, type TransitionConfig }                                       from 'svelte/transition';
 	import Modal                                                                from '../Modal.svelte';
 	import { animationEnabled }                                                 from '../../data/settings';
 	import { base }                                                             from '$app/paths';
 	import { Tab }                                                              from '$api/tab';
-	import FabledSkill, { skillStore }                                          from '../../data/skill-store';
-	import FabledClass, { classStore }                                          from '../../data/class-store';
-	import { FabledFolder, folderStore }                                        from '../../data/folder-store.js';
+	import FabledSkill, { skillStore }                                          from '../../data/skill-store.svelte';
+	import FabledClass, { classStore }                                          from '../../data/class-store.svelte';
+	import { FabledFolder, folderStore }                                        from '../../data/folder-store.svelte.js';
 	import { attributeStore }                                                   from '../../data/attribute-store';
 
 
@@ -192,23 +192,25 @@
 	{/if}
 </div>
 
-<Modal bind:open={deleting}>
-	<h3>Do you really want to delete {data?.name}?</h3>
-	<div class='modal-buttons'>
-		<div class='button' onclick={() => deleting = false}
-				 onkeypress={(event) => { if (event?.key === 'Enter') deleting = false; }}
-				 role='button'
-				 tabindex='0'
-		>Cancel
+{#if deleting}
+	<Modal>
+		<h3>Do you really want to delete {data?.name}?</h3>
+		<div class='modal-buttons'>
+			<div class='button' onclick={() => deleting = false}
+					 onkeypress={(event) => { if (event?.key === 'Enter') deleting = false; }}
+					 role='button'
+					 tabindex='0'
+			>Cancel
+			</div>
+			<div class='button modal-delete' onclick={() => deleteProData(data)}
+					 onkeypress={(event) => { if (event?.key === 'Enter') deleteProData(data); }}
+					 role='button'
+					 tabindex='0'
+			>Delete
+			</div>
 		</div>
-		<div class='button modal-delete' onclick={() => deleteProData(data)}
-				 onkeypress={(event) => { if (event?.key === 'Enter') deleteProData(data); }}
-				 role='button'
-				 tabindex='0'
-		>Delete
-		</div>
-	</div>
-</Modal>
+	</Modal>
+{/if}
 
 <style>
     .sidebar-entry {

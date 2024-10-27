@@ -1,24 +1,24 @@
 <script lang='ts'>
 	import ComponentWidget                                from '$components/ComponentWidget.svelte';
 	import Modal                                          from '$components/Modal.svelte';
+	import ComponentSection                               from '$components/modal/component/ComponentSection.svelte';
+	import { onMount }                                    from 'svelte';
 	import type { Unsubscriber }                          from 'svelte/store';
 	import { get }                                        from 'svelte/store';
 	import ProInput                                       from '$input/ProInput.svelte';
 	import { filterParams, initialized, triggerSections } from '$api/components/registry';
-	import { onMount }        from 'svelte';
-	import type FabledTrigger from '$api/components/triggers';
-	import { base }           from '$app/paths';
-	import ComponentSection            from '$components/modal/component/ComponentSection.svelte';
-	import FabledComponent             from '$api/components/fabled-component';
-	import FabledSkill, { skillStore } from '../../../../data/skill-store';
+	import type FabledTrigger                             from '$api/components/triggers.svelte';
+	import FabledComponent                                from '$api/components/fabled-component.svelte';
+	import { base }                                       from '$app/paths';
+	import FabledSkill, { skillStore }                    from '../../../../data/skill-store.svelte';
 
 	interface Props {
 		data: { data: FabledSkill };
 	}
 
-	let { data }: Props = $props();
+	let { data }: Props    = $props();
 	let skill: FabledSkill = $derived(data?.data);
-	let triggerModal = $state(false);
+	let triggerModal       = $state(false);
 
 	onMount(() => {
 		// This is by far my least favorite implementation... But with enough things going on,
@@ -54,14 +54,14 @@
 <div class='header'>
 	<h2>
 		{skill.name}
-		<a class='material-symbols-rounded edit-skill chip' title='Edit'
-			 href='{base}/skill/{skill.name}/edit'>edit</a>
+		<a class='material-symbols-rounded edit-skill chip' href='{base}/skill/{skill.name}/edit'
+			 title='Edit'>edit</a>
 		<span class='add-trigger chip'
-					title='Add Trigger'
-					tabindex='0'
-					role='button'
 					onclick={() => triggerModal = true}
-					onkeypress={(e) => e.key === 'Enter' && (triggerModal = true)}>
+					onkeypress={(e) => e.key === 'Enter' && (triggerModal = true)}
+					role='button'
+					tabindex='0'
+					title='Add Trigger'>
 			<span class='material-symbols-rounded'>
 				new_label
 			</span>
@@ -72,7 +72,7 @@
 <div class='container'>
 	{#each skill.triggers as comp (comp.id)}
 		<div class='widget'>
-			<ComponentWidget {skill} component={comp} on:update={update} on:save={save} />
+			<ComponentWidget {skill} component={comp} onupdate={update} onsave={save} />
 		</div>
 	{/each}
 	{#if skill.triggers.length === 0}
@@ -80,31 +80,33 @@
 	{/if}
 </div>
 
-<Modal bind:open={triggerModal}>
-	<div class='modal-header-wrapper'>
-		<div></div>
-		<h2 class='modal-header'>Select New Trigger</h2>
-		<div class='search-bar'>
-			<ProInput bind:value={$filterParams} placeholder='Search...' autofocus />
+{#if triggerModal}
+	<Modal onclose={() => triggerModal = false}>
+		<div class='modal-header-wrapper'>
+			<div></div>
+			<h2 class='modal-header'>Select New Trigger</h2>
+			<div class='search-bar'>
+				<ProInput bind:value={$filterParams} placeholder='Search...' autofocus />
+			</div>
 		</div>
-	</div>
-	<hr />
-	<div class='component-section'>
-		{#each Object.keys($triggerSections) as sectionName}
-			<ComponentSection sectionName={sectionName}
-												components={$triggerSections[sectionName]}
-												addComponent={onSelectTrigger}
-			/>
-		{/each}
-	</div>
-	<hr />
-	<div class='cancel' onclick={() => triggerModal = false}
-			 onkeypress={(e) => e.key === 'Enter' && (triggerModal = false)}
-			 tabindex='0'
-			 role='button'
-	>Cancel
-	</div>
-</Modal>
+		<hr />
+		<div class='component-section'>
+			{#each Object.keys($triggerSections) as sectionName}
+				<ComponentSection sectionName={sectionName}
+													components={$triggerSections[sectionName]}
+													addComponent={onSelectTrigger}
+				/>
+			{/each}
+		</div>
+		<hr />
+		<div class='cancel' onclick={() => triggerModal = false}
+				 onkeypress={(e) => e.key === 'Enter' && (triggerModal = false)}
+				 tabindex='0'
+				 role='button'
+		>Cancel
+		</div>
+	</Modal>
+{/if}
 
 <style>
     .header {

@@ -1,8 +1,7 @@
 <script lang='ts'>
-	import type { AttributeSection } from '$api/fabled-attribute';
-	import AttributeComponentSvelte  from '$components/attributes/AttributeComponent.svelte';
+	import type { AttributeSection } from '$api/fabled-attribute.svelte';
+	import AttributeComponent        from '$components/attributes/AttributeComponent.svelte';
 	import Control                   from '$components/control/Control.svelte';
-	import { updateSidebar }         from '../../data/store';
 
 	interface Props {
 		name: 'Target' | 'Condition' | 'Mechanic';
@@ -11,28 +10,20 @@
 
 	let { name, section }: Props = $props();
 	let color: string            = name === 'Target' ? '#04af38' : name === 'Condition' ? '#feac00' : '#ff3a3a';
-
-	let components          = $derived(section.components);
-	let availableComponents = $derived(section.availableComponents);
-
-	$effect.pre(() => {
-		if ($components && section.attribute?.name) updateSidebar();
-		section.attribute.save();
-	});
 </script>
 
 <div class='section'>
 	<div class='header'>{name} modifiers</div>
-	{#each $components as component}
-		<AttributeComponentSvelte {color}
-															{component}
-															{section} />
+	{#each section.components as component}
+		<AttributeComponent {color}
+												{component}
+												{section} />
 	{/each}
-	{#if $availableComponents.length > 0}
+	{#if section.availableComponents.length > 0}
 		<div class='btn'>
 			<Control title={`Add ${name}`} icon='add' color={color}
-							 on:click={() => section.addComponent($availableComponents[0])}
-							 on:keypress={() => section.addComponent($availableComponents[0])} />
+							 onclick={() => section.addComponent(section.availableComponents[0])}
+							 onkeypress={() => section.addComponent(section.availableComponents[0])} />
 		</div>
 	{/if}
 </div>

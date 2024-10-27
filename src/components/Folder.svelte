@@ -1,6 +1,5 @@
 <script lang='ts'>
 	import Folder from './Folder.svelte';
-	import { preventDefault, stopPropagation } from 'svelte/legacy';
 
 	import { slide }                     from 'svelte/transition';
 	import { dragging, sidebarOpen }     from '../data/store';
@@ -8,22 +7,26 @@
 	import SidebarEntry                  from '$components/sidebar/SidebarEntry.svelte';
 	import { goto }                      from '$app/navigation';
 	import { base }                      from '$app/paths';
-	import type FabledAttribute          from '$api/fabled-attribute';
-	import type FabledClass              from '../data/class-store';
-	import type FabledSkill              from '../data/skill-store';
-	import { FabledFolder, folderStore } from '../data/folder-store.js';
+	import type FabledAttribute          from '$api/fabled-attribute.svelte';
+	import type FabledClass              from '../data/class-store.svelte';
+	import type FabledSkill              from '../data/skill-store.svelte';
+	import { FabledFolder, folderStore } from '../data/folder-store.svelte';
 
 	interface Props {
 		folder: FabledFolder;
 	}
 
 	let { folder = $bindable() }: Props = $props();
-	let elm: HTMLElement = $state();
+	let elm: HTMLElement | undefined    = $state();
 
-	let focus = () => {
+	let focus = (e?: Event) => {
+		e?.stopPropagation();
+		if (!elm) return;
+
 		elm.contentEditable = 'true';
 		elm.focus();
 		setTimeout(() => {
+			if (!elm) return;
 			const range: Range = document.createRange();
 			range.setStart(elm, 0);
 			range.setEnd(elm, 1);
@@ -37,15 +40,17 @@
 		if (e.key == 'Enter') {
 			e.preventDefault();
 			e.stopPropagation();
-			elm.blur();
+			elm?.blur();
 		}
 	};
 
-	const deleteF = () => {
+	const deleteF = (e?: Event) => {
+		e?.stopPropagation();
 		folderStore.deleteFolder(folder);
 	};
 
-	const addFolder = () => {
+	const addFolder = (e?: Event) => {
+		e?.stopPropagation();
 		folder.createFolder();
 		folder.open = true;
 		folderStore.updateFolders();
@@ -58,7 +63,9 @@
 		dragging.set(folder);
 	};
 
-	const drop = () => {
+	const drop = (e: Event) => {
+		e.stopPropagation();
+		e.preventDefault();
 		over                                                                       = false;
 		const dragData: FabledClass | FabledSkill | FabledAttribute | FabledFolder = get(dragging);
 		if (!dragData) return;
@@ -75,7 +82,15 @@
 		folder.add(dragData);
 	};
 
-	const dragOver = () => {
+	const blur = (e: Event) => {
+		if (elm) {
+			elm.contentEditable = 'false';
+			folder.name         = (<HTMLElement>e.target).textContent || '';
+		}
+	};
+
+	const dragOver = (e: Event) => {
+		e.preventDefault();
 		if (folder === get(dragging)) return;
 		over = true;
 	};
@@ -84,71 +99,71 @@
 <div class='folder'
 		 class:over
 		 draggable='true'
-		 tabindex='0'
-		 role='menuitem'
-		 ondragstart={startDrag}
-		 ondrop={stopPropagation(preventDefault(drop))}
-		 ondragover={preventDefault(dragOver)}
-		 ondragleave={() => over = false}
+		 in:slide={{duration: ($sidebarOpen ? 0 : 400)}}
 		 onclick={() => folder.open = !folder.open}
+		 ondragleave={() => over = false}
+		 ondragover={dragOver}
+		 ondragstart={startDrag}
+		 ondrop={drop}
 		 onkeypress={(e) => {
        if (e.key === "Enter") {
          e.stopPropagation();
          folder.open = !folder.open;
        }
      }}
-		 in:slide={{duration: ($sidebarOpen ? 0 : 400)}}
-		 out:slide>
+		 out:slide
+		 role='menuitem'
+		 tabindex='0'>
   <span class='material-symbols-rounded folder-icon'>
     folder
   </span>
-	<span class='name' contenteditable='false'
-				tabindex='0'
-				role='textbox'
+	<span bind:this={elm}
+				class='name'
 				class:server={folder.location === 'server'}
-				bind:this={elm}
-				onblur={() => elm.contentEditable = "false"}
-				bind:textContent={folder.name}
-				onkeydown={keydown}></span>
+				contenteditable='false'
+				onblur={blur}
+				onkeydown={keydown}
+				role='textbox'
+				tabindex='0'>{folder.name}</span>
 	<div class='buttons'>
-		<div class='icon add' title='Add Folder'
-				 tabindex='0'
-				 role='button'
-				 onclick={stopPropagation(addFolder)}
+		<div class='icon add' onclick={addFolder}
 				 onkeypress={(e) => {
             if (e.key === "Enter") {
               e.stopPropagation();
               addFolder();
             }
-         }}>
+         }}
+				 role='button'
+				 tabindex='0'
+				 title='Add Folder'>
       <span class='material-symbols-rounded'>
         add
       </span>
 		</div>
-		<div class='icon' title='Rename'
-				 tabindex='0'
-				 role='button'
-				 onclick={stopPropagation(focus)}
+		<div class='icon' onclick={focus}
 				 onkeypress={(e) => {
               if (e.key === "Enter") {
                 e.stopPropagation();
                 focus();
               }
-         }}>
+         }}
+				 role='button'
+				 tabindex='0'
+				 title='Rename'>
       <span class='material-symbols-rounded'>
         edit
       </span>
 		</div>
-		<div class='icon delete' title='Delete Folder'
-				 tabindex='0'
-				 role='button'
-				 onclick={stopPropagation(deleteF)}
+		<div class='icon delete' onclick={deleteF}
 				 onkeypress={(e) => {
 							if (e.key === "Enter") {
 								e.stopPropagation();
 								deleteF();
 							}
-				 }}>
+				 }}
+				 role='button'
+				 tabindex='0'
+				 title='Delete Folder'>
       <span class='material-symbols-rounded'>
         delete
       </span>
