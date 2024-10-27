@@ -26,10 +26,11 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic.warp;
 
-import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
 import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
 
 abstract class AbstractWarpingMechanic extends MechanicComponent {
     protected static final String PRESERVE  = "preserve";
@@ -61,7 +62,7 @@ abstract class AbstractWarpingMechanic extends MechanicComponent {
     public void warp(LivingEntity target, LivingEntity caster, Location location, int level) {
         if (setYaw()) {
             boolean relative = relativeYaw();
-            float yaw = (float) parseValues(caster, YAW, level, 0);
+            float   yaw      = (float) parseValues(caster, YAW, level, 0);
             if (relative) {
                 yaw += target.getLocation().getYaw();
             }
@@ -69,18 +70,28 @@ abstract class AbstractWarpingMechanic extends MechanicComponent {
         }
         if (setPitch()) {
             boolean relative = relativePitch();
-            float pitch = (float) parseValues(caster, PITCH, level, 0);
+            float   pitch    = (float) parseValues(caster, PITCH, level, 0);
             if (relative) {
                 pitch += target.getLocation().getPitch();
             }
             location.setPitch(pitch);
         }
 
-        Vector velocity = target.getVelocity().clone();
+        Vector  velocity = target.getVelocity().clone();
+        boolean marker   = false;
+        if (target instanceof ArmorStand) {
+            marker = ((ArmorStand) target).isMarker();
+            ((ArmorStand) target).setMarker(false);
+        }
+
         target.teleport(location);
 
         if (preserveVelocity()) {
             target.setVelocity(velocity);
+        }
+
+        if (marker) {
+            ((ArmorStand) target).setMarker(true);
         }
     }
 }
