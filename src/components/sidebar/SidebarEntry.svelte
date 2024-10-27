@@ -1,26 +1,37 @@
 <script lang='ts'>
 	import { active, deleteProData, dragging, saveData, shownTab, sidebarOpen } from '../../data/store';
-	import FabledAttribute                                                      from '$api/fabled-attribute';
+	import FabledAttribute                                                      from '$api/fabled-attribute.svelte';
 	import { get }                                                              from 'svelte/store';
 	import { fly, type TransitionConfig }                                       from 'svelte/transition';
 	import Modal                                                                from '../Modal.svelte';
 	import { animationEnabled }                                                 from '../../data/settings';
 	import { base }                                                             from '$app/paths';
-	import { createEventDispatcher }                                            from 'svelte';
 	import { Tab }                                                              from '$api/tab';
-	import FabledSkill, { skillStore }                                          from '../../data/skill-store';
-	import FabledClass, { classStore }                                          from '../../data/class-store';
-	import { FabledFolder, folderStore }                                        from '../../data/folder-store.js';
+	import FabledSkill, { skillStore }                                          from '../../data/skill-store.svelte';
+	import FabledClass, { classStore }                                          from '../../data/class-store.svelte';
+	import { FabledFolder, folderStore }                                        from '../../data/folder-store.svelte.js';
 	import { attributeStore }                                                   from '../../data/attribute-store';
 
-	export let delay                                                         = 0;
-	export let direction: 'right' | 'left'                                   = 'left';
-	export let data: FabledSkill | FabledClass | FabledAttribute | undefined = undefined;
 
-	let over     = false;
-	let deleting = false;
+	interface Props {
+		delay?: number;
+		direction?: 'right' | 'left';
+		data?: FabledSkill | FabledClass | FabledAttribute | undefined;
+		children?: import('svelte').Snippet;
 
-	const dispatch = createEventDispatcher();
+		onclick?: (e: MouseEvent | KeyboardEvent) => void;
+	}
+
+	let {
+				delay     = 0,
+				direction = 'left',
+				data      = undefined,
+				children,
+				onclick
+			}: Props = $props();
+
+	let over     = $state(false);
+	let deleting = $state(false);
 
 	const startDrag = (e: DragEvent) => {
 		if (!data) {
@@ -30,7 +41,9 @@
 		dragging.set(data);
 	};
 
-	const drop = () => {
+	const drop = (e: Event) => {
+		e.stopPropagation();
+		e.preventDefault();
 		const dragData: FabledClass | FabledSkill | FabledAttribute | FabledFolder = get(dragging);
 		let targetFolder;
 		if (data) {
@@ -62,7 +75,8 @@
 		over = false;
 	};
 
-	const dragOver = () => {
+	const dragOver = (e: Event) => {
+		e.preventDefault();
 		const dragData = get(dragging);
 		if (data === dragData) return;
 		over = true;
@@ -78,7 +92,10 @@
 		return options.fn(node, options);
 	};
 
-	const cloneData = (data?: FabledClass | FabledSkill | FabledAttribute) => {
+	const cloneData = (data?: FabledClass | FabledSkill | FabledAttribute, e?: Event) => {
+		e?.preventDefault();
+		e?.stopPropagation();
+
 		if (!data) return;
 
 		if (data instanceof FabledClass) {
@@ -93,23 +110,23 @@
 
 
 <div class='sidebar-entry'
-		 class:over
 		 class:active={data && $active === data}
 		 class:in-folder={!!folderStore.getFolder(data)}
+		 class:over
 		 draggable='{!!data}'
-		 on:dragstart={startDrag}
-		 on:drop|preventDefault|stopPropagation={drop}
-		 on:dragover|preventDefault={dragOver}
-		 on:dragleave={() => over = false}
-		 on:click
-		 on:keypress={(e) => {
-			 if (e.key === 'Enter') dispatch('click');
-		 }}
-		 tabindex='0'
-		 role='menuitem'
 		 in:maybe={{fn: fly, x: (direction === "left" ? -100 : 100), duration: 500, delay: $sidebarOpen ? 0 : delay}}
-		 out:fly={{x: (direction === "left" ? -100 : 100), duration: 500}}>
-	<slot />
+		 {onclick}
+		 ondragleave={() => over = false}
+		 ondragover={dragOver}
+		 ondragstart={startDrag}
+		 ondrop={drop}
+		 onkeypress={(e) => {
+			 if (e.key === 'Enter') onclick?.(e);
+		 }}
+		 out:fly={{x: (direction === "left" ? -100 : 100), duration: 500}}
+		 role='menuitem'
+		 tabindex='0'>
+	{@render children?.()}
 	{#if data}
 		<div class='buttons'>
 			{#if data instanceof FabledSkill}
@@ -121,8 +138,8 @@
           </span>
 				</a>
 			{/if}
-			<div on:click|preventDefault|stopPropagation={() => saveData(data)}
-					 on:keypress|preventDefault|stopPropagation={(event) => {if (event?.key === 'Enter') saveData(data);}}
+			<div onclick={(e) => saveData(data, e)}
+					 onkeypress={(event) => {if (event?.key === 'Enter') saveData(data, event);}}
 					 tabindex='0'
 					 role='button'
 					 class='download'
@@ -131,8 +148,8 @@
           save
         </span>
 			</div>
-			<div on:click|preventDefault|stopPropagation={() => cloneData(data)}
-					 on:keypress|preventDefault|stopPropagation={(event) => { if (event?.key === 'Enter') cloneData(data); }}
+			<div onclick={(e) => cloneData(data, e)}
+					 onkeypress={(event) => { if (event?.key === 'Enter') cloneData(data, event); }}
 					 tabindex='0'
 					 role='button'
 					 class='clone'
@@ -141,7 +158,9 @@
           content_copy
         </span>
 			</div>
-			<div on:click|preventDefault|stopPropagation={(event) => {
+			<div onclick={(event) => {
+				event.stopPropagation();
+				event.preventDefault();
 						// If holding shift, delete without confirmation
 						if (event?.shiftKey) {
 							deleteProData(data);
@@ -149,8 +168,10 @@
 						}
 						deleting = true
 					}}
-					 on:keypress|preventDefault|stopPropagation={(event) => {
+					 onkeypress={(event) => {
 						 if (event?.key === 'Enter') {
+							 event.stopPropagation();
+							 event.preventDefault();
 							 // If holding shift, delete without confirmation
 							 if (event?.shiftKey) {
 								 deleteProData(data);
@@ -171,23 +192,25 @@
 	{/if}
 </div>
 
-<Modal bind:open={deleting}>
-	<h3>Do you really want to delete {data?.name}?</h3>
-	<div class='modal-buttons'>
-		<div class='button' on:click={() => deleting = false}
-				 on:keypress={(event) => { if (event?.key === 'Enter') deleting = false; }}
-				 tabindex='0'
-				 role='button'
-		>Cancel
+{#if deleting}
+	<Modal>
+		<h3>Do you really want to delete {data?.name}?</h3>
+		<div class='modal-buttons'>
+			<div class='button' onclick={() => deleting = false}
+					 onkeypress={(event) => { if (event?.key === 'Enter') deleting = false; }}
+					 role='button'
+					 tabindex='0'
+			>Cancel
+			</div>
+			<div class='button modal-delete' onclick={() => deleteProData(data)}
+					 onkeypress={(event) => { if (event?.key === 'Enter') deleteProData(data); }}
+					 role='button'
+					 tabindex='0'
+			>Delete
+			</div>
 		</div>
-		<div class='button modal-delete' on:click={() => deleteProData(data)}
-				 on:keypress={(event) => { if (event?.key === 'Enter') deleteProData(data); }}
-				 tabindex='0'
-				 role='button'
-		>Delete
-		</div>
-	</div>
-</Modal>
+	</Modal>
+{/if}
 
 <style>
     .sidebar-entry {
@@ -205,10 +228,6 @@
         user-select: none;
         -webkit-user-select: none;
         margin-inline: 0.4rem;
-    }
-
-    .sidebar-entry:has(.new) {
-        padding: unset;
     }
 
     .sidebar-entry:hover {

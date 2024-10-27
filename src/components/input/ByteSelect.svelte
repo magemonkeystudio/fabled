@@ -1,7 +1,11 @@
 <script lang='ts'>
 
-	export let value = 273;
-	export let data: string[];
+	interface Props {
+		value?: number;
+		data: string[];
+	}
+
+	let { value = $bindable(273), data }: Props = $props();
 
 </script>
 
@@ -10,8 +14,8 @@
 		<div class='entry'
 				 tabindex='0'
 				 role='menuitem'
-				 on:click={() => value = value ^ Math.pow(2, i)}
-				 on:keypress={(e) => {
+				 onclick={() => value = value ^ Math.pow(2, i)}
+				 onkeypress={(e) => {
            if (e.key === 'Enter') {
              value = value ^ Math.pow(2, i);
            }

@@ -1,20 +1,19 @@
 <script lang='ts'>
-	import { updateSidebar }           from '../data/store';
 	import ProInput                    from './input/ProInput.svelte';
 	import SearchableSelect            from './input/SearchableSelect.svelte';
 	import Toggle                      from './input/Toggle.svelte';
 	import AttributeInput              from './input/AttributeInput.svelte';
 	import IconInput                   from './input/IconInput.svelte';
 	import DynamicAttributeInput       from '$input/DynamicAttributeInput.svelte';
-	import FabledSkill, { skillStore } from '../data/skill-store';
+	import FabledSkill, { skillStore } from '../data/skill-store.svelte';
 
-	export let data: FabledSkill;
-	const skills = skillStore.skills;
-
-	$: {
-		if (data?.name) updateSidebar();
-		data.save();
+	interface Props {
+		data: FabledSkill;
 	}
+
+	let { data = $bindable() }: Props = $props();
+	const skills                      = skillStore.skills;
+	$effect(() => data.save());
 </script>
 
 {#if data}

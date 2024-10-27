@@ -6,12 +6,12 @@ import type { Unknown }         from '$api/types';
 export default class BlockSelect extends Requirements implements ComponentOption {
 	key                                                                                      = 'block';
 	component                                                                                = BlockSelectOption;
-	data: { material: string[], data: number, materialTooltip: string, dataTooltip: string } = {
+	data: { material: string[], data: number, materialTooltip: string, dataTooltip: string } = $state({
 		material:        ['Any'],
 		data:            -1,
 		materialTooltip: '',
 		dataTooltip:     ''
-	};
+	});
 
 	public constructor(materialTooltip?: string, dataTooltip?: string) {
 		super();

@@ -8,8 +8,8 @@ export default class BooleanSelect extends Requirements implements ComponentOpti
 	component                   = BooleanSelectOption;
 	name: string;
 	key: string;
-	data: boolean;
-	tooltip: string | undefined = undefined;
+	data: boolean               = $state(false);
+	tooltip: string | undefined = $state(undefined);
 
 	constructor(name: string, key: string, def = false) {
 		super();
@@ -24,8 +24,7 @@ export default class BooleanSelect extends Requirements implements ComponentOpti
 	};
 
 	clone = (): ComponentOption => {
-		const select = new BooleanSelect(this.name, this.key, this.data);
-		return select;
+		return new BooleanSelect(this.name, this.key, this.data);
 	};
 
 	getData = (): { [key: string]: boolean } => {

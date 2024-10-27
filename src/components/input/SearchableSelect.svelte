@@ -1,39 +1,68 @@
 <script lang='ts'>
-	import { fly }                                       from 'svelte/transition';
-	import { flip }                                      from 'svelte/animate';
-	import { clickOutside }                              from '$api/clickoutside';
-	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
-	import { browser }                                   from '$app/environment';
-	import type { Transformer }                          from '$api/transformer';
-	import { NameTransformer }                           from '$api/transformer';
+	import { fly }                from 'svelte/transition';
+	import { flip }               from 'svelte/animate';
+	import { clickOutside }       from '$api/clickoutside';
+	import { onDestroy, onMount } from 'svelte';
+	import { browser }            from '$app/environment';
+	import type { Transformer }   from '$api/transformer';
+	import { NameTransformer }    from '$api/transformer';
 
-	export let id: string | undefined                    = undefined;
-	export let data: unknown[]                           = [];
-	export let transformer: Transformer<unknown, string> = new NameTransformer();
-	export let placeholder                               = '';
-	export let multiple                                  = false;
-	export let selected: unknown[] | unknown             = undefined;
-	export let filtered: unknown[]                       = [];
-	export let autoFocus                                 = false;
+	interface Props {
+		id?: string | undefined;
+		data?: unknown[];
+		transformer?: Transformer<unknown, string>;
+		placeholder?: string;
+		multiple?: boolean;
+		selected?: unknown[] | unknown;
+		autoFocus?: boolean;
+		onselect?: (item: never) => boolean;
+		onremove?: (item: never) => boolean;
+	}
 
-	let focused    = false;
-	let focusedIn  = false;
-	let input: HTMLElement;
-	let criteria: string;
-	let height: number;
-	let y: number;
-	let clientHeight: number;
-	let heightOffset: number;
-	let selectElm: HTMLElement;
-	const dispatch = createEventDispatcher();
+	let {
+				id          = undefined,
+				data        = $bindable([]),
+				transformer = new NameTransformer(),
+				placeholder = '',
+				multiple    = $bindable(false),
+				selected    = $bindable(undefined),
+				autoFocus   = false,
+				onselect,
+				onremove
+			}: Props = $props();
 
-	const updateY = () => y = selectElm?.getBoundingClientRect().y;
-	$: y = selectElm?.getBoundingClientRect().y;
+	let focused                        = $state(false);
+	let focusedIn                      = $state(false);
+	let input: HTMLElement | undefined = $state();
+	let criteria: string               = $state('');
+	let height: number                 = $state(0);
+	let clientHeight: number           = $state(0);
+	let heightOffset: number           = $state(0);
+
+	let filtered = $derived.by(() => {
+		return data
+			.filter((s) => {
+				if (!criteria || transformer.transform(s).toLowerCase().includes(criteria.toLowerCase()))
+					return (
+						(multiple && selected instanceof Array && !selected.includes(s)) ||
+						(!multiple && selected != s)
+					);
+			})
+			.sort((a, b) => transformer.transform(a).localeCompare(transformer.transform(b)));
+	});
+
+	let wrapperElm: HTMLElement | undefined = $state();
+	const updateY                           = () => {
+		y = wrapperElm?.getBoundingClientRect().y || 0;
+	};
+	let y: number                           = $state(0);
 
 	onMount(() => {
 		if (!browser) return;
 
+		updateY();
 		window.addEventListener('scroll', updateY, true);
+		window.addEventListener('resize', updateY, true);
 		if (autoFocus) focus();
 	});
 
@@ -41,9 +70,10 @@
 		if (!browser) return;
 
 		window.removeEventListener('scroll', updateY, true);
+		window.removeEventListener('resize', updateY, true);
 	});
 
-	export const focus = () => input.focus();
+	export const focus = () => input?.focus();
 
 	const select = (item: unknown, event?: KeyboardEvent) => {
 		if (event && event?.key != 'Enter' && event?.key != ' ') return;
@@ -54,9 +84,9 @@
 		}
 
 		if (!multiple) {
-			const notCancelled = dispatch('select', item, { cancelable: true });
+			const cancelled = onselect?.(<never>item) || false;
 
-			if (notCancelled) {
+			if (!cancelled) {
 				selected = item;
 				criteria = '';
 			}
@@ -66,10 +96,10 @@
 
 		if (!selected || (selected instanceof Array && selected.includes(item))) return;
 
-		const notCancelled = dispatch('select', [...<Array<unknown>>selected, item], { cancelable: true });
-		if (!notCancelled) return;
+		const cancelled = onselect?.(<never>[...(<Array<never>>selected), item]) || false;
+		if (cancelled) return;
 
-		selected = [...<Array<unknown>>selected, item];
+		(<Array<unknown>>selected).push(item);
 		criteria = '';
 		focus();
 	};
@@ -77,8 +107,8 @@
 	const remove = (e: MouseEvent | KeyboardEvent, item: unknown) => {
 		e.stopPropagation();
 
-		const notCancelled = dispatch('remove', item, { cancelable: true });
-		if (!notCancelled) return;
+		const cancelled = onremove?.(<never>item) || true;
+		if (!cancelled) return;
 
 		if (multiple) selected = (<Array<unknown>>selected).filter((s: unknown) => s != item);
 		else selected = undefined;
@@ -97,96 +127,117 @@
 		}
 		if (e.key != 'Backspace' || criteria.length > 0 || !selected) return;
 
-		if (selected instanceof Array)
-			remove(e, selected[selected.length - 1]);
-		else
-			selected = undefined;
+		if (selected instanceof Array) remove(e, selected[selected.length - 1]);
+		else selected = undefined;
 	};
-
-	$: {
-		filtered = data.filter(s => {
-			if (!criteria || transformer.transform(s).toLowerCase().includes(criteria.toLowerCase()))
-				return (multiple && selected instanceof Array && !selected.includes(s))
-					|| (!multiple && selected != s);
-		}).sort((a, b) => transformer.transform(a).localeCompare(transformer.transform(b)));
-	}
 </script>
 
 <svelte:window bind:innerHeight={height} />
 
-<div id='wrapper'
-		 class:multiple
-		 use:clickOutside={clickOut}>
-	<div {id} class='input'
-			 tabindex='0'
-			 role='searchbox'
-			 on:click={() => focus()}
-			 on:keypress={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
-			 class:focused={focused}>
+<div bind:this={wrapperElm} class:multiple id='wrapper' use:clickOutside={clickOut}>
+	<div
+		class='input'
+		class:focused
+		{id}
+		onclick={() => focus()}
+		onkeypress={(e) => {
+			if (e.key === 'Enter') e.preventDefault();
+		}}
+		role='searchbox'
+		tabindex='0'
+	>
 		{#if multiple && selected instanceof Array}
 			{#each selected as sel (transformer.transform(sel))}
-				<div class='chip'
-						 title='Click to remove'
-						 tabindex='0'
-						 role='button'
-						 transition:fly={{y: -25}}
-						 animate:flip={{duration: 500}}
-						 on:click={(e) => remove(e, sel)}
-						 on:keypress={(e) => { if (e.key === 'Enter' || e.key === ' ') remove(e, sel); }}
-				>{transformer.transform(sel)}</div>
+				<div
+					class='chip'
+					title='Click to remove'
+					tabindex='0'
+					role='button'
+					transition:fly={{ y: -25 }}
+					animate:flip={{ duration: 500 }}
+					onclick={(e) => remove(e, sel)}
+					onkeypress={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') remove(e, sel);
+					}}
+				>
+					{transformer.transform(sel)}
+				</div>
 			{/each}
 		{:else if selected}
-			<div class='single-chip'
-					 title='Click to remove'
-					 tabindex='0'
-					 role='button'
-					 transition:fly={{y: -25}}
-					 on:click={(e) => remove(e, selected)}
-					 on:keypress={(e) => { if (e.key === 'Enter' || e.key === ' ') remove(e, selected); }}
-			>{transformer.transform(selected)}</div>
+			<div
+				class='single-chip'
+				title='Click to remove'
+				tabindex='0'
+				role='button'
+				transition:fly={{ y: -25 }}
+				onclick={(e) => remove(e, selected)}
+				onkeypress={(e) => {
+					if (e.key === 'Enter' || e.key === ' ') remove(e, selected);
+				}}
+			>
+				{transformer.transform(selected)}
+			</div>
 		{/if}
 		{#if !focused && !criteria && (!selected || (selected instanceof Array && selected.length === 0))}
-			<span class='placeholder' in:fly={{y: 25, delay: 250}}>{placeholder}</span>
+			<span class='placeholder' in:fly={{ y: 25, delay: 250 }}>{placeholder}</span>
 		{/if}
-		<div class='input-box'
-				 contenteditable
-				 tabindex='0'
-				 role='textbox'
-				 bind:this={input}
-				 bind:textContent={criteria}
-				 on:keydown={checkDelete}
-				 on:focus={() => {
-           focused = true;
-           updateY();
-         }}
-				 on:blur={() => setTimeout(() => focused = document.activeElement ? document.activeElement.classList.contains('input-box') : false, 250) }>
-		</div>
-		<div class='clear' />
+		<div
+			bind:textContent={criteria}
+			bind:this={input}
+			class='input-box'
+			contenteditable
+			onblur={() =>
+				setTimeout(
+					() =>
+						(focused = document.activeElement
+							? document.activeElement.classList.contains('input-box')
+							: false),
+					250
+				)}
+			onfocus={() => {
+				focused = true;
+				updateY();
+			}}
+			onkeydown={checkDelete}
+			role='textbox'
+			tabindex='0'
+		></div>
+		<div class='clear'></div>
 	</div>
 
 	{#if filtered.length > 0 && (focused || focusedIn)}
-		<div class='select-wrapper'
-				 bind:this={selectElm}
-				 bind:clientHeight={heightOffset}>
-			<div class='select'
-					 class:focusedIn
-					 bind:clientHeight={clientHeight}
-					 style:top={y+clientHeight > height ? y-clientHeight + "px" : y+heightOffset + "px"}>
+		<div class='select-wrapper' bind:clientHeight={heightOffset}>
+			<div
+				class='select'
+				class:focusedIn
+				bind:clientHeight
+				style:top={y + clientHeight > height ? y - clientHeight + 'px' : y + heightOffset + 'px'}
+			>
 				{#each filtered as datum}
-					<div class='select-item'
-							 tabindex='0'
-							 role='option'
-							 aria-selected='false'
-							 on:click={() => select(datum)}
-							 on:focus={() => focusedIn = true}
-							 on:blur={() => setTimeout(() => focusedIn = document.activeElement ? document.activeElement.classList.contains('select-item') : false, 250) }
-							 on:keypress={(e) => select(datum, e)}>{transformer.transform(datum)}</div>
+					<div
+						class='select-item'
+						tabindex='0'
+						role='option'
+						aria-selected='false'
+						onclick={() => select(datum)}
+						onfocus={() => (focusedIn = true)}
+						onblur={() =>
+							setTimeout(
+								() =>
+									(focusedIn = document.activeElement
+										? document.activeElement.classList.contains('select-item')
+										: false),
+								250
+							)}
+						onkeypress={(e) => select(datum, e)}
+					>
+						{transformer.transform(datum)}
+					</div>
 				{/each}
 			</div>
 		</div>
 	{/if}
 </div>
-
 
 <style>
     .input {
@@ -194,18 +245,19 @@
         padding: 0.2rem 0.5rem;
     }
 
-    .chip, .single-chip {
+    .chip,
+    .single-chip {
         float: left;
         margin-right: 0.4rem;
     }
 
-    .chip:hover, .single-chip:hover {
+    .chip:hover,
+    .single-chip:hover {
         cursor: pointer;
     }
 
     .placeholder {
         display: inline-block;
-
     }
 
     .input-box {
@@ -221,6 +273,7 @@
     }
 
     .select-wrapper {
+        display: inline-block;
         position: absolute;
         inset: 0;
     }

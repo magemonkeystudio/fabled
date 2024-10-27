@@ -1,52 +1,68 @@
-<!--suppress CssUnresolvedCustomProperty -->
 <script lang='ts'>
-	import type FabledComponent from '$api/components/fabled-component';
-	import FabledTrigger   from '$api/components/triggers';
-	import FabledCondition from '$api/components/conditions';
-	import FabledTarget    from '$api/components/targets';
-	import FabledMechanic  from '$api/components/mechanics';
-	import { slide }      from 'svelte/transition';
-	import { backOut }                                   from 'svelte/easing';
-	import { draggingComponent }                         from '../data/store';
-	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
-	import type { Unsubscriber }                         from 'svelte/store';
-	import { get }                                       from 'svelte/store';
-	import { showSummaryItems, useSymbols }              from '../data/settings';
-	import { openModal }                                 from '../data/modal-service';
-	import ComponentModal                                from '$components/modal/ComponentModal.svelte';
-	import ComponentSelectModal                          from '$components/modal/ComponentSelectModal.svelte';
-	import PreviewModal                                  from '$components/modal/PreviewModal.svelte';
-	import Registry                                      from '$api/components/registry';
-	import Control                                       from '$components/control/Control.svelte';
-	import type { YamlComponentData }                    from '$api/types';
-	import FabledSkill, { skillStore }                   from '../data/skill-store';
+	import ComponentWidget from './ComponentWidget.svelte';
 
-	export let skill: FabledSkill;
-	export let component: FabledComponent;
-	let wrapper: HTMLElement;
-	let children: HTMLElement;
-	let childrenList: FabledComponent[] = [];
+	import type FabledComponent             from '$api/components/fabled-component.svelte';
+	import FabledTrigger                    from '$api/components/triggers.svelte';
+	import FabledCondition                  from '$api/components/conditions.svelte';
+	import FabledTarget                     from '$api/components/targets.svelte';
+	import FabledMechanic                   from '$api/components/mechanics.svelte';
+	import { slide }                        from 'svelte/transition';
+	import { backOut }                      from 'svelte/easing';
+	import { draggingComponent }            from '../data/store';
+	import { onDestroy, onMount }           from 'svelte';
+	import type { Unsubscriber }            from 'svelte/store';
+	import { get }                          from 'svelte/store';
+	import { showSummaryItems, useSymbols } from '../data/settings';
+	import { openModal }                    from '../data/modal-service.svelte';
+	import ComponentModal                   from '$components/modal/ComponentModal.svelte';
+	import ComponentSelectModal             from '$components/modal/ComponentSelectModal.svelte';
+	import PreviewModal                     from '$components/modal/PreviewModal.svelte';
+	import Registry                         from '$api/components/registry';
+	import Control                          from '$components/control/Control.svelte';
+	import type { YamlComponentData }       from '$api/types';
+	import FabledSkill, { skillStore }      from '../data/skill-store.svelte';
+
+	interface Props {
+		skill: FabledSkill;
+		component: FabledComponent;
+		onsave?: () => void;
+		onupdate?: () => void;
+		onaddskill?: (e: { comp: FabledComponent; relativeTo: FabledComponent; above: boolean }) => void;
+	}
+
+	let { skill, component, onsave, onupdate, onaddskill }: Props = $props();
+	let wrapper: HTMLElement | undefined                          = $state();
+	let children: HTMLElement | undefined                         = $state();
+	let childrenList: FabledComponent[]                           = $state([]);
 
 	const skills = skillStore.skills;
 
-	const dispatch = createEventDispatcher();
-
-	let collapsed    = false;
-	let over         = false;
-	let overChildren = false;
-	let top          = false;
-	let bottom       = false;
+	let collapsed    = $state(false);
+	let over         = $state(false);
+	let overChildren = $state(false);
+	let top          = $state(false);
+	let bottom       = $state(false);
 	let commentOpen  = false;
 
 	let childCompsSub: Unsubscriber;
 
-	const openCompModal       = () => openModal(ComponentModal, component);
-	const openCompSelectModal = () => openModal(ComponentSelectModal, component);
-	const openPreviewModal    = () => openModal(PreviewModal, component);
+	const openCompModal       = (e?: Event) => {
+		e?.stopPropagation();
+		openModal(ComponentModal, component);
+	};
+	const openCompSelectModal = (e: Event) => {
+		e.stopPropagation();
+		openModal(ComponentSelectModal, component);
+	};
+	const openPreviewModal    = (e: Event) => {
+		e.stopPropagation();
+		openModal(PreviewModal, component);
+	};
 
 	onMount(() => {
-		childCompsSub = component.components
-			.subscribe((comps: FabledComponent[]) => childrenList = comps);
+		childCompsSub = component.components.subscribe(
+			(comps: FabledComponent[]) => (childrenList = comps)
+		);
 
 		if (component._defaultOpen) {
 			openCompModal();
@@ -104,19 +120,21 @@
 			css: (t: number) => {
 				const eased = backOut(t);
 
-				return `transform: rotate(${180 - (eased * 180)}deg);`;
+				return `transform: rotate(${180 - eased * 180}deg);`;
 			}
 		};
 	};
 
 	const move = (e: DragEvent) => {
+		e.stopPropagation();
+		e.preventDefault();
 		if (component == get(draggingComponent)) return;
 		over = true;
 		if (component instanceof FabledTrigger) return;
-		const rect = wrapper.getBoundingClientRect();
+		const rect = wrapper?.getBoundingClientRect() || { top: 0, height: 0 };
 
-		top    = e.clientY < (rect.height / 2) + rect.top;
-		bottom = e.clientY >= (rect.height / 2) + rect.top;
+		top    = e.clientY < rect.height / 2 + rect.top;
+		bottom = e.clientY >= rect.height / 2 + rect.top;
 	};
 
 	const clearStatus = () => {
@@ -126,85 +144,105 @@
 	};
 
 	const leave = (e: DragEvent) => {
-		if (!e.relatedTarget || !wrapper?.contains(<Node>e.relatedTarget) || children?.contains(<Node>e.relatedTarget)) {
+		e.stopPropagation();
+		if (
+			!e.relatedTarget ||
+			!wrapper?.contains(<Node>e.relatedTarget) ||
+			children?.contains(<Node>e.relatedTarget)
+		) {
 			clearStatus();
 		}
 	};
 
-	const drop = () => {
+	const drop = (e: Event) => {
+		e.stopPropagation();
 		let comp = get(draggingComponent);
-
-		dispatch('addskill', { comp, relativeTo: component, above: top });
+		if (comp) onaddskill?.({ comp, relativeTo: component, above: top });
 		clearStatus();
 	};
 
-	const addSkill = (e: { detail: { comp: FabledComponent, relativeTo: FabledComponent, above: FabledComponent } }) => {
-		let comp       = e.detail.comp;
-		let relativeTo = e.detail.relativeTo;
-		let above      = e.detail.above;
-		let index      = childrenList.indexOf(relativeTo);
+	const addSkill = (e: {
+		comp: FabledComponent; relativeTo: FabledComponent; above: boolean
+	}) => {
+		let { comp, relativeTo, above } = e;
+		let index                       = childrenList.indexOf(relativeTo);
 
 		skill.removeComponent(comp);
 		component.addComponent(comp, index + (!above ? 1 : 0));
-		dispatch('save');
+		onsave?.();
 	};
 
-	const clone = () => {
+	const clone = (e: Event) => {
+		e.stopPropagation();
 		const yamlData: YamlComponentData  = {};
 		yamlData[`${component.name}-copy`] = component.toYamlObj();
-		const cloned: FabledComponent[] = Registry.deserializeComponents(yamlData);
+		const cloned: FabledComponent[]    = Registry.deserializeComponents(yamlData);
 
 		if (component.parent) {
-			cloned.forEach(c => component.parent?.addComponent(c));
+			cloned.forEach((c) => component.parent?.addComponent(c));
 		} else {
-			cloned.forEach(c => skill.addComponent(c));
-			dispatch('update');
+			cloned.forEach((c) => skill.addComponent(c));
+			onupdate?.();
 		}
 	};
 </script>
 
 <div class='wrapper'>
-	<div out:slide
-			 bind:this={wrapper}
-			 draggable='true'
-			 tabindex='0'
-			 role='treeitem'
-			 aria-selected='{$draggingComponent === component}'
-			 on:dragstart|stopPropagation={() => draggingComponent.set(component)}
-			 on:dragend={() => draggingComponent.set(undefined)}
-			 on:drop|stopPropagation={drop}
-			 on:click|stopPropagation={openCompModal}
-			 on:keypress|stopPropagation={(e) => {
-           if (e.key === 'Enter') openCompModal
-         }}
-			 on:dragover|preventDefault|stopPropagation={move}
-			 on:dragleave|stopPropagation={leave}
-			 class='comp-body'
-			 class:over
-			 class:top
-			 class:bottom
-			 class:dragging={$draggingComponent === component}
-			 style:--comp-color={getColor()}>
+	<div
+		aria-selected={$draggingComponent === component}
+		bind:this={wrapper}
+		class='comp-body'
+		class:bottom
+		class:dragging={$draggingComponent === component}
+		class:over
+		class:top
+		draggable='true'
+		onclick={openCompModal}
+		ondragend={() => draggingComponent.set(undefined)}
+		ondragleave={leave}
+		ondragover={move}
+		ondragstart={(e) => {
+			e.stopPropagation();
+			draggingComponent.set(component)
+		}}
+		ondrop={drop}
+		onkeypress={(e) => {
+			if (e.key === 'Enter') {
+				openCompModal(e);
+			}
+		}}
+		out:slide
+		role='treeitem'
+		style:--comp-color={getColor()}
+		tabindex='0'
+	>
 		<div class='name'>
-			<span>{getName($useSymbols)}</span>{($useSymbols ? ' ' : ': ')}
+			<span>{getName($useSymbols)}</span>{$useSymbols ? ' ' : ': '}
 			{#if component.isDeprecated}
 				<s>{component.name}</s>
 			{:else}
 				{component.name}
 			{/if}
 		</div>
-		<div class='corner'
-				 tabindex='0'
-				 role='button'
-				 on:click|stopPropagation={() => collapsed = !collapsed}
-				 on:keypress|stopPropagation={(e) => {
-            if (e.key === 'Enter') collapsed = !collapsed;
-        }}
-		/>
+		<div
+			class='corner'
+			onclick={(e) => {
+				e.stopPropagation();
+				collapsed = !collapsed;
+			}}
+			onkeypress={(e) => {
+				if (e.key === 'Enter') {
+					e.stopPropagation();
+					collapsed = !collapsed;
+				}
+			}}
+			role='button'
+			tabindex='0'
+		></div>
 		{#if collapsed}
-			<span class='material-symbols-rounded' in:spin={{duration: 400}}>expand_more</span>
+			<span class='material-symbols-rounded' in:spin={{ duration: 400 }}>expand_more</span>
 		{:else}
-			<span class='material-symbols-rounded' in:spin={{duration: 400}}>expand_less</span>
+			<span class='material-symbols-rounded' in:spin={{ duration: 400 }}>expand_less</span>
 		{/if}
 
 		{#if $showSummaryItems && component.summaryItems && component.summaryItems.length > 0}
@@ -214,8 +252,9 @@
 						{#if component.getValue(item)}
 							<span class='summary-item'>
 								<span>{item}:</span>
-								{#if item.includes("color")}
-									<span style:background-color={component.getValue(item)} class='color-sample'></span>
+								{#if item.includes('color')}
+									<span style:background-color={component.getValue(item)} class='color-sample'
+									></span>
 								{:else}
 									{component.getValue(item)}
 								{/if}
@@ -237,60 +276,75 @@
 		{#if !collapsed}
 			<div class='controls' transition:slide>
 				{#if component.isParent}
-					<Control title='Add Component'
-									 icon='add'
-									 color={getColor()}
-									 on:click={openCompSelectModal} />
+					<Control
+						title='Add Component'
+						icon='add'
+						color={getColor()}
+						onclick={openCompSelectModal}
+					/>
 				{/if}
 				{#if component.preview && component.preview.length > 0}
-					<Control title='Preview Settings'
-									 icon='visibility'
-									 color='gray'
-									 on:click={openPreviewModal} />
+					<Control
+						title='Preview Settings'
+						icon='visibility'
+						color='gray'
+						onclick={openPreviewModal}
+					/>
 				{/if}
-				<Control title='Clone'
-								 icon='content_copy'
-								 color='white'
-								 on:click={clone}
+				<Control title='Clone' icon='content_copy' color='white' onclick={clone} />
+				<Control
+					title='Delete'
+					icon='delete'
+					color='red'
+					onclick={(e) => {
+						e.stopPropagation();
+						skill.removeComponent(component);
+						onupdate?.();
+					}}
 				/>
-				<Control title='Delete'
-								 icon='delete'
-								 color='red'
-								 on:click={() => {
-									 skill.removeComponent(component);
-									 dispatch("update");
-								 }} />
 			</div>
 			<div class='children' transition:slide>
 				{#if childrenList.length === 0}
 					{#if component.isParent && (over || overChildren)}
-						<div class='filler'
-								 role='none'
-								 transition:slide
-								 class:overChildren
-								 on:dragenter|stopPropagation={() => {
-                   overChildren = true;
-                   over = false;
-                 }}
-								 on:dragover|preventDefault|stopPropagation={() => {
+						<div
+							class='filler'
+							role='none'
+							transition:slide
+							class:overChildren
+							ondragenter={(e) => {
+								e.stopPropagation();
+								overChildren = true;
+								over = false;
+							}}
+							ondragover={(e) => {
+								e.stopPropagation();
+								e.preventDefault();
+							}}
+							ondragleave={leave}
+							ondrop={(e) => {
+								e.stopPropagation();
+								e.preventDefault();
+								overChildren = false;
 
-                 }}
-								 on:dragleave={leave}
-								 on:drop|preventDefault|stopPropagation={() => {
-                   overChildren = false;
-
-                   let comp = get(draggingComponent);
-									 if (!comp) return;
-                   skill.removeComponent(comp);
-                   component.addComponent(comp);
-                 }} />
+								let comp = get(draggingComponent);
+								if (!comp) return;
+								skill.removeComponent(comp);
+								component.addComponent(comp);
+							}}
+						></div>
 					{/if}
 				{:else}
 					<div class='child-wrapper' bind:this={children}>
 						{#each childrenList as child (child.id)}
-            <span transition:slide>
-              <svelte:self {skill} bind:component={child} on:update on:save on:addskill={addSkill} />
-            </span>
+							<span transition:slide>
+								<ComponentWidget
+									{skill}
+									component={child}
+									{onupdate}
+									{onsave}
+									onaddskill={addSkill}
+								/>
+							</span>
 						{/each}
 					</div>
 				{/if}

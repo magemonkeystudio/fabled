@@ -2,13 +2,16 @@ import { socketService }                                                       f
 import { active, shownTab }                                                    from '../../../../../data/store';
 import { get }                                                                 from 'svelte/store';
 import { redirect }                                                            from '@sveltejs/kit';
-import { Attribute }                                                           from '$api/stat';
 import type { MultiAttributeYamlData, MultiClassYamlData, MultiSkillYamlData } from '$api/types';
-import FabledAttribute                                                         from '$api/fabled-attribute';
+import FabledAttribute                                                         from '$api/fabled-attribute.svelte';
 import { Tab }                                                                 from '$api/tab';
 import { parseYaml }                                                           from '$api/yaml';
-import FabledSkill, { skillStore }                                             from '../../../../../data/skill-store';
-import FabledClass, { classStore }                                             from '../../../../../data/class-store';
+import FabledSkill, {
+	skillStore
+}                                                                              from '../../../../../data/skill-store.svelte';
+import FabledClass, {
+	classStore
+}                                                                              from '../../../../../data/class-store.svelte';
 import {
 	attributeStore
 }                                                                              from '../../../../../data/attribute-store';
@@ -121,6 +124,6 @@ const updateClassAttributes = (clazz: FabledClass) => {
 		if (clazz.attributes.find(b => b.name === a))
 			continue;
 
-		clazz.attributes.push(new Attribute(a, 0, 0));
+		clazz.attributes.push({ name: a, base: 0, scale: 0 });
 	}
 };

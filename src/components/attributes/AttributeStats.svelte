@@ -1,26 +1,24 @@
 <script lang='ts'>
-	import AttributeStatSvelte     from './AttributeStat.svelte';
+	import AttributeStat           from './AttributeStat.svelte';
 	import Control                 from '$components/control/Control.svelte';
-	import type { AttributeStats } from '$api/fabled-attribute';
-	import { updateSidebar }       from '../../data/store';
+	import type { AttributeStats } from '$api/fabled-attribute.svelte';
 
-	export let stats: AttributeStats;
-	$: statArray = stats.stats;
-	$: {
-		if ($statArray && stats.attribute?.name) updateSidebar();
-		stats.attribute.save();
+	interface Props {
+		stats: AttributeStats;
 	}
+
+	let { stats = $bindable() }: Props = $props();
 </script>
 
 <div class='stats'>
 	<div class='header'>Stat modifiers</div>
-	{#each $statArray as stat}
-		<AttributeStatSvelte bind:stats={stats} stat={stat} />
+	{#each stats.stats as stat}
+		<AttributeStat bind:stats={stats} stat={stat} />
 	{/each}
 	<div class='btn'>
-		<Control title={`Add Stat`} icon='add' color='gray'
-						 on:click={() => stats.addStat()}
-						 on:keypress={() => stats.addStat()} />
+		<Control color='gray' icon='add' onclick={() => stats.addStat()}
+						 onkeypress={() => stats.addStat()}
+						 title={`Add Stat`} />
 	</div>
 </div>
 

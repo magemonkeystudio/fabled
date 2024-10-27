@@ -1,17 +1,27 @@
 import { get }                     from 'svelte/store';
 import { Tab }                     from '$api/tab';
-import FabledClass, { classStore } from './class-store';
-import FabledSkill, { skillStore } from './skill-store';
-import FabledAttribute             from '$api/fabled-attribute';
+import FabledClass, { classStore } from './class-store.svelte';
+import FabledSkill, { skillStore } from './skill-store.svelte';
+import FabledAttribute             from '$api/fabled-attribute.svelte';
 import { shownTab, showSidebar }   from './store';
 
+export interface FolderProperties {
+	location: 'local' | 'server';
+	dataType: 'folder';
+	name: string;
+	data: (string | FolderProperties)[];
+	open: boolean;
+}
+
 export class FabledFolder {
-	public location: 'local' | 'server'                                            = 'local';
-	public dataType                                                                = 'folder';
-	public key                                                                     = {};
-	public open                                                                    = false;
-	public name                                                                    = 'Folder';
-	public data: Array<FabledFolder | FabledClass | FabledSkill | FabledAttribute> = [];
+	public key = {};
+
+	public location: 'local' | 'server' = 'local';
+	public dataType                     = 'folder' as const;
+	public open                         = $state(false);
+	public name                         = $state('Folder');
+
+	public data: Array<FabledFolder | FabledClass | FabledSkill | FabledAttribute> = $state([]);
 	public parent?: FabledFolder;
 
 	constructor(data?: Array<FabledFolder | FabledClass | FabledSkill | FabledAttribute>) {
@@ -23,6 +33,22 @@ export class FabledFolder {
 				});
 		}
 	}
+
+	public toJSON = (): FolderProperties => {
+		return {
+			location: this.location,
+			dataType: this.dataType,
+			name:     this.name,
+			data:     this.data
+									.map(d => {
+										if (d instanceof FabledFolder) return d.toJSON();
+
+										return d.name;
+									})
+									.filter(d => !!d),
+			open:     this.open
+		};
+	};
 
 	public updateParent = (parentFolder?: FabledFolder) => {
 		this.parent = parentFolder;
@@ -68,6 +94,42 @@ export class FabledFolder {
 		this.data = this.data.filter(f => f != folder);
 	};
 
+	/**
+	 * Gets all the non-folder data in this folder and sub folders
+	 */
+	public getAllData = (): Array<FabledClass | FabledSkill | FabledAttribute> => {
+		const data: Array<FabledClass | FabledSkill | FabledAttribute> = [];
+		for (const d of this.data) {
+			if (d instanceof FabledFolder) data.push(...d.getAllData());
+			else data.push(d);
+		}
+		return data;
+	};
+
+	/**
+	 * Gets all the classes in this folder and sub folders
+	 */
+	public getAllClasses = (): FabledClass[] => {
+		const data: FabledClass[] = [];
+		for (const d of this.data) {
+			if (d instanceof FabledFolder) data.push(...d.getAllClasses());
+			else if (d instanceof FabledClass) data.push(d);
+		}
+		return data;
+	};
+
+	/**
+	 * Gets all the skills in this folder and sub folders
+	 */
+	public getAllSkills = (): FabledSkill[] => {
+		const data: FabledSkill[] = [];
+		for (const d of this.data) {
+			if (d instanceof FabledFolder) data.push(...d.getAllSkills());
+			else if (d instanceof FabledSkill) data.push(d);
+		}
+		return data;
+	};
+
 	public contains = (data: FabledFolder | FabledClass | FabledSkill): boolean => {
 		if (this.data.includes(data)) return true;
 
@@ -107,7 +169,7 @@ export class FabledFolder {
 	};
 }
 
-class FolderStore {
+class FolderStoreSvelte {
 	rename = (folder: FabledFolder, folders: Array<FabledFolder | FabledClass | FabledSkill | FabledAttribute>) => {
 		const origName = folder.name;
 		let num        = 1;
@@ -172,4 +234,4 @@ class FolderStore {
 	};
 }
 
-export const folderStore = new FolderStore();
+export const folderStore = new FolderStoreSvelte();

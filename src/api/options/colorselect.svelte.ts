@@ -7,8 +7,8 @@ export default class ColorSelect extends Requirements implements ComponentOption
 	component                   = ColorSelectOption;
 	name: string;
 	key: string;
-	data: string;
-	tooltip: string | undefined = undefined;
+	data: string                = $state('#12cfab');
+	tooltip: string | undefined = $state(undefined);
 
 	constructor(name: string, key: string, def = '#12cfab') {
 		super();

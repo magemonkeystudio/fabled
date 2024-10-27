@@ -1,16 +1,16 @@
 import type { TriggerData, Unknown, YamlComponent } from '../types';
-import FabledComponent                              from './fabled-component';
+import FabledComponent                              from './fabled-component.svelte';
 import type { ComponentOption }                     from '../options/options';
 import Registry                                     from '$api/components/registry';
 import { get }                                      from 'svelte/store';
 import { parseBool }                                from '$api/api';
 
 export default class FabledTrigger extends FabledComponent {
-	public mana     = false;
-	public cooldown = false;
+	public mana     = $state(false);
+	public cooldown = $state(false);
 
-	protected constructor(data: TriggerData, isDeprecated = false) {
-		super('trigger', data, isDeprecated);
+	protected constructor(data: TriggerData) {
+		super('trigger', data);
 		this.mana     = data.mana || false;
 		this.cooldown = data.cooldown || false;
 	}

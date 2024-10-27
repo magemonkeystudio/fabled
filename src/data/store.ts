@@ -2,15 +2,16 @@ import type { Readable, Writable }                                             f
 import { derived, get, writable }                                              from 'svelte/store';
 import { localStore }                                                          from '$api/api';
 import { attributeStore }                                                      from './attribute-store';
-import type FabledComponent                                                    from '$api/components/fabled-component';
+import type FabledComponent
+																																							 from '$api/components/fabled-component.svelte';
 import type { MultiAttributeYamlData, MultiClassYamlData, MultiSkillYamlData } from '$api/types';
 import { socketService }                                                       from '$api/socket/socket-connector';
 import YAML                                                                    from 'yaml';
-import FabledAttribute                                                         from '$api/fabled-attribute';
+import FabledAttribute                                                         from '$api/fabled-attribute.svelte';
 import { Tab }                                                                 from '$api/tab';
-import FabledSkill, { skillStore }                                             from './skill-store';
-import FabledClass, { classStore }                                             from './class-store';
-import { FabledFolder, folderStore }                                           from './folder-store';
+import FabledSkill, { skillStore }                                             from './skill-store.svelte';
+import FabledClass, { classStore }                                             from './class-store.svelte';
+import { FabledFolder, folderStore }                                           from './folder-store.svelte';
 
 export const active: Writable<FabledClass | FabledSkill | FabledAttribute | undefined>      = writable(undefined);
 export const activeType: Readable<'class' | 'skill' | 'attribute' | ''>                     = derived(
@@ -34,25 +35,10 @@ export const sidebarOpen: Writable<boolean>                                     
 export const shownTab: Writable<Tab>                                                        = writable(Tab.CLASSES);
 export const importing: Writable<boolean>                                                   = writable(false);
 
-export const updateSidebar = () => {
-	if (!get(showSidebar)) return;
-	switch (get(activeType)) {
-		case 'class': {
-			classStore.refreshClasses();
-			break;
-		}
-		case 'skill': {
-			skillStore.refreshSkills();
-			break;
-		}
-		case 'attribute': {
-			attributeStore.refreshAttributes();
-			break;
-		}
-	}
-	folderStore.updateFolders();
+export const toggleSidebar = (e: Event) => {
+	e.stopPropagation();
+	showSidebar.set(!get(showSidebar));
 };
-export const toggleSidebar = () => showSidebar.set(!get(showSidebar));
 export const closeSidebar  = () => showSidebar.set(false);
 export const setImporting  = (bool: boolean) => importing.set(bool);
 
@@ -109,7 +95,10 @@ export const loadFile = (file: File) => {
 	reader.readAsText(file);
 };
 
-export const saveData = (data?: FabledSkill | FabledClass | FabledAttribute) => {
+export const saveData = (data?: FabledSkill | FabledClass | FabledAttribute, e?: Event) => {
+	e?.preventDefault();
+	e?.stopPropagation();
+
 	const act = data || get(active);
 	if (!act) return;
 	if (act instanceof FabledAttribute) {

@@ -8,8 +8,8 @@ export type Enchant = { name: string, level: number };
 export default class EnchantSelect extends Requirements implements ComponentOption {
 	component                     = EnchantSelectOption;
 	key                           = 'enchant';
-	data: { enchants: Enchant[] } = { enchants: [] };
-	tooltip: string | undefined   = undefined;
+	data: { enchants: Enchant[] } = $state({ enchants: [] });
+	tooltip: string | undefined   = $state(undefined);
 
 	constructor(def?: Enchant) {
 		super();

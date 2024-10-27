@@ -1,45 +1,27 @@
 import type { Unsubscriber, Writable } from 'svelte/store';
-import {
-	get,
-	writable
-}                                      from 'svelte/store';
+import { get, writable }               from 'svelte/store';
 import { sort, toEditorCase }          from '$api/api';
 import { parseYaml }                   from '$api/yaml';
-import {
-	browser
-}                                      from '$app/environment';
+import { browser }                     from '$app/environment';
 import { active, saveError }           from './store';
-import {
-	goto
-}                                      from '$app/navigation';
-import {
-	base
-}                                      from '$app/paths';
-import Registry, {
-	initialized
-}                                      from '$api/components/registry';
+import { goto }                        from '$app/navigation';
+import { base }                        from '$app/paths';
+import Registry, { initialized }       from '$api/components/registry';
 import type {
+	FabledSkillData,
+	IAttribute,
 	Icon,
 	MultiSkillYamlData,
-	FabledSkillData,
 	Serializable,
 	SkillYamlData,
 	YamlComponentData
 }                                      from '$api/types';
-import {
-	socketService
-}                                      from '$api/socket/socket-connector';
-import {
-	notify
-}                                      from '$api/notification-service';
-import { Attribute }        from '$api/stat';
-import FabledTrigger        from '$api/components/triggers';
-import type FabledComponent from '$api/components/fabled-component';
-import YAML                 from 'yaml';
-import {
-	FabledFolder,
-	folderStore
-}                                      from './folder-store';
+import { socketService }               from '$api/socket/socket-connector';
+import { notify }                      from '$api/notification-service';
+import FabledTrigger                   from '$api/components/triggers.svelte';
+import type FabledComponent            from '$api/components/fabled-component.svelte';
+import { FabledFolder, folderStore }   from './folder-store.svelte';
+import YAML                            from 'yaml';
 
 export default class FabledSkill implements Serializable {
 	dataType                     = 'skill';
@@ -48,25 +30,25 @@ export default class FabledSkill implements Serializable {
 	tooBig                       = false;
 	acknowledged                 = false;
 
-	isSkill                            = true;
-	public key                         = {};
-	name: string;
-	previousName: string               = '';
-	type                               = 'Dynamic';
-	maxLevel                           = 5;
-	skillReq?: FabledSkill;
-	skillReqLevel                      = 0;
-	attributeRequirements: Attribute[] = [];
-	permission: boolean                = false;
-	levelReq: Attribute                = new Attribute('level', 1, 0);
-	cost: Attribute                    = new Attribute('cost', 1, 0);
-	cooldown: Attribute                = new Attribute('cooldown', 0, 0);
-	cooldownMessage: boolean           = true;
-	mana: Attribute                    = new Attribute('mana', 0, 0);
-	minSpent: Attribute                = new Attribute('points-spent-req', 0, 0);
-	castMessage                        = '&6{player} &2has cast &6{skill}';
-	combo                              = '';
-	icon: Icon                         = {
+	isSkill                             = true;
+	public key                          = {};
+	name: string                        = $state('');
+	previousName: string                = '';
+	type                                = $state('Dynamic');
+	maxLevel                            = $state(5);
+	skillReq?: FabledSkill              = $state();
+	skillReqLevel                       = $state(0);
+	attributeRequirements: IAttribute[] = $state([]);
+	permission: boolean                 = $state(false);
+	levelReq: IAttribute                = $state({ name: 'level', base: 1, scale: 0 });
+	cost: IAttribute                    = $state({ name: 'cost', base: 1, scale: 0 });
+	cooldown: IAttribute                = $state({ name: 'cooldown', base: 1, scale: 0 });
+	cooldownMessage: boolean            = $state(true);
+	mana: IAttribute                    = $state({ name: 'mana', base: 0, scale: 0 });
+	minSpent: IAttribute                = $state({ name: 'points-spent-req', base: 0, scale: 0 });
+	castMessage                         = $state('&6{player} &2has cast &6{skill}');
+	combo                               = $state('');
+	icon: Icon                          = $state({
 		material:        'Pumpkin',
 		customModelData: 0,
 		lore:            [
@@ -79,9 +61,9 @@ export default class FabledSkill implements Serializable {
 			'&2Mana: {attr:mana}',
 			'&2Cooldown: {attr:cooldown}'
 		]
-	};
-	incompatible: FabledSkill[] = [];
-	triggers: FabledTrigger[]   = [];
+	});
+	incompatible: FabledSkill[]         = $state([]);
+	triggers: FabledTrigger[]           = $state([]);
 
 	private skillReqStr         = '';
 	private incompStr: string[] = [];
@@ -94,7 +76,11 @@ export default class FabledSkill implements Serializable {
 		if (data.maxLevel) this.maxLevel = data.maxLevel;
 		if (data.skillReq) this.skillReq = data.skillReq;
 		if (data.skillReqLevel) this.skillReqLevel = data.skillReqLevel;
-		if (data.attributeRequirements) this.attributeRequirements = data.attributeRequirements.map(a => new Attribute(a.name, a.base, a.scale));
+		if (data.attributeRequirements) this.attributeRequirements = data.attributeRequirements.map(a => ({
+			name:  a.name,
+			base:  a.base,
+			scale: a.scale
+		}));
 		if (data.permission !== undefined) this.permission = data.permission;
 		if (data.levelReq) this.levelReq = data.levelReq;
 		if (data.cost) this.cost = data.cost;
@@ -180,9 +166,9 @@ export default class FabledSkill implements Serializable {
 				'mana-base':              this.mana.base,
 				'mana-scale':             this.mana.scale,
 				'points-spent-req-base':  this.minSpent.base,
-				'points-spent-req-scale': this.minSpent.scale,
-				incompatible:             this.incompatible.map(s => s.name)
+				'points-spent-req-scale': this.minSpent.scale
 			},
+			incompatible:       this.incompatible.map(s => s.name),
 			components:         compData
 		};
 
@@ -207,17 +193,26 @@ export default class FabledSkill implements Serializable {
 
 		if (yaml.attributes) {
 			const attributes = yaml.attributes;
-			this.levelReq    = new Attribute('level', attributes['level-base'], attributes['level-scale']);
-			this.cost        = new Attribute('cost', attributes['cost-base'], attributes['cost-scale']);
-			this.cooldown    = new Attribute('cooldown', attributes['cooldown-base'], attributes['cooldown-scale']);
-			this.mana        = new Attribute('mana', attributes['mana-base'], attributes['mana-scale']);
-			this.minSpent    = new Attribute('points-spent-req', attributes['points-spent-req-base'], attributes['points-spent-req-scale']);
-			this.incompStr   = attributes.incompatible;
+			this.levelReq    = { name: 'level', base: attributes['level-base'], scale: attributes['level-scale'] };
+			this.cost        = { name: 'cost', base: attributes['cost-base'], scale: attributes['cost-scale'] };
+			this.cooldown    = { name: 'cooldown', base: attributes['cooldown-base'], scale: attributes['cooldown-scale'] };
+			this.mana        = { name: 'mana', base: attributes['mana-base'], scale: attributes['mana-scale'] };
+			this.minSpent    = {
+				name:  'points-spent-req',
+				base:  attributes['points-spent-req-base'],
+				scale: attributes['points-spent-req-scale']
+			};
 
 			const reserved             = ['level', 'cost', 'cooldown', 'mana', 'points-spent-req', 'incompatible'];
 			const names                = new Set(Object.keys(attributes).map(k => k.replace(/-(base|scale)/i, '')).filter(name => !reserved.includes(name)));
-			this.attributeRequirements = [...names].map(name => new Attribute(name, attributes[`${name}-base`], attributes[`${name}-scale`]));
+			this.attributeRequirements = [...names].map(name => ({
+				name,
+				base:  attributes[`${name}-base`],
+				scale: attributes[`${name}-scale`]
+			}));
 		}
+
+		if (yaml.incompatible) this.incompStr = yaml.incompatible;
 
 		if (yaml.icon) this.icon.material = toEditorCase(yaml.icon);
 		if (yaml['icon-data']) this.icon.customModelData = yaml['icon-data'];
@@ -245,6 +240,7 @@ export default class FabledSkill implements Serializable {
 		this.incompatible = <FabledSkill[]>this.incompStr.map(s => skillStore.getSkill(s)).filter(s => !!s);
 	};
 
+	private saveDebounceTimeout: number | undefined;
 	public save = () => {
 		if (!this.name || this.tooBig) return;
 
@@ -253,37 +249,43 @@ export default class FabledSkill implements Serializable {
 			return;
 		}
 
-		skillStore.isSaving.set(true);
-
-		if (this.location === 'server') {
-
-			return;
+		if (this.saveDebounceTimeout) {
+			window.clearTimeout(this.saveDebounceTimeout);
 		}
 
-		if (this.previousName && this.previousName !== this.name) {
-			localStorage.removeItem('sapi.skill.' + this.previousName);
-		}
-		this.previousName = this.name;
+		this.saveDebounceTimeout = window.setTimeout(() => {
+			skillStore.isSaving.set(true);
 
-		try {
-			const yaml = YAML.stringify({ [this.name]: this.serializeYaml() }, {
-				lineWidth:             0,
-				aliasDuplicateObjects: false
-			});
-			localStorage.setItem('sapi.skill.' + this.name, yaml);
-			this.tooBig = false;
-		} catch (e: any) {
-			// If the data is too big
-			if (!e?.message?.includes('quota')) {
-				console.error(this.name + ' Save error', e);
-			} else {
-				localStorage.removeItem('sapi.skill.' + this.name);
-				this.tooBig = true;
-				saveError.set(this);
+			if (this.location === 'server') {
+				return;
 			}
-		}
 
-		skillStore.isSaving.set(false);
+			if (this.previousName && this.previousName !== this.name) {
+				localStorage.removeItem('sapi.skill.' + this.previousName);
+			}
+			this.previousName = this.name;
+
+			try {
+				const yaml = YAML.stringify({ [this.name]: this.serializeYaml() }, {
+					lineWidth:             0,
+					aliasDuplicateObjects: false
+				});
+				localStorage.setItem('sapi.skill.' + this.name, yaml);
+				this.tooBig = false;
+			} catch (e: any) {
+				// If the data is too big
+				if (!e?.message?.includes('quota')) {
+					console.error(this.name + ' Save error', e);
+				} else {
+					localStorage.removeItem('sapi.skill.' + this.name);
+					this.tooBig = true;
+					saveError.set(this);
+				}
+			}
+
+			this.saveDebounceTimeout = undefined;
+			skillStore.isSaving.set(false);
+		}, 600); // Adjust the debounce delay as needed
 	};
 }
 

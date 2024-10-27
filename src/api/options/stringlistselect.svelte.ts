@@ -5,10 +5,10 @@ import type { Unknown }         from '$api/types';
 
 export default class StringListSelect extends Requirements implements ComponentOption {
 	component                   = StringListOption;
-	data: { value: string[] }   = { value: [] };
 	name                        = '';
 	key                         = '';
-	tooltip: string | undefined = undefined;
+	data: { value: string[] }   = $state({ value: [] });
+	tooltip: string | undefined = $state();
 
 	constructor(name: string, key: string, def?: string[]) {
 		super();

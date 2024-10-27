@@ -1,22 +1,18 @@
-import FabledComponent          from './fabled-component';
-import type { ComponentOption } from '../options/options';
+import FabledComponent                                from './fabled-component.svelte';
+import type { ComponentOption }                       from '../options/options';
 import type { ComponentData, Unknown, YamlComponent } from '$api/types';
 import Registry                                       from '$api/components/registry';
 
-export default class FabledMechanic extends FabledComponent {
-	iconKey      = '';
-	countsAsCast = true;
+export default class FabledCondition extends FabledComponent {
+	iconKey = $state('');
 
-	public constructor(data: ComponentData, isParent = false, isDeprecated = false) {
-		super('mechanic', data, isDeprecated);
-		this.isParent = isParent; // This should be false unless for specific mechanics like projectiles
+	public constructor(data: ComponentData) {
+		super('condition', data);
 	}
 
 	public override getData(raw = false): Unknown {
 		const data: Unknown = {};
-
-		data['icon-key'] = this.iconKey;
-		data['counts']   = this.countsAsCast;
+		data['icon-key']    = this.iconKey;
 
 		this.data
 			.filter(opt => raw || opt.meetsRequirements(this))
@@ -28,16 +24,18 @@ export default class FabledMechanic extends FabledComponent {
 		return data;
 	}
 
-	deserialize(yaml: YamlComponent): void {
+	public override deserialize(yaml: YamlComponent): void {
 		super.deserialize(yaml);
 		const data = yaml.data;
 
+		this.iconKey = <string>data['icon-key'];
+
 		if (data) this.data.forEach((opt: ComponentOption) => opt.deserialize(data));
-		this.iconKey      = <string>data['icon-key'];
-		this.countsAsCast = data.counts === undefined ? true : <boolean>data.counts;
 
 		if (yaml.children && Object.keys(yaml.children).length > 0) {
 			this.setComponents(Registry.deserializeComponents(yaml.children));
 		}
 	}
+
+	public static override new = (): FabledCondition => new FabledCondition({ name: 'null' });
 }

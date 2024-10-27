@@ -1,6 +1,12 @@
 <script lang='ts'>
-	export let value: string[] = [];
-	$: if (!value) value = [];
+	interface Props {
+		value: string[];
+	}
+
+	let { value = $bindable() }: Props = $props();
+	$effect.pre(() => {
+		if (!value) value = [];
+	});
 
 	const press = (e: KeyboardEvent) => {
 		const split = (<HTMLTextAreaElement>e.target).value.split(/\r?\n/g);
@@ -12,8 +18,9 @@
 	};
 </script>
 
-<textarea rows='5' value={value.join("\r\n")}
-					on:keyup={press} />
+<textarea onkeyup={press} rows='5'
+>{value.join('\r\n')}</textarea>
+
 <style>
     textarea {
         width: 100%;
