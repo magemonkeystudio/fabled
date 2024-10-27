@@ -1,6 +1,4 @@
 <script lang='ts'>
-	import { run } from 'svelte/legacy';
-
 	import Modal                               from './Modal.svelte';
 	import { loadFile, loadRaw, setImporting } from '../data/store';
 	import { getHaste }                        from '$api/hastebin';
@@ -25,7 +23,7 @@
 			.catch(console.error);
 	};
 
-	run(() => {
+	$effect(() => {
 		if (files && files.length > 0) {
 			for (const file of files) {
 				if (file.name.indexOf('.yml') == -1) continue;
@@ -36,7 +34,7 @@
 	});
 </script>
 
-<Modal open={true} onclose={onClose}>
+<Modal onclose={onClose}>
 	<div class='options'>
 		<div class='option'>
 			<div>Upload File</div>

@@ -1,6 +1,5 @@
 <script lang='ts'>
 	import ProInput                    from '$input/ProInput.svelte';
-	import { createEventDispatcher }   from 'svelte';
 	import SearchableSelect            from '$input/SearchableSelect.svelte';
 	import FabledClass, { classStore } from '../../data/class-store.svelte';
 
@@ -9,14 +8,14 @@
 		name?: string | undefined;
 		tooltip?: string | undefined;
 		multiple?: boolean;
+		onsave?: () => void;
 	}
 
-	let { data = $bindable([]), name = '', tooltip = undefined, multiple = true }: Props = $props();
+	let { data = $bindable([]), name = '', tooltip = undefined, multiple = true, onsave }: Props = $props();
 
 	const classes = classStore.classes;
 
-	const dispatch = createEventDispatcher();
-	$effect.pre(() => {
+	$effect(() => {
 		if (!multiple && !data) data = '';
 		if (data instanceof Array) {
 			data = data
@@ -27,17 +26,16 @@
 					if (clazz) return clazz;
 				})
 				.filter((cl) => !!cl); // Remove any undefined values
-			dispatch('save');
 		} else {
 			if (data && !(data instanceof FabledClass)) {
 				const clazz = classStore.getClass(<string>data);
 				if (clazz) data = clazz;
 			}
-			dispatch('save');
 		}
+		onsave?.();
 	});
 </script>
 
 <ProInput label={name} {tooltip}>
-	<SearchableSelect bind:data={$classes} {multiple} bind:selected={data} />
+	<SearchableSelect bind:data={$classes} bind:selected={data} {multiple} />
 </ProInput>

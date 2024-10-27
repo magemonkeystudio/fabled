@@ -5,9 +5,14 @@
 	interface Props {
 		data: { material: string, any?: boolean };
 		tooltip?: string | undefined;
+		onsave?: () => void;
 	}
 
-	let { data = $bindable(), tooltip = undefined }: Props = $props();
+	let { data = $bindable(), tooltip = undefined, onsave }: Props = $props();
+
+	$effect(() => {
+		if (data || !data) onsave?.();
+	});
 </script>
 
 <ProInput label='Material' tooltip='[material] {tooltip}'>

@@ -20,8 +20,8 @@ import { socketService }               from '$api/socket/socket-connector';
 import { notify }                      from '$api/notification-service';
 import FabledTrigger                   from '$api/components/triggers.svelte';
 import type FabledComponent            from '$api/components/fabled-component.svelte';
-import YAML                            from 'yaml';
 import { FabledFolder, folderStore }   from './folder-store.svelte';
+import YAML                            from 'yaml';
 
 export default class FabledSkill implements Serializable {
 	dataType                     = 'skill';
@@ -253,39 +253,39 @@ export default class FabledSkill implements Serializable {
 			window.clearTimeout(this.saveDebounceTimeout);
 		}
 
-		// this.saveDebounceTimeout = window.setTimeout(() => {
-		skillStore.isSaving.set(true);
+		this.saveDebounceTimeout = window.setTimeout(() => {
+			skillStore.isSaving.set(true);
 
-		if (this.location === 'server') {
-			return;
-		}
-
-		if (this.previousName && this.previousName !== this.name) {
-			localStorage.removeItem('sapi.skill.' + this.previousName);
-		}
-		this.previousName = this.name;
-
-		try {
-			const yaml = YAML.stringify({ [this.name]: this.serializeYaml() }, {
-				lineWidth:             0,
-				aliasDuplicateObjects: false
-			});
-			localStorage.setItem('sapi.skill.' + this.name, yaml);
-			this.tooBig = false;
-		} catch (e: any) {
-			// If the data is too big
-			if (!e?.message?.includes('quota')) {
-				console.error(this.name + ' Save error', e);
-			} else {
-				localStorage.removeItem('sapi.skill.' + this.name);
-				this.tooBig = true;
-				saveError.set(this);
+			if (this.location === 'server') {
+				return;
 			}
-		}
 
-		this.saveDebounceTimeout = undefined;
-		skillStore.isSaving.set(false);
-		// }, 600); // Adjust the debounce delay as needed
+			if (this.previousName && this.previousName !== this.name) {
+				localStorage.removeItem('sapi.skill.' + this.previousName);
+			}
+			this.previousName = this.name;
+
+			try {
+				const yaml = YAML.stringify({ [this.name]: this.serializeYaml() }, {
+					lineWidth:             0,
+					aliasDuplicateObjects: false
+				});
+				localStorage.setItem('sapi.skill.' + this.name, yaml);
+				this.tooBig = false;
+			} catch (e: any) {
+				// If the data is too big
+				if (!e?.message?.includes('quota')) {
+					console.error(this.name + ' Save error', e);
+				} else {
+					localStorage.removeItem('sapi.skill.' + this.name);
+					this.tooBig = true;
+					saveError.set(this);
+				}
+			}
+
+			this.saveDebounceTimeout = undefined;
+			skillStore.isSaving.set(false);
+		}, 600); // Adjust the debounce delay as needed
 	};
 }
 

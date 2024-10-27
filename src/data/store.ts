@@ -35,7 +35,10 @@ export const sidebarOpen: Writable<boolean>                                     
 export const shownTab: Writable<Tab>                                                        = writable(Tab.CLASSES);
 export const importing: Writable<boolean>                                                   = writable(false);
 
-export const toggleSidebar = () => showSidebar.set(!get(showSidebar));
+export const toggleSidebar = (e: Event) => {
+	e.stopPropagation();
+	showSidebar.set(!get(showSidebar));
+};
 export const closeSidebar  = () => showSidebar.set(false);
 export const setImporting  = (bool: boolean) => importing.set(bool);
 

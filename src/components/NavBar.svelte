@@ -1,6 +1,4 @@
 <script lang='ts'>
-	import { stopPropagation } from 'svelte/legacy';
-
 	import { active, activeType, setImporting, toggleSidebar } from '../data/store';
 	import { get }                                             from 'svelte/store';
 	import { createPaste }                                     from '$api/hastebin';
@@ -9,7 +7,8 @@
 	import type FabledSkill                                    from '../data/skill-store.svelte';
 	import type FabledAttribute                                from '$api/fabled-attribute.svelte';
 
-	const haste = () => {
+	const haste = (e?: Event) => {
+		e?.stopPropagation();
 		let act: FabledClass | FabledSkill | FabledAttribute | undefined = get(active);
 		if (!act) return;
 
@@ -22,7 +21,8 @@
 			.catch((requestError) => console.error(requestError));
 	};
 
-	const openImport = () => {
+	const openImport = (e?: Event) => {
+		e?.stopPropagation();
 		setImporting(true);
 	};
 </script>
@@ -30,11 +30,10 @@
 <div class='nav-wrap'>
 	<nav>
 		<div class='chip hamburger'
-				 onclick={stopPropagation(toggleSidebar)}
+				 onclick={toggleSidebar}
 				 onkeypress={(e) => {
 					 if (e.key === 'Enter') {
-             e.stopPropagation();
-             toggleSidebar();
+             toggleSidebar(e);
            }
          }}
 				 role='button'
@@ -47,11 +46,10 @@
 
 		<div class='transfer'>
 			<div class='chip import'
-					 onclick={stopPropagation(openImport)}
+					 onclick={openImport}
 					 onkeypress={(e) => {
 						 if (e.key === 'Enter') {
-							 e.stopPropagation();
-							 openImport();
+							 openImport(e);
 						 }
 					 }}
 					 role='button'
@@ -64,11 +62,10 @@
 				<div class='chip share'
 						 tabindex='0'
 						 role='button'
-						 onclick={stopPropagation(haste)}
+						 onclick={haste}
 						 onkeypress={(e) => {
 							 if (e.key === 'Enter') {
-								 e.stopPropagation();
-								 haste();
+								 haste(e);
 							 }
 						 }}
 						 title='Share {$activeType.substring(0, 1).toUpperCase() + $activeType.substring(1)}'>

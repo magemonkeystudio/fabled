@@ -15,8 +15,7 @@
 
 	const skills = skillStore.skills;
 
-	$effect.pre(() => {
-		console.log(data);
+	$effect(() => {
 		if (!multiple && !data) data = '';
 
 		if (data instanceof Array) {

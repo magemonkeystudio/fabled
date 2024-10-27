@@ -7,9 +7,14 @@
 		data: IAttribute;
 		name?: string | undefined;
 		tooltip?: string | undefined;
+		onsave?: () => void;
 	}
 
-	let { data = $bindable(), name = '', tooltip = undefined }: Props = $props();
+	let { data = $bindable(), name = '', tooltip = undefined, onsave }: Props = $props();
+
+	$effect(() => {
+		if (data || !data) onsave?.();
+	});
 </script>
 
 <ProInput label={name} {tooltip}>

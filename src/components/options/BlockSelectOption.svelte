@@ -1,19 +1,16 @@
 <script lang='ts'>
-	import { run } from 'svelte/legacy';
-
 	import BlockSelect               from '$input/BlockSelect.svelte';
 	import ProInput                  from '$input/ProInput.svelte';
-	import { createEventDispatcher } from 'svelte';
 
 	interface Props {
-		data: { material: string[], data: number, materialTooltip: string, dataTooltip: string };
+		data: { material: string[], data: number, materialTooltip: string, dataTooltip: string },
+		onsave: () => void;
 	}
 
-	let { data = $bindable() }: Props = $props();
+	let { data = $bindable(), onsave }: Props = $props();
 
-	const dispatch = createEventDispatcher();
-	run(() => {
-		if (data) dispatch('save');
+	$effect(() => {
+		if (data || !data) onsave?.();
 	});
 </script>
 
