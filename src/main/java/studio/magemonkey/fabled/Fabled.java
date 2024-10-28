@@ -201,7 +201,7 @@ public class Fabled extends SkillAPI {
     }
 
     /**
-     * Checks whether a skill is registered.
+     * Checks whether a skill is registered
      *
      * @param name name of the skill
      * @return true if registered, false otherwise
