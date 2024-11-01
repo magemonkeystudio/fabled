@@ -8,13 +8,13 @@ import java.util.List;
  * Fabled © 2024
  * studio.magemonkey.fabled.dynamic.mechanic.HealthSetMechanic
  */
-public class AirSetMechanic extends MechanicComponent {
+public class AirModify extends MechanicComponent {
 
     private static final String AIR = "air";
 
     @Override
     public String getKey() {
-        return "air set";
+        return "air modify";
     }
 
     @Override
@@ -23,7 +23,7 @@ public class AirSetMechanic extends MechanicComponent {
         final int ticks = (int) (air * 20);
 
         for (final LivingEntity target : targets) {
-            target.setRemainingAir(Math.min(ticks, target.getMaximumAir()));
+            target.setRemainingAir(ticks + target.getRemainingAir());
         }
 
         return true;
