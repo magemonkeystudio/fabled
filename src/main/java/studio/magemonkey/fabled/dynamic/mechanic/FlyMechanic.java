@@ -59,7 +59,6 @@ public class FlyMechanic extends MechanicComponent {
             // Only target players.
             if (target instanceof Player){
                 Player player = (Player) target;
-                player.setMaximumAir(player.getMaximumAir());
                 // Do not set flying to false if player is in spectator or creative.
                 if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
                     final PlayerData data = Fabled.getData((Player) target);

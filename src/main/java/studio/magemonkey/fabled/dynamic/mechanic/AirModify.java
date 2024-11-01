@@ -23,7 +23,7 @@ public class AirModify extends MechanicComponent {
         final int ticks = (int) (air * 20);
 
         for (final LivingEntity target : targets) {
-            target.setRemainingAir(ticks + target.getRemainingAir());
+            target.setRemainingAir(300);
         }
 
         return true;
