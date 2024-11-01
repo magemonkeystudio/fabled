@@ -22,7 +22,7 @@ public class AirSetMechanic extends MechanicComponent {
         final int air = Math.max(1, (int) parseValues(caster, AIR, level, 1));
 
         for (final LivingEntity target : targets) {
-            target.setHealth(Math.min(air, target.getMaximumAir()));
+            target.setRemainingAir(Math.min(air, target.getMaximumAir()));
         }
 
         return true;
