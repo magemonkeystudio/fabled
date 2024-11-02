@@ -170,7 +170,7 @@ public abstract class MockedTest {
 
         try {
             File core = DependencyResolver.resolve("studio.magemonkey:codex:" + coreVersion);
-            File dest = new File(server.getPluginsFolder().getAbsolutePath(), "Codex-" + coreVersion + ".jar");
+            File dest = new File(server.getPluginsFolder().getAbsolutePath(), "CodexCore-" + coreVersion + ".jar");
             FileUtils.copyFile(core, dest);
         } catch (IOException e) {
             throw new RuntimeException(e);
