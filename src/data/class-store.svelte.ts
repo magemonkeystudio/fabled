@@ -219,10 +219,10 @@ export default class FabledClass implements Serializable {
 			parent:             this.parent?.name || '',
 			'needs-permission': this.permission,
 			attributes:         {
-				'health-base':  health.base || 20,
-				'health-scale': health.scale || 0,
-				'mana-base':    mana.base || 20,
-				'mana-scale':   mana.scale || 0
+				'health-base':  health.base ?? 20,
+				'health-scale': health.scale ?? 0,
+				'mana-base':    mana.base ?? 20,
+				'mana-scale':   mana.scale ?? 0
 			},
 			'mana-regen':       this.manaRegen,
 			'skill-tree':       this.skillTree.toUpperCase().replace(/ /g, '_'),
