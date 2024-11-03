@@ -4,7 +4,7 @@
 	import FabledSkill, { skillStore } from '../../data/skill-store.svelte.js';
 
 	interface Props {
-		data?: FabledSkill[] | FabledSkill | string[] | string;
+		data?: FabledSkill[] | FabledSkill;
 		name?: string | undefined;
 		tooltip?: string | undefined;
 		multiple?: boolean;
@@ -15,28 +15,28 @@
 
 	const skills = skillStore.skills;
 
-	$effect(() => {
-		if (!multiple && !data) data = '';
-
-		if (data instanceof Array) {
-			data = data
-				.map((cl) => {
-					if (cl instanceof FabledSkill) return cl;
-
-					const sk = skillStore.getSkill(cl);
-					if (sk) return sk;
-				})
-				.filter((cl) => !!cl); // Remove any undefined values
-		} else {
-			if (data && !(data instanceof FabledSkill)) {
-				const sk = skillStore.getSkill(<string>data);
-				if (sk) data = sk;
-			}
-		}
-		onsave?.();
-	});
+	// if (!multiple && !data) data = '';
+	//
+	// if (data instanceof Array) {
+	// 	data = data
+	// 		.map((cl) => {
+	// 			if (cl instanceof FabledSkill) return cl;
+	//
+	// 			console.log('cl', cl);
+	// 			const sk = skillStore.getSkill(cl);
+	// 			if (sk) return sk;
+	// 		})
+	// 		.filter((cl) => !!cl); // Remove any undefined values
+	// } else {
+	// 	if (data && !(data instanceof FabledSkill)) {
+	// 		const sk = skillStore.getSkill(<string>data);
+	// 		console.log('sk', sk);
+	// 		if (sk) data = sk;
+	// 	}
+	// }
+	$effect(() => onsave?.());
 </script>
 
 <ProInput label={name} {tooltip}>
-	<SearchableSelect bind:data={$skills} {multiple} bind:selected={data} />
+	<SearchableSelect bind:data={$skills} bind:selected={data} {multiple} />
 </ProInput>

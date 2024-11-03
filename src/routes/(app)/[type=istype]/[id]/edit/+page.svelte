@@ -12,6 +12,8 @@
 	}
 
 	let { data }: Props = $props();
+
+	const save = () => data.data.save();
 </script>
 
 <svelte:head>
@@ -25,11 +27,11 @@
 <hr />
 <div class='container'>
 	{#if data?.data instanceof FabledClass}
-		<ClassDetails data={data.data} />
+		<ClassDetails data={data.data} onsave={save} />
 	{:else if data?.data instanceof FabledSkill}
-		<SkillDetails data={data.data} />
+		<SkillDetails data={data.data} onsave={save} />
 	{:else if data?.data instanceof FabledAttribute}
-		<AttributeDetails data={data.data} />
+		<AttributeDetails data={data.data} onsave={save} />
 	{/if}
 </div>
 

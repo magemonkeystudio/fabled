@@ -17,9 +17,10 @@
 
 	interface Props {
 		data: FabledClass;
+		onsave?: () => void;
 	}
 
-	let { data = $bindable() }: Props = $props();
+	let { data = $bindable(), onsave }: Props = $props();
 
 	let combosShown = $state(false);
 	let sub: Unsubscriber;
@@ -48,7 +49,7 @@
 		if (sub) sub();
 	});
 
-	$effect(() => data.save());
+	$effect(() => onsave?.());
 </script>
 
 {#if data}

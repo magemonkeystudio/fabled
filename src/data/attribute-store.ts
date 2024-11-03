@@ -250,6 +250,8 @@ class AttributeStore {
 				saveError.set({ name: 'Attributes', acknowledged: false });
 			}
 		}
+
+		console.log('Saved attributes 😎');
 	};
 }
 

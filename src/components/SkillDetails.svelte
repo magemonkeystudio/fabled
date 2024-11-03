@@ -9,11 +9,13 @@
 
 	interface Props {
 		data: FabledSkill;
+		onsave?: () => void;
 	}
 
-	let { data = $bindable() }: Props = $props();
+	let { data = $bindable(), onsave }: Props = $props();
 	const skills                      = skillStore.skills;
-	$effect(() => data.save());
+
+	$effect(() => onsave?.());
 </script>
 
 {#if data}

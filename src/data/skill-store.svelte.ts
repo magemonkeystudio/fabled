@@ -95,6 +95,40 @@ export default class FabledSkill implements Serializable {
 		if (data.triggers) this.triggers = data.triggers;
 	}
 
+	/**
+	 * Reads all the reactive state elements to act as a chane detector
+ 	 */
+	public changed = () => {
+		return {
+			name:               this.name,
+			type:               this.type,
+			'max-level':        this.maxLevel,
+			'skill-req':        this.skillReq?.name,
+			'skill-req-lvl':    this.skillReqLevel,
+			'needs-permission': this.permission,
+			'cooldown-message': this.cooldownMessage,
+			msg:                this.castMessage,
+			combo:              this.combo,
+			icon:               this.icon.material,
+			'icon-data':        this.icon.customModelData,
+			'icon-lore':        this.icon.lore,
+			attributes:         {
+				'level-base':             this.levelReq.base,
+				'level-scale':            this.levelReq.scale,
+				'cost-base':              this.cost.base,
+				'cost-scale':             this.cost.scale,
+				'cooldown-base':          this.cooldown.base,
+				'cooldown-scale':         this.cooldown.scale,
+				'mana-base':              this.mana.base,
+				'mana-scale':             this.mana.scale,
+				'points-spent-req-base':  this.minSpent.base,
+				'points-spent-req-scale': this.minSpent.scale
+			},
+			incompatible:       this.incompatible,
+			components:         this.triggers
+		};
+	};
+
 	public addComponent = (comp: FabledComponent) => {
 		if (comp instanceof FabledTrigger) {
 			this.triggers = [...this.triggers, comp];
@@ -249,16 +283,17 @@ export default class FabledSkill implements Serializable {
 			return;
 		}
 
+			if (this.location === 'server') {
+				return;
+			}
+
 		if (this.saveDebounceTimeout) {
 			window.clearTimeout(this.saveDebounceTimeout);
 		}
 
+		this.changed();
 		this.saveDebounceTimeout = window.setTimeout(() => {
 			skillStore.isSaving.set(true);
-
-			if (this.location === 'server') {
-				return;
-			}
 
 			if (this.previousName && this.previousName !== this.name) {
 				localStorage.removeItem('sapi.skill.' + this.previousName);
@@ -285,6 +320,7 @@ export default class FabledSkill implements Serializable {
 
 			this.saveDebounceTimeout = undefined;
 			skillStore.isSaving.set(false);
+			console.log('Saved ' + this.name + ' 😎');
 		}, 600); // Adjust the debounce delay as needed
 	};
 }

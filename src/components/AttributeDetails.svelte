@@ -8,10 +8,11 @@
 
 	interface Props {
 		data: FabledAttribute;
+		onsave?: () => void;
 	}
 
-	let { data = $bindable() }: Props = $props();
-	$effect(() => data.save());
+	let { data = $bindable(), onsave }: Props = $props();
+	$effect(() => onsave?.());
 </script>
 
 {#if data}

@@ -116,6 +116,46 @@ export default class FabledClass implements Serializable {
 		if (data?.fWhitelist) this.fWhitelist = data.fWhitelist;
 	}
 
+	/**
+	 * Reads all the reactive state elements to act as a chane detector
+	 */
+	public changed = () => {
+		return {
+			name:          this.name,
+			prefix:        this.prefix,
+			group:         this.group,
+			manaName:      this.manaName,
+			maxLevel:      this.maxLevel,
+			parent:        this.parent,
+			permission:    this.permission,
+			expSources:    this.expSources,
+			health:        this.health,
+			mana:          this.mana,
+			attributes:    this.attributes,
+			skillTree:     this.skillTree,
+			skills:        this.skills,
+			icon:          this.icon,
+			unusableItems: this.unusableItems,
+			actionBar:     this.actionBar,
+			lInverted:     this.lInverted,
+			rInverted:     this.rInverted,
+			lsInverted:    this.lsInverted,
+			rsInverted:    this.rsInverted,
+			sInverted:     this.sInverted,
+			pInverted:     this.pInverted,
+			qInverted:     this.qInverted,
+			fInverted:     this.fInverted,
+			lWhitelist:    this.lWhitelist,
+			rWhitelist:    this.rWhitelist,
+			lsWhitelist:   this.lsWhitelist,
+			rsWhitelist:   this.rsWhitelist,
+			sWhitelist:    this.sWhitelist,
+			pWhitelist:    this.pWhitelist,
+			qWhitelist:    this.qWhitelist,
+			fWhitelist:    this.fWhitelist
+		};
+	};
+
 	public updateAttributes = (attribs: string[]) => {
 		const included: string[] = [];
 		this.attributes          = this.attributes.filter(a => {
@@ -242,8 +282,12 @@ export default class FabledClass implements Serializable {
 
 		if (yaml.attributes) {
 			const attributes = yaml.attributes;
-			this.health      = {name: 'health', base: attributes['health-base'] || 20, scale: attributes['health-scale'] || 1};
-			this.mana        = {name: 'mana', base: attributes['mana-base'] || 20, scale: attributes['mana-scale'] || 1};
+			this.health      = {
+				name:  'health',
+				base:  attributes['health-base'] || 20,
+				scale: attributes['health-scale'] || 1
+			};
+			this.mana        = { name: 'mana', base: attributes['mana-base'] || 20, scale: attributes['mana-scale'] || 1 };
 
 			const map: { [key: string]: IAttribute } = {};
 			for (const attrId of Object.keys(attributes)) {
@@ -251,7 +295,7 @@ export default class FabledClass implements Serializable {
 				const name  = split[0];
 				if (map[name] || name === 'health' || name === 'mana') continue;
 
-				map[name]  = { name, base: attributes[`${name}-base`], scale: attributes[`${name}-scale`] };
+				map[name] = { name, base: attributes[`${name}-base`], scale: attributes[`${name}-scale`] };
 			}
 			this.attributes = Object.values(map);
 		}
@@ -295,9 +339,10 @@ export default class FabledClass implements Serializable {
 		if (!this.name) return;
 
 		if (this.location === 'server') {
-
 			return;
 		}
+
+		this.changed();
 
 		const yaml = YAML.stringify({ [this.name]: this.serializeYaml() }, { lineWidth: 0, aliasDuplicateObjects: false });
 
@@ -306,6 +351,8 @@ export default class FabledClass implements Serializable {
 		}
 		this.previousName = this.name;
 		localStorage.setItem('sapi.class.' + this.name, yaml);
+
+		console.log('Saved ' + this.name + ' 😎');
 	};
 }
 

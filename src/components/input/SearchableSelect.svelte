@@ -100,6 +100,7 @@
 		if (cancelled) return;
 
 		(<Array<unknown>>selected).push(item);
+		selected = [...(<Array<unknown>>selected)];
 		criteria = '';
 		focus();
 	};

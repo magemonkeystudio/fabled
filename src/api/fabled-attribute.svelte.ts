@@ -43,6 +43,23 @@ export default class FabledAttribute implements Serializable {
 		if (data.stats) this.stats = new AttributeStats(this, data.stats);
 	}
 
+	/**
+	 * Reads all the reactive state elements to act as a chane detector
+	 */
+	public changed = () => {
+		return {
+			name:       this.name,
+			display:    this.display,
+			max:        this.max,
+			cost:       this.cost,
+			icon:       this.icon,
+			targets:    this.targets,
+			conditions: this.conditions,
+			mechanics:  this.mechanics,
+			stats:      this.stats
+		};
+	};
+
 	public serializeYaml = (): AttributeYamlData => {
 		return <AttributeYamlData>{
 			display:       this.display,
@@ -83,6 +100,7 @@ export default class FabledAttribute implements Serializable {
 		if (this.location === 'server') {
 			return;
 		}
+		this.changed();
 		attributeStore.saveAll();
 	};
 }
