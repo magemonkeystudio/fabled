@@ -1105,6 +1105,7 @@ public class PlayerData {
             // Upgrade event
             PlayerSkillUpgradeEvent event = new PlayerSkillUpgradeEvent(this, data, cost);
             Bukkit.getPluginManager().callEvent(event);
+            Bukkit.getPluginManager().callEvent(new com.sucy.skill.api.event.PlayerSkillUpgradeEvent(this, data, cost));
             if (event.isCancelled()) {
                 return false;
             }
@@ -1151,6 +1152,7 @@ public class PlayerData {
             // Unlock event
             if (skill.getLevel() == 1) {
                 Bukkit.getPluginManager().callEvent(new PlayerSkillUnlockEvent(this, skill));
+                Bukkit.getPluginManager().callEvent(new com.sucy.skill.api.event.PlayerSkillUnlockEvent(this, skill));
                 this.autoLevel();
             }
         }
@@ -1194,6 +1196,7 @@ public class PlayerData {
             // Upgrade event
             PlayerSkillDowngradeEvent event = new PlayerSkillDowngradeEvent(this, data, cost);
             Bukkit.getPluginManager().callEvent(event);
+            Bukkit.getPluginManager().callEvent(new com.sucy.skill.api.event.PlayerSkillDowngradeEvent(this, data, cost));
             if (event.isCancelled()) {
                 return false;
             }

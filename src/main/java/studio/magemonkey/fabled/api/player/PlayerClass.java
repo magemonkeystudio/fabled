@@ -59,9 +59,9 @@ public class PlayerClass {
 
     // If shared-skill-points is enabled, this tracks the points gained (not lost) by each class,
     // so that if it is later disabled, points can be distributed properly
-    private       int         points;
+    private int points;
 
-    private       double      exp;
+    private double exp;
 
     ///////////////////////////////////////////////////////
     //                                                   //
@@ -302,9 +302,10 @@ public class PlayerClass {
         // Add the points if not cancelled
         if (!event.isCancelled()) {
             if (Fabled.getSettings().isSharedSkillPoints()) {
-                this.getPlayerData().setPoints((int) (this.getPlayerData().getPoints()+event.getAmount()));
+                this.getPlayerData().setPoints((int) (this.getPlayerData().getPoints() + event.getAmount()));
             }
-            if (!Fabled.getSettings().isSharedSkillPoints() || source != PointSource.REFUND) points += event.getAmount();
+            if (!Fabled.getSettings().isSharedSkillPoints() || source != PointSource.REFUND)
+                points += event.getAmount();
         }
     }
 
@@ -326,7 +327,7 @@ public class PlayerClass {
 
         // Use the points
         if (Fabled.getSettings().isSharedSkillPoints()) {
-            this.getPlayerData().setPoints(this.getPlayerData().getPoints()-amount);
+            this.getPlayerData().setPoints(this.getPlayerData().getPoints() - amount);
         } else {
             this.points -= amount;
         }
@@ -367,7 +368,9 @@ public class PlayerClass {
         PlayerExperienceGainEvent event = new PlayerExperienceGainEvent(this, amount, source);
         event.setCancelled(!classData.receivesExp(source) || level >= classData.getMaxLevel());
         Bukkit.getPluginManager().callEvent(event);
-        Bukkit.getPluginManager().callEvent(new com.sucy.skill.api.event.PlayerExperienceGainEvent(new com.sucy.skill.api.player.PlayerClass(this), amount, source));
+        Bukkit.getPluginManager()
+                .callEvent(new com.sucy.skill.api.event.PlayerExperienceGainEvent(new com.sucy.skill.api.player.PlayerClass(
+                        this), amount, source));
 
         int rounded = (int) Math.ceil(event.getExp());
 
@@ -533,6 +536,8 @@ public class PlayerClass {
         // Call the event
         PlayerLevelUpEvent event = new PlayerLevelUpEvent(this, amount);
         Bukkit.getPluginManager().callEvent(event);
+        Bukkit.getPluginManager()
+                .callEvent(new com.sucy.skill.api.event.PlayerLevelUpEvent(this, amount));
 
         // Apply the effect
         if (Fabled.getSettings().hasLevelUpEffect()) {
