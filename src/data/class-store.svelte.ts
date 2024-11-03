@@ -284,10 +284,10 @@ export default class FabledClass implements Serializable {
 			const attributes = yaml.attributes;
 			this.health      = {
 				name:  'health',
-				base:  attributes['health-base'] || 20,
-				scale: attributes['health-scale'] || 1
+				base:  attributes['health-base'] ?? 20,
+				scale: attributes['health-scale'] ?? 1
 			};
-			this.mana        = { name: 'mana', base: attributes['mana-base'] || 20, scale: attributes['mana-scale'] || 1 };
+			this.mana        = { name: 'mana', base: attributes['mana-base'] ?? 20, scale: attributes['mana-scale'] ?? 1 };
 
 			const map: { [key: string]: IAttribute } = {};
 			for (const attrId of Object.keys(attributes)) {
