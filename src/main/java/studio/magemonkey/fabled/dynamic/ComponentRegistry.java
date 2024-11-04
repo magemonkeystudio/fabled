@@ -37,6 +37,7 @@ public class ComponentRegistry {
 
     static {
         // Triggers
+        register(new AirTrigger());
         register(new ArmorEquipTrigger());
         register(new AttributeChangeTrigger());
         register(new BlockBreakTrigger());
