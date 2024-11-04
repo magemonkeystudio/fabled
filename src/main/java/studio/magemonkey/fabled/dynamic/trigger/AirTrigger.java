@@ -18,7 +18,8 @@ public class AirTrigger implements Trigger<EntityAirChangeEvent> {
     @Override
     public boolean shouldTrigger(EntityAirChangeEvent event, int level, Settings settings) {
         final String type = settings.getString("type", "decreasing");
-        return (event.getAmount() < 0 && type.equalsIgnoreCase("decreasing")) || (event.getAmount() > 0 && type.equalsIgnoreCase("increasing"));
+        final LivingEntity triggerEntity = (LivingEntity) event.getEntity();
+        return triggerEntity.canBreatheUnderwater() != (triggerEntity.isInWater() && type.equalsIgnoreCase("decreasing")) || (!triggerEntity.isInWater() &&  type.equalsIgnoreCase("increasing"));
     }
 
     @Override
