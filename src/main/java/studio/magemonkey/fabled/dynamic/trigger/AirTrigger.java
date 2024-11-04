@@ -17,7 +17,8 @@ public class AirTrigger implements Trigger<EntityAirChangeEvent> {
 
     @Override
     public boolean shouldTrigger(EntityAirChangeEvent event, int level, Settings settings) {
-        return true;
+        final String type = settings.getString("type", "decreasing");
+        return (event.getAmount() < 0 && type.equalsIgnoreCase("decreasing")) || (event.getAmount() > 0 && type.equalsIgnoreCase("increasing"));
     }
 
     @Override
