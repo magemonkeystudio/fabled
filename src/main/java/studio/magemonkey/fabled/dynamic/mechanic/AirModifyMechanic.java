@@ -20,13 +20,15 @@ public class AirModifyMechanic extends MechanicComponent {
     @Override
     public boolean execute(final LivingEntity caster, final int level, final List<LivingEntity> targets, boolean force) {
         final double air = Math.max(1, parseValues(caster, AIR, level, 1));
-        int ticks = (int) (air * 20);
+        final int ticks = (int) (air * 20);
 
         for (final LivingEntity target : targets) {
             if (target.getRemainingAir() + ticks > target.getMaximumAir()){
-                ticks = target.getMaximumAir();
+                target.setRemainingAir(target.getMaximumAir());
             }
-            target.setRemainingAir(target.getRemainingAir() + ticks);
+            else {
+                target.setRemainingAir(target.getRemainingAir() + ticks);
+            }
         }
 
         return true;
