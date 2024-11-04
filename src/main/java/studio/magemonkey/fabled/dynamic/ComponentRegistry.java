@@ -87,6 +87,7 @@ public class ComponentRegistry {
         register(new SingleTarget());
 
         // Conditions
+        register(new AirCondition());
         register(new AltitudeCondition());
         register(new ArmorCondition());
         register(new AttributeCondition());
@@ -138,6 +139,8 @@ public class ComponentRegistry {
 
         // Mechanics
         register(new AbortSkillMechanic());
+        register(new AirModifyMechanic());
+        register(new AirSetMechanic());
         register(new ArmorMechanic());
         register(new ArmorStandMechanic());
         register(new ArmorStandPoseMechanic());

@@ -8,7 +8,7 @@ import java.util.List;
  * Fabled © 2024
  * studio.magemonkey.fabled.dynamic.mechanic.HealthSetMechanic
  */
-public class AirModify extends MechanicComponent {
+public class AirSetMechanic extends MechanicComponent {
 
     private static final String AIR = "air";
 
