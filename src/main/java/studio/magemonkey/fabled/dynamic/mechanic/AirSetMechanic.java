@@ -14,7 +14,7 @@ public class AirSetMechanic extends MechanicComponent {
 
     @Override
     public String getKey() {
-        return "air modify";
+        return "air set";
     }
 
     @Override
@@ -23,7 +23,7 @@ public class AirSetMechanic extends MechanicComponent {
         final int ticks = (int) (air * 20);
 
         for (final LivingEntity target : targets) {
-            target.setRemainingAir(300);
+            target.setRemainingAir(ticks);
         }
 
         return true;
