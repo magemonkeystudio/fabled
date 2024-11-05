@@ -34,6 +34,19 @@ export default abstract class FabledComponent extends Constructable {
 		this.preview = data.preview || [];
 	}
 
+	/**
+	 * Reads all the reactive state elements to act as a chane detector
+	 */
+	public changed() {
+		return {
+			comment: this.comment,
+			components: get(this.components),
+			data: this.data,
+			preview: this.getRawPreviewData(),
+			enablePreview: this.enablePreview
+		}
+	};
+
 	public getValue(key: string): string {
 		const comp: ComponentOption | undefined = this.data?.find(opt => opt.key == key);
 		if (!comp || !comp.meetsRequirements(this)) return '';

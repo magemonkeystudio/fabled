@@ -11,11 +11,17 @@
 
 	let { data = $bindable(), tooltip = undefined, onsave }: Props = $props();
 
+	const changed = () => {
+		return {
+			enchants: data?.enchants
+		}
+	}
+
 	$effect(() => {
-		if (data || !data) onsave?.();
+		if (changed()) onsave?.();
 	});
 </script>
 
 <ProInput label='Enchant' tooltip='[enchant] {tooltip}'>
-	<EnchantSelect bind:selected={data.enchants} multiple={true} />
+	<EnchantSelect bind:selected={data.enchants} multiple={true} {onsave} />
 </ProInput>

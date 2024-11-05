@@ -252,8 +252,8 @@
 						{#if component.getValue(item)}
 							<span class='summary-item'>
 								<span>{item}:</span>
-								{#if item.includes('color')}
-									<span style:background-color={component.getValue(item)} class='color-sample'
+								{#if item.includes('color') && !component.getValue(item).includes(',') && !component.getValue(item).includes('_')}
+									<span style:background-color={component.getValue(item).toLowerCase()} class='color-sample'
 									></span>
 								{:else}
 									{component.getValue(item)}

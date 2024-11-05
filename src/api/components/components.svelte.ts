@@ -1223,6 +1223,24 @@ class ClassLevelCondition extends FabledCondition {
 	public static override new = () => new this();
 }
 
+class ColorCondition extends FabledCondition {
+	public constructor() {
+		super({
+			name:         'Color',
+			description:  'Applies child components when the target entity is of the specified color. Currently, this only works for sheep and shulkers',
+			data:         [
+				new DropdownSelect('Color', 'color', [
+					...getDyes()
+				], ['WHITE'], true)
+					.setTooltip('The color the entity must be')
+			],
+			summaryItems: ['color']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class CombatCondition extends FabledCondition {
 	public constructor() {
 		super({
@@ -5246,6 +5264,7 @@ export const initComponents = () => {
 		CHANCE:         { name: 'Chance', component: ChanceCondition },
 		CLASS:          { name: 'Class', component: ClassCondition },
 		CLASS_LEVEL:    { name: 'Class Level', component: ClassLevelCondition },
+		COLOR:          { name: 'Color', component: ColorCondition },
 		COMBAT:         { name: 'Combat', component: CombatCondition },
 		CROUCH:         { name: 'Crouch', component: CrouchCondition },
 		DIRECTION:      { name: 'Direction', component: DirectionCondition },

@@ -15,6 +15,14 @@ export default class FabledTrigger extends FabledComponent {
 		this.cooldown = data.cooldown || false;
 	}
 
+	public override changed() {
+		return {
+			...super.changed(),
+			mana:     this.mana,
+			cooldown: this.cooldown
+		};
+	}
+
 	public clone = (): FabledTrigger => {
 		return new FabledTrigger({
 			name:         this.name,

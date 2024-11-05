@@ -12,7 +12,7 @@
 	let { data = $bindable(), name = '', tooltip = undefined, onsave }: Props = $props();
 
 	$effect(() => {
-		if (data || !data) onsave?.();
+		if (data?.value) onsave?.();
 	});
 </script>
 <ProInput label={name} {tooltip}>

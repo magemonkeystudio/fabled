@@ -10,6 +10,13 @@ export default class FabledTarget extends FabledComponent {
 		super('target', data);
 	}
 
+	public override changed() {
+		return {
+			...super.changed(),
+			iconKey: this.iconKey
+		};
+	}
+
 	public override getData(raw = false): Unknown {
 		const data: Unknown = {};
 

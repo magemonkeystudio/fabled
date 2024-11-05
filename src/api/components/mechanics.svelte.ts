@@ -12,6 +12,14 @@ export default class FabledMechanic extends FabledComponent {
 		this.isParent = isParent; // This should be false unless for specific mechanics like projectiles
 	}
 
+	public override changed() {
+		return {
+			...super.changed(),
+			iconKey: this.iconKey,
+			countsAsCast: this.countsAsCast
+		};
+	}
+
 	public override getData(raw = false): Unknown {
 		const data: Unknown = {};
 

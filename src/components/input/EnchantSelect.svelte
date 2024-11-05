@@ -10,6 +10,7 @@
 		multiple?: boolean;
 		any?: boolean;
 		selected?: Enchant[] | Enchant | undefined;
+		onsave?: () => void;
 	}
 
 	let {
@@ -17,7 +18,8 @@
 				placeholder = '',
 				multiple    = false,
 				any         = false,
-				selected    = $bindable(undefined)
+				selected    = $bindable(undefined),
+				onsave
 			}: Props = $props();
 
 	const handleSelect = (item: string, index = -1) => {
@@ -47,6 +49,24 @@
 
 		return true;
 	};
+
+	const changed = () => {
+		if (selected instanceof Array) {
+			return selected.map((enchant) => ({
+				name:  enchant.name,
+				level: enchant.level
+			}));
+		} else {
+			return {
+				name:  selected?.name,
+				level: selected?.level
+			};
+		}
+	};
+
+	$effect(() => {
+		if (changed()) onsave?.();
+	});
 </script>
 
 {#if multiple}
@@ -55,7 +75,7 @@
 			<SearchableSelect
 				{id}
 				{placeholder}
-				selected={value.name}
+				bind:selected={value.name}
 				onselect={(item) => handleSelect(item, i)}
 				onremove={() => handleRemove(i)}
 				data={any ? ['Any', ...$versionData.ENCHANTS] : $versionData.ENCHANTS}

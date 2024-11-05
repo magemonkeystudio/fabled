@@ -4,7 +4,7 @@
 	import FabledClass, { classStore } from '../../data/class-store.svelte';
 
 	interface Props {
-		data?: FabledClass[] | FabledClass | string[] | string;
+		data?: FabledClass[] | FabledClass;
 		name?: string | undefined;
 		tooltip?: string | undefined;
 		multiple?: boolean;
@@ -15,25 +15,40 @@
 
 	const classes = classStore.classes;
 
-	$effect(() => {
-		if (!multiple && !data) data = '';
-		if (data instanceof Array) {
-			data = data
-				.map((cl) => {
-					if (cl instanceof FabledClass) return cl;
+	// $effect(() => {
+	// 	if (!multiple && !data) data = '';
+	// 	if (data instanceof Array) {
+	// 		data = data
+	// 			.map((cl) => {
+	// 				if (cl instanceof FabledClass) return cl;
+	//
+	// 				const clazz = classStore.getClass(cl);
+	// 				if (clazz) return clazz;
+	// 			})
+	// 			.filter((cl) => !!cl); // Remove any undefined values
+	// 	} else {
+	// 		if (data && !(data instanceof FabledClass)) {
+	// 			const clazz = classStore.getClass(<string>data);
+	// 			if (clazz) data = clazz;
+	// 		}
+	// 	}
+	// 	onsave?.();
+	// });
 
-					const clazz = classStore.getClass(cl);
-					if (clazz) return clazz;
-				})
-				.filter((cl) => !!cl); // Remove any undefined values
+	const changed = () => {
+		if (data instanceof Array) {
+			return data.map((d) => ({
+				name: d.name
+			}));
 		} else {
-			if (data && !(data instanceof FabledClass)) {
-				const clazz = classStore.getClass(<string>data);
-				if (clazz) data = clazz;
-			}
+			return data.name;
 		}
-		onsave?.();
+	};
+
+	$effect(() => {
+		if (changed()) onsave?.();
 	});
+
 </script>
 
 <ProInput label={name} {tooltip}>

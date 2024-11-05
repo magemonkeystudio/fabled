@@ -16,6 +16,12 @@ export default class EnchantSelect extends Requirements implements ComponentOpti
 		if (def) this.data.enchants = [def];
 	}
 
+	public changed() {
+		return [
+			...this.data.enchants
+		]
+	}
+
 	setTooltip = (tooltip: string): this => {
 		this.tooltip = tooltip;
 		return this;

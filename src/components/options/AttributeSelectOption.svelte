@@ -12,8 +12,15 @@
 
 	let { data = $bindable(), name = '', tooltip = undefined, onsave }: Props = $props();
 
+	const changed = () => {
+		return {
+			base: data?.base !== undefined,
+			scale: data?.scale !== undefined,
+		}
+	};
+
 	$effect(() => {
-		if (data || !data) onsave?.();
+		if (changed()) onsave?.();
 	});
 </script>
 

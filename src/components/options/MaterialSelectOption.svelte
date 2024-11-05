@@ -11,7 +11,7 @@
 	let { data = $bindable(), tooltip = undefined, onsave }: Props = $props();
 
 	$effect(() => {
-		if (data || !data) onsave?.();
+		if (data.material) onsave?.();
 	});
 </script>
 

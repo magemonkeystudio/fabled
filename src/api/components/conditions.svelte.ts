@@ -10,6 +10,13 @@ export default class FabledCondition extends FabledComponent {
 		super('condition', data);
 	}
 
+	public override changed() {
+		return {
+			...super.changed(),
+			iconKey: this.iconKey
+		};
+	}
+
 	public override getData(raw = false): Unknown {
 		const data: Unknown = {};
 		data['icon-key']    = this.iconKey;

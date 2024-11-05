@@ -34,7 +34,20 @@
 	// 		if (sk) data = sk;
 	// 	}
 	// }
-	$effect(() => onsave?.());
+
+	const changed = () => {
+		if (data instanceof Array) {
+			return data.map((d) => ({
+				name: d.name
+			}));
+		} else {
+			return data.name;
+		}
+	};
+
+	$effect(() => {
+		if (changed()) onsave?.();
+	});
 </script>
 
 <ProInput label={name} {tooltip}>

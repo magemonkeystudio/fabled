@@ -25,7 +25,7 @@
 	});
 
 	$effect(() => {
-		if (data || !data) {
+		if (data?.changed()) {
 			onsave?.();
 		}
 	});
