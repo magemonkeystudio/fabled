@@ -67,11 +67,11 @@ public class ComponentRegistry {
         register(new PhysicalTakenTrigger());
         register(new ProjectileHitTrigger());
         register(new ProjectileTickTrigger());
-        register(new SkillDealtTrigger());
-        register(new SkillTakenTrigger());
         register(new ShieldTrigger());
         register(new SignalTrigger());
         register(new SkillCastTrigger());
+        register(new SkillDealtTrigger());
+        register(new SkillTakenTrigger());
         register(new WorldChangeTrigger());
 
         // Targets
@@ -97,6 +97,7 @@ public class ComponentRegistry {
         register(new ChanceCondition());
         register(new ClassCondition());
         register(new ClassLevelCondition());
+        register(new ColorCondition());
         register(new CombatCondition());
         register(new CrouchCondition());
         register(new DirectionCondition());
@@ -114,8 +115,8 @@ public class ComponentRegistry {
         register(new LightCondition());
         register(new LoreCondition());
         register(new ManaCondition());
-        register(new MoonCondition());
         register(new MoneyCondition());
+        register(new MoonCondition());
         register(new MountedCondition());
         register(new MountingCondition());
         register(new MythicMobTypeCondition());
@@ -150,9 +151,9 @@ public class ComponentRegistry {
         register(new CleanseMechanic());
         register(new CommandMechanic());
         register(new CooldownMechanic());
-        register(new DamageMechanic());
         register(new DamageBuffMechanic());
         register(new DamageLoreMechanic());
+        register(new DamageMechanic());
         register(new DefenseBuffMechanic());
         register(new DelayMechanic());
         register(new DisguiseMechanic());
@@ -160,8 +161,8 @@ public class ComponentRegistry {
         register(new ExperienceMechanic());
         register(new ExplosionMechanic());
         register(new FireMechanic());
-        register(new FlagMechanic());
         register(new FlagClearMechanic());
+        register(new FlagMechanic());
         register(new FlagToggleMechanic());
         register(new FlyMechanic());
         register(new FoodMechanic());
@@ -183,10 +184,10 @@ public class ComponentRegistry {
         register(new MineMechanic());
         register(new MoneyMechanic());
         register(new MountMechanic());
-        register(new ParticleMechanic());
         register(new ParticleAnimationMechanic());
         register(new ParticleEffectMechanic());
         register(new ParticleImageMechanic());
+        register(new ParticleMechanic());
         register(new ParticleProjectileMechanic());
         register(new PassiveMechanic());
         register(new PermissionMechanic());
@@ -199,8 +200,8 @@ public class ComponentRegistry {
         register(new RepeatMechanic());
         register(new SignalEmitMechanic());
         register(new SkillCastMechanic());
-        register(new StatMechanic());
         register(new SoundMechanic());
+        register(new StatMechanic());
         register(new StatusMechanic());
         register(new SummonMechanic());
         register(new TauntMechanic());
@@ -223,8 +224,8 @@ public class ComponentRegistry {
         register(new ValueRotationMechanic());
         register(new ValueRoundMechanic());
         register(new ValueSetMechanic());
-        register(new WarpMechanic());
         register(new WarpLocMechanic());
+        register(new WarpMechanic());
         register(new WarpRandomMechanic());
         register(new WarpSwapMechanic());
         register(new WarpTargetMechanic());
