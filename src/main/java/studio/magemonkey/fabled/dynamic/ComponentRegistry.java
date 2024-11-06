@@ -125,6 +125,7 @@ public class ComponentRegistry {
         register(new PotionCondition());
         register(new SkillLevelCondition());
         register(new SlotCondition());
+        register(new SprintCondition());
         register(new StatusCondition());
         register(new TimeCondition());
         register(new ToolCondition());
