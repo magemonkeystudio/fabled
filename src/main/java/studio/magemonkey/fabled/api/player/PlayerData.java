@@ -1196,7 +1196,8 @@ public class PlayerData {
             // Upgrade event
             PlayerSkillDowngradeEvent event = new PlayerSkillDowngradeEvent(this, data, cost);
             Bukkit.getPluginManager().callEvent(event);
-            Bukkit.getPluginManager().callEvent(new com.sucy.skill.api.event.PlayerSkillDowngradeEvent(this, data, cost));
+            Bukkit.getPluginManager()
+                    .callEvent(new com.sucy.skill.api.event.PlayerSkillDowngradeEvent(this, data, cost));
             if (event.isCancelled()) {
                 return false;
             }
@@ -1497,8 +1498,8 @@ public class PlayerData {
                     if (reset) {
                         skills.remove(nm);
                         comboData.removeSkill(ps.getData());
+                        resetAttribs(true);
                     }
-                    resetAttribs(true);
                 }
             }
         } else {
