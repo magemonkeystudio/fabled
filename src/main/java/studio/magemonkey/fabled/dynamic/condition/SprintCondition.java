@@ -32,7 +32,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 public class SprintCondition extends ConditionComponent {
-    private static final String SPRINTING = "sprinting";
+    private static final String SPRINTING = "sprint";
 
     private boolean sprinting;
 
