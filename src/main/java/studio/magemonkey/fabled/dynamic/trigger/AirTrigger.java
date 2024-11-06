@@ -18,8 +18,14 @@ public class AirTrigger implements Trigger<EntityAirChangeEvent> {
     @Override
     public boolean shouldTrigger(EntityAirChangeEvent event, int level, Settings settings) {
         final String type = settings.getString("type", "decreasing");
+
+        final LivingEntity triggerEntity = (LivingEntity) event.getEntity();
+        final int previousAir = triggerEntity.getRemainingAir();
+        final int newAir = event.getAmount();
+
+
         // This only allows it to trigger whenever a bubble comes back / goes away.
-        return (event.getAmount() > 0);
+        return triggerEntity.canBreatheUnderwater() != ((newAir < previousAir && type.equalsIgnoreCase("decreasing")) || (newAir > previousAir &&  type.equalsIgnoreCase("increasing")));
     }
 
     @Override
