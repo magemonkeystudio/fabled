@@ -1621,7 +1621,7 @@ public class PlayerData {
                     ((PassiveSkill) ps.getData()).stopEffects(getPlayer());
                 }
 
-                points += ps.getInvestedCost();
+                if (ps != null) points += ps.getInvestedCost();
                 comboData.removeSkill(skill);
             }
             if (Fabled.getSettings().isSharedSkillPoints())
