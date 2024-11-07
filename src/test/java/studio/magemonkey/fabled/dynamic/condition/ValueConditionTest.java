@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ValueConditionTest extends MockedTest {
     private       PlayerMock     player;
-    private       LivingEntity   target;
     private       ValueCondition condition;
     private final DataSection    settings = new DataSection();
     private       CastData       castData;
@@ -25,10 +24,6 @@ public class ValueConditionTest extends MockedTest {
     @BeforeEach
     public void setup() {
         player = genPlayer("Travja");
-        target = (LivingEntity) player.getWorld()
-                .spawnEntity(player.getLocation(), EntityType.SHEEP);
-        ((Sheep) target).setColor(DyeColor.CYAN);
-
         DataSection data = new DataSection();
         data.set("key", "foobar");
         data.set("min-value-base", "0");
@@ -46,13 +41,13 @@ public class ValueConditionTest extends MockedTest {
     @Test
     void test_valueWellBelowPasses() {
         castData.put("foobar", 5.0);
-        assertTrue(condition.test(player, 1, target));
+        assertTrue(condition.test(player, 1, null));
     }
 
     @Test
     void test_equalTopPasses() {
         castData.put("foobar", 9.7);
-        assertTrue(condition.test(player, 1, target));
+        assertTrue(condition.test(player, 1, null));
     }
 
     @Test
@@ -61,7 +56,7 @@ public class ValueConditionTest extends MockedTest {
         for (int i = 0; i < 3; i++) {
             castData.put("foobar", castData.getDouble("foobar") - 0.1);
         }
-        assertTrue(condition.test(player, 1, target));
+        assertTrue(condition.test(player, 1, null));
     }
 
     @Test
@@ -70,24 +65,24 @@ public class ValueConditionTest extends MockedTest {
         for (int i = 0; i < 3; i++) {
             castData.put("foobar", castData.getDouble("foobar") + 0.1);
         }
-        assertTrue(condition.test(player, 1, target));
+        assertTrue(condition.test(player, 1, null));
     }
 
     @Test
     void test_equalBottomPasses() {
         castData.put("foobar", 0.0);
-        assertTrue(condition.test(player, 1, target));
+        assertTrue(condition.test(player, 1, null));
     }
 
     @Test
     void test_valueAboveFails() {
         castData.put("foobar", 9.8);
-        assertFalse(condition.test(player, 1, target));
+        assertFalse(condition.test(player, 1, null));
     }
 
     @Test
     void test_valueBelowFails() {
         castData.put("foobar", -1.0);
-        assertFalse(condition.test(player, 1, target));
+        assertFalse(condition.test(player, 1, null));
     }
 }
