@@ -27,7 +27,8 @@ public class AirSetMechanicTest extends MockedTest {
 
         DataSection  config = new DataSection();
         DataSection  data   = new DataSection();
-        data.set("air", air);
+        data.set("air-base", air);
+        data.set("air-scale", 0);
         config.set("data", data);
 
         mechanic.load(skill, config);
@@ -45,11 +46,39 @@ public class AirSetMechanicTest extends MockedTest {
     }
 
     @Test
-    void execute_setValue() {
+    void execute_setMinValue() {
+        AirSetMechanic mechanic = getMechanic(-20);
+
+        mechanic.execute(player, 1, List.of(player), false);
+
+        assertEquals(-20, player.getRemainingAir());
+    }
+
+    @Test
+    void execute_setPositiveValue() {
         AirSetMechanic mechanic = getMechanic(10);
+
+        mechanic.execute(player, 1, List.of(player), false);
+
+        assertEquals(200, player.getRemainingAir());
+    }
+
+    @Test
+    void execute_setNegativeValue() {
+        AirSetMechanic mechanic = getMechanic(-0.1);
+
+        mechanic.execute(player, 1, List.of(player), false);
+
+        assertEquals(-2, player.getRemainingAir());
+    }
+
+    @Test
+    void execute_setDecimalValue() {
+        AirSetMechanic mechanic = getMechanic(0.5);
 
         mechanic.execute(player, 1, List.of(player), false);
 
         assertEquals(10, player.getRemainingAir());
     }
+
 }
