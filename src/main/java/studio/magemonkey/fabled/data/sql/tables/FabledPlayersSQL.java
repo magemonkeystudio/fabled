@@ -137,31 +137,44 @@ public class FabledPlayersSQL extends IOManager {
     }
 
     public void migrateTable() {
-        // Delete Id column if existent
-        try (PreparedStatement delete = SQLManager.connection()
-                .prepareStatement("ALTER TABLE " + Table + " DROP COLUMN Id")) {
-            delete.execute();
-        } catch (SQLException e) {
-            Fabled.inst().getLogger().warning("[SQL:FusionPlayersSQL:migrateTable] Something went wrong with the sql-connection: "
-                            + e.getMessage());
-        }
+        try {
+            // Check and delete Id column if it exists
+            if (columnExists("Id")) {
+                try (PreparedStatement delete = SQLManager.connection()
+                        .prepareStatement("ALTER TABLE " + Table + " DROP COLUMN Id")) {
+                    delete.execute();
+                }
+            }
 
-        // Rename Name into UUID if existent
-        try (PreparedStatement rename = SQLManager.connection()
-                .prepareStatement("ALTER TABLE " + Table + " CHANGE Name UUID varchar(36)")) {
-            rename.execute();
-        } catch (SQLException e) {
-            Fabled.inst().getLogger().warning("[SQL:FusionPlayersSQL:migrateTable] Something went wrong with the sql-connection: "
-                            + e.getMessage());
-        }
+            // Check and rename Name to UUID if needed
+            if (columnExists("Name")) {
+                try (PreparedStatement rename = SQLManager.connection()
+                        .prepareStatement("ALTER TABLE " + Table + " CHANGE Name UUID varchar(36)")) {
+                    rename.execute();
+                }
+            }
 
-        // Rename data into Data if existent
-        try (PreparedStatement rename = SQLManager.connection()
-                .prepareStatement("ALTER TABLE " + Table + " CHANGE data Data MEDIUMTEXT")) {
-            rename.execute();
+            // Check and rename data to Data if needed
+            if (columnExists("data")) {
+                try (PreparedStatement rename = SQLManager.connection()
+                        .prepareStatement("ALTER TABLE " + Table + " CHANGE data Data MEDIUMTEXT")) {
+                    rename.execute();
+                }
+            }
         } catch (SQLException e) {
-            Fabled.inst().getLogger().warning("[SQL:FusionPlayersSQL:migrateTable] Something went wrong with the sql-connection: "
-                            + e.getMessage());
+            Fabled.inst().getLogger().warning("[SQL:FusionPlayersSQL:migrateTable] Something went wrong with the SQL connection: "
+                    + e.getMessage());
+        }
+    }
+
+    // Helper method to check if a column exists in the table
+    private boolean columnExists(String columnName) throws SQLException {
+        try (PreparedStatement stmt = SQLManager.connection()
+                .prepareStatement("SHOW COLUMNS FROM " + Table + " LIKE ?")) {
+            stmt.setString(1, columnName);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
         }
     }
 }
