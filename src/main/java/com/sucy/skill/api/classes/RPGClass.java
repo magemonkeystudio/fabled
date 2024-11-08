@@ -29,6 +29,10 @@ import java.util.Map;
 public class RPGClass {
     private final FabledClass root;
 
+    public FabledClass getWrapped() {
+        return root;
+    }
+
     public String getName() {
         return root.getName();
     }
@@ -78,7 +82,7 @@ public class RPGClass {
     }
 
     public ItemStack getIcon(PlayerData playerData) {
-        return root.getIcon(playerData.getActual());
+        return root.getIcon(playerData.getWrapped());
     }
 
     public boolean isAllowed(final Player player) {
