@@ -47,6 +47,10 @@ import java.util.Map;
  * Loads player data from the SQL Database
  */
 public class SQLIO extends IOManager {
+    public static final String OLD_ID   = "id";
+    public static final String OLD_DATA = "data";
+    public static final String NEW_ID   = "player_id";
+    public static final String NEW_DATA = "player_data";
     public static final String ID   = "id";
     public static final String DATA = "data";
 
@@ -68,8 +72,10 @@ public class SQLIO extends IOManager {
         connection.database.openConnection();
         connection.table = connection.database.createTable(api, "players");
 
-        connection.table.createColumn(ID, ColumnType.INCREMENT);
-        connection.table.createColumn(DATA, ColumnType.MEDIUM_TEXT);
+        migrateOldColumns(connection);
+        connection.table.createColumn(NEW_ID, ColumnType.INCREMENT);
+        connection.table.createColumn(NEW_DATA, ColumnType.MEDIUM_TEXT);
+        return connection;
         return connection;
     }
 
@@ -124,7 +130,7 @@ public class SQLIO extends IOManager {
         try {
             String playerKey = player.getUniqueId().toString().toLowerCase();
             DataSection file =
-                    new YAMLParser().parseText(connection.table.createEntry(playerKey).getString(DATA));
+                    new YAMLParser().parseText(connection.table.createEntry(playerKey).getString(NEW_DATA));
             return load(player, file);
         } catch (Exception ex) {
             Logger.bug("Failed to load data from the SQL Database - " + ex.getMessage());
@@ -137,7 +143,7 @@ public class SQLIO extends IOManager {
 
         try {
             String playerKey = data.getOfflinePlayer().getUniqueId().toString().toLowerCase();
-            connection.table.createEntry(playerKey).set(DATA, file.toString());
+            connection.table.createEntry(playerKey).set(NEW_DATA, file.toString());
         } catch (Exception ex) {
             Logger.bug("Failed to save data for invalid player");
         }
@@ -147,4 +153,14 @@ public class SQLIO extends IOManager {
         private SQLDatabase database;
         private SQLTable    table;
     }
+
+    private void migrateOldColumns(SQLConnection connection) {
+        if (connection.table.hasColumn(OLD_ID) && connection.table.hasColumn(OLD_DATA)) {
+            // Migrate data from old columns to new columns
+            connection.table.renameColumn(OLD_ID, NEW_ID);
+            connection.table.renameColumn(OLD_DATA, NEW_DATA);
+            Logger.info("Migrated old SQL columns to new format.");
+        }
+    }
+
 }
