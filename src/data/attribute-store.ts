@@ -77,7 +77,7 @@ class AttributeStore {
 	};
 
 	getDefaultAttributes = async (): Promise<FabledAttribute[]> => {
-		const yaml = parseYaml(await fetch('https://raw.githubusercontent.com/promcteam/fabled/dev/src/main/resources/attributes.yml').then(r => r.text()));
+		const yaml = parseYaml(await fetch('https://raw.githubusercontent.com/magemonkeystudio/fabled/dev/src/main/resources/attributes.yml').then(r => r.text()));
 		if (!yaml) return [];
 		return Object.keys(yaml).map((key: string) => {
 			const attrib: FabledAttribute = new FabledAttribute({ name: key });

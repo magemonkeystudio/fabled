@@ -116,7 +116,7 @@ export const saveData = (data?: FabledSkill | FabledClass | FabledAttribute, e?:
 
 export const getAttributeYaml = async () => {
 	let text = '';
-	for (const line of (await fetch('https://raw.githubusercontent.com/promcteam/fabled/dev/src/main/resources/attributes.yml').then(r => r.text())).split('\n')) {
+	for (const line of (await fetch('https://raw.githubusercontent.com/magemonkeystudio/fabled/dev/src/main/resources/attributes.yml').then(r => r.text())).split('\n')) {
 		if (line.startsWith('#') || line.length === 0) {
 			text = text + line + '\n';
 		} else {

@@ -12,7 +12,7 @@ To run the project locally, run `npm run dev` and navigate to [localhost:5173](h
 
 This app is set up to have a pretty automatic pipeline. You should just need to
 create a pull request and merge it into `editor` to deploy the app. The app will
-be deployed to [promcteam.github.io/proskillapi](https://promcteam.github.io/proskillapi/) where you can edit to your hearts content.
+be deployed to [fabled.magemonkey.studio](https://fabled.magemonkey.studio) where you can edit to your hearts content.
 
 ## SvelteKit
 
