@@ -1,15 +1,20 @@
 <script lang='ts'>
-	import ProInput                  from '$input/ProInput.svelte';
-	import SearchableSelect          from '$input/SearchableSelect.svelte';
-	import { createEventDispatcher } from 'svelte';
+	import ProInput         from '$input/ProInput.svelte';
+	import SearchableSelect from '$input/SearchableSelect.svelte';
 
-	export let data: { selected: string | string[], value: string[], multiple: boolean };
-	export let name: string | undefined    = '';
-	export let tooltip: string | undefined = undefined;
+	interface Props {
+		data: { selected: string | string[], value: string[], multiple: boolean };
+		name?: string | undefined;
+		tooltip?: string | undefined;
+		onsave?: () => void;
+	}
 
-	const dispatch = createEventDispatcher();
-	$: if (data) dispatch('save');
+	let { data = $bindable(), name = '', tooltip = undefined, onsave }: Props = $props();
+
+	$effect(() => {
+		if ((data && data.selected) || !data) onsave?.();
+	});
 </script>
 <ProInput label={name} {tooltip}>
-	<SearchableSelect bind:selected={data.selected} bind:data={data.value} bind:multiple={data.multiple} />
+	<SearchableSelect bind:data={data.value} bind:multiple={data.multiple} bind:selected={data.selected} />
 </ProInput>

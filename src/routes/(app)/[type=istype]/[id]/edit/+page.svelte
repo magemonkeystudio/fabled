@@ -3,11 +3,17 @@
 	import SkillDetails     from '$components/SkillDetails.svelte';
 	import AttributeDetails from '$components/AttributeDetails.svelte';
 	import { base }         from '$app/paths';
-	import FabledAttribute  from '$api/fabled-attribute';
-	import FabledClass      from '../../../../../data/class-store';
-	import FabledSkill      from '../../../../../data/skill-store';
+	import FabledAttribute  from '$api/fabled-attribute.svelte';
+	import FabledClass      from '../../../../../data/class-store.svelte';
+	import FabledSkill      from '../../../../../data/skill-store.svelte';
 
-	export let data: { data: FabledClass | FabledSkill | FabledAttribute };
+	interface Props {
+		data: { data: FabledClass | FabledSkill | FabledAttribute };
+	}
+
+	let { data }: Props = $props();
+
+	const save = () => data.data.save();
 </script>
 
 <svelte:head>
@@ -21,11 +27,11 @@
 <hr />
 <div class='container'>
 	{#if data?.data instanceof FabledClass}
-		<ClassDetails bind:data={data.data} />
+		<ClassDetails data={data.data} onsave={save} />
 	{:else if data?.data instanceof FabledSkill}
-		<SkillDetails bind:data={data.data} />
+		<SkillDetails data={data.data} onsave={save} />
 	{:else if data?.data instanceof FabledAttribute}
-		<AttributeDetails bind:data={data.data} />
+		<AttributeDetails data={data.data} onsave={save} />
 	{/if}
 </div>
 

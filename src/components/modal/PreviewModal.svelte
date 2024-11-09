@@ -1,40 +1,50 @@
 <script lang='ts'>
 	import Modal                from '$components/Modal.svelte';
-	import type FabledComponent from '$api/components/fabled-component';
-	import type DropdownSelect  from '$api/options/dropdownselect';
-	import type { ComponentOption } from '$api/options/options';
-	import Toggle                   from '$input/Toggle.svelte';
-	import ProInput                 from '$input/ProInput.svelte';
+	import type FabledComponent from '$api/components/fabled-component.svelte';
+	import DropdownSelect       from '$api/options/dropdownselect.svelte';
+	import Toggle               from '$input/Toggle.svelte';
+	import ProInput             from '$input/ProInput.svelte';
 
-	export let data: FabledComponent;
-	let modalOpen = true;
-
-	$: if (modalOpen && data) {
-		data.preview.filter((dat: ComponentOption) => (dat['dataSource'])).forEach((dat: DropdownSelect) => dat.init());
+	interface Props {
+		data: FabledComponent;
+		onclose?: () => void;
+		onsave?: () => void;
 	}
+
+	let { data, onclose, onsave }: Props = $props();
+
+	$effect.pre(() => {
+		if (data) {
+			data.preview.forEach((dat) => {
+				if (dat instanceof DropdownSelect) dat.init();
+			});
+		}
+	});
 </script>
 
-<Modal bind:open={modalOpen} on:close width='70%'>
+<Modal {onclose} width='70%'>
 	<h2 class:deprecated={data.isDeprecated}><span>{data.name} - Preview</span></h2>
 	{#if data.description}
 		<div class='modal-desc'>{data.description}</div>
 	{/if}
 	<hr />
 	<div class='component-entry'>
-		<ProInput label='Enable Preview'
-							tooltip={'[enabled] Whether this component will show its preview while casting. Requires a compatible casting mode: Item, Bars (hover bar only), Action bar, Title, Subtitle or Chat'}>
+		<ProInput
+			label='Enable Preview'
+			tooltip={'[enabled] Whether this component will show its preview while casting. Requires a compatible casting mode: Item, Bars (hover bar only), Action bar, Title, Subtitle or Chat'}
+		>
 			<Toggle bind:data={data.enablePreview} />
 		</ProInput>
 		{#if data.enablePreview}
 			{#each data.preview as datum}
 				{#if datum.meetsPreviewRequirements(data)}
-					<svelte:component
-						this={datum.component}
+					<datum.component
 						bind:data={datum.data}
 						name={datum.name}
 						tooltip="{datum.key ? '[' + datum.key + '] ' : ''}{datum.tooltip}"
 						multiple={datum.multiple}
-						on:save />
+						{onsave}
+					/>
 				{/if}
 			{/each}
 		{/if}
