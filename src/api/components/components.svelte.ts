@@ -57,7 +57,7 @@ class AirTrigger extends FabledTrigger {
 			description:  'Applies skill effects when an entity loses or gains air. This will fire every tick that the air value is updated.',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Increasing', 'Decreasing'])
-				.setTooltip('Whether the entity needs to be gaining or losing air to trigger')
+					.setTooltip('Whether the entity needs to be gaining or losing air to trigger')
 			],
 			summaryItems: ['type']
 		});
@@ -5280,7 +5280,7 @@ const particlePreviewOptions = (key: string): ComponentOption[] => {
 
 export const initComponents = () => {
 	triggers.set({
-		AIR:		   { name: 'Air', component: AirTrigger},
+		AIR:           { name: 'Air', component: AirTrigger },
 		ATTR_CHANGE:   { name: 'Attribute Change', component: AttributeChangeTrigger },
 		BLOCK_BREAK:   { name: 'Block Break', component: BlockBreakTrigger },
 		BLOCK_PLACE:   { name: 'Block Place', component: BlockPlaceTrigger },
@@ -5337,7 +5337,7 @@ export const initComponents = () => {
 		WORLD:    { name: 'World', component: WorldTarget }
 	});
 	conditions.set({
-		AIR:			{ name: 'Air', component: AirCondition},
+		AIR:            { name: 'Air', component: AirCondition },
 		ALTITUDE:       { name: 'Altitude', component: AltitudeCondition },
 		ARMOR:          { name: 'Armor', component: ArmorCondition },
 		ATTRIBUTE:      { name: 'Attribute', component: AttributeCondition },
@@ -5376,7 +5376,7 @@ export const initComponents = () => {
 		POTION:         { name: 'Potion', component: PotionCondition },
 		SKILL_LEVEL:    { name: 'Skill Level', component: SkillLevelCondition },
 		SLOT:           { name: 'Slot', component: SlotCondition },
-		SPRINT:			{ name: 'Sprint', component: SprintCondition},
+		SPRINT:         { name: 'Sprint', component: SprintCondition },
 		STATUS:         { name: 'Status', component: StatusCondition },
 		TIME:           { name: 'Time', component: TimeCondition },
 		TOOL:           { name: 'Tool', component: ToolCondition },
@@ -5388,8 +5388,8 @@ export const initComponents = () => {
 		YAW:            { name: 'Yaw', component: YawCondition }
 	});
 	mechanics.set({
-		AIR_MODIFY:			{ name: 'Air Modify', component: AirModify},
-		AIR_SET:			{ name: 'Air Set', component: AirSet},
+		AIR_MODIFY:         { name: 'Air Modify', component: AirModify },
+		AIR_SET:            { name: 'Air Set', component: AirSet },
 		ABORT_SKILL:        { name: 'Abort Skill', component: AbortSkillMechanic },
 		ARMOR:              { name: 'Armor', component: ArmorMechanic },
 		ARMOR_STAND:        { name: 'Armor Stand', component: ArmorStandMechanic },
