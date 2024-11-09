@@ -5,3 +5,4 @@ gh-pages/
 settings.xml
 toolchains.xml
 log.txt
+.svelte-kit
