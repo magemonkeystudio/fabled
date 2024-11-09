@@ -4463,31 +4463,8 @@ class StatMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Stat',
-			description:  'Gives a player bonus stat temporarily. All available <a href="https://github.com/promcteam/proskillapi/wiki/attributes#attribute-stats">attribute stats</a>',
+			description:  'Gives a player bonus stat temporarily. All available <a href="https://github.com/magemonkeystudio/fabled/wiki/attributes.yml">attribute stats</a>',
 			data:         [
-				// new DropdownSelect('Stat', 'key', ['health',
-				//                                              'mana',
-				//                                              'mana-regen',
-				//                                              'physical-damage',
-				//                                              'melee-damage',
-				//                                              'projectile-damage',
-				//                                              'physical-damage',
-				//                                              'melee-defense',
-				//                                              'projectile-defense',
-				//                                              'skill-damage',
-				//                                              'skill-defense',
-				//                                              'move-speed',
-				//                                              'attack-speed',
-				//                                              'armor',
-				//                                              'luck',
-				//                                              'armor-toughness',
-				//                                              'exp',
-				//                                              'hunger',
-				//                                              'hunger-heal',
-				//                                              'cooldown',
-				//                                              'knockback-resist'], 'health')
-				//     .setTooltip('The name of the stat to add to')
-				// ,
 				new StringSelect('Stat', 'key', 'health')
 					.setTooltip('The name of the stat to add to'),
 				new DropdownSelect('Operation', 'operation', ['ADD_NUMBER', 'MULTIPLY_PERCENTAGE'], 'ADD_NUMBER')
