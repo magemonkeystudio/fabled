@@ -49,6 +49,23 @@ import { attributeStore }                                        from '../../dat
 
 // TRIGGERS
 
+
+class AirTrigger extends FabledTrigger {
+	public constructor() {
+		super({
+			name:         'Air',
+			description:  'Applies skill effects when an entity loses or gains air. This will fire every tick that the air value is updated.',
+			data:         [
+				new DropdownSelect('Type', 'type', ['Increasing', 'Decreasing'])
+					.setTooltip('Whether the entity needs to be gaining or losing air to trigger')
+			],
+			summaryItems: ['type']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class ArmorEquipTrigger extends FabledTrigger {
 	public constructor() {
 		super({
@@ -1044,6 +1061,24 @@ const itemConditionOptions = (matOption: ComponentOption = new MaterialSelect(fa
 	];
 };
 
+class AirCondition extends FabledCondition {
+	public constructor() {
+		super({
+			name:         'Air',
+			description:  'Applies child components whenever the entity has an air value in the given range. Calculated in seconds left. By default, a player starts with 15 seconds of air.',
+			data:         [
+				new AttributeSelect('Min', 'min')
+					.setTooltip('The minimum number of seconds of remaining air the entity has.'),
+				new AttributeSelect('Max', 'max')
+					.setTooltip('The maximum number of seconds of remaining air the entity has.')
+			],
+			summaryItems: ['min', 'max']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class AltitudeCondition extends FabledCondition {
 	public constructor() {
 		super({
@@ -1715,6 +1750,22 @@ class SlotCondition extends FabledCondition {
 	public static override new = () => new this();
 }
 
+class SprintCondition extends FabledCondition {
+	public constructor() {
+		super({
+			name:         'Sprint',
+			description:  'Applies child components if the target player(s) are sprinting',
+			data:         [
+				new BooleanSelect('Sprinting', 'sprint', true)
+					.setTooltip('Whether the player should be sprinting')
+			],
+			summaryItems: ['sprint']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class StatusCondition extends FabledCondition {
 	public constructor() {
 		super({
@@ -2180,6 +2231,37 @@ const effectOptions = (optional: boolean): ComponentOption[] => {
 			.setTooltip('Whether to follow the rotation of the player for the effect.'))
 	];
 };
+
+class AirModify extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Air Modify',
+			description:  'Modifies the remaining air of an entity by a set amount of seconds. Positive numbers will add air, negative numbers will remove air. Players have a starting value of 15 seconds of air.',
+			data:         [
+				new AttributeSelect('Air', 'air', 3)
+					.setTooltip('The amount of air, in seconds, to add/subtract.')],
+			summaryItems: []
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
+class AirSet extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Air Set',
+			description:  'Sets the remaining air of an entity to a specific amount of seconds. Players have a starting value of 15 seconds of air.',
+			data:         [
+				new AttributeSelect('Air', 'air', 3)
+					.setTooltip('The amount of air, in seconds, to set to.')],
+			summaryItems: []
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
 
 class AbortSkillMechanic extends FabledMechanic {
 	public constructor() {
@@ -5198,6 +5280,7 @@ const particlePreviewOptions = (key: string): ComponentOption[] => {
 
 export const initComponents = () => {
 	triggers.set({
+		AIR:           { name: 'Air', component: AirTrigger },
 		ATTR_CHANGE:   { name: 'Attribute Change', component: AttributeChangeTrigger },
 		BLOCK_BREAK:   { name: 'Block Break', component: BlockBreakTrigger },
 		BLOCK_PLACE:   { name: 'Block Place', component: BlockPlaceTrigger },
@@ -5254,6 +5337,7 @@ export const initComponents = () => {
 		WORLD:    { name: 'World', component: WorldTarget }
 	});
 	conditions.set({
+		AIR:            { name: 'Air', component: AirCondition },
 		ALTITUDE:       { name: 'Altitude', component: AltitudeCondition },
 		ARMOR:          { name: 'Armor', component: ArmorCondition },
 		ATTRIBUTE:      { name: 'Attribute', component: AttributeCondition },
@@ -5292,6 +5376,7 @@ export const initComponents = () => {
 		POTION:         { name: 'Potion', component: PotionCondition },
 		SKILL_LEVEL:    { name: 'Skill Level', component: SkillLevelCondition },
 		SLOT:           { name: 'Slot', component: SlotCondition },
+		SPRINT:         { name: 'Sprint', component: SprintCondition },
 		STATUS:         { name: 'Status', component: StatusCondition },
 		TIME:           { name: 'Time', component: TimeCondition },
 		TOOL:           { name: 'Tool', component: ToolCondition },
@@ -5303,6 +5388,8 @@ export const initComponents = () => {
 		YAW:            { name: 'Yaw', component: YawCondition }
 	});
 	mechanics.set({
+		AIR_MODIFY:         { name: 'Air Modify', component: AirModify },
+		AIR_SET:            { name: 'Air Set', component: AirSet },
 		ABORT_SKILL:        { name: 'Abort Skill', component: AbortSkillMechanic },
 		ARMOR:              { name: 'Armor', component: ArmorMechanic },
 		ARMOR_STAND:        { name: 'Armor Stand', component: ArmorStandMechanic },
