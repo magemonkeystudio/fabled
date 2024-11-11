@@ -24,7 +24,7 @@ import java.util.UUID;
 
 public class FabledPlayersSQL extends IOManager {
 
-    private final String Table = "Fabled_players";
+    private final String table = "fabled_players";
 
     public FabledPlayersSQL() {
         super(Fabled.inst());
