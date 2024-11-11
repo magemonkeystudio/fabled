@@ -29,9 +29,9 @@ public class FabledPlayersSQL extends IOManager {
     public FabledPlayersSQL() {
         super(Fabled.inst());
         try (PreparedStatement create = SQLManager.connection()
-                .prepareStatement("CREATE TABLE IF NOT EXISTS " + Table + "("
-                        + "UUID varchar(36), "
-                        + "Data MEDIUMTEXT)")) {
+                .prepareStatement("CREATE TABLE IF NOT EXISTS " + table + "("
+                        + "uuid varchar(36), "
+                        + "data MEDIUMTEXT)")) {
             create.execute();
         } catch (SQLException e) {
             Fabled.inst().getLogger().warning("[SQL:FusionPlayersSQL:FusionPlayersSQL] Something went wrong with the sql-connection: "
@@ -42,11 +42,11 @@ public class FabledPlayersSQL extends IOManager {
     public PlayerAccounts loadPlayerAccounts(OfflinePlayer player) {
         if (player == null || player.getName() == null) return null;
         try(Connection connection = SQLManager.connection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM " + Table + " WHERE UUID = ?");
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM " + table + " WHERE uuid = ?");
             statement.setString(1, player.getUniqueId().toString());
             ResultSet result = statement.executeQuery();
             if(result.next()) {
-                return SQLUtils.load(player, result.getString("Data"));
+                return SQLUtils.load(player, result.getString("data"));
             }
 
         } catch (SQLException e) {
@@ -68,10 +68,10 @@ public class FabledPlayersSQL extends IOManager {
     public void savePlayerAccounts(OfflinePlayer player, PlayerAccounts accounts) {
         if (player == null || player.getName() == null) return;
         try(Connection connection = SQLManager.connection()) {
-            PreparedStatement statement = connection.prepareStatement("UPDATE " + Table + " SET Data = ? WHERE UUID = ?");
+            PreparedStatement statement = connection.prepareStatement("UPDATE " + table + " SET data = ? WHERE uuid = ?");
             DataSection data = IOManager.save(accounts);
             if(data == null) {
-                Fabled.inst().getLogger().warning("[SQL:FusionPlayersSQL:savePlayersAccounts] Data is null for player: " + player.getName());
+                Fabled.inst().getLogger().warning("[SQL:FusionPlayersSQL:savePlayersAccounts] data is null for player: " + player.getName());
                 return;
             }
             statement.setString(1, data.toString());
@@ -110,16 +110,16 @@ public class FabledPlayersSQL extends IOManager {
         saveAllPlayerAccounts();
     }
 
-    public int backUpData() {
+    public int backUpdata() {
         int count = 0;
         try(Connection connection = SQLManager.connection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM " + Table);
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM " + table);
             ResultSet result = statement.executeQuery();
             final File file = new File(api.getDataFolder(), "players");
             file.mkdir();
             while(result.next()) {
-                OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(result.getString("UUID")));
-                String data = result.getString("Data");
+                OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(result.getString("uuid")));
+                String data = result.getString("data");
                 String yaml = new YAMLParser().parseText(data).toString();
                 FileOutputStream out = new FileOutputStream(new File(file, player.getUniqueId() + ".yml"));
                 BufferedWriter write = new BufferedWriter(new OutputStreamWriter(out));
@@ -130,7 +130,7 @@ public class FabledPlayersSQL extends IOManager {
             return count;
         } catch (SQLException | IOException e) {
             Fabled.inst().getLogger().warning("&4SQL database backup failed - backed up {amount} entries" + Filter.AMOUNT.setReplacement(count + ""));
-            Fabled.inst().getLogger().warning("[SQL:FusionPlayersSQL:backUpData] Something went wrong with the sql-connection: "
+            Fabled.inst().getLogger().warning("[SQL:FusionPlayersSQL:backUpdata] Something went wrong with the sql-connection: "
                             + e.getMessage());
         }
         return count;
@@ -141,23 +141,23 @@ public class FabledPlayersSQL extends IOManager {
             // Check and delete Id column if it exists
             if (columnExists("Id")) {
                 try (PreparedStatement delete = SQLManager.connection()
-                        .prepareStatement("ALTER TABLE " + Table + " DROP COLUMN Id")) {
+                        .prepareStatement("ALTER TABLE " + table + " DROP COLUMN Id")) {
                     delete.execute();
                 }
             }
 
-            // Check and rename Name to UUID if needed
+            // Check and rename Name to uuid if needed
             if (columnExists("Name")) {
                 try (PreparedStatement rename = SQLManager.connection()
-                        .prepareStatement("ALTER TABLE " + Table + " CHANGE Name UUID varchar(36)")) {
+                        .prepareStatement("ALTER TABLE " + table + " CHANGE Name uuid varchar(36)")) {
                     rename.execute();
                 }
             }
 
-            // Check and rename data to Data if needed
+            // Check and rename data to data if needed
             if (columnExists("data")) {
                 try (PreparedStatement rename = SQLManager.connection()
-                        .prepareStatement("ALTER TABLE " + Table + " CHANGE data Data MEDIUMTEXT")) {
+                        .prepareStatement("ALTER TABLE " + table + " CHANGE data data MEDIUMTEXT")) {
                     rename.execute();
                 }
             }
@@ -170,7 +170,7 @@ public class FabledPlayersSQL extends IOManager {
     // Helper method to check if a column exists in the table
     private boolean columnExists(String columnName) throws SQLException {
         try (PreparedStatement stmt = SQLManager.connection()
-                .prepareStatement("SHOW COLUMNS FROM " + Table + " LIKE ?")) {
+                .prepareStatement("SHOW COLUMNS FROM " + table + " LIKE ?")) {
             stmt.setString(1, columnName);
             try (ResultSet rs = stmt.executeQuery()) {
                 return rs.next();
