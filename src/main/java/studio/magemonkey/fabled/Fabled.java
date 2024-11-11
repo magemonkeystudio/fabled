@@ -570,7 +570,8 @@ public class Fabled extends SkillAPI {
         registrationManager = new RegistrationManager(this);
         cmd = new CmdManager(this);
         if(settings.isUseSql()) {
-            SQLManager.init();
+            SQLManager.reload();
+            SQLManager.runMigrations();
             io = SQLManager.players();
         } else {
             io = new ConfigIO(this);

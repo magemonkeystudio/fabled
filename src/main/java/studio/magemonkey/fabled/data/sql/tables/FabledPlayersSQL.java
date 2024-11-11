@@ -148,7 +148,7 @@ public class FabledPlayersSQL extends IOManager {
         saveAllPlayerAccounts();
     }
 
-    public int backUpdata() {
+    public int backUpData() {
         int count = 0;
         try(Connection connection = SQLManager.connection()) {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM " + table);

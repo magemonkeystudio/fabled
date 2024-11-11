@@ -16,22 +16,23 @@ public class SQLManager {
 
     private static FabledPlayersSQL fabledPlayersSQL;
 
-    public static void init() {
-        String host = Fabled.getSettings().getSqlHost();
-        int port = Integer.parseInt(Fabled.getSettings().getSqlPort());
-        String database = Fabled.getSettings().getSqlDatabase();
-        String user = Fabled.getSettings().getSqlUser();
-        String password = Fabled.getSettings().getSqlPass();
+    private static final String host = Fabled.getSettings().getSqlHost();
+    private static final int port = Integer.parseInt(Fabled.getSettings().getSqlPort());
+    private static final String database = Fabled.getSettings().getSqlDatabase();
+    private static final String user = Fabled.getSettings().getSqlUser();
+    private static final String password = Fabled.getSettings().getSqlPass();
 
+    public static void reconnect() {
         Fabled.inst().getLogger().info("Initializing SQLManager with type: MySQL");
         connection = getMySQLConnection(host, port, database, user, password);
-
         if (connection == null) {
             Fabled.inst().getLogger().severe("Failed to initialize the Connection.");
         }
+    }
 
+    public static void reload() {
+        reconnect();
         fabledPlayersSQL = new FabledPlayersSQL();
-        fabledPlayersSQL.migrateTable();
     }
 
     // SQLite connection in case we want to implement it in future
@@ -64,7 +65,7 @@ public class SQLManager {
 
     public static Connection connection() throws SQLException {
         if (connection == null || connection.isClosed()) {
-            init();
+            reconnect();
         }
         if (connection != null) {
             return connection;
@@ -72,6 +73,11 @@ public class SQLManager {
             Fabled.inst().getLogger().severe("Connection is still null after initialization attempt.");
         }
         return null;
+    }
+
+    public static void runMigrations() {
+        if(fabledPlayersSQL != null)
+            fabledPlayersSQL.migrateTable();
     }
 
     public static FabledPlayersSQL players() {
