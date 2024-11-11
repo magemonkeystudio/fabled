@@ -18,9 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class FabledPlayersSQL extends IOManager {
 
@@ -59,8 +57,27 @@ public class FabledPlayersSQL extends IOManager {
 
     public Map<UUID, PlayerAccounts> loadAllOnlinePlayerAccounts() {
         Map<UUID, PlayerAccounts> result = new HashMap<>();
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            result.put(player.getUniqueId(), loadPlayerAccounts(player));
+        StringBuilder bulkSelect = new StringBuilder("SELECT * FROM " + table + " WHERE uuid IN (");
+        List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+        for(int i = 0; i < players.size(); i++) {
+            bulkSelect.append(players.get(i).getUniqueId());
+            if(i < Bukkit.getOnlinePlayers().size() - 1) {
+                bulkSelect.append(",");
+            }
+        }
+        bulkSelect.append(")");
+
+        try(Connection connection = SQLManager.connection()) {
+            PreparedStatement statement = connection.prepareStatement(bulkSelect.toString());
+            ResultSet resultSet = statement.executeQuery();
+            while(resultSet.next()) {
+                UUID uuid = UUID.fromString(resultSet.getString("uuid"));
+                PlayerAccounts accounts = SQLUtils.load(Bukkit.getOfflinePlayer(uuid), resultSet.getString("data"));
+                result.put(uuid, accounts);
+            }
+        } catch (SQLException e) {
+            Fabled.inst().getLogger().warning("[SQL:FusionPlayersSQL:loadAllOnlinePlayerAccounts] Something went wrong with the sql-connection: "
+                            + e.getMessage());
         }
         return result;
     }
@@ -69,6 +86,7 @@ public class FabledPlayersSQL extends IOManager {
         if (player == null || player.getName() == null) return;
         try(Connection connection = SQLManager.connection()) {
             PreparedStatement statement = connection.prepareStatement("UPDATE " + table + " SET data = ? WHERE uuid = ?");
+
             DataSection data = IOManager.save(accounts);
             if(data == null) {
                 Fabled.inst().getLogger().warning("[SQL:FusionPlayersSQL:savePlayersAccounts] data is null for player: " + player.getName());
@@ -85,8 +103,28 @@ public class FabledPlayersSQL extends IOManager {
 
     public void saveAllPlayerAccounts() {
         Map<UUID, PlayerAccounts> data = PlayerLoader.getAllPlayerAccounts();
-        for(Map.Entry<UUID, PlayerAccounts> entry : data.entrySet())
-            savePlayerAccounts(Bukkit.getOfflinePlayer(entry.getKey()), entry.getValue());
+
+        try (Connection connection = SQLManager.connection()) {
+            PreparedStatement statement = connection.prepareStatement("UPDATE " + table + " SET data = ? WHERE uuid = ?");
+            for (Map.Entry<UUID, PlayerAccounts> entry : data.entrySet()) {
+                UUID uuid = entry.getKey();
+                PlayerAccounts accounts = entry.getValue();
+
+                DataSection accountData = IOManager.save(accounts);
+                if (accountData == null) {
+                    Fabled.inst().getLogger().warning("[SQL:FusionPlayersSQL:saveAllPlayerAccounts] data is null for UUID: " + uuid);
+                    continue;
+                }
+                statement.setString(1, accountData.toString());
+                statement.setString(2, uuid.toString());
+                statement.addBatch();
+            }
+
+            statement.executeBatch();
+        } catch (SQLException e) {
+            Fabled.inst().getLogger().warning("[SQL:FusionPlayersSQL:saveAllPlayerAccounts] Something went wrong with the sql-connection: "
+                    + e.getMessage());
+        }
     }
 
 
