@@ -18,7 +18,6 @@ public class AirSetMechanicTest extends MockedTest {
     @BeforeEach
     public void setup() {
         player = this.genPlayer("Travja");
-        player.setRemainingAir(300);
     }
 
     private AirSetMechanic getMechanic(double air) {
