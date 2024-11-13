@@ -1,13 +1,13 @@
 /**
  * Fabled
- * studio.magemonkey.fabled.dynamic.condition.ValueCondition
+ * studio.magemonkey.fabled.dynamic.condition.CrouchCondition
  * <p>
  * The MIT License (MIT)
  * <p>
  * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software") to deal
+ * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
@@ -26,42 +26,29 @@
  */
 package studio.magemonkey.fabled.dynamic.condition;
 
-import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
-import java.util.List;
+public class SprintCondition extends ConditionComponent {
+    private static final String SPRINTING = "sprint";
 
-public class ValueCondition extends ConditionComponent {
-    private static final String KEY = "key";
-    private static final String MIN = "min-value";
-    private static final String MAX = "max-value";
+    private boolean sprinting;
 
     @Override
     public String getKey() {
-        return "value";
+        return "sprint";
     }
 
     @Override
-    public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        return test(caster, level, null) && executeChildren(caster, level, targets, force);
+    public void load(DynamicSkill skill, DataSection config) {
+        super.load(skill, config);
+        sprinting = !settings.getString(SPRINTING, "true").toLowerCase().equals("false");
     }
 
     @Override
     boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        final String key  = settings.getString(KEY);
-        final double min  = parseValues(caster, MIN, level, 1);
-        final double max  = parseValues(caster, MAX, level, 999);
-        CastData     data = DynamicSkill.getCastData(caster);
-        if (!data.contains(key)) return false;
-
-        double value = DynamicSkill.getCastData(caster).getDouble(key);
-
-        // Because of floating point precision, we need to allow for a small delta
-        double deltaAllowed = 0.0001;
-        double minDelta = value - min;
-        double maxDelta = max - value;
-
-        return minDelta >= -deltaAllowed && maxDelta >= -deltaAllowed;
+        return target instanceof Player && ((Player) target).isSprinting() == sprinting;
     }
 }
