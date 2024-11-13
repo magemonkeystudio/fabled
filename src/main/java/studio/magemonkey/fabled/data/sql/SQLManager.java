@@ -16,11 +16,11 @@ public class SQLManager {
 
     private static FabledPlayersSQL fabledPlayersSQL;
 
-    private static final String host = Fabled.getSettings().getSqlHost();
-    private static final int port = Integer.parseInt(Fabled.getSettings().getSqlPort());
-    private static final String database = Fabled.getSettings().getSqlDatabase();
-    private static final String user = Fabled.getSettings().getSqlUser();
-    private static final String password = Fabled.getSettings().getSqlPass();
+    private static String host;
+    private static int port;
+    private static String database;
+    private static String user;
+    private static String password;
 
     public static void reconnect() {
         Fabled.inst().getLogger().info("Initializing SQLManager with type: MySQL");
@@ -31,6 +31,12 @@ public class SQLManager {
     }
 
     public static void reload() {
+        host = Fabled.getSettings().getSqlHost();
+        port = Integer.parseInt(Fabled.getSettings().getSqlPort());
+        database = Fabled.getSettings().getSqlDatabase();
+        user = Fabled.getSettings().getSqlUser();
+        password = Fabled.getSettings().getSqlPass();
+
         reconnect();
         fabledPlayersSQL = new FabledPlayersSQL();
     }
