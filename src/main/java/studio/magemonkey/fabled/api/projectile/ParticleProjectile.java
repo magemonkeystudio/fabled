@@ -316,7 +316,7 @@ public class ParticleProjectile extends CustomProjectile {
         }
 
         // Distance
-        if (this.loc.distance(this.sloc) >= distance) {
+        if (this.loc.distanceSquared(this.sloc) >= distance * distance) {
             if (settings.getBool("on-expire")) callback.callback(this, null);
             cancel();
             Bukkit.getPluginManager().callEvent(new ParticleProjectileExpireEvent(this)); 
