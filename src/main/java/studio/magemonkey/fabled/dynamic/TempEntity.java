@@ -803,6 +803,7 @@ public class TempEntity implements LivingEntity {
 
     }
 
+
     public EntityDamageEvent getLastDamageCause() {
         return null;
     }

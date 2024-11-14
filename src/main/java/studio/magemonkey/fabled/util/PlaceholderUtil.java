@@ -3,7 +3,6 @@ package studio.magemonkey.fabled.util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 import studio.magemonkey.codex.util.AttributeUT;
