@@ -27,7 +27,6 @@
 package studio.magemonkey.fabled.listener;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -42,7 +41,7 @@ import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.scheduler.BukkitTask;
 import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.PlayerLoader;
+import studio.magemonkey.fabled.data.io.PlayerLoader;
 import studio.magemonkey.fabled.api.DefaultCombatProtection;
 import studio.magemonkey.fabled.api.enums.ExpSource;
 import studio.magemonkey.fabled.api.event.PhysicalDamageEvent;

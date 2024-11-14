@@ -32,7 +32,6 @@ import org.bukkit.entity.Player;
 import studio.magemonkey.codex.mccore.config.CommentedConfig;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.PlayerLoader;
 import studio.magemonkey.fabled.api.player.PlayerAccounts;
 import studio.magemonkey.fabled.log.Logger;
 

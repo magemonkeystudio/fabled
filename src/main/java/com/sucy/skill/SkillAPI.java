@@ -14,7 +14,7 @@ import org.bukkit.scheduler.BukkitTask;
 import studio.magemonkey.codex.mccore.config.CommentedConfig;
 import studio.magemonkey.codex.mccore.config.CommentedLanguageConfig;
 import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.PlayerLoader;
+import studio.magemonkey.fabled.data.io.PlayerLoader;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.player.PlayerClass;
 import studio.magemonkey.fabled.api.player.PlayerSkill;
@@ -278,7 +278,7 @@ public class SkillAPI extends JavaPlugin {
      */
     @Deprecated(forRemoval = true)
     public static PlayerAccounts loadPlayerData(OfflinePlayer player) {
-        return new PlayerAccounts(PlayerLoader.getPlayerAccounts(player));
+        return new PlayerAccounts(Fabled.getPlayerAccounts(player));
     }
 
     /**
@@ -324,11 +324,11 @@ public class SkillAPI extends JavaPlugin {
      *
      * @param player player to check for
      * @return true if data has loaded, false otherwise
-     * @deprecated use {@link PlayerLoader#hasPlayerAccounts(OfflinePlayer)}
+     * @deprecated use {@link PlayerLoader#hasPlayerData(OfflinePlayer)}
      */
     @Deprecated(forRemoval = true)
     public static boolean hasPlayerData(OfflinePlayer player) {
-        return PlayerLoader.hasPlayerAccounts(player);
+        return Fabled.hasPlayerData(player);
     }
 
     /**
@@ -363,11 +363,11 @@ public class SkillAPI extends JavaPlugin {
      *
      * @param player player to get the data for
      * @return the class data of the player
-     * @deprecated use {@link PlayerLoader#getPlayerAccounts(OfflinePlayer)}
+     * @deprecated use {@link Fabled#getPlayerAccounts(OfflinePlayer)}
      */
     @Deprecated(forRemoval = true)
     public static PlayerAccounts getPlayerAccountData(OfflinePlayer player) {
-        return new PlayerAccounts(PlayerLoader.getPlayerAccounts(player));
+        return new PlayerAccounts(Fabled.getPlayerAccounts(player));
     }
 
     /**

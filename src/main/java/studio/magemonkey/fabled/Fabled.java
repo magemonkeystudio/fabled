@@ -57,6 +57,7 @@ import studio.magemonkey.fabled.data.PlayerStats;
 import studio.magemonkey.fabled.data.Settings;
 import studio.magemonkey.fabled.data.io.ConfigIO;
 import studio.magemonkey.fabled.data.io.IOManager;
+import studio.magemonkey.fabled.data.io.PlayerLoader;
 import studio.magemonkey.fabled.data.sql.SQLManager;
 import studio.magemonkey.fabled.dynamic.DynamicClass;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
@@ -86,9 +87,9 @@ public class Fabled extends SkillAPI {
     private static Fabled singleton;
     public static  Random RANDOM = new Random();
 
-    private final Map<String, Skill>          skills  = new HashMap<>();
-    private final Map<String, FabledClass>    classes = new HashMap<>();
-    private final List<String>                groups  = new ArrayList<>();
+    private final Map<String, Skill>       skills  = new HashMap<>();
+    private final Map<String, FabledClass> classes = new HashMap<>();
+    private final List<String>             groups  = new ArrayList<>();
 
     private final List<FabledListener> listeners = new ArrayList<>();
 
@@ -318,7 +319,20 @@ public class Fabled extends SkillAPI {
         if (player == null) {
             return null;
         }
-        return PlayerLoader.getPlayerAccounts(player).getActiveData();
+        return getPlayerAccounts(player).getActiveData();
+    }
+
+    /**
+     * Checks whether Fabled currently has loaded data for the
+     * given player. This returning false doesn't necessarily mean the
+     * player doesn't have any data at all, just not data that is
+     * currently loaded.
+     *
+     * @param player player to check for
+     * @return true if data has loaded, false otherwise
+     */
+    public static boolean hasPlayerData(OfflinePlayer player) {
+        return PlayerLoader.hasPlayerAccounts(player);
     }
 
     /**
@@ -338,6 +352,22 @@ public class Fabled extends SkillAPI {
             if (!skipSaving)
                 PlayerLoader.unloadPlayer(player);
         });
+    }
+
+    /**
+     * Retrieves all class data for the player. This includes the active and
+     * all inactive accounts the player has. If no data is found, a new set
+     * of data will be created and returned.
+     *
+     * @param player player to get the data for
+     * @return the class data of the player
+     */
+    public static PlayerAccounts getPlayerAccounts(OfflinePlayer player) {
+        if (player == null) {
+            return null;
+        }
+
+        return PlayerLoader.getPlayerAccounts(player);
     }
 
     /**
@@ -567,7 +597,7 @@ public class Fabled extends SkillAPI {
         comboManager = new ComboManager();
         registrationManager = new RegistrationManager(this);
         cmd = new CmdManager(this);
-        if(settings.isUseSql()) {
+        if (settings.isUseSql()) {
             SQLManager.reload();
             SQLManager.runMigrations();
             io = SQLManager.players();

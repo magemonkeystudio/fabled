@@ -31,7 +31,6 @@ import studio.magemonkey.codex.mccore.commands.IFunction;
 import studio.magemonkey.codex.mccore.config.Filter;
 import studio.magemonkey.codex.mccore.config.parse.NumberParser;
 import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.PlayerLoader;
 import studio.magemonkey.fabled.api.player.PlayerAccounts;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -79,7 +78,7 @@ public class CmdForceReset implements IFunction, TabCompleter {
                 return;
             }
 
-            PlayerAccounts accounts = PlayerLoader.getPlayerAccounts(player);
+            PlayerAccounts accounts = Fabled.getPlayerAccounts(player);
             int            id       = accounts.getActiveId();
 
             if (args.length > 1)

@@ -29,7 +29,6 @@ package studio.magemonkey.fabled.task;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.PlayerLoader;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.thread.RepeatThreadTask;
 
@@ -52,7 +51,7 @@ public class CooldownTask extends RepeatThreadTask {
     @Override
     public void run() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!PlayerLoader.hasPlayerAccounts(player)) continue;
+            if (!Fabled.hasPlayerData(player)) continue;
 
             PlayerData data = Fabled.getData(player);
             if (data.hasClass()) data.getSkillBar().updateCooldowns();

@@ -3,13 +3,11 @@ package studio.magemonkey.fabled.util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 import studio.magemonkey.codex.util.AttributeUT;
 import studio.magemonkey.codex.util.StringUT;
 import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.PlayerLoader;
 import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.player.PlayerAccounts;
@@ -230,7 +228,7 @@ public class PlaceholderUtil {
             return "0";
         }
 
-        if (!PlayerLoader.hasPlayerAccounts(player)) {
+        if (!Fabled.hasPlayerData(player)) {
             return "0";
         }
 
@@ -331,7 +329,7 @@ public class PlaceholderUtil {
 
         if (identifier.startsWith("player_")) {
             if (identifier.startsWith("player_account_")) {
-                PlayerAccounts accounts = PlayerLoader.getPlayerAccounts(player);
+                PlayerAccounts accounts = Fabled.getPlayerAccounts(player);
                 Pattern        pattern  = Pattern.compile("player_account_(\\d+)");
                 Matcher        matcher  = pattern.matcher(identifier);
                 if (matcher.find()) {

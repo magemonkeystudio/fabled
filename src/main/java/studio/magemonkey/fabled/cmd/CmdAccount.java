@@ -29,7 +29,6 @@ package studio.magemonkey.fabled.cmd;
 import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
 import studio.magemonkey.codex.mccore.commands.IFunction;
 import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.PlayerLoader;
 import studio.magemonkey.fabled.api.player.PlayerAccounts;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -72,7 +71,7 @@ public class CmdAccount implements IFunction {
 
         // Switch accounts if valid number
         else {
-            PlayerAccounts player = PlayerLoader.getPlayerAccounts((Player) sender);
+            PlayerAccounts player = Fabled.getPlayerAccounts((Player) sender);
 
             try {
                 int id = Integer.parseInt(args[0]);

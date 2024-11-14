@@ -7,7 +7,7 @@ import studio.magemonkey.codex.mccore.config.Filter;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.codex.mccore.config.parse.YAMLParser;
 import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.PlayerLoader;
+import studio.magemonkey.fabled.data.io.PlayerLoader;
 import studio.magemonkey.fabled.api.player.PlayerAccounts;
 import studio.magemonkey.fabled.data.io.IOManager;
 import studio.magemonkey.fabled.data.sql.SQLManager;

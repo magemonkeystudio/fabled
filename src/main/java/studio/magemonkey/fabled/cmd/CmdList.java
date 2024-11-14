@@ -30,7 +30,6 @@ import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
 import studio.magemonkey.codex.mccore.commands.IFunction;
 import studio.magemonkey.codex.mccore.config.Filter;
 import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.PlayerLoader;
 import studio.magemonkey.fabled.api.player.PlayerAccounts;
 import studio.magemonkey.fabled.api.player.PlayerClass;
 import studio.magemonkey.fabled.api.player.PlayerData;
@@ -82,7 +81,7 @@ public class CmdList implements IFunction, TabCompleter {
                 return;
             }
 
-            PlayerAccounts accounts = PlayerLoader.getPlayerAccounts(target);
+            PlayerAccounts accounts = Fabled.getPlayerAccounts(target);
             cmd.sendMessage(sender,
                     TITLE,
                     ChatColor.DARK_GRAY + "--" + ChatColor.DARK_GREEN + " {player} " + ChatColor.DARK_GRAY

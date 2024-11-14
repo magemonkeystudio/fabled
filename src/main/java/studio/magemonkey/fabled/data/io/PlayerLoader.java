@@ -1,8 +1,9 @@
-package studio.magemonkey.fabled;
+package studio.magemonkey.fabled.data.io;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerAccounts;
 
 import java.util.Map;

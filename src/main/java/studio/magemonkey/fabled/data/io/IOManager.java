@@ -30,7 +30,6 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.PlayerLoader;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.player.*;
 import studio.magemonkey.fabled.api.skills.Skill;
