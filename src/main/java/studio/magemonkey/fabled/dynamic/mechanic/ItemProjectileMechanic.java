@@ -268,11 +268,13 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
                                 level,
                                 dir,
                                 location,
+                                location,
                                 copy,
                                 parseValues(caster, ANGLE, level, 30.0),
                                 amount,
                                 callback,
-                                lifespan
+                                lifespan,
+                                2 // Distance is ignored here.
                         ));
                     }
 

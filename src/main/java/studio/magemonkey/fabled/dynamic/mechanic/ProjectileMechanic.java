@@ -446,7 +446,7 @@ public class ProjectileMechanic extends MechanicComponent {
                                 parseValues(caster, HEIGHT, level, 8.0),
                                 amount,
                                 callback,
-                                lifespan));
+                                lifespan)); // Distance is ignored here.
                     } else {
                         Vector dir = location.getDirection();
                         if (spread.equals("horizontal cone")) {
@@ -458,11 +458,13 @@ public class ProjectileMechanic extends MechanicComponent {
                                 level,
                                 dir,
                                 location,
+                                location,
                                 copy,
                                 parseValues(caster, ANGLE, level, 30.0),
                                 amount,
                                 callback,
-                                lifespan
+                                lifespan,
+                                2 // Distance is ignored here.
                         ));
                     }
 
