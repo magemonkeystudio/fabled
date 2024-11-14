@@ -1,7 +1,7 @@
 package com.sucy.skill.api.player;
 
+import com.sucy.skill.api.classes.RPGClass;
 import lombok.RequiredArgsConstructor;
-import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.enums.ExpSource;
 import studio.magemonkey.fabled.api.enums.PointSource;
 import studio.magemonkey.fabled.api.event.PlayerExperienceLostEvent;
@@ -11,7 +11,7 @@ import studio.magemonkey.fabled.api.event.PlayerExperienceLostEvent;
  *
  * @deprecated use {@link studio.magemonkey.fabled.api.player.PlayerClass} instead
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 @RequiredArgsConstructor
 public class PlayerClass {
     private final studio.magemonkey.fabled.api.player.PlayerClass _data;
@@ -34,8 +34,8 @@ public class PlayerClass {
      *
      * @return generic data for the class
      */
-    public FabledClass getData() {
-        return _data.getData();
+    public RPGClass getData() {
+        return new RPGClass(_data.getData());
     }
 
     /**
