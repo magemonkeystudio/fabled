@@ -274,7 +274,7 @@ public class SkillAPI extends JavaPlugin {
      * asynchronously since it is loading configuration files.
      *
      * @param player player to load the data for
-     * @deprecated use {@link Fabled#loadPlayerAccounts(OfflinePlayer)}
+     * @deprecated use {@link Fabled#getPlayerAccounts(OfflinePlayer)}
      */
     @Deprecated(forRemoval = true)
     public static PlayerAccounts loadPlayerData(OfflinePlayer player) {
@@ -324,7 +324,7 @@ public class SkillAPI extends JavaPlugin {
      *
      * @param player player to check for
      * @return true if data has loaded, false otherwise
-     * @deprecated use {@link PlayerLoader#hasPlayerData(OfflinePlayer)}
+     * @deprecated use {@link Fabled#hasPlayerData(OfflinePlayer)}
      */
     @Deprecated(forRemoval = true)
     public static boolean hasPlayerData(OfflinePlayer player) {
