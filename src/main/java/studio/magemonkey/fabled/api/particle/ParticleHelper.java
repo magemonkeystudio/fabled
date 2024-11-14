@@ -358,6 +358,7 @@ public final class ParticleHelper {
                 object = item;
                 break;
             case "block":
+            case "block_dust":
             case "block_crack":
             case "falling_dust":
             case "block_marker":

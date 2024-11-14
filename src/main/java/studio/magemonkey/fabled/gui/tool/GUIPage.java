@@ -41,8 +41,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GUIPage {
-    private final HashMap<String, Integer> slots  = new HashMap<>();
-    private final HashMap<Integer, String> lookup = new HashMap<>();
+    private final Map<String, Integer> slots  = new HashMap<>();
+    private final Map<Integer, String> lookup = new HashMap<>();
 
     private final GUIData parent;
 
@@ -78,10 +78,7 @@ public class GUIPage {
 
     public int getIndex(String item) {
         item = item.toLowerCase();
-        if (!slots.containsKey(item))
-            return -1;
-        else
-            return slots.get(item);
+        return slots.getOrDefault(item, -1);
     }
 
     public void fill(ItemStack[] data) {
@@ -152,7 +149,7 @@ public class GUIPage {
                 continue;
             }
 
-            if (PluginChecker.isPlaceholderAPIActive()) {
+            if (item != null && PluginChecker.isPlaceholderAPIActive()) {
                 PlaceholderAPIHook.processPlaceholders(item, bukkitPlayer);
             }
             try {
@@ -174,6 +171,6 @@ public class GUIPage {
     }
 
     public boolean isValid() {
-        return slots.size() > 0;
+        return !slots.isEmpty();
     }
 }

@@ -27,6 +27,8 @@ import studio.magemonkey.fabled.cast.CastMode;
 import studio.magemonkey.fabled.cast.PlayerTextCastingData;
 import studio.magemonkey.fabled.gui.handlers.SkillHandler;
 import studio.magemonkey.fabled.gui.tool.GUITool;
+import studio.magemonkey.fabled.hook.PlaceholderAPIHook;
+import studio.magemonkey.fabled.hook.PluginChecker;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -199,6 +201,9 @@ public class CastTextListener extends FabledListener {
                 return;
             }
             String message = playerData.getTextCastingData().getMessage();
+            if (PluginChecker.isPlaceholderAPIActive()) {
+                message = PlaceholderAPIHook.format(message, player);
+            }
             switch (castMode) {
                 case ACTION_BAR -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
                 case TITLE -> player.sendTitle(message, "", 0, 20, 0);

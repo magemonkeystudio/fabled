@@ -13,7 +13,7 @@ authors:
 has-open-classloader: true
 
 dependencies:
-  - name: Codex
+  - name: CodexCore
     required: true
     bootstrap: true
   - name: Vault
@@ -51,7 +51,7 @@ load-before:
   - name: TAB
     boostrap: false
 load-after:
-  - name: Codex
+  - name: CodexCore
     boostrap: false
 
 permissions:

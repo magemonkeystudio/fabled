@@ -47,6 +47,7 @@ import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.codex.mccore.config.parse.NumberParser;
 import studio.magemonkey.codex.mccore.util.TextFormatter;
 import studio.magemonkey.codex.registry.damage.DamageRegistry;
+import studio.magemonkey.codex.util.AttributeUT;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.ReadOnlySettings;
 import studio.magemonkey.fabled.api.Settings;
@@ -765,7 +766,7 @@ public abstract class Skill implements IconHolder {
      * @param classification type of damage to deal
      */
     public void damage(LivingEntity target, double damage, LivingEntity source, String classification) {
-        damage(target, damage, source, classification, true);
+        damage(target, damage, source, classification, true, true);
     }
 
     /**
@@ -776,13 +777,15 @@ public abstract class Skill implements IconHolder {
      * @param source         source of the damage (skill caster)
      * @param classification type of damage to deal
      * @param knockback      whether the damage should apply knockback
+     * @param ignoreDivinity whether the skill's damage should use divinity's overrides
      */
     public void damage(LivingEntity target,
                        double damage,
                        LivingEntity source,
                        String classification,
-                       boolean knockback) {
-        damage(target, damage, source, classification, knockback, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+                       boolean knockback,
+                       boolean ignoreDivinity) {
+        damage(target, damage, source, classification, knockback, ignoreDivinity, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
     }
 
     /**
@@ -793,6 +796,7 @@ public abstract class Skill implements IconHolder {
      * @param source         source of the damage (skill caster)
      * @param classification type of damage to deal
      * @param knockback      whether the damage should apply knockback
+     * @param ignoreDivinity whether the skill's damage should use divinity's overrides
      * @param cause          the cause of the damage, might affect death messages
      */
     public void damage(LivingEntity target,
@@ -800,6 +804,7 @@ public abstract class Skill implements IconHolder {
                        LivingEntity source,
                        String classification,
                        boolean knockback,
+                       boolean ignoreDivinity,
                        EntityDamageEvent.DamageCause cause) {
         if (target instanceof TempEntity) {
             return;
@@ -813,7 +818,7 @@ public abstract class Skill implements IconHolder {
             return;
         }
 
-        SkillDamageEvent event = new SkillDamageEvent(this, source, target, damage, classification, knockback);
+        SkillDamageEvent event = new SkillDamageEvent(this, source, target, damage, classification, knockback, ignoreDivinity);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return;
@@ -865,7 +870,7 @@ public abstract class Skill implements IconHolder {
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled() && event.getDamage() != 0) {
             target.setHealth(Math.max(Math.min(target.getHealth() - event.getDamage(),
-                    target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()), 0));
+                    target.getAttribute(AttributeUT.resolve("MAX_HEALTH")).getValue()), 0));
         }
     }
 

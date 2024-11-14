@@ -109,10 +109,12 @@ public final class ItemStackReader {
 
         if (meta instanceof Damageable) {
             Damageable damageable = (Damageable) meta;
-            damageable.setDamage(readDurability(settings));
+            int        damage     = readDurability(settings);
+            if (damage > 0) damageable.setDamage(damage);
             meta.setUnbreakable(settings.getBool(UNBREAKABLE, false));
         }
-        meta.setCustomModelData(readCustomModelData(settings));
+        int modelData = readCustomModelData(settings);
+        if (modelData != 0) meta.setCustomModelData(modelData);
 
         for (String hideFlag : settings.getStringList(HIDE_FLAGS)) {
             try {

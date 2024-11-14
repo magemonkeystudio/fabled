@@ -26,12 +26,12 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic.value;
 
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
 
@@ -63,9 +63,11 @@ public class ValueDivideMechanic extends MechanicComponent {
             return false;
         }
 
-        String   key     = settings.getString(KEY);
-        double   divisor = parseValues(caster, DIVISOR, level, 1);
-        CastData data    = DynamicSkill.getCastData(caster);
+        String key     = settings.getString(KEY);
+        double divisor = parseValues(caster, DIVISOR, level, 1);
+        if (divisor == 0) return false;
+
+        CastData data = DynamicSkill.getCastData(caster);
         if (data.contains(key)) {
             data.put(key, data.getDouble(key) / divisor);
         }

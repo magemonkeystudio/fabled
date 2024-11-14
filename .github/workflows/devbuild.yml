@@ -56,7 +56,7 @@ jobs:
       - name: Update Javadocs
         run: |
           rm -rf editor/static/javadocs
-          cp -r app/gh-pages/javadocs editor/static
+          cp -r app/gh-pages/apidocs/ editor/static/javadocs/
           cd editor
           git add .
           git commit -m "Update javadocs"
@@ -71,4 +71,8 @@ jobs:
           git push
           git push --tags
       - name: Notify Discord
-        run: cd app && pip install simplejson && python ./.github/notify_published.py ${{ secrets.WEBHOOK_URL }} true
+        run: |
+          cd app
+          python -m venv .venv
+          .venv/bin/pip install simplejson requests
+          .venv/bin/python ./.github/notify_published.py ${{ secrets.WEBHOOK_URL }} true

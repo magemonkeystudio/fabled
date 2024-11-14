@@ -209,7 +209,7 @@ public class Fabled extends SkillAPI {
     }
 
     /**
-     * Checks whether a skill is registered.
+     * Checks whether a skill is registered
      *
      * @param name name of the skill
      * @return true if registered, false otherwise
@@ -467,8 +467,6 @@ public class Fabled extends SkillAPI {
         }
 
         MimicHook.init(this);
-        fabledProvider = new FabledAttributeProvider(this);
-        AttributeRegistry.registerProvider(fabledProvider);
     }
 
     /**
@@ -662,6 +660,9 @@ public class Fabled extends SkillAPI {
         if (Bukkit.getServer().getPluginManager().getPlugin("Quests") != null) {
             ResourceManager.copyQuestsModule();
         }
+
+        fabledProvider = new FabledAttributeProvider();
+        AttributeRegistry.registerProvider(fabledProvider);
 
         loaded = true;
     }

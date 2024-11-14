@@ -25,7 +25,7 @@ if is_dev:
     version = '-'.join(split)
 if not is_dev:
     url = re.sub(
-        'https:\/\/s01\.oss\.sonatype\.org:443\/service\/local\/staging\/deployByRepositoryId\/studiomagemonkey-\d+',
+        r'https:\/\/s01\.oss\.sonatype\.org:443\/service\/local\/staging\/deployByRepositoryId\/studiomagemonkey-\d+',
         'https://s01.oss.sonatype.org/service/local/repositories/releases/content',
         url)
 embed = {

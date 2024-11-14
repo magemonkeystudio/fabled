@@ -66,16 +66,10 @@ public class PlayerAttributeModifier {
     }
 
     public double applyOn(double value) {
-
-        switch (this.operation) {
-            case ADD_NUMBER:
-                return value + this.amount;
-            case MULTIPLY_PERCENTAGE:
-                return value * this.amount;
-        }
-
-        return -1;
-
+        return switch (this.operation) {
+            case ADD_NUMBER -> value + this.amount;
+            case MULTIPLY_PERCENTAGE -> value * this.amount;
+        };
     }
 
     public UUID getUUID() {
