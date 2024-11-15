@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Deprecated(forRemoval = true)
 public class PlayerAccounts {
     private final studio.magemonkey.fabled.api.player.PlayerAccounts _accounts;
 

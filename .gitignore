@@ -2,8 +2,8 @@
 *.iml
 /*target
 gh-pages/
-node_modules/
-.svelte-kit/
 settings.xml
 toolchains.xml
 log.txt
+.svelte-kit/
+node_modules/

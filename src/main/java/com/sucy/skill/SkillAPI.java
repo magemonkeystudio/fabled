@@ -14,6 +14,7 @@ import org.bukkit.scheduler.BukkitTask;
 import studio.magemonkey.codex.mccore.config.CommentedConfig;
 import studio.magemonkey.codex.mccore.config.CommentedLanguageConfig;
 import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.data.io.PlayerLoader;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.player.PlayerClass;
 import studio.magemonkey.fabled.api.player.PlayerSkill;
@@ -26,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -272,11 +274,11 @@ public class SkillAPI extends JavaPlugin {
      * asynchronously since it is loading configuration files.
      *
      * @param player player to load the data for
-     * @deprecated use {@link Fabled#loadPlayerAccounts(OfflinePlayer)}
+     * @deprecated use {@link Fabled#getPlayerAccounts(OfflinePlayer)}
      */
     @Deprecated(forRemoval = true)
     public static PlayerAccounts loadPlayerData(OfflinePlayer player) {
-        return new PlayerAccounts(Fabled.loadPlayerAccounts(player));
+        return new PlayerAccounts(Fabled.getPlayerAccounts(player));
     }
 
     /**
@@ -284,11 +286,11 @@ public class SkillAPI extends JavaPlugin {
      * This should not be used by other plugins. If the player data already exists, this does nothing.
      *
      * @param player player to fake data for
-     * @deprecated use {@link Fabled#initFakeData(OfflinePlayer)}
+     * @deprecated dont use it
      */
     @Deprecated(forRemoval = true)
     public static void initFakeData(final OfflinePlayer player) {
-        Fabled.initFakeData(player);
+        // Will be removed due to data loss
     }
 
     /**
@@ -307,11 +309,11 @@ public class SkillAPI extends JavaPlugin {
      * should be called asynchronously to avoid problems
      * with the main server loop.
      *
-     * @deprecated use {@link Fabled#saveData()}
+     * @deprecated use {@link PlayerLoader#saveAllPlayerAccounts()}
      */
     @Deprecated(forRemoval = true)
     public static void saveData() {
-        Fabled.saveData();
+        PlayerLoader.saveAllPlayerAccounts();
     }
 
     /**
@@ -373,11 +375,11 @@ public class SkillAPI extends JavaPlugin {
      * modify this map. Instead, use helper methods within individual player data.
      *
      * @return all Fabled player data
-     * @deprecated use {@link Fabled#getPlayerAccounts()}
+     * @deprecated use {@link PlayerLoader#getAllPlayerAccounts()}
      */
     @Deprecated(forRemoval = true)
-    public static Map<String, PlayerAccounts> getPlayerAccountData() {
-        return Fabled.getPlayerAccounts().entrySet()
+    public static Map<UUID, PlayerAccounts> getPlayerAccountData() {
+        return PlayerLoader.getAllPlayerAccounts().entrySet()
                 .stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
                         entry -> new PlayerAccounts(entry.getValue()),
