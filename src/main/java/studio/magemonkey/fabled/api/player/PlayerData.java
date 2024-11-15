@@ -1148,13 +1148,13 @@ public class PlayerData {
                     ((PassiveSkill) skill.getData()).update(player, oldLevel, skill.getLevel());
                 }
             }
+        }
 
-            // Unlock event
-            if (skill.getLevel() == 1) {
-                Bukkit.getPluginManager().callEvent(new PlayerSkillUnlockEvent(this, skill));
-                Bukkit.getPluginManager().callEvent(new com.sucy.skill.api.event.PlayerSkillUnlockEvent(this, skill));
-                this.autoLevel();
-            }
+        // Unlock event
+        if (skill.getLevel() == 1) {
+            Bukkit.getPluginManager().callEvent(new PlayerSkillUnlockEvent(this, skill));
+            Bukkit.getPluginManager().callEvent(new com.sucy.skill.api.event.PlayerSkillUnlockEvent(this, skill));
+            this.autoLevel();
         }
     }
 

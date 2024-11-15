@@ -1,19 +1,22 @@
 package studio.magemonkey.fabled.cast;
 
+import lombok.Getter;
+import org.bukkit.inventory.PlayerInventory;
+import org.jetbrains.annotations.Nullable;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
+import studio.magemonkey.codex.util.StringUT;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.player.PlayerSkill;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import studio.magemonkey.codex.util.StringUT;
-import org.bukkit.inventory.PlayerInventory;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class PlayerTextCastingData {
     private final PlayerData player;
     private final String[]   skills  = new String[9];
+    @Getter
     private       boolean    casting = false;
     private       int        oldSlot;
 
@@ -37,7 +40,7 @@ public class PlayerTextCastingData {
         }
         int castSlot = Fabled.getSettings().getCastSlot();
         if (skills[castSlot] != null) {
-            ArrayList<String> list = new ArrayList<>(10);
+            List<String> list = new ArrayList<>(10);
             Collections.addAll(list, skills);
             for (int i = 0; i < list.size(); i++) {
                 if (i != castSlot && list.get(i) == null) {
@@ -76,7 +79,12 @@ public class PlayerTextCastingData {
 
     @Nullable
     public String getSkill(int slot) {
-        return skills[slot];
+        String skill = skills[slot];
+        if (isValid(skill)) return skill;
+        else {
+            skills[slot] = null;
+            return null;
+        }
     }
 
     public void assign(@Nullable String skillName, int slot) {
@@ -125,10 +133,6 @@ public class PlayerTextCastingData {
             }
         }
         return stringBuilder.toString();
-    }
-
-    public boolean isCasting() {
-        return casting;
     }
 
     public void setCasting(boolean casting) {
