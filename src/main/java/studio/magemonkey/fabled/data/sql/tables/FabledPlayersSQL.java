@@ -22,7 +22,7 @@ import java.util.*;
 
 public class FabledPlayersSQL extends IOManager {
 
-    private final String table = "fabled_players";
+    private final String table = "Fabled_players";
 
     public FabledPlayersSQL() {
         super(Fabled.inst());
@@ -176,10 +176,10 @@ public class FabledPlayersSQL extends IOManager {
 
     public void migrateTable() {
         try {
-            // Check and delete Id column if it exists
-            if (columnExists("Id")) {
+            // Check and delete id column if it exists
+            if (columnExists("id")) {
                 try (PreparedStatement delete = SQLManager.connection()
-                        .prepareStatement("ALTER TABLE " + table + " DROP COLUMN Id")) {
+                        .prepareStatement("ALTER TABLE " + table + " DROP COLUMN id")) {
                     delete.execute();
                 }
             }
@@ -187,15 +187,7 @@ public class FabledPlayersSQL extends IOManager {
             // Check and rename Name to uuid if needed
             if (columnExists("Name")) {
                 try (PreparedStatement rename = SQLManager.connection()
-                        .prepareStatement("ALTER TABLE " + table + " CHANGE Name uuid varchar(36)")) {
-                    rename.execute();
-                }
-            }
-
-            // Check and rename data to data if needed
-            if (columnExists("data")) {
-                try (PreparedStatement rename = SQLManager.connection()
-                        .prepareStatement("ALTER TABLE " + table + " CHANGE data data MEDIUMTEXT")) {
+                        .prepareStatement("ALTER TABLE " + table + " CHANGE Name uuid varchar(36) PRIMARY KEY")) {
                     rename.execute();
                 }
             }
