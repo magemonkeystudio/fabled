@@ -46,17 +46,14 @@ import studio.magemonkey.fabled.api.event.PlayerSkillUnlockEvent;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.player.PlayerSkillSlot;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Handles the alternate casting option for casting via a cycling slot
  */
 public class CastItemListener extends FabledListener {
-    private final HashMap<UUID, PlayerSkillSlot> data            = new HashMap<>();
-    private final Set<UUID>                      playersDropping = new HashSet<>();
+    private final Map<UUID, PlayerSkillSlot> data            = new HashMap<>();
+    private final Set<UUID>                  playersDropping = new HashSet<>();
 
     private void cleanup(Player player) {
         data.remove(player.getUniqueId());
