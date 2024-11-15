@@ -4,6 +4,7 @@ com.sucy.skill.api.classes
 com.sucy.skill.api.enums
 com.sucy.skill.api.event
 com.sucy.skill.api.player
+com.sucy.skill.data
 com.sucy.skill.manager
 studio.magemonkey.fabled
 studio.magemonkey.fabled.api
