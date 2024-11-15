@@ -1,7 +1,5 @@
 package studio.magemonkey.fabled.listener;
 
-import studio.magemonkey.fabled.api.DefaultCombatProtection;
-import studio.magemonkey.fabled.api.event.PlayerBlockDamageEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Entity;
@@ -9,6 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerStatisticIncrementEvent;
+import studio.magemonkey.fabled.api.DefaultCombatProtection;
+import studio.magemonkey.fabled.api.event.PlayerBlockDamageEvent;
 
 import java.util.HashMap;
 import java.util.Timer;

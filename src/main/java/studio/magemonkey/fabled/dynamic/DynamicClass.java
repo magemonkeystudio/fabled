@@ -26,10 +26,10 @@
  */
 package studio.magemonkey.fabled.dynamic;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.classes.FabledClass;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.classes.FabledClass;
 
 /**
  * <p>A basic implementation of RPGClass that loads from the dynamic

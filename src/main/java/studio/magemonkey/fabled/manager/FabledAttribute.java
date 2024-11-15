@@ -1,5 +1,12 @@
 package studio.magemonkey.fabled.manager;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.util.DamageLoreRemover;
@@ -11,13 +18,6 @@ import studio.magemonkey.fabled.dynamic.EffectComponent;
 import studio.magemonkey.fabled.gui.tool.IconHolder;
 import studio.magemonkey.fabled.log.LogType;
 import studio.magemonkey.fabled.log.Logger;
-import lombok.Getter;
-import lombok.Setter;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 import java.util.stream.Collectors;

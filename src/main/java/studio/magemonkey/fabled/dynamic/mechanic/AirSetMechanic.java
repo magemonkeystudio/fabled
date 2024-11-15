@@ -19,9 +19,12 @@ public class AirSetMechanic extends MechanicComponent {
 
     // Air values are handled via ticks. Has a maximum value of 300, or 15 ticks of air.
     @Override
-    public boolean execute(final LivingEntity caster, final int level, final List<LivingEntity> targets, boolean force) {
-        final double air = parseValues(caster, AIR, level, 3.0);
-        int ticks = (int) (air * 20);
+    public boolean execute(final LivingEntity caster,
+                           final int level,
+                           final List<LivingEntity> targets,
+                           boolean force) {
+        final double air   = parseValues(caster, AIR, level, 3.0);
+        int          ticks = (int) (air * 20);
 
         for (LivingEntity target : targets) {
             target.setRemainingAir(Math.max(-20, Math.min(ticks, target.getMaximumAir())));

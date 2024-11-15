@@ -187,7 +187,8 @@ public abstract class IOManager {
                     for (String classKey : classes.keys()) {
                         FabledClass fabledClass = Fabled.getClass(classKey);
                         if (fabledClass != null) {
-                            acc.getClass(fabledClass.getGroup()).setEarnedPoints(classes.getSection(classKey).getInt(POINTS, 0));
+                            acc.getClass(fabledClass.getGroup())
+                                    .setEarnedPoints(classes.getSection(classKey).getInt(POINTS, 0));
                         }
                     }
                 } else {
@@ -199,7 +200,7 @@ public abstract class IOManager {
                             int current = classes.getSection(classKey).getInt(POINTS, 0);
                             shared += current;
                             PlayerClass playerClass = acc.getClass(fabledClass.getGroup());
-                            playerClass.setEarnedPoints(current+acc.getSkills().stream()
+                            playerClass.setEarnedPoints(current + acc.getSkills().stream()
                                     .filter(skill -> skill.getPlayerClass() == playerClass)
                                     .map(PlayerSkill::getInvestedCost)
                                     .reduce(Integer::sum).orElse(0));
@@ -210,7 +211,7 @@ public abstract class IOManager {
             } else {
                 if (account.has(SHARED_POINTS)) {
                     // shared-skill-points was just disabled,
-                    Map<String,Integer> points = new HashMap<>();
+                    Map<String, Integer> points = new HashMap<>();
                     for (String classKey : classes.keys()) {
                         FabledClass fabledClass = Fabled.getClass(classKey);
                         if (fabledClass != null) {
@@ -227,7 +228,8 @@ public abstract class IOManager {
                     for (String classKey : classes.keys()) {
                         FabledClass fabledClass = Fabled.getClass(classKey);
                         if (fabledClass != null) {
-                            acc.getClass(fabledClass.getGroup()).setPoints(classes.getSection(classKey).getInt(POINTS, 0));
+                            acc.getClass(fabledClass.getGroup())
+                                    .setPoints(classes.getSection(classKey).getInt(POINTS, 0));
                         }
                     }
                 }

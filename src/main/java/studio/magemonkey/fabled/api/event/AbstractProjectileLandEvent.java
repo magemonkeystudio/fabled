@@ -1,8 +1,8 @@
 package studio.magemonkey.fabled.api.event;
 
-import studio.magemonkey.fabled.api.projectile.CustomProjectile;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import studio.magemonkey.fabled.api.projectile.CustomProjectile;
 
 public class AbstractProjectileLandEvent<T extends CustomProjectile> extends Event {
     private static final HandlerList handlers = new HandlerList();

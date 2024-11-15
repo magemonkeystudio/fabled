@@ -26,13 +26,13 @@
  */
 package studio.magemonkey.fabled.api.particle;
 
+import org.bukkit.Color;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.api.particle.direction.Directions;
 import studio.magemonkey.fabled.api.particle.target.EffectTarget;
 import studio.magemonkey.fabled.log.Logger;
-import org.bukkit.Color;
-import org.bukkit.Material;
-import org.bukkit.Particle;
 
 /**
  * Handles playing effects based on configuration settings

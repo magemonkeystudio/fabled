@@ -26,12 +26,12 @@
  */
 package studio.magemonkey.fabled.gui.map;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.player.PlayerSkill;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import studio.magemonkey.codex.mccore.gui.*;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.player.PlayerSkill;
 
 import java.util.ArrayList;
 import java.util.List;

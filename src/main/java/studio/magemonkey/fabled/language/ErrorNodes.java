@@ -36,5 +36,5 @@ public class ErrorNodes {
             MANA       = BASE + "no-mana",
             NO_SKILLS  = BASE + "no-skills",
             CANNOT_USE = BASE + "cannot-use",
-            NO_MONEY = BASE + "attribute-no-money";
+            NO_MONEY   = BASE + "attribute-no-money";
 }

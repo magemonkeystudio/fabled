@@ -26,6 +26,10 @@
  */
 package studio.magemonkey.fabled.cmd;
 
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
 import studio.magemonkey.codex.mccore.commands.IFunction;
 import studio.magemonkey.codex.mccore.util.TextFormatter;
@@ -33,10 +37,6 @@ import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.player.PlayerClass;
 import studio.magemonkey.fabled.api.player.PlayerData;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;

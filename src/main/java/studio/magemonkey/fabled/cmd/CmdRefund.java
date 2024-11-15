@@ -26,16 +26,16 @@
  */
 package studio.magemonkey.fabled.cmd;
 
-import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
-import studio.magemonkey.codex.mccore.commands.IFunction;
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.player.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
+import studio.magemonkey.codex.mccore.commands.IFunction;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.player.PlayerData;
 
 import java.util.List;
 
@@ -77,7 +77,7 @@ public class CmdRefund implements IFunction {
                 OfflinePlayer player1    = Bukkit.getOfflinePlayer(args[0]);
                 PlayerData    playerData = Fabled.getData(player1);
 
-                int current = playerData.getInvestedAttribute(args[2].toLowerCase());
+                int current      = playerData.getInvestedAttribute(args[2].toLowerCase());
                 int refundAmount = Math.min(current, Integer.parseInt(args[3]));
 
                 if (current > 0) {

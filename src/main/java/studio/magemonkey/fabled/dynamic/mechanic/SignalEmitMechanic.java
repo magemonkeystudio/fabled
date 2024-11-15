@@ -1,9 +1,9 @@
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.fabled.api.event.SignalEmitEvent;
-import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.fabled.api.event.SignalEmitEvent;
+import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
 import java.util.List;
 import java.util.stream.Collectors;

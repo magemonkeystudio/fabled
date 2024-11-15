@@ -43,13 +43,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.metadata.FixedMetadataValue;
 import studio.magemonkey.codex.util.InventoryUtil;
-import studio.magemonkey.codex.util.ItemUT;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.event.*;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.player.PlayerSkillBar;
 import studio.magemonkey.fabled.api.skills.Skill;
-import studio.magemonkey.fabled.api.util.ItemSerializer;
 import studio.magemonkey.fabled.gui.handlers.SkillHandler;
 import studio.magemonkey.fabled.hook.CitizensHook;
 
@@ -118,8 +116,8 @@ public class CastCombatListener extends FabledListener {
 
     private void cleanup(Player player) {
         ignored.remove(player.getUniqueId());
-        PlayerData     data    = Fabled.getData(player);
-        PlayerSkillBar bar     = data.getSkillBar();
+        PlayerData     data = Fabled.getData(player);
+        PlayerSkillBar bar  = data.getSkillBar();
         if (bar.isSetup()) toggle(player);
         player.getInventory().setItem(slot, null);
         backup.remove(player.getUniqueId());

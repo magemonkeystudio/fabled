@@ -1,9 +1,9 @@
 package studio.magemonkey.fabled.dynamic.trigger;
 
-import studio.magemonkey.fabled.api.CastData;
-import studio.magemonkey.fabled.api.Settings;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityAirChangeEvent;
+import studio.magemonkey.fabled.api.CastData;
+import studio.magemonkey.fabled.api.Settings;
 
 public class AirTrigger implements Trigger<EntityAirChangeEvent> {
 
@@ -20,12 +20,13 @@ public class AirTrigger implements Trigger<EntityAirChangeEvent> {
         final String type = settings.getString("type", "decreasing");
 
         final LivingEntity triggerEntity = (LivingEntity) event.getEntity();
-        final int previousAir = triggerEntity.getRemainingAir();
-        final int newAir = event.getAmount();
+        final int          previousAir   = triggerEntity.getRemainingAir();
+        final int          newAir        = event.getAmount();
 
 
         // This only allows it to trigger whenever a bubble comes back / goes away.
-        return triggerEntity.canBreatheUnderwater() != ((newAir < previousAir && type.equalsIgnoreCase("decreasing")) || (newAir > previousAir &&  type.equalsIgnoreCase("increasing")));
+        return triggerEntity.canBreatheUnderwater() != ((newAir < previousAir && type.equalsIgnoreCase("decreasing"))
+                || (newAir > previousAir && type.equalsIgnoreCase("increasing")));
     }
 
     @Override

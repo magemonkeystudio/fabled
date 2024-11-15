@@ -26,11 +26,11 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic.value;
 
-import studio.magemonkey.fabled.dynamic.ItemChecker;
-import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import studio.magemonkey.fabled.dynamic.ItemChecker;
+import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
 
 import java.util.List;
 

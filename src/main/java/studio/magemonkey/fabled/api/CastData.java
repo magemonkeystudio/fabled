@@ -1,10 +1,10 @@
 package studio.magemonkey.fabled.api;
 
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import studio.magemonkey.codex.mccore.util.MobManager;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerData;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;

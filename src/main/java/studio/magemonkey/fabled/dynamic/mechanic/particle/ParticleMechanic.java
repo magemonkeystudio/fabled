@@ -26,12 +26,12 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic.particle;
 
-import studio.magemonkey.fabled.api.Settings;
-import studio.magemonkey.fabled.api.particle.ParticleHelper;
-import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.api.Settings;
+import studio.magemonkey.fabled.api.particle.ParticleHelper;
+import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
 
 import java.util.List;
 

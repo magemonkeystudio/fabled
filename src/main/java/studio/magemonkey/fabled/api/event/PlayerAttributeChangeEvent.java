@@ -1,11 +1,11 @@
 package studio.magemonkey.fabled.api.event;
 
-import studio.magemonkey.fabled.api.player.PlayerData;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
+import studio.magemonkey.fabled.api.player.PlayerData;
 
 @Getter
 @Setter

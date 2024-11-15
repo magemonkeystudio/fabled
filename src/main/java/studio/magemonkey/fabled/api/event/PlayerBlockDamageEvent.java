@@ -1,6 +1,5 @@
 package studio.magemonkey.fabled.api.event;
 
-import studio.magemonkey.fabled.dynamic.TempEntity;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -11,6 +10,7 @@ import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 import org.bukkit.projectiles.BlockProjectileSource;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.NotNull;
+import studio.magemonkey.fabled.dynamic.TempEntity;
 
 /**
  * Event call when player block damage with a shield

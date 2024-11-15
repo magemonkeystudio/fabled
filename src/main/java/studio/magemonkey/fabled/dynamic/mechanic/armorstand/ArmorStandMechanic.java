@@ -1,5 +1,10 @@
 package studio.magemonkey.fabled.dynamic.mechanic.armorstand;
 
+import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.armorstand.ArmorStandInstance;
 import studio.magemonkey.fabled.api.armorstand.ArmorStandManager;
@@ -7,11 +12,6 @@ import studio.magemonkey.fabled.dynamic.TempEntity;
 import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
 import studio.magemonkey.fabled.listener.MechanicListener;
 import studio.magemonkey.fabled.task.RemoveEntitiesTask;
-import org.bukkit.Location;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -99,7 +99,10 @@ public class ArmorStandMechanic extends MechanicComponent {
                         // 1.20.1: remove this block if the deprecated interface has removed.
                         Class<?> regionAccessor = Class.forName("org.bukkit.RegionAccessor");
                         //noinspection JavaReflectionMemberAccess,deprecation
-                        Method method = regionAccessor.getDeclaredMethod("spawn", Location.class, Class.class, org.bukkit.util.Consumer.class);
+                        Method method = regionAccessor.getDeclaredMethod("spawn",
+                                Location.class,
+                                Class.class,
+                                org.bukkit.util.Consumer.class);
                         //noinspection deprecation
                         return (ArmorStand) method.invoke(target.getWorld(), loc, ArmorStand.class,
                                 (org.bukkit.util.Consumer<ArmorStand>) onSpawn::accept);

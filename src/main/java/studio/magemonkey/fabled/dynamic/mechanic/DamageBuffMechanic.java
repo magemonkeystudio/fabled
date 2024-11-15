@@ -26,10 +26,10 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.api.util.Buff;
 import studio.magemonkey.fabled.api.util.BuffManager;
 import studio.magemonkey.fabled.api.util.BuffType;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
 

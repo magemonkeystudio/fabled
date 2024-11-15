@@ -26,10 +26,10 @@
  */
 package studio.magemonkey.fabled.cast;
 
-import studio.magemonkey.fabled.api.particle.ParticleSettings;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.api.particle.ParticleSettings;
 
 /**
  * Represents a preview indicator for showing the direction of projectiles to fire

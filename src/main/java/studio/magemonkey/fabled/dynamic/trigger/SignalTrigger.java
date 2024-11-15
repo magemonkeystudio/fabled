@@ -1,9 +1,9 @@
 package studio.magemonkey.fabled.dynamic.trigger;
 
+import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.api.event.SignalEmitEvent;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
 import java.util.Objects;

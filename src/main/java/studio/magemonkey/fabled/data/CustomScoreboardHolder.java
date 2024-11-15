@@ -1,10 +1,10 @@
 package studio.magemonkey.fabled.data;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.util.PlaceholderUtil;
-import studio.magemonkey.codex.mccore.scoreboard.StatHolder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import studio.magemonkey.codex.mccore.scoreboard.StatHolder;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.util.PlaceholderUtil;
 
 import java.util.ArrayList;
 import java.util.List;

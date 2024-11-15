@@ -1,8 +1,6 @@
 package studio.magemonkey.fabled.listener;
 
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
-import org.junit.jupiter.api.Disabled;
-import studio.magemonkey.fabled.testutil.MockedTest;
 import org.bukkit.Location;
 import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Zombie;
@@ -10,6 +8,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import studio.magemonkey.fabled.testutil.MockedTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

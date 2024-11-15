@@ -26,11 +26,6 @@
  */
 package studio.magemonkey.fabled.listener;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.event.PlayerClassChangeEvent;
-import studio.magemonkey.fabled.api.event.PlayerSkillUnlockEvent;
-import studio.magemonkey.fabled.api.player.PlayerData;
-import studio.magemonkey.fabled.api.player.PlayerSkillSlot;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -45,6 +40,11 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.event.PlayerClassChangeEvent;
+import studio.magemonkey.fabled.api.event.PlayerSkillUnlockEvent;
+import studio.magemonkey.fabled.api.player.PlayerData;
+import studio.magemonkey.fabled.api.player.PlayerSkillSlot;
 
 import java.util.HashMap;
 import java.util.HashSet;

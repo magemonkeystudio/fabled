@@ -26,6 +26,7 @@
  */
 package studio.magemonkey.fabled.api.particle;
 
+import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.codex.mccore.config.CommentedConfig;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.codex.util.FileUT;
@@ -35,7 +36,6 @@ import studio.magemonkey.fabled.api.particle.target.EffectTarget;
 import studio.magemonkey.fabled.api.particle.target.EntityTarget;
 import studio.magemonkey.fabled.task.EffectTask;
 import studio.magemonkey.fabled.thread.MainThread;
-import org.bukkit.entity.LivingEntity;
 
 import java.io.File;
 import java.util.HashMap;

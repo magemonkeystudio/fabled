@@ -1,12 +1,12 @@
 package studio.magemonkey.fabled.tree.basic;
 
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.exception.SkillTreeException;
 import studio.magemonkey.fabled.api.skills.Skill;
 import studio.magemonkey.fabled.gui.tool.GUIData;
 import studio.magemonkey.fabled.gui.tool.GUIType;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
 
 import java.util.List;
 

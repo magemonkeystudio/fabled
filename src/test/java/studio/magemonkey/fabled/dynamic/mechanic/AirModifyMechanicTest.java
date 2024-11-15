@@ -9,7 +9,7 @@ import studio.magemonkey.fabled.testutil.MockedTest;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AirModifyMechanicTest extends MockedTest {
     private Player player;
@@ -21,10 +21,10 @@ public class AirModifyMechanicTest extends MockedTest {
 
     private AirModifyMechanic getMechanic(double air) {
         AirModifyMechanic mechanic = new AirModifyMechanic();
-        DynamicSkill skill  = new DynamicSkill("AirModify");
+        DynamicSkill      skill    = new DynamicSkill("AirModify");
 
-        DataSection  config = new DataSection();
-        DataSection  data   = new DataSection();
+        DataSection config = new DataSection();
+        DataSection data   = new DataSection();
         data.set("air-base", air);
         data.set("air-scale", 0);
         config.set("data", data);

@@ -26,10 +26,10 @@
  */
 package studio.magemonkey.fabled.data;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.player.PlayerClass;
 import studio.magemonkey.codex.mccore.config.FilterType;
 import studio.magemonkey.codex.mccore.scoreboard.StatHolder;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.player.PlayerClass;
 
 import java.util.ArrayList;
 import java.util.HashMap;

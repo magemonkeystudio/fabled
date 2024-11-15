@@ -26,12 +26,12 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.fabled.api.event.SkillPushEvent;
-import studio.magemonkey.fabled.dynamic.target.RememberTarget;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.api.event.SkillPushEvent;
+import studio.magemonkey.fabled.dynamic.target.RememberTarget;
 
 import java.util.List;
 

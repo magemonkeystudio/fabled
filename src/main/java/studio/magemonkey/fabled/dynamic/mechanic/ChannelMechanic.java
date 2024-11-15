@@ -26,11 +26,11 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.util.FlagManager;
 import studio.magemonkey.fabled.api.util.StatusFlag;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
 

@@ -26,15 +26,15 @@
  */
 package studio.magemonkey.fabled.cmd;
 
+import org.bukkit.GameMode;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
 import studio.magemonkey.codex.mccore.commands.IFunction;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.player.PlayerSkillBar;
-import org.bukkit.GameMode;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 /**
  * Command to toggle on/off the skill bar

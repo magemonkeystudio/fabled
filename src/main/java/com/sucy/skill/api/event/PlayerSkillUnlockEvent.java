@@ -39,8 +39,8 @@ import org.bukkit.event.HandlerList;
 public class PlayerSkillUnlockEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
-    private final PlayerData  player;
-    private final PlayerSkill unlockedSkill;
+    private final        PlayerData  player;
+    private final        PlayerSkill unlockedSkill;
 
     /**
      * Constructor
@@ -48,7 +48,8 @@ public class PlayerSkillUnlockEvent extends Event {
      * @param playerData    data of the player unlocking the skill
      * @param unlockedSkill the skill that was unlocked
      */
-    public PlayerSkillUnlockEvent(studio.magemonkey.fabled.api.player.PlayerData playerData, studio.magemonkey.fabled.api.player.PlayerSkill unlockedSkill) {
+    public PlayerSkillUnlockEvent(studio.magemonkey.fabled.api.player.PlayerData playerData,
+                                  studio.magemonkey.fabled.api.player.PlayerSkill unlockedSkill) {
         this.player = new PlayerData(playerData);
         this.unlockedSkill = new PlayerSkill(unlockedSkill);
     }

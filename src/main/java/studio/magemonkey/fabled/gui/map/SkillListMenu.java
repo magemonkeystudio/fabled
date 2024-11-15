@@ -26,11 +26,11 @@
  */
 package studio.magemonkey.fabled.gui.map;
 
+import org.bukkit.entity.Player;
+import studio.magemonkey.codex.mccore.gui.*;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.player.PlayerSkill;
-import org.bukkit.entity.Player;
-import studio.magemonkey.codex.mccore.gui.*;
 
 import java.util.ArrayList;
 
@@ -177,8 +177,8 @@ public class SkillListMenu extends MapMenu {
     public void setup(Player player) {
         MapScheme scheme = MapScheme.get(api, Fabled.getData(player).getScheme());
 
-        MapScene   scene      = getScene(player);
-        PlayerData playerData = Fabled.getData(player);
+        MapScene               scene      = getScene(player);
+        PlayerData             playerData = Fabled.getData(player);
         ArrayList<PlayerSkill> skills     = new ArrayList<PlayerSkill>();
         for (PlayerSkill skill : playerData.getSkills()) {
             if (skill.getPlayerClass().getData().getSkillTree().canShow(player, skill.getData())) {

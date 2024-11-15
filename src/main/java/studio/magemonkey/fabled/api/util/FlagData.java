@@ -26,14 +26,14 @@
  */
 package studio.magemonkey.fabled.api.util;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.event.FlagApplyEvent;
-import studio.magemonkey.fabled.api.event.FlagExpireEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.event.FlagApplyEvent;
+import studio.magemonkey.fabled.api.event.FlagExpireEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,6 +1,5 @@
 package studio.magemonkey.fabled.api.armorstand;
 
-import studio.magemonkey.fabled.Fabled;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
@@ -8,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.Fabled;
 
 @AllArgsConstructor
 @RequiredArgsConstructor

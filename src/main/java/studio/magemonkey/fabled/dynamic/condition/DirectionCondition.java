@@ -26,10 +26,10 @@
  */
 package studio.magemonkey.fabled.dynamic.condition;
 
+import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.api.target.TargetHelper;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.function.BiPredicate;
 

@@ -26,11 +26,11 @@
  */
 package studio.magemonkey.fabled.dynamic.trigger;
 
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.Event;
 import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.Event;
 
 /**
  * Possible triggers for dynamic skill effects

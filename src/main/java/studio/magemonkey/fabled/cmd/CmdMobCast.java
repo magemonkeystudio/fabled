@@ -26,12 +26,6 @@
  */
 package studio.magemonkey.fabled.cmd;
 
-import studio.magemonkey.codex.mccore.commands.CommandManager;
-import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
-import studio.magemonkey.codex.mccore.commands.IFunction;
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.skills.Skill;
-import studio.magemonkey.fabled.api.skills.SkillShot;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -45,6 +39,12 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.util.RayTraceResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import studio.magemonkey.codex.mccore.commands.CommandManager;
+import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
+import studio.magemonkey.codex.mccore.commands.IFunction;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.skills.Skill;
+import studio.magemonkey.fabled.api.skills.SkillShot;
 
 import java.util.Arrays;
 import java.util.List;

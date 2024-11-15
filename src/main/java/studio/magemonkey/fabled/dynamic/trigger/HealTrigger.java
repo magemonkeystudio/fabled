@@ -1,9 +1,9 @@
 package studio.magemonkey.fabled.dynamic.trigger;
 
-import studio.magemonkey.fabled.api.CastData;
-import studio.magemonkey.fabled.api.Settings;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import studio.magemonkey.fabled.api.CastData;
+import studio.magemonkey.fabled.api.Settings;
 
 public class HealTrigger implements Trigger<EntityRegainHealthEvent> {
     /**

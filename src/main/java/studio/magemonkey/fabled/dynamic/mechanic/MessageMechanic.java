@@ -26,9 +26,9 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.codex.mccore.util.TextFormatter;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import studio.magemonkey.codex.mccore.util.TextFormatter;
 
 import java.util.List;
 

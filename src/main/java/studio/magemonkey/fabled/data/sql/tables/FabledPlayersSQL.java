@@ -110,7 +110,7 @@ public class FabledPlayersSQL extends IOManager {
     public void savePlayerAccounts(OfflinePlayer player, PlayerAccounts accounts) {
         if (player == null || player.getName() == null) return;
         boolean accountExists = accountExists(player);
-        String sql = "UPDATE " + table + " SET data = ? WHERE uuid = ?";
+        String  sql           = "UPDATE " + table + " SET data = ? WHERE uuid = ?";
         if (!accountExists) {
             sql = "INSERT INTO " + table + " (data, uuid) VALUES (?, ?)";
         }

@@ -26,8 +26,8 @@
  */
 package studio.magemonkey.fabled.data;
 
-import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.codex.mccore.util.TextFormatter;
+import studio.magemonkey.fabled.Fabled;
 
 import java.util.HashMap;
 import java.util.Map;

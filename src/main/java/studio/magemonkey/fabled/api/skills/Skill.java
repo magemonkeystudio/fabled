@@ -32,7 +32,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -785,7 +784,13 @@ public abstract class Skill implements IconHolder {
                        String classification,
                        boolean knockback,
                        boolean ignoreDivinity) {
-        damage(target, damage, source, classification, knockback, ignoreDivinity, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+        damage(target,
+                damage,
+                source,
+                classification,
+                knockback,
+                ignoreDivinity,
+                EntityDamageEvent.DamageCause.ENTITY_ATTACK);
     }
 
     /**
@@ -818,7 +823,8 @@ public abstract class Skill implements IconHolder {
             return;
         }
 
-        SkillDamageEvent event = new SkillDamageEvent(this, source, target, damage, classification, knockback, ignoreDivinity);
+        SkillDamageEvent event =
+                new SkillDamageEvent(this, source, target, damage, classification, knockback, ignoreDivinity);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return;

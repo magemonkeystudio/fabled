@@ -26,6 +26,11 @@
  */
 package studio.magemonkey.fabled.api.particle;
 
+import lombok.Getter;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
 import studio.magemonkey.fabled.api.particle.direction.DirectionHandler;
 import studio.magemonkey.fabled.api.particle.direction.Directions;
 import studio.magemonkey.fabled.api.particle.direction.XZHandler;
@@ -35,11 +40,6 @@ import studio.magemonkey.fabled.data.Point3D;
 import studio.magemonkey.fabled.data.formula.Formula;
 import studio.magemonkey.fabled.data.formula.IValue;
 import studio.magemonkey.fabled.data.formula.value.CustomValue;
-import lombok.Getter;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
 
 import java.util.Objects;
 import java.util.Set;

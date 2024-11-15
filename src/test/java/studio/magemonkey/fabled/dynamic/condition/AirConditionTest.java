@@ -12,10 +12,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AirConditionTest extends MockedTest {
-    private PlayerMock        player;
-    private LivingEntity      target;
+    private PlayerMock   player;
+    private LivingEntity target;
     private AirCondition condition;
-    private DataSection       settings = new DataSection();
+    private DataSection  settings = new DataSection();
 
     @BeforeEach
     public void setup() {

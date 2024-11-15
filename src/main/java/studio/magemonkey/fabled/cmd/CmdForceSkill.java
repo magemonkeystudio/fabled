@@ -26,11 +26,6 @@
  */
 package studio.magemonkey.fabled.cmd;
 
-import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
-import studio.magemonkey.codex.mccore.commands.IFunction;
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.player.PlayerData;
-import studio.magemonkey.fabled.api.player.PlayerSkill;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -39,6 +34,11 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
+import studio.magemonkey.codex.mccore.commands.IFunction;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.player.PlayerData;
+import studio.magemonkey.fabled.api.player.PlayerSkill;
 
 import java.util.Arrays;
 import java.util.List;

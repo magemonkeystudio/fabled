@@ -26,11 +26,11 @@
  */
 package studio.magemonkey.fabled.dynamic.condition;
 
-import studio.magemonkey.fabled.api.util.Combat;
-import studio.magemonkey.fabled.dynamic.DynamicSkill;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
+import studio.magemonkey.fabled.api.util.Combat;
+import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
 /**
  * A condition for dynamic skills that requires the target to be a player

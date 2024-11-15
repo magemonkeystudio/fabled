@@ -1,9 +1,9 @@
 package studio.magemonkey.fabled.api.event;
 
-import studio.magemonkey.fabled.api.player.PlayerCombos;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
+import studio.magemonkey.fabled.api.player.PlayerCombos;
 
 public class PlayerComboStepEvent extends Event {
     private static final HandlerList handlers = new HandlerList();

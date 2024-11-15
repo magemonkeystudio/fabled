@@ -26,11 +26,11 @@
  */
 package studio.magemonkey.fabled.dynamic.condition;
 
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.player.PlayerData;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 public class ClassCondition extends ConditionComponent {
     private static final String CLASS = "class";

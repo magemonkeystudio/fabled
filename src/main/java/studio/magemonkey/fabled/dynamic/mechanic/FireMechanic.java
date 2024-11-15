@@ -26,9 +26,9 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.fabled.Fabled;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.fabled.Fabled;
 
 import java.util.List;
 

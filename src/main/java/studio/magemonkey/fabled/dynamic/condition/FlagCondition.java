@@ -26,8 +26,8 @@
  */
 package studio.magemonkey.fabled.dynamic.condition;
 
-import studio.magemonkey.fabled.api.util.FlagManager;
 import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.fabled.api.util.FlagManager;
 
 /**
  * A condition for dynamic skills that requires the target to have a specified flag active

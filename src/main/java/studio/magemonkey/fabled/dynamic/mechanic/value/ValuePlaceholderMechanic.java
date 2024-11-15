@@ -1,14 +1,14 @@
 package studio.magemonkey.fabled.dynamic.mechanic.value;
 
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
 import studio.magemonkey.fabled.hook.PlaceholderAPIHook;
 import studio.magemonkey.fabled.hook.PluginChecker;
 import studio.magemonkey.fabled.log.Logger;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Locale;

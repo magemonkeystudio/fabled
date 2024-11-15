@@ -26,14 +26,14 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.listener.MechanicListener;
 import org.bukkit.Location;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.listener.MechanicListener;
 
 import java.util.*;
 import java.util.function.Supplier;
