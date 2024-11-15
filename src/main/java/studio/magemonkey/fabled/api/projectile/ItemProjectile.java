@@ -26,16 +26,6 @@
  */
 package studio.magemonkey.fabled.api.projectile;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.Settings;
-import studio.magemonkey.fabled.api.event.ItemProjectileExpireEvent;
-import studio.magemonkey.fabled.api.event.ItemProjectileHitEvent;
-import studio.magemonkey.fabled.api.event.ItemProjectileLandEvent;
-import studio.magemonkey.fabled.api.event.ItemProjectileLaunchEvent;
-import studio.magemonkey.fabled.api.target.TargetHelper;
-import studio.magemonkey.fabled.api.util.DamageLoreRemover;
-import studio.magemonkey.fabled.api.util.Nearby;
-import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
@@ -47,6 +37,16 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.Settings;
+import studio.magemonkey.fabled.api.event.ItemProjectileExpireEvent;
+import studio.magemonkey.fabled.api.event.ItemProjectileHitEvent;
+import studio.magemonkey.fabled.api.event.ItemProjectileLandEvent;
+import studio.magemonkey.fabled.api.event.ItemProjectileLaunchEvent;
+import studio.magemonkey.fabled.api.target.TargetHelper;
+import studio.magemonkey.fabled.api.util.DamageLoreRemover;
+import studio.magemonkey.fabled.api.util.Nearby;
+import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -281,7 +281,11 @@ public class ItemProjectile extends CustomProjectile {
                         .multiply(speed)
                         .subtract(item.getVelocity());
                 double length = acceleration.length();
-                acceleration.multiply(1.0 / length).multiply(Math.min(length, correction));
+                if (length < 0.00001) {
+                    acceleration = item.getVelocity();
+                } else {
+                    acceleration.multiply(1.0 / length).multiply(Math.min(length, correction));
+                }
                 item.setVelocity(item.getVelocity().add(acceleration));
             }
         }
