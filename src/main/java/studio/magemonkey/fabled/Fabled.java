@@ -518,6 +518,11 @@ public class Fabled extends SkillAPI {
         EffectManager.cleanUp();
         ArmorStandManager.cleanUp();
 
+        for (FabledListener listener : listeners) {
+            listener.cleanup();
+        }
+        listeners.clear();
+
         mainThread.disable();
         mainThread = null;
 
@@ -525,11 +530,6 @@ public class Fabled extends SkillAPI {
             manaTask.cancel();
             manaTask = null;
         }
-
-        for (FabledListener listener : listeners) {
-            listener.cleanup();
-        }
-        listeners.clear();
 
         // Clear scoreboards
         ClassBoardManager.clearAll();

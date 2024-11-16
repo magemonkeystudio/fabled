@@ -2810,6 +2810,7 @@ public class PlayerData {
      * @param player player to set up for
      */
     public void init(Player player) {
+        if (player == null) return;
         if (!Fabled.getSettings().isWorldEnabled(player.getWorld())) {
             return;
         }
