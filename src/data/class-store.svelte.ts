@@ -43,7 +43,7 @@ export default class FabledClass implements Serializable {
 	manaName             = $state('&2Mana');
 	maxLevel             = $state(40);
 	parent?: FabledClass = $state();
-	parentStr            = $derived(this.parent?.name);
+	parentStr            = $state(this.parent?.name);
 
 	permission               = $state(false);
 	expSources               = $state(273);
