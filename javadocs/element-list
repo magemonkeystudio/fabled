@@ -4,6 +4,7 @@ com.sucy.skill.api.classes
 com.sucy.skill.api.enums
 com.sucy.skill.api.event
 com.sucy.skill.api.player
+com.sucy.skill.data
 com.sucy.skill.manager
 studio.magemonkey.fabled
 studio.magemonkey.fabled.api
@@ -29,6 +30,8 @@ studio.magemonkey.fabled.data.formula.func
 studio.magemonkey.fabled.data.formula.operator
 studio.magemonkey.fabled.data.formula.value
 studio.magemonkey.fabled.data.io
+studio.magemonkey.fabled.data.sql
+studio.magemonkey.fabled.data.sql.tables
 studio.magemonkey.fabled.dynamic
 studio.magemonkey.fabled.dynamic.condition
 studio.magemonkey.fabled.dynamic.custom
