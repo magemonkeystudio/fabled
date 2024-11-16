@@ -23,10 +23,9 @@ public class SQLManager {
     private static String password;
 
     public static void reconnect() {
-        Fabled.inst().getLogger().info("Initializing SQLManager with type: MySQL");
         connection = getMySQLConnection(host, port, database, user, password);
         if (connection == null) {
-            Fabled.inst().getLogger().severe("Failed to initialize the Connection.");
+            Fabled.inst().getLogger().severe("Failed to connect to database.");
         }
     }
 
@@ -37,7 +36,13 @@ public class SQLManager {
         user = Fabled.getSettings().getSqlUser();
         password = Fabled.getSettings().getSqlPass();
 
+        Fabled.inst().getLogger().info("Initializing SQLManager with type: MySQL");
+
         reconnect();
+
+        if (connection != null)
+            Fabled.inst().getLogger().info("Connection established to database: " + database);
+
         fabledPlayersSQL = new FabledPlayersSQL();
     }
 
@@ -61,7 +66,6 @@ public class SQLManager {
         try {
             String     url  = "jdbc:mysql://" + host + ":" + port + "/" + database;
             Connection conn = DriverManager.getConnection(url, user, password);
-            Fabled.inst().getLogger().info("MySQL connection created for database: " + database);
             return conn;
         } catch (SQLException e) {
             Fabled.inst().getLogger().severe("Error creating MySQL connection: " + e.getMessage());
