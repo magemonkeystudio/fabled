@@ -333,6 +333,7 @@ export default class FabledClass implements Serializable {
 		}
 
 		this.loaded = true;
+		this.save();
 	};
 
 	public save = () => {

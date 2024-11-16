@@ -85,7 +85,11 @@
 	const blur = (e: Event) => {
 		if (elm) {
 			elm.contentEditable = 'false';
-			folder.name         = (<HTMLElement>e.target).textContent || '';
+			// If the folder name is different, set it and update the store
+			if (folder.name !== (<HTMLElement>e.target).textContent) {
+				folder.name = (<HTMLElement>e.target).textContent || '';
+				folderStore.updateFolders();
+			}
 		}
 	};
 
