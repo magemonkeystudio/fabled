@@ -31,24 +31,24 @@ import org.bukkit.entity.Player;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
-public class SprintCondition extends ConditionComponent {
-    private static final String SPRINTING = "sprint";
+public class BlockingCondition extends ConditionComponent {
+    private static final String BLOCKING = "blocking";
 
-    private boolean sprinting;
+    private boolean blocking;
 
     @Override
     public String getKey() {
-        return "sprint";
+        return "blocking";
     }
 
     @Override
     public void load(DynamicSkill skill, DataSection config) {
         super.load(skill, config);
-        sprinting = !settings.getString(SPRINTING, "true").equalsIgnoreCase("false");
+        blocking = !settings.getString(BLOCKING, "true").equalsIgnoreCase("false");
     }
 
     @Override
     boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        return target instanceof Player && ((Player) target).isSprinting() == sprinting;
+        return target instanceof Player && ((Player) target).isBlocking() == blocking;
     }
 }
