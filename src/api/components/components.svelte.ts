@@ -1172,6 +1172,22 @@ class BlockCondition extends FabledCondition {
 	public static override new = () => new this();
 }
 
+class BlockingCondition extends FabledCondition {
+	public constructor() {
+		super({
+			name:         'Blocking',
+			description:  'Applies child components if the target player(s) are blocking with a shield',
+			data:         [
+				new BooleanSelect('Blocking', 'blocking', true)
+					.setTooltip('Whether the player should be blocking')
+			],
+			summaryItems: ['blocking']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class BurningCondition extends FabledCondition {
 	public constructor() {
 		super({
@@ -1592,7 +1608,6 @@ class MoonCondition extends FabledCondition {
 
 	public static override new = () => new this();
 }
-
 
 class MountedCondition extends FabledCondition {
 	public constructor() {
@@ -5321,6 +5336,7 @@ export const initComponents = () => {
 		BIOME:          { name: 'Biome', component: BiomeCondition },
 		BLOCK:          { name: 'Block', component: BlockCondition },
 		BURNING:        { name: 'Burning', component: BurningCondition },
+		BLOCKING:       { name: 'Blocking', component: BlockingCondition },
 		CEILING:        { name: 'Ceiling', component: CeilingCondition },
 		CHANCE:         { name: 'Chance', component: ChanceCondition },
 		CLASS:          { name: 'Class', component: ClassCondition },
