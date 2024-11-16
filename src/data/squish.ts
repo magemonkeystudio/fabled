@@ -22,7 +22,11 @@ export const squish = (node: Element, {
 		delay,
 		duration,
 		css: (t: number) => {
-			return `max-width: unset; width: ${t * w}${matcher[2]}; min-width: unset;`;
+			let val = t * w;
+			if (isNaN(val)) {
+				val = 0;
+			}
+			return `max-width: unset; width: ${val}${matcher[2]}; min-width: unset;`;
 		}
 	};
 };
@@ -46,7 +50,11 @@ export const squash = (node: Element, {
 		delay,
 		duration,
 		css: (t: number) => {
-			return `max-height: unset; height: ${t * w}${matcher[2]}; min-height: unset;`;
+		let val = t *w;
+			if (isNaN(val)) {
+				val = 0;
+			}
+			return `max-height: unset; height: ${val}${matcher[2]}; min-height: unset;`;
 		}
 	};
 };

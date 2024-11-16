@@ -1,5 +1,5 @@
-import type FabledClass from '../data/class-store';
-import type FabledSkill from '../data/skill-store';
+import type FabledClass from '../data/class-store.svelte';
+import type FabledSkill from '../data/skill-store.svelte';
 
 export interface Transformer<T, V> {
 	transform(value: T): V;

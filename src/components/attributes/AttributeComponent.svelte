@@ -1,42 +1,39 @@
 <script lang='ts'>
 	import ProInput                                      from '$input/ProInput.svelte';
 	import SearchableSelect                              from '$input/SearchableSelect.svelte';
-	import AttributeComponentStatSvelte                  from './AttributeComponentStat.svelte';
-	import type { AttributeComponent, AttributeSection } from '$api/fabled-attribute';
+	import AttributeComponentStat                        from './AttributeComponentStat.svelte';
+	import type { AttributeComponent, AttributeSection } from '$api/fabled-attribute.svelte';
 	import Control                                       from '$components/control/Control.svelte';
-	import { updateSidebar }                             from '../../data/store';
 
-	export let color: string;
-	export let component: AttributeComponent;
-	export let section: AttributeSection;
-	$: selected = component.name;
-	$: stats = component.stats;
-	$: availableComponents = section.availableComponents;
-	$: availableStats = component.availableStats;
-	$: {
-		if ($stats && component.section.attribute?.name) updateSidebar();
-		component.section.attribute.save();
+	interface Props {
+		color: string;
+		component: AttributeComponent;
+		section: AttributeSection;
 	}
+
+	let { color, component, section }: Props = $props();
+
+	$effect(() => component.section.attribute.save());
 </script>
 
 <div class='component' style:--comp-color={color}>
 	<div class='componentTitle'>
 		<ProInput label={'Component'} tooltip={'The component to modify options to'}>
-			<SearchableSelect bind:selected={$selected} data={$availableComponents} multiple={false} />
+			<SearchableSelect bind:selected={component.name} data={section.availableComponents} multiple={false} />
 		</ProInput>
 	</div>
-	{#each $stats as stat}
-		<AttributeComponentStatSvelte bind:stat={stat} component={component} />
+	{#each component.stats as stat}
+		<AttributeComponentStat {stat} {component} />
 	{/each}
 	<div class='controls'>
-		{#if $availableStats.length > 0}
+		{#if component.availableStats.length > 0}
 			<Control title='Add Stat' icon='add' color='gray'
-							 on:click={() => component.addStat($availableStats[0])}
-							 on:keypress={() => component.addStat($availableStats[0])} />
+							 onclick={() => component.addStat(component.availableStats[0])}
+							 onkeypress={() => component.addStat(component.availableStats[0])} />
 		{/if}
 		<Control title='Delete Component' icon='delete' color='red'
-						 on:click={() => section.removeComponent(component)}
-						 on:keypress={() => section.removeComponent(component)} />
+						 onclick={() => section.removeComponent(component)}
+						 onkeypress={() => section.removeComponent(component)} />
 	</div>
 </div>
 

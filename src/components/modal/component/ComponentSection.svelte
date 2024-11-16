@@ -1,17 +1,22 @@
 <script lang='ts'>
 	import { squash }             from '../../../data/squish';
 	import type { RegistryEntry } from '$api/components/registry';
-	import type FabledComponent   from '$api/components/fabled-component';
+	import type FabledComponent   from '$api/components/fabled-component.svelte';
+	import { deprecated }         from '$api/components/components.svelte';
 
-	export let sectionName                 = '';
-	export let components: RegistryEntry[] = [];
-	export let addComponent: (comp: { new: () => { defaultOpen: () => FabledComponent } }) => void;
+	interface Props {
+		sectionName?: string;
+		components?: RegistryEntry[];
+		addComponent: (comp: { new: () => { defaultOpen: () => FabledComponent } }) => void;
+	}
 
-	let expanded = true;
+	let { sectionName = '', components = [], addComponent }: Props = $props();
+
+	let expanded = $state(true);
 </script>
 
 <div class='comp-subsection'>
-	<h4 class='comp-subsection-header' on:click={() => expanded = !expanded}>
+	<h4 class='comp-subsection-header' onclick={() => expanded = !expanded}>
 		{sectionName}
 		<span class='icon material-symbols-rounded' class:expanded>
 			expand_more
@@ -21,9 +26,9 @@
 		<div class='component-section' transition:squash={{duration: 200}}>
 			{#each components as comp}
 				<div class='comp-select'
-						 on:click={() => addComponent(comp.component)}
-						 on:keypress={(e) => { if (e.key === 'Enter') addComponent(comp.component); }}
-						 class:deprecated={comp.component.new().isDeprecated}>
+						 onclick={() => addComponent(comp.component)}
+						 onkeypress={(e) => { if (e.key === 'Enter') addComponent(comp.component); }}
+						 class:deprecated={deprecated.includes(comp.component)}>
 					{comp.name}
 				</div>
 			{/each}

@@ -1,18 +1,30 @@
 <script lang='ts'>
-	import BlockSelect               from '$input/BlockSelect.svelte';
-	import ProInput                  from '$input/ProInput.svelte';
-	import { createEventDispatcher } from 'svelte';
+	import BlockSelect from '$input/BlockSelect.svelte';
+	import ProInput    from '$input/ProInput.svelte';
 
-	export let data: { material: string[], data: number, materialTooltip: string, dataTooltip: string };
+	interface Props {
+		data: { material: string[], data: number, materialTooltip: string, dataTooltip: string },
+		onsave: () => void;
+	}
 
-	const dispatch = createEventDispatcher();
-	$: if (data) dispatch('save');
+	let { data = $bindable(), onsave }: Props = $props();
+
+	const changed = () => {
+		return {
+			material: data.material,
+			data:     data.data
+		};
+	};
+
+	$effect(() => {
+		if (changed()) onsave?.();
+	});
 </script>
 
 <ProInput label='Material' tooltip='[material] {data.materialTooltip}'>
 	<BlockSelect any bind:selected={data.material} multiple />
 </ProInput>
-<ProInput type='number' intMode
+<ProInput bind:value={data.data} intMode
 					label='Data'
-					bind:value={data.data}
-					tooltip='[data] {data.dataTooltip}' />
+					tooltip='[data] {data.dataTooltip}'
+					type='number' />

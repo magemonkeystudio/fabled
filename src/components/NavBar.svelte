@@ -3,11 +3,12 @@
 	import { get }                                             from 'svelte/store';
 	import { createPaste }                                     from '$api/hastebin';
 	import YAML                                                from 'yaml';
-	import type FabledClass                                    from '../data/class-store';
-	import type FabledSkill                                    from '../data/skill-store';
-	import type FabledAttribute                                from '$api/fabled-attribute';
+	import type FabledClass                                    from '../data/class-store.svelte';
+	import type FabledSkill                                    from '../data/skill-store.svelte';
+	import type FabledAttribute                                from '$api/fabled-attribute.svelte';
 
-	const haste = () => {
+	const haste = (e?: Event) => {
+		e?.stopPropagation();
 		let act: FabledClass | FabledSkill | FabledAttribute | undefined = get(active);
 		if (!act) return;
 
@@ -20,7 +21,8 @@
 			.catch((requestError) => console.error(requestError));
 	};
 
-	const openImport = () => {
+	const openImport = (e?: Event) => {
+		e?.stopPropagation();
 		setImporting(true);
 	};
 </script>
@@ -28,32 +30,30 @@
 <div class='nav-wrap'>
 	<nav>
 		<div class='chip hamburger'
-				 tabindex='0'
-				 role='button'
-				 on:click|stopPropagation={toggleSidebar}
-				 on:keypress={(e) => {
+				 onclick={toggleSidebar}
+				 onkeypress={(e) => {
 					 if (e.key === 'Enter') {
-             e.stopPropagation();
-             toggleSidebar();
+             toggleSidebar(e);
            }
          }}
+				 role='button'
+				 tabindex='0'
 		>
 			<span class='material-symbols-rounded'>menu</span>
 		</div>
 
-		<div />
+		<div></div>
 
 		<div class='transfer'>
 			<div class='chip import'
-					 tabindex='0'
-					 role='button'
-					 on:click|stopPropagation={openImport}
-					 on:keypress={(e) => {
+					 onclick={openImport}
+					 onkeypress={(e) => {
 						 if (e.key === 'Enter') {
-							 e.stopPropagation();
-							 openImport();
+							 openImport(e);
 						 }
 					 }}
+					 role='button'
+					 tabindex='0'
 					 title='Import Data'>
 				Import
 			</div>
@@ -62,11 +62,10 @@
 				<div class='chip share'
 						 tabindex='0'
 						 role='button'
-						 on:click|stopPropagation={haste}
-						 on:keypress={(e) => {
+						 onclick={haste}
+						 onkeypress={(e) => {
 							 if (e.key === 'Enter') {
-								 e.stopPropagation();
-								 haste();
+								 haste(e);
 							 }
 						 }}
 						 title='Share {$activeType.substring(0, 1).toUpperCase() + $activeType.substring(1)}'>

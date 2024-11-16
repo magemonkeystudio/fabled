@@ -1,18 +1,36 @@
 <script lang='ts'>
 	import { fly, slide, type TransitionConfig } from 'svelte/transition';
-	import { onMount }                           from 'svelte';
+	import { onMount, type Snippet }             from 'svelte';
 
-	export let tooltip: string | undefined        = undefined;
-	export let label: string | undefined          = undefined;
-	export let value: string | number | undefined = undefined;
-	export let placeholder: string | undefined    = undefined;
-	export let nowrap                             = false;
-	export let autofocus                          = false;
-	export let disabled                           = false;
-	export let disableAnimation                   = false;
-	let input: HTMLElement;
-	let hovered                                   = false;
-	let ypos                                      = 0;
+	interface Props {
+		children?: Snippet,
+		labelContent?: Snippet,
+
+		tooltip?: string | undefined;
+		label?: string | undefined;
+		value?: string | number | undefined;
+		placeholder?: string | undefined;
+		nowrap?: boolean;
+		autofocus?: boolean;
+		disabled?: boolean;
+		disableAnimation?: boolean;
+	}
+
+	let {
+				children,
+				labelContent,
+				tooltip          = undefined,
+				label            = undefined,
+				value            = $bindable(undefined),
+				placeholder      = undefined,
+				nowrap           = false,
+				autofocus        = false,
+				disabled         = false,
+				disableAnimation = false
+			}: Props                       = $props();
+	let input: HTMLElement | undefined = $state();
+	let hovered                        = $state(false);
+	let ypos                           = $state(0);
 
 	onMount(() => {
 		if (autofocus && input) {
@@ -36,7 +54,7 @@
 	};
 </script>
 
-{#if $$slots.label || label}
+{#if labelContent || label}
 	<div class='label'
 			 in:maybe={{fn: slide}}
 			 out:maybe={{fn: slide}}>
@@ -51,16 +69,16 @@
 					class:nowrap
 					in:maybe={{fn: slide}}
 					out:slide
-					on:mouseenter={handleMouseEnter}
-					on:mouseleave={() => hovered = false}>
+					onmouseenter={handleMouseEnter}
+					onmouseleave={() => hovered = false}>
     {label || ''}
-			<slot name='label' />
+			{@render labelContent?.()}
   </span>
 	</div>
 {/if}
-<div in:maybe={{fn: slide}}
-		 out:maybe={{fn: slide}}
-		 class='input-wrapper' class:labeled={!!label}>
+<div class='input-wrapper'
+		 class:labeled={!!label}
+		 in:maybe={{fn: slide}} out:maybe={{fn: slide}}>
 	<!--{#if type === "number"}-->
 	<!--    <input type="number" bind:value use:numberOnly={{intMode, enabled: type === "number"}}-->
 	<!--           {placeholder} />-->
@@ -69,7 +87,7 @@
 		<input bind:this={input} bind:value {disabled} {placeholder} />
 	{/if}
 	<!--{/if}-->
-	<slot />
+	{@render children?.()}
 </div>
 
 <style>

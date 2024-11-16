@@ -1,13 +1,18 @@
 <script lang='ts'>
-	import MaterialSelect            from '$input/MaterialSelect.svelte';
-	import ProInput                  from '$input/ProInput.svelte';
-	import { createEventDispatcher } from 'svelte';
+	import MaterialSelect from '$input/MaterialSelect.svelte';
+	import ProInput       from '$input/ProInput.svelte';
 
-	export let data: { material: string, any?: boolean };
-	export let tooltip: string | undefined = undefined;
+	interface Props {
+		data: { material: string, any?: boolean };
+		tooltip?: string | undefined;
+		onsave?: () => void;
+	}
 
-	const dispatch = createEventDispatcher();
-	$: if (data) dispatch('save');
+	let { data = $bindable(), tooltip = undefined, onsave }: Props = $props();
+
+	$effect(() => {
+		if (data.material) onsave?.();
+	});
 </script>
 
 <ProInput label='Material' tooltip='[material] {tooltip}'>
