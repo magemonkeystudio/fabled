@@ -1,10 +1,10 @@
 package studio.magemonkey.fabled.api.player;
 
-import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockbukkit.mockbukkit.entity.PlayerMock;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.enums.Operation;
 import studio.magemonkey.fabled.api.event.PlayerAttributeChangeEvent;

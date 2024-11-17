@@ -1,12 +1,12 @@
 package studio.magemonkey.fabled.listener;
 
-import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockbukkit.mockbukkit.entity.PlayerMock;
 import studio.magemonkey.fabled.testutil.MockedTest;
 
 import java.util.ArrayList;

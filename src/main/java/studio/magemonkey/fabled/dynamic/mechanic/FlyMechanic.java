@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerData;
 
@@ -18,9 +19,9 @@ import java.util.Map;
  * Does not persist on logout. 
  */
 public class FlyMechanic extends MechanicComponent {
-    private static final String SECONDS  = "seconds";
-    private static final String FLYSPEED = "flyspeed";
-    private static final String FLYING   = "flying";
+    private static final String SECONDS   = "seconds";
+    private static final String FLY_SPEED = "flyspeed";
+    private static final String FLYING    = "flying";
 
     private final Map<Integer, Map<String, FlyTask>> tasks = new HashMap<>();
 
@@ -38,22 +39,16 @@ public class FlyMechanic extends MechanicComponent {
     }
 
     /**
-     * Executes the component
-     *
-     * @param caster  caster of the skill
-     * @param level   level of the skill
-     * @param targets targets to apply to
-     * @param force
-     * @return true if applied to something, false otherwise
+     * {@inheritDoc}
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        final double               seconds     =
+        final double seconds =
                 parseValues(caster, SECONDS, level, 3.0); // Get seconds or default to 3 seconds.
-        final int                  ticks       = (int) (seconds * 20);
-        float                      flyspeed    =
-                (float) parseValues(caster, FLYSPEED, level, 0.1); // Get flyspeed or default value.
-        boolean                    flying      = settings.getString(FLYING, "false")
+        final int ticks = (int) (seconds * 20);
+        float flyspeed =
+                (float) parseValues(caster, FLY_SPEED, level, 0.1); // Get flyspeed or default value.
+        boolean flying = settings.getString(FLYING, "false")
                 .equalsIgnoreCase("true"); // Get if a player wants to grant or remove flight.
         final Map<String, FlyTask> casterTasks =
                 tasks.computeIfAbsent(caster.getEntityId(), HashMap::new); // Map of all current Tasks.
@@ -96,7 +91,7 @@ public class FlyMechanic extends MechanicComponent {
                 }
             }
         }
-        return targets.size() > 0;
+        return !targets.isEmpty();
     }
 
     private class FlyTask extends BukkitRunnable {
@@ -121,8 +116,9 @@ public class FlyMechanic extends MechanicComponent {
             }
         }
 
+        @NotNull
         @Override
-        public BukkitTask runTaskLater(final Plugin plugin, final long delay) {
+        public BukkitTask runTaskLater(@NotNull final Plugin plugin, final long delay) {
             running = true;
             return super.runTaskLater(plugin, delay);
         }

@@ -1,11 +1,11 @@
 package studio.magemonkey.fabled.hook;
 
-import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.OfflinePlayer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockbukkit.mockbukkit.entity.PlayerMock;
 import org.mockito.MockedStatic;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.testutil.MockedTest;
