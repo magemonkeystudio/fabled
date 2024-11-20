@@ -2114,7 +2114,7 @@ const projectileOptions = (): ComponentOption[] => {
 			.setTooltip('How fast the projectile is launched, in meters per second. A negative value fires it in the opposite direction.'),
 		new AttributeSelect('Lifespan', 'lifespan', 5)
 			.setTooltip('How long in seconds before the projectile will expire in case it doesn\'t hit anything.'),
-		new AttributeSelect('Distance', 'distance', 5)
+		new AttributeSelect('Distance', 'distance', 50)
 			.setTooltip('How far in blocks before the projectile will expire in case it doesn\'t hit anything.'),
 		new BooleanSelect('On Expire', 'on-expire', false)
 			.setTooltip('Whether to add the projectile\'s expire location as one of the targets. You can filter out this target with EntityTypeCondition: Location'),
