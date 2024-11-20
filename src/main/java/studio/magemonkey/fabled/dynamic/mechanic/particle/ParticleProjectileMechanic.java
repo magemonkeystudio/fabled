@@ -83,7 +83,7 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
         String  spread = settings.getString(SPREAD, "cone").toLowerCase();
         boolean ally   = settings.getString(GROUP, "enemy").equalsIgnoreCase("ally");
         settings.set("level", level);
-        int life = (int) (parseValues(caster, LIFESPAN, level, settings.getDouble(LIFESPAN, 2)) * 20);
+        int life     = (int) (parseValues(caster, LIFESPAN, level, settings.getDouble(LIFESPAN, 2)) * 20);
         int distance = (int) (parseValues(caster, DISTANCE, level, settings.getDouble(DISTANCE, 2)));
 
         final Settings copy = new Settings(settings);
@@ -116,7 +116,8 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                         parseValues(caster, HEIGHT, level, 8.0),
                         amount,
                         this,
-                        life);
+                        life,
+                        distance);
             } else {
                 Vector dir = location.getDirection();
                 if (spread.equals("horizontal cone")) {
@@ -127,7 +128,6 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                         caster,
                         level,
                         dir,
-                        location,
                         location,
                         copy,
                         parseValues(caster, ANGLE, level, 30.0),
@@ -193,10 +193,10 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
             public void run() {
                 targets.clear();
 
-                int     amount = (int) parseValues(caster, AMOUNT, level, 1.0);
-                String  spread = settings.getString(SPREAD, "cone").toLowerCase();
-                boolean ally   = settings.getString(GROUP, "enemy").equalsIgnoreCase("ally");
-                int     life   = (int) (parseValues(caster, LIFESPAN, level, settings.getDouble(LIFESPAN, 2)) * 20);
+                int     amount   = (int) parseValues(caster, AMOUNT, level, 1.0);
+                String  spread   = settings.getString(SPREAD, "cone").toLowerCase();
+                boolean ally     = settings.getString(GROUP, "enemy").equalsIgnoreCase("ally");
+                int     life     = (int) (parseValues(caster, LIFESPAN, level, settings.getDouble(LIFESPAN, 2)) * 20);
                 int     distance = (int) parseValues(caster, DISTANCE, level, settings.getInt(DISTANCE, 2));
 
                 final Settings copy = new Settings(settings);
@@ -232,7 +232,8 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
 
                     // Apply the spread type
                     if (spread.equals("rain")) {
-                        list.addAll(ParticleProjectile.rain(caster,
+                        list.addAll(ParticleProjectile.rain(
+                                caster,
                                 level,
                                 location,
                                 copy,
@@ -240,7 +241,9 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                                 parseValues(caster, HEIGHT, level, 8.0),
                                 amount,
                                 callback,
-                                life));
+                                life,
+                                distance
+                        ));
                     } else {
                         Vector dir = location.getDirection();
                         if (spread.equals("horizontal cone")) {
@@ -251,7 +254,6 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
                                 caster,
                                 level,
                                 dir,
-                                location,
                                 location,
                                 copy,
                                 parseValues(caster, ANGLE, level, 30.0),
