@@ -36,11 +36,11 @@ public class WorldChangeTrigger implements Trigger<PlayerChangedWorldEvent> {
     @Override
     public boolean shouldTrigger(final PlayerChangedWorldEvent event, final int level, final Settings settings) {
         World from = event.getFrom();
-        World to = event.getPlayer().getWorld();
+        World to   = event.getPlayer().getWorld();
 
-        List<String> worlds = settings.getStringList("worlds");
-        boolean inverted = settings.getBool("inverted", false);
-        String direction = settings.getString("direction", "to"); // Directions are to, from, or both
+        List<String> worlds    = settings.getStringList("worlds");
+        boolean      inverted  = settings.getBool("inverted", false);
+        String       direction = settings.getString("direction", "to"); // Directions are to, from, or both
 
         boolean correctWorld = false;
         if (direction.equalsIgnoreCase("to")) {

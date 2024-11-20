@@ -26,9 +26,9 @@
  */
 package studio.magemonkey.fabled.dynamic.condition;
 
+import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
 
@@ -59,8 +59,8 @@ public class ValueCondition extends ConditionComponent {
 
         // Because of floating point precision, we need to allow for a small delta
         double deltaAllowed = 0.0001;
-        double minDelta = value - min;
-        double maxDelta = max - value;
+        double minDelta     = value - min;
+        double maxDelta     = max - value;
 
         return minDelta >= -deltaAllowed && maxDelta >= -deltaAllowed;
     }

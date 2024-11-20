@@ -26,10 +26,10 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.fabled.hook.VaultHook;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import studio.magemonkey.fabled.hook.VaultHook;
 
 import java.util.List;
 

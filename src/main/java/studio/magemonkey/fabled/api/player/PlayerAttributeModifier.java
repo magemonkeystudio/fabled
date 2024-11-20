@@ -26,8 +26,8 @@
  */
 package studio.magemonkey.fabled.api.player;
 
-import studio.magemonkey.fabled.api.enums.Operation;
 import lombok.Getter;
+import studio.magemonkey.fabled.api.enums.Operation;
 
 import java.util.UUID;
 

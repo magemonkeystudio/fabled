@@ -17,16 +17,15 @@ public class SQLManager {
     private static FabledPlayersSQL fabledPlayersSQL;
 
     private static String host;
-    private static int port;
+    private static int    port;
     private static String database;
     private static String user;
     private static String password;
 
     public static void reconnect() {
-        Fabled.inst().getLogger().info("Initializing SQLManager with type: MySQL");
         connection = getMySQLConnection(host, port, database, user, password);
         if (connection == null) {
-            Fabled.inst().getLogger().severe("Failed to initialize the Connection.");
+            Fabled.inst().getLogger().severe("Failed to connect to database.");
         }
     }
 
@@ -37,7 +36,13 @@ public class SQLManager {
         user = Fabled.getSettings().getSqlUser();
         password = Fabled.getSettings().getSqlPass();
 
+        Fabled.inst().getLogger().info("Initializing SQLManager with type: MySQL");
+
         reconnect();
+
+        if (connection != null)
+            Fabled.inst().getLogger().info("Connection established to database: " + database);
+
         fabledPlayersSQL = new FabledPlayersSQL();
     }
 
@@ -46,7 +51,7 @@ public class SQLManager {
         File databaseFile = new File(Fabled.inst().getDataFolder(), "database.db");
         databaseFile.getParentFile().mkdirs(); // Ensure the parent directories exist
         try {
-            String url = "jdbc:sqlite:" + databaseFile.getAbsolutePath();
+            String     url  = "jdbc:sqlite:" + databaseFile.getAbsolutePath();
             Connection conn = DriverManager.getConnection(url);
 
             Fabled.inst().getLogger().info("SQLite connection created at: " + databaseFile.getAbsolutePath());
@@ -59,9 +64,8 @@ public class SQLManager {
 
     private static Connection getMySQLConnection(String host, int port, String database, String user, String password) {
         try {
-            String url = "jdbc:mysql://" + host + ":" + port + "/" + database;
+            String     url  = "jdbc:mysql://" + host + ":" + port + "/" + database;
             Connection conn = DriverManager.getConnection(url, user, password);
-            Fabled.inst().getLogger().info("MySQL connection created for database: " + database);
             return conn;
         } catch (SQLException e) {
             Fabled.inst().getLogger().severe("Error creating MySQL connection: " + e.getMessage());
@@ -82,7 +86,7 @@ public class SQLManager {
     }
 
     public static void runMigrations() {
-        if(fabledPlayersSQL != null)
+        if (fabledPlayersSQL != null)
             fabledPlayersSQL.migrateTable();
     }
 

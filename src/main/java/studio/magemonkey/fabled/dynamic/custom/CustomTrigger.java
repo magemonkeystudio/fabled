@@ -1,7 +1,7 @@
 package studio.magemonkey.fabled.dynamic.custom;
 
-import studio.magemonkey.fabled.dynamic.trigger.Trigger;
 import org.bukkit.event.Event;
+import studio.magemonkey.fabled.dynamic.trigger.Trigger;
 
 /**
  * Fabled © 2024

@@ -26,14 +26,12 @@
  */
 package studio.magemonkey.fabled.manager;
 
-import org.bukkit.plugin.java.JavaPlugin;
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.cmd.*;
-import studio.magemonkey.fabled.cmd.*;
-import studio.magemonkey.fabled.data.Permissions;
 import studio.magemonkey.codex.mccore.commands.CommandManager;
 import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
 import studio.magemonkey.codex.mccore.commands.SenderType;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.cmd.*;
+import studio.magemonkey.fabled.data.Permissions;
 
 /**
  * Sets up commands for the plugin

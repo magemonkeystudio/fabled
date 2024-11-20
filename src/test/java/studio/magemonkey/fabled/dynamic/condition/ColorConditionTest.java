@@ -1,6 +1,5 @@
 package studio.magemonkey.fabled.dynamic.condition;
 
-import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -8,6 +7,7 @@ import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Shulker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockbukkit.mockbukkit.entity.PlayerMock;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.testutil.MockedTest;
 

@@ -26,9 +26,9 @@
  */
 package studio.magemonkey.fabled.dynamic.condition;
 
-import studio.magemonkey.fabled.hook.VaultHook;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import studio.magemonkey.fabled.hook.VaultHook;
 
 import java.util.Locale;
 

@@ -26,10 +26,10 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.api.particle.EffectData;
 import studio.magemonkey.fabled.api.particle.EffectManager;
 import studio.magemonkey.fabled.api.particle.target.EntityTarget;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
 

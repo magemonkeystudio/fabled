@@ -2,6 +2,7 @@ package com.sucy.skill;
 
 import com.sucy.skill.api.player.PlayerAccounts;
 import com.sucy.skill.api.player.PlayerData;
+import com.sucy.skill.data.Settings;
 import com.sucy.skill.manager.AttributeManager;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -14,12 +15,11 @@ import org.bukkit.scheduler.BukkitTask;
 import studio.magemonkey.codex.mccore.config.CommentedConfig;
 import studio.magemonkey.codex.mccore.config.CommentedLanguageConfig;
 import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.data.io.PlayerLoader;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.player.PlayerClass;
 import studio.magemonkey.fabled.api.player.PlayerSkill;
 import studio.magemonkey.fabled.api.skills.Skill;
-import studio.magemonkey.fabled.data.Settings;
+import studio.magemonkey.fabled.data.io.PlayerLoader;
 import studio.magemonkey.fabled.exception.FabledNotEnabledException;
 import studio.magemonkey.fabled.manager.ComboManager;
 
@@ -85,7 +85,7 @@ public class SkillAPI extends JavaPlugin {
      */
     @Deprecated(forRemoval = true)
     public static Settings getSettings() {
-        return Fabled.getSettings();
+        return new Settings();
     }
 
     /**

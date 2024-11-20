@@ -1,9 +1,9 @@
 package studio.magemonkey.fabled.dynamic.mechanic.particle;
 
+import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.api.particle.EffectImage;
 import studio.magemonkey.fabled.api.particle.target.EntityTarget;
 import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
 

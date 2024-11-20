@@ -1,12 +1,12 @@
 package studio.magemonkey.fabled.hook;
 
-import studio.magemonkey.fabled.util.PlaceholderUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import studio.magemonkey.fabled.util.PlaceholderUtil;
 
 import java.util.List;
 import java.util.stream.Collectors;

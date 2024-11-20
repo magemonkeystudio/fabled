@@ -1,11 +1,11 @@
 package studio.magemonkey.fabled.api.event;
 
-import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
 public class DynamicTriggerEvent extends Event {
     private static final HandlerList handlers = new HandlerList();

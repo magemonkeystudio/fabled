@@ -1,23 +1,17 @@
 package studio.magemonkey.fabled;
 
+import com.google.common.collect.Lists;
+import org.bukkit.event.*;
+import org.bukkit.plugin.IllegalPluginAccessException;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredListener;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
-
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventException;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.IllegalPluginAccessException;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.RegisteredListener;
-
-import com.google.common.collect.Lists;
 
 public class CancellationDetector<TEvent extends Event> {
     interface CancelListener<TEvent extends Event> {

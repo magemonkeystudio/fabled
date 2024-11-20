@@ -1,13 +1,13 @@
 /**
  * Fabled
- * studio.magemonkey.fabled.dynamic.condition.AttributeCondition
+ * studio.magemonkey.fabled.dynamic.condition.CrouchCondition
  * <p>
  * The MIT License (MIT)
  * <p>
  * Copyright (c) 2024 MageMonkeyStudio
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software") to deal
+ * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
@@ -28,29 +28,27 @@ package studio.magemonkey.fabled.dynamic.condition;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.player.PlayerData;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
+import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
-public class AttributeCondition extends ConditionComponent {
-    private static final String ATTR = "attribute";
-    private static final String MIN  = "min";
-    private static final String MAX  = "max";
+public class BlockingCondition extends ConditionComponent {
+    private static final String BLOCKING = "blocking";
 
-    @Override
-    boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        if (!(target instanceof Player)) return false;
-
-        final String attr = settings.getString(ATTR, null);
-        final int    min  = (int) parseValues(caster, MIN, level, 0);
-        final int    max  = (int) parseValues(caster, MAX, level, 999);
-
-        final PlayerData data  = Fabled.getData((Player) target);
-        final int        value = data.getAttribute(attr);
-        return value >= min && value <= max;
-    }
+    private boolean blocking;
 
     @Override
     public String getKey() {
-        return "attribute";
+        return "blocking";
+    }
+
+    @Override
+    public void load(DynamicSkill skill, DataSection config) {
+        super.load(skill, config);
+        blocking = !settings.getString(BLOCKING, "true").equalsIgnoreCase("false");
+    }
+
+    @Override
+    boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
+        return target instanceof Player && ((Player) target).isBlocking() == blocking;
     }
 }

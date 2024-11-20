@@ -26,13 +26,13 @@
  */
 package studio.magemonkey.fabled.api.util;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.scheduler.BukkitRunnable;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.event.BuffExpiredEvent;
 import studio.magemonkey.fabled.log.LogType;
 import studio.magemonkey.fabled.log.Logger;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Collections;
 import java.util.HashMap;

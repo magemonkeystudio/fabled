@@ -1,6 +1,5 @@
 package studio.magemonkey.fabled.api;
 
-import studio.magemonkey.fabled.Fabled;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.damage.DamageSource;
@@ -12,6 +11,7 @@ import org.bukkit.entity.Tameable;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
+import studio.magemonkey.fabled.Fabled;
 
 import java.lang.reflect.InvocationTargetException;
 

@@ -26,24 +26,14 @@
  */
 package studio.magemonkey.fabled.cmd;
 
-import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
-import studio.magemonkey.codex.mccore.commands.IFunction;
-import studio.magemonkey.codex.mccore.config.Filter;
-import studio.magemonkey.codex.mccore.config.parse.YAMLParser;
-import studio.magemonkey.codex.mccore.sql.direct.SQLDatabase;
-import studio.magemonkey.codex.mccore.sql.direct.SQLTable;
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.data.Settings;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
+import studio.magemonkey.codex.mccore.commands.IFunction;
+import studio.magemonkey.codex.mccore.config.Filter;
+import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.data.sql.SQLManager;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.sql.ResultSet;
 
 /**
  * Backs up SQL data into local config files
@@ -51,7 +41,7 @@ import java.sql.ResultSet;
 public class CmdBackup implements IFunction {
     private static final String BACKUP = "backup";
     private static final String FAILED = "failed";
-    private static final String DONE = "done";
+    private static final String DONE   = "done";
 
     /**
      * Executes the command
@@ -73,8 +63,8 @@ public class CmdBackup implements IFunction {
      */
     private class BackupTask extends BukkitRunnable {
         private final ConfigurableCommand cmd;
-        private final Fabled api;
-        private final CommandSender sender;
+        private final Fabled              api;
+        private final CommandSender       sender;
 
         /**
          * @param api Fabled reference
@@ -91,7 +81,10 @@ public class CmdBackup implements IFunction {
         @Override
         public void run() {
             int count = SQLManager.players().backUpData();
-            cmd.sendMessage(sender, DONE, "&2SQL database backup has finished with {amount} entries backed up", Filter.AMOUNT.setReplacement(count + ""));
+            cmd.sendMessage(sender,
+                    DONE,
+                    "&2SQL database backup has finished with {amount} entries backed up",
+                    Filter.AMOUNT.setReplacement(count + ""));
         }
     }
 }

@@ -31,7 +31,6 @@ import studio.magemonkey.fabled.api.particle.target.EffectTarget;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * A collection of effects played on a target

@@ -69,8 +69,8 @@ public class ConfigIO extends IOManager {
      */
     @Override
     public PlayerAccounts loadData(OfflinePlayer player) {
-        String playerKey = player.getUniqueId().toString().toLowerCase();
-        CommentedConfig config = new CommentedConfig(api, "players/" + playerKey);
+        String          playerKey  = player.getUniqueId().toString().toLowerCase();
+        CommentedConfig config     = new CommentedConfig(api, "players/" + playerKey);
         CommentedConfig nameConfig = new CommentedConfig(api, "players/" + player.getName());
         if (!playerKey.equals(player.getName()) && nameConfig.getConfigFile().exists()) {
             DataSection old = nameConfig.getConfig();
@@ -112,7 +112,7 @@ public class ConfigIO extends IOManager {
     @Override
     public void saveAll() {
         Map<UUID, PlayerAccounts> data = PlayerLoader.getAllPlayerAccounts();
-        ArrayList<UUID> keys = new ArrayList<>(data.keySet());
+        ArrayList<UUID>           keys = new ArrayList<>(data.keySet());
         for (UUID key : keys)
             saveData(data.get(key));
     }

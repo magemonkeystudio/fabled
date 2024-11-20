@@ -26,6 +26,9 @@
  */
 package studio.magemonkey.fabled.listener;
 
+import org.bukkit.entity.Entity;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.*;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.event.KeyPressEvent;
 import studio.magemonkey.fabled.api.event.PlayerComboStepEvent;
@@ -35,9 +38,6 @@ import studio.magemonkey.fabled.data.TitleType;
 import studio.magemonkey.fabled.language.RPGFilter;
 import studio.magemonkey.fabled.manager.ComboManager;
 import studio.magemonkey.fabled.manager.TitleManager;
-import org.bukkit.entity.Entity;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.*;
 
 import java.util.HashMap;
 import java.util.HashSet;

@@ -1,13 +1,13 @@
 package studio.magemonkey.fabled.api.particle;
 
+import org.bukkit.Location;
+import org.bukkit.util.Vector;
 import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.api.enums.Direction;
 import studio.magemonkey.fabled.data.Matrix3D;
 import studio.magemonkey.fabled.data.Point3D;
 import studio.magemonkey.fabled.data.formula.Formula;
 import studio.magemonkey.fabled.data.formula.value.CustomValue;
-import org.bukkit.Location;
-import org.bukkit.util.Vector;
 
 public class TimeBasedTransform {
     private static final Vector        UP     = new Vector(0, 1, 0);

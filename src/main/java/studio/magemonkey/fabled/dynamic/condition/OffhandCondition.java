@@ -26,9 +26,9 @@
  */
 package studio.magemonkey.fabled.dynamic.condition;
 
-import studio.magemonkey.fabled.dynamic.ItemChecker;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EntityEquipment;
+import studio.magemonkey.fabled.dynamic.ItemChecker;
 
 /**
  * Item condition for a player's off hand

@@ -26,11 +26,11 @@
  */
 package studio.magemonkey.fabled.cmd;
 
+import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.Plugin;
 import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
 import studio.magemonkey.codex.mccore.commands.IFunction;
 import studio.magemonkey.fabled.Fabled;
-import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
 
 /**
  * A command that allows a player to profess through classes

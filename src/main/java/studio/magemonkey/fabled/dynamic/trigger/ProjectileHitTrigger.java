@@ -1,14 +1,14 @@
 package studio.magemonkey.fabled.dynamic.trigger;
 
-import studio.magemonkey.fabled.api.CastData;
-import studio.magemonkey.fabled.api.Settings;
-import studio.magemonkey.fabled.api.particle.target.EntityTarget;
-import studio.magemonkey.fabled.dynamic.TempEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.projectiles.ProjectileSource;
+import studio.magemonkey.fabled.api.CastData;
+import studio.magemonkey.fabled.api.Settings;
+import studio.magemonkey.fabled.api.particle.target.EntityTarget;
+import studio.magemonkey.fabled.dynamic.TempEntity;
 
 import java.util.List;
 import java.util.Objects;

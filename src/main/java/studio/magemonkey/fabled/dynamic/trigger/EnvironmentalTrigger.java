@@ -1,12 +1,12 @@
 package studio.magemonkey.fabled.dynamic.trigger;
 
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.api.DefaultCombatProtection;
 import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.List;
 import java.util.Locale;

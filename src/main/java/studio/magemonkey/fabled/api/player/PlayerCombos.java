@@ -26,6 +26,7 @@
  */
 package studio.magemonkey.fabled.api.player;
 
+import org.bukkit.Bukkit;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.event.PlayerComboFinishEvent;
 import studio.magemonkey.fabled.api.event.PlayerComboStepEvent;
@@ -33,7 +34,6 @@ import studio.magemonkey.fabled.api.skills.Skill;
 import studio.magemonkey.fabled.data.Click;
 import studio.magemonkey.fabled.log.Logger;
 import studio.magemonkey.fabled.manager.ComboManager;
-import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.HashMap;

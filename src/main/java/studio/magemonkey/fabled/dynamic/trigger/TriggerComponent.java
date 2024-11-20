@@ -1,9 +1,9 @@
 package studio.magemonkey.fabled.dynamic.trigger;
 
+import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.dynamic.ComponentType;
 import studio.magemonkey.fabled.dynamic.EffectComponent;
 import studio.magemonkey.fabled.util.Lists;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
 

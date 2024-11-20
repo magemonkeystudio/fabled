@@ -52,6 +52,6 @@ public class SaveTask extends RepeatThreadTask {
      */
     @Override
     public void run() {
-        PlayerLoader.saveAllPlayerAccounts();
+        PlayerLoader.saveAllPlayerAccounts(false);
     }
 }

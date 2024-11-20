@@ -51,7 +51,7 @@ public class Point3D {
      */
     public void rotate(double xRot, double yRot, double zRot) {
         Matrix3D rotMatrix = MatrixUtil.getRotationMatrix(xRot, yRot, zRot);
-        Point3D newPoint = MatrixUtil.multiply(rotMatrix, this);
+        Point3D  newPoint  = MatrixUtil.multiply(rotMatrix, this);
 
         this.x = newPoint.x;
         this.y = newPoint.y;

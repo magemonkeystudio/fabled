@@ -26,9 +26,9 @@
  */
 package studio.magemonkey.fabled.data.formula.value;
 
-import studio.magemonkey.fabled.data.formula.IValue;
 import lombok.Getter;
 import lombok.Setter;
+import studio.magemonkey.fabled.data.formula.IValue;
 
 /**
  * A custom defined value for a formula

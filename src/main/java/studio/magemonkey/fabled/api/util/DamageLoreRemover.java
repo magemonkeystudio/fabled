@@ -29,11 +29,6 @@ package studio.magemonkey.fabled.api.util;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import studio.magemonkey.codex.util.Reflex;
-import studio.magemonkey.codex.util.reflection.ReflectionManager;
-import studio.magemonkey.fabled.log.Logger;
-
-import java.lang.reflect.Method;
 
 /**
  * <p>Utility class for removing vanilla damage lore lines from items.</p>

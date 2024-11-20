@@ -26,10 +26,10 @@
  */
 package studio.magemonkey.fabled.task;
 
-import studio.magemonkey.fabled.Fabled;
 import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.Fabled;
 
 import java.util.ArrayList;
 import java.util.List;

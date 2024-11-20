@@ -26,8 +26,8 @@
  */
 package studio.magemonkey.fabled.dynamic.condition;
 
-import studio.magemonkey.fabled.Fabled;
 import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.fabled.Fabled;
 
 public class ChanceCondition extends ConditionComponent {
     private static final String CHANCE = "chance";

@@ -27,8 +27,6 @@
 package studio.magemonkey.fabled.dynamic.mechanic;
 
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.particle.ParticleHelper;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -42,6 +40,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.particle.ParticleHelper;
 
 import java.util.*;
 import java.util.function.Supplier;

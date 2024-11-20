@@ -26,13 +26,13 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import org.bukkit.Material;
+import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.api.util.FlagManager;
 import studio.magemonkey.fabled.dynamic.TempEntity;
 import studio.magemonkey.fabled.hook.DisguiseHook;
 import studio.magemonkey.fabled.hook.PluginChecker;
 import studio.magemonkey.fabled.listener.MechanicListener;
-import org.bukkit.Material;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
 import java.util.Locale;

@@ -26,9 +26,9 @@
  */
 package studio.magemonkey.fabled.api.player;
 
+import org.bukkit.entity.Player;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.gui.tool.GUITool;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 

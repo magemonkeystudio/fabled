@@ -1,5 +1,11 @@
 package studio.magemonkey.fabled.listener;
 
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityPotionEffectEvent;
+import org.bukkit.potion.PotionEffectType;
 import studio.magemonkey.fabled.api.event.BuffExpiredEvent;
 import studio.magemonkey.fabled.api.event.PhysicalDamageEvent;
 import studio.magemonkey.fabled.api.event.SkillDamageEvent;
@@ -7,12 +13,6 @@ import studio.magemonkey.fabled.api.event.SkillHealEvent;
 import studio.magemonkey.fabled.api.util.BuffManager;
 import studio.magemonkey.fabled.api.util.BuffType;
 import studio.magemonkey.fabled.hook.PluginChecker;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.EntityPotionEffectEvent;
-import org.bukkit.potion.PotionEffectType;
 
 import static studio.magemonkey.fabled.listener.attribute.AttributeListener.PHYSICAL;
 

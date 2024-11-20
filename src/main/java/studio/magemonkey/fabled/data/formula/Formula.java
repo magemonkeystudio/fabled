@@ -26,14 +26,12 @@
  */
 package studio.magemonkey.fabled.data.formula;
 
+import lombok.Getter;
 import studio.magemonkey.fabled.data.formula.func.*;
 import studio.magemonkey.fabled.data.formula.operator.*;
 import studio.magemonkey.fabled.data.formula.value.CustomValue;
 import studio.magemonkey.fabled.data.formula.value.ValueNum;
 import studio.magemonkey.fabled.log.Logger;
-import lombok.Getter;
-import studio.magemonkey.fabled.data.formula.func.*;
-import studio.magemonkey.fabled.data.formula.operator.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

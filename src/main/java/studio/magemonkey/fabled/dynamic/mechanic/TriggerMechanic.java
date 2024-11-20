@@ -1,14 +1,14 @@
 package studio.magemonkey.fabled.dynamic.mechanic;
 
 import com.google.common.base.Objects;
+import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.dynamic.ComponentRegistry;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.TriggerHandler;
 import studio.magemonkey.fabled.dynamic.trigger.Trigger;
 import studio.magemonkey.fabled.dynamic.trigger.TriggerComponent;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;

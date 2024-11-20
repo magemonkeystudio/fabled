@@ -1,26 +1,23 @@
 package studio.magemonkey.fabled.listener;
 
-import studio.magemonkey.fabled.api.DefaultCombatProtection;
-import studio.magemonkey.fabled.api.event.PlayerBlockDamageEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.Statistic;
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerStatisticIncrementEvent;
-
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.projectiles.BlockProjectileSource;
+import org.jetbrains.annotations.NotNull;
+import studio.magemonkey.fabled.api.DefaultCombatProtection;
+import studio.magemonkey.fabled.api.event.PlayerBlockDamageEvent;
+import studio.magemonkey.fabled.dynamic.TempEntity;
 
 /**
- * Listener to throw custom {@link PlayerBlockDamageEvent}
+ * Listener to call custom {@link PlayerBlockDamageEvent}
  */
 public class ShieldBlockListener extends FabledListener {
-
-    private final HashMap<UUID, Entity> volatileMap = new HashMap<>();
 
     /**
      * Remember EntityDamageByEntityEvent in a moment
@@ -28,26 +25,34 @@ public class ShieldBlockListener extends FabledListener {
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof Player) || DefaultCombatProtection.isFakeDamageEvent(event)) return;
+
         Player player = (Player) event.getEntity();
         if (!player.isBlocking()) return;
-        UUID player_uuid = player.getUniqueId();
-        volatileMap.put(player_uuid, event.getDamager());
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                volatileMap.remove(player_uuid);
-            }
-        }, 100);
+
+        @SuppressWarnings("deprecation") double blockedDamage =
+                event.getDamage(EntityDamageEvent.DamageModifier.BLOCKING);
+        if (blockedDamage == 0) return;
+
+        PlayerBlockDamageEvent statEvent =
+                buildDamageEvent(event, player, -blockedDamage);
+        Bukkit.getPluginManager().callEvent(statEvent);
     }
 
-    /**
-     * Trigger for {@link PlayerBlockDamageEvent}
-     */
-    @EventHandler
-    public void onStat(PlayerStatisticIncrementEvent event) {
-        if (!event.getStatistic().equals(Statistic.DAMAGE_BLOCKED_BY_SHIELD)) return;
-        Player player = event.getPlayer();
-        if (!volatileMap.containsKey(player.getUniqueId())) return;
-        Bukkit.getPluginManager().callEvent(new PlayerBlockDamageEvent(volatileMap.get(player.getUniqueId()), event));
+    @NotNull
+    private static PlayerBlockDamageEvent buildDamageEvent(EntityDamageByEntityEvent event,
+                                                           Player player,
+                                                           double blockedDamage) {
+        String type   = "melee";
+        Entity source = event.getDamager();
+        if (source instanceof Projectile) {
+            type = "projectile";
+            if (source instanceof BlockProjectileSource) {
+                Location locTarget = ((BlockProjectileSource) source).getBlock().getLocation();
+                source = new TempEntity(locTarget);
+            } else
+                source = (Entity) ((Projectile) source).getShooter();
+        }
+
+        return new PlayerBlockDamageEvent(player, source, blockedDamage, type);
     }
 }

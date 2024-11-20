@@ -39,9 +39,13 @@ public class PlayerLoader {
     }
 
     public static void saveAllPlayerAccounts() {
+        saveAllPlayerAccounts(false);
+    }
+
+    public static void saveAllPlayerAccounts(boolean clearCache) {
         for (PlayerAccounts playerAccounts : cachedPlayers.values())
             Fabled.getIO().saveData(playerAccounts);
-        cachedPlayers.clear();
+        if (clearCache) cachedPlayers.clear();
     }
 
     public static Map<UUID, PlayerAccounts> getAllPlayerAccounts() {

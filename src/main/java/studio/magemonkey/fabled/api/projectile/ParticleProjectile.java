@@ -26,6 +26,11 @@
  */
 package studio.magemonkey.fabled.api.projectile;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.Event;
+import org.bukkit.util.Vector;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.api.event.ParticleProjectileExpireEvent;
@@ -36,11 +41,6 @@ import studio.magemonkey.fabled.api.particle.ParticleHelper;
 import studio.magemonkey.fabled.api.target.TargetHelper;
 import studio.magemonkey.fabled.api.util.Nearby;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.Event;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.Comparator;

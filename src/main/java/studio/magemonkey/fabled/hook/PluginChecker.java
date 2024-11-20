@@ -26,14 +26,14 @@
  */
 package studio.magemonkey.fabled.hook;
 
-import studio.magemonkey.fabled.hook.mimic.MimicHook;
-import studio.magemonkey.fabled.listener.FabledListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import studio.magemonkey.fabled.hook.mimic.MimicHook;
+import studio.magemonkey.fabled.listener.FabledListener;
 
 /**
  * Handler for checking whether hooked plugins are present

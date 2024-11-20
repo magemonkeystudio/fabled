@@ -27,7 +27,6 @@
 package studio.magemonkey.fabled.dynamic.target;
 
 import com.google.common.collect.ImmutableList;
-import studio.magemonkey.fabled.dynamic.TempEntity;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -35,6 +34,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.dynamic.TempEntity;
 
 import java.util.List;
 

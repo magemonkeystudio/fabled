@@ -1,10 +1,10 @@
 package studio.magemonkey.fabled.api.event;
 
-import studio.magemonkey.fabled.api.skills.Skill;
 import lombok.Getter;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import studio.magemonkey.fabled.api.skills.Skill;
 
 import java.util.List;
 

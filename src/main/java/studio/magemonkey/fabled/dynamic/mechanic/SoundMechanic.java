@@ -26,7 +26,6 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import org.bukkit.Keyed;
 import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.codex.util.SoundUT;
 import studio.magemonkey.fabled.log.Logger;

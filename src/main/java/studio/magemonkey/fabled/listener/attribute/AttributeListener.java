@@ -26,18 +26,6 @@
  */
 package studio.magemonkey.fabled.listener.attribute;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.enums.ExpSource;
-import studio.magemonkey.fabled.api.enums.ManaSource;
-import studio.magemonkey.fabled.api.event.*;
-import studio.magemonkey.fabled.api.player.PlayerData;
-import studio.magemonkey.fabled.hook.CitizensHook;
-import studio.magemonkey.fabled.hook.DivinityHook;
-import studio.magemonkey.fabled.listener.MainListener;
-import studio.magemonkey.fabled.listener.FabledListener;
-import studio.magemonkey.fabled.log.LogType;
-import studio.magemonkey.fabled.log.Logger;
-import studio.magemonkey.fabled.manager.AttributeManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -47,6 +35,18 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.enums.ExpSource;
+import studio.magemonkey.fabled.api.enums.ManaSource;
+import studio.magemonkey.fabled.api.event.*;
+import studio.magemonkey.fabled.api.player.PlayerData;
+import studio.magemonkey.fabled.hook.CitizensHook;
+import studio.magemonkey.fabled.hook.DivinityHook;
+import studio.magemonkey.fabled.listener.FabledListener;
+import studio.magemonkey.fabled.listener.MainListener;
+import studio.magemonkey.fabled.log.LogType;
+import studio.magemonkey.fabled.log.Logger;
+import studio.magemonkey.fabled.manager.AttributeManager;
 
 /**
  * Listener for managing applying attribute bonuses for players

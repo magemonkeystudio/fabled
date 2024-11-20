@@ -2,7 +2,6 @@ package studio.magemonkey.fabled.dynamic.mechanic;
 
 import org.bukkit.entity.Player;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
@@ -10,7 +9,7 @@ import studio.magemonkey.fabled.testutil.MockedTest;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AirSetMechanicTest extends MockedTest {
     private Player player;
@@ -22,10 +21,10 @@ public class AirSetMechanicTest extends MockedTest {
 
     private AirSetMechanic getMechanic(double air) {
         AirSetMechanic mechanic = new AirSetMechanic();
-        DynamicSkill skill  = new DynamicSkill("AirSet");
+        DynamicSkill   skill    = new DynamicSkill("AirSet");
 
-        DataSection  config = new DataSection();
-        DataSection  data   = new DataSection();
+        DataSection config = new DataSection();
+        DataSection data   = new DataSection();
         data.set("air-base", air);
         data.set("air-scale", 0);
         config.set("data", data);
