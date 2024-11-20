@@ -5,7 +5,11 @@
 	import ProInput       from './ProInput.svelte';
 	import { activeType } from '../../data/store';
 
-	export let icon: Icon;
+	interface Props {
+		icon: Icon;
+	}
+
+	let { icon = $bindable() }: Props = $props();
 </script>
 
 <ProInput label='Icon'

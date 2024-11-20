@@ -8,8 +8,8 @@
 	<div class='home'
 			 tabindex='0'
 			 role='button'
-			 on:click={() => goto(`${base}/`)}
-			 on:keypress={(e) => e.key === "Enter" && goto(`${base}/`)}
+			 onclick={() => goto(`${base}/`)}
+			 onkeypress={(e) => e.key === "Enter" && goto(`${base}/`)}
 	>
 		<h1 class='accent'>Fabled</h1>
 		<h2>Dynamic Editor</h2>
@@ -21,7 +21,7 @@
 			<DiscordLogo />
 		</a>
 		<a class='social github'
-			 href='https://github.com/promcteam/proskillapi'
+			 href='https://github.com/magemonkeystudio/fabled'
 			 title='Check out our GitHub'>
 			<img src='{base}/github-mark-white.svg' alt='Github' />
 		</a>
@@ -31,7 +31,7 @@
 			<img src='{base}/spigot.png' alt='Spigot' />
 		</a>
 		<a class='social wiki'
-			 href='https://promcteam.com/wiki/index.php?title=Proskillapi:Proskillapi'
+			 href='https://github.com/magemonkeystudio/fabled/wiki'
 			 title='Wiki'>
 			<span class='material-symbols-rounded'>help</span>
 		</a>

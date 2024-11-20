@@ -2,11 +2,21 @@
 	import SearchableSelect from './SearchableSelect.svelte';
 	import { versionData }  from '../../version/data';
 
-	export let id: string | undefined = undefined;
-	export let placeholder            = '';
-	export let multiple               = false;
-	export let any                    = false;
-	export let selected: any[] | any  = undefined;
+	interface Props {
+		id?: string | undefined;
+		placeholder?: string;
+		multiple?: boolean;
+		any?: boolean;
+		selected?: any[] | any;
+	}
+
+	let {
+				id          = undefined,
+				placeholder = '',
+				multiple    = false,
+				any         = false,
+				selected    = $bindable(undefined)
+			}: Props = $props();
 </script>
 
 <SearchableSelect

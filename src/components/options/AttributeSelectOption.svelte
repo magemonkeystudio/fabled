@@ -1,15 +1,27 @@
 <script lang='ts'>
-	import ProInput                  from '$input/ProInput.svelte';
-	import { createEventDispatcher } from 'svelte';
-	import AttributeInput            from '$input/AttributeInput.svelte';
-	import type { Stat }             from '$api/stat';
+	import ProInput            from '$input/ProInput.svelte';
+	import AttributeInput      from '$input/AttributeInput.svelte';
+	import type { IAttribute } from '$api/types';
 
-	export let data: Stat;
-	export let name: string | undefined    = '';
-	export let tooltip: string | undefined = undefined;
+	interface Props {
+		data: IAttribute;
+		name?: string | undefined;
+		tooltip?: string | undefined;
+		onsave?: () => void;
+	}
 
-	const dispatch = createEventDispatcher();
-	$: if (data) dispatch('save');
+	let { data = $bindable(), name = '', tooltip = undefined, onsave }: Props = $props();
+
+	const changed = () => {
+		return {
+			base: data?.base !== undefined,
+			scale: data?.scale !== undefined,
+		}
+	};
+
+	$effect(() => {
+		if (changed()) onsave?.();
+	});
 </script>
 
 <ProInput label={name} {tooltip}>

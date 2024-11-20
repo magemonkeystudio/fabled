@@ -1,23 +1,38 @@
 <script lang='ts'>
-	export let title = '';
-	export let icon  = '';
-	export let color = 'red';
+	interface Props {
+		title?: string;
+		icon?: string;
+		color?: string;
+		children?: import('svelte').Snippet;
+		onclick?: (e: MouseEvent) => void;
+		onkeypress?: (e: KeyboardEvent) => void;
+	}
 
-	const keypress = (e: KeyboardEvent) => e.key === 'Enter' && (<HTMLElement>e.target).click();
+	let { title = '', icon = '', color = 'red', children, onclick, onkeypress }: Props = $props();
+
+	const keypress = (e: KeyboardEvent) => {
+		if (e.key === 'Enter') {
+			e.stopPropagation();
+			(<HTMLElement>e.target).click();
+		}
+
+		onkeypress?.(e);
+	};
 </script>
 
-<div class='control'
-		 style:--color={color}
-		 {title}
-		 tabindex='0'
-		 role='button'
-		 on:click|stopPropagation
-		 on:keypress|stopPropagation={keypress}
+<div
+	class='control'
+	style:--color={color}
+	{title}
+	tabindex='0'
+	role='button'
+	{onclick}
+	onkeypress={keypress}
 >
 	{#if icon}
 		<span class='material-symbols-rounded'>{icon}</span>
 	{/if}
-	<slot></slot>
+	{@render children?.()}
 </div>
 
 <style>
@@ -33,7 +48,8 @@
         margin: 0.15rem;
         border: 2px solid rgba(0, 0, 0, 0.4);
         color: rgba(0, 0, 0, 0.4);
-        transition: color 0.3s ease, background 0.3s ease;
+        transition: color 0.3s ease,
+        background 0.3s ease;
     }
 
     .control:hover {

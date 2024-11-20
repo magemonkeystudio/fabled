@@ -1,27 +1,37 @@
 <script lang='ts'>
-	import FabledTrigger   from '$api/components/triggers';
-	import FabledTarget    from '$api/components/targets';
-	import FabledCondition from '$api/components/conditions';
-	import FabledMechanic  from '$api/components/mechanics';
-	import ProInput        from '$input/ProInput.svelte';
-	import Modal                from '$components/Modal.svelte';
-	import type FabledComponent from '$api/components/fabled-component';
-	import DropdownSelect       from '$api/options/dropdownselect';
+	import FabledTrigger            from '$api/components/triggers.svelte';
+	import FabledTarget             from '$api/components/targets.svelte';
+	import FabledCondition          from '$api/components/conditions.svelte';
+	import FabledMechanic           from '$api/components/mechanics.svelte';
+	import ProInput                 from '$input/ProInput.svelte';
+	import Modal                    from '$components/Modal.svelte';
+	import type FabledComponent     from '$api/components/fabled-component.svelte';
+	import DropdownSelect           from '$api/options/dropdownselect.svelte';
 	import type { ComponentOption } from '$api/options/options';
 	import BooleanSelectOption      from '$components/options/BooleanSelectOption.svelte';
-	import { beforeUpdate }         from 'svelte';
 
-	export let data: FabledComponent | undefined = undefined;
-	let modalOpen                                = true;
+	interface Props {
+		data?: FabledComponent | undefined;
+		onclose?: () => void;
+		onsave?: () => void;
+	}
 
-	beforeUpdate(() => {
-		if (!modalOpen || !data) return;
+	let { data = $bindable(undefined), onclose, onsave }: Props = $props();
 
-		data.data.filter((dat: ComponentOption) => (dat instanceof DropdownSelect)).forEach((dat: ComponentOption) => (<DropdownSelect>dat).init());
+	$effect.pre(() => {
+		data?.data.forEach((dat: ComponentOption) => {
+			if (dat instanceof DropdownSelect) dat.init();
+		});
+	});
+
+	$effect(() => {
+		if (data?.changed()) {
+			onsave?.();
+		}
 	});
 </script>
 
-<Modal bind:open={modalOpen} on:close width='70%'>
+<Modal {onclose} width='70%'>
 	{#if data}
 		<h2 class:deprecated={data.isDeprecated}><span>{data.name}</span></h2>
 		{#if data.description}
@@ -29,37 +39,46 @@
 		{/if}
 		<hr />
 		<div class='component-entry'>
-			<ProInput label='Comment'
-								tooltip='[comment] A comment that will be displayed in the skill editor'
-								bind:value={data.comment} />
+			<ProInput
+				label='Comment'
+				tooltip='[comment] A comment that will be displayed in the skill editor'
+				bind:value={data.comment}
+			/>
 			{#if data instanceof FabledTrigger && data.name !== 'Cast' && data.name !== 'Initialize' && data.name !== 'Cleanup'}
-				<BooleanSelectOption name='Mana' tooltip='[mana] Whether this trigger requires the mana cost to activate'
-														 bind:data={data.mana}
-														 on:save />
-				<BooleanSelectOption name='Cooldown'
-														 tooltip='[cooldown] Whether this trigger requires to be off cooldown to activate'
-														 bind:data={data.cooldown}
-														 on:save />
+				<BooleanSelectOption
+					name='Mana'
+					tooltip='[mana] Whether this trigger requires the mana cost to activate'
+					bind:data={data.mana}
+				/>
+				<BooleanSelectOption
+					name='Cooldown'
+					tooltip='[cooldown] Whether this trigger requires to be off cooldown to activate'
+					bind:data={data.cooldown}
+				/>
 			{:else if data instanceof FabledTarget || data instanceof FabledCondition || data instanceof FabledMechanic}
-				<ProInput label='Icon Key' bind:value={data.iconKey}
-									tooltip={'[icon-key] The key used by the component in the Icon Lore. If this is set to "example" and has a value name of "value", it can be referenced using the string "{attr:example.value}"'} />
+				<ProInput
+					label='Icon Key'
+					bind:value={data.iconKey}
+					tooltip={'[icon-key] The key used by the component in the Icon Lore. If this is set to "example" and has a value name of "value", it can be referenced using the string "{attr:example.value}"'}
+				/>
 			{/if}
 			{#if data instanceof FabledMechanic}
-				<BooleanSelectOption name='Counts as Cast'
-														 tooltip='[counts] Whether this mechanic running treats the skill as "casted" and will consume mana and start the cooldown. Set to false if it is a mechanic applled when the skill fails such as cleanup or an error message"'
-														 bind:data={data.countsAsCast}
-														 on:save />
+				<BooleanSelectOption
+					name='Counts as Cast'
+					tooltip={'[counts] Whether this mechanic running treats the skill as "casted" and will consume mana and start the cooldown. Set to false if it is a mechanic applled when the skill fails such as cleanup or an error message'}
+					bind:data={data.countsAsCast}
+				/>
 			{/if}
 
 			{#each data.data as datum}
 				{#if datum.meetsRequirements(data)}
-					<svelte:component
-						this={datum.component}
+					<datum.component
 						bind:data={datum.data}
 						name={datum.name}
 						tooltip="{datum.key ? '[' + datum.key + '] ' : ''}{datum.tooltip}"
 						multiple={datum.multiple}
-						on:save />
+						{onsave}
+					/>
 				{/if}
 			{/each}
 		</div>

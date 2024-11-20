@@ -1,13 +1,18 @@
 <script lang='ts'>
 	import ProInput                  from '$input/ProInput.svelte';
-	import { createEventDispatcher } from 'svelte';
 
-	export let data: number;
-	export let name: string | undefined    = '';
-	export let tooltip: string | undefined = undefined;
+	interface Props {
+		data: number;
+		name?: string | undefined;
+		tooltip?: string | undefined;
+		onsave?: () => void;
+	}
 
-	const dispatch = createEventDispatcher();
-	$: if (data || !data) dispatch('save');
+	let { data = $bindable(), name = '', tooltip = undefined, onsave }: Props = $props();
+
+	$effect(() => {
+		if (data || !data) onsave?.();
+	});
 </script>
 
 <ProInput label={name} {tooltip} bind:value={data} type='number' placeholder='0' />

@@ -1,13 +1,10 @@
 <script lang='ts'>
-	import { createEventDispatcher } from 'svelte';
-	import {
-		squash
-	}                                from '../../data/squish';
-	import ProInput                  from '$input/ProInput.svelte';
-	import Modal                     from '$components/Modal.svelte';
+	import { squash }           from '../../data/squish';
+	import ProInput             from '$input/ProInput.svelte';
+	import Modal                from '$components/Modal.svelte';
 	import {
 		closeModal
-	}                                from '../../data/modal-service';
+	}                           from '../../data/modal-service.svelte';
 	import {
 		filteredConditions,
 		filteredMechanics,
@@ -15,31 +12,36 @@
 		filterParams,
 		mechanicSections
 	}                           from '$api/components/registry';
-	import type FabledComponent from '$api/components/fabled-component';
+	import type FabledComponent from '$api/components/fabled-component.svelte';
 	import ComponentSection     from '$components/modal/component/ComponentSection.svelte';
+	import {
+		deprecated
+	}                           from '$api/components/components.svelte.js';
 
-	export let data: FabledComponent;
+	interface Props {
+		data: FabledComponent;
+		onsave?: () => void;
+	}
 
-	let targetsShown    = true;
-	let conditionsShown = true;
-	let mechanicsShown  = true;
+	let { data, onsave }: Props = $props();
 
-	const dispatch = createEventDispatcher();
+	let targetsShown    = $state(true);
+	let conditionsShown = $state(true);
+	let mechanicsShown  = $state(true);
 
-	const addComponent =
-					(comp: { new: () => { defaultOpen: () => FabledComponent } }) => {
-						data.addComponent(comp.new().defaultOpen());
-						filterParams.set('');
-						dispatch('save');
-						closeModal();
-					};
+	const addComponent = (comp: typeof FabledComponent & { new: () => { defaultOpen: () => FabledComponent } }) => {
+		const component        = comp.new().defaultOpen();
+		component.isDeprecated = deprecated.includes(comp);
+		data.addComponent(component);
+		filterParams.set('');
+		onsave?.();
+		closeModal();
+	};
 </script>
 
-<Modal width='70%'
-			 open={true}
-			 on:close={closeModal}>
+<Modal width='70%' open={true} onclose={closeModal}>
 	<div class='modal-header-wrapper'>
-		<div />
+		<div></div>
 		<h2>Add a Component</h2>
 		<div class='search-bar'>
 			<ProInput bind:value={$filterParams} placeholder='Search...' autofocus />
@@ -47,25 +49,31 @@
 	</div>
 	{#if $filteredTargets.length > 0}
 		<hr />
-		<div class='comp-modal-header'
-				 on:click={() => targetsShown = !targetsShown}
-				 on:keypress={(e) => {
-									 if (e.key === 'Enter') targetsShown = !targetsShown;
-				 }}>
-			<h3>Targets
+		<div
+			class='comp-modal-header'
+			onclick={() => (targetsShown = !targetsShown)}
+			onkeypress={(e) => {
+				if (e.key === 'Enter') targetsShown = !targetsShown;
+			}}
+		>
+			<h3>
+				Targets
 				<span class='icon material-symbols-rounded' class:expanded={targetsShown}>
 					expand_more
 				</span>
 			</h3>
 		</div>
 		{#if targetsShown}
-			<div class='component-section' transition:squash={{duration: 200}}>
+			<div class='component-section' transition:squash={{ duration: 200 }}>
 				{#each $filteredTargets as target}
-					<div class='comp-select' on:click={() => addComponent(target.component)}
-							 on:keypress={(e) => {
-                       if (e.key === 'Enter') addComponent(target.component);
-                     }}>
-						{#if target.component.new().isDeprecated}<s>{target.name}</s>{:else}{target.name}{/if}
+					<div
+						class='comp-select'
+						onclick={() => addComponent(target.component)}
+						onkeypress={(e) => {
+							if (e.key === 'Enter') addComponent(target.component);
+						}}
+					>
+						{#if deprecated.includes(target.component)}<s>{target.name}</s>{:else}{target.name}{/if}
 					</div>
 				{/each}
 			</div>
@@ -73,26 +81,32 @@
 	{/if}
 	{#if $filteredConditions.length > 0}
 		<hr />
-		<div class='comp-modal-header'
-				 on:click={() => conditionsShown = !conditionsShown}
-				 on:keypress={(e) => {
-									 if (e.key === 'Enter') conditionsShown = !conditionsShown;
-				 }}>
-			<h3>Conditions
+		<div
+			class='comp-modal-header'
+			onclick={() => (conditionsShown = !conditionsShown)}
+			onkeypress={(e) => {
+				if (e.key === 'Enter') conditionsShown = !conditionsShown;
+			}}
+		>
+			<h3>
+				Conditions
 				<span class='icon material-symbols-rounded' class:expanded={conditionsShown}>
 					expand_more
 				</span>
 			</h3>
 		</div>
 		{#if conditionsShown}
-			<div class='component-section' transition:squash={{duration: 200}}>
+			<div class='component-section' transition:squash={{ duration: 200 }}>
 				{#each $filteredConditions as condition}
-					<div class='comp-select' on:click={() => addComponent(condition.component)}
-							 on:keypress={(e) => {
-                  if (e.key === 'Enter') addComponent(condition.component);
-                }}
+					<div
+						class='comp-select'
+						onclick={() => addComponent(condition.component)}
+						onkeypress={(e) => {
+							if (e.key === 'Enter') addComponent(condition.component);
+						}}
 					>
-						{#if condition.component.new().isDeprecated}<s>{condition.name}</s>{:else}{condition.name}{/if}
+						{#if deprecated.includes(condition.component)}<s>{condition.name}</s
+						>{:else}{condition.name}{/if}
 					</div>
 				{/each}
 			</div>
@@ -100,34 +114,42 @@
 	{/if}
 	{#if $filteredMechanics.length > 0}
 		<hr />
-		<div class='comp-modal-header'
-				 on:click={() => mechanicsShown = !mechanicsShown}
-				 on:keypress={(e) => {
-									 if (e.key === 'Enter') mechanicsShown = !mechanicsShown;
-				 }}>
-			<h3>Mechanics
+		<div
+			class='comp-modal-header'
+			onclick={() => (mechanicsShown = !mechanicsShown)}
+			onkeypress={(e) => {
+				if (e.key === 'Enter') mechanicsShown = !mechanicsShown;
+			}}
+		>
+			<h3>
+				Mechanics
 				<span class='icon material-symbols-rounded' class:expanded={mechanicsShown}>
 					expand_more
 				</span>
 			</h3>
 		</div>
 		{#if mechanicsShown}
-			<div class='component-section' transition:squash={{duration: 200}}>
+			<div class='component-section' transition:squash={{ duration: 200 }}>
 				{#each Object.keys($mechanicSections) as sectionName}
 					{#if $mechanicSections[sectionName].length > 0}
-						<ComponentSection sectionName={sectionName}
-															components={$mechanicSections[sectionName]}
-															addComponent={addComponent} />
+						<ComponentSection
+							{sectionName}
+							components={$mechanicSections[sectionName]}
+							{addComponent}
+						/>
 					{/if}
 				{/each}
 			</div>
 		{/if}
 	{/if}
 	<hr />
-	<div class='cancel' on:click={closeModal}
-			 on:keypress={(e) => {
-           if (e.key === 'Enter') closeModal();
-         }}>
+	<div
+		class='cancel'
+		onclick={closeModal}
+		onkeypress={(e) => {
+			if (e.key === 'Enter') closeModal();
+		}}
+	>
 		Cancel
 	</div>
 </Modal>

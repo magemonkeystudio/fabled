@@ -1,10 +1,9 @@
-import { Attribute }   from './stat';
-import FabledTrigger   from './components/triggers';
-import FabledComponent from '$api/components/fabled-component';
-import ComponentOption from './options/options';
-import type { AttributeComponent, AttributeStat } from './fabled-attribute';
-import type FabledClass                           from '../data/class-store';
-import type FabledSkill                           from '../data/skill-store';
+import FabledTrigger                              from './components/triggers';
+import FabledComponent                            from '$api/components/fabled-component.svelte';
+import ComponentOption                            from './options/options';
+import type { AttributeComponent, AttributeStat } from './fabled-attribute.svelte';
+import type FabledClass                           from '../data/class-store.svelte';
+import type FabledSkill                           from '../data/skill-store.svelte';
 
 export interface FabledClassData {
 	name: string;
@@ -16,10 +15,10 @@ export interface FabledClassData {
 	parent?: FabledClass;
 	permission?: boolean;
 	expSources?: number;
-	health?: Attribute;
-	mana?: Attribute;
+	health?: IAttribute;
+	mana?: IAttribute;
 	manaRegen?: number;
-	attributes?: Attribute[];
+	attributes?: IAttribute[];
 	skillTree?: 'Custom' | 'Requirement' | 'Basic Horizontal' | 'Basic Vertical' | 'Level Horizontal' | 'Level Vertical' | 'Flood';
 	skills?: FabledSkill[];
 	icon?: Icon;
@@ -48,14 +47,14 @@ export interface FabledSkillData {
 	maxLevel?: number;
 	skillReq?: FabledSkill;
 	skillReqLevel?: number;
-	attributeRequirements?: Attribute[];
+	attributeRequirements?: IAttribute[];
 	permission?: boolean;
-	levelReq?: Attribute;
-	cost?: Attribute;
-	cooldown?: Attribute;
+	levelReq?: IAttribute;
+	cost?: IAttribute;
+	cooldown?: IAttribute;
 	cooldownMessage?: boolean;
-	mana?: Attribute;
-	minSpent?: Attribute;
+	mana?: IAttribute;
+	minSpent?: IAttribute;
 	castMessage?: string;
 	combo?: string;
 	indicator?: '2D' | '3D' | 'None';
@@ -70,7 +69,7 @@ export interface ProAttributeData {
 	location?: 'local' | 'server';
 	display?: string;
 	max?: number;
-	cost?: Attribute;
+	cost?: IAttribute;
 	icon?: Icon;
 	targets?: AttributeComponent[];
 	conditions?: AttributeComponent[];
@@ -184,9 +183,9 @@ export interface SkillYamlData {
 		'mana-scale': number;
 		'points-spent-req-base': number;
 		'points-spent-req-scale': number;
-		incompatible: string[];
 	};
 
+	incompatible: string[];
 	components: YamlComponentData;
 }
 
@@ -213,7 +212,7 @@ export interface YamlComponentData {
 }
 
 export type AttributeType = {
-	[K in string as `${K}-base` | `${K}-scale`]: number;
+	[K in string as `${K}-base` | `${K}-scale`]: number | string;
 }
 
 export type Unknown = {
@@ -247,4 +246,10 @@ export interface MultiSkillYamlData {
 
 export interface MultiAttributeYamlData {
 	[key: string]: AttributeYamlData;
+}
+
+export interface IAttribute {
+	name: string;
+	base: number | string;
+	scale: number | string;
 }

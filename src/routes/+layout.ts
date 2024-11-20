@@ -2,7 +2,7 @@ import type { LayoutLoad }         from './$types';
 import { getHaste }                from '$api/hastebin';
 import { base }                    from '$app/paths';
 import { socketService }           from '$api/socket/socket-connector';
-import { initComponents }          from '$api/components/components';
+import { initComponents }          from '$api/components/components.svelte';
 import YAML                        from 'yaml';
 import { parseYaml }               from '$api/yaml';
 import type { MultiSkillYamlData } from '$api/types';

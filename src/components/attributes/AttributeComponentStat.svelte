@@ -2,28 +2,25 @@
 	import ProInput                                   from '$input/ProInput.svelte';
 	import SearchableSelect                           from '$input/SearchableSelect.svelte';
 	import StringSelectOption                         from '$components/options/StringSelectOption.svelte';
-	import type { AttributeComponent, AttributeStat } from '$api/fabled-attribute';
+	import type { AttributeComponent, AttributeStat } from '$api/fabled-attribute.svelte';
 	import Control                                    from '$components/control/Control.svelte';
-	import { updateSidebar }                          from '../../data/store';
 
-	export let stat: AttributeStat;
-	export let component: AttributeComponent;
-	$: selected = stat.key;
-	$: availableStats = component.availableStats;
-	$: {
-		if ($selected && stat.formula && component.section.attribute?.name) updateSidebar();
-		component.section.attribute.save();
+	interface Props {
+		stat: AttributeStat;
+		component: AttributeComponent;
 	}
+
+	let { stat = $bindable(), component }: Props = $props();
 </script>
 
 <div class='stat'>
 	<div class='btn-del'>
 		<Control title='Delete stat' icon='delete' color='red'
-						 on:click={() => component.removeStat(stat)}
-						 on:keypress={() => component.removeStat(stat)} />
+						 onclick={() => component.removeStat(stat)}
+						 onkeypress={() => component.removeStat(stat)} />
 	</div>
 	<ProInput label={'Option'} tooltip={'Attribute option to modify based on attribute value'}>
-		<SearchableSelect bind:selected={$selected} data={$availableStats} multiple={false} />
+		<SearchableSelect bind:selected={stat.key} data={component.availableStats} multiple={false} />
 	</ProInput>
 	<StringSelectOption bind:data={stat.formula} name={'Formula'} tooltip='Formula to modify the option by' />
 </div>

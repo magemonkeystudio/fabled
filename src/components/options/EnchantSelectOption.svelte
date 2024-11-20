@@ -1,16 +1,27 @@
 <script lang='ts'>
 	import ProInput                  from '$input/ProInput.svelte';
-	import { createEventDispatcher } from 'svelte';
 	import EnchantSelect             from '$input/EnchantSelect.svelte';
-	import type { Enchant }          from '$api/options/enchantselect';
+	import type { Enchant }          from '$api/options/enchantselect.svelte';
 
-	export let data: { enchants: Enchant[] };
-	export let tooltip: string | undefined = undefined;
+	interface Props {
+		data: { enchants: Enchant[] };
+		tooltip?: string | undefined;
+		onsave?: () => void;
+	}
 
-	const dispatch = createEventDispatcher();
-	$: if (data) dispatch('save');
+	let { data = $bindable(), tooltip = undefined, onsave }: Props = $props();
+
+	const changed = () => {
+		return {
+			enchants: data?.enchants
+		}
+	}
+
+	$effect(() => {
+		if (changed()) onsave?.();
+	});
 </script>
 
 <ProInput label='Enchant' tooltip='[enchant] {tooltip}'>
-	<EnchantSelect bind:selected={data.enchants} multiple />
+	<EnchantSelect bind:selected={data.enchants} multiple={true} {onsave} />
 </ProInput>

@@ -2,7 +2,7 @@ import type { Writable }               from 'svelte/store';
 import { get, writable }               from 'svelte/store';
 import { browser }                     from '$app/environment';
 import YAML                            from 'yaml';
-import FabledAttribute                 from '$api/fabled-attribute';
+import FabledAttribute                 from '$api/fabled-attribute.svelte';
 import type { MultiAttributeYamlData } from '$api/types';
 import { sort }                        from '$api/api';
 import { parseYaml }                   from '$api/yaml';
@@ -10,7 +10,7 @@ import { active, saveError }           from './store';
 import { base }                        from '$app/paths';
 import { goto }                        from '$app/navigation';
 import { socketService }               from '$api/socket/socket-connector';
-import { classStore }                  from './class-store';
+import { classStore }                  from './class-store.svelte';
 
 class AttributeStore {
 	tooBig: Writable<boolean>       = writable(false);
@@ -77,7 +77,7 @@ class AttributeStore {
 	};
 
 	getDefaultAttributes = async (): Promise<FabledAttribute[]> => {
-		const yaml = parseYaml(await fetch('https://raw.githubusercontent.com/promcteam/fabled/dev/src/main/resources/attributes.yml').then(r => r.text()));
+		const yaml = parseYaml(await fetch('https://raw.githubusercontent.com/magemonkeystudio/fabled/dev/src/main/resources/attributes.yml').then(r => r.text()));
 		if (!yaml) return [];
 		return Object.keys(yaml).map((key: string) => {
 			const attrib: FabledAttribute = new FabledAttribute({ name: key });
@@ -250,6 +250,8 @@ class AttributeStore {
 				saveError.set({ name: 'Attributes', acknowledged: false });
 			}
 		}
+
+		console.log('Saved attributes 😎');
 	};
 }
 

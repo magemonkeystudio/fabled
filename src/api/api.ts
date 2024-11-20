@@ -1,9 +1,9 @@
 import { browser }           from '$app/environment';
 import { writable }          from 'svelte/store';
-import type FabledAttribute  from './fabled-attribute';
-import type FabledClass      from '../data/class-store';
-import type FabledSkill      from '../data/skill-store';
-import type { FabledFolder } from '../data/folder-store';
+import type FabledAttribute  from './fabled-attribute.svelte';
+import type FabledClass      from '../data/class-store.svelte';
+import type FabledSkill      from '../data/skill-store.svelte';
+import type { FabledFolder } from '../data/folder-store.svelte';
 
 export const toProperCase = (s: string) => {
 	return s
