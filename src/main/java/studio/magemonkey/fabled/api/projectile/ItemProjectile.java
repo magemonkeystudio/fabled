@@ -26,6 +26,7 @@
  */
 package studio.magemonkey.fabled.api.projectile;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
@@ -70,8 +71,11 @@ public class ItemProjectile extends CustomProjectile {
 
     private static int NEXT = 0;
 
+    @Getter
     private final Item                   item;
+    private final Location               startingLocation;
     private       int                    life;
+    private       int                    distance;
     private final boolean                walls;
     private final double                 speed;
     protected     Supplier<LivingEntity> homing;
@@ -94,6 +98,7 @@ public class ItemProjectile extends CustomProjectile {
                           ItemStack item,
                           Vector vel,
                           int lifespan,
+                          int distance,
                           boolean collideWalls) {
         super(thrower, settings);
 
@@ -105,11 +110,13 @@ public class ItemProjectile extends CustomProjectile {
         DamageLoreRemover.removeAttackDmg(item);
 
         this.item = thrower.getWorld().dropItem(loc, item);
+        this.startingLocation = this.item.getLocation();
         this.item.setVelocity(vel);
         this.speed = vel.length();
         this.item.setPickupDelay(Integer.MAX_VALUE);
         this.walls = collideWalls;
         this.life = lifespan;
+        this.distance = distance;
         this.radius = settings.getAttr(RADIUS, level, 0.2);
         Fabled.setMeta(this.item, ITEM_PROJECTILE, this);
 
@@ -155,8 +162,6 @@ public class ItemProjectile extends CustomProjectile {
 
         Bukkit.getPluginManager().callEvent(new ItemProjectileLaunchEvent(this));
     }
-
-    public Item getItem() {return item;}
 
     /**
      * Retrieves the location of the projectile
@@ -297,6 +302,10 @@ public class ItemProjectile extends CustomProjectile {
             if (settings.getBool("on-expire") && callback != null) callback.callback(this, null);
             cancel();
             Bukkit.getPluginManager().callEvent(new ItemProjectileExpireEvent(this));
+        } else if (this.item.getLocation().distanceSquared(this.startingLocation) >= distance * distance) {
+            if (settings.getBool("on-expire")) callback.callback(this, null);
+            cancel();
+            Bukkit.getPluginManager().callEvent(new ItemProjectileExpireEvent(this));
         }
     }
 
@@ -333,6 +342,7 @@ public class ItemProjectile extends CustomProjectile {
                                               int amount,
                                               ProjectileCallback callback,
                                               int lifespan,
+                                              int distance,
                                               boolean collideWalls) {
         double speed = direction.length();
         direction.normalize();
@@ -340,7 +350,8 @@ public class ItemProjectile extends CustomProjectile {
         List<ItemProjectile> list = new ArrayList<>();
         for (Vector dir : dirs) {
             Vector         vel = dir.multiply(speed);
-            ItemProjectile p   = new ItemProjectile(shooter, level, loc, settings, item, vel, lifespan, collideWalls);
+            ItemProjectile p   =
+                    new ItemProjectile(shooter, level, loc, settings, item, vel, lifespan, distance, collideWalls);
             p.setCallback(callback);
             list.add(p);
         }
@@ -373,13 +384,15 @@ public class ItemProjectile extends CustomProjectile {
                                             int amount,
                                             ProjectileCallback callback,
                                             int lifespan,
+                                            int distance,
                                             boolean collideWalls) {
         Vector               vel  = new Vector(0, speed, 0);
         List<Location>       locs = calcRain(center, radius, height, amount);
         List<ItemProjectile> list = new ArrayList<>();
         for (Location l : locs) {
             l.setDirection(vel);
-            ItemProjectile p = new ItemProjectile(shooter, level, l, settings, item, vel, lifespan, collideWalls);
+            ItemProjectile p =
+                    new ItemProjectile(shooter, level, l, settings, item, vel, lifespan, distance, collideWalls);
             p.setCallback(callback);
             list.add(p);
         }

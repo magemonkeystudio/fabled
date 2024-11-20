@@ -94,8 +94,10 @@ public class ParticleProjectile extends CustomProjectile {
     private static final String PIERCE = "pierce";
 
     private       Location               loc;
+    private final Location               startingLocation;  // Starting location of the projectile.
     private       Vector                 vel;
     private       int                    life;
+    private final int                    distance;
     private final int                    steps;
     private final double                 radius;
     private final double                 gravity;
@@ -115,12 +117,19 @@ public class ParticleProjectile extends CustomProjectile {
      * @param loc      initial location of the projectile
      * @param settings settings for the projectile
      */
-    public ParticleProjectile(LivingEntity shooter, int level, Location loc, Settings settings, int lifespan) {
+    public ParticleProjectile(LivingEntity shooter,
+                              int level,
+                              Location loc,
+                              Settings settings,
+                              int lifespan,
+                              int distance) {
         super(shooter, settings);
 
         this.loc = loc;
+        this.startingLocation = loc;
         this.vel = loc.getDirection().multiply(settings.getAttr(SPEED, level, 1.0));
         this.life = lifespan;
+        this.distance = distance;
         this.steps = settings.getInt(STEPS, 2);
         this.radius = settings.getAttr(RADIUS, level, 1.5);
         this.gravity = settings.getAttr(GRAVITY, level, -0.04);
@@ -178,6 +187,10 @@ public class ParticleProjectile extends CustomProjectile {
     @Override
     public Location getLocation() {
         return loc;
+    }
+
+    public Location getStartLocation() {
+        return startingLocation;
     }
 
     /**
@@ -306,6 +319,12 @@ public class ParticleProjectile extends CustomProjectile {
             cancel();
             Bukkit.getPluginManager().callEvent(new ParticleProjectileExpireEvent(this));
         }
+        // Distance
+        else if (this.loc.distanceSquared(this.startingLocation) >= distance * distance) {
+            if (settings.getBool("on-expire")) callback.callback(this, null);
+            cancel();
+            Bukkit.getPluginManager().callEvent(new ParticleProjectileExpireEvent(this));
+        }
     }
 
     /**
@@ -319,6 +338,8 @@ public class ParticleProjectile extends CustomProjectile {
      * @param angle     angle of the spread
      * @param amount    number of projectiles to fire
      * @param callback  optional callback for when projectiles hit
+     * @param lifespan  lifespan of the projectile
+     * @param distance  distance the projectile can travel
      * @return list of fired projectiles
      */
     public static List<ParticleProjectile> spread(LivingEntity shooter,
@@ -329,13 +350,14 @@ public class ParticleProjectile extends CustomProjectile {
                                                   double angle,
                                                   int amount,
                                                   ProjectileCallback callback,
-                                                  int lifespan) {
+                                                  int lifespan,
+                                                  int distance) {
         List<Vector>             dirs = calcSpread(direction, angle, amount);
         List<ParticleProjectile> list = new ArrayList<>();
         for (Vector dir : dirs) {
             Location l = loc.clone();
             l.setDirection(dir);
-            ParticleProjectile p = new ParticleProjectile(shooter, level, l, settings, lifespan);
+            ParticleProjectile p = new ParticleProjectile(shooter, level, l, settings, lifespan, distance);
             p.setCallback(callback);
             list.add(p);
         }
@@ -353,6 +375,8 @@ public class ParticleProjectile extends CustomProjectile {
      * @param height   height above the center location
      * @param amount   number of projectiles to fire
      * @param callback optional callback for when projectiles hit
+     * @param lifespan lifespan of the projectile
+     * @param distance distance the projectile can travel
      * @return list of fired projectiles
      */
     public static List<ParticleProjectile> rain(LivingEntity shooter,
@@ -363,13 +387,14 @@ public class ParticleProjectile extends CustomProjectile {
                                                 double height,
                                                 int amount,
                                                 ProjectileCallback callback,
-                                                int lifespan) {
+                                                int lifespan,
+                                                int distance) {
         Vector                   vel  = new Vector(0, 1, 0);
         List<Location>           locs = calcRain(center, radius, height, amount);
         List<ParticleProjectile> list = new ArrayList<>();
         for (Location l : locs) {
             l.setDirection(vel);
-            ParticleProjectile p = new ParticleProjectile(shooter, level, l, settings, lifespan);
+            ParticleProjectile p = new ParticleProjectile(shooter, level, l, settings, lifespan, distance);
             p.setCallback(callback);
             list.add(p);
         }

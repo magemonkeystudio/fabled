@@ -26,19 +26,19 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
+import studio.magemonkey.codex.legacy.utils.Utils;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.api.particle.EffectPlayer;
@@ -87,6 +87,7 @@ public class PotionProjectileMechanic extends MechanicComponent {
     public static final  String REMEMBER      = "remember-key";
     public static final  String CORRECTION    = "correction";
     public static final  String WALL          = "wall";
+    public static final  String DISTANCE      = "distance";
 
     private static final String ALLY   = "group";
     private static final String LINGER = "linger";
@@ -101,19 +102,17 @@ public class PotionProjectileMechanic extends MechanicComponent {
     public static final String RADIUS_PER_TICK = "radius-per-tick";
     public static final String CLOUD_PREFIX    = "cloud-";
 
+    private static final NamespacedKey namespaceKey =
+            new NamespacedKey(Objects.requireNonNull(Bukkit.getPluginManager().getPlugin("Fabled")),
+                    "proj_start_location");
+
     @Override
     public String getKey() {
         return "potion projectile";
     }
 
     /**
-     * Executes the component
-     *
-     * @param caster  caster of the skill
-     * @param level   level of the skill
-     * @param targets targets to apply to
-     * @param force
-     * @return true if applied to something, false otherwise
+     * {@inheritDoc}
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
@@ -129,20 +128,19 @@ public class PotionProjectileMechanic extends MechanicComponent {
             Location location = VectorUtil.getOffsetLocation(target,
                     parseValues(caster, FORWARD, level, 0),
                     parseValues(caster, RIGHT, level, 0),
-                    parseValues(caster, UPWARD, level, 0)
-            );
+                    parseValues(caster, UPWARD, level, 0));
 
             // Apply the spread type
             if (spread.equals("rain")) {
                 Vector dir = new Vector(0, speed, 0);
-                for (Location loc : CustomProjectile.calcRain(
-                        location,
+                for (Location loc : CustomProjectile.calcRain(location,
                         parseValues(caster, RAIN_RADIUS, level, 2.0),
                         parseValues(caster, HEIGHT, level, 8.0),
                         amount)) {
                     ThrownPotion p = caster.launchProjectile(ThrownPotion.class);
-                    p.setVelocity(dir);
                     p.teleport(loc);
+                    p.setVelocity(dir);
+                    p.getPersistentDataContainer().set(namespaceKey, PersistentDataType.STRING, Utils.locToString(loc));
                     projectiles.add(p);
                 }
             } else {
@@ -155,6 +153,8 @@ public class PotionProjectileMechanic extends MechanicComponent {
                 for (Vector d : dirs) {
                     ThrownPotion p = caster.launchProjectile(ThrownPotion.class);
                     p.teleport(location);
+                    p.getPersistentDataContainer()
+                            .set(namespaceKey, PersistentDataType.STRING, Utils.locToString(location));
                     p.setVelocity(d.multiply(speed));
                     projectiles.add(p);
                 }
@@ -162,8 +162,7 @@ public class PotionProjectileMechanic extends MechanicComponent {
         }
 
         ItemStack itemStack = new ItemStack(
-                settings.getString(LINGER, "false").equalsIgnoreCase("true")
-                        ? Material.LINGERING_POTION
+                settings.getString(LINGER, "false").equalsIgnoreCase("true") ? Material.LINGERING_POTION
                         : Material.SPLASH_POTION);
         ItemMeta meta = itemStack.getItemMeta();
         if (meta instanceof PotionMeta) {
@@ -188,8 +187,7 @@ public class PotionProjectileMechanic extends MechanicComponent {
         if (settings.getBool(USE_EFFECT, false)) {
             EffectPlayer player = new EffectPlayer(settings);
             for (Projectile p : projectiles) {
-                player.start(
-                        new EntityTarget(p),
+                player.start(new EntityTarget(p),
                         settings.getString(EFFECT_KEY, skill.getName()),
                         Integer.MAX_VALUE,
                         level,
@@ -233,8 +231,12 @@ public class PotionProjectileMechanic extends MechanicComponent {
             new RepeatingEntityTask<>(projectiles, proj -> {
                 LivingEntity tar = homing.apply(proj);
                 if (tar != null) {
-                    Vector acceleration = tar.getBoundingBox().getCenter().subtract(proj.getBoundingBox().getCenter())
-                            .normalize().multiply(speed).subtract(proj.getVelocity());
+                    Vector acceleration = tar.getBoundingBox()
+                            .getCenter()
+                            .subtract(proj.getBoundingBox().getCenter())
+                            .normalize()
+                            .multiply(speed)
+                            .subtract(proj.getVelocity());
                     double length = acceleration.length();
                     acceleration.multiply(1.0 / length).multiply(Math.min(length, correction));
                     proj.setVelocity(proj.getVelocity().add(acceleration));
@@ -242,7 +244,23 @@ public class PotionProjectileMechanic extends MechanicComponent {
             });
         }
 
-        new RepeatingEntityTask<>(projectiles, proj -> ParticleHelper.play(proj.getLocation(), settings));
+        int distance = (int) parseValues(caster, DISTANCE, level, 50);
+        new RepeatingEntityTask<>(projectiles, proj -> {
+            ParticleHelper.play(proj.getLocation(), settings);
+
+            Location startLocation = Utils.stringToLoc(Objects.requireNonNull(proj.getPersistentDataContainer()
+                    .get(namespaceKey, PersistentDataType.STRING)));
+
+            if (startLocation != null) {
+                if (proj.getLocation().distance(startLocation) > distance * distance) {
+                    if(proj.isValid()) proj.remove();
+
+                    if (settings.getBool("on-expire", false)) {
+                        callback(proj, null);
+                    }
+                }
+            }
+        });
         new RemoveEntitiesTask(projectiles, (int) parseValues(caster, LIFESPAN, level, 9999) * 20) {
             @Override
             public void run() {
@@ -303,6 +321,7 @@ public class PotionProjectileMechanic extends MechanicComponent {
                 int    amount   = (int) parseValues(caster, AMOUNT, level, 1.0);
                 String spread   = settings.getString(SPREAD, "cone").toLowerCase();
                 int    lifespan = (int) (parseValues(caster, LIFESPAN, level, 9999) * 20);
+                int    distance = (int) parseValues(caster, DISTANCE, level, 50);
 
                 final Settings copy = new Settings(settings);
                 copy.set(ParticleProjectile.SPEED, parseValues(caster, ParticleProjectile.SPEED, level, 1), 0);
@@ -321,14 +340,13 @@ public class PotionProjectileMechanic extends MechanicComponent {
                     if (settings.getBool(LINGER, false)) {
                         double   radius = parseValues(caster, RADIUS, level, 3);
                         Location loc    = projectile.getLocation();
-                        hitTargets.addAll(Nearby.getLivingNearby(projectile.getLocation().getWorld(), new BoundingBox(
-                                loc.getX() - radius,
-                                loc.getY() + 0.6,
-                                loc.getZ() - radius,
-                                loc.getX() + radius,
-                                loc.getY() + 1.1,
-                                loc.getZ() + radius
-                        )));
+                        hitTargets.addAll(Nearby.getLivingNearby(projectile.getLocation().getWorld(),
+                                new BoundingBox(loc.getX() - radius,
+                                        loc.getY() + 0.6,
+                                        loc.getZ() - radius,
+                                        loc.getX() + radius,
+                                        loc.getY() + 1.1,
+                                        loc.getZ() + radius)));
                     }
                     if (hitTargets.isEmpty()) {
                         hitTargets.add(hit);
@@ -336,7 +354,10 @@ public class PotionProjectileMechanic extends MechanicComponent {
                     targets.addAll(hitTargets);
                     if (preview.getBool("per-target")) {
                         for (LivingEntity target : hitTargets) {
-                            ParticleHelper.play(target.getLocation(), preview, Set.of(caster), "per-target-",
+                            ParticleHelper.play(target.getLocation(),
+                                    preview,
+                                    Set.of(caster),
+                                    "per-target-",
                                     preview.getBool("per-target-" + "hitbox") ? target.getBoundingBox() : null);
                         }
                     }
@@ -348,8 +369,7 @@ public class PotionProjectileMechanic extends MechanicComponent {
                     Location location = VectorUtil.getOffsetLocation(target,
                             parseValues(caster, FORWARD, level, 0),
                             parseValues(caster, RIGHT, level, 0),
-                            parseValues(caster, UPWARD, level, 0)
-                    );
+                            parseValues(caster, UPWARD, level, 0));
 
                     // Apply the spread type
                     if (spread.equals("rain")) {
@@ -361,15 +381,15 @@ public class PotionProjectileMechanic extends MechanicComponent {
                                 parseValues(caster, HEIGHT, level, 8.0),
                                 amount,
                                 callback,
-                                lifespan));
+                                lifespan,
+                                distance));
                     } else {
                         Vector dir = location.getDirection();
                         if (spread.equals("horizontal cone")) {
                             dir.setY(0);
                             dir.normalize();
                         }
-                        list.addAll(ParticleProjectile.spread(
-                                caster,
+                        list.addAll(ParticleProjectile.spread(caster,
                                 level,
                                 dir,
                                 location,
@@ -377,8 +397,8 @@ public class PotionProjectileMechanic extends MechanicComponent {
                                 parseValues(caster, ANGLE, level, 30.0),
                                 amount,
                                 callback,
-                                lifespan
-                        ));
+                                lifespan,
+                                distance));
                     }
 
                     for (ParticleProjectile p : list) {
@@ -386,12 +406,11 @@ public class PotionProjectileMechanic extends MechanicComponent {
                         p.setAllyEnemy(true, true);
                     }
 
-                    Consumer<Location> onStep = preview.getBool("path")
-                            ? loc -> new ParticleSettings(preview, "path-").instance(caster,
-                            loc.getX(),
-                            loc.getY(),
-                            loc.getZ())
-                            : loc -> {
+                    Consumer<Location> onStep =
+                            preview.getBool("path") ? loc -> new ParticleSettings(preview, "path-").instance(caster,
+                                    loc.getX(),
+                                    loc.getY(),
+                                    loc.getZ()) : loc -> {
                             };
                     for (ParticleProjectile p : list) p.setOnStep(onStep);
 
