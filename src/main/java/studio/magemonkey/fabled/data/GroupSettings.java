@@ -27,6 +27,7 @@
 package studio.magemonkey.fabled.data;
 
 import com.google.common.collect.ImmutableList;
+import lombok.Data;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
@@ -43,6 +44,7 @@ import java.util.List;
 public class GroupSettings {
     private static final int[] POINTS = new int[]{0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
 
+    private static final String  PRIORITY                  = "priority";
     private static final String  PROFESS_RESET             = "profess-reset";
     private static final String  PROFESS_REFUND_SKILLS     = "profess-refund-skills";
     private static final String  PROFESS_REFUND_ATTRIBUTES = "profess-refund-attributes";
@@ -60,6 +62,14 @@ public class GroupSettings {
     private static final String  DEFINED_POINTS            = "custom-points";
     private static final String  CUSTOM_ATTRIBS            = "use-custom-attribute-points";
     private static final String  DEFINED_ATTRIBS           = "custom-attribute-points";
+    /**
+     * -- GETTER --
+     *  Retrieves the priority of the group
+     *
+     * @return default is no priority/-1, otherwise the lowest number is the highest priority
+     */
+    @Getter
+    private              int  priority                     = -1;
     private              String  defaultClass              = "none";
     private              String  permission                = "none";
     /**
@@ -139,6 +149,7 @@ public class GroupSettings {
      * @param config config to load from
      */
     public GroupSettings(DataSection config) {
+        priority = config.getInt(DEFAULT, priority);
         defaultClass = config.getString(DEFAULT, defaultClass);
         permission = config.getString(PERMISSION, permission);
         professReset = config.getBoolean(PROFESS_RESET, professReset);
@@ -180,6 +191,15 @@ public class GroupSettings {
             return points.stream().mapToInt(Integer::intValue).toArray();
         }
         return POINTS;
+    }
+
+    /**
+     * Retrieves whether the group has a priority set
+     *
+     * @return true if greater than -1, false otherwise
+     */
+    public boolean hasPriority() {
+        return priority > -1;
     }
 
     /**
@@ -255,6 +275,13 @@ public class GroupSettings {
      * @param config config to save to
      */
     public void save(DataSection config) {
+        config.setComments(PRIORITY, ImmutableList.of(
+                "",
+                " The priority of this group. Lower numbers are higher priority.",
+                " If two groups have the same priority, the one with the lower",
+                " index in the config will be used."));
+        config.set(PRIORITY, priority);
+
         config.setComments(DEFAULT, ImmutableList.of(
                 "",
                 " The starting class for all players for this group.",
