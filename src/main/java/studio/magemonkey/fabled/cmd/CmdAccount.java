@@ -83,6 +83,9 @@ public class CmdAccount implements IFunction {
                 }
             } catch (Exception ex) {
                 // Invalid ID
+                if(args[0].equalsIgnoreCase("open")) {
+                    // Open the account selection gui
+                }
             }
 
             command.sendMessage(sender, NOT_ACCOUNT, ChatColor.RED + "That is not a valid account ID");
