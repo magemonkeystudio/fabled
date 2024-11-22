@@ -1,6 +1,6 @@
 /**
  * Fabled
- * studio.magemonkey.fabled.gui.tool.GUITool
+ * studio.magemonkey.fabled.gui.customization.tool.GUITool
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,7 +24,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package studio.magemonkey.fabled.gui.tool;
+package studio.magemonkey.fabled.gui.customization.tool;
 
 import lombok.Getter;
 import org.bukkit.ChatColor;
@@ -50,6 +50,7 @@ import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.skills.Skill;
 import studio.magemonkey.fabled.api.util.DamageLoreRemover;
+import studio.magemonkey.fabled.gui.customization.tools.ToolMenu;
 import studio.magemonkey.fabled.log.Logger;
 import studio.magemonkey.fabled.manager.FabledAttribute;
 import studio.magemonkey.fabled.tree.basic.CustomTree;

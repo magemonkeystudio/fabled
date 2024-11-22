@@ -28,7 +28,7 @@ package studio.magemonkey.fabled.gui.handlers;
 
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.skills.Skill;
-import studio.magemonkey.fabled.gui.tool.GUIHolder;
+import studio.magemonkey.fabled.gui.customization.tools.GUIHolder;
 
 public class SkillHandler extends GUIHolder<Skill> {
     @Override

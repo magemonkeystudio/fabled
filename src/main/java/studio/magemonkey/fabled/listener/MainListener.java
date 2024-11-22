@@ -54,7 +54,7 @@ import studio.magemonkey.fabled.data.Permissions;
 import studio.magemonkey.fabled.data.io.PlayerLoader;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.mechanic.ImmunityMechanic;
-import studio.magemonkey.fabled.gui.tool.GUITool;
+import studio.magemonkey.fabled.gui.customization.tool.GUITool;
 import studio.magemonkey.fabled.hook.CitizensHook;
 import studio.magemonkey.fabled.manager.ClassBoardManager;
 

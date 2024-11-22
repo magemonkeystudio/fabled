@@ -52,7 +52,7 @@ import studio.magemonkey.fabled.cast.CastMode;
 import studio.magemonkey.fabled.data.formula.Formula;
 import studio.magemonkey.fabled.data.formula.value.CustomValue;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
-import studio.magemonkey.fabled.gui.tool.GUITool;
+import studio.magemonkey.fabled.gui.customization.tool.GUITool;
 import studio.magemonkey.fabled.log.Logger;
 
 import java.util.*;

@@ -59,7 +59,7 @@ import studio.magemonkey.fabled.api.util.DamageLoreRemover;
 import studio.magemonkey.fabled.api.util.Data;
 import studio.magemonkey.fabled.data.Permissions;
 import studio.magemonkey.fabled.dynamic.TempEntity;
-import studio.magemonkey.fabled.gui.tool.IconHolder;
+import studio.magemonkey.fabled.gui.customization.tool.IconHolder;
 import studio.magemonkey.fabled.hook.NoCheatHook;
 import studio.magemonkey.fabled.hook.PluginChecker;
 import studio.magemonkey.fabled.language.NotificationNodes;

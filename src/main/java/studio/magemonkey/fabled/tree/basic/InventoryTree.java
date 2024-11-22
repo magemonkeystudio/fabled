@@ -38,7 +38,7 @@ import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.exception.SkillTreeException;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.skills.Skill;
-import studio.magemonkey.fabled.gui.tool.GUITool;
+import studio.magemonkey.fabled.gui.customization.tool.GUITool;
 import studio.magemonkey.fabled.language.GUINodes;
 import studio.magemonkey.fabled.language.RPGFilter;
 import studio.magemonkey.fabled.tree.SkillTree;

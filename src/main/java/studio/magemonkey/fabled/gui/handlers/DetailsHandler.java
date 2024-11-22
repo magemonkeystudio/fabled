@@ -27,7 +27,7 @@
 package studio.magemonkey.fabled.gui.handlers;
 
 import studio.magemonkey.fabled.api.classes.FabledClass;
-import studio.magemonkey.fabled.gui.tool.GUIHolder;
+import studio.magemonkey.fabled.gui.customization.tools.GUIHolder;
 
 /**
  * Handles interactions with the class details menu

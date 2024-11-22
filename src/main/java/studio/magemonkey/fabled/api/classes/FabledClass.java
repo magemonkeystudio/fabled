@@ -48,7 +48,7 @@ import studio.magemonkey.fabled.api.util.Data;
 import studio.magemonkey.fabled.data.Click;
 import studio.magemonkey.fabled.data.GroupSettings;
 import studio.magemonkey.fabled.data.Permissions;
-import studio.magemonkey.fabled.gui.tool.IconHolder;
+import studio.magemonkey.fabled.gui.customization.tool.IconHolder;
 import studio.magemonkey.fabled.log.LogType;
 import studio.magemonkey.fabled.log.Logger;
 import studio.magemonkey.fabled.tree.basic.InventoryTree;

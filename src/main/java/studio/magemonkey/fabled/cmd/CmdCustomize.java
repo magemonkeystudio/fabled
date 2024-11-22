@@ -31,7 +31,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
 import studio.magemonkey.codex.mccore.commands.IFunction;
-import studio.magemonkey.fabled.gui.tool.GUITool;
+import studio.magemonkey.fabled.gui.customization.tool.GUITool;
 
 public class CmdCustomize implements IFunction {
     public static final String CUSTOMIZE = "fabledCustomGUI";

@@ -30,7 +30,7 @@ import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.exception.SkillTreeException;
 import studio.magemonkey.fabled.api.skills.Skill;
-import studio.magemonkey.fabled.gui.tool.GUIType;
+import studio.magemonkey.fabled.gui.customization.tool.GUIType;
 
 import java.util.ArrayList;
 import java.util.Comparator;

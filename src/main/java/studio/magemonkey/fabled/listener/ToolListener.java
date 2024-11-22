@@ -33,8 +33,8 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import studio.magemonkey.codex.util.InventoryUtil;
-import studio.magemonkey.fabled.gui.tool.GUIHolder;
-import studio.magemonkey.fabled.gui.tool.ToolMenu;
+import studio.magemonkey.fabled.gui.customization.tools.GUIHolder;
+import studio.magemonkey.fabled.gui.customization.tools.ToolMenu;
 
 public class ToolListener extends FabledListener {
     @EventHandler
@@ -45,7 +45,7 @@ public class ToolListener extends FabledListener {
             else
                 ((ToolMenu) event.getInventory().getHolder()).handleClick(event);
         } else if (event.getInventory().getHolder() instanceof GUIHolder)
-            ((GUIHolder) event.getInventory().getHolder()).handleClick(event);
+            ((GUIHolder<?>) event.getInventory().getHolder()).handleClick(event);
     }
 
     @EventHandler
@@ -53,7 +53,7 @@ public class ToolListener extends FabledListener {
         if (event.getInventory().getHolder() instanceof ToolMenu)
             event.setCancelled(true);
         else if (event.getInventory().getHolder() instanceof GUIHolder)
-            ((GUIHolder) event.getInventory().getHolder()).handleDrag(event);
+            ((GUIHolder<?>) event.getInventory().getHolder()).handleDrag(event);
     }
 
     @EventHandler
@@ -62,7 +62,7 @@ public class ToolListener extends FabledListener {
             event.getPlayer().setItemOnCursor(null);
             ((ToolMenu) event.getInventory().getHolder()).restore();
         } else if (event.getInventory().getHolder() instanceof GUIHolder)
-            ((GUIHolder) event.getInventory().getHolder()).handleClose(event);
+            ((GUIHolder<?>) event.getInventory().getHolder()).handleClose(event);
     }
 
     @EventHandler

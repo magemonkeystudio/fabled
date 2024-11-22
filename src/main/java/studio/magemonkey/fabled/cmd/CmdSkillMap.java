@@ -36,7 +36,7 @@ import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
 import studio.magemonkey.codex.mccore.commands.IFunction;
 import studio.magemonkey.codex.mccore.gui.MapMenuManager;
 import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.gui.map.Menu;
+import studio.magemonkey.fabled.gui.customization.map.Menu;
 
 /**
  * A command that allows a player to view their skill tree

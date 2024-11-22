@@ -1,6 +1,6 @@
 /**
  * Fabled
- * studio.magemonkey.fabled.gui.tool.InventoryData
+ * studio.magemonkey.fabled.gui.customization.tools.ToolMenu
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,39 +24,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package studio.magemonkey.fabled.gui.tool;
+package studio.magemonkey.fabled.gui.customization.tools;
 
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.InventoryHolder;
 
-/**
- * Handles keeping track of player inventory data when overwriting it
- * for tool GUIs, allowing the plugin to restore it as they close the menu.
- */
-public class InventoryData {
-    private ItemStack[] main;
-    private ItemStack[] armor;
-    private ItemStack   sidearm;
+public interface ToolMenu extends InventoryHolder {
 
-    /**
-     * Creates a backup of the player's inventory contents
-     *
-     * @param player player to make a backup for
-     */
-    public InventoryData(Player player) {
-        main = player.getInventory().getContents();
-        armor = player.getInventory().getArmorContents();
-        sidearm = player.getInventory().getItemInOffHand();
-    }
-
-    /**
-     * Restores the player's inventory contents
-     *
-     * @param player player to restore for
-     */
-    public void restore(Player player) {
-        player.getInventory().setContents(main);
-        player.getInventory().setArmorContents(armor);
-        player.getInventory().setItemInOffHand(sidearm);
-    }
+    void handleClick(InventoryClickEvent event);
+    void restore();
 }

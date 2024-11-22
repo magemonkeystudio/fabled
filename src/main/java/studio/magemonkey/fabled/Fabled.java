@@ -62,7 +62,7 @@ import studio.magemonkey.fabled.data.sql.SQLManager;
 import studio.magemonkey.fabled.dynamic.DynamicClass;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.exception.FabledNotEnabledException;
-import studio.magemonkey.fabled.gui.tool.GUITool;
+import studio.magemonkey.fabled.gui.customization.tool.GUITool;
 import studio.magemonkey.fabled.hook.PlaceholderAPIHook;
 import studio.magemonkey.fabled.hook.PluginChecker;
 import studio.magemonkey.fabled.hook.mimic.MimicHook;

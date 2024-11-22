@@ -26,7 +26,7 @@ import studio.magemonkey.fabled.api.skills.Skill;
 import studio.magemonkey.fabled.cast.CastMode;
 import studio.magemonkey.fabled.cast.PlayerTextCastingData;
 import studio.magemonkey.fabled.gui.handlers.SkillHandler;
-import studio.magemonkey.fabled.gui.tool.GUITool;
+import studio.magemonkey.fabled.gui.customization.tool.GUITool;
 import studio.magemonkey.fabled.hook.PlaceholderAPIHook;
 import studio.magemonkey.fabled.hook.PluginChecker;
 

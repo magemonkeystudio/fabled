@@ -47,8 +47,8 @@ import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.player.PlayerSkillBar;
 import studio.magemonkey.fabled.api.skills.Skill;
 import studio.magemonkey.fabled.gui.handlers.SkillHandler;
-import studio.magemonkey.fabled.gui.map.SkillDetailMenu;
-import studio.magemonkey.fabled.gui.map.SkillListMenu;
+import studio.magemonkey.fabled.gui.customization.map.SkillDetailMenu;
+import studio.magemonkey.fabled.gui.customization.map.SkillListMenu;
 import studio.magemonkey.fabled.hook.CitizensHook;
 
 import java.util.HashSet;

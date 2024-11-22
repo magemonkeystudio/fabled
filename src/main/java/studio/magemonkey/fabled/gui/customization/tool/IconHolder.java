@@ -1,6 +1,6 @@
 /**
  * Fabled
- * studio.magemonkey.fabled.gui.tool.ToolMenu
+ * studio.magemonkey.fabled.gui.customization.tool.IconHolder
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,13 +24,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package studio.magemonkey.fabled.gui.tool;
+package studio.magemonkey.fabled.gui.customization.tool;
 
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import studio.magemonkey.fabled.api.player.PlayerData;
 
-public interface ToolMenu extends InventoryHolder {
-    void handleClick(InventoryClickEvent event);
+public interface IconHolder {
+    ItemStack getIcon(PlayerData player);
 
-    void restore();
+    boolean isAllowed(Player player);
 }

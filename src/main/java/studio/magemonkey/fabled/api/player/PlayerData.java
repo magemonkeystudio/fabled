@@ -70,7 +70,7 @@ import studio.magemonkey.fabled.gui.handlers.AttributeHandler;
 import studio.magemonkey.fabled.gui.handlers.DetailsHandler;
 import studio.magemonkey.fabled.gui.handlers.ProfessHandler;
 import studio.magemonkey.fabled.gui.handlers.SkillHandler;
-import studio.magemonkey.fabled.gui.tool.GUITool;
+import studio.magemonkey.fabled.gui.customization.tool.GUITool;
 import studio.magemonkey.fabled.language.ErrorNodes;
 import studio.magemonkey.fabled.language.GUINodes;
 import studio.magemonkey.fabled.language.RPGFilter;

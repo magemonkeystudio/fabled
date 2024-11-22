@@ -31,9 +31,9 @@ import studio.magemonkey.codex.mccore.config.CommentedConfig;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.dynamic.EffectComponent;
-import studio.magemonkey.fabled.gui.tool.GUIData;
-import studio.magemonkey.fabled.gui.tool.GUIPage;
-import studio.magemonkey.fabled.gui.tool.GUITool;
+import studio.magemonkey.fabled.gui.customization.tool.GUIData;
+import studio.magemonkey.fabled.gui.customization.tool.GUIPage;
+import studio.magemonkey.fabled.gui.customization.tool.GUITool;
 import studio.magemonkey.fabled.log.LogType;
 import studio.magemonkey.fabled.log.Logger;
 

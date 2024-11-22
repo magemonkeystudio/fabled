@@ -24,7 +24,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package studio.magemonkey.fabled.gui.map;
+package studio.magemonkey.fabled.gui.customization.map;
 
 import studio.magemonkey.codex.mccore.gui.MapFont;
 import studio.magemonkey.codex.mccore.gui.MapMenuManager;

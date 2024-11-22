@@ -15,7 +15,7 @@ import studio.magemonkey.fabled.data.formula.Formula;
 import studio.magemonkey.fabled.data.formula.value.CustomValue;
 import studio.magemonkey.fabled.dynamic.ComponentType;
 import studio.magemonkey.fabled.dynamic.EffectComponent;
-import studio.magemonkey.fabled.gui.tool.IconHolder;
+import studio.magemonkey.fabled.gui.customization.tool.IconHolder;
 import studio.magemonkey.fabled.log.LogType;
 import studio.magemonkey.fabled.log.Logger;
 

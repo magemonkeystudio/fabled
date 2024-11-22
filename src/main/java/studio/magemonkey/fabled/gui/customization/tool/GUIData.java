@@ -1,6 +1,6 @@
 /**
  * Fabled
- * studio.magemonkey.fabled.gui.tool.GUIData
+ * studio.magemonkey.fabled.gui.customization.tool.GUIData
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,7 +24,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package studio.magemonkey.fabled.gui.tool;
+package studio.magemonkey.fabled.gui.customization.tool;
 
 import com.google.common.base.Preconditions;
 import lombok.Getter;
@@ -35,6 +35,7 @@ import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.skills.Skill;
+import studio.magemonkey.fabled.gui.customization.tools.GUIHolder;
 import studio.magemonkey.fabled.tree.basic.CustomTree;
 import studio.magemonkey.fabled.tree.basic.InventoryTree;
 

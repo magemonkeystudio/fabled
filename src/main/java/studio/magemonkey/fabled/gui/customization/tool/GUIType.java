@@ -1,6 +1,6 @@
 /**
  * Fabled
- * studio.magemonkey.fabled.gui.tool.GUIType
+ * studio.magemonkey.fabled.gui.customization.tool.GUIType
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,7 +24,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package studio.magemonkey.fabled.gui.tool;
+package studio.magemonkey.fabled.gui.customization.tool;
 
 import studio.magemonkey.fabled.Fabled;
 

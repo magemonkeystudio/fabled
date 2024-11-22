@@ -44,7 +44,7 @@ import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.event.PlayerClassChangeEvent;
 import studio.magemonkey.fabled.api.event.PlayerSkillUnlockEvent;
 import studio.magemonkey.fabled.cast.PlayerCastBars;
-import studio.magemonkey.fabled.gui.tool.GUITool;
+import studio.magemonkey.fabled.gui.customization.tool.GUITool;
 
 import java.util.HashSet;
 import java.util.Set;

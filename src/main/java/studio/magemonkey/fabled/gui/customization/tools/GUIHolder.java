@@ -1,6 +1,6 @@
 /**
  * Fabled
- * studio.magemonkey.fabled.gui.tool.GUIHolder
+ * studio.magemonkey.fabled.gui.customization.tools.GUIHolder
  * <p>
  * The MIT License (MIT)
  * <p>
@@ -24,7 +24,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package studio.magemonkey.fabled.gui.tool;
+package studio.magemonkey.fabled.gui.customization.tools;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
@@ -37,6 +37,9 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import studio.magemonkey.codex.util.InventoryUtil;
 import studio.magemonkey.fabled.api.player.PlayerData;
+import studio.magemonkey.fabled.gui.customization.tool.GUIData;
+import studio.magemonkey.fabled.gui.customization.tool.GUITool;
+import studio.magemonkey.fabled.gui.customization.tool.IconHolder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +47,7 @@ import java.util.Map;
 public abstract class GUIHolder<T extends IconHolder> implements InventoryHolder {
     protected Map<String, T> data = new HashMap<>();
 
-    protected GUIData    gui;
+    protected GUIData gui;
     protected PlayerData player;
     protected Inventory  inventory;
     protected int        page;
