@@ -2133,7 +2133,11 @@ public class PlayerData {
         try {
             AttributeInstance instance = player.getAttribute(attribute);
             if (instance == null) return;
-            double def      = instance.getDefaultValue();
+            double def = instance.getDefaultValue();
+            if (attribKey.equalsIgnoreCase(AttributeManager.ATTACK_DAMAGE)) {
+                // The player's default attack damage is *actually* 1 instead of the attribute's default value of 2
+                def = 1.0;
+            }
             double modified = this.scaleStat(attribKey, def, min, max);
             instance.setBaseValue(/*def + */modified);
         } catch (Exception e) {
