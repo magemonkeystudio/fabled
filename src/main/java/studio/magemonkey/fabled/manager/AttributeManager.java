@@ -70,9 +70,7 @@ public class AttributeManager implements IAttributeManager {
     // https://hub.spigotmc.org/javadocs/spigot/org/bukkit/attribute/Attribute.html
     public static final String ATTACK_DAMAGE                  = "attack-damage";
     public static final String ATTACK_KNOCKBACK               = "attack-knockback";
-    public static final String FLYING_SPEED                   = "flying-speed";
-    public static final String FOLLOW_RANGE                   = "follow-range";
-    public static final String ABSORPTION                     = "absorption";
+    public static final String ABSORPTION                     = "absorption";  
     public static final String SCALE                          = "scale";
     public static final String STEP_HEIGHT                    = "step-height";
     public static final String JUMP_STRENGTH                  = "jump-strength";

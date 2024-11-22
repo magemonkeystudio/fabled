@@ -1984,16 +1984,6 @@ public class PlayerData {
                     0.0f,
                     5.0f);
             this.updateMCAttribute(player,
-                    AttributeUT.resolve("FLYING_SPEED"),
-                    AttributeManager.FLYING_SPEED,
-                    0.0f,
-                    1024.0f);
-            this.updateMCAttribute(player,
-                    AttributeUT.resolve("FOLLOW_RANGE"),
-                    AttributeManager.FOLLOW_RANGE,
-                    0.0f,
-                    2048.0f);
-            this.updateMCAttribute(player,
                     AttributeUT.resolve("MAX_ABSORPTION"),
                     AttributeManager.ABSORPTION,
                     0.0f,
