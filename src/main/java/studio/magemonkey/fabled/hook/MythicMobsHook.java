@@ -1,8 +1,8 @@
 package studio.magemonkey.fabled.hook;
 
-import studio.magemonkey.codex.CodexEngine;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.codex.CodexEngine;
 
 /**
  * Fabled © 2024

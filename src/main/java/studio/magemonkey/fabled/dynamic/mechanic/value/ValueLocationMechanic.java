@@ -26,12 +26,12 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic.value;
 
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
 

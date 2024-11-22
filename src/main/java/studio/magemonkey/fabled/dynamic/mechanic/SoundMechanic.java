@@ -26,9 +26,9 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.fabled.log.Logger;
-import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.codex.util.SoundUT;
+import studio.magemonkey.fabled.log.Logger;
 
 import java.util.List;
 import java.util.Locale;
@@ -67,7 +67,8 @@ public class SoundMechanic extends MechanicComponent {
                 settings.getString(SOUND, settings.getString(SOUND2, "")).toUpperCase(Locale.US).replace(" ", "_");
         try {
             String sound =
-                    type.equals("CUSTOM") ? settings.getString(CUSTOM, "") : Sound.valueOf(type).getKey().toString();
+                    type.equals("CUSTOM") ? settings.getString(CUSTOM, "")
+                            : SoundUT.getSound(type).getKey().toString();
             float volume = (float) parseValues(caster, VOLUME, level, 100.0) / 100;
             float pitch  = (float) parseValues(caster, PITCH, level, 0.0);
 

@@ -17,9 +17,9 @@ import org.bukkit.event.HandlerList;
 @AllArgsConstructor
 public class PlayerClassChangeEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private final PlayerClass playerClass;
-    private final RPGClass    previousClass;
-    private final RPGClass    newClass;
+    private final        PlayerClass playerClass;
+    private final        RPGClass    previousClass;
+    private final        RPGClass    newClass;
 
     public PlayerData getPlayerData() {
         return playerClass.getPlayerData();

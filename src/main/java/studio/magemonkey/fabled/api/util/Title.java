@@ -1,8 +1,8 @@
 package studio.magemonkey.fabled.api.util;
 
+import org.bukkit.entity.Player;
 import studio.magemonkey.codex.util.Reflex;
 import studio.magemonkey.codex.util.reflection.ReflectionManager;
-import org.bukkit.entity.Player;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;

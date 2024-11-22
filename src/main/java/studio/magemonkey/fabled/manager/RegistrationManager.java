@@ -26,6 +26,11 @@
  */
 package studio.magemonkey.fabled.manager;
 
+import org.bukkit.Bukkit;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
+import studio.magemonkey.codex.mccore.config.CommentedConfig;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.SkillPlugin;
 import studio.magemonkey.fabled.api.classes.FabledClass;
@@ -36,11 +41,6 @@ import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.log.LogType;
 import studio.magemonkey.fabled.log.Logger;
 import studio.magemonkey.fabled.util.ConfigurationException;
-import studio.magemonkey.codex.mccore.config.CommentedConfig;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;

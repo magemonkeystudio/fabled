@@ -2,7 +2,6 @@ package studio.magemonkey.fabled.dynamic.mechanic;
 
 import org.bukkit.entity.Player;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;

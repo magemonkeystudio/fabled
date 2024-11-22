@@ -152,8 +152,10 @@ public class ItemChecker {
         List<String> potionTypes = new ArrayList<>();
         if (item != null && item.hasItemMeta() && item.getItemMeta() instanceof PotionMeta) {
             PotionType pType = ((PotionMeta) item.getItemMeta()).getBasePotionType();
-            for (PotionEffect potionEffect : pType.getPotionEffects()) {
-                potionTypes.add(potionEffect.getType().getName());
+            if (pType != null) {
+                for (PotionEffect potionEffect : pType.getPotionEffects()) {
+                    potionTypes.add(potionEffect.getType().getName());
+                }
             }
         }
 

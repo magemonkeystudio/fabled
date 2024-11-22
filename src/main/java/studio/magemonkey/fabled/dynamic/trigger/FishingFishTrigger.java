@@ -1,8 +1,8 @@
 package studio.magemonkey.fabled.dynamic.trigger;
 
-import studio.magemonkey.fabled.api.Settings;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerFishEvent.State;
+import studio.magemonkey.fabled.api.Settings;
 
 public class FishingFishTrigger extends FishingTrigger {
 

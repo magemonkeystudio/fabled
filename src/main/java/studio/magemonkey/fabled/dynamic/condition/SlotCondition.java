@@ -26,10 +26,10 @@
  */
 package studio.magemonkey.fabled.dynamic.condition;
 
-import studio.magemonkey.fabled.dynamic.ItemChecker;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
+import studio.magemonkey.fabled.dynamic.ItemChecker;
 
 public class SlotCondition extends ConditionComponent {
     private static final String SLOT = "slot";

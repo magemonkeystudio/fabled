@@ -26,15 +26,6 @@
  */
 package studio.magemonkey.fabled.cmd;
 
-import studio.magemonkey.codex.mccore.commands.CommandManager;
-import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
-import studio.magemonkey.codex.mccore.commands.IFunction;
-import studio.magemonkey.codex.mccore.config.Filter;
-import studio.magemonkey.codex.mccore.config.parse.NumberParser;
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.enums.ManaSource;
-import studio.magemonkey.fabled.api.player.PlayerData;
-import studio.magemonkey.fabled.language.RPGFilter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -45,6 +36,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import studio.magemonkey.codex.mccore.commands.CommandManager;
+import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
+import studio.magemonkey.codex.mccore.commands.IFunction;
+import studio.magemonkey.codex.mccore.config.Filter;
+import studio.magemonkey.codex.mccore.config.parse.NumberParser;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.enums.ManaSource;
+import studio.magemonkey.fabled.api.player.PlayerData;
+import studio.magemonkey.fabled.language.RPGFilter;
 
 import java.util.List;
 

@@ -1,13 +1,12 @@
 package studio.magemonkey.fabled.dynamic;
 
-import be.seeseemelk.mockbukkit.Coordinate;
-import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockbukkit.mockbukkit.entity.PlayerMock;
+import org.mockbukkit.mockbukkit.world.Coordinate;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.event.DynamicTriggerEvent;
@@ -59,9 +58,8 @@ public class PlayerClassTest extends MockedTest {
         player.simulateBlockBreak(block);
         assertEquals(Material.AIR, block.getType());
 
-        server.getPluginManager().assertEventFired(BlockBreakEvent.class);
-        server.getPluginManager()
-                .assertEventFired(DynamicTriggerEvent.class, event -> event.getSkill().equals(skill.getData()));
+        assertEventFired(BlockBreakEvent.class);
+        assertEventFired(DynamicTriggerEvent.class, event -> event.getSkill().equals(skill.getData()));
 
         assertFalse(playerData.getSkills().isEmpty());
         player.performCommand("class changeclass Travja class Mage");
@@ -75,7 +73,7 @@ public class PlayerClassTest extends MockedTest {
         player.simulateBlockBreak(block);
         assertEquals(Material.AIR, block.getType());
 
-        server.getPluginManager().assertEventFired(BlockBreakEvent.class);
-        server.getPluginManager().assertEventNotFired(DynamicTriggerEvent.class);
+        assertEventFired(BlockBreakEvent.class);
+        assertEventNotFired(DynamicTriggerEvent.class);
     }
 }

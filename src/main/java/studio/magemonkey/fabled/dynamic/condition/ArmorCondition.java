@@ -27,12 +27,12 @@
 package studio.magemonkey.fabled.dynamic.condition;
 
 import com.google.common.collect.ImmutableList;
-import studio.magemonkey.fabled.dynamic.DynamicSkill;
-import studio.magemonkey.fabled.dynamic.ItemChecker;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
+import studio.magemonkey.fabled.dynamic.DynamicSkill;
+import studio.magemonkey.fabled.dynamic.ItemChecker;
 
 import java.util.List;
 import java.util.function.Function;

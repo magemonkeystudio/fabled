@@ -1,9 +1,9 @@
 package studio.magemonkey.fabled.dynamic.mechanic.armorstand;
 
+import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.api.armorstand.ArmorStandData;
 import studio.magemonkey.fabled.api.armorstand.ArmorStandManager;
 import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
 

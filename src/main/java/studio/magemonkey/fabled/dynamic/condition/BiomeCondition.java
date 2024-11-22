@@ -26,9 +26,10 @@
  */
 package studio.magemonkey.fabled.dynamic.condition;
 
-import studio.magemonkey.fabled.dynamic.DynamicSkill;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
+import studio.magemonkey.codex.util.EnumUT;
+import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
 import java.util.Locale;
 import java.util.Set;
@@ -57,6 +58,6 @@ public class BiomeCondition extends ConditionComponent {
 
     @Override
     boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        return biomes.contains(target.getLocation().getBlock().getBiome().name()) == requiresIn;
+        return biomes.contains(EnumUT.getName(target.getLocation().getBlock().getBiome())) == requiresIn;
     }
 }

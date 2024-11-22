@@ -26,6 +26,9 @@
  */
 package studio.magemonkey.fabled.task;
 
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.scheduler.BukkitRunnable;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.skills.PassiveSkill;
 import studio.magemonkey.fabled.api.skills.Skill;
@@ -33,9 +36,6 @@ import studio.magemonkey.fabled.api.util.BuffManager;
 import studio.magemonkey.fabled.api.util.FlagManager;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.mechanic.WolfMechanic;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
 

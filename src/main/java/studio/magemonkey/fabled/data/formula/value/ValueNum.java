@@ -26,8 +26,8 @@
  */
 package studio.magemonkey.fabled.data.formula.value;
 
-import studio.magemonkey.fabled.data.formula.IValue;
 import studio.magemonkey.codex.mccore.config.parse.NumberParser;
+import studio.magemonkey.fabled.data.formula.IValue;
 
 /**
  * The attribute value

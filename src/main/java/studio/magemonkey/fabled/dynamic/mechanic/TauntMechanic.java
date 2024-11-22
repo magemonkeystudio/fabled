@@ -26,10 +26,10 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.fabled.hook.MythicMobsHook;
-import studio.magemonkey.fabled.hook.PluginChecker;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.fabled.hook.MythicMobsHook;
+import studio.magemonkey.fabled.hook.PluginChecker;
 
 import java.util.List;
 

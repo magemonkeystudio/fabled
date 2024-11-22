@@ -26,17 +26,17 @@
  */
 package studio.magemonkey.fabled.cmd;
 
-import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
-import studio.magemonkey.codex.mccore.commands.IFunction;
-import studio.magemonkey.codex.mccore.gui.MapMenuManager;
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.gui.map.Menu;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
+import studio.magemonkey.codex.mccore.commands.IFunction;
+import studio.magemonkey.codex.mccore.gui.MapMenuManager;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.gui.map.Menu;
 
 /**
  * A command that allows a player to view their skill tree

@@ -26,12 +26,6 @@
  */
 package studio.magemonkey.fabled.api.projectile;
 
-import studio.magemonkey.codex.util.Reflex;
-import studio.magemonkey.codex.util.reflection.ReflectionManager;
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.Settings;
-import studio.magemonkey.fabled.api.particle.target.Followable;
-import studio.magemonkey.fabled.log.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -42,6 +36,12 @@ import org.bukkit.metadata.Metadatable;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import studio.magemonkey.codex.util.Reflex;
+import studio.magemonkey.codex.util.reflection.ReflectionManager;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.Settings;
+import studio.magemonkey.fabled.api.particle.target.Followable;
+import studio.magemonkey.fabled.log.Logger;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;

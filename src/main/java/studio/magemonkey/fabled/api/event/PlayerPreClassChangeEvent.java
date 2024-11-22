@@ -1,11 +1,11 @@
 package studio.magemonkey.fabled.api.event;
 
-import studio.magemonkey.fabled.api.classes.FabledClass;
-import studio.magemonkey.fabled.api.player.PlayerClass;
-import studio.magemonkey.fabled.api.player.PlayerData;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import studio.magemonkey.fabled.api.classes.FabledClass;
+import studio.magemonkey.fabled.api.player.PlayerClass;
+import studio.magemonkey.fabled.api.player.PlayerData;
 
 /**
  * Fabled © 2024

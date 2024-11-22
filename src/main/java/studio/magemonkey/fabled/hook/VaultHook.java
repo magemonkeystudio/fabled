@@ -26,13 +26,13 @@
  */
 package studio.magemonkey.fabled.hook;
 
-import studio.magemonkey.fabled.Fabled;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import studio.magemonkey.fabled.Fabled;
 
 /**
  * Manages setting permissions through vault

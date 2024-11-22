@@ -26,11 +26,11 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic.warp;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.target.TargetHelper;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.target.TargetHelper;
 
 import java.util.List;
 

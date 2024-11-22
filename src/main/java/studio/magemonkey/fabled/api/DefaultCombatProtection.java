@@ -1,13 +1,13 @@
 package studio.magemonkey.fabled.api;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.player.PlayerClass;
-import studio.magemonkey.fabled.hook.NoCheatHook;
-import studio.magemonkey.fabled.hook.PluginChecker;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.player.PlayerClass;
+import studio.magemonkey.fabled.hook.NoCheatHook;
+import studio.magemonkey.fabled.hook.PluginChecker;
 
 import java.util.HashMap;
 import java.util.HashSet;

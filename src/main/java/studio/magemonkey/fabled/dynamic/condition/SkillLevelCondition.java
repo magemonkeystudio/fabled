@@ -26,8 +26,8 @@
  */
 package studio.magemonkey.fabled.dynamic.condition;
 
-import studio.magemonkey.fabled.api.player.PlayerSkill;
 import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.fabled.api.player.PlayerSkill;
 
 import java.util.List;
 

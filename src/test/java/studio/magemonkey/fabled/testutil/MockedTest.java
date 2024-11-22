@@ -1,15 +1,15 @@
 package studio.magemonkey.fabled.testutil;
 
-import be.seeseemelk.mockbukkit.MockBukkit;
-import be.seeseemelk.mockbukkit.ServerMock;
-import be.seeseemelk.mockbukkit.WorldMock;
-import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
+import org.mockbukkit.mockbukkit.MockBukkit;
+import org.mockbukkit.mockbukkit.ServerMock;
+import org.mockbukkit.mockbukkit.entity.PlayerMock;
+import org.mockbukkit.mockbukkit.world.WorldMock;
 import org.mockito.MockedStatic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +32,8 @@ import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import static org.mockbukkit.mockbukkit.matcher.plugin.PluginManagerFiredEventClassMatcher.hasFiredEventInstance;
+import static org.mockbukkit.mockbukkit.matcher.plugin.PluginManagerFiredEventFilterMatcher.hasFiredFilteredEvent;
 import static org.mockito.Mockito.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -170,7 +172,7 @@ public abstract class MockedTest {
 
         try {
             File core = DependencyResolver.resolve("studio.magemonkey:codex:" + coreVersion);
-            File dest = new File(server.getPluginsFolder().getAbsolutePath(), "Codex-" + coreVersion + ".jar");
+            File dest = new File(server.getPluginsFolder().getAbsolutePath(), "CodexCore-" + coreVersion + ".jar");
             FileUtils.copyFile(core, dest);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -312,11 +314,21 @@ public abstract class MockedTest {
     }
 
     public <T extends Event> void assertEventFired(Class<T> clazz) {
-        server.getPluginManager().assertEventFired(clazz);
+        if (!hasFiredEventInstance(clazz).matches(server.getPluginManager())) {
+            Assertions.fail("Event " + clazz.getSimpleName() + " was not fired");
+        }
     }
 
     public <T extends Event> void assertEventFired(Class<T> clazz, Predicate<T> predicate) {
-        server.getPluginManager().assertEventFired(clazz, predicate);
+        if (!hasFiredFilteredEvent(clazz, predicate).matches(server.getPluginManager())) {
+            Assertions.fail("Event " + clazz.getSimpleName() + " was not fired");
+        }
+    }
+
+    public <T extends Event> void assertEventNotFired(Class<T> clazz) {
+        if (hasFiredEventInstance(clazz).matches(server.getPluginManager())) {
+            Assertions.fail("Event " + clazz.getSimpleName() + " was fired");
+        }
     }
 
     public void clearEvents() {

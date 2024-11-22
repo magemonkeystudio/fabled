@@ -26,11 +26,6 @@
  */
 package studio.magemonkey.fabled.listener;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.event.PlayerClassChangeEvent;
-import studio.magemonkey.fabled.api.event.PlayerSkillUnlockEvent;
-import studio.magemonkey.fabled.api.player.PlayerData;
-import studio.magemonkey.fabled.api.player.PlayerSkillSlot;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -45,18 +40,20 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.event.PlayerClassChangeEvent;
+import studio.magemonkey.fabled.api.event.PlayerSkillUnlockEvent;
+import studio.magemonkey.fabled.api.player.PlayerData;
+import studio.magemonkey.fabled.api.player.PlayerSkillSlot;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Handles the alternate casting option for casting via a cycling slot
  */
 public class CastItemListener extends FabledListener {
-    private final HashMap<UUID, PlayerSkillSlot> data            = new HashMap<>();
-    private final Set<UUID>                      playersDropping = new HashSet<>();
+    private final Map<UUID, PlayerSkillSlot> data            = new HashMap<>();
+    private final Set<UUID>                  playersDropping = new HashSet<>();
 
     private void cleanup(Player player) {
         data.remove(player.getUniqueId());

@@ -26,12 +26,12 @@
  */
 package studio.magemonkey.fabled.tree;
 
+import org.bukkit.entity.Player;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.exception.SkillTreeException;
 import studio.magemonkey.fabled.api.skills.Skill;
 import studio.magemonkey.fabled.log.Logger;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -27,9 +27,9 @@
 package studio.magemonkey.fabled.dynamic.target;
 
 import com.google.common.collect.ImmutableList;
-import studio.magemonkey.fabled.dynamic.TempEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.dynamic.TempEntity;
 
 import java.util.List;
 

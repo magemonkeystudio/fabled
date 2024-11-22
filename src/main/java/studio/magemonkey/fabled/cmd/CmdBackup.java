@@ -26,24 +26,14 @@
  */
 package studio.magemonkey.fabled.cmd;
 
-import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
-import studio.magemonkey.codex.mccore.commands.IFunction;
-import studio.magemonkey.codex.mccore.config.Filter;
-import studio.magemonkey.codex.mccore.config.parse.YAMLParser;
-import studio.magemonkey.codex.mccore.sql.direct.SQLDatabase;
-import studio.magemonkey.codex.mccore.sql.direct.SQLTable;
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.data.Settings;
-import studio.magemonkey.fabled.data.io.SQLIO;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.sql.ResultSet;
+import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
+import studio.magemonkey.codex.mccore.commands.IFunction;
+import studio.magemonkey.codex.mccore.config.Filter;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.data.sql.SQLManager;
 
 /**
  * Backs up SQL data into local config files
@@ -90,44 +80,11 @@ public class CmdBackup implements IFunction {
          */
         @Override
         public void run() {
-            Settings settings = Fabled.getSettings();
-            int      count    = 0;
-            SQLDatabase database = new SQLDatabase(api, settings.getSqlHost(), settings.getSqlPort(),
-                    settings.getSqlDatabase(), settings.getSqlUser(), settings.getSqlPass());
-            try {
-                database.openConnection();
-                SQLTable  table = database.createTable(api, "players");
-                ResultSet query = table.queryAll();
-
-                final File file = new File(api.getDataFolder(), "players");
-                file.mkdir();
-
-                // Go through every entry, saving it to disk
-                while (query.next()) {
-                    String sqlYaml = query.getString(SQLIO.DATA);
-                    String yaml    = new YAMLParser().parseText(sqlYaml).toString();
-                    String name    = query.getString("Name");
-
-                    FileOutputStream out   = new FileOutputStream(new File(file, name + ".yml"));
-                    BufferedWriter   write = new BufferedWriter(new OutputStreamWriter(out));
-
-                    write.write(yaml);
-
-                    write.close();
-
-                    count++;
-                }
-                cmd.sendMessage(sender, DONE, "&2SQL database backup has finished successfully");
-            } catch (Exception ex) {
-                cmd.sendMessage(
-                        sender,
-                        FAILED,
-                        "&4SQL database backup failed - backed up {amount} entries",
-                        Filter.AMOUNT.setReplacement(count + "")
-                );
-                ex.printStackTrace();
-            }
-            database.closeConnection();
+            int count = SQLManager.players().backUpData();
+            cmd.sendMessage(sender,
+                    DONE,
+                    "&2SQL database backup has finished with {amount} entries backed up",
+                    Filter.AMOUNT.setReplacement(count + ""));
         }
     }
 }

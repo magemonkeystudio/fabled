@@ -26,7 +26,6 @@
  */
 package studio.magemonkey.fabled.hook;
 
-import studio.magemonkey.fabled.log.Logger;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.*;
 import me.libraryaddict.disguise.disguisetypes.watchers.ArmorStandWatcher;
@@ -37,6 +36,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import studio.magemonkey.fabled.log.Logger;
 
 import java.util.Locale;
 

@@ -1,10 +1,10 @@
 package studio.magemonkey.fabled.hook.mimic;
 
-import studio.magemonkey.fabled.log.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import ru.endlesscode.mimic.Mimic;
 import ru.endlesscode.mimic.MimicApiLevel;
+import studio.magemonkey.fabled.log.Logger;
 
 public class MimicHook {
 

@@ -26,16 +26,6 @@
  */
 package studio.magemonkey.fabled.listener;
 
-import studio.magemonkey.codex.util.InventoryUtil;
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.event.*;
-import studio.magemonkey.fabled.api.player.PlayerData;
-import studio.magemonkey.fabled.api.player.PlayerSkillBar;
-import studio.magemonkey.fabled.api.skills.Skill;
-import studio.magemonkey.fabled.api.util.ItemSerializer;
-import studio.magemonkey.fabled.gui.handlers.SkillHandler;
-import studio.magemonkey.fabled.hook.CitizensHook;
-import studio.magemonkey.codex.util.ItemUT;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -52,19 +42,25 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.metadata.FixedMetadataValue;
+import studio.magemonkey.codex.util.InventoryUtil;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.event.*;
+import studio.magemonkey.fabled.api.player.PlayerData;
+import studio.magemonkey.fabled.api.player.PlayerSkillBar;
+import studio.magemonkey.fabled.api.skills.Skill;
+import studio.magemonkey.fabled.gui.handlers.SkillHandler;
+import studio.magemonkey.fabled.hook.CitizensHook;
 
 import java.util.*;
 
 /**
  * Handles interactions with skill bars. This shouldn't be
- * use by other plugins as it is handled by the API.
+ * used by other plugins as it is handled by the API.
  */
 public class CastCombatListener extends FabledListener {
-    private static final String ITEM_SAVE_KEY = "combatItems";
+    private final Map<UUID, ItemStack[]> backup = new HashMap<>();
 
-    private final HashMap<UUID, ItemStack[]> backup = new HashMap<>();
-
-    private final HashSet<UUID> ignored = new HashSet<>();
+    private final Set<UUID> ignored = new HashSet<>();
 
     private final int slot = Fabled.getSettings().getCastSlot();
 
@@ -87,21 +83,7 @@ public class CastCombatListener extends FabledListener {
         if (!Fabled.getSettings().isWorldEnabled(player.getWorld())) return;
 
         PlayerData data = Fabled.getData(player);
-        if (data.getExtraData().has(ITEM_SAVE_KEY)) {
-            ItemStack[] items;
-            if (data.getExtraData().get(ITEM_SAVE_KEY) instanceof String) {
-                items = ItemSerializer.fromBase64(data.getExtraData().getString(ITEM_SAVE_KEY));
-            } else {
-                items = ItemUT.fromBase64(data.getExtraData().getList(ITEM_SAVE_KEY));
-                for (int i = 0; i < items.length; i++) {
-                    ItemStack item = items[i];
-                    if (item.getType() == Material.AIR) items[i] = null;
-                }
-            }
-
-            if (items != null) backup.put(player.getUniqueId(), items);
-            else backup.put(player.getUniqueId(), new ItemStack[9]);
-        } else backup.put(player.getUniqueId(), new ItemStack[9]);
+        backup.put(player.getUniqueId(), new ItemStack[9]);
 
         if (Fabled.getSettings().isWorldEnabled(player.getWorld())) {
             PlayerInventory inv  = player.getInventory();
@@ -137,12 +119,8 @@ public class CastCombatListener extends FabledListener {
         PlayerData     data = Fabled.getData(player);
         PlayerSkillBar bar  = data.getSkillBar();
         if (bar.isSetup()) toggle(player);
-
         player.getInventory().setItem(slot, null);
-        ItemStack[]  restore = backup.remove(player.getUniqueId());
-        List<String> base64  = ItemUT.toBase64(restore);
-
-        data.getExtraData().set(ITEM_SAVE_KEY, base64);
+        backup.remove(player.getUniqueId());
     }
 
     private void toggle(Player player) {

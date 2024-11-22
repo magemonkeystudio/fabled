@@ -26,13 +26,13 @@
  */
 package studio.magemonkey.fabled.manager;
 
+import org.bukkit.entity.Player;
+import studio.magemonkey.codex.mccore.config.CustomFilter;
+import studio.magemonkey.codex.mccore.config.FilterType;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.util.Title;
 import studio.magemonkey.fabled.data.Settings;
 import studio.magemonkey.fabled.data.TitleType;
-import studio.magemonkey.codex.mccore.config.CustomFilter;
-import studio.magemonkey.codex.mccore.config.FilterType;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 

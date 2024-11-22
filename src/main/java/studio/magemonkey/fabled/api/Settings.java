@@ -62,7 +62,7 @@ public class Settings {
      * @param value setting value
      */
     public void set(String key, Object value) {
-        if(value == null) settings.remove(key);
+        if (value == null) settings.remove(key);
         else settings.put(key, value);
     }
 
@@ -210,7 +210,8 @@ public class Settings {
      * @return boolean setting value
      */
     public boolean getBool(String key) {
-        return settings.containsKey(key) && settings.get(key) != null && Boolean.parseBoolean(settings.get(key).toString());
+        return settings.containsKey(key) && settings.get(key) != null && Boolean.parseBoolean(settings.get(key)
+                .toString());
     }
 
     /**

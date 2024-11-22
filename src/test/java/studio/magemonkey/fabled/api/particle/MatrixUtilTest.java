@@ -1,8 +1,8 @@
 package studio.magemonkey.fabled.api.particle;
 
+import org.junit.jupiter.api.Test;
 import studio.magemonkey.fabled.data.Matrix3D;
 import studio.magemonkey.fabled.data.Point3D;
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -98,8 +98,8 @@ class MatrixUtilTest {
     @Test
     void multiply_point_x90TimesZ90() {
         Matrix3D matrix = MatrixUtil.getRotationMatrix(90, 0, 90);
-        Point3D point  = new Point3D(1, 2, 3);
-        Point3D result = MatrixUtil.multiply(matrix, point);
+        Point3D  point  = new Point3D(1, 2, 3);
+        Point3D  result = MatrixUtil.multiply(matrix, point);
 
         /*
         Expected:
@@ -113,8 +113,8 @@ class MatrixUtilTest {
     @Test
     void mutiply_point_x45TimeZ45() {
         Matrix3D matrix = MatrixUtil.getRotationMatrix(45, 0, 45);
-        Point3D point  = new Point3D(1, 2, 3);
-        Point3D result = MatrixUtil.multiply(matrix, point);
+        Point3D  point  = new Point3D(1, 2, 3);
+        Point3D  result = MatrixUtil.multiply(matrix, point);
 
         /*
         Expected:

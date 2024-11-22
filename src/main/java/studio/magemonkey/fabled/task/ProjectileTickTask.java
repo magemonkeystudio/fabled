@@ -1,14 +1,14 @@
 package studio.magemonkey.fabled.task;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Projectile;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.event.ProjectileTickEvent;
 import studio.magemonkey.fabled.dynamic.ComponentRegistry;
 import studio.magemonkey.fabled.dynamic.trigger.ProjectileTickTrigger;
 import studio.magemonkey.fabled.listener.ProjectileListener;
 import studio.magemonkey.fabled.thread.RepeatThreadTask;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Projectile;
 
 /**
  * Task used to implement {@link ProjectileTickEvent}

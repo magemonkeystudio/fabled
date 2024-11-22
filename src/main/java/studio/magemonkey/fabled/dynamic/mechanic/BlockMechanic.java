@@ -213,8 +213,8 @@ public class BlockMechanic extends MechanicComponent {
         } catch (Exception ex) {
             // Use default
         }
-        int  ticks = (int) (20 * parseValues(caster, SECONDS, level, 5));
-        byte data  = (byte) settings.getInt(DATA, 0);
+        int     ticks     = (int) (20 * parseValues(caster, SECONDS, level, 5));
+        byte    data      = (byte) settings.getInt(DATA, 0);
         boolean permanent = settings.getBool(PERMANENT, false);
 
         // Change blocks
@@ -284,7 +284,7 @@ public class BlockMechanic extends MechanicComponent {
      */
     private class RevertTask extends BukkitRunnable {
         private final List<Location> locs;
-        private final LivingEntity        caster;
+        private final LivingEntity   caster;
 
         RevertTask(final LivingEntity caster, final List<Location> locs) {
             this.caster = caster;

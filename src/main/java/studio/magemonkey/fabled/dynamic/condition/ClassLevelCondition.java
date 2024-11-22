@@ -26,12 +26,12 @@
  */
 package studio.magemonkey.fabled.dynamic.condition;
 
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerClass;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 public class ClassLevelCondition extends ConditionComponent {
     private static final String MIN_LEVEL = "min-level";

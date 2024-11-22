@@ -3,14 +3,13 @@ package studio.magemonkey.fabled.util;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import studio.magemonkey.fabled.testutil.MockedTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class VectorUtilTest extends MockedTest {
-    private Player player = null;
+    private Player player    = null;
     private double eyeHeight = 0;
 
     @BeforeEach

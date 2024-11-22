@@ -26,10 +26,10 @@
  */
 package studio.magemonkey.fabled.api.event;
 
-import studio.magemonkey.fabled.api.projectile.ItemProjectile;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import studio.magemonkey.fabled.api.projectile.ItemProjectile;
 
 /**
  * <p>An event for when an item projectile hits something.</p>
