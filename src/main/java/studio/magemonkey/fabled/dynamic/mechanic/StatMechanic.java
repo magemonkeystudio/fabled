@@ -26,15 +26,15 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.enums.Operation;
-import studio.magemonkey.fabled.api.player.PlayerData;
-import studio.magemonkey.fabled.api.player.PlayerStatModifier;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.enums.Operation;
+import studio.magemonkey.fabled.api.player.PlayerData;
+import studio.magemonkey.fabled.api.player.PlayerStatModifier;
 
 import java.util.HashMap;
 import java.util.List;

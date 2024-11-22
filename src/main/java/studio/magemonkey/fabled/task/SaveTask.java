@@ -27,6 +27,7 @@
 package studio.magemonkey.fabled.task;
 
 import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.data.io.PlayerLoader;
 import studio.magemonkey.fabled.thread.RepeatThreadTask;
 
 /**
@@ -51,6 +52,6 @@ public class SaveTask extends RepeatThreadTask {
      */
     @Override
     public void run() {
-        Fabled.saveData();
+        PlayerLoader.saveAllPlayerAccounts(false);
     }
 }

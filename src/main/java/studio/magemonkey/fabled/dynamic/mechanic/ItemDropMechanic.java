@@ -1,10 +1,10 @@
 package studio.magemonkey.fabled.dynamic.mechanic;
 
-import studio.magemonkey.fabled.api.util.ItemStackReader;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.api.util.ItemStackReader;
 
 import java.util.List;
 

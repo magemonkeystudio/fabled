@@ -27,7 +27,6 @@
 package studio.magemonkey.fabled.listener;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -52,6 +51,7 @@ import studio.magemonkey.fabled.api.util.BuffManager;
 import studio.magemonkey.fabled.api.util.Combat;
 import studio.magemonkey.fabled.api.util.FlagManager;
 import studio.magemonkey.fabled.data.Permissions;
+import studio.magemonkey.fabled.data.io.PlayerLoader;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.dynamic.mechanic.ImmunityMechanic;
 import studio.magemonkey.fabled.gui.tool.GUITool;
@@ -124,32 +124,10 @@ public class MainListener extends FabledListener {
     }
 
     /**
-     * Loads player data asynchronously when a player tries to log in
-     *
-     * @param event event details
-     */
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onLogin(AsyncPlayerPreLoginEvent event) {
-        final OfflinePlayer player = Bukkit.getOfflinePlayer(event.getUniqueId());
-
-        if (Fabled.getSettings().isUseSql() && Fabled.getSettings().getSqlDelay() > 0)
-            Fabled.initFakeData(player);
-        else
-            Fabled.loadPlayerAccounts(player);
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onReadyLogin(PlayerLoginEvent event) {
-        if (event.getResult() == PlayerLoginEvent.Result.ALLOWED) return;
-
-        Fabled.unloadPlayerData(event.getPlayer(), true);
-    }
-
-    /**
      * Starts passives and applies class data when a player logs in.
      */
     @EventHandler
-    public void onJoin(final PlayerJoinEvent event) {
+    public void onJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
         if (player.hasMetadata("NPC") || !Fabled.getSettings().isWorldEnabled(player.getWorld()))
             return;
@@ -158,7 +136,7 @@ public class MainListener extends FabledListener {
         if (Fabled.getSettings().isUseSql() && delay > 0) {
             final BukkitTask task = Fabled.schedule(() -> {
                 try {
-                    Fabled.reloadPlayerData(player);
+                    PlayerLoader.loadPlayer(player);
                     init(player);
                 } finally {
                     loadingPlayers.remove(event.getPlayer().getUniqueId());

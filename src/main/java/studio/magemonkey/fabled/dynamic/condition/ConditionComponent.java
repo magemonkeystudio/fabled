@@ -1,9 +1,9 @@
 package studio.magemonkey.fabled.dynamic.condition;
 
-import studio.magemonkey.fabled.dynamic.ComponentType;
-import studio.magemonkey.fabled.dynamic.EffectComponent;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import studio.magemonkey.fabled.dynamic.ComponentType;
+import studio.magemonkey.fabled.dynamic.EffectComponent;
 
 import java.util.List;
 import java.util.function.Supplier;

@@ -60,7 +60,7 @@ import java.util.*;
 /**
  * <p>The management class for Fabled's config.yml settings.</p>
  */
-public class Settings {
+public class Settings extends com.sucy.skill.data.Settings {
 
     private static final String GUI_BASE = "GUI.";
     private static final String

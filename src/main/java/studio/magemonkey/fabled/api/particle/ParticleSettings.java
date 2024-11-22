@@ -26,12 +26,12 @@
  */
 package studio.magemonkey.fabled.api.particle;
 
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import studio.magemonkey.fabled.api.Settings;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
+import studio.magemonkey.fabled.api.Settings;
 
 import java.util.Locale;
 

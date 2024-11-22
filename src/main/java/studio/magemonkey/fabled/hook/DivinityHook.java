@@ -1,8 +1,8 @@
 package studio.magemonkey.fabled.hook;
 
-import studio.magemonkey.codex.util.DataUT;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import studio.magemonkey.codex.util.DataUT;
 
 public class DivinityHook {
     private static final NamespacedKey KEY_MODULE  = NamespacedKey.fromString("prorpgitems:qrpg_item_module");

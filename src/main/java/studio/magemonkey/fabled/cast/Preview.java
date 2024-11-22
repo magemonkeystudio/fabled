@@ -26,9 +26,9 @@
  */
 package studio.magemonkey.fabled.cast;
 
-import studio.magemonkey.fabled.api.particle.ParticleSettings;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import studio.magemonkey.fabled.api.particle.ParticleSettings;
 
 public abstract class Preview {
     public abstract void playParticles(Player player, ParticleSettings particle, Location location, int step);

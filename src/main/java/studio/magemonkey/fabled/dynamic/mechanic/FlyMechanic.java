@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-
+import org.jetbrains.annotations.NotNull;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerData;
 
@@ -19,9 +19,9 @@ import java.util.Map;
  * Does not persist on logout. 
  */
 public class FlyMechanic extends MechanicComponent {
-    private static final String SECONDS = "seconds";
-    private static final String FLYSPEED = "flyspeed";
-    private static final String FLYING = "flying";
+    private static final String SECONDS   = "seconds";
+    private static final String FLY_SPEED = "flyspeed";
+    private static final String FLYING    = "flying";
 
     private final Map<Integer, Map<String, FlyTask>> tasks = new HashMap<>();
 
@@ -39,34 +39,31 @@ public class FlyMechanic extends MechanicComponent {
     }
 
     /**
-     * Executes the component
-     * 
-     * @param caster  caster of the skill
-     * @param level   level of the skill
-     * @param targets targets to apply to
-     * @param force
-     * @return true if applied to something, false otherwise
+     * {@inheritDoc}
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        final double    seconds  = parseValues(caster, SECONDS, level, 3.0); // Get seconds or default to 3 seconds.
-        final int       ticks    = (int) (seconds * 20);
-        float           flyspeed = (float) parseValues(caster, FLYSPEED, level, 0.1); // Get flyspeed or default value.
-        boolean         flying   = settings.getString(FLYING, "false").equalsIgnoreCase("true"); // Get if a player wants to grant or remove flight.
-        final Map<String, FlyTask> casterTasks = tasks.computeIfAbsent(caster.getEntityId(), HashMap::new); // Map of all current Tasks.
+        final double seconds =
+                parseValues(caster, SECONDS, level, 3.0); // Get seconds or default to 3 seconds.
+        final int ticks = (int) (seconds * 20);
+        float flyspeed =
+                (float) parseValues(caster, FLY_SPEED, level, 0.1); // Get flyspeed or default value.
+        boolean flying = settings.getString(FLYING, "false")
+                .equalsIgnoreCase("true"); // Get if a player wants to grant or remove flight.
+        final Map<String, FlyTask> casterTasks =
+                tasks.computeIfAbsent(caster.getEntityId(), HashMap::new); // Map of all current Tasks.
 
         for (LivingEntity target : targets) {
             // Only target players.
-            if (target instanceof Player){
+            if (target instanceof Player) {
                 Player player = (Player) target;
                 // Do not set flying to false if player is in spectator or creative.
                 if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
                     final PlayerData data = Fabled.getData((Player) target);
                     // Bound Flightspeed as it cannot be greater than 1 or less than -1.
-                    if (flyspeed > 1){
+                    if (flyspeed > 1) {
                         flyspeed = 1.0f;
-                    }
-                    else if (flyspeed < -1){
+                    } else if (flyspeed < -1) {
                         flyspeed = -1.0f;
                     }
                     // Set player flight based on given boolean.
@@ -79,7 +76,7 @@ public class FlyMechanic extends MechanicComponent {
                     / This allows flight to be extended if players cast multiple skills.
                     / Without this players may fall too early or unexpectedly.
                     */
-                    if (casterTasks.containsKey(data.getPlayerName())){
+                    if (casterTasks.containsKey(data.getPlayerName())) {
                         final FlyTask oldTask = casterTasks.remove(data.getPlayerName());
                         oldTask.cancel();
                     }
@@ -87,22 +84,22 @@ public class FlyMechanic extends MechanicComponent {
                     if (flying) {
                         final FlyTask task = new FlyTask(caster.getEntityId(), data);
                         casterTasks.put(data.getPlayerName(), task);
-                        if (ticks >= 0){
+                        if (ticks >= 0) {
                             Fabled.schedule(task, ticks);
                         }
                     }
                 }
             }
         }
-        return targets.size() > 0;
+        return !targets.isEmpty();
     }
 
     private class FlyTask extends BukkitRunnable {
 
-        private final PlayerData         data;
-        private final int                id;
-        private       boolean            running = false;
-        private       boolean            stopped = false;
+        private final PlayerData data;
+        private final int        id;
+        private       boolean    running = false;
+        private       boolean    stopped = false;
 
         FlyTask(int id, PlayerData data) {
             this.id = id;
@@ -119,8 +116,9 @@ public class FlyMechanic extends MechanicComponent {
             }
         }
 
+        @NotNull
         @Override
-        public BukkitTask runTaskLater(final Plugin plugin, final long delay) {
+        public BukkitTask runTaskLater(@NotNull final Plugin plugin, final long delay) {
             running = true;
             return super.runTaskLater(plugin, delay);
         }
@@ -129,7 +127,7 @@ public class FlyMechanic extends MechanicComponent {
         public void run() {
             Player player = data.getPlayer();
             // Do not set flying to false if player is in spectator or creative.
-            if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE){
+            if (player.getGameMode() == GameMode.SURVIVAL || player.getGameMode() == GameMode.ADVENTURE) {
                 player.setFlying(false);
                 player.setAllowFlight(false);
             }

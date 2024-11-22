@@ -1,9 +1,9 @@
 package studio.magemonkey.fabled.dynamic.mechanic.armorstand;
 
-import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.EulerAngle;
+import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
 
 import java.util.Arrays;
 import java.util.List;

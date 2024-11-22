@@ -26,14 +26,14 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic.particle;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.Settings;
-import studio.magemonkey.fabled.api.particle.ParticleHelper;
-import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.Settings;
+import studio.magemonkey.fabled.api.particle.ParticleHelper;
+import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
 
 import java.util.List;
 
@@ -99,8 +99,8 @@ public class ParticleAnimationMechanic extends MechanicComponent {
         private final double   cos;
         private final Settings settings;
         private final double   sin;
-        private final boolean withRotation;
-        private       int     life;
+        private final boolean  withRotation;
+        private       int      life;
 
         ParticleTask(LivingEntity caster, List<LivingEntity> targets, int level, Settings settings) {
             this.targets = targets;

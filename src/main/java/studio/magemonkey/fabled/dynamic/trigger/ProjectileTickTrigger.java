@@ -1,12 +1,12 @@
 package studio.magemonkey.fabled.dynamic.trigger;
 
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.api.event.ProjectileTickEvent;
 import studio.magemonkey.fabled.api.particle.target.EntityTarget;
 import studio.magemonkey.fabled.dynamic.TempEntity;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.HashMap;
 import java.util.List;

@@ -27,6 +27,11 @@
 package studio.magemonkey.fabled.data;
 
 import com.google.common.base.Objects;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import studio.magemonkey.codex.mccore.config.parse.NumberParser;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.enums.Operation;
@@ -34,11 +39,6 @@ import studio.magemonkey.fabled.api.player.PlayerAttributeModifier;
 import studio.magemonkey.fabled.api.player.PlayerClass;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.skills.Skill;
-import studio.magemonkey.codex.mccore.config.parse.NumberParser;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 import java.util.Map.Entry;

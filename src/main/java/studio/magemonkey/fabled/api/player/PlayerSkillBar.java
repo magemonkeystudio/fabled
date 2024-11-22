@@ -26,31 +26,47 @@
  */
 package studio.magemonkey.fabled.api.player;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.cast.CastMode;
+import lombok.Getter;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.cast.CastMode;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A skill bar for a player
  */
+@SuppressWarnings("javadoc")
 public class PlayerSkillBar {
     private static final String
             UNASSIGNED = "e";
 
-    private final HashMap<Integer, String> slots    = new HashMap<Integer, String>();
-    private final HashSet<Integer>         reserved = new HashSet<Integer>();
-    private final PlayerData               player;
-    private       boolean                  enabled  = true;
-    private       boolean                  setup    = false;
+    private final Map<Integer, String> slots    = new HashMap<>();
+    private final Set<Integer>         reserved = new HashSet<>();
+    private final PlayerData           player;
+    /**
+     * -- GETTER --
+     *
+     * @return whether the skill bar is enabled
+     */
+    @Getter
+    private       boolean              enabled  = true;
+    /**
+     * -- GETTER --
+     *  whether the skill bar has been set up recently
+     *
+     * @return true if setup recently, false otherwise
+     */
+    @Getter
+    private       boolean              setup    = false;
 
     /**
      * Initial constructor
@@ -71,22 +87,6 @@ public class PlayerSkillBar {
     public void reserve(int slot) {
         this.reserved.add(slot);
         this.slots.remove(slot);
-    }
-
-    /**
-     * @return whether the skill bar is enabled
-     */
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    /**
-     * whether the skill bar has been set up recently
-     *
-     * @return true if setup recently, false otherwise
-     */
-    public boolean isSetup() {
-        return setup;
     }
 
     /**
@@ -413,7 +413,7 @@ public class PlayerSkillBar {
      *
      * @return skill bar data
      */
-    public HashMap<Integer, String> getData() {
+    public Map<Integer, String> getData() {
         return slots;
     }
 

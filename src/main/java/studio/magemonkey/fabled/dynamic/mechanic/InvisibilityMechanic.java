@@ -1,14 +1,14 @@
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import studio.magemonkey.fabled.api.util.Buff;
 import studio.magemonkey.fabled.api.util.BuffManager;
 import studio.magemonkey.fabled.api.util.BuffType;
 import studio.magemonkey.fabled.hook.PluginChecker;
 import studio.magemonkey.fabled.listener.PacketListener;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
 

@@ -32,7 +32,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -47,6 +46,7 @@ import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.codex.mccore.config.parse.NumberParser;
 import studio.magemonkey.codex.mccore.util.TextFormatter;
 import studio.magemonkey.codex.registry.damage.DamageRegistry;
+import studio.magemonkey.codex.util.AttributeUT;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.ReadOnlySettings;
 import studio.magemonkey.fabled.api.Settings;
@@ -784,7 +784,13 @@ public abstract class Skill implements IconHolder {
                        String classification,
                        boolean knockback,
                        boolean ignoreDivinity) {
-        damage(target, damage, source, classification, knockback, ignoreDivinity, EntityDamageEvent.DamageCause.ENTITY_ATTACK);
+        damage(target,
+                damage,
+                source,
+                classification,
+                knockback,
+                ignoreDivinity,
+                EntityDamageEvent.DamageCause.ENTITY_ATTACK);
     }
 
     /**
@@ -817,7 +823,8 @@ public abstract class Skill implements IconHolder {
             return;
         }
 
-        SkillDamageEvent event = new SkillDamageEvent(this, source, target, damage, classification, knockback, ignoreDivinity);
+        SkillDamageEvent event =
+                new SkillDamageEvent(this, source, target, damage, classification, knockback, ignoreDivinity);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return;
@@ -869,7 +876,7 @@ public abstract class Skill implements IconHolder {
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled() && event.getDamage() != 0) {
             target.setHealth(Math.max(Math.min(target.getHealth() - event.getDamage(),
-                    target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()), 0));
+                    target.getAttribute(AttributeUT.resolve("MAX_HEALTH")).getValue()), 0));
         }
     }
 

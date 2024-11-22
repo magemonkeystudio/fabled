@@ -76,8 +76,8 @@ public class CmdUnbind implements IFunction {
                 return;
             }
 
-            PlayerData player = Fabled.getData((Player) sender);
-            List<String> bound = BindListener.getBoundSkills(item);
+            PlayerData   player = Fabled.getData((Player) sender);
+            List<String> bound  = BindListener.getBoundSkills(item);
             if (bound.isEmpty()) {
                 command.sendMessage(sender, NOT_BOUND, "&4There are no skills bound to the held item");
             } else {

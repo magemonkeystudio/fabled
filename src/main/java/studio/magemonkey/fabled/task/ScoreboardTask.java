@@ -26,12 +26,12 @@
  */
 package studio.magemonkey.fabled.task;
 
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import studio.magemonkey.fabled.api.player.PlayerClass;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.hook.CitizensHook;
 import studio.magemonkey.fabled.manager.ClassBoardManager;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class ScoreboardTask extends BukkitRunnable {
     private final PlayerData data;

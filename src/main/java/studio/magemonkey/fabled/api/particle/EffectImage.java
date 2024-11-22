@@ -26,15 +26,15 @@
  */
 package studio.magemonkey.fabled.api.particle;
 
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import org.bukkit.Color;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.api.particle.target.EffectTarget;
 import studio.magemonkey.fabled.data.Point3D;
 import studio.magemonkey.fabled.data.formula.Formula;
 import studio.magemonkey.fabled.data.formula.value.CustomValue;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import org.bukkit.Color;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;

@@ -1,12 +1,12 @@
 package studio.magemonkey.fabled.hook.mimic;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.player.PlayerClass;
-import studio.magemonkey.fabled.api.player.PlayerData;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.endlesscode.mimic.classes.BukkitClassSystem;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.player.PlayerClass;
+import studio.magemonkey.fabled.api.player.PlayerData;
 
 import java.util.List;
 import java.util.stream.Collectors;

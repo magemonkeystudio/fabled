@@ -1,10 +1,10 @@
 package studio.magemonkey.fabled.cmd;
 
+import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.Plugin;
 import studio.magemonkey.codex.mccore.commands.CommandManager;
 import studio.magemonkey.codex.mccore.commands.ConfigurableCommand;
 import studio.magemonkey.codex.mccore.commands.IFunction;
-import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
 
 /**
  * Fabled

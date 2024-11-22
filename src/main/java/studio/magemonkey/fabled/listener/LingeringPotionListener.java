@@ -1,10 +1,5 @@
 package studio.magemonkey.fabled.listener;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.Settings;
-import studio.magemonkey.fabled.api.particle.ParticleHelper;
-import studio.magemonkey.fabled.api.particle.ParticleSettings;
-import studio.magemonkey.fabled.dynamic.mechanic.PotionProjectileMechanic;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -13,6 +8,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.AreaEffectCloudApplyEvent;
 import org.bukkit.event.entity.LingeringPotionSplashEvent;
 import org.bukkit.metadata.MetadataValue;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.Settings;
+import studio.magemonkey.fabled.api.particle.ParticleHelper;
+import studio.magemonkey.fabled.api.particle.ParticleSettings;
+import studio.magemonkey.fabled.dynamic.mechanic.PotionProjectileMechanic;
 
 import java.util.Locale;
 

@@ -26,9 +26,9 @@
  */
 package studio.magemonkey.fabled.gui.tool;
 
-import studio.magemonkey.fabled.api.player.PlayerData;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import studio.magemonkey.fabled.api.player.PlayerData;
 
 public interface IconHolder {
     ItemStack getIcon(PlayerData player);

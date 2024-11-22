@@ -26,9 +26,9 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.api.util.FlagManager;
 import studio.magemonkey.fabled.hook.PluginChecker;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.List;
 

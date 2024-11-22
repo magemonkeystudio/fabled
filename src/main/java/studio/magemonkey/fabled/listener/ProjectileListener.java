@@ -1,14 +1,14 @@
 package studio.magemonkey.fabled.listener;
 
-import studio.magemonkey.fabled.api.event.ProjectileTickEvent;
-import studio.magemonkey.fabled.task.ProjectileTickTask;
-import studio.magemonkey.fabled.thread.MainThread;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.projectiles.ProjectileSource;
+import studio.magemonkey.fabled.api.event.ProjectileTickEvent;
+import studio.magemonkey.fabled.task.ProjectileTickTask;
+import studio.magemonkey.fabled.thread.MainThread;
 
 import java.util.ArrayList;
 import java.util.List;

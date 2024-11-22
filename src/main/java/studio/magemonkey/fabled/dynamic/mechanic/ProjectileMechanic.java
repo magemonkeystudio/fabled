@@ -29,13 +29,16 @@ package studio.magemonkey.fabled.dynamic.mechanic;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+import studio.magemonkey.codex.legacy.utils.Utils;
 import studio.magemonkey.codex.util.NamespaceResolver;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.Settings;
@@ -76,6 +79,7 @@ public class ProjectileMechanic extends MechanicComponent {
     private static final String                                       COST          = "cost";
     private static final String                                       VELOCITY      = "velocity";
     private static final String                                       LIFESPAN      = "lifespan";
+    private static final String                                       DISTANCE      = "distance";
     private static final String                                       SPREAD        = "spread";
     private static final String                                       AMOUNT        = "amount";
     private static final String                                       ANGLE         = "angle";
@@ -106,6 +110,9 @@ public class ProjectileMechanic extends MechanicComponent {
                 put("egg", Material.EGG);
                 put("snowball", snowBall());
             }};
+
+    private static final NamespacedKey namespaceKey = new NamespacedKey(Objects.requireNonNull(Bukkit.getPluginManager()
+            .getPlugin("Fabled")), "proj_start_location");
 
     @SuppressWarnings("unchecked")
     private static Class<? extends Projectile> getProjectileClass(String projectileName) {
@@ -193,6 +200,9 @@ public class ProjectileMechanic extends MechanicComponent {
                     Projectile p = caster.launchProjectile(type);
                     p.teleport(loc);
                     p.setVelocity(vel);
+                    p.getPersistentDataContainer().set(namespaceKey,
+                            PersistentDataType.STRING,
+                            Utils.locToString(loc));
                     projectiles.add(p);
                 }
             } else {
@@ -205,6 +215,9 @@ public class ProjectileMechanic extends MechanicComponent {
                 for (Vector d : dirs) {
                     Projectile p = caster.launchProjectile(type);
                     p.teleport(location);
+                    p.getPersistentDataContainer().set(namespaceKey,
+                            PersistentDataType.STRING,
+                            Utils.locToString(location));
                     p.setVelocity(d.multiply(speed));
                     projectiles.add(p);
                 }
@@ -320,7 +333,23 @@ public class ProjectileMechanic extends MechanicComponent {
             });
         }
 
-        new RepeatingEntityTask<>(projectiles, proj -> ParticleHelper.play(proj.getLocation(), settings));
+        int distance = (int) parseValues(caster, DISTANCE, level, 50);
+        new RepeatingEntityTask<>(projectiles, proj -> {
+            ParticleHelper.play(proj.getLocation(), settings);
+
+            Location startLocation = Utils.stringToLoc(Objects.requireNonNull(proj.getPersistentDataContainer()
+                    .get(namespaceKey, PersistentDataType.STRING)));
+
+            if (startLocation != null) {
+                if (proj.getLocation().distance(startLocation) > distance * distance) {
+                    if (proj.isValid()) proj.remove();
+
+                    if (settings.getBool("on-expire", false)) {
+                        callback(proj, null);
+                    }
+                }
+            }
+        });
         new RemoveEntitiesTask(projectiles, (int) parseValues(caster, LIFESPAN, level, 9999) * 20) {
             @Override
             public void run() {
@@ -377,6 +406,7 @@ public class ProjectileMechanic extends MechanicComponent {
                 int    amount   = (int) parseValues(caster, AMOUNT, level, 1.0);
                 String spread   = settings.getString(SPREAD, "cone").toLowerCase();
                 int    lifespan = (int) (parseValues(caster, LIFESPAN, level, 9999) * 20);
+                int    distance = (int) parseValues(caster, DISTANCE, level, 50);
                 String type     = settings.getString(PROJECTILE, "arrow").toLowerCase();
                 double gravity;
                 double drag;
@@ -438,7 +468,8 @@ public class ProjectileMechanic extends MechanicComponent {
 
                     // Apply the spread type
                     if (spread.equals("rain")) {
-                        list.addAll(ParticleProjectile.rain(caster,
+                        list.addAll(ParticleProjectile.rain(
+                                caster,
                                 level,
                                 location,
                                 copy,
@@ -446,7 +477,9 @@ public class ProjectileMechanic extends MechanicComponent {
                                 parseValues(caster, HEIGHT, level, 8.0),
                                 amount,
                                 callback,
-                                lifespan));
+                                lifespan,
+                                distance
+                        ));
                     } else {
                         Vector dir = location.getDirection();
                         if (spread.equals("horizontal cone")) {
@@ -462,7 +495,8 @@ public class ProjectileMechanic extends MechanicComponent {
                                 parseValues(caster, ANGLE, level, 30.0),
                                 amount,
                                 callback,
-                                lifespan
+                                lifespan,
+                                distance
                         ));
                     }
 

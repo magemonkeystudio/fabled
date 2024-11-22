@@ -26,13 +26,13 @@
  */
 package studio.magemonkey.fabled.api.player;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.bukkit.Material;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.enums.SkillStatus;
 import studio.magemonkey.fabled.api.skills.Skill;
 import studio.magemonkey.fabled.manager.AttributeManager;
-import lombok.Getter;
-import lombok.Setter;
-import org.bukkit.Material;
 
 /**
  * Represents player-specific data for a skill such as the player's

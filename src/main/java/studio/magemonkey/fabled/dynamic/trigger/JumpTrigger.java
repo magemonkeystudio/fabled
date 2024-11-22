@@ -1,10 +1,10 @@
 package studio.magemonkey.fabled.dynamic.trigger;
 
-import studio.magemonkey.fabled.api.CastData;
-import studio.magemonkey.fabled.api.Settings;
+import org.bukkit.Statistic;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.player.PlayerStatisticIncrementEvent;
-import org.bukkit.Statistic;
+import studio.magemonkey.fabled.api.CastData;
+import studio.magemonkey.fabled.api.Settings;
 
 public class JumpTrigger implements Trigger<PlayerStatisticIncrementEvent> {
 
@@ -24,7 +24,7 @@ public class JumpTrigger implements Trigger<PlayerStatisticIncrementEvent> {
         if (player.isClimbing()) {
             return false;
         }
-        if (!player.isOnGround()){
+        if (!player.isOnGround()) {
             return false;
         }
         Statistic statistic = event.getStatistic();

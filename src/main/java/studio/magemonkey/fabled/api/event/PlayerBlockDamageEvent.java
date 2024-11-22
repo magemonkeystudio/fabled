@@ -1,44 +1,35 @@
 package studio.magemonkey.fabled.api.event;
 
-import studio.magemonkey.fabled.dynamic.TempEntity;
 import lombok.Getter;
-import org.bukkit.Location;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
-import org.bukkit.event.player.PlayerStatisticIncrementEvent;
-import org.bukkit.projectiles.BlockProjectileSource;
-import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Event call when player block damage with a shield
  */
+@Getter
 public class PlayerBlockDamageEvent extends PlayerEvent {
     private static final HandlerList handlers = new HandlerList();
-    @Getter
-    private              Entity      source;
-    @Getter
+    private final        Entity      source;
     private final        double      damage;
-    @Getter
-    private              String      type     = "melee";
+    private final        String      type;
 
 
     public PlayerBlockDamageEvent(
+            Player player,
             Entity damager,
-            PlayerStatisticIncrementEvent statEvent) {
-        super(statEvent.getPlayer());
-        source = damager;
-        if (source instanceof Projectile) {
-            type = "projectile";
-            ProjectileSource ps = ((Projectile) source).getShooter();
-            if (ps instanceof BlockProjectileSource) {
-                Location locTarget = ((BlockProjectileSource) ps).getBlock().getLocation();
-                source = new TempEntity(locTarget);
-            } else source = (Entity) ps;
-        }
-        damage = (statEvent.getNewValue() - statEvent.getPreviousValue()) / 10D;
+            double damageBlocked,
+            String type
+    ) {
+        super(player);
+        this.source = damager;
+        this.damage = damageBlocked;
+
+        if (type == null || (!type.equals("melee") && !type.equals("projectile"))) type = "melee";
+        this.type = type;
     }
 
     /**

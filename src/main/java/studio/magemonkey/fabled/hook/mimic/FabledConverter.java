@@ -1,9 +1,9 @@
 package studio.magemonkey.fabled.hook.mimic;
 
-import studio.magemonkey.fabled.Fabled;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.endlesscode.mimic.level.ExpLevelConverter;
+import studio.magemonkey.fabled.Fabled;
 
 public class FabledConverter implements ExpLevelConverter {
 

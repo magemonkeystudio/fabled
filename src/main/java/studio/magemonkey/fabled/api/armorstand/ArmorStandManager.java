@@ -1,12 +1,12 @@
 package studio.magemonkey.fabled.api.armorstand;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.listener.MechanicListener;
 import studio.magemonkey.fabled.task.ArmorStandTask;
 import studio.magemonkey.fabled.thread.MainThread;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.Iterator;
 import java.util.Map;

@@ -26,6 +26,13 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.api.particle.EffectPlayer;
@@ -38,13 +45,6 @@ import studio.magemonkey.fabled.api.projectile.ParticleProjectile;
 import studio.magemonkey.fabled.api.projectile.ProjectileCallback;
 import studio.magemonkey.fabled.api.util.ItemStackReader;
 import studio.magemonkey.fabled.dynamic.TempEntity;
-import org.bukkit.Location;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Vector;
 import studio.magemonkey.fabled.util.VectorUtil;
 
 import java.util.ArrayList;
@@ -72,6 +72,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
     private static final String FORWARD  = "forward";
     private static final String UPWARD   = "upward";
     private static final String RIGHT    = "right";
+    private static final String DISTANCE = "distance";
 
     private static final String USE_EFFECT = "use-effect";
     private static final String EFFECT_KEY = "effect-key";
@@ -82,13 +83,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
     }
 
     /**
-     * Executes the component
-     *
-     * @param caster  caster of the skill
-     * @param level   level of the skill
-     * @param targets targets to apply to
-     * @param force
-     * @return true if applied to something, false otherwise
+     * {@inheritDoc}
      */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
@@ -101,6 +96,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
         boolean ally     = settings.getString(ALLY, "enemy").equalsIgnoreCase("ally");
         boolean walls    = settings.getBool(WALLS, true);
         int     lifespan = (int) (parseValues(caster, LIFESPAN, level, 9999) * 20);
+        int     distance = (int) parseValues(caster, DISTANCE, level, 50);
 
         final Settings copy = new Settings(settings);
         copy.set(ParticleProjectile.SPEED, parseValues(caster, ParticleProjectile.SPEED, level, 1), 0);
@@ -131,6 +127,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
                         amount,
                         this,
                         lifespan,
+                        distance,
                         walls);
             } else {
                 Vector dir = location.getDirection();
@@ -151,6 +148,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
                         amount,
                         this,
                         lifespan,
+                        distance,
                         walls
                 );
             }
@@ -216,6 +214,7 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
                 String  spread   = settings.getString(SPREAD, "cone").toLowerCase();
                 boolean ally     = settings.getString(ALLY, "enemy").equalsIgnoreCase("ally");
                 int     lifespan = (int) (parseValues(caster, LIFESPAN, level, 9999) * 20);
+                int     distance = (int) parseValues(caster, DISTANCE, level, 50);
 
                 final Settings copy = new Settings(settings);
                 copy.set(ParticleProjectile.SPEED, parseValues(caster, ParticleProjectile.SPEED, level, 1), 0);
@@ -256,7 +255,9 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
                                 parseValues(caster, HEIGHT, level, 8.0),
                                 amount,
                                 callback,
-                                lifespan));
+                                lifespan,
+                                distance
+                        ));
                     } else {
                         Vector dir = location.getDirection();
                         if (spread.equals("horizontal cone")) {
@@ -272,7 +273,8 @@ public class ItemProjectileMechanic extends MechanicComponent implements Project
                                 parseValues(caster, ANGLE, level, 30.0),
                                 amount,
                                 callback,
-                                lifespan
+                                lifespan,
+                                distance
                         ));
                     }
 

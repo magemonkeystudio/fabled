@@ -26,12 +26,12 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.enums.ManaCost;
 import studio.magemonkey.fabled.api.enums.ManaSource;
 import studio.magemonkey.fabled.api.player.PlayerData;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 

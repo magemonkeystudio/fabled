@@ -26,12 +26,12 @@
  */
 package studio.magemonkey.fabled.api.event;
 
-import studio.magemonkey.fabled.api.enums.PointSource;
-import studio.magemonkey.fabled.api.player.PlayerClass;
-import studio.magemonkey.fabled.api.player.PlayerData;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import studio.magemonkey.fabled.api.enums.PointSource;
+import studio.magemonkey.fabled.api.player.PlayerClass;
+import studio.magemonkey.fabled.api.player.PlayerData;
 
 /**
  * Event called when a player gains class experience

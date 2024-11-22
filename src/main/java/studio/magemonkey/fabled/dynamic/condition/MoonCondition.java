@@ -1,9 +1,9 @@
 package studio.magemonkey.fabled.dynamic.condition;
 
-import studio.magemonkey.fabled.dynamic.DynamicSkill;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.World;
+import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
+import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
 import java.util.Locale;
 import java.util.Set;
@@ -13,32 +13,32 @@ import java.util.stream.Collectors;
  * A condition for dynamic skills to apply when the moon phase matches.
  */
 public class MoonCondition extends ConditionComponent {
-    private static final String PHASES = "phases";
+    private static final String PHASES    = "phases";
     private static final String BLACKLIST = "blacklist";
 
     private Set<String> phases;
     private boolean     blacklist;
-    
+
     // Array containing all Minecraft Moon Phases
     // Can be found here: https://minecraft.fandom.com/wiki/Moon#Effects_on_mobs
     private final String[] phaseNames = {
-            "FULL MOON", 
-            "WANING GIBBOUS", 
+            "FULL MOON",
+            "WANING GIBBOUS",
             "LAST QUARTER",
             "WANING CRESCENT",
             "NEW MOON",
             "WAXING CRESCENT",
             "FIRST QUARTER",
             "WAXING GIBBOUS"
-        };
-    
+    };
+
     @Override
-    public String getKey(){
+    public String getKey() {
         return "moon";
     }
 
     @Override
-    public void load(DynamicSkill skill, DataSection config){
+    public void load(DynamicSkill skill, DataSection config) {
         super.load(skill, config);
 
         phases = settings.getStringList(PHASES).stream().map(s -> s.toUpperCase(Locale.US)).collect(Collectors.toSet());
@@ -48,7 +48,7 @@ public class MoonCondition extends ConditionComponent {
     /*
      *
      * Minecraft's 8 Moon Phases
-     * 
+     *
      * 0. Full Moon
      * 1. Waning Gibbous
      * 2. Last Quarter
@@ -57,14 +57,14 @@ public class MoonCondition extends ConditionComponent {
      * 5. Waxing Crescent
      * 6. First Quarter
      * 7. Waxing Gibbous
-     * 
+     *
      * Formula: phase = (day % 8)
-     * 
+     *
      */
     @Override
-    boolean test(final LivingEntity caster, final int level, final LivingEntity target){
-        final World world = target.getWorld();
-        final int day = ((int) (world.getFullTime() / 24000L) % 8);
+    boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
+        final World  world        = target.getWorld();
+        final int    day          = ((int) (world.getFullTime() / 24000L) % 8);
         final String currentPhase = phaseNames[day];
         return phases.contains(currentPhase) != blacklist;
     }

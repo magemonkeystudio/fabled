@@ -43,9 +43,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Nullable;
 import studio.magemonkey.codex.CodexEngine;
+import studio.magemonkey.codex.core.Version;
 import studio.magemonkey.codex.mccore.config.Filter;
 import studio.magemonkey.codex.mccore.config.FilterType;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
+import studio.magemonkey.codex.util.AttributeUT;
+import studio.magemonkey.codex.util.EnumUT;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.enums.*;
@@ -77,7 +80,6 @@ import studio.magemonkey.fabled.manager.AttributeManager;
 import studio.magemonkey.fabled.manager.FabledAttribute;
 import studio.magemonkey.fabled.manager.IAttributeManager;
 import studio.magemonkey.fabled.task.ScoreboardTask;
-import studio.magemonkey.codex.core.Version;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -1103,6 +1105,7 @@ public class PlayerData {
             // Upgrade event
             PlayerSkillUpgradeEvent event = new PlayerSkillUpgradeEvent(this, data, cost);
             Bukkit.getPluginManager().callEvent(event);
+            Bukkit.getPluginManager().callEvent(new com.sucy.skill.api.event.PlayerSkillUpgradeEvent(this, data, cost));
             if (event.isCancelled()) {
                 return false;
             }
@@ -1149,6 +1152,7 @@ public class PlayerData {
             // Unlock event
             if (skill.getLevel() == 1) {
                 Bukkit.getPluginManager().callEvent(new PlayerSkillUnlockEvent(this, skill));
+                Bukkit.getPluginManager().callEvent(new com.sucy.skill.api.event.PlayerSkillUnlockEvent(this, skill));
                 this.autoLevel();
             }
         }
@@ -1192,6 +1196,8 @@ public class PlayerData {
             // Upgrade event
             PlayerSkillDowngradeEvent event = new PlayerSkillDowngradeEvent(this, data, cost);
             Bukkit.getPluginManager().callEvent(event);
+            Bukkit.getPluginManager()
+                    .callEvent(new com.sucy.skill.api.event.PlayerSkillDowngradeEvent(this, data, cost));
             if (event.isCancelled()) {
                 return false;
             }
@@ -1492,8 +1498,8 @@ public class PlayerData {
                     if (reset) {
                         skills.remove(nm);
                         comboData.removeSkill(ps.getData());
+                        resetAttribs(true);
                     }
-                    resetAttribs(true);
                 }
             }
         } else {
@@ -1615,7 +1621,7 @@ public class PlayerData {
                     ((PassiveSkill) ps.getData()).stopEffects(getPlayer());
                 }
 
-                points += ps.getInvestedCost();
+                if (ps != null) points += ps.getInvestedCost();
                 comboData.removeSkill(skill);
             }
             if (Fabled.getSettings().isSharedSkillPoints())
@@ -1626,8 +1632,10 @@ public class PlayerData {
 
             // Call the event
             Bukkit.getPluginManager().callEvent(new PlayerClassChangeEvent(playerClass, data, null));
-            Bukkit.getPluginManager().callEvent(new com.sucy.skill.api.event.PlayerClassChangeEvent(new com.sucy.skill.api.player.PlayerClass(playerClass),
-                    new RPGClass(data), null));
+            Bukkit.getPluginManager()
+                    .callEvent(new com.sucy.skill.api.event.PlayerClassChangeEvent(new com.sucy.skill.api.player.PlayerClass(
+                            playerClass),
+                            new RPGClass(data), null));
         }
 
         // Restore default class if applicable
@@ -1739,8 +1747,10 @@ public class PlayerData {
             }
 
             Bukkit.getPluginManager().callEvent(new PlayerClassChangeEvent(current, previous, current.getData()));
-            Bukkit.getPluginManager().callEvent(new com.sucy.skill.api.event.PlayerClassChangeEvent(new com.sucy.skill.api.player.PlayerClass(current),
-                    previous == null ? null : new RPGClass(previous), new RPGClass(current.getData())));
+            Bukkit.getPluginManager()
+                    .callEvent(new com.sucy.skill.api.event.PlayerClassChangeEvent(new com.sucy.skill.api.player.PlayerClass(
+                            current),
+                            previous == null ? null : new RPGClass(previous), new RPGClass(current.getData())));
             if (fabledClass.getParent() == null || isResetting)
                 skillPoints += fabledClass.getGroupSettings().getStartingPoints();
             current.givePoints(skillPoints);
@@ -1937,7 +1947,7 @@ public class PlayerData {
 
         // Update health if it's been changed
         if (oldMaxHealth != this.maxHealth
-                || player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() != this.maxHealth) {
+                || player.getAttribute(AttributeUT.resolve("MAX_HEALTH")).getValue() != this.maxHealth) {
             this.updateHealth(player);
         } else {
             // Health scaling is available starting with 1.6.2
@@ -1951,38 +1961,116 @@ public class PlayerData {
 
         // Others stats
         // Min and Max Values determined by the following: https://minecraft.wiki/w/Attribute
-        this.updateMCAttribute(player, Attribute.GENERIC_ATTACK_SPEED, AttributeManager.ATTACK_SPEED, 0, 1024);
-        this.updateMCAttribute(player, Attribute.GENERIC_ARMOR, AttributeManager.ARMOR, 0, 30);
-        this.updateMCAttribute(player, Attribute.GENERIC_LUCK, AttributeManager.LUCK, -1024, 1024);
-        this.updateMCAttribute(player, Attribute.GENERIC_KNOCKBACK_RESISTANCE, AttributeManager.KNOCKBACK_RESIST, 0, 1.0);
-        this.updateMCAttribute(player, Attribute.GENERIC_ARMOR_TOUGHNESS, AttributeManager.ARMOR_TOUGHNESS, 0, 20);
+        this.updateMCAttribute(player, AttributeUT.resolve("ATTACK_SPEED"), AttributeManager.ATTACK_SPEED, 0, 1024);
+        this.updateMCAttribute(player, AttributeUT.resolve("ARMOR"), AttributeManager.ARMOR, 0, 30);
+        this.updateMCAttribute(player, AttributeUT.resolve("LUCK"), AttributeManager.LUCK, -1024, 1024);
+        this.updateMCAttribute(player,
+                AttributeUT.resolve("KNOCKBACK_RESISTANCE"),
+                AttributeManager.KNOCKBACK_RESIST,
+                0,
+                1.0);
+        this.updateMCAttribute(player, AttributeUT.resolve("ARMOR_TOUGHNESS"), AttributeManager.ARMOR_TOUGHNESS, 0, 20);
         // Initialize 1.21+ attributes only if version is 1.21+
         if (Version.CURRENT.isAtLeast(Version.V1_21_R1)) {
             // Generic stats 1.21+
-            this.updateMCAttribute(player, Attribute.GENERIC_ATTACK_DAMAGE, AttributeManager.ATTACK_DAMAGE, 0.0f, 2048.0f);
-            this.updateMCAttribute(player, Attribute.GENERIC_ATTACK_KNOCKBACK, AttributeManager.ATTACK_KNOCKBACK, 0.0f, 5.0f);
-            this.updateMCAttribute(player, Attribute.GENERIC_FLYING_SPEED, AttributeManager.FLYING_SPEED, 0.0f, 1024.0f);
-            this.updateMCAttribute(player, Attribute.GENERIC_FOLLOW_RANGE, AttributeManager.FOLLOW_RANGE, 0.0f, 2048.0f);
-            this.updateMCAttribute(player, Attribute.GENERIC_MAX_ABSORPTION, AttributeManager.ABSORPTION, 0.0f, 2048.0f);
-            this.updateMCAttribute(player, Attribute.GENERIC_SCALE, AttributeManager.SCALE, 0.0625f, 16.0f);
-            this.updateMCAttribute(player, Attribute.GENERIC_STEP_HEIGHT, AttributeManager.STEP_HEIGHT, 0.0f, 10.0f);
-            this.updateMCAttribute(player, Attribute.GENERIC_JUMP_STRENGTH, AttributeManager.JUMP_STRENGTH, 0.0f, 32.0f);
-            this.updateMCAttribute(player, Attribute.GENERIC_GRAVITY, AttributeManager.GRAVITY, -1.0f, 1.0f);
-            this.updateMCAttribute(player, Attribute.GENERIC_SAFE_FALL_DISTANCE, AttributeManager.SAFE_FALL_DISTANCE, -1024.0f, 1024.0f);
-            this.updateMCAttribute(player, Attribute.GENERIC_FALL_DAMAGE_MULTIPLIER, AttributeManager.FALL_DAMAGE_MULTIPLIER, 0.0f, 100.0f);
-            this.updateMCAttribute(player, Attribute.GENERIC_BURNING_TIME, AttributeManager.BURNING_TIME, 0.0f, 1024.0f);
-            this.updateMCAttribute(player, Attribute.GENERIC_EXPLOSION_KNOCKBACK_RESISTANCE, AttributeManager.EXPLOSION_KNOCKBACK_RESISTANCE, 0.0f, 1.0f);
-            this.updateMCAttribute(player, Attribute.GENERIC_MOVEMENT_EFFICIENCY, AttributeManager.MOVEMENT_EFFICIENCY, 0.0f, 1.0f);
-            this.updateMCAttribute(player, Attribute.GENERIC_OXYGEN_BONUS, AttributeManager.OXYGEN_BONUS, 0.0f, 1024.0f);
-            this.updateMCAttribute(player, Attribute.GENERIC_WATER_MOVEMENT_EFFICIENCY, AttributeManager.WATER_MOVEMENT_EFFICIENCY, 0.0f, 1.0f);
+            this.updateMCAttribute(player,
+                    AttributeUT.resolve("ATTACK_DAMAGE"),
+                    AttributeManager.ATTACK_DAMAGE,
+                    0.0f,
+                    2048.0f);
+            this.updateMCAttribute(player,
+                    AttributeUT.resolve("ATTACK_KNOCKBACK"),
+                    AttributeManager.ATTACK_KNOCKBACK,
+                    0.0f,
+                    5.0f);
+            this.updateMCAttribute(player,
+                    AttributeUT.resolve("MAX_ABSORPTION"),
+                    AttributeManager.ABSORPTION,
+                    0.0f,
+                    2048.0f);
+            this.updateMCAttribute(player, AttributeUT.resolve("SCALE"), AttributeManager.SCALE, 0.0625f, 16.0f);
+            this.updateMCAttribute(player,
+                    AttributeUT.resolve("STEP_HEIGHT"),
+                    AttributeManager.STEP_HEIGHT,
+                    0.0f,
+                    10.0f);
+            this.updateMCAttribute(player,
+                    AttributeUT.resolve("JUMP_STRENGTH"),
+                    AttributeManager.JUMP_STRENGTH,
+                    0.0f,
+                    32.0f);
+            this.updateMCAttribute(player, AttributeUT.resolve("GRAVITY"), AttributeManager.GRAVITY, -1.0f, 1.0f);
+            this.updateMCAttribute(player,
+                    AttributeUT.resolve("SAFE_FALL_DISTANCE"),
+                    AttributeManager.SAFE_FALL_DISTANCE,
+                    -1024.0f,
+                    1024.0f);
+            this.updateMCAttribute(player,
+                    AttributeUT.resolve("FALL_DAMAGE_MULTIPLIER"),
+                    AttributeManager.FALL_DAMAGE_MULTIPLIER,
+                    0.0f,
+                    100.0f);
+            this.updateMCAttribute(player,
+                    AttributeUT.resolve("BURNING_TIME"),
+                    AttributeManager.BURNING_TIME,
+                    0.0f,
+                    1024.0f);
+            this.updateMCAttribute(player,
+                    AttributeUT.resolve("EXPLOSION_KNOCKBACK_RESISTANCE"),
+                    AttributeManager.EXPLOSION_KNOCKBACK_RESISTANCE,
+                    0.0f,
+                    1.0f);
+            this.updateMCAttribute(player,
+                    AttributeUT.resolve("MOVEMENT_EFFICIENCY"),
+                    AttributeManager.MOVEMENT_EFFICIENCY,
+                    0.0f,
+                    1.0f);
+            this.updateMCAttribute(player,
+                    AttributeUT.resolve("OXYGEN_BONUS"),
+                    AttributeManager.OXYGEN_BONUS,
+                    0.0f,
+                    1024.0f);
+            this.updateMCAttribute(player,
+                    AttributeUT.resolve("WATER_MOVEMENT_EFFICIENCY"),
+                    AttributeManager.WATER_MOVEMENT_EFFICIENCY,
+                    0.0f,
+                    1.0f);
             // Player only stats 1.21+
-            this.updateMCAttribute(player, Attribute.PLAYER_BLOCK_INTERACTION_RANGE, AttributeManager.BLOCK_INTERACTION_RANGE, 0.0f, 64.0f);
-            this.updateMCAttribute(player, Attribute.PLAYER_ENTITY_INTERACTION_RANGE, AttributeManager.ENTITY_INTERACTION_RANGE, 0.0f, 64.0f);
-            this.updateMCAttribute(player, Attribute.PLAYER_BLOCK_BREAK_SPEED, AttributeManager.BLOCK_BREAK_SPEED, 0.0f, 1024.0f);
-            this.updateMCAttribute(player, Attribute.PLAYER_MINING_EFFICIENCY, AttributeManager.MINING_EFFICIENCY, 0.0f, 1024.0f);
-            this.updateMCAttribute(player, Attribute.PLAYER_SNEAKING_SPEED, AttributeManager.SNEAKING_SPEED, 0.0f, 1.0f);
-            this.updateMCAttribute(player, Attribute.PLAYER_SUBMERGED_MINING_SPEED, AttributeManager.SUBMERGED_MINING_SPEED, 0.0f, 20.0f);
-            this.updateMCAttribute(player, Attribute.PLAYER_SWEEPING_DAMAGE_RATIO, AttributeManager.SWEEPING_DAMAGE_RATIO, 0.0f, 1.0f);
+            this.updateMCAttribute(player,
+                    AttributeUT.resolve("BLOCK_INTERACTION_RANGE"),
+                    AttributeManager.BLOCK_INTERACTION_RANGE,
+                    0.0f,
+                    64.0f);
+            this.updateMCAttribute(player,
+                    AttributeUT.resolve("ENTITY_INTERACTION_RANGE"),
+                    AttributeManager.ENTITY_INTERACTION_RANGE,
+                    0.0f,
+                    64.0f);
+            this.updateMCAttribute(player,
+                    AttributeUT.resolve("BLOCK_BREAK_SPEED"),
+                    AttributeManager.BLOCK_BREAK_SPEED,
+                    0.0f,
+                    1024.0f);
+            this.updateMCAttribute(player,
+                    AttributeUT.resolve("MINING_EFFICIENCY"),
+                    AttributeManager.MINING_EFFICIENCY,
+                    0.0f,
+                    1024.0f);
+            this.updateMCAttribute(player,
+                    AttributeUT.resolve("SNEAKING_SPEED"),
+                    AttributeManager.SNEAKING_SPEED,
+                    0.0f,
+                    1.0f);
+            this.updateMCAttribute(player,
+                    AttributeUT.resolve("SUBMERGED_MINING_SPEED"),
+                    AttributeManager.SUBMERGED_MINING_SPEED,
+                    0.0f,
+                    20.0f);
+            this.updateMCAttribute(player,
+                    AttributeUT.resolve("SWEEPING_DAMAGE_RATIO"),
+                    AttributeManager.SWEEPING_DAMAGE_RATIO,
+                    0.0f,
+                    1.0f);
         }
     }
 
@@ -2016,7 +2104,7 @@ public class PlayerData {
             this.maxHealth = Fabled.getSettings().getDefaultHealth();
         }
 
-        final AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        final AttributeInstance attribute = player.getAttribute(AttributeUT.resolve("MAX_HEALTH"));
         Objects.requireNonNull(attribute).setBaseValue(this.maxHealth);
 
         // Health scaling is available starting with 1.6.2
@@ -2034,11 +2122,21 @@ public class PlayerData {
     private void updateMCAttribute(Player player, Attribute attribute, String attribKey, double min, double max) {
         try {
             AttributeInstance instance = player.getAttribute(attribute);
-            double            def      = instance.getDefaultValue();
-            double            modified = this.scaleStat(attribKey, def, min, max);
+            if (instance == null) return;
+            double def = instance.getDefaultValue();
+            if (attribKey.equalsIgnoreCase(AttributeManager.ATTACK_DAMAGE)) {
+                // The player's default attack damage is *actually* 1 instead of the attribute's default value of 2
+                def = 1.0;
+            }
+            double modified = this.scaleStat(attribKey, def, min, max);
             instance.setBaseValue(/*def + */modified);
         } catch (Exception e) {
-            Logger.log("Failed to update attribute " + attribute.name() + " for " + player.getName());
+            if (e.getClass().getSimpleName().equals("UnimplementedOperationException")) return;
+            Logger.log(
+                    "Failed to update attribute " + (attribute == null ? "null" : EnumUT.getName(attribute)) + " for "
+                            + player.getName() + ": "
+                            + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -2706,6 +2804,7 @@ public class PlayerData {
      * @param player player to set up for
      */
     public void init(Player player) {
+        if (player == null) return;
         if (!Fabled.getSettings().isWorldEnabled(player.getWorld())) {
             return;
         }

@@ -1,10 +1,10 @@
 package studio.magemonkey.fabled.dynamic.condition;
 
+import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.hook.MythicMobsHook;
 import studio.magemonkey.fabled.hook.PluginChecker;
-import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import org.bukkit.entity.LivingEntity;
 
 import java.util.HashSet;
 import java.util.List;

@@ -26,16 +26,16 @@
  */
 package studio.magemonkey.fabled.api.player;
 
-import studio.magemonkey.fabled.Fabled;
-import studio.magemonkey.fabled.api.event.PlayerAccountChangeEvent;
-import studio.magemonkey.fabled.cast.CastMode;
-import studio.magemonkey.fabled.manager.ClassBoardManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.event.PlayerAccountChangeEvent;
+import studio.magemonkey.fabled.cast.CastMode;
+import studio.magemonkey.fabled.manager.ClassBoardManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,12 +50,12 @@ import java.util.UUID;
  */
 public class PlayerAccounts {
     private final Map<Integer, PlayerData> classData = new HashMap<>();
-    private final UUID                         player;
-    private       int                          active;
+    private final UUID                     player;
+    private       int                      active;
     @Getter
     @Setter
     @Accessors(fluent = true)
-    private       boolean                      isLoaded  = false;
+    private       boolean                  isLoaded  = false;
 
     /**
      * Initializes a new container for player account data.

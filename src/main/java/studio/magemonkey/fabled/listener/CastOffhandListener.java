@@ -26,9 +26,9 @@
  */
 package studio.magemonkey.fabled.listener;
 
-import studio.magemonkey.fabled.gui.tool.GUITool;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import studio.magemonkey.fabled.gui.tool.GUITool;
 
 public class CastOffhandListener extends FabledListener {
 

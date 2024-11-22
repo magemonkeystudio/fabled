@@ -1,5 +1,6 @@
 package com.sucy.skill.api.player;
 
+import com.sucy.skill.api.classes.RPGClass;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -12,7 +13,6 @@ import studio.magemonkey.fabled.api.enums.ManaCost;
 import studio.magemonkey.fabled.api.enums.ManaSource;
 import studio.magemonkey.fabled.api.enums.PointSource;
 import studio.magemonkey.fabled.api.player.PlayerAttributeModifier;
-import studio.magemonkey.fabled.api.player.PlayerSkill;
 import studio.magemonkey.fabled.api.player.PlayerSkillBar;
 import studio.magemonkey.fabled.api.player.PlayerStatModifier;
 import studio.magemonkey.fabled.api.skills.Skill;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 public class PlayerData {
     private final studio.magemonkey.fabled.api.player.PlayerData _data;
 
-    public studio.magemonkey.fabled.api.player.PlayerData getActual() {
+    public studio.magemonkey.fabled.api.player.PlayerData getWrapped() {
         return _data;
     }
 
@@ -209,7 +209,7 @@ public class PlayerData {
     }
 
     public PlayerSkill getSkill(String name) {
-        return _data.getSkill(name);
+        return new PlayerSkill(_data.getSkill(name));
     }
 
     public int getInvestedSkillPoints() {
@@ -217,7 +217,9 @@ public class PlayerData {
     }
 
     public Collection<PlayerSkill> getSkills() {
-        return _data.getSkills();
+        return _data.getSkills().stream().map(
+                PlayerSkill::new
+        ).collect(Collectors.toList());
     }
 
     public Set<studio.magemonkey.fabled.api.player.PlayerData.ExternallyAddedSkill> getExternallyAddedSkills() {
@@ -232,16 +234,16 @@ public class PlayerData {
         _data.giveSkill(skill);
     }
 
-    public void giveSkill(Skill skill, com.sucy.skill.api.player.PlayerClass parent) {
+    public void giveSkill(Skill skill, PlayerClass parent) {
         _data.giveSkill(skill, parent.getRealClass());
     }
 
-    public void addSkill(Skill skill, com.sucy.skill.api.player.PlayerClass parent) {
+    public void addSkill(Skill skill, PlayerClass parent) {
         _data.addSkill(skill, parent.getRealClass());
     }
 
     public void addSkillExternally(Skill skill,
-                                   com.sucy.skill.api.player.PlayerClass parent,
+                                   PlayerClass parent,
                                    NamespacedKey namespacedKey,
                                    int level) {
         _data.addSkillExternally(skill, parent.getRealClass(), namespacedKey, level);
@@ -260,11 +262,11 @@ public class PlayerData {
     }
 
     public void forceUpSkill(PlayerSkill skill) {
-        _data.forceUpSkill(skill);
+        _data.forceUpSkill(skill.getWrapped());
     }
 
     public void forceUpSkill(PlayerSkill skill, int amount) {
-        _data.forceUpSkill(skill, amount);
+        _data.forceUpSkill(skill.getWrapped(), amount);
     }
 
     public boolean downgradeSkill(Skill skill) {
@@ -272,15 +274,15 @@ public class PlayerData {
     }
 
     public void forceDownSkill(PlayerSkill skill) {
-        _data.forceDownSkill(skill);
+        _data.forceDownSkill(skill.getWrapped());
     }
 
     public void forceDownSkill(PlayerSkill skill, int amount) {
-        _data.forceDownSkill(skill, amount);
+        _data.forceDownSkill(skill.getWrapped(), amount);
     }
 
     public void refundSkill(PlayerSkill skill) {
-        _data.refundSkill(skill);
+        _data.refundSkill(skill.getWrapped());
     }
 
     public void refundSkills() {
@@ -303,7 +305,7 @@ public class PlayerData {
         return _data.showSkills(player);
     }
 
-    public boolean showSkills(Player player, com.sucy.skill.api.player.PlayerClass playerClass) {
+    public boolean showSkills(Player player, PlayerClass playerClass) {
         return _data.showSkills(player, playerClass.getRealClass());
     }
 
@@ -338,16 +340,16 @@ public class PlayerData {
         return new PlayerClass(_data.setClass(previous, fabledClass, reset));
     }
 
-    public boolean isExactClass(FabledClass fabledClass) {
-        return _data.isExactClass(fabledClass);
+    public boolean isExactClass(RPGClass playerClass) {
+        return _data.isExactClass(playerClass.getWrapped());
     }
 
-    public boolean isClass(FabledClass fabledClass) {
-        return _data.isClass(fabledClass);
+    public boolean isClass(PlayerClass playerClass) {
+        return _data.isClass(playerClass.getData().getWrapped());
     }
 
-    public boolean canProfess(FabledClass fabledClass) {
-        return _data.canProfess(fabledClass);
+    public boolean canProfess(PlayerClass playerClass) {
+        return _data.canProfess(playerClass.getData().getWrapped());
     }
 
     public int reset(String group, boolean toSubclass) {
@@ -450,6 +452,14 @@ public class PlayerData {
         _data.useMana(amount, cost);
     }
 
+    public double getMana() {
+        return _data.getMana();
+    }
+
+    public double getMaxMana() {
+        return _data.getMaxMana();
+    }
+
     public void removeStatModifier(UUID uuid, boolean update) {
         _data.removeStatModifier(uuid, update);
     }
@@ -472,12 +482,19 @@ public class PlayerData {
 
     @Deprecated
     public PlayerSkill getBoundSkill(Material mat) {
-        return _data.getBoundSkill(mat);
+        return new PlayerSkill(_data.getBoundSkill(mat));
     }
 
     @Deprecated
     public HashMap<Material, PlayerSkill> getBinds() {
-        return _data.getBinds();
+        Map<Material, studio.magemonkey.fabled.api.player.PlayerSkill> rawSkills = _data.getBinds();
+        // Wrap into a new map
+        HashMap<Material, PlayerSkill> skills = new HashMap<>();
+        for (Map.Entry<Material, studio.magemonkey.fabled.api.player.PlayerSkill> entry : rawSkills.entrySet()) {
+            skills.put(entry.getKey(), new PlayerSkill(entry.getValue()));
+        }
+
+        return skills;
     }
 
     @Deprecated
@@ -487,7 +504,7 @@ public class PlayerData {
 
     @Deprecated
     public boolean bind(Material mat, PlayerSkill skill) {
-        return _data.bind(mat, skill);
+        return _data.bind(mat, skill.getWrapped());
     }
 
     @Deprecated
@@ -542,11 +559,11 @@ public class PlayerData {
     }
 
     public boolean cast(PlayerSkill skill) {
-        return _data.cast(skill);
+        return _data.cast(skill.getWrapped());
     }
 
     public boolean check(PlayerSkill skill, boolean cooldown, boolean mana) {
-        return _data.check(skill, cooldown, mana);
+        return _data.check(skill.getWrapped(), cooldown, mana);
     }
 
     public void setOnPreviewStop(@Nullable Runnable onPreviewStop) {
