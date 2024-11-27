@@ -26,6 +26,7 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic.particle;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -48,6 +49,7 @@ import studio.magemonkey.fabled.util.VectorUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -159,6 +161,8 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
         return !targets.isEmpty();
     }
 
+    private final List<UUID> hitEntities = new ArrayList<>();
+
     /**
      * The callback for the projectiles that applies child components
      *
@@ -170,12 +174,20 @@ public class ParticleProjectileMechanic extends MechanicComponent implements Pro
         if (hit == null) {
             hit = new TempEntity(projectile.getLocation());
         }
-        ArrayList<LivingEntity> targets = new ArrayList<LivingEntity>();
+
+        if (hitEntities.contains(hit.getUniqueId())) return;
+
+        List<LivingEntity> targets = new ArrayList<>();
         targets.add(hit);
         executeChildren(projectile.getShooter(),
                 Fabled.getMetaInt(projectile, LEVEL),
                 targets,
                 skill.isForced(projectile.getShooter()));
+
+        // This prevents us from hitting entities with the same parent projectile multiple times
+        hitEntities.add(hit.getUniqueId());
+        LivingEntity finalHit = hit;
+        Bukkit.getScheduler().runTaskLater(Fabled.inst(), () -> hitEntities.remove(finalHit.getUniqueId()), 2L);
     }
 
     /**
