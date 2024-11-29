@@ -397,14 +397,15 @@
 		});
 		workspace.addChangeListener((e) => {
 			if (['viewport_change', 'drag', 'delete'].includes(e.type)) {
+				updateSelected();
 				$selected = undefined;
+				return;
 			}
 			if (e.type !== 'click') return;
-			console.log(e);
 			// @ts-ignore
 			const blockId = e.blockId;
-			$selected = blockId;
 			updateSelected();
+			$selected = blockId;
 		});
 
 		let lastClickId: string = '';
