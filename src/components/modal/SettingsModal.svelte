@@ -1,6 +1,6 @@
 <script lang='ts'>
 	import { version, VERSIONS }                              from '../../version/data';
-	import { animationEnabled, showSummaryItems, useSymbols } from '../../data/settings';
+	import { animationEnabled, showSummaryItems, useSymbols, blocklyMode } from '../../data/settings';
 	import ProInput                                           from '$input/ProInput.svelte';
 	import Toggle                                             from '$input/Toggle.svelte';
 	import Modal                                              from '$components/Modal.svelte';
@@ -46,6 +46,12 @@
 			tooltip='If the waterfall animation should play in the sidebar'
 		>
 			<Toggle bind:data={$animationEnabled} />
+		</ProInput>
+		<ProInput
+			label='Blockly Mode'
+			tooltip='If the Blockly editor should be used instead of the default component editor'
+		>
+			<Toggle bind:data={$blocklyMode} />
 		</ProInput>
 		<hr class='span' />
 		<!--		<ProInput label='Clear data' tooltip='Clear all data stored in the editor'>-->
