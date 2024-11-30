@@ -2,9 +2,7 @@
 	import { get, writable, type Writable } from 'svelte/store';
 	import { slide } from 'svelte/transition';
 
-	import type { ComponentOption } from '$api/options/options';
 	import * as Registry from '$api/components/registry';
-	import ComponentRegistry from '$api/components/registry';
 	import FabledComponent from '$api/components/fabled-component.svelte';
 	import FabledSkill from '../data/skill-store.svelte';
 	import FabledTrigger from '$api/components/triggers.svelte';
@@ -18,7 +16,9 @@
 	import { EmbedField } from '$api/blockly/blockly-fields';
 	import BooleanSelectOption from '$components/options/BooleanSelectOption.svelte';
 	import ProInput from '$input/ProInput.svelte';
-	import { onDestroy } from 'svelte';
+
+	export type FabledBlockSvg = Blockly.BlockSvg & { component: FabledComponent; assign: (data: FabledComponent) => void };
+
 	const workspace_config = {
 		collapse: true,
 		comments: true,
@@ -205,12 +205,10 @@
 					key = `${type}_${value.name.toLowerCase().replace(/\s/g, '_')}`;
 					const definition: any = {
 						init: function () {
+							const self = this as FabledBlockSvg;
 							// @ts-ignore
 							const component = new value.component();
-							this.component = component;
-							this.componentType = type;
-							this.componentName = value.name;
-							const self = this as Blockly.Block;
+							self.assign(component);
 							if (!type.startsWith('trigger')) {
 								self.setPreviousStatement(true, null);
 								self.setNextStatement(true, null);
@@ -246,6 +244,9 @@
 									'Block must be connected to a Trigger'
 								);
 							}
+						},
+						assign: function (data: FabledComponent) {
+							this.component = data;
 						}
 					};
 					return [key, definition] as [string, any];
@@ -306,7 +307,8 @@
 		parent: Blockly.BlockSvg | null = null
 	): Blockly.BlockSvg {
 		const key = `${component.type}_${component.name.toLowerCase().replace(/\s/g, '_')}`;
-		const com = workspace.newBlock(key);
+		const com = workspace.newBlock(key) as Blockly.BlockSvg & { assign: (data: FabledComponent) => void };
+		com.assign(component);
 		if (parent) {
 			const childrenInput = parent.getInput('CHILDREN');
 			if (childrenInput) {
@@ -344,15 +346,14 @@
 		skill.triggers = components as FabledTrigger[];
 	}
 
-	export function blockToComponent(block: Blockly.BlockSvg): FabledComponent | undefined {
-		// @ts-ignore
-		const component: FabledComponent = block.component;
+	export function blockToComponent(block: FabledBlockSvg): FabledComponent | undefined {
+		const component = block.component;
 		if (component && component.isParent) {
 			component.components.set([]);
 			const children = block.getInput('CHILDREN')!;
 			let target = children.connection?.targetBlock();
 			while (target) {
-				const child = blockToComponent(target as Blockly.BlockSvg);
+				const child = blockToComponent(target as FabledBlockSvg);
 				if (child) component.components.update((components) => [...components, child]);
 				target = target.getNextBlock();
 			}
@@ -397,15 +398,14 @@
 		});
 		workspace.addChangeListener((e) => {
 			if (['viewport_change', 'drag', 'delete'].includes(e.type)) {
-				updateSelected();
 				$selected = undefined;
-				return;
 			}
 			if (e.type !== 'click') return;
+			console.log(e);
 			// @ts-ignore
 			const blockId = e.blockId;
-			updateSelected();
 			$selected = blockId;
+			updateSelected();
 		});
 
 		let lastClickId: string = '';
@@ -449,8 +449,7 @@
 
 	function getSelected(): FabledComponent | undefined {
 		if (!$selected) return undefined;
-		// @ts-ignore
-		return workspace.getBlockById($selected)?.component;
+		return (workspace.getBlockById($selected) as FabledBlockSvg)?.component;
 	}
 
 	function updateSelected() {
