@@ -17,8 +17,6 @@
 	import BooleanSelectOption from '$components/options/BooleanSelectOption.svelte';
 	import ProInput from '$input/ProInput.svelte';
 
-	export type FabledBlockSvg = Blockly.BlockSvg & { component: FabledComponent; assign: (data: FabledComponent) => void };
-
 	const workspace_config = {
 		collapse: true,
 		comments: true,
@@ -191,6 +189,12 @@
 		return '???';
 	}
 
+	export type FabledBlockSvg = Blockly.BlockSvg & {
+		component: FabledComponent;
+		assign: (data: FabledComponent) => void;
+		updateSummary: () => void;
+	};
+
 	function migrateRegistry() {
 		const migrate = (
 			type: string,
@@ -219,15 +223,17 @@
 								.appendEndRowInput()
 								.appendField(new EmbedField(`&l${getIcon(component)}&r: ${component.name}`));
 
-							if (get(showSummaryItems) && component.summaryItems && component.summaryItems.length) {
+							if (
+								get(showSummaryItems) &&
+								component.summaryItems &&
+								component.summaryItems.length
+							) {
 								const summary = self.appendEndRowInput();
 								component.summaryItems.forEach((entry: string) => {
 									const value = component.getValue(entry);
-									if (value && value != '') {
-										const field = new Blockly.FieldTextInput(`${entry}: ${value}`);
-										field.setEnabled(false);
-										summary.appendField(field, entry);
-									}
+									const field = new Blockly.FieldTextInput(`${entry}: ${value}`);
+									field.setEnabled(false);
+									summary.appendField(field, entry);
 								});
 							}
 
@@ -247,6 +253,16 @@
 						},
 						assign: function (data: FabledComponent) {
 							this.component = data;
+						},
+						updateSummary: function () {
+							const self = this as FabledBlockSvg;
+							self.inputList.flatMap((input) => input.fieldRow).forEach((field) => {
+								if (!field.name) return;
+								let value = self.component.getValue(field.name);
+								if (value !== undefined) {
+									field.setValue(`${field.name}: ${value}`);
+								}
+							});
 						}
 					};
 					return [key, definition] as [string, any];
@@ -307,7 +323,7 @@
 		parent: Blockly.BlockSvg | null = null
 	): Blockly.BlockSvg {
 		const key = `${component.type}_${component.name.toLowerCase().replace(/\s/g, '_')}`;
-		const com = workspace.newBlock(key) as Blockly.BlockSvg & { assign: (data: FabledComponent) => void };
+		const com = workspace.newBlock(key) as FabledBlockSvg;
 		com.assign(component);
 		if (parent) {
 			const childrenInput = parent.getInput('CHILDREN');
@@ -315,16 +331,7 @@
 				childrenInput.connection?.connect(com.previousConnection);
 			}
 		}
-		const fields = (block: Blockly.BlockSvg): Blockly.Field[] =>
-			block.inputList.flatMap((input) => input.fieldRow);
-		fields(com).forEach((field) => {
-			if (!field.name) return;
-			let value = component.getValue(field.name);
-			if (value !== undefined) {
-				field.setValue(`${field.name}: ${value}`);
-			}
-		});
-
+		com.updateSummary();
 		get(component.components)
 			.reverse()
 			.forEach((child) => {
@@ -387,6 +394,7 @@
 			toolbox: Toolbox.get(),
 			...workspace_config
 		});
+		new Blockly.WorkspaceAudio(workspace).preload();
 		skill.triggers.forEach((trigger) => {
 			componentToBlock(workspace, trigger);
 		});
@@ -401,7 +409,6 @@
 				$selected = undefined;
 			}
 			if (e.type !== 'click') return;
-			console.log(e);
 			// @ts-ignore
 			const blockId = e.blockId;
 			$selected = blockId;
@@ -409,7 +416,7 @@
 		});
 
 		let lastClickId: string = '';
-		let lastClickTime: number = 0;	
+		let lastClickTime: number = 0;
 		// @ts-ignore
 		workspace.addChangeListener((e: { blockId: string; type: string }) => {
 			if (e.type !== 'click') return;
@@ -482,57 +489,57 @@
 					observer.observe(e.target as Element);
 				}}
 			>
-			<div class='component-editor' style="width: 30em;">
-				<h2 class:deprecated={data.isDeprecated}><span>{data.name}</span></h2>
-				{#if data.description}
-					<div class='modal-desc'>{@html data.description}</div>
-				{/if}
-				<hr />
-				<div class='component-entry'>
-					<ProInput
-						label='Comment'
-						tooltip='[comment] A comment that will be displayed in the skill editor'
-						bind:value={data.comment}
-					/>
-					{#if data instanceof FabledTrigger && data.name !== 'Cast' && data.name !== 'Initialize' && data.name !== 'Cleanup'}
-						<BooleanSelectOption
-							name='Mana'
-							tooltip='[mana] Whether this trigger requires the mana cost to activate'
-							bind:data={data.mana}
-						/>
-						<BooleanSelectOption
-							name='Cooldown'
-							tooltip='[cooldown] Whether this trigger requires to be off cooldown to activate'
-							bind:data={data.cooldown}
-						/>
-					{:else if data instanceof FabledTarget || data instanceof FabledCondition || data instanceof FabledMechanic}
+				<div class="component-editor" style="width: 30em;">
+					<h2 class:deprecated={data.isDeprecated}><span>{data.name}</span></h2>
+					{#if data.description}
+						<div class="modal-desc">{@html data.description}</div>
+					{/if}
+					<hr />
+					<div class="component-entry">
 						<ProInput
-							label='Icon Key'
-							bind:value={data.iconKey}
-							tooltip={'[icon-key] The key used by the component in the Icon Lore. If this is set to "example" and has a value name of "value", it can be referenced using the string "{attr:example.value}"'}
+							label="Comment"
+							tooltip="[comment] A comment that will be displayed in the skill editor"
+							bind:value={data.comment}
 						/>
-					{/if}
-					{#if data instanceof FabledMechanic}
-						<BooleanSelectOption
-							name='Counts as Cast'
-							tooltip={'[counts] Whether this mechanic running treats the skill as "casted" and will consume mana and start the cooldown. Set to false if it is a mechanic applled when the skill fails such as cleanup or an error message'}
-							bind:data={data.countsAsCast}
-						/>
-					{/if}
-		
-					{#each data.data as datum}
-						{#if datum.meetsRequirements(data)}
-							<datum.component
-								bind:data={datum.data}
-								name={datum.name}
-								tooltip="{datum.key ? '[' + datum.key + '] ' : ''}{datum.tooltip}"
-								multiple={datum.multiple}
+						{#if data instanceof FabledTrigger && data.name !== 'Cast' && data.name !== 'Initialize' && data.name !== 'Cleanup'}
+							<BooleanSelectOption
+								name="Mana"
+								tooltip="[mana] Whether this trigger requires the mana cost to activate"
+								bind:data={data.mana}
+							/>
+							<BooleanSelectOption
+								name="Cooldown"
+								tooltip="[cooldown] Whether this trigger requires to be off cooldown to activate"
+								bind:data={data.cooldown}
+							/>
+						{:else if data instanceof FabledTarget || data instanceof FabledCondition || data instanceof FabledMechanic}
+							<ProInput
+								label="Icon Key"
+								bind:value={data.iconKey}
+								tooltip={'[icon-key] The key used by the component in the Icon Lore. If this is set to "example" and has a value name of "value", it can be referenced using the string "{attr:example.value}"'}
 							/>
 						{/if}
-					{/each}
+						{#if data instanceof FabledMechanic}
+							<BooleanSelectOption
+								name="Counts as Cast"
+								tooltip={'[counts] Whether this mechanic running treats the skill as "casted" and will consume mana and start the cooldown. Set to false if it is a mechanic applled when the skill fails such as cleanup or an error message'}
+								bind:data={data.countsAsCast}
+							/>
+						{/if}
+
+						{#each data.data as datum}
+							{#if datum.meetsRequirements(data)}
+								<datum.component
+									bind:data={datum.data}
+									name={datum.name}
+									tooltip="{datum.key ? '[' + datum.key + '] ' : ''}{datum.tooltip}"
+									multiple={datum.multiple}
+								/>
+							{/if}
+						{/each}
+					</div>
 				</div>
 			</div>
-		</div>
 		{/if}
 	</div>
 {/key}
@@ -548,7 +555,7 @@
 	.selected-block {
 		border-left: #424242 solid 3px;
 		color: #fff;
-		overflow-y: auto;
+		overflow: hidden auto;
 	}
 
 	.component-editor {
@@ -566,48 +573,47 @@
 		text-align: center;
 		box-sizing: border-box;
 		padding-inline: 1em;
-        white-space: break-spaces;
+		white-space: break-spaces;
 	}
 
-	
-    .deprecated {
-        align-items: center;
-        display: flex;
-    }
+	.deprecated {
+		align-items: center;
+		display: flex;
+	}
 
-    .deprecated > span {
-        text-decoration: line-through;
-    }
+	.deprecated > span {
+		text-decoration: line-through;
+	}
 
-    .deprecated::after {
-        text-decoration: unset;
-        margin-left: 0.5rem;
-        content: 'deprecated';
-        font-size: 0.6em;
-        color: goldenrod;
-    }
+	.deprecated::after {
+		text-decoration: unset;
+		margin-left: 0.5rem;
+		content: 'deprecated';
+		font-size: 0.6em;
+		color: goldenrod;
+	}
 
-    .component-entry {
-        display: grid;
-        grid-template-columns: calc(50% - 3rem) calc(50% + 3rem);
-        width: 100%;
-        padding-inline: 0.5rem;
-        padding-top: 0.25rem;
-    }
+	.component-entry {
+		display: grid;
+		grid-template-columns: calc(50% - 3rem) calc(50% + 3rem);
+		width: 100%;
+		padding-inline: 0.5rem;
+		padding-top: 0.25rem;
+	}
 
-    .component-entry {
-        display: grid;
-        grid-template-columns: calc(50% - 3rem) calc(50% + 3rem);
-        width: 100%;
-        padding-inline: 0.5rem;
-        padding-top: 0.25rem;
-    }
+	.component-entry {
+		display: grid;
+		grid-template-columns: calc(50% - 3rem) calc(50% + 3rem);
+		width: 100%;
+		padding-inline: 0.5rem;
+		padding-top: 0.25rem;
+	}
 
-    .modal-desc {
-        max-width: 100%;
-        white-space: break-spaces;
-        text-align: center;
-    }
+	.modal-desc {
+		max-width: 100%;
+		white-space: break-spaces;
+		text-align: center;
+	}
 
 	:global(.blocklyMainBackground) {
 		stroke-width: 0;
