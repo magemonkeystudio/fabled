@@ -234,13 +234,22 @@
 								component.summaryItems &&
 								component.summaryItems.length
 							) {
-								const summary = self.appendEndRowInput();
+								let summaries: Blockly.Field[] = [];
 								component.summaryItems.forEach((entry: string) => {
 									const value = component.getValue(entry);
 									const field = new Blockly.FieldTextInput(`${entry}: ${value}`);
 									field.setEnabled(false);
-									summary.appendField(field, entry);
+									summaries.push(field);
 								});
+								const alignLimit = 3;
+								const rows = Math.ceil(summaries.length / alignLimit);
+								for (let row = 0; row < rows; row++) {
+									const summary = self.appendEndRowInput();
+									const itemsPerRow = Math.ceil((summaries.length - row * alignLimit) / (rows - row));
+									for (let i = 0; i < itemsPerRow && row * alignLimit + i < summaries.length; i++) {
+										summary.appendField(summaries[row * alignLimit + i]);
+									}
+								}
 							}
 
 							if (component.isParent) {
@@ -265,9 +274,7 @@
 							self.inputList.flatMap((input) => input.fieldRow).forEach((field) => {
 								if (!field.name) return;
 								let value = self.component.getValue(field.name);
-								if (value !== undefined) {
-									field.setValue(`${field.name}: ${value}`);
-								}
+								field.setValue(`${field.name}: ${value}`);
 							});
 						}
 					};
@@ -413,13 +420,14 @@
 		});
 		workspace.addChangeListener((e) => {
 			if (['viewport_change', 'drag', 'delete'].includes(e.type)) {
+				updateSelected();
 				$selected = undefined;
 			}
 			if (e.type !== 'click') return;
 			// @ts-ignore
 			const blockId = e.blockId;
-			$selected = blockId;
 			updateSelected();
+			$selected = blockId;
 		});
 
 		let lastClickId: string = '';
