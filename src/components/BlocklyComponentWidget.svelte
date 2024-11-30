@@ -49,7 +49,11 @@
 
 	const Toolbox = {
 		isInitialized() {
-			return document.getElementById('toolbox') !== null;
+			const toolbox = document.getElementById('toolbox');
+			if (!toolbox) return false;
+			if (toolbox.getAttribute('useSymbols') !== get(useSymbols).toString()) return false;
+			if (toolbox.getAttribute('showSummaryItems') !== get(showSummaryItems).toString()) return false;
+			return true;
 		},
 
 		get() {
@@ -57,6 +61,8 @@
 			if (!toolbox) {
 				toolbox = document.createElement('toolbox');
 				toolbox.setAttribute('id', 'toolbox');
+				toolbox.setAttribute('useSymbols', get(useSymbols).toString());
+				toolbox.setAttribute('showSummaryItems', get(showSummaryItems).toString());
 				toolbox.style.display = 'none';
 
 				document.body.appendChild(toolbox);
@@ -303,6 +309,7 @@
 	}
 
 	function setupToolbox() {
+		if (Toolbox.isInitialized()) return;
 		Toolbox.clear();
 		Toolbox.get().appendChild(
 			(() => {
@@ -347,7 +354,7 @@
 			...workspace
 				.getTopBlocks(true)
 				.filter((b) => b.isEnabled() && b.type.startsWith('trigger'))
-				.map((b) => blockToComponent(b))
+				.map((b) => blockToComponent(b as FabledBlockSvg))
 				.filter((b) => b !== undefined)
 		];
 		skill.triggers = components as FabledTrigger[];
