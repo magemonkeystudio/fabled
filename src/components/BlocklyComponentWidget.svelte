@@ -16,6 +16,8 @@
 	import { EmbedField } from '$api/blockly/blockly-fields';
 	import BooleanSelectOption from '$components/options/BooleanSelectOption.svelte';
 	import ProInput from '$input/ProInput.svelte';
+	import type { ComponentOption } from '$api/options/options';
+	import DropdownSelect from '$api/options/dropdownselect.svelte';
 
 	const workspace_config = {
 		collapse: true,
@@ -52,7 +54,8 @@
 			const toolbox = document.getElementById('toolbox');
 			if (!toolbox) return false;
 			if (toolbox.getAttribute('useSymbols') !== get(useSymbols).toString()) return false;
-			if (toolbox.getAttribute('showSummaryItems') !== get(showSummaryItems).toString()) return false;
+			if (toolbox.getAttribute('showSummaryItems') !== get(showSummaryItems).toString())
+				return false;
 			return true;
 		},
 
@@ -217,7 +220,7 @@
 						init: function () {
 							const self = this as FabledBlockSvg;
 							// @ts-ignore
-							const component = new value.component();
+							const component = (new value.component() as FabledComponent).defaultOpen();
 							self.assign(component);
 							if (!type.startsWith('trigger')) {
 								self.setPreviousStatement(true, null);
@@ -234,20 +237,24 @@
 								component.summaryItems &&
 								component.summaryItems.length
 							) {
-								let summaries: Blockly.Field[] = [];
-								component.summaryItems.forEach((entry: string) => {
-									const value = component.getValue(entry);
-									const field = new Blockly.FieldTextInput(`${entry}: ${value}`);
-									field.setEnabled(false);
-									summaries.push(field);
-								});
 								const alignLimit = 3;
-								const rows = Math.ceil(summaries.length / alignLimit);
+								const rows = Math.ceil(component.summaryItems.length / alignLimit);
 								for (let row = 0; row < rows; row++) {
 									const summary = self.appendEndRowInput();
-									const itemsPerRow = Math.ceil((summaries.length - row * alignLimit) / (rows - row));
-									for (let i = 0; i < itemsPerRow && row * alignLimit + i < summaries.length; i++) {
-										summary.appendField(summaries[row * alignLimit + i]);
+									const itemsPerRow = Math.ceil(
+										(component.summaryItems.length - row * alignLimit) / (rows - row)
+									);
+									for (
+										let i = 0;
+										i < itemsPerRow && row * alignLimit + i < component.summaryItems.length;
+										i++
+									) {
+										const field = new Blockly.FieldTextInput();
+										const item = component.summaryItems[row * alignLimit + i];
+										const value = component.getValue(item);
+										field.setValue(`${item}: ${value}`);
+										field.setEnabled(false);
+										summary.appendField(field, item);
 									}
 								}
 							}
@@ -266,16 +273,21 @@
 								);
 							}
 						},
-						assign: function (data: FabledComponent) {
-							this.component = data;
+						assign: function (component: FabledComponent) {
+							this.component = component;
+							component.data
+								.filter((dat: ComponentOption) => dat instanceof DropdownSelect)
+								.forEach((dat: DropdownSelect) => { dat.init(); });
 						},
 						updateSummary: function () {
 							const self = this as FabledBlockSvg;
-							self.inputList.flatMap((input) => input.fieldRow).forEach((field) => {
-								if (!field.name) return;
-								let value = self.component.getValue(field.name);
-								field.setValue(`${field.name}: ${value}`);
-							});
+							self.inputList
+								.flatMap((input) => input.fieldRow)
+								.forEach((field) => {
+									if (!field.name) return;
+									let value = self.component.getValue(field.name);
+									field.setValue(`${field.name}: ${value}`);
+								});
 						}
 					};
 					return [key, definition] as [string, any];
@@ -398,7 +410,6 @@
 	let { skill, onupdate, onsave }: Props = $props();
 	let workspace: Blockly.WorkspaceSvg;
 	let selected: Writable<string | undefined> = writable(undefined);
-
 	function blocklyInit(node: HTMLElement) {
 		console.debug('Blockly init');
 		Blockly.ShortcutRegistry.registry.reset();
@@ -476,13 +487,8 @@
 
 	function updateSelected() {
 		if (!$selected) return;
-		const block = workspace.getBlockById($selected)!;
-		const component = getSelected()!;
-		if (component.summaryItems && component.summaryItems.length) {
-			component.summaryItems.forEach((item) => {
-				block.getField(item)?.setValue(`${item}: ${component.getValue(item)}`);
-			});
-		}
+		const block = workspace.getBlockById($selected)! as FabledBlockSvg;
+		block.updateSummary();
 		workspaceToSkill(workspace, skill);
 		if (onupdate) onupdate();
 	}
@@ -491,20 +497,11 @@
 {#key [skill, $showSummaryItems, $useSymbols]}
 	<div class="wrapper">
 		<div style="height: 100%; flex-grow: 1;" use:blocklyInit></div>
+		{#key $selected}
 		{#if $selected}
 			{@const data = getSelected()!}
-			<div
-				class="selected-block"
-				style="height: 100%; width: 30em;"
-				transition:slide|local={{ axis: 'x', duration: 200 }}
-				onintrostart={function (e) {
-					const observer = new ResizeObserver(() => {
-						Blockly.svgResize(workspace);
-					});
-					observer.observe(e.target as Element);
-				}}
-			>
-				<div class="component-editor" style="width: 30em;">
+			<div class="selected-block" style="height: 100%; width: 30em;">
+				<div class="component-editor" style="width: 100%;">
 					<h2 class:deprecated={data.isDeprecated}><span>{data.name}</span></h2>
 					{#if data.description}
 						<div class="modal-desc">{@html data.description}</div>
@@ -556,6 +553,7 @@
 				</div>
 			</div>
 		{/if}
+		{/key}
 	</div>
 {/key}
 
