@@ -1,8 +1,9 @@
 package studio.magemonkey.fabled.api.util;
 
 import org.bukkit.entity.Player;
+import studio.magemonkey.codex.api.NMSProvider;
+import studio.magemonkey.codex.core.Version;
 import studio.magemonkey.codex.util.Reflex;
-import studio.magemonkey.codex.util.reflection.ReflectionManager;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -22,7 +23,7 @@ public class Title {
 
     private static void loadClasses() throws Exception { // This is not used...
         packetTitle = Reflex.getNMSClass("PacketPlayOutTitle");
-        Class<?> chatBaseComponent = ReflectionManager.MINOR_VERSION >= 17
+        Class<?> chatBaseComponent = Version.CURRENT.isAtLeast(Version.V1_17_R1)
                 ? Reflex.getClass("net.minecraft.network.chat.IChatBaseComponent")
                 : Reflex.getNMSClass("IChatBaseComponent");
         serialize = chatBaseComponent.getDeclaredClasses()[0].getDeclaredMethod("a", String.class);
@@ -39,18 +40,6 @@ public class Title {
 
     public static void send(Player player, String title, String subtitle, int fadeIn, int duration, int fadeOut) {
         player.sendTitle(title, subtitle, fadeIn, duration, fadeOut);
-//        try
-//        {
-//            if (packetTitle == null)
-//                loadClasses();
-//            if (title != null)
-//                send(player, title, titleType, fadeIn, duration, fadeOut);
-//            if (subtitle != null)
-//                send(player, subtitle, subtitleType, fadeIn, duration, fadeOut);
-//        }
-//        catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
     }
 
     private static void send(Player player, String text, Object type, int fadeIn, int duration, int fadeOut) throws
@@ -58,9 +47,9 @@ public class Title {
         Object chatText = serialize.invoke(null, "{\"text\":\"" + text + "\"}");
 
         Object packet = timesConstructor.newInstance(timesType, chatText, fadeIn, duration, fadeOut);
-        ReflectionManager.getReflectionUtil().sendPacket(player, packet);
+        NMSProvider.getNms().sendPacket(player, packet);
 
         packet = contentConstructor.newInstance(type, chatText);
-        ReflectionManager.getReflectionUtil().sendPacket(player, packet);
+        NMSProvider.getNms().sendPacket(player, packet);
     }
 }

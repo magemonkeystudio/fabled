@@ -32,8 +32,8 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import studio.magemonkey.codex.core.Version;
 import studio.magemonkey.codex.util.Reflex;
-import studio.magemonkey.codex.util.reflection.ReflectionManager;
 import studio.magemonkey.fabled.Fabled;
 
 import java.io.*;
@@ -49,6 +49,7 @@ import java.util.Map;
 
 /**
  * Will be removed in lieu of Codex's ItemUT from/toBase64
+ * TODO: Port this over to be a part of Codex's modularized setup if still needed
  */
 @Deprecated
 public class ItemSerializer {
@@ -121,7 +122,7 @@ public class ItemSerializer {
 
         try {
             Class<?> craftItemStack = Reflex.getCraftClass("inventory.CraftItemStack");
-            Class<?> nmsItemStack = ReflectionManager.MINOR_VERSION >= 17
+            Class<?> nmsItemStack = Version.CURRENT.isAtLeast(Version.V1_17_R1)
                     ? Reflex.getClass("net.minecraft.world.item.ItemStack")
                     : Reflex.getNMSClass("ItemStack");
             craftItemConstructor = Reflex.getConstructor(craftItemStack, ItemStack.class);
@@ -131,23 +132,23 @@ public class ItemSerializer {
             craftItemStack_getHandle = Reflex.getField(craftItemStack, "handle");
             craftItemStack_getHandle.setAccessible(true);
 
-            Class<?> nbtBase = ReflectionManager.MINOR_VERSION >= 17
+            Class<?> nbtBase = Version.CURRENT.isAtLeast(Version.V1_17_R1)
                     ? Reflex.getClass("net.minecraft.nbt.NBTBase")
                     : Reflex.getNMSClass("NBTBase");
-            Class<?> nbtTagCompound = ReflectionManager.MINOR_VERSION >= 17
+            Class<?> nbtTagCompound = Version.CURRENT.isAtLeast(Version.V1_17_R1)
                     ? Reflex.getClass("net.minecraft.nbt.NBTTagCompound")
                     : Reflex.getNMSClass("NBTTagCompound");
-            Class<?> nbtTagList = ReflectionManager.MINOR_VERSION >= 17
+            Class<?> nbtTagList = Version.CURRENT.isAtLeast(Version.V1_17_R1)
                     ? Reflex.getClass("net.minecraft.nbt.NBTTagList")
                     : Reflex.getNMSClass("NBTTagList");
-            Class<?> nbtCompressedStreamTools = ReflectionManager.MINOR_VERSION >= 17
+            Class<?> nbtCompressedStreamTools = Version.CURRENT.isAtLeast(Version.V1_17_R1)
                     ? Reflex.getClass("net.minecraft.nbt.NBTCompressedStreamTools")
                     : Reflex.getNMSClass("NBTCompressedStreamTools");
             nmsItemConstructor = Reflex.getConstructor(nmsItemStack, nbtTagCompound);
             nmsItemConstructor.setAccessible(true);
             nbtTagCompoundConstructor = nbtTagCompound.getConstructor();
             nbtTagListConstructor = nbtTagList.getConstructor();
-            if (ReflectionManager.MINOR_VERSION >= 18) {
+            if (Version.CURRENT.isAtLeast(Version.V1_18_R1)) {
                 nbtTagCompound_set = Reflex.getMethod(nbtTagCompound, "a", String.class, nbtBase);
                 nbtTagCompound_getList = Reflex.getMethod(nbtTagCompound, "c", String.class, int.class);
                 nbtTagCompound_isEmpty = Reflex.getMethod(nbtTagCompound, "f");

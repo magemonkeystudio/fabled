@@ -36,8 +36,8 @@ import org.bukkit.metadata.Metadatable;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import studio.magemonkey.codex.core.Version;
 import studio.magemonkey.codex.util.Reflex;
-import studio.magemonkey.codex.util.reflection.ReflectionManager;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.api.particle.target.Followable;
@@ -66,10 +66,10 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
     static {
         try {
             Class<?> aabbClass =
-                    ReflectionManager.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.phys.AxisAlignedBB")
+                    Version.CURRENT.isAtLeast(Version.V1_17_R1) ? Reflex.getClass("net.minecraft.world.phys.AxisAlignedBB")
                             : Reflex.getNMSClass("AxisAlignedBB");
             Class<?> entityClass =
-                    ReflectionManager.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.entity.Entity")
+                    Version.CURRENT.isAtLeast(Version.V1_17_R1) ? Reflex.getClass("net.minecraft.world.entity.Entity")
                             : Reflex.getNMSClass("Entity");
             aabbConstructor = aabbClass.getConstructor(double.class,
                     double.class,
@@ -80,13 +80,13 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
             getBukkitEntity = entityClass.getDeclaredMethod("getBukkitEntity");
             getHandle = Reflex.getCraftClass("CraftWorld").getDeclaredMethod("getHandle");
             Class<?> worldClass =
-                    ReflectionManager.MINOR_VERSION >= 17 ? Reflex.getClass("net.minecraft.world.level.World")
+                    Version.CURRENT.isAtLeast(Version.V1_17_R1) ? Reflex.getClass("net.minecraft.world.level.World")
                             : Reflex.getNMSClass("World");
             try {
-                getEntities = worldClass.getDeclaredMethod(ReflectionManager.MINOR_VERSION >= 18 ? "a" : "getEntities",
+                getEntities = worldClass.getDeclaredMethod(Version.CURRENT.isAtLeast(Version.V1_18_R1) ? "a" : "getEntities",
                         entityClass, aabbClass, Predicate.class);
             } catch (Exception e) {
-                getEntitiesGuava = worldClass.getDeclaredMethod(ReflectionManager.MINOR_VERSION >= 18
+                getEntitiesGuava = worldClass.getDeclaredMethod(Version.CURRENT.isAtLeast(Version.V1_18_R1)
                         ? "a"
                         : "getEntities", entityClass, aabbClass, com.google.common.base.Predicate.class);
             }

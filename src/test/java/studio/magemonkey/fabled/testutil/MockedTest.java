@@ -1,6 +1,7 @@
 package studio.magemonkey.fabled.testutil;
 
 import org.apache.commons.io.FileUtils;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
@@ -14,14 +15,13 @@ import org.mockito.MockedStatic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import studio.magemonkey.codex.CodexEngine;
+import studio.magemonkey.codex.api.NMS;
+import studio.magemonkey.codex.api.NMSProvider;
 import studio.magemonkey.codex.hooks.HookManager;
 import studio.magemonkey.codex.mccore.scoreboard.Board;
 import studio.magemonkey.codex.util.ItemUT;
 import studio.magemonkey.codex.util.Reflex;
 import studio.magemonkey.codex.util.actions.ActionsManager;
-import studio.magemonkey.codex.util.reflection.ReflectionManager;
-import studio.magemonkey.codex.util.reflection.ReflectionUtil;
-import studio.magemonkey.codex.util.reflection.Reflection_1_17;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.util.DamageLoreRemover;
@@ -54,9 +54,6 @@ public abstract class MockedTest {
     protected HookManager    hookManager;
     protected ActionsManager actionsManager;
 
-    protected ReflectionUtil                  reflectionMock;
-    protected Reflection_1_17                 reflection17Mock;
-    protected MockedStatic<ReflectionManager> reflectionManager;
     protected MockedStatic<Reflex>            reflex;
     protected MockedStatic<Board>             board;
     protected MockedStatic<DamageLoreRemover> damageLoreRemover;
@@ -177,17 +174,25 @@ public abstract class MockedTest {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        NMS nms = mock(NMS.class);
+        when(nms.getVersion()).thenReturn("test");
+        when(nms.getAttribute(anyString())).thenAnswer(ans -> {
+            try {
+                return Attribute.valueOf(ans.getArgument(0).toString());
+            } catch (IllegalArgumentException e) {
+                return Attribute.valueOf("GENERIC_" + ans.getArgument(0).toString());
+            }
+        });
+        when(nms.fixColors(anyString())).thenAnswer(ans -> ans.getArgument(0));
+
+        NMSProvider.setNms(nms);
+
         damageLoreRemover = mockStatic(DamageLoreRemover.class);
         damageLoreRemover.when(() -> DamageLoreRemover.removeAttackDmg(any(ItemStack.class)))
                 .thenAnswer(a -> a.getArgument(0));
         board = mockStatic(Board.class);
         reflex = mockStatic(Reflex.class);
-        reflectionMock = mock(ReflectionUtil.class);
-        reflection17Mock = mock(Reflection_1_17.class);
-        reflectionManager = mockStatic(ReflectionManager.class);
-        when(reflectionMock.fixColors(anyString()))
-                .thenAnswer(args -> args.getArgument(0));
-        reflectionManager.when(ReflectionManager::getReflectionUtil).thenReturn(reflectionMock);
 
         hookManager = mock(HookManager.class);
         actionsManager = mock(ActionsManager.class);
@@ -204,7 +209,6 @@ public abstract class MockedTest {
     @AfterAll
     public void destroy() {
         if (reflex != null) reflex.close();
-        if (reflectionManager != null) reflectionManager.close();
         if (board != null) board.close();
         if (damageLoreRemover != null) damageLoreRemover.close();
 //        itemUT.close();

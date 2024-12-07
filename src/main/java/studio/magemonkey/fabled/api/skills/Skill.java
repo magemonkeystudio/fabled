@@ -40,13 +40,13 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
+import studio.magemonkey.codex.api.NMSProvider;
 import studio.magemonkey.codex.mccore.config.Filter;
 import studio.magemonkey.codex.mccore.config.FilterType;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.codex.mccore.config.parse.NumberParser;
 import studio.magemonkey.codex.mccore.util.TextFormatter;
 import studio.magemonkey.codex.registry.damage.DamageRegistry;
-import studio.magemonkey.codex.util.AttributeUT;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.ReadOnlySettings;
 import studio.magemonkey.fabled.api.Settings;
@@ -91,9 +91,9 @@ public abstract class Skill implements IconHolder {
     private static final String            COMBO            = "combo";
     /**
      * -- GETTER --
-     *  Checks whether the current damage event is due to
-     *  skills damaging an entity. This method is used by the API
-     *  and shouldn't be used by other plugins.
+     * Checks whether the current damage event is due to
+     * skills damaging an entity. This method is used by the API
+     * and shouldn't be used by other plugins.
      *
      * @return true if caused by a skill, false otherwise
      */
@@ -109,7 +109,7 @@ public abstract class Skill implements IconHolder {
     private final        ReadOnlySettings  readOnlySettings = new ReadOnlySettings(settings);
     /**
      * -- GETTER --
-     *  Retrieves the configuration key for the skill
+     * Retrieves the configuration key for the skill
      *
      * @return configuration key for the skill
      */
@@ -118,7 +118,7 @@ public abstract class Skill implements IconHolder {
     private              List<String>      iconLore;
     /**
      * -- GETTER --
-     *  Retrieves the indicator representing the skill for menus
+     * Retrieves the indicator representing the skill for menus
      *
      * @return indicator for the skill
      */
@@ -126,7 +126,7 @@ public abstract class Skill implements IconHolder {
     private              ItemStack         indicator;
     /**
      * -- GETTER --
-     *  Retrieves the name of the skill
+     * Retrieves the name of the skill
      *
      * @return skill name
      */
@@ -134,7 +134,7 @@ public abstract class Skill implements IconHolder {
     private              String            name;
     /**
      * -- GETTER --
-     *  Retrieves the descriptive type of the skill
+     * Retrieves the descriptive type of the skill
      *
      * @return descriptive type of the skill
      */
@@ -142,7 +142,7 @@ public abstract class Skill implements IconHolder {
     private              String            type;
     /**
      * -- GETTER --
-     *  Retrieves the message for the skill to display when cast.
+     * Retrieves the message for the skill to display when cast.
      *
      * @return cast message of the skill
      */
@@ -150,7 +150,7 @@ public abstract class Skill implements IconHolder {
     private              String            message;
     /**
      * -- GETTER --
-     *  Retrieves the skill required to be upgraded before this one
+     * Retrieves the skill required to be upgraded before this one
      *
      * @return required skill
      */
@@ -158,7 +158,7 @@ public abstract class Skill implements IconHolder {
     private              String            skillReq;
     /**
      * -- GETTER --
-     *  Retrieves the max level the skill can reach
+     * Retrieves the max level the skill can reach
      *
      * @return max skill level
      */
@@ -166,8 +166,8 @@ public abstract class Skill implements IconHolder {
     private              int               maxLevel;
     /**
      * -- GETTER --
-     *  Retrieves the level of the required skill needed to be obtained
-     *  before this one can be upgraded.
+     * Retrieves the level of the required skill needed to be obtained
+     * before this one can be upgraded.
      *
      * @return required skill level
      */
@@ -177,12 +177,11 @@ public abstract class Skill implements IconHolder {
     private              boolean           cooldownMessage;
     /**
      * -- GETTER --
-     *  Retrieves the ID of the skill's combo
+     * Retrieves the ID of the skill's combo
      *
      * @return combo ID
      * -- SETTER --
-     *  Sets the click combo for the skill
-     *
+     * Sets the click combo for the skill
      * @param combo new combo
      */
     @Setter
@@ -876,7 +875,7 @@ public abstract class Skill implements IconHolder {
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled() && event.getDamage() != 0) {
             target.setHealth(Math.max(Math.min(target.getHealth() - event.getDamage(),
-                    target.getAttribute(AttributeUT.resolve("MAX_HEALTH")).getValue()), 0));
+                    target.getAttribute(NMSProvider.getNms().getAttribute("MAX_HEALTH")).getValue()), 0));
         }
     }
 
