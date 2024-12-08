@@ -1,7 +1,7 @@
 package studio.magemonkey.fabled.api.util;
 
 import org.bukkit.entity.Player;
-import studio.magemonkey.codex.api.NMSProvider;
+import studio.magemonkey.codex.api.VersionManager;
 import studio.magemonkey.codex.core.Version;
 import studio.magemonkey.codex.util.Reflex;
 
@@ -47,9 +47,9 @@ public class Title {
         Object chatText = serialize.invoke(null, "{\"text\":\"" + text + "\"}");
 
         Object packet = timesConstructor.newInstance(timesType, chatText, fadeIn, duration, fadeOut);
-        NMSProvider.getNms().sendPacket(player, packet);
+        VersionManager.getNms().sendPacket(player, packet);
 
         packet = contentConstructor.newInstance(type, chatText);
-        NMSProvider.getNms().sendPacket(player, packet);
+        VersionManager.getNms().sendPacket(player, packet);
     }
 }

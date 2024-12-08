@@ -40,7 +40,7 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
-import studio.magemonkey.codex.api.NMSProvider;
+import studio.magemonkey.codex.api.VersionManager;
 import studio.magemonkey.codex.mccore.config.Filter;
 import studio.magemonkey.codex.mccore.config.FilterType;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
@@ -875,7 +875,7 @@ public abstract class Skill implements IconHolder {
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled() && event.getDamage() != 0) {
             target.setHealth(Math.max(Math.min(target.getHealth() - event.getDamage(),
-                    target.getAttribute(NMSProvider.getNms().getAttribute("MAX_HEALTH")).getValue()), 0));
+                    target.getAttribute(VersionManager.getNms().getAttribute("MAX_HEALTH")).getValue()), 0));
         }
     }
 

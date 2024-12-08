@@ -2,8 +2,6 @@ package studio.magemonkey.fabled.api;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.damage.DamageSource;
-import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -11,9 +9,8 @@ import org.bukkit.entity.Tameable;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
+import studio.magemonkey.codex.api.VersionManager;
 import studio.magemonkey.fabled.Fabled;
-
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * Fabled © 2024
@@ -65,28 +62,7 @@ public interface CombatProtection {
     static boolean canAttackExternally(@NotNull Entity damager,
                                        @NotNull Entity entity,
                                        @NotNull EntityDamageEvent.DamageCause cause) {
-        EntityDamageByEntityEvent event;
-        try {
-            // The old constructor has been re-added to Spigot, but this future proofs things a little
-            event = new EntityDamageByEntityEvent(damager,
-                    entity,
-                    cause,
-                    DamageSource.builder(DamageType.MOB_ATTACK).build(),
-                    5);
-        } catch (NoClassDefFoundError | NoSuchFieldError | NoSuchMethodError e) {
-            try {
-                event = EntityDamageByEntityEvent.class
-                        .getConstructor(Entity.class, Entity.class, EntityDamageEvent.DamageCause.class, double.class)
-                        .newInstance(damager, entity, cause, 5D);
-            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
-                     InvocationTargetException ex) {
-                Fabled.inst()
-                        .getLogger()
-                        .warning("Failed to create EntityDamageByEntityEvent, contact a developer for help");
-                ex.printStackTrace();
-                return true;
-            }
-        }
+        EntityDamageByEntityEvent event = VersionManager.getNms().createEntityDamageEvent(damager, entity, cause, 5);
 
         DefaultCombatProtection.fakeDamageEvents.add(event);
         boolean externallyCancelled = false;

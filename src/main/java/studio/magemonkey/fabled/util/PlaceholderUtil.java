@@ -5,7 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
-import studio.magemonkey.codex.api.NMSProvider;
+import studio.magemonkey.codex.api.VersionManager;
 import studio.magemonkey.codex.util.StringUT;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.CastData;
@@ -262,11 +262,11 @@ public class PlaceholderUtil {
                 return String.valueOf((int) data.getMainClass().getPlayerData().getMana());
             }
             if (identifier.equals("default_currentmaxhealth")) {
-                double maxHP = player.getPlayer().getAttribute(NMSProvider.getNms().getAttribute("MAX_HEALTH")).getBaseValue();
+                double maxHP = player.getPlayer().getAttribute(VersionManager.getNms().getAttribute("MAX_HEALTH")).getBaseValue();
                 return String.valueOf(maxHP);
             }
             if (identifier.equals("default_scurrentmaxhealth")) {
-                double maxHP = player.getPlayer().getAttribute(NMSProvider.getNms().getAttribute("MAX_HEALTH")).getBaseValue();
+                double maxHP = player.getPlayer().getAttribute(VersionManager.getNms().getAttribute("MAX_HEALTH")).getBaseValue();
                 return String.valueOf((int) maxHP);
             }
             if (identifier.equals("default_currenthealth")) {
@@ -454,7 +454,7 @@ public class PlaceholderUtil {
             return String.valueOf((int) currentHP);
         }
         if (identifier.equals("smaxhealth")) {
-            double maxHP = player.getPlayer().getAttribute(NMSProvider.getNms().getAttribute("MAX_HEALTH")).getBaseValue();
+            double maxHP = player.getPlayer().getAttribute(VersionManager.getNms().getAttribute("MAX_HEALTH")).getBaseValue();
             return String.valueOf((int) maxHP);
         }
         if (identifier.startsWith("skillevel:")) {

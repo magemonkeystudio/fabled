@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import studio.magemonkey.codex.CodexEngine;
 import studio.magemonkey.codex.api.NMS;
-import studio.magemonkey.codex.api.NMSProvider;
+import studio.magemonkey.codex.api.VersionManager;
 import studio.magemonkey.codex.hooks.HookManager;
 import studio.magemonkey.codex.mccore.scoreboard.Board;
 import studio.magemonkey.codex.util.ItemUT;
@@ -186,7 +186,7 @@ public abstract class MockedTest {
         });
         when(nms.fixColors(anyString())).thenAnswer(ans -> ans.getArgument(0));
 
-        NMSProvider.setNms(nms);
+        VersionManager.setNms(nms);
 
         damageLoreRemover = mockStatic(DamageLoreRemover.class);
         damageLoreRemover.when(() -> DamageLoreRemover.removeAttackDmg(any(ItemStack.class)))

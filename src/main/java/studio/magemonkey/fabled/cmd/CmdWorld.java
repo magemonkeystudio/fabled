@@ -34,7 +34,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.generator.WorldInfo;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -79,8 +78,9 @@ public class CmdWorld implements IFunction, TabCompleter {
                                       @NotNull Command command,
                                       @NotNull String s,
                                       @NotNull String[] args) {
+        //noinspection Convert2MethodRef
         return ConfigurableCommand.getTabCompletions(Bukkit.getWorlds().stream()
-                .map(WorldInfo::getName)
+                .map(world -> world.getName())
                 .collect(Collectors.toList()), args);
     }
 }
