@@ -2,8 +2,11 @@ package studio.magemonkey.fabled.testutil;
 
 import org.apache.commons.io.FileUtils;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
@@ -185,6 +188,9 @@ public abstract class MockedTest {
             }
         });
         when(nms.fixColors(anyString())).thenAnswer(ans -> ans.getArgument(0));
+        when(nms.createEntityDamageEvent(any(Entity.class), any(Entity.class), any(EntityDamageEvent.DamageCause.class), anyDouble()))
+                .thenAnswer(ans -> new EntityDamageByEntityEvent(ans.getArgument(0), ans.getArgument(1),
+                        ans.getArgument(2), ans.getArgument(3)));
 
         VersionManager.setNms(nms);
 

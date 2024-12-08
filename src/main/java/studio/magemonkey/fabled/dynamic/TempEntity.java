@@ -88,6 +88,7 @@ public class TempEntity implements LivingEntity {
         return 0.2;
     }
 
+    @NotNull
     public Location getEyeLocation() {
         return getLocation().add(0, 0, 0);
     }
@@ -96,24 +97,27 @@ public class TempEntity implements LivingEntity {
         return null;
     }
 
+    @NotNull
     public List<Block> getLineOfSight(Set<Material> set, int i) {
-        return null;
+        return List.of();
     }
 
     public Block getTargetBlock(HashSet<Byte> hashSet, int i) {
         return null;
     }
 
+    @NotNull
     public Block getTargetBlock(Set<Material> set, int i) {
-        return null;
+        return getLocation().getBlock();
     }
 
     public List<Block> getLastTwoTargetBlocks(HashSet<Byte> hashSet, int i) {
         return null;
     }
 
+    @NotNull
     public List<Block> getLastTwoTargetBlocks(Set<Material> set, int i) {
-        return null;
+        return List.of(getLocation().getBlock(), getLocation().getBlock().getRelative(BlockFace.NORTH));
     }
 
     @Override
