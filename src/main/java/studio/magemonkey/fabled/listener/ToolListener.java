@@ -45,7 +45,7 @@ public class ToolListener extends FabledListener {
             else
                 ((ToolMenu) event.getInventory().getHolder()).handleClick(event);
         } else if (event.getInventory().getHolder() instanceof GUIHolder)
-            ((GUIHolder) event.getInventory().getHolder()).handleClick(event);
+            ((GUIHolder<?>) event.getInventory().getHolder()).handleClick(event);
     }
 
     @EventHandler
@@ -53,7 +53,7 @@ public class ToolListener extends FabledListener {
         if (event.getInventory().getHolder() instanceof ToolMenu)
             event.setCancelled(true);
         else if (event.getInventory().getHolder() instanceof GUIHolder)
-            ((GUIHolder) event.getInventory().getHolder()).handleDrag(event);
+            ((GUIHolder<?>) event.getInventory().getHolder()).handleDrag(event);
     }
 
     @EventHandler
@@ -62,13 +62,13 @@ public class ToolListener extends FabledListener {
             event.getPlayer().setItemOnCursor(null);
             ((ToolMenu) event.getInventory().getHolder()).restore();
         } else if (event.getInventory().getHolder() instanceof GUIHolder)
-            ((GUIHolder) event.getInventory().getHolder()).handleClose(event);
+            ((GUIHolder<?>) event.getInventory().getHolder()).handleClose(event);
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        Inventory top = InventoryUtil.getTopInventory(event.getPlayer().getOpenInventory());
-        if (top != null && top.getHolder() instanceof ToolMenu) {
+        Inventory top = InventoryUtil.getTopInventory(event.getPlayer());
+        if (top.getHolder() instanceof ToolMenu) {
             event.getPlayer().setItemOnCursor(null);
             ((ToolMenu) top.getHolder()).restore();
         }

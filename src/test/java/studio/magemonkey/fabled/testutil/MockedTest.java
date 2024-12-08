@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
@@ -18,10 +19,11 @@ import org.mockito.MockedStatic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import studio.magemonkey.codex.CodexEngine;
-import studio.magemonkey.codex.api.NMS;
-import studio.magemonkey.codex.api.VersionManager;
+import studio.magemonkey.codex.compat.NMS;
+import studio.magemonkey.codex.compat.VersionManager;
 import studio.magemonkey.codex.hooks.HookManager;
 import studio.magemonkey.codex.mccore.scoreboard.Board;
+import studio.magemonkey.codex.util.InventoryUtil;
 import studio.magemonkey.codex.util.ItemUT;
 import studio.magemonkey.codex.util.Reflex;
 import studio.magemonkey.codex.util.actions.ActionsManager;
@@ -60,6 +62,7 @@ public abstract class MockedTest {
     protected MockedStatic<Reflex>            reflex;
     protected MockedStatic<Board>             board;
     protected MockedStatic<DamageLoreRemover> damageLoreRemover;
+    protected MockedStatic<InventoryUtil>     inventoryUtil;
 
     public void preInit() {}
 
@@ -178,6 +181,18 @@ public abstract class MockedTest {
             throw new RuntimeException(e);
         }
 
+        inventoryUtil = mockStatic(InventoryUtil.class);
+        inventoryUtil.when(() -> InventoryUtil.getTopInventory(any(Player.class)))
+                .thenAnswer(ans -> {
+                    Player    player = ((Player) ans.getArgument(0));
+                    Inventory inv    = player.getOpenInventory().getTopInventory();
+                    //noinspection ConstantValue
+                    if (inv != null) return inv;
+
+                    // It shouldn't be possible to have a null topInventory, but is for MockBukkit
+                    return player.getInventory();
+                });
+
         NMS nms = mock(NMS.class);
         when(nms.getVersion()).thenReturn("test");
         when(nms.getAttribute(anyString())).thenAnswer(ans -> {
@@ -220,6 +235,7 @@ public abstract class MockedTest {
 //        itemUT.close();
 //        itemSerializer.close();
         MockBukkit.unmock();
+        if (inventoryUtil != null) inventoryUtil.close();
     }
 
     @BeforeEach

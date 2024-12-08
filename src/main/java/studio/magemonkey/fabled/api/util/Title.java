@@ -1,7 +1,7 @@
 package studio.magemonkey.fabled.api.util;
 
 import org.bukkit.entity.Player;
-import studio.magemonkey.codex.api.VersionManager;
+import studio.magemonkey.codex.compat.VersionManager;
 import studio.magemonkey.codex.core.Version;
 import studio.magemonkey.codex.util.Reflex;
 

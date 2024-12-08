@@ -199,9 +199,8 @@ public abstract class InventoryTree extends SkillTree {
      * @param player player
      */
     public void update(PlayerData player) {
-        Object view = player.getPlayer().getOpenInventory();
         for (Map.Entry<Integer, Skill> skills : skillSlots.entrySet()) {
-            InventoryUtil.setItem(view, skills.getKey(),
+            InventoryUtil.setItem(player.getPlayer(), skills.getKey(),
                     skills.getValue().getIndicator(player.getSkill(skills.getValue().getName()), false));
         }
     }

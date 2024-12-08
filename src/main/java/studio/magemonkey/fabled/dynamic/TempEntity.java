@@ -426,9 +426,9 @@ public class TempEntity implements LivingEntity {
         return false;
     }
 
-    @Override
-    public void setRiptiding(boolean b) {
-    }
+//    @Override
+//    public void setRiptiding(boolean b) {
+//    }
 
     @Override
     public boolean isSleeping() {
