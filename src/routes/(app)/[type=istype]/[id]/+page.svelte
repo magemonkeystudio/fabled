@@ -1,4 +1,5 @@
 <script lang='ts'>
+	import BlocklyComponentWidget                         from '$components/BlocklyComponentWidget.svelte';
 	import ComponentWidget                                from '$components/ComponentWidget.svelte';
 	import Modal                                          from '$components/Modal.svelte';
 	import ComponentSection                               from '$components/modal/component/ComponentSection.svelte';
@@ -11,6 +12,7 @@
 	import FabledComponent                                from '$api/components/fabled-component.svelte';
 	import { base }                                       from '$app/paths';
 	import FabledSkill, { skillStore }                    from '../../../../data/skill-store.svelte';
+	import { blocklyMode }                                from '../../../../data/settings';
 
 	interface Props {
 		data: { data: FabledSkill };
@@ -56,6 +58,7 @@
 		{skill.name}
 		<a class='material-symbols-rounded edit-skill chip' href='{base}/skill/{skill.name}/edit'
 			 title='Edit'>edit</a>
+		{#if !$blocklyMode}
 		<span class='add-trigger chip'
 					onclick={() => triggerModal = true}
 					onkeypress={(e) => e.key === 'Enter' && (triggerModal = true)}
@@ -66,17 +69,24 @@
 				new_label
 			</span>
 		</span>
+		{/if}
 	</h2>
 	<hr />
 </div>
-<div class='container'>
-	{#each skill.triggers as comp (comp.id)}
-		<div class='widget'>
-			<ComponentWidget {skill} component={comp} onupdate={update} onsave={save} />
-		</div>
-	{/each}
-	{#if skill.triggers.length === 0}
-		<div>No triggers added yet.</div>
+<div class='container' class:blockly={$blocklyMode}>
+	{#if $blocklyMode}
+		{#key skill}
+			<BlocklyComponentWidget {skill} onupdate={update} onsave={save} />
+		{/key}
+	{:else}
+		{#each skill.triggers as comp (comp.id)}
+			<div class='widget'>
+				<ComponentWidget {skill} component={comp} onupdate={update} onsave={save} />
+			</div>
+		{/each}
+		{#if skill.triggers.length === 0}
+			<div>No triggers added yet.</div>
+		{/if}
 	{/if}
 </div>
 
@@ -136,6 +146,11 @@
         padding-inline: 2rem;
         flex-grow: 1;
     }
+
+	.container.blockly {
+		padding-inline: 0;
+		border-left: 3px solid #444;
+	}
 
     .widget {
         margin-right: 0.5rem;
