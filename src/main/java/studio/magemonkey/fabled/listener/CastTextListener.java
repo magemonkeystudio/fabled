@@ -62,7 +62,7 @@ public class CastTextListener extends FabledListener {
     }
 
     private void init(Player player) {
-        Inventory top = InventoryUtil.getTopInventory(player.getOpenInventory());
+        Inventory top = InventoryUtil.getTopInventory(player);
         if (top != null && top.getHolder() instanceof SkillHandler) player.closeInventory();
         Fabled.getData(player).getTextCastingData().validate();
     }

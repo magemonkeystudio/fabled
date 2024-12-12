@@ -43,11 +43,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Nullable;
 import studio.magemonkey.codex.CodexEngine;
+import studio.magemonkey.codex.compat.VersionManager;
 import studio.magemonkey.codex.core.Version;
 import studio.magemonkey.codex.mccore.config.Filter;
 import studio.magemonkey.codex.mccore.config.FilterType;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
-import studio.magemonkey.codex.util.AttributeUT;
 import studio.magemonkey.codex.util.EnumUT;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.classes.FabledClass;
@@ -1947,7 +1947,7 @@ public class PlayerData {
 
         // Update health if it's been changed
         if (oldMaxHealth != this.maxHealth
-                || player.getAttribute(AttributeUT.resolve("MAX_HEALTH")).getValue() != this.maxHealth) {
+                || player.getAttribute(VersionManager.getNms().getAttribute("MAX_HEALTH")).getValue() != this.maxHealth) {
             this.updateHealth(player);
         } else {
             // Health scaling is available starting with 1.6.2
@@ -1961,113 +1961,113 @@ public class PlayerData {
 
         // Others stats
         // Min and Max Values determined by the following: https://minecraft.wiki/w/Attribute
-        this.updateMCAttribute(player, AttributeUT.resolve("ATTACK_SPEED"), AttributeManager.ATTACK_SPEED, 0, 1024);
-        this.updateMCAttribute(player, AttributeUT.resolve("ARMOR"), AttributeManager.ARMOR, 0, 30);
-        this.updateMCAttribute(player, AttributeUT.resolve("LUCK"), AttributeManager.LUCK, -1024, 1024);
+        this.updateMCAttribute(player, VersionManager.getNms().getAttribute("ATTACK_SPEED"), AttributeManager.ATTACK_SPEED, 0, 1024);
+        this.updateMCAttribute(player, VersionManager.getNms().getAttribute("ARMOR"), AttributeManager.ARMOR, 0, 30);
+        this.updateMCAttribute(player, VersionManager.getNms().getAttribute("LUCK"), AttributeManager.LUCK, -1024, 1024);
         this.updateMCAttribute(player,
-                AttributeUT.resolve("KNOCKBACK_RESISTANCE"),
+                VersionManager.getNms().getAttribute("KNOCKBACK_RESISTANCE"),
                 AttributeManager.KNOCKBACK_RESIST,
                 0,
                 1.0);
-        this.updateMCAttribute(player, AttributeUT.resolve("ARMOR_TOUGHNESS"), AttributeManager.ARMOR_TOUGHNESS, 0, 20);
+        this.updateMCAttribute(player, VersionManager.getNms().getAttribute("ARMOR_TOUGHNESS"), AttributeManager.ARMOR_TOUGHNESS, 0, 20);
         // Initialize 1.21+ attributes only if version is 1.21+
         if (Version.CURRENT.isAtLeast(Version.V1_21_R1)) {
             // Generic stats 1.21+
             this.updateMCAttribute(player,
-                    AttributeUT.resolve("ATTACK_DAMAGE"),
+                    VersionManager.getNms().getAttribute("ATTACK_DAMAGE"),
                     AttributeManager.ATTACK_DAMAGE,
                     0.0f,
                     2048.0f);
             this.updateMCAttribute(player,
-                    AttributeUT.resolve("ATTACK_KNOCKBACK"),
+                    VersionManager.getNms().getAttribute("ATTACK_KNOCKBACK"),
                     AttributeManager.ATTACK_KNOCKBACK,
                     0.0f,
                     5.0f);
             this.updateMCAttribute(player,
-                    AttributeUT.resolve("MAX_ABSORPTION"),
+                    VersionManager.getNms().getAttribute("MAX_ABSORPTION"),
                     AttributeManager.ABSORPTION,
                     0.0f,
                     2048.0f);
-            this.updateMCAttribute(player, AttributeUT.resolve("SCALE"), AttributeManager.SCALE, 0.0625f, 16.0f);
+            this.updateMCAttribute(player, VersionManager.getNms().getAttribute("SCALE"), AttributeManager.SCALE, 0.0625f, 16.0f);
             this.updateMCAttribute(player,
-                    AttributeUT.resolve("STEP_HEIGHT"),
+                    VersionManager.getNms().getAttribute("STEP_HEIGHT"),
                     AttributeManager.STEP_HEIGHT,
                     0.0f,
                     10.0f);
             this.updateMCAttribute(player,
-                    AttributeUT.resolve("JUMP_STRENGTH"),
+                    VersionManager.getNms().getAttribute("JUMP_STRENGTH"),
                     AttributeManager.JUMP_STRENGTH,
                     0.0f,
                     32.0f);
-            this.updateMCAttribute(player, AttributeUT.resolve("GRAVITY"), AttributeManager.GRAVITY, -1.0f, 1.0f);
+            this.updateMCAttribute(player, VersionManager.getNms().getAttribute("GRAVITY"), AttributeManager.GRAVITY, -1.0f, 1.0f);
             this.updateMCAttribute(player,
-                    AttributeUT.resolve("SAFE_FALL_DISTANCE"),
+                    VersionManager.getNms().getAttribute("SAFE_FALL_DISTANCE"),
                     AttributeManager.SAFE_FALL_DISTANCE,
                     -1024.0f,
                     1024.0f);
             this.updateMCAttribute(player,
-                    AttributeUT.resolve("FALL_DAMAGE_MULTIPLIER"),
+                    VersionManager.getNms().getAttribute("FALL_DAMAGE_MULTIPLIER"),
                     AttributeManager.FALL_DAMAGE_MULTIPLIER,
                     0.0f,
                     100.0f);
             this.updateMCAttribute(player,
-                    AttributeUT.resolve("BURNING_TIME"),
+                    VersionManager.getNms().getAttribute("BURNING_TIME"),
                     AttributeManager.BURNING_TIME,
                     0.0f,
                     1024.0f);
             this.updateMCAttribute(player,
-                    AttributeUT.resolve("EXPLOSION_KNOCKBACK_RESISTANCE"),
+                    VersionManager.getNms().getAttribute("EXPLOSION_KNOCKBACK_RESISTANCE"),
                     AttributeManager.EXPLOSION_KNOCKBACK_RESISTANCE,
                     0.0f,
                     1.0f);
             this.updateMCAttribute(player,
-                    AttributeUT.resolve("MOVEMENT_EFFICIENCY"),
+                    VersionManager.getNms().getAttribute("MOVEMENT_EFFICIENCY"),
                     AttributeManager.MOVEMENT_EFFICIENCY,
                     0.0f,
                     1.0f);
             this.updateMCAttribute(player,
-                    AttributeUT.resolve("OXYGEN_BONUS"),
+                    VersionManager.getNms().getAttribute("OXYGEN_BONUS"),
                     AttributeManager.OXYGEN_BONUS,
                     0.0f,
                     1024.0f);
             this.updateMCAttribute(player,
-                    AttributeUT.resolve("WATER_MOVEMENT_EFFICIENCY"),
+                    VersionManager.getNms().getAttribute("WATER_MOVEMENT_EFFICIENCY"),
                     AttributeManager.WATER_MOVEMENT_EFFICIENCY,
                     0.0f,
                     1.0f);
             // Player only stats 1.21+
             this.updateMCAttribute(player,
-                    AttributeUT.resolve("BLOCK_INTERACTION_RANGE"),
+                    VersionManager.getNms().getAttribute("BLOCK_INTERACTION_RANGE"),
                     AttributeManager.BLOCK_INTERACTION_RANGE,
                     0.0f,
                     64.0f);
             this.updateMCAttribute(player,
-                    AttributeUT.resolve("ENTITY_INTERACTION_RANGE"),
+                    VersionManager.getNms().getAttribute("ENTITY_INTERACTION_RANGE"),
                     AttributeManager.ENTITY_INTERACTION_RANGE,
                     0.0f,
                     64.0f);
             this.updateMCAttribute(player,
-                    AttributeUT.resolve("BLOCK_BREAK_SPEED"),
+                    VersionManager.getNms().getAttribute("BLOCK_BREAK_SPEED"),
                     AttributeManager.BLOCK_BREAK_SPEED,
                     0.0f,
                     1024.0f);
             this.updateMCAttribute(player,
-                    AttributeUT.resolve("MINING_EFFICIENCY"),
+                    VersionManager.getNms().getAttribute("MINING_EFFICIENCY"),
                     AttributeManager.MINING_EFFICIENCY,
                     0.0f,
                     1024.0f);
             this.updateMCAttribute(player,
-                    AttributeUT.resolve("SNEAKING_SPEED"),
+                    VersionManager.getNms().getAttribute("SNEAKING_SPEED"),
                     AttributeManager.SNEAKING_SPEED,
                     0.0f,
                     1.0f);
             this.updateMCAttribute(player,
-                    AttributeUT.resolve("SUBMERGED_MINING_SPEED"),
+                    VersionManager.getNms().getAttribute("SUBMERGED_MINING_SPEED"),
                     AttributeManager.SUBMERGED_MINING_SPEED,
                     0.0f,
                     20.0f);
             this.updateMCAttribute(player,
-                    AttributeUT.resolve("SWEEPING_DAMAGE_RATIO"),
+                    VersionManager.getNms().getAttribute("SWEEPING_DAMAGE_RATIO"),
                     AttributeManager.SWEEPING_DAMAGE_RATIO,
                     0.0f,
                     1.0f);
@@ -2104,7 +2104,7 @@ public class PlayerData {
             this.maxHealth = Fabled.getSettings().getDefaultHealth();
         }
 
-        final AttributeInstance attribute = player.getAttribute(AttributeUT.resolve("MAX_HEALTH"));
+        final AttributeInstance attribute = player.getAttribute(VersionManager.getNms().getAttribute("MAX_HEALTH"));
         Objects.requireNonNull(attribute).setBaseValue(this.maxHealth);
 
         // Health scaling is available starting with 1.6.2

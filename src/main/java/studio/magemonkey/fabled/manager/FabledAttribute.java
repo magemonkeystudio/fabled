@@ -47,12 +47,11 @@ public class FabledAttribute implements IconHolder {
     private String    display;
     private ItemStack icon;
     /**
-     * --- GETTER ---
+     * -- GETTER --
      * Retrieves the max amount the attribute can be raised to
      *
      * @return max attribute amount
-     *
-     * --- SETTER ---
+     * -- SETTER --
      * Sets the max level for the attribute
      */
     @Getter

@@ -33,7 +33,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import studio.magemonkey.codex.util.reflection.ReflectionManager;
+import studio.magemonkey.codex.compat.VersionManager;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.enums.ExpSource;
 import studio.magemonkey.fabled.api.event.PhysicalDamageEvent;
@@ -129,7 +129,7 @@ public class KillListener extends FabledListener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPhysical(PhysicalDamageEvent event) {
         if (event.getDamager() instanceof Player)
-            ReflectionManager.getReflectionUtil().setKiller(event.getTarget(), (Player) event.getDamager());
+            VersionManager.getNms().setKiller(event.getTarget(), (Player) event.getDamager());
     }
 
     /**
@@ -140,7 +140,7 @@ public class KillListener extends FabledListener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onSpell(SkillDamageEvent event) {
         if (event.getDamager() instanceof Player)
-            ReflectionManager.getReflectionUtil().setKiller(event.getTarget(), (Player) event.getDamager());
+            VersionManager.getNms().setKiller(event.getTarget(), (Player) event.getDamager());
     }
 
     /**
@@ -151,6 +151,6 @@ public class KillListener extends FabledListener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onTrue(TrueDamageEvent event) {
         if (event.getDamager() instanceof Player)
-            ReflectionManager.getReflectionUtil().setKiller(event.getTarget(), (Player) event.getDamager());
+            VersionManager.getNms().setKiller(event.getTarget(), (Player) event.getDamager());
     }
 }
