@@ -71,9 +71,9 @@
 					out:slide
 					onmouseenter={handleMouseEnter}
 					onmouseleave={() => hovered = false}>
-    {label || ''}
+    	{label || ''}
 			{@render labelContent?.()}
-  </span>
+  	</span>
 	</div>
 {/if}
 <div class='input-wrapper'
