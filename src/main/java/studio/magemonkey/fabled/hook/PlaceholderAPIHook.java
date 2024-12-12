@@ -68,7 +68,6 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
     @Override
     public String onRequest(OfflinePlayer player, String identifier) {
         identifier = PlaceholderAPI.setBracketPlaceholders(player, identifier);
-
         return PlaceholderUtil.replace(player, identifier);
     }
 }
