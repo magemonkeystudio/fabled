@@ -253,7 +253,7 @@ public class PotionProjectileMechanic extends MechanicComponent {
 
             if (startLocation != null) {
                 if (proj.getLocation().distance(startLocation) > distance * distance) {
-                    if(proj.isValid()) proj.remove();
+                    if (proj.isValid()) proj.remove();
 
                     if (settings.getBool("on-expire", false)) {
                         callback(proj, null);

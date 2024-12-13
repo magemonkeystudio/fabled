@@ -1947,7 +1947,8 @@ public class PlayerData {
 
         // Update health if it's been changed
         if (oldMaxHealth != this.maxHealth
-                || player.getAttribute(VersionManager.getNms().getAttribute("MAX_HEALTH")).getValue() != this.maxHealth) {
+                || player.getAttribute(VersionManager.getNms().getAttribute("MAX_HEALTH")).getValue()
+                != this.maxHealth) {
             this.updateHealth(player);
         } else {
             // Health scaling is available starting with 1.6.2
@@ -1961,15 +1962,27 @@ public class PlayerData {
 
         // Others stats
         // Min and Max Values determined by the following: https://minecraft.wiki/w/Attribute
-        this.updateMCAttribute(player, VersionManager.getNms().getAttribute("ATTACK_SPEED"), AttributeManager.ATTACK_SPEED, 0, 1024);
+        this.updateMCAttribute(player,
+                VersionManager.getNms().getAttribute("ATTACK_SPEED"),
+                AttributeManager.ATTACK_SPEED,
+                0,
+                1024);
         this.updateMCAttribute(player, VersionManager.getNms().getAttribute("ARMOR"), AttributeManager.ARMOR, 0, 30);
-        this.updateMCAttribute(player, VersionManager.getNms().getAttribute("LUCK"), AttributeManager.LUCK, -1024, 1024);
+        this.updateMCAttribute(player,
+                VersionManager.getNms().getAttribute("LUCK"),
+                AttributeManager.LUCK,
+                -1024,
+                1024);
         this.updateMCAttribute(player,
                 VersionManager.getNms().getAttribute("KNOCKBACK_RESISTANCE"),
                 AttributeManager.KNOCKBACK_RESIST,
                 0,
                 1.0);
-        this.updateMCAttribute(player, VersionManager.getNms().getAttribute("ARMOR_TOUGHNESS"), AttributeManager.ARMOR_TOUGHNESS, 0, 20);
+        this.updateMCAttribute(player,
+                VersionManager.getNms().getAttribute("ARMOR_TOUGHNESS"),
+                AttributeManager.ARMOR_TOUGHNESS,
+                0,
+                20);
         // Initialize 1.21+ attributes only if version is 1.21+
         if (Version.CURRENT.isAtLeast(Version.V1_21_R1)) {
             // Generic stats 1.21+
@@ -1988,7 +2001,11 @@ public class PlayerData {
                     AttributeManager.ABSORPTION,
                     0.0f,
                     2048.0f);
-            this.updateMCAttribute(player, VersionManager.getNms().getAttribute("SCALE"), AttributeManager.SCALE, 0.0625f, 16.0f);
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("SCALE"),
+                    AttributeManager.SCALE,
+                    0.0625f,
+                    16.0f);
             this.updateMCAttribute(player,
                     VersionManager.getNms().getAttribute("STEP_HEIGHT"),
                     AttributeManager.STEP_HEIGHT,
@@ -1999,7 +2016,11 @@ public class PlayerData {
                     AttributeManager.JUMP_STRENGTH,
                     0.0f,
                     32.0f);
-            this.updateMCAttribute(player, VersionManager.getNms().getAttribute("GRAVITY"), AttributeManager.GRAVITY, -1.0f, 1.0f);
+            this.updateMCAttribute(player,
+                    VersionManager.getNms().getAttribute("GRAVITY"),
+                    AttributeManager.GRAVITY,
+                    -1.0f,
+                    1.0f);
             this.updateMCAttribute(player,
                     VersionManager.getNms().getAttribute("SAFE_FALL_DISTANCE"),
                     AttributeManager.SAFE_FALL_DISTANCE,

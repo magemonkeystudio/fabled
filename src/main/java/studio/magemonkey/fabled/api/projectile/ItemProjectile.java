@@ -349,8 +349,8 @@ public class ItemProjectile extends CustomProjectile {
         List<Vector>         dirs = calcSpread(shooter.getLocation().getDirection(), angle, amount);
         List<ItemProjectile> list = new ArrayList<>();
         for (Vector dir : dirs) {
-            Vector         vel = dir.multiply(speed);
-            ItemProjectile p   =
+            Vector vel = dir.multiply(speed);
+            ItemProjectile p =
                     new ItemProjectile(shooter, level, loc, settings, item, vel, lifespan, distance, collideWalls);
             p.setCallback(callback);
             list.add(p);

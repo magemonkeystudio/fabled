@@ -66,7 +66,8 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
     static {
         try {
             Class<?> aabbClass =
-                    Version.CURRENT.isAtLeast(Version.V1_17_R1) ? Reflex.getClass("net.minecraft.world.phys.AxisAlignedBB")
+                    Version.CURRENT.isAtLeast(Version.V1_17_R1) ? Reflex.getClass(
+                            "net.minecraft.world.phys.AxisAlignedBB")
                             : Reflex.getNMSClass("AxisAlignedBB");
             Class<?> entityClass =
                     Version.CURRENT.isAtLeast(Version.V1_17_R1) ? Reflex.getClass("net.minecraft.world.entity.Entity")
@@ -83,8 +84,9 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
                     Version.CURRENT.isAtLeast(Version.V1_17_R1) ? Reflex.getClass("net.minecraft.world.level.World")
                             : Reflex.getNMSClass("World");
             try {
-                getEntities = worldClass.getDeclaredMethod(Version.CURRENT.isAtLeast(Version.V1_18_R1) ? "a" : "getEntities",
-                        entityClass, aabbClass, Predicate.class);
+                getEntities =
+                        worldClass.getDeclaredMethod(Version.CURRENT.isAtLeast(Version.V1_18_R1) ? "a" : "getEntities",
+                                entityClass, aabbClass, Predicate.class);
             } catch (Exception e) {
                 getEntitiesGuava = worldClass.getDeclaredMethod(Version.CURRENT.isAtLeast(Version.V1_18_R1)
                         ? "a"
