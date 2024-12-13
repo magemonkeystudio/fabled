@@ -32,7 +32,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-import studio.magemonkey.codex.util.InventoryUtil;
+import studio.magemonkey.codex.compat.VersionManager;
 import studio.magemonkey.codex.util.Reflex;
 
 /**
@@ -61,13 +61,13 @@ public class ListenerUtil {
 
     public static Inventory getClickedInventory(InventoryClickEvent event) {
         int       slot = event.getRawSlot();
-        Inventory top  = InventoryUtil.getTopInventory(event);
+        Inventory top  = VersionManager.getCompat().getTopInventory(event);
         if (slot < 0) {
             return null;
         } else if ((top != null) && (slot < top.getSize())) {
             return top;
         } else {
-            return InventoryUtil.getBottomInventory(event);
+            return VersionManager.getCompat().getBottomInventory(event);
         }
     }
 

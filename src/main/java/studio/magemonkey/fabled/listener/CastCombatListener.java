@@ -42,7 +42,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.metadata.FixedMetadataValue;
-import studio.magemonkey.codex.util.InventoryUtil;
+import studio.magemonkey.codex.compat.VersionManager;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.event.*;
 import studio.magemonkey.fabled.api.player.PlayerData;
@@ -330,7 +330,7 @@ public class CastCombatListener extends FabledListener {
 
         // Prevent moving skill icons
         int slot = event.getSlot();
-        if (event.getSlot() < 9 && event.getRawSlot() > InventoryUtil.getTopInventory(event).getSize()) {
+        if (event.getSlot() < 9 && event.getRawSlot() > VersionManager.getCompat().getTopInventory(event).getSize()) {
             if (event.getSlot() == this.slot) event.setCancelled(true);
             else if (event.getClick() == ClickType.LEFT || event.getClick() == ClickType.SHIFT_LEFT)
                 event.setCancelled(!skillBar.isWeaponSlot(slot));

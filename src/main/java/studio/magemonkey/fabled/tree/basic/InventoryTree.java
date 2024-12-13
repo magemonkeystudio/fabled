@@ -29,10 +29,10 @@ package studio.magemonkey.fabled.tree.basic;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import studio.magemonkey.codex.compat.VersionManager;
 import studio.magemonkey.codex.mccore.config.Filter;
 import studio.magemonkey.codex.mccore.config.FilterType;
 import studio.magemonkey.codex.mccore.items.InventoryManager;
-import studio.magemonkey.codex.util.InventoryUtil;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.exception.SkillTreeException;
@@ -200,7 +200,7 @@ public abstract class InventoryTree extends SkillTree {
      */
     public void update(PlayerData player) {
         for (Map.Entry<Integer, Skill> skills : skillSlots.entrySet()) {
-            InventoryUtil.setItem(player.getPlayer(), skills.getKey(),
+            VersionManager.getCompat().setItem(player.getPlayer(), skills.getKey(),
                     skills.getValue().getIndicator(player.getSkill(skills.getValue().getName()), false));
         }
     }

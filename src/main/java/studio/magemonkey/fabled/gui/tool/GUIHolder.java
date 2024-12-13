@@ -35,7 +35,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import studio.magemonkey.codex.util.InventoryUtil;
+import studio.magemonkey.codex.compat.VersionManager;
 import studio.magemonkey.fabled.api.player.PlayerData;
 
 import java.util.HashMap;
@@ -86,7 +86,7 @@ public abstract class GUIHolder<T extends IconHolder> implements InventoryHolder
     @SuppressWarnings("unchecked")
     public void handleClick(InventoryClickEvent event) {
         event.setCancelled(true);
-        Inventory topInv = InventoryUtil.getTopInventory(event);
+        Inventory topInv = VersionManager.getCompat().getTopInventory(event);
         boolean   top    = event.getRawSlot() < topInv.getSize();
         T         result = get(event.getSlot());
         if (top && result != null && result.isAllowed((Player) event.getWhoClicked())) {

@@ -16,7 +16,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
-import studio.magemonkey.codex.util.InventoryUtil;
+import studio.magemonkey.codex.compat.VersionManager;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.event.PlayerClassChangeEvent;
 import studio.magemonkey.fabled.api.event.PlayerSkillUnlockEvent;
@@ -62,7 +62,7 @@ public class CastTextListener extends FabledListener {
     }
 
     private void init(Player player) {
-        Inventory top = InventoryUtil.getTopInventory(player);
+        Inventory top = VersionManager.getCompat().getTopInventory(player);
         if (top != null && top.getHolder() instanceof SkillHandler) player.closeInventory();
         Fabled.getData(player).getTextCastingData().validate();
     }
@@ -118,8 +118,8 @@ public class CastTextListener extends FabledListener {
         Player player = ((Player) event.getWhoClicked());
         if (!isWorldEnabled(player)) return;
 
-        Inventory topInventory     = InventoryUtil.getTopInventory(event);
-        Inventory bottomInventory  = InventoryUtil.getBottomInventory(event);
+        Inventory topInventory     = VersionManager.getCompat().getTopInventory(event);
+        Inventory bottomInventory  = VersionManager.getCompat().getBottomInventory(event);
         Inventory clickedInventory = event.getClickedInventory();
 
         if (topInventory.getHolder() instanceof SkillHandler) {

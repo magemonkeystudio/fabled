@@ -12,11 +12,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import studio.magemonkey.codex.compat.VersionManager;
 import studio.magemonkey.codex.manager.api.menu.Menu;
 import studio.magemonkey.codex.manager.api.menu.Slot;
 import studio.magemonkey.codex.manager.api.menu.YAMLMenu;
 import studio.magemonkey.codex.mccore.util.TextFormatter;
-import studio.magemonkey.codex.util.InventoryUtil;
 import studio.magemonkey.codex.util.StringUT;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerData;
@@ -166,7 +166,7 @@ public class BindingMenu extends Menu {
         registerListener(new Listener() {
             @EventHandler
             public void onInventoryClick(InventoryClickEvent event) {
-                Inventory top = InventoryUtil.getTopInventory(event);
+                Inventory top = VersionManager.getCompat().getTopInventory(event);
                 if (top.getHolder() != BindingMenu.this) return;
                 if (event.getSlotType() == InventoryType.SlotType.QUICKBAR) {
                     event.setCancelled(true);

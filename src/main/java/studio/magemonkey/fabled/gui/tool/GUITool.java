@@ -41,10 +41,10 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import studio.magemonkey.codex.compat.VersionManager;
 import studio.magemonkey.codex.mccore.config.CommentedConfig;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.codex.mccore.util.TextFormatter;
-import studio.magemonkey.codex.util.InventoryUtil;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.classes.FabledClass;
 import studio.magemonkey.fabled.api.player.PlayerData;
@@ -509,7 +509,9 @@ public class GUITool implements ToolMenu {
         if (event.getAction() == InventoryAction.HOTBAR_SWAP
                 || event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD)
             event.setCancelled(true);
-        else if (event.getRawSlot() < InventoryUtil.getTopInventory(event).getSize()) { // Clicked upper inventory
+        else if (event.getRawSlot() < VersionManager.getCompat()
+                .getTopInventory(event)
+                .getSize()) { // Clicked upper inventory
             if (guiData.getPages() > 1) { // Check if clicked next or prev buttons
                 if (guiData.getSize() > 9) { // Next and prev buttons are placed vertically
                     switch (event.getSlot()) {

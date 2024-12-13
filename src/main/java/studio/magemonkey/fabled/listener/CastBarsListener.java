@@ -39,7 +39,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
-import studio.magemonkey.codex.util.InventoryUtil;
+import studio.magemonkey.codex.compat.VersionManager;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.event.PlayerClassChangeEvent;
 import studio.magemonkey.fabled.api.event.PlayerSkillUnlockEvent;
@@ -161,7 +161,8 @@ public class CastBarsListener extends FabledListener {
     public void onClick(InventoryClickEvent event) {
         if (Fabled.getSettings().isWorldEnabled(event.getWhoClicked().getWorld())) {
             int slot = Fabled.getSettings().getCastSlot();
-            if ((InventoryUtil.getTopInventory(event).getHolder() instanceof PlayerCastBars // Organizer menu
+            if ((VersionManager.getCompat().getTopInventory(event).getHolder() instanceof PlayerCastBars
+                    // Organizer menu
                     && event.getClickedInventory() instanceof PlayerInventory
                     && event.getSlot() == slot + 27)
                     || (event.getSlot() == slot

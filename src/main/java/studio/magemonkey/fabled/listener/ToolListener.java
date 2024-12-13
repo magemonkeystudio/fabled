@@ -32,7 +32,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
-import studio.magemonkey.codex.util.InventoryUtil;
+import studio.magemonkey.codex.compat.VersionManager;
 import studio.magemonkey.fabled.gui.tool.GUIHolder;
 import studio.magemonkey.fabled.gui.tool.ToolMenu;
 
@@ -67,7 +67,7 @@ public class ToolListener extends FabledListener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        Inventory top = InventoryUtil.getTopInventory(event.getPlayer());
+        Inventory top = VersionManager.getCompat().getTopInventory(event.getPlayer());
         if (top.getHolder() instanceof ToolMenu) {
             event.getPlayer().setItemOnCursor(null);
             ((ToolMenu) top.getHolder()).restore();

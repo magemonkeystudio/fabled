@@ -19,11 +19,11 @@ import org.mockito.MockedStatic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import studio.magemonkey.codex.CodexEngine;
+import studio.magemonkey.codex.compat.Compat;
 import studio.magemonkey.codex.compat.NMS;
 import studio.magemonkey.codex.compat.VersionManager;
 import studio.magemonkey.codex.hooks.HookManager;
 import studio.magemonkey.codex.mccore.scoreboard.Board;
-import studio.magemonkey.codex.util.InventoryUtil;
 import studio.magemonkey.codex.util.ItemUT;
 import studio.magemonkey.codex.util.Reflex;
 import studio.magemonkey.codex.util.actions.ActionsManager;
@@ -62,7 +62,6 @@ public abstract class MockedTest {
     protected MockedStatic<Reflex>            reflex;
     protected MockedStatic<Board>             board;
     protected MockedStatic<DamageLoreRemover> damageLoreRemover;
-    protected MockedStatic<InventoryUtil>     inventoryUtil;
 
     public void preInit() {}
 
@@ -181,10 +180,10 @@ public abstract class MockedTest {
             throw new RuntimeException(e);
         }
 
-        inventoryUtil = mockStatic(InventoryUtil.class);
-        inventoryUtil.when(() -> InventoryUtil.getTopInventory(any(Player.class)))
+        Compat compat = mock(Compat.class);
+        when(compat.getTopInventory(any(Player.class)))
                 .thenAnswer(ans -> {
-                    Player    player = ((Player) ans.getArgument(0));
+                    Player    player = ans.getArgument(0);
                     Inventory inv    = player.getOpenInventory().getTopInventory();
                     //noinspection ConstantValue
                     if (inv != null) return inv;
@@ -203,11 +202,15 @@ public abstract class MockedTest {
             }
         });
         when(nms.fixColors(anyString())).thenAnswer(ans -> ans.getArgument(0));
-        when(nms.createEntityDamageEvent(any(Entity.class), any(Entity.class), any(EntityDamageEvent.DamageCause.class), anyDouble()))
+        when(nms.createEntityDamageEvent(any(Entity.class),
+                any(Entity.class),
+                any(EntityDamageEvent.DamageCause.class),
+                anyDouble()))
                 .thenAnswer(ans -> new EntityDamageByEntityEvent(ans.getArgument(0), ans.getArgument(1),
                         ans.getArgument(2), ans.getArgument(3)));
 
         VersionManager.setNms(nms);
+        VersionManager.setCompat(compat);
 
         damageLoreRemover = mockStatic(DamageLoreRemover.class);
         damageLoreRemover.when(() -> DamageLoreRemover.removeAttackDmg(any(ItemStack.class)))
@@ -235,7 +238,6 @@ public abstract class MockedTest {
 //        itemUT.close();
 //        itemSerializer.close();
         MockBukkit.unmock();
-        if (inventoryUtil != null) inventoryUtil.close();
     }
 
     @BeforeEach

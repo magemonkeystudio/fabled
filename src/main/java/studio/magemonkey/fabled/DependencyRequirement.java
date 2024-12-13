@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public class DependencyRequirement {
 
-    public static final String MIN_CORE_VERSION = "1.0.1-R0.8-SNAPSHOT";
+    public static final String MIN_CORE_VERSION = "1.1.0-R0.2-SNAPSHOT";
 
     public static boolean meetsVersion(String requiredVersion, String providedVersion) {
         List<Integer> required = splitVersion(requiredVersion);
