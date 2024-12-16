@@ -22,4 +22,4 @@ updates:
     reviewers:
       - Travja
     ignore:
-      - dependency-name: "spigot-api"
+      - dependency-name: "org.spigotmc:spigot-api"
