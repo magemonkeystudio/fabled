@@ -1042,6 +1042,22 @@ const itemConditionOptions = (matOption: ComponentOption = new MaterialSelect(fa
 	];
 };
 
+class ActionBarCondition extends FabledCondition {
+	public constructor() {
+		super({
+			name:         'Action Bar',
+			description:  'Applies child components whenever the action bar is active or not depending on what is set.',
+			data:         [
+				new BooleanSelect('Is Casting', 'casting', true)
+					.setTooltip('Whether or not the action bar is active or not.'),
+			],
+			summaryItems: ['casting']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class AltitudeCondition extends FabledCondition {
 	public constructor() {
 		super({
@@ -5197,6 +5213,7 @@ export const initComponents = () => {
 		WORLD:    { name: 'World', component: WorldTarget }
 	});
 	conditions.set({
+		ACTION_BAR:       { name: 'Action Bar', component: ActionBarCondition },
 		ALTITUDE:       { name: 'Altitude', component: AltitudeCondition },
 		ARMOR:          { name: 'Armor', component: ArmorCondition },
 		ATTRIBUTE:      { name: 'Attribute', component: AttributeCondition },

@@ -11,3 +11,5 @@ vite.config.ts.timestamp-*
 gh-pages/
 .idea/
 .webstorm.js
+.target
+/target
