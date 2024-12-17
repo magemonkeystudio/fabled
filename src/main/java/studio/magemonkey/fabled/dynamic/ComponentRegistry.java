@@ -87,6 +87,7 @@ public class ComponentRegistry {
         register(new SingleTarget());
 
         // Conditions
+        register(new ActionBarCondition());
         register(new AirCondition());
         register(new AltitudeCondition());
         register(new ArmorCondition());
