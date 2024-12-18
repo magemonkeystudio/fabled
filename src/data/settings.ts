@@ -69,3 +69,26 @@ export const animationEnabled: Writable<boolean> = ((): Writable<boolean> => {
 		update
 	};
 })();
+
+export const blocklyMode: Writable<boolean> = ((): Writable<boolean> => {
+	let saved = false;
+	if (browser) {
+		const stored = localStorage.getItem('blockly-mode');
+		saved        = stored !== null ? stored === 'true' : saved;
+	}
+
+	const {
+					subscribe,
+					set,
+					update
+				} = writable<boolean>(saved);
+	return {
+		subscribe,
+		set: (value: boolean) => {
+			localStorage.setItem('blockly-mode', String(value));
+			return set(value);
+		},
+		update
+	};
+})();
+

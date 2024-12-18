@@ -95,7 +95,7 @@
 	id='sidebar'
 	onintroend={() => sidebarOpen.set(true)}
 	onoutroend={() => sidebarOpen.set(false)}
-	style:--height='calc({height}px - 6rem + min(3rem, {scrollY}px))'
+	style:--height='100%'
 	transition:squish
 	use:clickOutside={clickOut}
 >
