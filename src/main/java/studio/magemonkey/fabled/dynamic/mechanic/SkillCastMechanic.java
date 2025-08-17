@@ -11,6 +11,7 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SkillCastMechanic extends MechanicComponent {
     @Override
@@ -42,15 +43,6 @@ public class SkillCastMechanic extends MechanicComponent {
         }
     }
 
-    /**
-     * Executes the component
-     *
-     * @param caster  caster of the skill
-     * @param level   level of the skill
-     * @param targets targets to apply to
-     * @param force
-     * @return true if applied to something, false otherwise
-     */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (targets.isEmpty()) return false;
@@ -75,12 +67,12 @@ public class SkillCastMechanic extends MechanicComponent {
                     && (force_cast || (!(target instanceof Player) || ( // Bypass checks if the target is not a player
                     Fabled.getData((Player) target).hasSkill(e.getKey())
                             && Fabled.getData((Player) target).getSkill(e.getKey()).getLevel() > 0)))
-            ).toList();
+            ).collect(Collectors.toList());
             if (filtered.isEmpty()) return;
 
             //  Cast
             switch (mode) {
-                case "first" -> cast(target, filtered.getFirst().getKey(), filtered.getFirst().getValue(), force_cast);
+                case "first" -> cast(target, filtered.get(0).getKey(), filtered.get(0).getValue(), force_cast);
                 case "all" -> handle.forEach(entry -> cast(target, entry.getKey(), entry.getValue(), force_cast));
                 case "random" -> {
                     int i = Fabled.RANDOM.nextInt(filtered.size());

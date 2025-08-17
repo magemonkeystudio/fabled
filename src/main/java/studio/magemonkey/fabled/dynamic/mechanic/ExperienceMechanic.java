@@ -15,31 +15,18 @@ import java.util.List;
 public class ExperienceMechanic extends MechanicComponent {
 
     // Shared Variables
-    private static final String EXP        = "value"; // Amount of XP to Give
+    private static final String VALUE      = "value"; // Amount of XP to Give
     private static final String MODE       = "mode"; // Give, Set, Take
     private static final String TYPE       = "type"; // Flat, Percent, Levels
     private static final String GROUP      = "group"; // Specified Class Group
     private static final String LEVEL_DOWN = "level-down"; // Whether to Level Down or not
     private static final String VANILLA    = "vanilla"; // Boolean whether to give vanills experience instead.
 
-    // Class Variables
-
-    // Vanilla Variables
-
     @Override
     public String getKey() {
         return "experience";
     }
 
-    /**
-     * Executes the component
-     *
-     * @param caster  caster of the skill
-     * @param level   level of the skill
-     * @param targets targets to apply to
-     * @param force
-     * @return true if applied to something, false otherwise
-     */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
         if (!(caster instanceof Player)) return false;
@@ -55,7 +42,7 @@ public class ExperienceMechanic extends MechanicComponent {
     }
 
     public boolean vanillaExperienceMechanic(Player caster, int level, List<LivingEntity> targets, boolean force) {
-        int     expValue  = (int) getNum(caster, EXP, 0.0);
+        int     expValue  = (int) getNum(caster, VALUE, 0.0);
         String  mode      = settings.getString(MODE, "give").toLowerCase();
         String  type      = settings.getString(TYPE, "flat").toLowerCase();
         boolean levelDown = settings.getBool(LEVEL_DOWN, true);
@@ -129,7 +116,7 @@ public class ExperienceMechanic extends MechanicComponent {
     }
 
     public boolean classExperienceMechanic(Player caster, int level, List<LivingEntity> targets, boolean force) {
-        int     expValue  = (int) getNum(caster, EXP, 0.0);
+        int     value     = (int) getNum(caster, VALUE, 0.0);
         String  mode      = settings.getString(MODE, "give").toLowerCase();
         String  type      = settings.getString(TYPE, "flat").toLowerCase();
         boolean levelDown = settings.getBool(LEVEL_DOWN, true);
@@ -142,13 +129,13 @@ public class ExperienceMechanic extends MechanicComponent {
         if (type.equals("levels")) {
             switch (mode) {
                 case "give":
-                    playerClass.giveLevels(expValue);
+                    playerClass.giveLevels(value);
                     break;
                 case "set":
-                    playerClass.setLevel(expValue);
+                    playerClass.setLevel(value);
                     break;
                 case "take":
-                    playerClass.loseLevels(expValue);
+                    playerClass.loseLevels(value);
                     break;
                 default:
                     return false;
@@ -156,7 +143,7 @@ public class ExperienceMechanic extends MechanicComponent {
         }
         // Percent
         else if (type.equals("percent")) {
-            double percentExp = allNextLevelExp * expValue / 100;
+            double percentExp = allNextLevelExp * value / 100;
             switch (mode) {
                 case "give":
                     MechanicListener.addExemptExperience(caster, percentExp);
@@ -173,12 +160,12 @@ public class ExperienceMechanic extends MechanicComponent {
         else if (type.equals("flat")) {
             switch (mode) {
                 case "give":
-                    MechanicListener.addExemptExperience(caster, expValue);
-                    playerClass.giveExp(expValue, ExpSource.PLUGIN);
+                    MechanicListener.addExemptExperience(caster, value);
+                    playerClass.giveExp(value, ExpSource.PLUGIN);
                 case "set":
-                    playerClass.setExp(expValue);
+                    playerClass.setExp(value);
                 case "take":
-                    playerClass.loseExp(expValue, false, levelDown, true);
+                    playerClass.loseExp(value, false, levelDown, true);
                 default:
                     return false;
             }
