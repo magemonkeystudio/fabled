@@ -48,7 +48,6 @@ import java.util.UUID;
 public class ClickListener extends FabledListener {
     private Map<UUID, Long> dropPlayers = new HashMap<>();
 
-
     /**
      * Registers clicks as they happen
      *
@@ -71,22 +70,22 @@ public class ClickListener extends FabledListener {
             }
         }
 
-            // Left clicks
-            if (!Fabled.getSettings().isAnimationLeftClick()) {
-                if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
-                    Bukkit.getServer()
-                            .getPluginManager()
-                            .callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.LEFT));
-                    return;
-                }
-            }
-
-            // Right clicks
-            if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
+        // Left clicks
+        if (!Fabled.getSettings().isAnimationLeftClick()) {
+            if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
                 Bukkit.getServer()
                         .getPluginManager()
-                        .callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.RIGHT));
+                        .callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.LEFT));
+                return;
             }
+        }
+
+        // Right clicks
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
+            Bukkit.getServer()
+                    .getPluginManager()
+                    .callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.RIGHT));
+        }
     }
 
     @EventHandler
@@ -116,9 +115,10 @@ public class ClickListener extends FabledListener {
         // Keep track of players who have dropped items.
         UUID playerId = event.getPlayer().getUniqueId();
         dropPlayers.put(playerId, System.currentTimeMillis());
-        Bukkit.getScheduler().runTaskLater(Fabled.getPlugin(Fabled.class), () -> {
-            dropPlayers.remove(playerId);
-        }, 3L); // 3 ticks = ~150ms
+        Bukkit.getScheduler()
+                .runTaskLater(Fabled.getPlugin(Fabled.class),
+                        () -> dropPlayers.remove(playerId),
+                        3L); // 3 ticks = ~150ms
 
         Bukkit.getServer().getPluginManager().callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.Q));
     }

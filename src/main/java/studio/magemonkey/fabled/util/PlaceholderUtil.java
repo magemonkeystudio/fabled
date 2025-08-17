@@ -30,15 +30,15 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-abstract interface PlaceholderFunction<T, U, V, R> {
+interface PlaceholderFunction<T, U, V, R> {
     R apply(T t, U u, V v);
 }
 
 public class PlaceholderUtil {
-
-    private static       long                                                                           legacyMessageTime;
     private static final Map<String, PlaceholderFunction<OfflinePlayer, List<String>, Integer, String>> actions =
             new HashMap<>();
+
+    private static long legacyMessageTime;
 
     static {
         // Class Placeholders
@@ -915,8 +915,8 @@ public class PlaceholderUtil {
     private static String castingPlaceholder(OfflinePlayer player, List<String> arguments, Integer accountId) {
         try {
             PlayerData            playerData = getPlayerData(player, accountId);
-            PlayerTextCastingData textData  = playerData.getTextCastingData();
-            PlayerCastWheel wheelData  = playerData.getCastWheel();
+            PlayerTextCastingData textData   = playerData.getTextCastingData();
+            PlayerCastWheel       wheelData  = playerData.getCastWheel();
             return String.valueOf(textData.isCasting() || wheelData.isCasting());
         } catch (Exception e) {
             return "false";

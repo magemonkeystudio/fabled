@@ -1,4 +1,4 @@
- /**
+/**
  * Fabled
  * studio.magemonkey.fabled.dynamic.mechanic.SoundMechanic
  * <p>
