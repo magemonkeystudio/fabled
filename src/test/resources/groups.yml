@@ -1,0 +1,90 @@
+
+# Settings for classes with the group class
+# If new classes are loaded with different groups,
+# the new groups will show up in this file after the first load.
+class: 
+
+  # The starting class for all players for this group.
+  # "none" will result in no starting class
+  default: 'none'
+
+  # The permission required to profess as any class in this group.
+  # "none" will result in no permissions being required
+  permission: 'none'
+
+  # Whether to reset a players level and skill points to starting values
+  # when professing into a subclass
+  'profess-reset': 'false'
+
+  # If profess-reset is true, this determines if skill points are refunded
+  # or just deleted. Take into account that the skill points corresponding to those skills
+  # can be regained normally by leveling up the new class, so enabling this option
+  # effectively creates new skill points that seemingly come from nowhere
+  'profess-refund-skills': 'false'
+
+  # If profess-reset is true, this determines if attribute points are refunded
+  # or just deleted
+  'profess-refund-attributes': 'false'
+
+  # whether this class is reset when players use the reset command
+  'can-reset': 'true'
+
+  # whether players professed as the same base class in this group
+  # are considered allies and cannot attack each other
+  friendly: 'false'
+
+  # whether to show a scoreboard for classes within this group.
+  # Scoreboards must be enabled for this to work.
+  'show-scoreboard': 'true'
+
+  # Percentage of experience lost upon dying.
+  # This will not cause players to lose levels.
+  'exp-lost-on-death': 0.0
+
+  # Number of skill points players start with
+  'starting-points': 1
+
+  # How many skill points a player gains every level.
+  # You can use decimal values for one point every few levels.
+  # 0.2, for instance, would give one point every 5 levels.
+  # If use-custom-points is enabled, this is ignored
+  'points-per-level': 1.0
+
+  # Number of attribute points players start with
+  'starting-attribs': 0
+
+  # How many attribute points a player gains every level.
+  # You can use decimal values for one point every few levels.
+  # 0.2, for instance, would give one point every 5 levels.
+  # If use-custom-attribute-points is enabled, this is ignored.
+  'attribs-per-level': 1.0
+
+  # whether to use custom skill point distribution.
+  # When enabled, skill points are given based on custom-points
+  # instead of points-per-level
+  'use-custom-points': 'false'
+
+  # whether to use custom attribute point distribution.
+  # When enabled, attribute points are given based on custom-attribute-points
+  # instead of attribs-per-level
+  'use-custom-attribute-points': 'false'
+
+  # Defines how many skill points players get at specific levels.
+  # This only applies when use-custom-points is set to "true".
+  # Numbers on the left are the level the skill points are given.
+  # Numbers on the right are how many skill points are given.
+  'custom-points': 
+    5: 1
+    10: 1
+    15: 1
+    20: 1
+
+  # Defines how many attribute points players get at specific levels.
+  # This only applies when use-custom-attribute-points is set to "true".
+  # Numbers on the left are the level the attribute points are given.
+  # Numbers on the right are how many attribute points are given.
+  'custom-attribute-points': 
+    5: 1
+    10: 1
+    15: 1
+    20: 1

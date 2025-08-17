@@ -7,7 +7,7 @@
     <parent>
         <groupId>studio.magemonkey</groupId>
         <artifactId>magemonkey-parent</artifactId>
-        <version>1.21.7-R0.3</version>
+        <version>1.21.8-R0.2</version>
     </parent>
 
     <artifactId>fabled</artifactId>
@@ -22,7 +22,7 @@
 
     <properties>
         <java.version>14</java.version>
-        <codex.version>1.1.1-R0.6-SNAPSHOT</codex.version>
+        <codex.version>1.1.1-R0.8-SNAPSHOT</codex.version>
 
         <delombok.dir>${project.build.directory}/javadoc-delombok</delombok.dir>
     </properties>
@@ -31,10 +31,6 @@
         <repository>
             <id>sonatype</id>
             <url>https://central.sonatype.com/repository/maven-snapshots/</url>
-        </repository>
-        <repository>
-            <id>dmulloy2-repo</id>
-            <url>https://repo.dmulloy2.net/repository/public/</url>
         </repository>
     </repositories>
 
@@ -52,9 +48,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.comphenix.protocol</groupId>
+            <groupId>net.dmulloy2</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>5.3.0</version>
+            <version>5.4.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
