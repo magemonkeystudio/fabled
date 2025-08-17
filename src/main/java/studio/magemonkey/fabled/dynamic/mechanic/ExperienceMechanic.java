@@ -148,10 +148,13 @@ public class ExperienceMechanic extends MechanicComponent {
                 case "give":
                     MechanicListener.addExemptExperience(caster, percentExp);
                     playerClass.giveExp(percentExp, ExpSource.PLUGIN);
+                    break;
                 case "set":
                     playerClass.setExp(percentExp);
+                    break;
                 case "take":
                     playerClass.loseExp(percentExp, false, levelDown, true);
+                    break;
                 default:
                     return false;
             }
@@ -162,10 +165,13 @@ public class ExperienceMechanic extends MechanicComponent {
                 case "give":
                     MechanicListener.addExemptExperience(caster, value);
                     playerClass.giveExp(value, ExpSource.PLUGIN);
+                    break;
                 case "set":
                     playerClass.setExp(value);
+                    break;
                 case "take":
                     playerClass.loseExp(value, false, levelDown, true);
+                    break;
                 default:
                     return false;
             }
