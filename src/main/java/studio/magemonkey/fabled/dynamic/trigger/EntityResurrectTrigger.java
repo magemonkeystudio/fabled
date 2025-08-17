@@ -1,4 +1,3 @@
-
 package studio.magemonkey.fabled.dynamic.trigger;
 
 import org.bukkit.entity.LivingEntity;
@@ -7,9 +6,9 @@ import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.api.Settings;
 
 /**
- * Fabled © 2024
+ * Fabled © 2025
  * studio.magemonkey.fabled.dynamic.trigger.EntityResurrectTrigger
- *
+ * <p>
  * Triggers when an entity is resurrected (e.g., by a totem of undying)
  */
 public class EntityResurrectTrigger implements Trigger<EntityResurrectEvent> {
