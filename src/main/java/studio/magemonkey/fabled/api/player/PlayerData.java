@@ -60,6 +60,7 @@ import studio.magemonkey.fabled.api.skills.SkillShot;
 import studio.magemonkey.fabled.api.skills.TargetSkill;
 import studio.magemonkey.fabled.api.target.TargetHelper;
 import studio.magemonkey.fabled.cast.PlayerCastBars;
+import studio.magemonkey.fabled.cast.PlayerCastWheel;
 import studio.magemonkey.fabled.cast.PlayerTextCastingData;
 import studio.magemonkey.fabled.data.GroupSettings;
 import studio.magemonkey.fabled.data.PlayerEquips;
@@ -118,6 +119,7 @@ public class PlayerData {
     private       PlayerSkillBar                             skillBar;
     private       PlayerCastBars                             castBars;
     private       PlayerTextCastingData                      textCastingData;
+    private       PlayerCastWheel                            castWheel;
     /**
      * The data for the player's combos
      *
@@ -267,6 +269,14 @@ public class PlayerData {
     public PlayerTextCastingData getTextCastingData() {
         if (textCastingData == null) textCastingData = new PlayerTextCastingData(this);
         return textCastingData;
+    }
+
+    /**
+     * @return cast wheel data for the player
+     */
+    public PlayerCastWheel getCastWheel() {
+        if (castWheel == null) castWheel = new PlayerCastWheel(this);
+        return castWheel;
     }
 
     public int subtractHungerValue(final double amount) {
