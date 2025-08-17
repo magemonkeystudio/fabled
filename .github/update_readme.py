@@ -3,7 +3,7 @@ import sys
 is_dev = len(sys.argv) >= 2 and bool(sys.argv[1])
 remove = '''<repository>
     <id>sonatype</id>
-    <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+    <url>https://central.sonatype.com/content/repositories/snapshots</url>
 </repository>
 ...
 '''

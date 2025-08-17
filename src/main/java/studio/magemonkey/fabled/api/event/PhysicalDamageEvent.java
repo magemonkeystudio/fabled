@@ -30,6 +30,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * An event for when an entity is damaged by another entity without the
@@ -37,7 +39,9 @@ import org.bukkit.event.HandlerList;
  */
 public class PhysicalDamageEvent extends Event implements Cancellable {
     private static final HandlerList  handlers = new HandlerList();
+    @Nullable
     private final        LivingEntity damager;
+    @NotNull
     private final        LivingEntity target;
     private              double       damage;
     private final        boolean      projectile;
@@ -51,7 +55,7 @@ public class PhysicalDamageEvent extends Event implements Cancellable {
      * @param damage     the amount of damage dealt
      * @param projectile whether it was a projectile attack
      */
-    public PhysicalDamageEvent(LivingEntity damager, LivingEntity target, double damage, boolean projectile) {
+    public PhysicalDamageEvent(@Nullable LivingEntity damager, @NotNull LivingEntity target, double damage, boolean projectile) {
         this.damager = damager;
         this.target = target;
         this.damage = damage;
@@ -64,6 +68,7 @@ public class PhysicalDamageEvent extends Event implements Cancellable {
      *
      * @return entity that dealt the damage
      */
+    @Nullable
     public LivingEntity getDamager() {
         return damager;
     }
@@ -73,6 +78,7 @@ public class PhysicalDamageEvent extends Event implements Cancellable {
      *
      * @return entity that received the damage
      */
+    @NotNull
     public LivingEntity getTarget() {
         return target;
     }

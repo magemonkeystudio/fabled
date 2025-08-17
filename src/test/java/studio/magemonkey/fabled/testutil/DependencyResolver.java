@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 @Log4j2
 public class DependencyResolver {
     private static List<String> repositories =
-            List.of("https://s01.oss.sonatype.org/content/repositories/snapshots/", "https://repo1.maven.org/maven2");
+            List.of("https://central.sonatype.com/repository/maven-snapshots/", "https://repo1.maven.org/maven2");
 
     public static File resolve(String dependency) throws FileNotFoundException {
         log.info("Attempting to resolve dependency " + dependency);

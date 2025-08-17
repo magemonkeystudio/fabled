@@ -35,8 +35,9 @@ public class ProtocolLibHook {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (player.equals(p) || !p.getWorld().equals(player.getWorld())) continue;
 
-            double dist = player.getLocation().distanceSquared(p.getLocation());
-            if (dist < Bukkit.getViewDistance() * 16) {
+            double dist         = player.getLocation().distanceSquared(p.getLocation());
+            double viewDistance = Bukkit.getViewDistance();
+            if (dist < viewDistance * viewDistance * 16) {
                 protocolManager.sendServerPacket(p, packet);
             }
         }
