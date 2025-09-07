@@ -3066,6 +3066,23 @@ class DurabilityMechanic extends FabledMechanic {
 	public static override new = () => new this();
 }
 
+class EnchantMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Enchant',
+			description:  'Enchants the hold item of the target for a specific amount of time',
+			data:         [
+				new EnchantSelect()
+					.setTooltip('The enchantments to be applied on the hold item'),
+				new AttributeSelect('Duration', 'duration', 30)
+					.setTooltip('How long, in seconds, to apply the enchantment for. Use a negative number for permanent enchantments')
+			],
+			summaryItems: ['enchant', 'duration']
+		}, false);
+	}
+	public static override new = () => new this();
+}
+
 class ExperienceMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -5760,6 +5777,7 @@ export const initComponents = () => {
 		DELAY:              { name: 'Delay', component: DelayMechanic },
 		DISGUISE:           { name: 'Disguise', component: DisguiseMechanic },
 		DURABILITY:         { name: 'Durability', component: DurabilityMechanic },
+		ENCHANT:         	{ name: 'Enchant', component: EnchantMechanic },
 		EXPERIENCE:         { name: 'Experience', component: ExperienceMechanic },
 		EXPLOSION:          { name: 'Explosion', component: ExplosionMechanic },
 		FIRE:               { name: 'Fire', component: FireMechanic },
