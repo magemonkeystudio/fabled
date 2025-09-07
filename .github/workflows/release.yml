@@ -30,10 +30,10 @@ jobs:
         uses: s4u/maven-settings-action@v3.0.0
         with:
           githubServer: false
-          servers: '[{"id": "central", "username": "${{ secrets.SONATYPE_USERNAME }}", "password": "${{ secrets.SONATYPE_DEPLOY_KEY }}"}]'
+          servers: '[{"id": "magemonkey-repo", "username": "${{ secrets.REPO_USERNAME }}", "password": "${{ secrets.DEPLOY_KEY }}"}]'
       - name: Update version
         run: python ./.github/update_version.py false true
-      - name: Publish to Maven Central
+      - name: Publish to Travja Repo
         env:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
