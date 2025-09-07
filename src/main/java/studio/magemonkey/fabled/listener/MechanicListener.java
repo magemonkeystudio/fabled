@@ -42,6 +42,7 @@ import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.util.BoundingBox;
 import studio.magemonkey.fabled.Fabled;
@@ -199,6 +200,9 @@ public class MechanicListener extends FabledListener {
     public void onQuit(PlayerQuitEvent event) {
         flying.remove(event.getPlayer().getUniqueId());
         event.getPlayer().setWalkSpeed(0.2f);
+        for(ItemStack item : event.getPlayer().getInventory()) {
+            EnchantMechanic.restoreEnchantments(item);
+        }
     }
 
     /**
