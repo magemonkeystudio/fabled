@@ -51,9 +51,9 @@ public class CmdWorld implements IFunction, TabCompleter {
     public void execute(final ConfigurableCommand cmd,
                         final Plugin plugin,
                         final CommandSender sender,
-                        final String[] args) {
+                        final String[] args, boolean silent) {
         if (!(sender instanceof Player)) {
-            cmd.sendMessage(sender, PLAYER_ONLY, ChatColor.DARK_RED + "Only players can use this command");
+            cmd.sendMessage(sender, PLAYER_ONLY, ChatColor.DARK_RED + "Only players can use this command", silent);
             return;
         } else if (args.length < 1) {
             cmd.displayHelp(sender);

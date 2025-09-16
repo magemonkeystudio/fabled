@@ -83,18 +83,10 @@ public class CmdLevel implements IFunction, TabCompleter {
      * @param plugin plugin reference
      * @param sender sender of the command
      * @param args   argument list
+     * @param silent whether to suppress output
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
-        boolean silent = isSilent(args);
-        // Filter out the silent argument, this could be in any location
-        if (silent) {
-            args = Arrays.stream(args)
-                    .filter(arg -> !IS_BOOL.matcher(arg).matches() && !arg.equalsIgnoreCase("-s")
-                            && !arg.equalsIgnoreCase("--silent"))
-                    .toArray(String[]::new);
-        }
-
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         int           numberIndex = getNumberIndex(args);
         OfflinePlayer target;
         if (!(sender instanceof Player)) {
@@ -108,7 +100,7 @@ public class CmdLevel implements IFunction, TabCompleter {
         } else {
             // Disabled world
             if (!Fabled.getSettings().isWorldEnabled(((Player) sender).getWorld()) && args.length == 2) {
-                cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+                cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world", silent);
                 return;
             }
 
@@ -124,7 +116,7 @@ public class CmdLevel implements IFunction, TabCompleter {
 
         // Only can show info of a player so console needs to provide a name
         if (target == null) {
-            cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name");
+            cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name", silent);
             return;
         }
         // Get the player data
@@ -181,30 +173,27 @@ public class CmdLevel implements IFunction, TabCompleter {
         }
 
         // Messages
-        if (silent) return;
-
         if (!success) {
-            cmd.sendMessage(
-                    sender,
+            cmd.sendMessage(sender,
                     NO_CLASSES,
                     ChatColor.RED + "You aren't professed as a class that receives experience from commands",
+                    silent,
                     Filter.PLAYER.setReplacement(target.getName()),
-                    RPGFilter.LEVEL.setReplacement("" + amount)
-            );
+                    RPGFilter.LEVEL.setReplacement("" + amount));
         } else if (target != sender) {
-            cmd.sendMessage(
-                    sender,
+                cmd.sendMessage(sender,
                     GAVE_LEVEL,
                     ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD + "{player} {level} levels",
+                    silent,
                     Filter.PLAYER.setReplacement(target.getName()),
                     RPGFilter.LEVEL.setReplacement("" + amount));
         }
         if (target.isOnline()) {
-            cmd.sendMessage(
-                    target.getPlayer(),
+            cmd.sendMessage(target.getPlayer(),
                     RECEIVED_LEVEL,
                     ChatColor.DARK_GREEN + "You have received " + ChatColor.GOLD + "{level} levels "
                             + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}",
+                    silent,
                     Filter.PLAYER.setReplacement(sender.getName()),
                     RPGFilter.LEVEL.setReplacement("" + amount));
         }
@@ -218,23 +207,6 @@ public class CmdLevel implements IFunction, TabCompleter {
         }
 
         return -1;
-    }
-
-    private boolean isSilent(String[] args) {
-        if (args == null || args.length == 0) return false;
-
-        if (IS_BOOL.matcher(args[args.length - 1]).matches()) {
-            return !Boolean.parseBoolean(args[args.length - 1]);
-        }
-
-        // If any arg is `-s` or `--silent`, return true
-        for (String arg : args) {
-            if (arg.equalsIgnoreCase("-s") || arg.equalsIgnoreCase("--silent")) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     @Override
@@ -251,8 +223,7 @@ public class CmdLevel implements IFunction, TabCompleter {
         }
 
         if (args.length == 1) {
-            List<String> list = new ArrayList<>(
-                    ConfigurableCommand.getPlayerTabCompletions(commandSender, args[0]));
+            List<String> list = new ArrayList<>(ConfigurableCommand.getPlayerTabCompletions(commandSender, args[0]));
             list.add("add");
             list.add("remove");
             list.add("set");

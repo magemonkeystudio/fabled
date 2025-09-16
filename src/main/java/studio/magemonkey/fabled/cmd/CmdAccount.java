@@ -51,17 +51,18 @@ public class CmdAccount implements IFunction {
      * @param plugin  plugin reference
      * @param sender  sender of the command
      * @param args    arguments
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         // Must be a player
         if (!(sender instanceof Player)) {
-            command.sendMessage(sender, NOT_PLAYER, "&4Only players can use this command");
+            command.sendMessage(sender, NOT_PLAYER, "&4Only players can use this command", silent);
         }
 
         // Disabled world
         else if (!Fabled.getSettings().isWorldEnabled(((Player) sender).getWorld())) {
-            command.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+            command.sendMessage(sender, DISABLED, "&4You cannot use this command in this world", silent);
         }
 
         // Needs an argument
@@ -78,14 +79,14 @@ public class CmdAccount implements IFunction {
 
                 if (player.getAccountLimit() >= id && id > 0) {
                     player.setAccount(id);
-                    command.sendMessage(sender, CHANGED, ChatColor.DARK_GREEN + "Your account has been changed");
+                    command.sendMessage(sender, CHANGED, ChatColor.DARK_GREEN + "Your account has been changed", silent);
                     return;
                 }
             } catch (Exception ex) {
                 // Invalid ID
             }
 
-            command.sendMessage(sender, NOT_ACCOUNT, ChatColor.RED + "That is not a valid account ID");
+            command.sendMessage(sender, NOT_ACCOUNT, ChatColor.RED + "That is not a valid account ID", silent);
         }
     }
 }

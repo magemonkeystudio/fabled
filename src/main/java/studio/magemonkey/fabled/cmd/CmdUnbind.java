@@ -59,27 +59,28 @@ public class CmdUnbind implements IFunction {
      * @param plugin  plugin reference
      * @param sender  sender of the command
      * @param args    arguments
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         if (!(sender instanceof Player)) {
-            command.sendMessage(sender, NOT_PLAYER, "&4Only players can use this command");
+            command.sendMessage(sender, NOT_PLAYER, "&4Only players can use this command", silent);
         }
 
         // Disabled world
         else if (!Fabled.getSettings().isWorldEnabled(((Player) sender).getWorld())) {
-            command.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+            command.sendMessage(sender, DISABLED, "&4You cannot use this command in this world", silent);
         } else {
             ItemStack item = ((Player) sender).getInventory().getItemInMainHand();
             if (item == null || item.getType() == Material.AIR) {
-                command.sendMessage(sender, NO_ITEM, "&4You are not holding an item");
+                command.sendMessage(sender, NO_ITEM, "&4You are not holding an item", silent);
                 return;
             }
 
             PlayerData   player = Fabled.getData((Player) sender);
             List<String> bound  = BindListener.getBoundSkills(item);
             if (bound.isEmpty()) {
-                command.sendMessage(sender, NOT_BOUND, "&4There are no skills bound to the held item");
+                command.sendMessage(sender, NOT_BOUND, "&4There are no skills bound to the held item", silent);
             } else {
                 BindListener.setBoundSkills(item, List.of());
                 bound = bound.stream()
@@ -88,7 +89,7 @@ public class CmdUnbind implements IFunction {
                 command.sendMessage(sender,
                         SKILL_BOUND,
                         "&6{skill} &2has been unbound from &6{item}",
-                        RPGFilter.SKILL.setReplacement(String.join(", ", bound)),
+                        silent, RPGFilter.SKILL.setReplacement(String.join(", ", bound)),
                         RPGFilter.ITEM.setReplacement(TextFormatter.format(item.getType().name())));
             }
         }

@@ -71,17 +71,10 @@ public class CmdExp implements IFunction, TabCompleter {
      * @param plugin plugin reference
      * @param sender sender of the command
      * @param args   argument list
+     * @param silent whether to suppress output
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String... args) {
-        boolean silent = isSilent(args);
-        if (silent) {
-            args = Arrays.stream(args)
-                    .filter(arg -> !IS_BOOL.matcher(arg).matches() && !arg.equalsIgnoreCase("-s")
-                            && !arg.equalsIgnoreCase("--silent"))
-                    .toArray(String[]::new);
-        }
-
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         int           numberIndex = getNumberIndex(args);
         OfflinePlayer target;
         if (!(sender instanceof Player)) {
@@ -94,7 +87,7 @@ public class CmdExp implements IFunction, TabCompleter {
         } else {
             // Disabled world
             if (!Fabled.getSettings().isWorldEnabled(((Player) sender).getWorld()) && args.length == 2) {
-                cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+                cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world", silent);
                 return;
             }
 
@@ -108,7 +101,7 @@ public class CmdExp implements IFunction, TabCompleter {
 
         // Only can show info of a player so console needs to provide a name
         if (target == null) {
-            cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name");
+            cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name", silent);
             return;
         }
         // Get the player data
@@ -145,24 +138,24 @@ public class CmdExp implements IFunction, TabCompleter {
 
             if (amount > 0) {
                 playerClass.giveExp(amount, ExpSource.COMMAND, !silent);
-                if (!silent && target != sender) {
-                    cmd.sendMessage(
-                            sender,
+                if (target != sender) {
+                    cmd.sendMessage(sender,
                             GAVE_EXP,
                             ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD
                                     + "{player} {exp}{class} experience",
+                            silent,
                             Filter.PLAYER.setReplacement(target.getName()),
                             RPGFilter.EXP.setReplacement("" + amount),
                             RPGFilter.CLASS.setReplacement(' ' + playerClass.getData().getGroup()));
                 }
             } else {
                 playerClass.loseExp(-amount, false, true, !silent);
-                if (!silent && target != sender) {
-                    cmd.sendMessage(
-                            sender,
+                if (target != sender) {
+                    cmd.sendMessage(sender,
                             TOOK_EXP,
                             ChatColor.DARK_GREEN + "You have taken " + ChatColor.GOLD + "{exp}{class} experience "
                                     + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}",
+                            silent,
                             Filter.PLAYER.setReplacement(target.getName()),
                             RPGFilter.EXP.setReplacement("" + -amount),
                             RPGFilter.CLASS.setReplacement(' ' + playerClass.getData().getGroup()));
@@ -178,26 +171,24 @@ public class CmdExp implements IFunction, TabCompleter {
 
             if (amount > 0) {
                 data.giveExp(amount, ExpSource.COMMAND, !silent);
-                if (!silent) {
-                    if (target != sender) {
-                        cmd.sendMessage(
-                                sender,
-                                GAVE_EXP,
-                                ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD
-                                        + "{player} {exp}{class} experience",
-                                Filter.PLAYER.setReplacement(target.getName()),
-                                RPGFilter.EXP.setReplacement("" + amount),
-                                RPGFilter.CLASS.setReplacement(""));
-                    }
+                if (target != sender) {
+                    cmd.sendMessage(sender,
+                            GAVE_EXP,
+                            ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD
+                                    + "{player} {exp}{class} experience",
+                            silent,
+                            Filter.PLAYER.setReplacement(target.getName()),
+                            RPGFilter.EXP.setReplacement("" + amount),
+                            RPGFilter.CLASS.setReplacement(""));
                 }
             } else {
                 data.loseExp(-amount, false, true, !silent);
-                if (!silent && target != sender) {
-                    cmd.sendMessage(
-                            sender,
+                if (target != sender) {
+                    cmd.sendMessage(sender,
                             TOOK_EXP,
                             ChatColor.DARK_GREEN + "You have taken " + ChatColor.GOLD + "{exp}{class} experience "
                                     + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}",
+                            silent,
                             Filter.PLAYER.setReplacement(target.getName()),
                             RPGFilter.EXP.setReplacement("" + -amount),
                             RPGFilter.CLASS.setReplacement(""));
@@ -216,23 +207,6 @@ public class CmdExp implements IFunction, TabCompleter {
         return -1;
     }
 
-    private boolean isSilent(String[] args) {
-        if (args == null || args.length == 0) return false;
-
-        if (IS_BOOL.matcher(args[args.length - 1]).matches()) {
-            return !Boolean.parseBoolean(args[args.length - 1]);
-        }
-
-        // If any arg is `-s` or `--silent`, return true
-        for (String arg : args) {
-            if (arg.equalsIgnoreCase("-s") || arg.equalsIgnoreCase("--silent")) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     @Override
     @Nullable
     public List<String> onTabComplete(@NotNull CommandSender commandSender,
@@ -247,8 +221,7 @@ public class CmdExp implements IFunction, TabCompleter {
         }
 
         if (args.length == 1) {
-            List<String> list = new ArrayList<>(
-                    ConfigurableCommand.getPlayerTabCompletions(commandSender, args[0]));
+            List<String> list = new ArrayList<>(ConfigurableCommand.getPlayerTabCompletions(commandSender, args[0]));
             list.add("add");
             list.add("remove");
             list.add("set");

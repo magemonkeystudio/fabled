@@ -66,16 +66,17 @@ public class CmdCombo implements IFunction, TabCompleter {
      * @param plugin  plugin reference
      * @param sender  sender of the command
      * @param args    arguments
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         if (!(sender instanceof Player)) {
-            command.sendMessage(sender, NOT_PLAYER, "&4Only players can use this command");
+            command.sendMessage(sender, NOT_PLAYER, "&4Only players can use this command", silent);
         }
 
         // Disabled world
         else if (!Fabled.getSettings().isWorldEnabled(((Player) sender).getWorld())) {
-            command.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+            command.sendMessage(sender, DISABLED, "&4You cannot use this command in this world", silent);
         } else if (args.length >= Fabled.getComboManager().getComboSize() + 1) {
             PlayerData player = Fabled.getData((Player) sender);
 
@@ -87,9 +88,9 @@ public class CmdCombo implements IFunction, TabCompleter {
             PlayerSkill skill = player.getSkill(name);
 
             if (skill == null) {
-                command.sendMessage(sender, NOT_SKILL, "&4You do not have that skill");
+                command.sendMessage(sender, NOT_SKILL, "&4You do not have that skill", silent);
             } else if (!skill.getData().canCast()) {
-                command.sendMessage(sender, NOT_CASTABLE, "&4That skill cannot be cast");
+                command.sendMessage(sender, NOT_CASTABLE, "&4That skill cannot be cast", silent);
             } else {
 
                 Click[] clicks = new Click[comboSize];
@@ -99,7 +100,7 @@ public class CmdCombo implements IFunction, TabCompleter {
                         command.sendMessage(sender,
                                 NOT_CLICK,
                                 "&6{name} &4is not a valid click type. Use Left, Right, or Shift instead",
-                                RPGFilter.NAME);
+                                silent, RPGFilter.NAME);
                         return;
                     }
                     clicks[i - args.length + comboSize] = click;
@@ -112,9 +113,9 @@ public class CmdCombo implements IFunction, TabCompleter {
                     command.sendMessage(sender,
                             COMBO_SET,
                             "&2The combo for &6{skill} &2has been updated",
-                            RPGFilter.SKILL.setReplacement(skill.getData().getName()));
+                            silent, RPGFilter.SKILL.setReplacement(skill.getData().getName()));
                 } else {
-                    command.sendMessage(sender, NOT_COMBO, "&4That combo cannot be used");
+                    command.sendMessage(sender, NOT_COMBO, "&4That combo cannot be used", silent);
                 }
             }
         } else {

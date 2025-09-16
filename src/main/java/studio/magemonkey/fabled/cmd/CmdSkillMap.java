@@ -55,12 +55,13 @@ public class CmdSkillMap implements IFunction {
      * @param plugin plugin reference
      * @param sender sender of the command
      * @param args   argument list
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         // Disabled world
         if (sender instanceof Player && !Fabled.getSettings().isWorldEnabled(((Player) sender).getWorld())) {
-            cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+            cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world", silent);
         }
 
         // Only plays have skills to view
@@ -69,19 +70,20 @@ public class CmdSkillMap implements IFunction {
             ItemStack map = MapMenuManager.getData(Menu.SKILL_TREE).getMapItem();
             for (ItemStack i : p.getInventory().getContents()) {
                 if (i != null && i.getType() == Material.MAP && i.getDurability() == map.getDurability()) {
-                    cmd.sendMessage(sender, MAP_OWNED, ChatColor.RED + "You already have the skill tree map");
+                    cmd.sendMessage(sender, MAP_OWNED, ChatColor.RED + "You already have the skill tree map", silent);
                     return;
                 }
             }
             cmd.sendMessage(sender,
                     MAP_GIVEN,
-                    ChatColor.DARK_GREEN + "You were given the skill tree map. Hold it in your hand to view skills.");
+                    ChatColor.DARK_GREEN + "You were given the skill tree map. Hold it in your hand to view skills.",
+                    silent);
             p.getInventory().addItem(map);
         }
 
         // Console doesn't have profession options
         else {
-            cmd.sendMessage(sender, CANNOT_USE, ChatColor.RED + "This cannot be used by the console");
+            cmd.sendMessage(sender, CANNOT_USE, ChatColor.RED + "This cannot be used by the console", silent);
         }
     }
 }

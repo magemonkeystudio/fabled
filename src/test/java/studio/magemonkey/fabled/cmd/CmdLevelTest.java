@@ -1,7 +1,7 @@
 package studio.magemonkey.fabled.cmd;
 
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -63,8 +63,7 @@ class CmdLevelTest {
         commandManager = mockStatic(CommandManager.class);
         cmdManager = mockStatic(CmdManager.class);
 
-        cmdManager.when(() -> CmdManager.join(any(String[].class), anyInt(), anyInt()))
-                .thenReturn("player");
+        cmdManager.when(() -> CmdManager.join(any(String[].class), anyInt(), anyInt())).thenReturn("player");
 
         Settings settings = mock(Settings.class);
         when(Fabled.getSettings()).thenReturn(settings);
@@ -91,91 +90,85 @@ class CmdLevelTest {
     class CmdLevelExecuteTests {
         @Test
         void execute_noArgs() {
-            command.execute(classCmd, plugin, player, new String[]{});
+            command.execute(classCmd, plugin, player, new String[]{}, false);
 
             commandManager.verify(() -> CommandManager.displayUsage(classCmd, player));
         }
 
         @Test
         void execute_invalidTarget() {
-            command.execute(classCmd, plugin, player, new String[]{
-                    "not-a-player", "add", "5"
-            });
+            command.execute(classCmd, plugin, player, new String[]{"not-a-player", "add", "5"}, false);
 
-            verify(classCmd).sendMessage(eq(player), eq("not-player"),
-                    eq(ChatColor.RED + "That is not a valid player name"));
+            verify(classCmd).sendMessage(eq(player),
+                    eq("not-player"),
+                    eq(ChatColor.RED + "That is not a valid player name"),
+                    anyBoolean());
         }
 
         @Test
         void execute_plainLevels() {
-            command.execute(classCmd, plugin, player, new String[]{
-                    "add", "5"
-            });
+            command.execute(classCmd, plugin, player, new String[]{"add", "5"}, false);
 
             verify(playerData).giveLevels(5, ExpSource.COMMAND);
-            verify(classCmd).sendMessage(eq(player), eq("received-level"),
-                    eq(ChatColor.DARK_GREEN + "You have received " +
-                            ChatColor.GOLD + "{level} levels " +
-                            ChatColor.DARK_GREEN + "from " +
-                            ChatColor.GOLD + "{player}"),
+            verify(classCmd).sendMessage(eq(player),
+                    eq("received-level"),
+                    eq(ChatColor.DARK_GREEN + "You have received " + ChatColor.GOLD + "{level} levels "
+                            + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}"),
+                    anyBoolean(),
                     any(CustomFilter.class),
                     any(CustomFilter.class));
         }
 
         @Test
         void execute_negativeLevels() {
-            command.execute(classCmd, plugin, player, new String[]{
-                    "add", "-5"
-            });
+            command.execute(classCmd, plugin, player, new String[]{"add", "-5"}, false);
 
             verify(playerData).loseLevels(5);
-            verify(classCmd).sendMessage(eq(player), eq("received-level"),
-                    eq(ChatColor.DARK_GREEN + "You have received " +
-                            ChatColor.GOLD + "{level} levels " +
-                            ChatColor.DARK_GREEN + "from " +
-                            ChatColor.GOLD + "{player}"),
+            verify(classCmd).sendMessage(eq(player),
+                    eq("received-level"),
+                    eq(ChatColor.DARK_GREEN + "You have received " + ChatColor.GOLD + "{level} levels "
+                            + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}"),
+                    anyBoolean(),
                     any(CustomFilter.class),
                     any(CustomFilter.class));
         }
 
         @Test
         void execute_targetPlayer() {
-            command.execute(classCmd, plugin, player, new String[]{
-                    "player", "add", "5"
-            });
+            command.execute(classCmd, plugin, player, new String[]{"player", "add", "5"}, false);
 
             verify(playerData).giveLevels(5, ExpSource.COMMAND);
-            verify(classCmd).sendMessage(eq(targetPlayer), eq("received-level"),
-                    eq(ChatColor.DARK_GREEN + "You have received " +
-                            ChatColor.GOLD + "{level} levels " +
-                            ChatColor.DARK_GREEN + "from " +
-                            ChatColor.GOLD + "{player}"),
+            verify(classCmd).sendMessage(eq(targetPlayer),
+                    eq("received-level"),
+                    eq(ChatColor.DARK_GREEN + "You have received " + ChatColor.GOLD + "{level} levels "
+                            + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}"),
+                    anyBoolean(),
                     any(CustomFilter.class),
                     any(CustomFilter.class));
-            verify(classCmd).sendMessage(eq(player), eq("gave-level"),
-                    eq(ChatColor.DARK_GREEN + "You have given " +
-                            ChatColor.GOLD + "{player} {level} levels"),
+            verify(classCmd).sendMessage(eq(player),
+                    eq("gave-level"),
+                    eq(ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD + "{player} {level} levels"),
+                    anyBoolean(),
                     any(CustomFilter.class),
                     any(CustomFilter.class));
         }
 
         @Test
         void execute_targetPlayerNegativeLevels() {
-            command.execute(classCmd, plugin, player, new String[]{
-                    "player", "remove", "5"
-            });
+            command.execute(classCmd, plugin, player, new String[]{"player", "remove", "5"}, false);
 
             verify(playerData).loseLevels(5);
-            verify(classCmd).sendMessage(eq(targetPlayer), eq("received-level"),
-                    eq(ChatColor.DARK_GREEN + "You have received " +
-                            ChatColor.GOLD + "{level} levels " +
-                            ChatColor.DARK_GREEN + "from " +
-                            ChatColor.GOLD + "{player}"),
+            verify(classCmd).sendMessage(eq(targetPlayer),
+                    eq("received-level"),
+                    eq(ChatColor.DARK_GREEN + "You have received " + ChatColor.GOLD + "{level} levels "
+                            + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}"),
+                    anyBoolean(),
                     any(CustomFilter.class),
                     any(CustomFilter.class));
-            verify(classCmd).sendMessage(eq(player), eq("gave-level"),
-                    eq(ChatColor.DARK_GREEN + "You have given " +
-                            ChatColor.GOLD + "{player} {level} levels"),
+            verify(classCmd).sendMessage(eq(player),
+                    eq("gave-level"),
+                    eq(ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD + "{player} {level} levels"),
+                    anyBoolean(),
                     any(CustomFilter.class),
                     any(CustomFilter.class));
         }
@@ -183,74 +176,68 @@ class CmdLevelTest {
         // Class-based modifications
         @Test
         void execute_classLevels() {
-            command.execute(classCmd, plugin, player, new String[]{
-                    "add", "5", "class"
-            });
+            command.execute(classCmd, plugin, player, new String[]{"add", "5", "class"}, false);
 
             verify(playerClass).giveLevels(5);
-            verify(classCmd).sendMessage(eq(player), eq("received-level"),
-                    eq(ChatColor.DARK_GREEN + "You have received " +
-                            ChatColor.GOLD + "{level} levels " +
-                            ChatColor.DARK_GREEN + "from " +
-                            ChatColor.GOLD + "{player}"),
+            verify(classCmd).sendMessage(eq(player),
+                    eq("received-level"),
+                    eq(ChatColor.DARK_GREEN + "You have received " + ChatColor.GOLD + "{level} levels "
+                            + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}"),
+                    anyBoolean(),
                     any(CustomFilter.class),
                     any(CustomFilter.class));
         }
 
         @Test
         void execute_classNegativeLevels() {
-            command.execute(classCmd, plugin, player, new String[]{
-                    "remove", "5", "class"
-            });
+            command.execute(classCmd, plugin, player, new String[]{"remove", "5", "class"}, false);
 
             verify(playerClass).loseLevels(5);
-            verify(classCmd).sendMessage(eq(player), eq("received-level"),
-                    eq(ChatColor.DARK_GREEN + "You have received " +
-                            ChatColor.GOLD + "{level} levels " +
-                            ChatColor.DARK_GREEN + "from " +
-                            ChatColor.GOLD + "{player}"),
+            verify(classCmd).sendMessage(eq(player),
+                    eq("received-level"),
+                    eq(ChatColor.DARK_GREEN + "You have received " + ChatColor.GOLD + "{level} levels "
+                            + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}"),
+                    anyBoolean(),
                     any(CustomFilter.class),
                     any(CustomFilter.class));
         }
 
         @Test
         void execute_playerClassLevels() {
-            command.execute(classCmd, plugin, player, new String[]{
-                    "player", "add", "5", "class"
-            });
+            command.execute(classCmd, plugin, player, new String[]{"player", "add", "5", "class"}, false);
 
             verify(playerClass).giveLevels(5);
-            verify(classCmd).sendMessage(eq(player), eq("gave-level"),
-                    eq(ChatColor.DARK_GREEN + "You have given " +
-                            ChatColor.GOLD + "{player} {level} levels"),
+            verify(classCmd).sendMessage(eq(player),
+                    eq("gave-level"),
+                    eq(ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD + "{player} {level} levels"),
+                    anyBoolean(),
                     any(CustomFilter.class),
                     any(CustomFilter.class));
-            verify(classCmd).sendMessage(eq(targetPlayer), eq("received-level"),
-                    eq(ChatColor.DARK_GREEN + "You have received " +
-                            ChatColor.GOLD + "{level} levels " +
-                            ChatColor.DARK_GREEN + "from " +
-                            ChatColor.GOLD + "{player}"),
+            verify(classCmd).sendMessage(eq(targetPlayer),
+                    eq("received-level"),
+                    eq(ChatColor.DARK_GREEN + "You have received " + ChatColor.GOLD + "{level} levels "
+                            + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}"),
+                    anyBoolean(),
                     any(CustomFilter.class),
                     any(CustomFilter.class));
         }
 
         @Test
         void execute_playerClassNegativeLevels() {
-            command.execute(classCmd, plugin, player, new String[]{
-                    "player", "add", "-5", "class"
-            });
+            command.execute(classCmd, plugin, player, new String[]{"player", "add", "-5", "class"}, false);
 
             verify(playerClass).loseLevels(5);
-            verify(classCmd).sendMessage(eq(player), eq("gave-level"),
-                    eq(ChatColor.DARK_GREEN + "You have given " +
-                            ChatColor.GOLD + "{player} {level} levels"),
+            verify(classCmd).sendMessage(eq(player),
+                    eq("gave-level"),
+                    eq(ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD + "{player} {level} levels"),
+                    anyBoolean(),
                     any(CustomFilter.class),
                     any(CustomFilter.class));
-            verify(classCmd).sendMessage(eq(targetPlayer), eq("received-level"),
-                    eq(ChatColor.DARK_GREEN + "You have received " +
-                            ChatColor.GOLD + "{level} levels " +
-                            ChatColor.DARK_GREEN + "from " +
-                            ChatColor.GOLD + "{player}"),
+            verify(classCmd).sendMessage(eq(targetPlayer),
+                    eq("received-level"),
+                    eq(ChatColor.DARK_GREEN + "You have received " + ChatColor.GOLD + "{level} levels "
+                            + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}"),
+                    anyBoolean(),
                     any(CustomFilter.class),
                     any(CustomFilter.class));
         }
@@ -258,46 +245,41 @@ class CmdLevelTest {
         @Test
         void execute_playerClassLevelsSet() {
             when(playerClass.getLevel()).thenReturn(15);
-            command.execute(classCmd, plugin, player, new String[]{
-                    "player", "set", "5", "class"
-            });
+            command.execute(classCmd, plugin, player, new String[]{"player", "set", "5", "class"}, false);
 
             verify(playerClass).loseLevels(10);
-            verify(classCmd).sendMessage(eq(player), eq("gave-level"),
-                    eq(ChatColor.DARK_GREEN + "You have given " +
-                            ChatColor.GOLD + "{player} {level} levels"),
+            verify(classCmd).sendMessage(eq(player),
+                    eq("gave-level"),
+                    eq(ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD + "{player} {level} levels"),
+                    anyBoolean(),
                     any(CustomFilter.class),
                     any(CustomFilter.class));
-            verify(classCmd).sendMessage(eq(targetPlayer), eq("received-level"),
-                    eq(ChatColor.DARK_GREEN + "You have received " +
-                            ChatColor.GOLD + "{level} levels " +
-                            ChatColor.DARK_GREEN + "from " +
-                            ChatColor.GOLD + "{player}"),
+            verify(classCmd).sendMessage(eq(targetPlayer),
+                    eq("received-level"),
+                    eq(ChatColor.DARK_GREEN + "You have received " + ChatColor.GOLD + "{level} levels "
+                            + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}"),
+                    anyBoolean(),
                     any(CustomFilter.class),
                     any(CustomFilter.class));
         }
 
         @Test
         void execute_setLevels() {
-            command.execute(classCmd, plugin, player, new String[]{
-                    "set", "5"
-            });
+            command.execute(classCmd, plugin, player, new String[]{"set", "5"}, false);
 
             verify(playerData).setLevel(5, ExpSource.COMMAND);
-            verify(classCmd).sendMessage(eq(player), eq("received-level"),
-                    eq(ChatColor.DARK_GREEN + "You have received " +
-                            ChatColor.GOLD + "{level} levels " +
-                            ChatColor.DARK_GREEN + "from " +
-                            ChatColor.GOLD + "{player}"),
+            verify(classCmd).sendMessage(eq(player),
+                    eq("received-level"),
+                    eq(ChatColor.DARK_GREEN + "You have received " + ChatColor.GOLD + "{level} levels "
+                            + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}"),
+                    anyBoolean(),
                     any(CustomFilter.class),
                     any(CustomFilter.class));
         }
 
         @Test
         void execute_invalidOperation() {
-            command.execute(classCmd, plugin, player, new String[]{
-                    "invalid", "5"
-            });
+            command.execute(classCmd, plugin, player, new String[]{"invalid", "5"}, false);
 
             // Display usage
             commandManager.verify(() -> CommandManager.displayUsage(classCmd, player));
@@ -306,62 +288,36 @@ class CmdLevelTest {
         // Silent mode
         @Test
         void execute_silent() {
-            command.execute(classCmd, plugin, player, new String[]{
-                    "add", "5", "-s"
-            });
+            command.execute(classCmd, plugin, player, new String[]{"add", "5"}, true);
 
             verify(playerData).giveLevels(5, ExpSource.COMMAND);
-            verify(classCmd, never()).sendMessage(any(), any(), any(), any(), any());
+            verify(classCmd, times(1)).sendMessage(any(), any(), any(), eq(true), any(), any());
         }
 
         @Test
         void execute_silentTargetPlayer() {
-            command.execute(classCmd, plugin, player, new String[]{
-                    "player", "add", "5", "-s"
-            });
+            command.execute(classCmd, plugin, player, new String[]{"player", "add", "5"}, true);
 
             verify(playerData).giveLevels(5, ExpSource.COMMAND);
-            verify(classCmd, never()).sendMessage(any(), any(), any(), any(), any());
+            verify(classCmd, times(1)).sendMessage(any(), eq("gave-level"), any(), eq(true), any(), any());
+            verify(classCmd, times(1)).sendMessage(any(), eq("received-level"), any(), eq(true), any(), any());
         }
 
         @Test
         void execute_silentClassLevels() {
-            command.execute(classCmd, plugin, player, new String[]{
-                    "add", "5", "class", "-s"
-            });
+            command.execute(classCmd, plugin, player, new String[]{"add", "5", "class"}, true);
 
             verify(playerClass).giveLevels(5);
-            verify(classCmd, never()).sendMessage(any(), any(), any(), any(), any());
+            verify(classCmd, times(1)).sendMessage(any(), any(), any(), eq(true), any(), any());
         }
 
         @Test
         void execute_silentPlayerClassLevels() {
-            command.execute(classCmd, plugin, player, new String[]{
-                    "player", "add", "5", "class", "-s"
-            });
+            command.execute(classCmd, plugin, player, new String[]{"player", "add", "5", "class"}, true);
 
             verify(playerClass).giveLevels(5);
-            verify(classCmd, never()).sendMessage(any(), any(), any(), any(), any());
-        }
-
-        @Test
-        void execute_silentFirst() {
-            command.execute(classCmd, plugin, player, new String[]{
-                    "-s", "player", "add", "5", "class"
-            });
-
-            verify(playerClass).giveLevels(5);
-            verify(classCmd, never()).sendMessage(any(), any(), any(), any(), any());
-        }
-
-        @Test
-        void execute_silentInOtherSpot() {
-            command.execute(classCmd, plugin, player, new String[]{
-                    "add", "5", "-s", "class"
-            });
-
-            verify(playerClass).giveLevels(5);
-            verify(classCmd, never()).sendMessage(any(), any(), any(), any(), any());
+            verify(classCmd, times(1)).sendMessage(any(), eq("gave-level"), any(), eq(true), any(), any());
+            verify(classCmd, times(1)).sendMessage(any(), eq("received-level"), any(), eq(true), any(), any());
         }
     }
 

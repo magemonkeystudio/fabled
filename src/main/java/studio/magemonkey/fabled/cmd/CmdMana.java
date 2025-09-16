@@ -66,13 +66,14 @@ public class CmdMana implements IFunction, TabCompleter {
      * @param plugin plugin reference
      * @param sender sender of the command
      * @param args   argument list
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         // Disabled world
         if (sender instanceof Player && !Fabled.getSettings().isWorldEnabled(((Player) sender).getWorld())
                 && args.length == 1) {
-            cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+            cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world", silent);
         }
 
         // Only can show info of a player so console needs to provide a name
@@ -80,7 +81,7 @@ public class CmdMana implements IFunction, TabCompleter {
             // Get the player data
             OfflinePlayer target = args.length == 1 ? (OfflinePlayer) sender : Bukkit.getOfflinePlayer(args[0]);
             if (target == null) {
-                cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name");
+                cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name", silent);
                 return;
             }
 
@@ -89,13 +90,13 @@ public class CmdMana implements IFunction, TabCompleter {
             try {
                 amount = NumberParser.parseDouble(args[args.length == 1 ? 0 : 1]);
             } catch (Exception ex) {
-                cmd.sendMessage(sender, NOT_NUMBER, ChatColor.RED + "That is not a valid mana amount");
+                cmd.sendMessage(sender, NOT_NUMBER, ChatColor.RED + "That is not a valid mana amount", silent);
                 return;
             }
 
             // Invalid amount of mana
             if (amount <= 0) {
-                cmd.sendMessage(sender, NOT_POSITIVE, ChatColor.RED + "You must give a positive amount of mana");
+                cmd.sendMessage(sender, NOT_POSITIVE, ChatColor.RED + "You must give a positive amount of mana", silent);
                 return;
             }
 
@@ -108,7 +109,7 @@ public class CmdMana implements IFunction, TabCompleter {
                 cmd.sendMessage(sender,
                         GAVE_MANA,
                         ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD + "{player} {mana} mana",
-                        Filter.PLAYER.setReplacement(target.getName()),
+                        silent, Filter.PLAYER.setReplacement(target.getName()),
                         RPGFilter.MANA.setReplacement("" + amount));
             }
             if (target.isOnline()) {
@@ -116,7 +117,7 @@ public class CmdMana implements IFunction, TabCompleter {
                         RECEIVED_MANA,
                         ChatColor.DARK_GREEN + "You have received " + ChatColor.GOLD + "{mana} mana "
                                 + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}",
-                        Filter.PLAYER.setReplacement(sender.getName()),
+                        silent, Filter.PLAYER.setReplacement(sender.getName()),
                         RPGFilter.MANA.setReplacement("" + amount));
             }
         }

@@ -49,12 +49,13 @@ public class CmdAttribute implements IFunction {
      * @param plugin plugin reference
      * @param sender sender of the command
      * @param args   argument list
+     * @param silent whether to suppress output
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         // Disabled world
         if (sender instanceof Player && !Fabled.getSettings().isWorldEnabled(((Player) sender).getWorld())) {
-            cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+            cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world", silent);
         }
 
         // Only plays have skills to view
@@ -66,7 +67,7 @@ public class CmdAttribute implements IFunction {
 
         // Console doesn't have profession options
         else {
-            cmd.sendMessage(sender, CANNOT_USE, ChatColor.RED + "This cannot be used by the console");
+            cmd.sendMessage(sender, CANNOT_USE, ChatColor.RED + "This cannot be used by the console", silent);
         }
     }
 }

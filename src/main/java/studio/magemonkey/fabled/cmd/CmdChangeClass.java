@@ -66,9 +66,10 @@ public class CmdChangeClass implements IFunction, TabCompleter {
      * @param plugin plugin reference
      * @param sender sender of the command
      * @param args   arguments
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         if (args.length < 3) {
             cmd.displayHelp(sender);
             return;
@@ -86,7 +87,7 @@ public class CmdChangeClass implements IFunction, TabCompleter {
                 cmd.sendMessage(sender,
                         INVALID_PLAYER,
                         ChatColor.DARK_RED + "{player} is not online, nor have they played before.",
-                        Filter.PLAYER.setReplacement(playerName));
+                        silent, Filter.PLAYER.setReplacement(playerName));
                 return;
             }
         }
@@ -95,7 +96,7 @@ public class CmdChangeClass implements IFunction, TabCompleter {
         final PlayerClass clazz = data.getClass(groupName);
         if (clazz == null) {
             cmd.sendMessage(sender, INVALID_GROUP, "{player} does not have a {class}",
-                    Filter.PLAYER.setReplacement(player.getName()),
+                    silent, Filter.PLAYER.setReplacement(player.getName()),
                     RPGFilter.GROUP.setReplacement(groupName),
                     RPGFilter.CLASS.setReplacement(className.toString()));
             return;
@@ -105,7 +106,7 @@ public class CmdChangeClass implements IFunction, TabCompleter {
         final FabledClass target   = Fabled.getClass(className.toString());
         if (target == null) {
             cmd.sendMessage(sender, INVALID_TARGET, "{class} is not a valid class to change to",
-                    RPGFilter.CLASS.setReplacement(className.toString()));
+                    silent, RPGFilter.CLASS.setReplacement(className.toString()));
             return;
         }
 
@@ -129,14 +130,14 @@ public class CmdChangeClass implements IFunction, TabCompleter {
 
 
         cmd.sendMessage(sender, SUCCESS, "You have changed {player} from a {name} to a {class}",
-                Filter.PLAYER.setReplacement(player.getName()),
+                silent, Filter.PLAYER.setReplacement(player.getName()),
                 RPGFilter.GROUP.setReplacement(groupName),
                 RPGFilter.CLASS.setReplacement(className.toString()),
                 RPGFilter.NAME.setReplacement(original));
 
         if (sender != player && player.isOnline()) {
             cmd.sendMessage((Player) player, NOTIFICATION, "You have changed from a {name} to a {class}",
-                    RPGFilter.GROUP.setReplacement(groupName),
+                    silent, RPGFilter.GROUP.setReplacement(groupName),
                     RPGFilter.CLASS.setReplacement(className.toString()),
                     RPGFilter.NAME.setReplacement(original));
         }

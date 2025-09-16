@@ -1,7 +1,7 @@
 package studio.magemonkey.fabled.cmd;
 
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -93,43 +93,44 @@ class CmdExpTest {
     class CmdLevelExecuteTests {
         @Test
         void execute_noArgs() {
-            command.execute(classCmd, plugin, player);
+            command.execute(classCmd, plugin, player, new String[0], false);
 
             commandManager.verify(() -> CommandManager.displayUsage(classCmd, player));
         }
 
         @Test
         void execute_invalidTarget() {
-            command.execute(classCmd, plugin, player, "not-a-player", "add", "5");
+            command.execute(classCmd, plugin, player, new String[]{"not-a-player", "add", "5"}, false);
 
             verify(classCmd).sendMessage(eq(player),
                     eq("not-player"),
-                    eq(ChatColor.RED + "That is not a valid player name"));
+                    eq(ChatColor.RED + "That is not a valid player name"),
+                    anyBoolean());
         }
 
         @Test
         void execute_plainExp() {
-            command.execute(classCmd, plugin, player, "add", "5");
+            command.execute(classCmd, plugin, player, new String[]{"add", "5"}, false);
 
             verify(playerData).giveExp(5, ExpSource.COMMAND, true);
         }
 
         @Test
         void execute_negativeExp() {
-            command.execute(classCmd, plugin, player, "add", "-5");
+            command.execute(classCmd, plugin, player, new String[]{"add", "-5"}, false);
 
             verify(playerData).loseExp(5, false, true, true);
         }
 
         @Test
         void execute_targetPlayer() {
-            command.execute(classCmd, plugin, player, "player", "add", "5");
+            command.execute(classCmd, plugin, player, new String[]{"player", "add", "5"}, false);
 
             verify(playerData).giveExp(5, ExpSource.COMMAND, true);
             verify(classCmd).sendMessage(eq(player),
                     eq("gave-exp"),
-                    eq(ChatColor.DARK_GREEN + "You have given "
-                            + ChatColor.GOLD + "{player} {exp}{class} experience"),
+                    eq(ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD + "{player} {exp}{class} experience"),
+                    anyBoolean(),
                     any(CustomFilter.class),
                     any(CustomFilter.class),
                     any(CustomFilter.class));
@@ -137,15 +138,14 @@ class CmdExpTest {
 
         @Test
         void execute_targetPlayerNegativeExp() {
-            command.execute(classCmd, plugin, player, "player", "remove", "5");
+            command.execute(classCmd, plugin, player, new String[]{"player", "remove", "5"}, false);
 
             verify(playerData).loseExp(5, false, true, true);
             verify(classCmd).sendMessage(eq(player),
                     eq("took-exp"),
-                    eq(ChatColor.DARK_GREEN + "You have taken "
-                            + ChatColor.GOLD + "{exp}{class} experience "
-                            + ChatColor.DARK_GREEN + "from "
-                            + ChatColor.GOLD + "{player}"),
+                    eq(ChatColor.DARK_GREEN + "You have taken " + ChatColor.GOLD + "{exp}{class} experience "
+                            + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}"),
+                    anyBoolean(),
                     any(CustomFilter.class),
                     any(CustomFilter.class),
                     any(CustomFilter.class));
@@ -154,27 +154,27 @@ class CmdExpTest {
         // Class-based modifications
         @Test
         void execute_classExp() {
-            command.execute(classCmd, plugin, player, "add", "5", "class");
+            command.execute(classCmd, plugin, player, new String[]{"add", "5", "class"}, false);
 
             verify(playerClass).giveExp(5, ExpSource.COMMAND, true);
         }
 
         @Test
         void execute_classNegativeExp() {
-            command.execute(classCmd, plugin, player, "remove", "5", "class");
+            command.execute(classCmd, plugin, player, new String[]{"remove", "5", "class"}, false);
 
             verify(playerClass).loseExp(5, false, true, true);
         }
 
         @Test
         void execute_playerClassExp() {
-            command.execute(classCmd, plugin, player, "player", "add", "5", "class");
+            command.execute(classCmd, plugin, player, new String[]{"player", "add", "5", "class"}, false);
 
             verify(playerClass).giveExp(5, ExpSource.COMMAND, true);
             verify(classCmd).sendMessage(eq(player),
                     eq("gave-exp"),
-                    eq(ChatColor.DARK_GREEN + "You have given "
-                            + ChatColor.GOLD + "{player} {exp}{class} experience"),
+                    eq(ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD + "{player} {exp}{class} experience"),
+                    anyBoolean(),
                     any(CustomFilter.class),
                     any(CustomFilter.class),
                     any(CustomFilter.class));
@@ -182,15 +182,14 @@ class CmdExpTest {
 
         @Test
         void execute_playerClassNegativeExp() {
-            command.execute(classCmd, plugin, player, "player", "remove", "5", "class");
+            command.execute(classCmd, plugin, player, new String[]{"player", "remove", "5", "class"}, false);
 
             verify(playerClass).loseExp(5, false, true, true);
             verify(classCmd).sendMessage(eq(player),
                     eq("took-exp"),
-                    eq(ChatColor.DARK_GREEN + "You have taken "
-                            + ChatColor.GOLD + "{exp}{class} experience "
-                            + ChatColor.DARK_GREEN + "from "
-                            + ChatColor.GOLD + "{player}"),
+                    eq(ChatColor.DARK_GREEN + "You have taken " + ChatColor.GOLD + "{exp}{class} experience "
+                            + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}"),
+                    anyBoolean(),
                     any(CustomFilter.class),
                     any(CustomFilter.class),
                     any(CustomFilter.class));
@@ -198,7 +197,7 @@ class CmdExpTest {
 
         @Test
         void execute_setExp() {
-            command.execute(classCmd, plugin, player, "set", "5");
+            command.execute(classCmd, plugin, player, new String[]{"set", "5"}, false);
 
             verify(playerData).setExp(5, ExpSource.COMMAND, true);
         }
@@ -206,16 +205,14 @@ class CmdExpTest {
         @Test
         void execute_playerClassSet() {
             when(playerClass.getTotalExp()).thenReturn(15.0);
-            command.execute(classCmd, plugin, player, "player", "set", "5", "class");
+            command.execute(classCmd, plugin, player, new String[]{"player", "set", "5", "class"}, false);
 
             verify(playerClass).loseExp(10, false, true, true);
         }
 
         @Test
         void execute_invalidOperation() {
-            command.execute(classCmd, plugin, player, new String[]{
-                    "invalid", "5"
-            });
+            command.execute(classCmd, plugin, player, new String[]{"invalid", "5"}, false);
 
             // Display usage
             commandManager.verify(() -> CommandManager.displayUsage(classCmd, player));
@@ -224,50 +221,34 @@ class CmdExpTest {
         // Silent mode
         @Test
         void execute_silent() {
-            command.execute(classCmd, plugin, player, "add", "5", "-s");
+            command.execute(classCmd, plugin, player, new String[]{"add", "5"}, true);
 
             verify(playerData).giveExp(5, ExpSource.COMMAND, false);
-            verify(classCmd, never()).sendMessage(any(), any(), any(), any(), any());
+            verify(classCmd, never()).sendMessage(any(), any(), any(), anyBoolean(), any(), any());
         }
 
         @Test
         void execute_silentTargetPlayer() {
-            command.execute(classCmd, plugin, player, "player", "add", "5", "-s");
+            command.execute(classCmd, plugin, player, new String[]{"player", "add", "5"}, true);
 
             verify(playerData).giveExp(5, ExpSource.COMMAND, false);
-            verify(classCmd, never()).sendMessage(any(), any(), any(), any(), any());
+            verify(classCmd, never()).sendMessage(any(), any(), any(), anyBoolean(), any(), any());
         }
 
         @Test
         void execute_silentClassExp() {
-            command.execute(classCmd, plugin, player, "remove", "5", "class", "-s");
+            command.execute(classCmd, plugin, player, new String[]{"remove", "5", "class"}, true);
 
             verify(playerClass).loseExp(5, false, true, false);
-            verify(classCmd, never()).sendMessage(any(), any(), any(), any(), any());
+            verify(classCmd, never()).sendMessage(any(), any(), any(), anyBoolean(), any(), any());
         }
 
         @Test
         void execute_silentPlayerClassExp() {
-            command.execute(classCmd, plugin, player, "player", "add", "5", "class", "-s");
+            command.execute(classCmd, plugin, player, new String[]{"player", "add", "5", "class"}, true);
 
             verify(playerClass).giveExp(5, ExpSource.COMMAND, false);
-            verify(classCmd, never()).sendMessage(any(), any(), any(), any(), any());
-        }
-
-        @Test
-        void execute_silentFirst() {
-            command.execute(classCmd, plugin, player, "-s", "player", "add", "5", "class");
-
-            verify(playerClass).giveExp(5, ExpSource.COMMAND, false);
-            verify(classCmd, never()).sendMessage(any(), any(), any(), any(), any());
-        }
-
-        @Test
-        void execute_silentInOtherSpot() {
-            command.execute(classCmd, plugin, player, "add", "5", "-s", "class");
-
-            verify(playerClass).giveExp(5, ExpSource.COMMAND, false);
-            verify(classCmd, never()).sendMessage(any(), any(), any(), any(), any());
+            verify(classCmd, never()).sendMessage(any(), any(), any(), anyBoolean(), any(), any());
         }
     }
 

@@ -55,17 +55,18 @@ public class CmdBar implements IFunction {
      * @param plugin  plugin reference
      * @param sender  sender of the command
      * @param args    arguments
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         if (!(sender instanceof Player)) {
-            command.sendMessage(sender, NOT_PLAYER, "&4Only players can use this command");
+            command.sendMessage(sender, NOT_PLAYER, "&4Only players can use this command", silent);
             return;
         }
 
         // Disabled world
         else if (!Fabled.getSettings().isWorldEnabled(((Player) sender).getWorld())) {
-            command.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+            command.sendMessage(sender, DISABLED, "&4You cannot use this command in this world", silent);
             return;
         }
 
@@ -73,26 +74,27 @@ public class CmdBar implements IFunction {
 
         // Player must have a class
         if (!player.hasClass()) {
-            command.sendMessage(sender, NO_CLASS, "&4You have not professed as any class yet");
+            command.sendMessage(sender, NO_CLASS, "&4You have not professed as any class yet", silent);
         }
 
         // Cannot be in creative mode
         else if (player.getPlayer().getGameMode() == GameMode.CREATIVE) {
-            command.sendMessage(sender, IN_CREATIVE, "&4You cannot be in creative mode");
+            command.sendMessage(sender, IN_CREATIVE, "&4You cannot be in creative mode", silent);
         } else {
             PlayerSkillBar bar = player.getSkillBar();
 
             // Not enough space
             if (!bar.isEnabled() && bar.countOpenSlots() < bar.getItemsInSkillSlots()) {
-                command.sendMessage(sender, NO_SPACE, "&4You don't have enough inventory space for the skill bar");
+                command.sendMessage(sender, NO_SPACE, "&4You don't have enough inventory space for the skill bar",
+                        silent);
                 return;
             }
 
             bar.toggleEnabled();
             if (bar.isEnabled()) {
-                command.sendMessage(sender, TOGGLE_ON, "&2Your skill bar has been &6enabled");
+                command.sendMessage(sender, TOGGLE_ON, "&2Your skill bar has been &6enabled", silent);
             } else {
-                command.sendMessage(sender, TOGGLE_OFF, "&2Your skill bar has been &2disabled");
+                command.sendMessage(sender, TOGGLE_OFF, "&2Your skill bar has been &2disabled", silent);
             }
         }
     }

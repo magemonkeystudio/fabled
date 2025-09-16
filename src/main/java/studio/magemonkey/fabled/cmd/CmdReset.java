@@ -52,12 +52,13 @@ public class CmdReset implements IFunction {
      * @param plugin plugin reference
      * @param sender sender of the command
      * @param args   argument list
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         // Disabled world
         if (sender instanceof Player && !Fabled.getSettings().isWorldEnabled(((Player) sender).getWorld())) {
-            cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+            cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world", silent);
         }
 
         // Only players have profession options
@@ -65,22 +66,22 @@ public class CmdReset implements IFunction {
             if (args.length == 0 || !args[0].equalsIgnoreCase("confirm")) {
                 cmd.sendMessage(sender,
                         CONFIRM,
-                        ChatColor.DARK_RED + "This will delete your active account's data entirely");
+                        ChatColor.DARK_RED + "This will delete your active account's data entirely", silent);
                 cmd.sendMessage(sender,
                         INSTRUCTIONS,
                         ChatColor.GRAY + "Type " + ChatColor.GOLD + "/class reset confirm" + ChatColor.GRAY
-                                + " to continue");
+                                + " to continue", silent);
             } else {
                 PlayerData data = Fabled.getData((Player) sender);
                 data.resetAll();
                 data.updatePlayerStat(((Player) sender).getPlayer());
-                cmd.sendMessage(sender, RESET, ChatColor.DARK_GREEN + "You have reset your active account data");
+                cmd.sendMessage(sender, RESET, ChatColor.DARK_GREEN + "You have reset your active account data", silent);
             }
         }
 
         // Console doesn't have profession options
         else {
-            cmd.sendMessage(sender, CANNOT_USE, ChatColor.RED + "This cannot be used by the console");
+            cmd.sendMessage(sender, CANNOT_USE, ChatColor.RED + "This cannot be used by the console", silent);
         }
     }
 }

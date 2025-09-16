@@ -577,8 +577,10 @@ public class Fabled extends SkillAPI {
 
         String coreVersion = CodexEngine.getEngine().getDescription().getVersion();
         if (!DependencyRequirement.meetsVersion(DependencyRequirement.MIN_CORE_VERSION, coreVersion)) {
-            getLogger().warning("Missing required Codex version. " + coreVersion + " installed. "
-                    + DependencyRequirement.MIN_CORE_VERSION + " required. Disabling.");
+            getLogger().severe("\n\n===== [ INITIALIZATION ERROR ] =====\n"
+                    + "Missing required Codex version. "
+                    + coreVersion + " installed. "
+                    + DependencyRequirement.MIN_CORE_VERSION + " required. Disabling.\n\n");
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }

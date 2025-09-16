@@ -61,16 +61,17 @@ public class CmdCast implements IFunction, TabCompleter {
      * @param plugin  plugin reference
      * @param sender  sender of the command
      * @param args    arguments
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         // Player only command
         if (!(sender instanceof Player))
-            command.sendMessage(sender, NOT_PLAYER, "&4Only players can use this command");
+            command.sendMessage(sender, NOT_PLAYER, "&4Only players can use this command", silent);
 
             // Disabled world
         else if (!Fabled.getSettings().isWorldEnabled(((Player) sender).getWorld()))
-            command.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+            command.sendMessage(sender, DISABLED, "&4You cannot use this command in this world", silent);
 
             // Requires at least one argument
         else if (args.length >= 1) {
@@ -81,17 +82,17 @@ public class CmdCast implements IFunction, TabCompleter {
 
             // Invalid skill
             if (!Fabled.isSkillRegistered(skill))
-                command.sendMessage(sender, NOT_SKILL, ChatColor.RED + "That is not a valid skill name");
+                command.sendMessage(sender, NOT_SKILL, ChatColor.RED + "That is not a valid skill name", silent);
 
                 // Class mismatch
             else if (!player.hasSkill(skill))
                 command.sendMessage(sender,
                         NOT_AVAILABLE,
-                        ChatColor.RED + "That skill is not available for your class");
+                        ChatColor.RED + "That skill is not available for your class", silent);
 
                 // Not unlocked
             else if (!player.hasSkill(skill) || player.getSkillLevel(skill) == 0)
-                command.sendMessage(sender, NOT_UNLOCKED, ChatColor.RED + "You must level up the skill first");
+                command.sendMessage(sender, NOT_UNLOCKED, ChatColor.RED + "You must level up the skill first", silent);
 
             else {
                 // Cast the skill

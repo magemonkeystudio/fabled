@@ -70,28 +70,25 @@ public class CmdForceProfess implements IFunction, TabCompleter {
      * @param plugin plugin reference
      * @param sender sender of the command
      * @param args   argument list
+     * @param silent whether to suppress output
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         // Only players have profession options
         if (args.length < 2) {
             CommandManager.displayUsage(cmd, sender);
         } else {
-            boolean silent = Arrays.stream(args).anyMatch(s -> s.equalsIgnoreCase("-s"));
-            if (silent)
-                args = Arrays.stream(args).filter(s -> !s.equalsIgnoreCase("-s"))
-                        .collect(Collectors.toList()).toArray(new String[0]);
-
             // If the -f flag is present, skip checking requirements
             boolean checkRequirements = !Arrays.stream(args).anyMatch(s -> s.equalsIgnoreCase("-f"));
-            if (!checkRequirements)
-                args = Arrays.stream(args).filter(s -> !s.equalsIgnoreCase("-f"))
-                        .collect(Collectors.toList()).toArray(new String[0]);
+            if (!checkRequirements) args = Arrays.stream(args)
+                    .filter(s -> !s.equalsIgnoreCase("-f"))
+                    .collect(Collectors.toList())
+                    .toArray(new String[0]);
 
 
             OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
             if (player == null) {
-                cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name");
+                cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name", silent);
                 return;
             }
 
@@ -103,7 +100,7 @@ public class CmdForceProfess implements IFunction, TabCompleter {
 
             // Invalid class
             if (target == null) {
-                cmd.sendMessage(sender, INVALID_CLASS, ChatColor.RED + "That is not a valid class");
+                cmd.sendMessage(sender, INVALID_CLASS, ChatColor.RED + "That is not a valid class", silent);
             }
 
             // Can profess
@@ -114,20 +111,23 @@ public class CmdForceProfess implements IFunction, TabCompleter {
                             SUCCESSS,
                             ChatColor.GOLD + "{player}" + ChatColor.DARK_GREEN + " is now a " + ChatColor.GOLD
                                     + "{class}",
+                            silent,
                             Filter.PLAYER.setReplacement(player.getName()),
                             RPGFilter.CLASS.setReplacement(target.getName()));
-                    if (!silent) {
-                        cmd.sendMessage((Player) player,
-                                PROFESSED,
-                                ChatColor.DARK_GREEN + "You are now a " + ChatColor.GOLD + "{class}",
-                                RPGFilter.CLASS.setReplacement(target.getName()));
-                    }
+                    cmd.sendMessage((Player) player,
+                            PROFESSED,
+                            ChatColor.DARK_GREEN + "You are now a " + ChatColor.GOLD + "{class}",
+                            silent,
+                            RPGFilter.CLASS.setReplacement(target.getName()));
                 }
             }
 
             // Cannot profess
             else {
-                cmd.sendMessage(sender, CANNOT_PROFESS, ChatColor.RED + "They cannot profess to this class currently");
+                cmd.sendMessage(sender,
+                        CANNOT_PROFESS,
+                        ChatColor.RED + "They cannot profess to this class currently",
+                        silent);
             }
         }
     }

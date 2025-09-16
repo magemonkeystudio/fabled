@@ -62,12 +62,13 @@ public class CmdProfess implements IFunction, TabCompleter {
      * @param plugin plugin reference
      * @param sender sender of the command
      * @param args   argument list
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         // Disabled world
         if (sender instanceof Player && !Fabled.getSettings().isWorldEnabled(((Player) sender).getWorld())) {
-            cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+            cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world", silent);
         }
 
         // Only players have profession options
@@ -78,7 +79,7 @@ public class CmdProfess implements IFunction, TabCompleter {
                 if (!data.showProfession((Player) sender))
                     cmd.sendMessage(sender,
                             NOT_AVAILABLE,
-                            ChatColor.RED + "There's no profession available at this time");
+                            ChatColor.RED + "There's no profession available at this time", silent);
             } else {
                 String name = args[0];
                 for (int i = 1; i < args.length; i++) name += ' ' + args[i];
@@ -87,7 +88,7 @@ public class CmdProfess implements IFunction, TabCompleter {
 
                 // Invalid class
                 if (target == null) {
-                    cmd.sendMessage(sender, INVALID_CLASS, ChatColor.RED + "That is not a valid class");
+                    cmd.sendMessage(sender, INVALID_CLASS, ChatColor.RED + "That is not a valid class", silent);
                 }
 
                 // Can profess
@@ -96,21 +97,21 @@ public class CmdProfess implements IFunction, TabCompleter {
                     cmd.sendMessage(sender,
                             PROFESSED,
                             ChatColor.DARK_GREEN + "You are now a " + ChatColor.GOLD + "{class}",
-                            RPGFilter.CLASS.setReplacement(target.getName()));
+                            silent, RPGFilter.CLASS.setReplacement(target.getName()));
                 }
 
                 // Cannot profess
                 else {
                     cmd.sendMessage(sender,
                             CANNOT_PROFESS,
-                            ChatColor.RED + "You cannot profess to this class currently");
+                            ChatColor.RED + "You cannot profess to this class currently", silent);
                 }
             }
         }
 
         // Console doesn't have profession options
         else {
-            cmd.sendMessage(sender, CANNOT_USE, ChatColor.RED + "This cannot be used by the console");
+            cmd.sendMessage(sender, CANNOT_USE, ChatColor.RED + "This cannot be used by the console", silent);
         }
     }
 
