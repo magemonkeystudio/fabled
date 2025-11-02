@@ -392,6 +392,21 @@ class FlagExpireTrigger extends FabledTrigger {
 	public static override new = () => new this();
 }
 
+class FlightToggleTrigger extends FabledTrigger {
+	public constructor() {
+		super({
+			name:         'Flight Toggle',
+			description:  'Applies skill effects when a player starts or stops flying.',
+			data:         [
+				new DropdownSelect('Flying', 'type', ['Start Flying', 'Stop Flying', 'Both'])
+			],
+			summaryItems: ['type']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class GlideTrigger extends FabledTrigger {
 	public constructor() {
 		super({
@@ -5625,6 +5640,7 @@ export const initComponents = () => {
 		ENTITY_TARGET:    { name: 'Entity Target', component: EntityTargetTrigger },
 		ENTITY_RESURRECT: { name: 'Entity Resurrect', component: EntityResurrectTrigger },
 		EXPERIENCE:       { name: 'Experience', component: ExperienceTrigger },
+		FLIGHT_TOGGLE:    { name: 'Flight Toggle', component: FlightToggleTrigger },
 		GLIDE:            { name: 'Glide', component: GlideTrigger },
 		HARVEST:          { name: 'Harvest', component: HarvestTrigger },
 		HEAL:             { name: 'Heal', component: HealTrigger },
