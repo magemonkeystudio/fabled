@@ -61,6 +61,7 @@ public class ComponentRegistry {
         register(new FishingReelTrigger());
         register(new FlagTrigger());
         register(new FlagExpireTrigger());
+        register(new FlightToggleTrigger());
         register(new GlideTrigger());
         register(new HarvestTrigger());
         register(new HealTrigger());
