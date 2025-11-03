@@ -3179,10 +3179,12 @@ class FlyMechanic extends FabledMechanic {
 					.setTooltip('The duration of the flight in seconds'),
 				new AttributeSelect('Flyspeed', 'flyspeed', 0.1, 0)
 					.setTooltip('How fast the player should be able to fly. NOTE: The value should be between -1 and 1. Values higher than this may show no change in speed.'),
+				new BooleanSelect('Allow Flight', 'allow-flight', true)
+					.setTooltip('Should the player be allowed to fly by pressing the space bar? This will not force them to fly.'),
 				new BooleanSelect('Flying', 'flying', true)
-					.setTooltip('If the player should be able to fly. Setting this to false will revoke flight regardless of time left. If set to false, the seconds value is ignored.')
+					.setTooltip('If the player should be forced to fly. Setting this to false will revoke flight regardless of time left. However, if Allow Flying is true, players can still fly again when double clicking space. If set to false, the seconds value is ignored.')
 			],
-			summaryItems: ['seconds', 'flyspeed', 'flying']
+			summaryItems: ['seconds', 'flyspeed', 'allow-flight', 'flying']
 		});
 	}
 
