@@ -62,9 +62,10 @@ public class CmdForceSkill implements IFunction, TabCompleter {
      * @param plugin  plugin reference
      * @param sender  sender of the command
      * @param args    arguments
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         // Needs two arguments
         if (args.length < 3) {
             command.displayHelp(sender);
@@ -75,7 +76,7 @@ public class CmdForceSkill implements IFunction, TabCompleter {
             OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
 
             if (player == null) {
-                command.sendMessage(sender, NOT_PLAYER, "&4That is not a valid player name");
+                command.sendMessage(sender, NOT_PLAYER, "&4That is not a valid player name", silent);
                 return;
             }
 
@@ -85,7 +86,7 @@ public class CmdForceSkill implements IFunction, TabCompleter {
             PlayerSkill skill = playerData.getSkill(skillName.toString());
 
             if (skill == null) {
-                command.sendMessage(sender, NOT_SKILL, "&4The player does not have access to that skill");
+                command.sendMessage(sender, NOT_SKILL, "&4The player does not have access to that skill", silent);
                 return;
             }
 
@@ -93,19 +94,20 @@ public class CmdForceSkill implements IFunction, TabCompleter {
                 playerData.forceUpSkill(skill);
                 command.sendMessage(sender,
                         UPGRADED,
-                        "&6" + skill.getData().getName() + "&2 was upgraded for &6" + player.getName());
+                        "&6" + skill.getData().getName() + "&2 was upgraded for &6" + player.getName(), silent);
             } else if (args[1].equals("down")) {
                 playerData.forceDownSkill(skill);
                 command.sendMessage(sender,
                         DOWNGRADED,
-                        "&6" + skill.getData().getName() + "&2 was downgraded for &6" + player.getName());
+                        "&6" + skill.getData().getName() + "&2 was downgraded for &6" + player.getName(), silent);
             } else if (args[1].equals("reset")) {
                 playerData.refundSkill(skill);
                 command.sendMessage(sender,
                         RESET,
-                        "&6" + skill.getData().getName() + "&2 was reset for &6" + player.getName());
+                        "&6" + skill.getData().getName() + "&2 was reset for &6" + player.getName(), silent);
             } else
-                command.sendMessage(sender, NOT_FUNCTION, "&4That is not a valid function. Use up, down, or reset.");
+                command.sendMessage(sender, NOT_FUNCTION, "&4That is not a valid function. Use up, down, or reset.",
+                        silent);
         }
     }
 

@@ -66,9 +66,10 @@ public class CmdForcePoints implements IFunction, TabCompleter {
      * @param plugin plugin reference
      * @param sender sender of the command
      * @param args   argument list
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         Player  target = null;
         Integer amount = null;
         String  group  = null;
@@ -76,7 +77,7 @@ public class CmdForcePoints implements IFunction, TabCompleter {
         if (args.length == 2) {
             if (sender instanceof Player) target = (Player) sender;
             else {
-                cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name");
+                cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name", silent);
                 return;
             }
             amount = Integer.parseInt(args[1]);
@@ -111,31 +112,31 @@ public class CmdForcePoints implements IFunction, TabCompleter {
         } else if (args.length == 4) {
             target = Bukkit.getPlayer(args[1]);
             if (target == null) {
-                cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name");
+                cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name", silent);
                 return;
             }
             try {
                 amount = Integer.parseInt(args[2]);
             } catch (NumberFormatException ignored) {
-                cmd.sendMessage(sender, NOT_NUMBER, ChatColor.RED + "That is not a valid skill point amount");
+                cmd.sendMessage(sender, NOT_NUMBER, ChatColor.RED + "That is not a valid skill point amount", silent);
                 return;
             }
             group = args[3];
             if (!Fabled.getGroups().contains(group)) {
-                cmd.sendMessage(sender, NOT_GROUP, ChatColor.RED + "That is not a valid class group");
+                cmd.sendMessage(sender, NOT_GROUP, ChatColor.RED + "That is not a valid class group", silent);
                 return;
             }
         }
 
         // Disabled world
         if (!Fabled.getSettings().isWorldEnabled(target.getWorld())) {
-            cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+            cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world", silent);
             return;
         }
 
         PlayerData data = Fabled.getData(target);
         if (data == null) {
-            cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name");
+            cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name", silent);
             return;
         }
 
@@ -147,20 +148,20 @@ public class CmdForcePoints implements IFunction, TabCompleter {
                             GAVE_SP,
                             ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD + "{player} {points}{group} "
                                     + ChatColor.DARK_GREEN + "skill points",
-                            Filter.PLAYER.setReplacement(target.getName()),
+                            silent, Filter.PLAYER.setReplacement(target.getName()),
                             RPGFilter.GROUP.setReplacement(""),
                             RPGFilter.POINTS.setReplacement("" + amount));
                 } else {
                     PlayerClass clazz = data.getClass(group);
                     if (clazz == null) {
-                        cmd.sendMessage(sender, NOT_GROUP, ChatColor.RED + "That is not a valid class group");
+                        cmd.sendMessage(sender, NOT_GROUP, ChatColor.RED + "That is not a valid class group", silent);
                     } else {
                         clazz.givePoints(amount, PointSource.COMMAND);
                         cmd.sendMessage(sender,
                                 GAVE_SP,
                                 ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD + "{player} {points}{group} "
                                         + ChatColor.DARK_GREEN + "skill points",
-                                Filter.PLAYER.setReplacement(target.getName()),
+                                silent, Filter.PLAYER.setReplacement(target.getName()),
                                 RPGFilter.GROUP.setReplacement(' ' + group),
                                 RPGFilter.POINTS.setReplacement("" + amount));
                     }
@@ -173,20 +174,20 @@ public class CmdForcePoints implements IFunction, TabCompleter {
                             SET_SP,
                             ChatColor.DARK_GREEN + "You have set " + ChatColor.GOLD + "{player}'s{group} "
                                     + ChatColor.DARK_GREEN + "skill points to " + ChatColor.GOLD + "{points}",
-                            Filter.PLAYER.setReplacement(target.getName()),
+                            silent, Filter.PLAYER.setReplacement(target.getName()),
                             RPGFilter.GROUP.setReplacement(""),
                             RPGFilter.POINTS.setReplacement("" + amount));
                 } else {
                     PlayerClass clazz = data.getClass(group);
                     if (clazz == null) {
-                        cmd.sendMessage(sender, NOT_GROUP, ChatColor.RED + "That is not a valid class group");
+                        cmd.sendMessage(sender, NOT_GROUP, ChatColor.RED + "That is not a valid class group", silent);
                     } else {
                         clazz.setPoints(amount);
                         cmd.sendMessage(sender,
                                 SET_SP,
                                 ChatColor.DARK_GREEN + "You have set " + ChatColor.GOLD + "{player}'s{group} "
                                         + ChatColor.DARK_GREEN + "skill points to " + ChatColor.GOLD + "{points}",
-                                Filter.PLAYER.setReplacement(target.getName()),
+                                silent, Filter.PLAYER.setReplacement(target.getName()),
                                 RPGFilter.GROUP.setReplacement(' ' + group),
                                 RPGFilter.POINTS.setReplacement("" + amount));
                     }

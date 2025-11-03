@@ -57,9 +57,10 @@ public class CmdRefund implements IFunction {
      * @param plugin plugin reference
      * @param sender sender of the command
      * @param args   argument list
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         // Only players have skills
         if (sender instanceof Player) {
             PlayerData player = Fabled.getData((Player) sender);
@@ -68,10 +69,10 @@ public class CmdRefund implements IFunction {
             if (args.length < 1) {
                 // Player must have a class
                 if (!player.hasClass()) {
-                    cmd.sendMessage(sender, NO_CLASS, "&4You have not professed as any class yet");
+                    cmd.sendMessage(sender, NO_CLASS, "&4You have not professed as any class yet", silent);
                 }
                 player.refundSkills();
-                cmd.sendMessage(sender, REFUNDED, "&2Your skill points have been refunded");
+                cmd.sendMessage(sender, REFUNDED, "&2Your skill points have been refunded", silent);
             } else if (args.length > 2 && args[1].equals("attribute")) {
 
                 OfflinePlayer player1    = Bukkit.getOfflinePlayer(args[0]);
@@ -87,12 +88,12 @@ public class CmdRefund implements IFunction {
                         cmd.sendMessage(sender,
                                 REFUNDED_OTHER,
                                 "&6" + refundAmount + " " + args[2] + " &2attribute points have been refunded for &6"
-                                        + args[0]);
+                                        + args[0], silent);
                     } else {
                         cmd.sendMessage(sender,
                                 REFUNDED_OTHER_FAIL,
                                 "&6" + refundAmount + " " + args[2] + " &cattribute points could not be refunded for &6"
-                                        + args[0]);
+                                        + args[0], silent);
                     }
                 }
             } else if (args.length == 2 && args[1].equals("attribute")) {
@@ -102,12 +103,13 @@ public class CmdRefund implements IFunction {
                 List<String> refunded = playerData.refundAttributes();
                 cmd.sendMessage(sender,
                         REFUNDED_OTHER_ALL,
-                        "&2Refunded &6" + args[0] + "&2's attribute points for &6" + String.join(", ", refunded));
+                        "&2Refunded &6" + args[0] + "&2's attribute points for &6" + String.join(", ", refunded),
+                        silent);
             }
         }
         // Console doesn't have profession options
         else {
-            cmd.sendMessage(sender, CANNOT_USE, ChatColor.RED + "This cannot be used by the console");
+            cmd.sendMessage(sender, CANNOT_USE, ChatColor.RED + "This cannot be used by the console", silent);
         }
     }
 }

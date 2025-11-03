@@ -66,24 +66,25 @@ public class CmdBind implements IFunction, TabCompleter {
      * @param plugin  plugin reference
      * @param sender  sender of the command
      * @param args    arguments
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         if (!(sender instanceof Player)) {
-            command.sendMessage(sender, NOT_PLAYER, "&4Only players can use this command");
+            command.sendMessage(sender, NOT_PLAYER, "&4Only players can use this command", silent);
             return;
         }
         Player player = (Player) sender;
 
         // Disabled world
         if (!Fabled.getSettings().isWorldEnabled(player.getWorld())) {
-            command.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+            command.sendMessage(sender, DISABLED, "&4You cannot use this command in this world", silent);
             return;
         }
 
         ItemStack item = BindListener.getHeldItem(player.getInventory());
         if (item == null || item.getItemMeta() == null) {
-            command.sendMessage(sender, NO_ITEM, "&4You are not holding an item");
+            command.sendMessage(sender, NO_ITEM, "&4You are not holding an item", silent);
             return;
         }
         ItemMeta meta = item.getItemMeta();
@@ -98,9 +99,9 @@ public class CmdBind implements IFunction, TabCompleter {
             PlayerSkill skill = playerData.getSkill(skillName.toString());
 
             if (skill == null) {
-                command.sendMessage(sender, NOT_SKILL, "&4You do not have that skill");
+                command.sendMessage(sender, NOT_SKILL, "&4You do not have that skill", silent);
             } else if (skill.getLevel() == 0) {
-                command.sendMessage(sender, NOT_UNLOCKED, "&4You have not unlocked that skill");
+                command.sendMessage(sender, NOT_UNLOCKED, "&4You have not unlocked that skill", silent);
             } else {
                 List<String> bound = BindListener.getBoundSkills(item);
                 if (!bound.contains(skill.getData().getKey())) {
@@ -110,7 +111,7 @@ public class CmdBind implements IFunction, TabCompleter {
                 command.sendMessage(sender,
                         SKILL_BOUND,
                         "&6{skill} &2has been bound to &6{item}",
-                        RPGFilter.SKILL.setReplacement(skill.getData().getName()),
+                        silent, RPGFilter.SKILL.setReplacement(skill.getData().getName()),
                         RPGFilter.ITEM.setReplacement(meta.hasDisplayName() ? meta.getDisplayName()
                                 : TextFormatter.format(item.getType().name())));
             }

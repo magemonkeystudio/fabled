@@ -28,7 +28,6 @@ package studio.magemonkey.fabled.listener;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -38,8 +37,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.event.KeyPressEvent;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -47,8 +46,7 @@ import java.util.UUID;
  * combos that cast skills.
  */
 public class ClickListener extends FabledListener {
-    private Set<UUID> dropPlayers = new HashSet<>();
-
+    private Map<UUID, Long> dropPlayers = new HashMap<>();
 
     /**
      * Registers clicks as they happen
@@ -58,32 +56,36 @@ public class ClickListener extends FabledListener {
     @EventHandler
     public void onClick(PlayerInteractEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) return;
+        UUID playerId = event.getPlayer().getUniqueId();
+        Long dropTime = dropPlayers.get(playerId);
 
-        // Delay the click firing by 1 tick just to ensure that the player clicked instead of dropping an item
-        Bukkit.getScheduler().runTaskLater(Fabled.getPlugin(Fabled.class), () -> {
-            // Drop event
-            if (dropPlayers.contains(event.getPlayer().getUniqueId())) {
-                dropPlayers.remove(event.getPlayer().getUniqueId());
+        if (dropTime != null) {
+            long now = System.currentTimeMillis();
+
+            // If a player dropped an item within 3 ticks ignore click event.
+            if (now - dropTime < 150) {
                 return;
+            } else {
+                dropPlayers.remove(playerId); // cleanup
             }
+        }
 
-            // Left clicks
-            if (!Fabled.getSettings().isAnimationLeftClick()) {
-                if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
-                    Bukkit.getServer()
-                            .getPluginManager()
-                            .callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.LEFT));
-                    return;
-                }
-            }
-
-            // Right clicks
-            if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
+        // Left clicks
+        if (!Fabled.getSettings().isAnimationLeftClick()) {
+            if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
                 Bukkit.getServer()
                         .getPluginManager()
-                        .callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.RIGHT));
+                        .callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.LEFT));
+                return;
             }
-        }, 1L);
+        }
+
+        // Right clicks
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
+            Bukkit.getServer()
+                    .getPluginManager()
+                    .callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.RIGHT));
+        }
     }
 
     @EventHandler
@@ -110,15 +112,15 @@ public class ClickListener extends FabledListener {
 
     @EventHandler
     public void onDrop(final PlayerDropItemEvent event) {
+        // Keep track of players who have dropped items.
+        UUID playerId = event.getPlayer().getUniqueId();
+        dropPlayers.put(playerId, System.currentTimeMillis());
+        Bukkit.getScheduler()
+                .runTaskLater(Fabled.getPlugin(Fabled.class),
+                        () -> dropPlayers.remove(playerId),
+                        3L); // 3 ticks = ~150ms
+
         Bukkit.getServer().getPluginManager().callEvent(new KeyPressEvent(event.getPlayer(), KeyPressEvent.Key.Q));
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void dropTimer(final PlayerDropItemEvent event) {
-        dropPlayers.add(event.getPlayer().getUniqueId());
-        Bukkit.getScheduler()
-                .runTaskLater(Fabled.getPlugin(Fabled.class),
-                        () -> dropPlayers.remove(event.getPlayer().getUniqueId()),
-                        2);
-    }
 }

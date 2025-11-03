@@ -68,9 +68,10 @@ public class CmdForceAttr implements IFunction, TabCompleter {
      * @param plugin plugin reference
      * @param sender sender of the command
      * @param args   argument list
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         // Only players have profession options
         if (args.length < 1) {
             CommandManager.displayUsage(cmd, sender);
@@ -80,7 +81,7 @@ public class CmdForceAttr implements IFunction, TabCompleter {
         // Grab the player data
         OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
         if (player == null) {
-            cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name");
+            cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name", silent);
             return;
         }
         PlayerData data = Fabled.getData(player);
@@ -92,7 +93,7 @@ public class CmdForceAttr implements IFunction, TabCompleter {
                     RESET,
                     ChatColor.GOLD + "{player}'s " + ChatColor.DARK_GREEN + "attributes were refunded for attributes "
                             + ChatColor.GOLD + "{attributes}",
-                    Filter.PLAYER.setReplacement(args[0]),
+                    silent, Filter.PLAYER.setReplacement(args[0]),
                     new CustomFilter("attributes", StringUtils.join(refunded, ", ")));
             return;
         }
@@ -102,7 +103,7 @@ public class CmdForceAttr implements IFunction, TabCompleter {
             cmd.sendMessage(sender,
                     NOT_ATTR,
                     ChatColor.GOLD + "{name}" + ChatColor.RED + " is not a valid attribute name",
-                    RPGFilter.NAME.setReplacement(args[1]));
+                    silent, RPGFilter.NAME.setReplacement(args[1]));
             return;
         }
 
@@ -114,7 +115,7 @@ public class CmdForceAttr implements IFunction, TabCompleter {
                         RESET_ONE_FAIL,
                         ChatColor.GOLD + "{player}'s " + ChatColor.DARK_GREEN + "{name}" + ChatColor.RED
                                 + " attributes were not refunded",
-                        Filter.PLAYER.setReplacement(args[0]),
+                        silent, Filter.PLAYER.setReplacement(args[0]),
                         RPGFilter.NAME.setReplacement(args[1]));
                 return;
             }
@@ -122,7 +123,7 @@ public class CmdForceAttr implements IFunction, TabCompleter {
                     RESET_ONE,
                     ChatColor.GOLD + "{player}'s " + ChatColor.DARK_GREEN + "{name}" + ChatColor.GOLD
                             + " attributes were refunded",
-                    Filter.PLAYER.setReplacement(args[0]),
+                    silent, Filter.PLAYER.setReplacement(args[0]),
                     RPGFilter.NAME.setReplacement(args[1]));
         }
 
@@ -136,7 +137,7 @@ public class CmdForceAttr implements IFunction, TabCompleter {
                             GAVE_ATTR_FAIL,
                             ChatColor.GOLD + "{player}" + ChatColor.RED + " was not given " + ChatColor.GOLD
                                     + "{amount} {name} points",
-                            Filter.PLAYER.setReplacement(args[0]),
+                            silent, Filter.PLAYER.setReplacement(args[0]),
                             RPGFilter.NAME.setReplacement(args[1]));
                     return;
                 }
@@ -144,14 +145,14 @@ public class CmdForceAttr implements IFunction, TabCompleter {
                         GAVE_ATTR,
                         ChatColor.GOLD + "{player}" + ChatColor.DARK_GREEN + " was given " + ChatColor.GOLD
                                 + "{amount} {name} points",
-                        Filter.PLAYER.setReplacement(args[0]),
+                        silent, Filter.PLAYER.setReplacement(args[0]),
                         RPGFilter.NAME.setReplacement(args[1]),
                         Filter.AMOUNT.setReplacement(amount + ""));
             } catch (Exception ex) {
                 cmd.sendMessage(sender,
                         NOT_NUM,
                         ChatColor.GOLD + "{amount} " + ChatColor.RED + "is not an integer number",
-                        Filter.AMOUNT.setReplacement(args[2]));
+                        silent, Filter.AMOUNT.setReplacement(args[2]));
             }
         }
     }

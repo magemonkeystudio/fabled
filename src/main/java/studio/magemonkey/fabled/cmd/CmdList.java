@@ -64,20 +64,21 @@ public class CmdList implements IFunction, TabCompleter {
      * @param plugin plugin reference
      * @param sender sender of the command
      * @param args   argument list
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         // Disabled world
         if (sender instanceof Player && !Fabled.getSettings().isWorldEnabled(((Player) sender).getWorld())
                 && args.length == 0) {
-            cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+            cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world", silent);
         }
 
         // Only can show info of a player so console needs to provide a name
         else if (sender instanceof Player || args.length >= 1) {
             OfflinePlayer target = args.length == 0 ? (OfflinePlayer) sender : Bukkit.getOfflinePlayer(args[0]);
             if (target == null) {
-                cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name");
+                cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name", silent);
                 return;
             }
 
@@ -86,7 +87,7 @@ public class CmdList implements IFunction, TabCompleter {
                     TITLE,
                     ChatColor.DARK_GRAY + "--" + ChatColor.DARK_GREEN + " {player} " + ChatColor.DARK_GRAY
                             + "-----------",
-                    Filter.PLAYER.setReplacement(target.getName()));
+                    silent, Filter.PLAYER.setReplacement(target.getName()));
             String line = cmd.getMessage(LINE,
                     ChatColor.GRAY + "[" + ChatColor.GOLD + "{id}" + ChatColor.GRAY + "] " + ChatColor.DARK_GREEN + "Lv"
                             + ChatColor.GOLD + "{level} {class}");
@@ -104,12 +105,12 @@ public class CmdList implements IFunction, TabCompleter {
                     );
                 }
             }
-            cmd.sendMessage(sender, END, ChatColor.DARK_GRAY + "----------------------------");
+            cmd.sendMessage(sender, END, ChatColor.DARK_GRAY + "----------------------------", silent);
         }
 
         // Console doesn't have profession options
         else {
-            cmd.sendMessage(sender, NEEDS_ARGS, ChatColor.RED + "A player name is required from the console");
+            cmd.sendMessage(sender, NEEDS_ARGS, ChatColor.RED + "A player name is required from the console", silent);
         }
     }
 

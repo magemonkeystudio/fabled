@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import studio.magemonkey.codex.registry.BuffRegistry;
 import studio.magemonkey.fabled.api.event.BuffExpiredEvent;
@@ -24,7 +25,7 @@ import static studio.magemonkey.fabled.listener.attribute.AttributeListener.PHYS
  */
 public class BuffListener extends FabledListener {
 
-    private static double scaleDamage(LivingEntity damager, LivingEntity target, double damage,
+    private static double scaleDamage(@Nullable LivingEntity damager, @NotNull LivingEntity target, double damage,
                                       @Nullable String classification) {
         String damageType  = BuffType.DAMAGE.getLocalizedName();
         String defenseType = BuffType.DEFENSE.getLocalizedName();
@@ -34,7 +35,8 @@ public class BuffListener extends FabledListener {
             defenseType = BuffType.SKILL_DEFENSE.getLocalizedName() + "_" + classification;
         }
 
-        double withDamageBuffs = BuffRegistry.scaleValue(damageType, damager, damage);
+        double withDamageBuffs = damage;
+        if (damager != null) withDamageBuffs = BuffRegistry.scaleValue(damageType, damager, damage);
         // With defense buffs
         return BuffRegistry.scaleValue(defenseType, target, withDamageBuffs);
     }

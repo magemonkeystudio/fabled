@@ -7,7 +7,7 @@ import studio.magemonkey.fabled.api.Settings;
 
 /**
  * Fabled © 2024
- * studio.magemonkey.fabled.dynamic.trigger.BlockBreakTrigger
+ * studio.magemonkey.fabled.dynamic.trigger.GlideTrigger
  */
 public class GlideTrigger implements Trigger<EntityToggleGlideEvent> {
 

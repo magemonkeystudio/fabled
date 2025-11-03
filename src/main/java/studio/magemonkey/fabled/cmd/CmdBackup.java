@@ -26,6 +26,7 @@
  */
 package studio.magemonkey.fabled.cmd;
 
+import lombok.RequiredArgsConstructor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -50,30 +51,27 @@ public class CmdBackup implements IFunction {
      * @param plugin  plugin reference
      * @param sender  sender of the command
      * @param args    arguments
+     * @param silent  whether to suppress output
      */
     @Override
-    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand command,
+                        Plugin plugin,
+                        CommandSender sender,
+                        String[] args,
+                        boolean silent) {
         final Fabled api = (Fabled) plugin;
-        command.sendMessage(sender, BACKUP, "&2Starting backup asynchronously...");
-        new BackupTask(api, command, sender).runTaskAsynchronously(api);
+        command.sendMessage(sender, BACKUP, "&2Starting backup asynchronously...", silent);
+        new BackupTask(command, sender, silent).runTaskAsynchronously(api);
     }
 
     /**
      * The task for backing up SQL data
      */
-    private class BackupTask extends BukkitRunnable {
+    @RequiredArgsConstructor
+    private static class BackupTask extends BukkitRunnable {
         private final ConfigurableCommand cmd;
-        private final Fabled              api;
         private final CommandSender       sender;
-
-        /**
-         * @param api Fabled reference
-         */
-        BackupTask(Fabled api, ConfigurableCommand cmd, CommandSender sender) {
-            this.api = api;
-            this.cmd = cmd;
-            this.sender = sender;
-        }
+        private final boolean             silent;
 
         /**
          * Runs the backup task, backing up the entire SQL database locally
@@ -84,6 +82,7 @@ public class CmdBackup implements IFunction {
             cmd.sendMessage(sender,
                     DONE,
                     "&2SQL database backup has finished with {amount} entries backed up",
+                    silent,
                     Filter.AMOUNT.setReplacement(count + ""));
         }
     }

@@ -8,5 +8,6 @@ public enum CastMode {
     TITLE,
     SUBTITLE,
     CHAT,
+    WHEEL
     ;
 }

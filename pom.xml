@@ -7,11 +7,11 @@
     <parent>
         <groupId>studio.magemonkey</groupId>
         <artifactId>magemonkey-parent</artifactId>
-        <version>1.21.7-R0.3</version>
+        <version>1.21.8-R1.1</version>
     </parent>
 
     <artifactId>fabled</artifactId>
-    <version>1.0.4-R0.59-SNAPSHOT</version>
+    <version>1.0.4-R0.65-SNAPSHOT</version>
     <name>Fabled</name>
     <description>A Minecraft Bukkit plugin aiming to provide an easy code API and skill editor for all server owners to
         create unique and fully custom classes and skills.
@@ -22,19 +22,19 @@
 
     <properties>
         <java.version>14</java.version>
-        <codex.version>1.1.1-R0.4-SNAPSHOT</codex.version>
+        <codex.version>1.1.1-R0.11-SNAPSHOT</codex.version>
 
         <delombok.dir>${project.build.directory}/javadoc-delombok</delombok.dir>
     </properties>
 
     <repositories>
         <repository>
-            <id>sonatype</id>
-            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+            <id>magemonkey-releases</id>
+            <url>https://repo.travja.dev/releases</url>
         </repository>
         <repository>
-            <id>dmulloy2-repo</id>
-            <url>https://repo.dmulloy2.net/repository/public/</url>
+            <id>magemonkey-snapshots</id>
+            <url>https://repo.travja.dev/snapshots</url>
         </repository>
     </repositories>
 
@@ -42,6 +42,10 @@
         <dependency>
             <groupId>org.mockbukkit.mockbukkit</groupId>
             <artifactId>mockbukkit-v1.21</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
         </dependency>
 
         <dependency>
@@ -52,9 +56,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.comphenix.protocol</groupId>
+            <groupId>net.dmulloy2</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>5.3.0</version>
+            <version>5.4.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -150,7 +154,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.2</version>
+                <version>3.5.4</version>
                 <configuration>
                     <systemPropertyVariables>
                         <CODEX_VERSION>${codex.version}</CODEX_VERSION>
@@ -183,7 +187,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.11.2</version>
+                <version>3.12.0</version>
                 <configuration>
                     <sourcepath>${delombok.dir}</sourcepath>
                     <outputDirectory>gh-pages</outputDirectory>

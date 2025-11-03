@@ -45,10 +45,11 @@ public class CmdReload implements IFunction {
      * @param plugin plugin reference
      * @param sender sender of the command
      * @param args   argument list
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         Fabled.reload();
-        cmd.sendMessage(sender, DONE, "&2Fabled has been reloaded");
+        cmd.sendMessage(sender, DONE, "&2Fabled has been reloaded", silent);
     }
 }

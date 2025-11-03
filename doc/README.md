@@ -1,6 +1,6 @@
-[![Build](https://github.com/magemonkeystudio/${project.artifactId}/actions/workflows/release.yml/badge.svg?branch=main)](https://central.sonatype.com/repository/maven-snapshots/studio/magemonkey/${project.artifactId}/)
-[![Build](https://github.com/magemonkeystudio/${project.artifactId}/actions/workflows/devbuild.yml/badge.svg?branch=dev)](https://central.sonatype.com/repository/maven-snapshots/studio/magemonkey/${project.artifactId}/${project.version}/)
-[![Discord](https://dcbadge.vercel.app/api/server/6UzkTe6RvW?style=flat)](https://discord.gg/6UzkTe6RvW)
+[![Build](https://github.com/magemonkeystudio/${project.artifactId}/actions/workflows/release.yml/badge.svg?branch=main)](https://repo.travja.dev/releases/studio/magemonkey/${project.artifactId}/${project.version})
+[![Build](https://github.com/magemonkeystudio/${project.artifactId}/actions/workflows/devbuild.yml/badge.svg?branch=dev)](https://repo.travja.dev/snapshots/studio/magemonkey/${project.artifactId}/${project.version})
+[![Discord](https://dcbadge.limes.pink/api/server/6UzkTe6RvW?style=flat)](https://discord.gg/6UzkTe6RvW)
 
 # ${project.name}
 
@@ -22,7 +22,7 @@ You can download ${project.name} from our marketplace
 
 ## MageMonkeyStudio:
 
-[![Discord](https://dcbadge.vercel.app/api/server/6UzkTe6RvW?style=flat)](https://discord.gg/6UzkTe6RvW)
+[![Discord](https://dcbadge.limes.pink/api/server/6UzkTe6RvW?style=flat)](https://discord.gg/6UzkTe6RvW)
 
 # Development
 
@@ -31,8 +31,8 @@ or snapshots through Sonatype.
 
 ```xml
 <repository>
-    <id>sonatype</id>
-    <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+    <id>magemonkey-snapshots</id>
+    <url>https://repo.travja.dev/snapshots</url>
 </repository>
 ...
 <dependency>

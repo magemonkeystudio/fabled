@@ -41,9 +41,10 @@ public class CmdHelp implements IFunction {
      * @param plugin plugin reference
      * @param sender sender of the command
      * @param args   argument list
+     * @param silent whether to suppress output
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String... args) {
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         try {
             int page = args.length >= 1 ? Integer.parseInt(args[0]) : 1;
             CommandManager.displayUsage(cmd.getParent(), sender, page);

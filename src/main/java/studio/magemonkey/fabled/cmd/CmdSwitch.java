@@ -60,17 +60,18 @@ public class CmdSwitch implements IFunction, TabCompleter {
      * @param plugin  plugin reference
      * @param sender  sender of the command
      * @param args    arguments
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         // Must be a player
         if (!(sender instanceof Player)) {
-            command.sendMessage(sender, NOT_PLAYER, "&4Only players can use this command");
+            command.sendMessage(sender, NOT_PLAYER, "&4Only players can use this command", silent);
         }
 
         // Disabled world
         else if (!Fabled.getSettings().isWorldEnabled(((Player) sender).getWorld())) {
-            command.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+            command.sendMessage(sender, DISABLED, "&4You cannot use this command in this world", silent);
         }
 
         // Needs an argument
@@ -100,11 +101,11 @@ public class CmdSwitch implements IFunction, TabCompleter {
                     player.setAccount(i);
                     player.getActiveData().profess(fabledClass);
                 }
-                command.sendMessage(sender, CHANGED, ChatColor.DARK_GREEN + "You have changed classes");
+                command.sendMessage(sender, CHANGED, ChatColor.DARK_GREEN + "You have changed classes", silent);
                 return;
             }
 
-            command.sendMessage(sender, NOT_CLASS, ChatColor.RED + "That is not a valid class");
+            command.sendMessage(sender, NOT_CLASS, ChatColor.RED + "That is not a valid class", silent);
         }
     }
 

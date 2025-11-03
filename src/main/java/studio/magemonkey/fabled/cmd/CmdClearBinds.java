@@ -49,21 +49,22 @@ public class CmdClearBinds implements IFunction {
      * @param plugin  plugin reference
      * @param sender  sender of the command
      * @param args    arguments
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         if (!(sender instanceof Player)) {
-            command.sendMessage(sender, NOT_PLAYER, "&4Only players can use this command");
+            command.sendMessage(sender, NOT_PLAYER, "&4Only players can use this command", silent);
         }
 
         // Disabled world
         else if (!Fabled.getSettings().isWorldEnabled(((Player) sender).getWorld())) {
-            command.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+            command.sendMessage(sender, DISABLED, "&4You cannot use this command in this world", silent);
         } else {
             PlayerData player = Fabled.getData((Player) sender);
 
             player.clearAllBinds();
-            command.sendMessage(sender, UNBOUND, "&2All skill bindings have been cleared");
+            command.sendMessage(sender, UNBOUND, "&2All skill bindings have been cleared", silent);
         }
     }
 }

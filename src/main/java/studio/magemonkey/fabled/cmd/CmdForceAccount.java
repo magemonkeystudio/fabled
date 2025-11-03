@@ -61,9 +61,10 @@ public class CmdForceAccount implements IFunction, TabCompleter {
      * @param plugin  plugin reference
      * @param sender  sender of the command
      * @param args    arguments
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand command, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         // Needs two arguments
         if (args.length < 2) {
             command.displayHelp(sender);
@@ -74,7 +75,7 @@ public class CmdForceAccount implements IFunction, TabCompleter {
             OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
 
             if (player == null) {
-                command.sendMessage(sender, NOT_PLAYER, "&4That is not a valid player name");
+                command.sendMessage(sender, NOT_PLAYER, "&4That is not a valid player name", silent);
                 return;
             }
 
@@ -87,13 +88,13 @@ public class CmdForceAccount implements IFunction, TabCompleter {
                     command.sendMessage(sender,
                             CHANGED,
                             ChatColor.GOLD + "{player}'s" + ChatColor.DARK_GREEN + " active account has been changed",
-                            Filter.PLAYER.setReplacement(player.getName()));
+                            silent, Filter.PLAYER.setReplacement(player.getName()));
                     if (player.isOnline()) {
                         command.sendMessage((Player) player,
                                 TARGET,
                                 ChatColor.DARK_GREEN + "Your account has been forced to " + ChatColor.GOLD
                                         + "Account #{account}",
-                                RPGFilter.ACCOUNT.setReplacement(id + ""));
+                                silent, RPGFilter.ACCOUNT.setReplacement(id + ""));
                     }
                     return;
                 }
@@ -101,7 +102,7 @@ public class CmdForceAccount implements IFunction, TabCompleter {
                 // Invalid ID
             }
 
-            command.sendMessage(sender, NOT_ACCOUNT, ChatColor.RED + "That is not a valid account ID");
+            command.sendMessage(sender, NOT_ACCOUNT, ChatColor.RED + "That is not a valid account ID", silent);
         }
     }
 

@@ -63,19 +63,20 @@ public class CmdOptions implements IFunction {
      * @param plugin plugin reference
      * @param sender sender of the command
      * @param args   argument list
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         // Disabled world
         if (sender instanceof Player && !Fabled.getSettings().isWorldEnabled(((Player) sender).getWorld()))
-            cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+            cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world", silent);
 
             // Only players have profession options
         else if (sender instanceof Player) {
             cmd.sendMessage(sender,
                     TITLE,
                     ChatColor.DARK_GRAY + "--" + ChatColor.DARK_GREEN + " Profess Options " + ChatColor.DARK_GRAY
-                            + "-----------");
+                            + "-----------", silent);
             PlayerData data = Fabled.getData((Player) sender);
             String categoryTemplate =
                     cmd.getMessage(CATEGORY, ChatColor.GOLD + "{category}" + ChatColor.GRAY + ": ");
@@ -123,9 +124,9 @@ public class CmdOptions implements IFunction {
                     sender.sendMessage(list.toString());
                 }
             }
-            cmd.sendMessage(sender, END, ChatColor.DARK_GRAY + "----------------------------");
+            cmd.sendMessage(sender, END, ChatColor.DARK_GRAY + "----------------------------", silent);
         }
         // Console doesn't have profession options
-        else cmd.sendMessage(sender, CANNOT_USE, ChatColor.RED + "This cannot be used by the console");
+        else cmd.sendMessage(sender, CANNOT_USE, ChatColor.RED + "This cannot be used by the console", silent);
     }
 }

@@ -55,9 +55,10 @@ public class CmdLore implements IFunction {
      * @param plugin plugin reference
      * @param sender sender of the command
      * @param args   argument list
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         // Must be a player with an argument
         if (args.length >= 1 && sender instanceof Player) {
             Player    player = (Player) sender;
@@ -65,7 +66,7 @@ public class CmdLore implements IFunction {
 
             // No held item
             if (held == null || held.getType().isAir()) {
-                cmd.sendMessage(sender, NO_ITEM, ChatColor.RED + "You are not holding an item");
+                cmd.sendMessage(sender, NO_ITEM, ChatColor.RED + "You are not holding an item", silent);
                 return;
             }
 
@@ -81,12 +82,12 @@ public class CmdLore implements IFunction {
             }
 
             // Messages
-            cmd.sendMessage(sender, LORE_ADDED, ChatColor.DARK_GREEN + "The lore has been added to your item");
+            cmd.sendMessage(sender, LORE_ADDED, ChatColor.DARK_GREEN + "The lore has been added to your item", silent);
         }
 
         // Not a player
         else if (!(sender instanceof Player)) {
-            cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "Only players can use that command");
+            cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "Only players can use that command", silent);
         }
 
         // Not enough arguments

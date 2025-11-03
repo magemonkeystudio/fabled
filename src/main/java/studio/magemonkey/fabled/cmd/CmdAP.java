@@ -64,13 +64,14 @@ public class CmdAP implements IFunction, TabCompleter {
      * @param plugin plugin reference
      * @param sender sender of the command
      * @param args   argument list
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         // Disabled world
         if (sender instanceof Player && !Fabled.getSettings().isWorldEnabled(((Player) sender).getWorld())
                 && args.length == 1) {
-            cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world");
+            cmd.sendMessage(sender, DISABLED, "&4You cannot use this command in this world", silent);
         }
 
         // Only can show info of a player so console needs to provide a name
@@ -78,7 +79,7 @@ public class CmdAP implements IFunction, TabCompleter {
             // Get the player data
             OfflinePlayer target = args.length == 1 ? (OfflinePlayer) sender : Bukkit.getOfflinePlayer(args[0]);
             if (target == null) {
-                cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name");
+                cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name", silent);
                 return;
             }
 
@@ -87,7 +88,7 @@ public class CmdAP implements IFunction, TabCompleter {
             try {
                 amount = Integer.parseInt(args[args.length == 1 ? 0 : 1]);
             } catch (Exception ex) {
-                cmd.sendMessage(sender, NOT_NUMBER, ChatColor.RED + "That is not a valid skill point amount");
+                cmd.sendMessage(sender, NOT_NUMBER, ChatColor.RED + "That is not a valid skill point amount", silent);
                 return;
             }
 
@@ -101,7 +102,7 @@ public class CmdAP implements IFunction, TabCompleter {
                         GAVE_AP,
                         ChatColor.DARK_GREEN + "You have given " + ChatColor.GOLD
                                 + "{player} {points} attribute points",
-                        Filter.PLAYER.setReplacement(target.getName()),
+                        silent, Filter.PLAYER.setReplacement(target.getName()),
                         RPGFilter.POINTS.setReplacement("" + amount));
             }
             if (target.isOnline()) {
@@ -109,7 +110,7 @@ public class CmdAP implements IFunction, TabCompleter {
                         RECEIVED_AP,
                         ChatColor.DARK_GREEN + "You have received " + ChatColor.GOLD + "{points} attribute points "
                                 + ChatColor.DARK_GREEN + "from " + ChatColor.GOLD + "{player}",
-                        Filter.PLAYER.setReplacement(sender.getName()),
+                        silent, Filter.PLAYER.setReplacement(sender.getName()),
                         RPGFilter.POINTS.setReplacement("" + amount));
             }
         }

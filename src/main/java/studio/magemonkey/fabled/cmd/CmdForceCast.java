@@ -65,16 +65,17 @@ public class CmdForceCast implements IFunction, TabCompleter {
      * @param plugin plugin reference
      * @param sender sender of the command
      * @param args   argument list
+     * @param silent whether to suppress output
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         // Only players have profession options
         if (args.length < 2) {
             CommandManager.displayUsage(cmd, sender);
         } else {
             Player player = Bukkit.getPlayer(args[0]);
             if (player == null) {
-                cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name");
+                cmd.sendMessage(sender, NOT_PLAYER, ChatColor.RED + "That is not a valid player name", silent);
                 return;
             }
 
@@ -90,7 +91,7 @@ public class CmdForceCast implements IFunction, TabCompleter {
 
             // Invalid class
             if (skill == null) {
-                cmd.sendMessage(sender, INVALID_SKILL, ChatColor.RED + "That is not a valid skill");
+                cmd.sendMessage(sender, INVALID_SKILL, ChatColor.RED + "That is not a valid skill", silent);
             }
 
             // Castable skill
@@ -102,7 +103,8 @@ public class CmdForceCast implements IFunction, TabCompleter {
             else {
                 cmd.sendMessage(sender,
                         WRONG_SKILL,
-                        ChatColor.RED + "Skills must be skill shot skills or dynamic skills to be cast this way.");
+                        ChatColor.RED + "Skills must be skill shot skills or dynamic skills to be cast this way.",
+                        silent);
             }
         }
     }

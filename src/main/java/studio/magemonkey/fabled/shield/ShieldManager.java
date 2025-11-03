@@ -3,6 +3,8 @@ package studio.magemonkey.fabled.shield;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import studio.magemonkey.codex.api.items.PrefixHelper;
 import studio.magemonkey.codex.registry.provider.BuffProvider;
 import studio.magemonkey.fabled.Fabled;
@@ -16,11 +18,12 @@ public class ShieldManager implements BuffProvider {
     private final Fabled                   plugin;
     private final Map<UUID, ShieldDetails> shieldDetails = new HashMap<>();
 
-    public ShieldDetails getShieldDetails(LivingEntity entity) {
+    @Nullable
+    public ShieldDetails getShieldDetails(@NotNull LivingEntity entity) {
         return shieldDetails.get(entity.getUniqueId());
     }
 
-    public void setShieldDetails(LivingEntity entity, ShieldDetails details) {
+    public void setShieldDetails(@NotNull LivingEntity entity, @NotNull ShieldDetails details) {
         shieldDetails.put(entity.getUniqueId(), details);
     }
 
@@ -36,11 +39,11 @@ public class ShieldManager implements BuffProvider {
         shieldDetails.clear();
     }
 
-    public boolean hasShield(LivingEntity entity) {
+    public boolean hasShield(@NotNull LivingEntity entity) {
         return shieldDetails.containsKey(entity.getUniqueId());
     }
 
-    public void addEffect(LivingEntity entity, ShieldEffect effect, int ticks) {
+    public void addEffect(@NotNull LivingEntity entity, @NotNull ShieldEffect effect, int ticks) {
         UUID          uuid    = entity.getUniqueId();
         ShieldDetails details = shieldDetails.computeIfAbsent(uuid, ShieldDetails::new);
         details.addEffect(effect, ticks);
@@ -48,7 +51,7 @@ public class ShieldManager implements BuffProvider {
         displayShieldDetails(entity);
     }
 
-    public void displayShieldDetails(LivingEntity entity) {
+    public void displayShieldDetails(@NotNull LivingEntity entity) {
         if (!(entity instanceof Player)) {
             return;
         }
@@ -81,7 +84,7 @@ public class ShieldManager implements BuffProvider {
     }
 
     @Override
-    public double scaleValue(String identifier, LivingEntity entity, double value) {
+    public double scaleValue(String identifier, @NotNull LivingEntity entity, double value) {
         identifier = PrefixHelper.stripPrefix("FABLED", identifier);
 
         ShieldDetails details = getShieldDetails(entity);
@@ -102,7 +105,7 @@ public class ShieldManager implements BuffProvider {
     }
 
     @Override
-    public double scaleDamageForDefense(String identifier, LivingEntity entity, double damage) {
+    public double scaleDamageForDefense(String identifier, @NotNull LivingEntity entity, double damage) {
         identifier = PrefixHelper.stripPrefix("FABLED", identifier);
 
         ShieldDetails details = getShieldDetails(entity);

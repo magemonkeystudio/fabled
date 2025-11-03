@@ -19,7 +19,7 @@ jobs:
         run: |
           git config --global user.name "Build Monkey"
           git config --global user.email "<>"
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
@@ -32,8 +32,8 @@ jobs:
         uses: s4u/maven-settings-action@v3.0.0
         with:
           githubServer: false
-          servers: '[{"id": "central", "username": "${{ secrets.SONATYPE_USERNAME }}", "password": "${{ secrets.SONATYPE_DEPLOY_KEY }}"}]'
-      - name: Publish to Maven Central
+          servers: '[{"id": "magemonkey-repo", "username": "${{ secrets.REPO_USERNAME }}", "password": "${{ secrets.DEPLOY_KEY }}"}]'
+      - name: Publish to Travja Repo
         env:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |

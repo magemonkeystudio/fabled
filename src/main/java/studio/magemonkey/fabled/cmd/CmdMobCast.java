@@ -70,15 +70,16 @@ public class CmdMobCast implements IFunction, TabCompleter {
      * @param plugin plugin reference
      * @param sender sender of the command
      * @param args   argument list
+     * @param silent
      */
     @Override
-    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args) {
+    public void execute(ConfigurableCommand cmd, Plugin plugin, CommandSender sender, String[] args, boolean silent) {
         if (args.length < 2) {
             CommandManager.displayUsage(cmd, sender);
         } else {
             Entity ent = Bukkit.getEntity(UUID.fromString(args[0]));
             if (ent == null || !(ent instanceof LivingEntity)) {
-                cmd.sendMessage(sender, NOT_ENTITY, ChatColor.RED + "That is not a valid entity");
+                cmd.sendMessage(sender, NOT_ENTITY, ChatColor.RED + "That is not a valid entity", silent);
                 return;
             }
 
@@ -96,7 +97,7 @@ public class CmdMobCast implements IFunction, TabCompleter {
 
             // Invalid class
             if (skill == null) {
-                cmd.sendMessage(sender, INVALID_SKILL, ChatColor.RED + "That is not a valid skill");
+                cmd.sendMessage(sender, INVALID_SKILL, ChatColor.RED + "That is not a valid skill", silent);
             }
 
             // Castable skill
@@ -108,7 +109,8 @@ public class CmdMobCast implements IFunction, TabCompleter {
             else {
                 cmd.sendMessage(sender,
                         WRONG_SKILL,
-                        ChatColor.RED + "Skills must be skill shot skills or dynamic skills to be cast this way.");
+                        ChatColor.RED + "Skills must be skill shot skills or dynamic skills to be cast this way.",
+                        silent);
             }
         }
     }
