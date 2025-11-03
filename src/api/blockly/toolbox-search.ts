@@ -99,6 +99,11 @@ export class ToolboxSearchCategory extends Blockly.ToolboxCategory {
     this.searchField = document.createElement('input');
     this.searchField.type = 'search';
     this.searchField.placeholder = 'Search';
+    this.searchField.autocomplete = 'off';
+    this.searchField.setAttribute('autocomplete', 'new-password');
+    this.searchField.setAttribute('autocorrect', 'off');
+    this.searchField.setAttribute('autocapitalize', 'off');
+    this.searchField.setAttribute('spellcheck', 'false');
     this.workspace_.RTL
       ? (this.searchField.style.marginRight = '8px')
       : (this.searchField.style.marginLeft = '8px');

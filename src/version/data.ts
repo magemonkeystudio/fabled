@@ -10,7 +10,7 @@ import { DATA_1_20_4 }      from './1.20.4';
 import { DATA_1_20_6 }      from './1.20.6';
 import { DATA_1_21 }        from './1.21';
 
-export const expSources = ['Mob', 'Block Break', 'Block Place', 'Craft', 'Command', 'Special', 'Exp Bottle', 'Smelt', 'Quest'];
+export const expSources = ['Mob', 'Block Break', 'Block Place', 'Craft', 'Command', 'Special', 'Exp Bottle', 'Smelt', 'Quest', 'Plugin'];
 
 type Versions = '21' | '20.6' | '20.4' | '19' | '18' | '17' | '16';
 

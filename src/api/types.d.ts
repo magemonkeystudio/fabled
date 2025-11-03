@@ -1,9 +1,9 @@
 import FabledTrigger                              from './components/triggers';
 import FabledComponent                            from '$api/components/fabled-component.svelte';
-import ComponentOption                            from './options/options';
 import type { AttributeComponent, AttributeStat } from './fabled-attribute.svelte';
 import type FabledClass                           from '../data/class-store.svelte';
 import type FabledSkill                           from '../data/skill-store.svelte';
+import type { ComponentOption }                   from '$api/options/options';
 
 export interface FabledClassData {
 	name: string;
