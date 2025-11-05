@@ -49,10 +49,11 @@ public class FlyMechanic extends MechanicComponent {
         final int ticks = (int) (seconds * 20);
         float flyspeed =
                 (float) parseValues(caster, FLY_SPEED, level, 0.1); // Get flyspeed or default value.
-        boolean flying = settings.getString(FLYING, "false")
-                .equalsIgnoreCase("true"); // Get if a player wants to grant or remove flight.
         boolean allowflight = settings.getString(ALLOW_FLIGHT, "false")
-                .equalsIgnoreCase("true"); // Get if a player wants to grant or remove flight.
+                .equalsIgnoreCase("true"); // Get if a player wants to grant or remove the ability for flight.
+        boolean flying = settings.getString(FLYING, "false")
+                .equalsIgnoreCase("true")
+                && allowflight; // Get if a player wants to force or stop a person's flight, automatically false if allowflight is false.
         final Map<String, FlyTask> casterTasks =
                 tasks.computeIfAbsent(caster.getEntityId(), HashMap::new); // Map of all current Tasks.
 
