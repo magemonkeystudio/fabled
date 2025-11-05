@@ -227,6 +227,17 @@ class DropItemTrigger extends FabledTrigger {
 	public static override new = () => new this();
 }
 
+class EntityResurrectTrigger extends FabledTrigger {
+	public constructor() {
+		super({
+			name:        'Entity Resurrect',
+			description: 'Applies skill effects when an entity is resurrected.'
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class EntityTargetTrigger extends FabledTrigger {
 	public constructor() {
 		super({
@@ -347,14 +358,14 @@ class FlagTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Flag',
-			description:  'Applies skill effects when a flag expires on a player.',
+			description:  'Applies skill effects when the player receives a flag from a mechanic.',
 			data:         [
 				new StringListSelect('Flags', 'flags', ['Any'])
 					.setTooltip('The flags to check for, "Any" will trigger regardless of flag name'),
 				new IntSelect('Min Duration', 'min-duration', 0)
 					.setTooltip('The minimum duration the specified flags must be set for'),
 				new BooleanSelect('Inverse', 'inverse', false)
-					.setTooltip('Whether to trigger when NOT applying the specified flags'),
+					.setTooltip('Whether to trigger when NOT applying the specified flags')
 			],
 			summaryItems: ['flags', 'min-duration', 'inverse']
 		});
@@ -367,14 +378,29 @@ class FlagExpireTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Flag Expire',
-			description:  'Applies skill effects when the player receives a flag from a mechanic.',
+			description:  'Applies skill effects when a flag expires on a player.',
 			data:         [
 				new StringListSelect('Flags', 'flags', ['Any'])
 					.setTooltip('The flags to check for, "Any" will trigger regardless of flag name'),
 				new BooleanSelect('Inverse', 'inverse', false)
-					.setTooltip('Whether to trigger when NOT applying the specified flags'),
+					.setTooltip('Whether to trigger when NOT applying the specified flags')
 			],
 			summaryItems: ['flags', 'inverse']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
+class FlightToggleTrigger extends FabledTrigger {
+	public constructor() {
+		super({
+			name:         'Flight Toggle',
+			description:  'Applies skill effects when a player starts or stops flying.',
+			data:         [
+				new DropdownSelect('Flying', 'type', ['Start Flying', 'Stop Flying', 'Both'])
+			],
+			summaryItems: ['type']
 		});
 	}
 
@@ -1473,8 +1499,8 @@ class ClassLevelCondition extends FabledCondition {
 					.setTooltip('The minimum class level the player should be. If the player has multiple classes, this will be of their main class'),
 				new IntSelect('Max Level', 'max-level', 99)
 					.setTooltip('The maximum class level the player should be. If the player has multiple classes, this will be of their main class'),
-				new StringSelect('Group', 'group', "main")
-					.setTooltip("The specified group to check the class level for. If set to main will choose the main class group.")
+				new StringSelect('Group', 'group', 'main')
+					.setTooltip('The specified group to check the class level for. If set to main will choose the main class group.')
 			],
 			summaryItems: ['min-level', 'max-level', 'group']
 		});
@@ -3755,6 +3781,7 @@ class MythicMobSkill extends FabledMechanic {
 			summaryItems: ['skill']
 		});
 	}
+
 	public static override new = () => new this();
 }
 
@@ -5606,38 +5633,40 @@ const particlePreviewOptions = (key: string): ComponentOption[] => {
 
 export const initComponents = () => {
 	triggers.set({
-		AIR:           { name: 'Air', component: AirTrigger },
-		ATTR_CHANGE:   { name: 'Attribute Change', component: AttributeChangeTrigger },
-		BLOCK_BREAK:   { name: 'Block Break', component: BlockBreakTrigger },
-		BLOCK_PLACE:   { name: 'Block Place', component: BlockPlaceTrigger },
-		CAST:          { name: 'Cast', component: CastTrigger },
-		CHAT:          { name: 'Chat', component: ChatTrigger },
-		CLEANUP:       { name: 'Cleanup', component: CleanupTrigger },
-		CROUCH:        { name: 'Crouch', component: CrouchTrigger },
-		DEATH:         { name: 'Death', component: DeathTrigger },
-		ENTITY_TARGET: { name: 'Entity Target', component: EntityTargetTrigger },
-		EXPERIENCE:    { name: 'Experience', component: ExperienceTrigger },
-		GLIDE:         { name: 'Glide', component: GlideTrigger },
-		HARVEST:       { name: 'Harvest', component: HarvestTrigger },
-		HEAL:          { name: 'Heal', component: HealTrigger },
-		INIT:          { name: 'Initialize', component: InitializeTrigger },
-		JUMP:          { name: 'Jump', component: JumpTrigger },
-		KILL:          { name: 'Kill', component: KillTrigger },
-		LAND:          { name: 'Land', component: LandTrigger },
-		LEFT_CLICK:    { name: 'Left Click', component: LeftClickTrigger },
-		RIGHT_CLICK:   { name: 'Right Click', component: RightClickTrigger },
-		MOVE:          { name: 'Move', component: MoveTrigger },
-		PROJ_HIT:      { name: 'Projectile Hit', component: ProjectileHitTrigger },
-		PROJ_LAUNCH:   { name: 'Projectile Launch', alias: 'Launch', component: LaunchTrigger },
-		PROJ_TICK:     { name: 'Projectile Tick', component: ProjectileTickTrigger },
-		RIPTIDE:       { name: 'Riptide', component: RiptideTrigger },
-		SHEAR:         { name: 'Shear', component: ShearTrigger },
-		SHIELD:        { name: 'Shield', component: ShieldTrigger },
-		SIGNAL:        { name: 'Signal', component: SignalTrigger },
-		SKILL_CAST:    { name: 'Skill Cast', component: SkillCastTrigger },
-		SPRINT:        { name: 'Sprint', component: SprintTrigger },
-		STRIP_LOG:    { name: 'Strip Log', component: StripLogTrigger },
-		WORLD_CHANGE:  { name: 'World Change', component: WorldChangeTrigger },
+		AIR:              { name: 'Air', component: AirTrigger },
+		ATTR_CHANGE:      { name: 'Attribute Change', component: AttributeChangeTrigger },
+		BLOCK_BREAK:      { name: 'Block Break', component: BlockBreakTrigger },
+		BLOCK_PLACE:      { name: 'Block Place', component: BlockPlaceTrigger },
+		CAST:             { name: 'Cast', component: CastTrigger },
+		CHAT:             { name: 'Chat', component: ChatTrigger },
+		CLEANUP:          { name: 'Cleanup', component: CleanupTrigger },
+		CROUCH:           { name: 'Crouch', component: CrouchTrigger },
+		DEATH:            { name: 'Death', component: DeathTrigger },
+		ENTITY_TARGET:    { name: 'Entity Target', component: EntityTargetTrigger },
+		ENTITY_RESURRECT: { name: 'Entity Resurrect', component: EntityResurrectTrigger },
+		EXPERIENCE:       { name: 'Experience', component: ExperienceTrigger },
+		FLIGHT_TOGGLE:    { name: 'Flight Toggle', component: FlightToggleTrigger },
+		GLIDE:            { name: 'Glide', component: GlideTrigger },
+		HARVEST:          { name: 'Harvest', component: HarvestTrigger },
+		HEAL:             { name: 'Heal', component: HealTrigger },
+		INIT:             { name: 'Initialize', component: InitializeTrigger },
+		JUMP:             { name: 'Jump', component: JumpTrigger },
+		KILL:             { name: 'Kill', component: KillTrigger },
+		LAND:             { name: 'Land', component: LandTrigger },
+		LEFT_CLICK:       { name: 'Left Click', component: LeftClickTrigger },
+		RIGHT_CLICK:      { name: 'Right Click', component: RightClickTrigger },
+		MOVE:             { name: 'Move', component: MoveTrigger },
+		PROJ_HIT:         { name: 'Projectile Hit', component: ProjectileHitTrigger },
+		PROJ_LAUNCH:      { name: 'Projectile Launch', alias: 'Launch', component: LaunchTrigger },
+		PROJ_TICK:        { name: 'Projectile Tick', component: ProjectileTickTrigger },
+		RIPTIDE:          { name: 'Riptide', component: RiptideTrigger },
+		SHEAR:            { name: 'Shear', component: ShearTrigger },
+		SHIELD:           { name: 'Shield', component: ShieldTrigger },
+		SIGNAL:           { name: 'Signal', component: SignalTrigger },
+		SKILL_CAST:       { name: 'Skill Cast', component: SkillCastTrigger },
+		SPRINT:           { name: 'Sprint', component: SprintTrigger },
+		STRIP_LOG:        { name: 'Strip Log', component: StripLogTrigger },
+		WORLD_CHANGE:     { name: 'World Change', component: WorldChangeTrigger },
 
 		ARMOR_EQUIP: { name: 'Armor Equip', component: ArmorEquipTrigger, section: 'Item' },
 		CONSUME:     { name: 'Consume', component: ConsumeTrigger, section: 'Item' },
@@ -5657,8 +5686,8 @@ export const initComponents = () => {
 		SKILL_DAMAGE: { name: 'Skill Damage', component: SkillDamageTrigger, section: 'Damage' },
 		TOOK_SKILL:   { name: 'Took Skill Damage', component: TookSkillTrigger, section: 'Damage' },
 
-		FLAG:   { name: 'Flag', component: FlagTrigger, section: 'Flag' },
-		FLAG_EXPIRE:   { name: 'Flag Expire', component: FlagExpireTrigger, section: 'Flag' }
+		FLAG:        { name: 'Flag', component: FlagTrigger, section: 'Flag' },
+		FLAG_EXPIRE: { name: 'Flag Expire', component: FlagExpireTrigger, section: 'Flag' }
 
 	});
 	targets.set({
