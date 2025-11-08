@@ -21,6 +21,7 @@ import java.util.Map;
 public class FlyMechanic extends MechanicComponent {
     private static final String SECONDS   = "seconds";
     private static final String FLY_SPEED = "flyspeed";
+    private static final String ALLOW_FLIGHT = "allow-flight";
     private static final String FLYING    = "flying";
 
     private final Map<Integer, Map<String, FlyTask>> tasks = new HashMap<>();
@@ -48,8 +49,11 @@ public class FlyMechanic extends MechanicComponent {
         final int ticks = (int) (seconds * 20);
         float flyspeed =
                 (float) parseValues(caster, FLY_SPEED, level, 0.1); // Get flyspeed or default value.
+        boolean allowflight = settings.getString(ALLOW_FLIGHT, "false")
+                .equalsIgnoreCase("true"); // Get if a player wants to grant or remove the ability for flight.
         boolean flying = settings.getString(FLYING, "false")
-                .equalsIgnoreCase("true"); // Get if a player wants to grant or remove flight.
+                .equalsIgnoreCase("true")
+                && allowflight; // Get if a player wants to force or stop a person's flight, automatically false if allowflight is false.
         final Map<String, FlyTask> casterTasks =
                 tasks.computeIfAbsent(caster.getEntityId(), HashMap::new); // Map of all current Tasks.
 
@@ -67,7 +71,7 @@ public class FlyMechanic extends MechanicComponent {
                         flyspeed = -1.0f;
                     }
                     // Set player flight based on given boolean.
-                    player.setAllowFlight(flying);
+                    player.setAllowFlight(allowflight);
                     player.setFlying(flying);
                     player.setFlySpeed(flyspeed);
 
