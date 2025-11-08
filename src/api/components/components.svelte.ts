@@ -3199,16 +3199,21 @@ class FlyMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Fly',
-			description:  'Grants creative flight to a target for a set duration.',
+			description:  'Grants creative flight to a target for a set duration. Can also be used to revoke flight.',
 			data:         [
+				new BooleanSelect('Allow Flight', 'allow-flight', true)
+					.setTooltip('Should the player be allowed to fly when in Survival or Adventure mode? Setting this to false will revoke flight in Survival or Adventure mode.'),
 				new AttributeSelect('Seconds', 'seconds', 3, 1)
-					.setTooltip('The duration of the flight in seconds'),
+					.setTooltip('The duration for how long flight should be granted in seconds.')
+					.requireValue('allow-flight', [true]),
 				new AttributeSelect('Flyspeed', 'flyspeed', 0.1, 0)
-					.setTooltip('How fast the player should be able to fly. NOTE: The value should be between -1 and 1. Values higher than this may show no change in speed.'),
-				new BooleanSelect('Flying', 'flying', true)
-					.setTooltip('If the player should be able to fly. Setting this to false will revoke flight regardless of time left. If set to false, the seconds value is ignored.')
+					.setTooltip('How fast the player should be able to fly. NOTE: Default flight speed is 0.1, and values greater than 1 or less than -1 will show no change in speed.')
+					.requireValue('allow-flight', [true]),
+				new BooleanSelect('Force Flight', 'flying', true)
+					.setTooltip('If the player is in the air, should they be forced to fly.')
+					.requireValue('allow-flight', [true])
 			],
-			summaryItems: ['seconds', 'flyspeed', 'flying']
+			summaryItems: ['allow-flight', 'seconds', 'flyspeed', 'flying']
 		});
 	}
 
