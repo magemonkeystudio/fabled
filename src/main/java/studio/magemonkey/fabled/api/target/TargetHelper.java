@@ -4,6 +4,7 @@ import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.utilities.reflection.FakeBoundingBox;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
@@ -248,12 +249,13 @@ public abstract class TargetHelper {
     }
 
     /**
-     * Retrieves an open location along the line for teleporting or linear targeting
+     * Retrieves an open location along the line for teleporting.
+     * Ensures there are 2 blocks of clearance for the player.
      *
      * @param loc1        start location of the path
      * @param loc2        end location of the path
      * @param throughWall whether going through walls is allowed
-     * @return the farthest open location along the path
+     * @return the most relevant open location with 2 blocks of clearance
      */
     public static Location getOpenLocation(Location loc1, Location loc2, boolean throughWall) {
         // Special case
@@ -269,28 +271,38 @@ public abstract class TargetHelper {
         // Going through walls starts at the end and traverses backwards
         if (throughWall) {
             Location temp = loc2.clone();
-            while (isSolid(temp.getBlock().getType()) && steps > 0) {
+            while (steps > 0) {
+                if (!isSolid(temp.getBlock().getType()) && !isSolid(temp.getBlock()
+                        .getRelative(BlockFace.UP)
+                        .getType())) {
+                    temp.setX(temp.getBlockX() + 0.5);
+                    temp.setZ(temp.getBlockZ() + 0.5);
+                    temp.setY(temp.getBlockY() + 1);
+                    return temp;
+                }
                 temp.subtract(slope);
                 steps--;
             }
-            temp.setX(temp.getBlockX() + 0.5);
-            temp.setZ(temp.getBlockZ() + 0.5);
-            temp.setY(temp.getBlockY() + 1);
-            return temp;
-        }
-
-        // Not going through walls starts at the beginning and traverses forward
-        else {
-            Location temp = loc1.clone();
-            while (!isSolid(temp.getBlock().getType()) && steps > 0) {
+            return loc1;
+        } else {
+            Location temp      = loc1.clone();
+            Location lastValid = null;
+            while (steps > 0) {
+                if (!isSolid(temp.getBlock().getType()) && !isSolid(temp.getBlock()
+                        .getRelative(BlockFace.UP)
+                        .getType())) {
+                    lastValid = temp.clone();
+                }
                 temp.add(slope);
                 steps--;
             }
-            temp.subtract(slope);
-            temp.setX(temp.getBlockX() + 0.5);
-            temp.setZ(temp.getBlockZ() + 0.5);
-            temp.setY(temp.getBlockY() + 1);
-            return temp;
+            if (lastValid != null) {
+                lastValid.setX(lastValid.getBlockX() + 0.5);
+                lastValid.setZ(lastValid.getBlockZ() + 0.5);
+                lastValid.setY(lastValid.getBlockY() + 1);
+                return lastValid;
+            }
+            return loc1;
         }
     }
 
