@@ -38,6 +38,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.Vector;
+import studio.magemonkey.codex.compat.VersionManager;
 import studio.magemonkey.codex.util.NamespaceResolver;
 import studio.magemonkey.fabled.api.DefaultCombatProtection;
 import studio.magemonkey.fabled.api.event.*;
@@ -47,22 +48,21 @@ import studio.magemonkey.fabled.data.TitleType;
 import studio.magemonkey.fabled.language.RPGFilter;
 import studio.magemonkey.fabled.manager.TitleManager;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * Listener for applying default status flags for the API. You should
  * not use this class as it is already set up by the API.
  */
 public class StatusListener extends FabledListener {
-    private static final HashMap<String, Long> messageTimers = new HashMap<String, Long>();
+    private static final Map<String, Long> messageTimers = new HashMap<>();
 
-    private static final HashSet<String> interrupts = new HashSet<String>() {{
+    private static final Set<String> interrupts = new HashSet<>() {{
         add(StatusFlag.STUN);
         add(StatusFlag.SILENCE);
     }};
 
-    private static final HashMap<String, String> messageMap = new HashMap<String, String>() {{
+    private static final Map<String, String> messageMap = new HashMap<>() {{
         put(StatusFlag.STUN, "stunned");
         put(StatusFlag.ROOT, "rooted");
         put(StatusFlag.INVINCIBLE, "invincible");
@@ -222,9 +222,11 @@ public class StatusListener extends FabledListener {
      * @param damage damage amount
      */
     private void checkAbsorbAndInvincible(LivingEntity entity, Cancellable event, double damage) {
-        if (check(event, entity, null, StatusFlag.ABSORB))
-            entity.setHealth(entity.getHealth() + damage);
-        else
+        if (check(event, entity, null, StatusFlag.ABSORB)) {
+            double maxHealth = Objects.requireNonNull(entity.getAttribute(VersionManager.getNms()
+                    .getAttribute("MAX_HEALTH"))).getValue();
+            entity.setHealth(Math.max(Math.min(entity.getHealth() + damage, maxHealth), 0));
+        } else
             check(event, entity, null, StatusFlag.INVINCIBLE);
     }
 
