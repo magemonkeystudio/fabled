@@ -23,9 +23,7 @@ public class ArmorEquipTrigger implements Trigger<ArmorEquipEvent> {
     }
 
     @Override
-    public void setValues(ArmorEquipEvent event, final CastData data) {
-
-    }
+    public void setValues(ArmorEquipEvent event, final CastData data) {}
 
     @Override
     public LivingEntity getCaster(ArmorEquipEvent event) {return event.getPlayer();}

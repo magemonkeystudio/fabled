@@ -32,6 +32,7 @@ import java.util.List;
 
 public class PermissionCondition extends ConditionComponent {
     private static final String PERM = "perm";
+    private static final String NEGATE = "negate";
 
     @Override
     public String getKey() {
@@ -45,6 +46,8 @@ public class PermissionCondition extends ConditionComponent {
 
     @Override
     boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        return caster.hasPermission(settings.getString(PERM));
+        boolean negate = settings.getBool(NEGATE, false);
+        boolean hasPerm = caster.hasPermission(settings.getString(PERM));
+        return negate != hasPerm;
     }
 }
