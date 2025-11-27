@@ -1949,9 +1949,11 @@ class PermissionCondition extends FabledCondition {
 			description:  'Applies child components if the caster has the required permission',
 			data:         [
 				new StringSelect('Permission', 'perm', 'some.permission')
-					.setTooltip('The permission the player needs to have')
+					.setTooltip('The permission the player needs to have'),
+				new BooleanSelect('Negate', 'negate', false)
+					.setTooltip('Whether to negate the permission check. If true, the player must NOT have the permission to pass the condition')
 			],
-			summaryItems: ['perm']
+			summaryItems: ['perm', 'negate']
 		});
 	}
 
