@@ -39,7 +39,7 @@
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
     "uuid": "^13.0.0",
-    "yaml": "^2.8.1"
+    "yaml": "^2.8.2"
   },
   "overrides": {
     "cookie": "1.0.2"
