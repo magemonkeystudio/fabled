@@ -12,3 +12,5 @@ gh-pages/
 .idea/
 .webstorm.js
 target/
+scratch/
+public/

@@ -9,7 +9,9 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --plugin-search-dir . --check . && eslint .",
-    "format": "prettier --plugin-search-dir . --write ."
+    "format": "prettier --plugin-search-dir . --write .",
+    "extract-components": "vite-node scripts/extract-components.ts",
+    "start-mcp-server": "npm run extract-components && (cd mcp-server-project && npm run build && npm run start)"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^7.0.0",
