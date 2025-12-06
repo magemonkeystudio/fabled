@@ -63,3 +63,54 @@ export async function chatWithGemini(message: string): Promise<string> {
 		throw new Error(`Failed to get response from Gemini LLM: ${(error as Error).message}`);
 	}
 }
+
+// Function to classify message intent (Fabled, Divinity, Codex vs. banter)
+export async function shouldAnswer(message: string): Promise<boolean> {
+	// Let's do some quick string checks to short-circuit obvious cases.
+	// This helps reduce costs and latency by avoiding unnecessary LLM calls.
+	const lowerMessage = message.toLowerCase();
+	const keywords = ['fabled', 'divinity', 'codex', 'skill', 'component'];
+	if (keywords.some((keyword) => lowerMessage.includes(keyword))) {
+		console.log(`✅ Quick keyword match found for message: "${message}"`);
+		return true;
+	}
+
+	if (!ai) {
+		console.warn(
+			'Google Generative AI not initialized. GEMINI_API_KEY is missing. Defaulting to true for shouldAnswer.'
+		);
+		return true; // If AI is not available, assume we should answer to avoid blocking
+	}
+
+	const classificationPrompt = `
+    Analyze the following user message and determine if it is related to the Spigot/Paper plugins Fabled, Divinity, or Codex.
+    Respond with "YES" if it is related to these topics or requests information that could be answered by tools related to these topics (e.g., listing components, getting component details).
+    Respond with "NO" if it appears to be general banter, off-topic, or something the Fabled bot should not respond to as a specialized helper.
+
+    Message: "${message}"
+    Response (YES/NO):`;
+
+	try {
+		const result = await ai.models.generateContent({
+			model: GEMINI_MODEL_NAME,
+			contents: classificationPrompt
+		});
+		const responseText = result.text?.trim().toUpperCase();
+
+		if (responseText === 'YES') {
+			console.log(`✅ Gemini classified message as domain-specific: "${message}"`);
+			return true;
+		} else if (responseText === 'NO') {
+			console.log(`🚫 Gemini classified message as general banter: "${message}"`);
+			return false;
+		} else {
+			console.warn(
+				`⚠️ Gemini returned unexpected response for intent classification: "${responseText}". Defaulting to true.`
+			);
+			return true; // Default to true if classification is ambiguous
+		}
+	} catch (error) {
+		console.error('❌ Error during intent classification with Gemini:', error);
+		return true; // Default to true if classification fails, to avoid silence
+	}
+}

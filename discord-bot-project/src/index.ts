@@ -11,109 +11,18 @@ import {
 	DMChannel
 } from 'discord.js';
 import 'dotenv/config'; // Loads .env file
-import { chatWithGemini } from './llm-service.js';
-import * as sqlite3 from 'sqlite3'; // Import sqlite3
-
-const DISCORD_MSG_MAX_LENGTH = 1900; // Leave some room for markdown and ellipsis
-const DB_PATH = process.env.SQLITE_DB_PATH || './active_channels.db'; // SQLite DB path
-
-async function chunkContent(content: string): Promise<string[]> {
-	const chunks: string[] = [];
-	let currentChunk = '';
-	const lines = content.split('\n');
-
-	for (const line of lines) {
-		if (currentChunk.length + line.length + 1 > DISCORD_MSG_MAX_LENGTH) {
-			// +1 for newline
-			chunks.push(currentChunk);
-			currentChunk = '';
-		}
-		currentChunk += (currentChunk ? '\n' : '') + line;
-	}
-	if (currentChunk) {
-		chunks.push(currentChunk);
-	}
-	return chunks;
-}
-
-async function sendMessageInChunks(targetChannel: Message['channel'], content: string) {
-	const chunks = await chunkContent(content);
-
-	// Ensure the channel is text-based before sending messages
-	if (
-		!targetChannel ||
-		!('send' in targetChannel) ||
-		!(targetChannel instanceof TextChannel || targetChannel instanceof DMChannel)
-	) {
-		console.error(
-			`[❌ ERROR] Attempted to send message to a non-text-based or null channel. Message content not sent.`
-		);
-		return;
-	}
-
-	for (const chunk of chunks) {
-		await targetChannel.send(chunk);
-	}
-}
-
-async function replyMessageInChunks(originalMessage: Message, content: string) {
-	const chunks = await chunkContent(content);
-
-	// Reply to the original message with the first chunk
-	const firstReply = await originalMessage.reply(chunks[0]);
-
-	// Send subsequent chunks in the same channel
-	for (let i = 1; i < chunks.length; i++) {
-		if (firstReply.channel instanceof TextChannel || firstReply.channel instanceof DMChannel) {
-			await firstReply.channel.send(chunks[i]);
-		}
-	}
-}
+import { chatWithGemini, shouldAnswer } from './llm-service.js';
+import {
+	activeChannels,
+	initializeDatabase,
+	loadActiveChannels,
+	saveActiveChannel,
+	deleteActiveChannel
+} from './persistence.js';
+import { messageUtils } from './message-utils.js';
 
 const TOKEN = process.env.DISCORD_TOKEN;
 const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
-
-const activeChannels: Set<string> = new Set(); // Stores channel IDs where the bot is active without mentions
-
-let db: sqlite3.Database; // Declare db globally
-
-async function initializeDatabase() {
-    return new Promise<void>((resolve, reject) => {
-        // Use OPEN_READWRITE | OPEN_CREATE to ensure the database file is created if it doesn't exist
-        db = new sqlite3.Database(DB_PATH, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err: Error | null) => {
-            if (err) {
-                console.error('❌ ERROR: Could not connect to SQLite database:', err.message);
-                return reject(err);
-            }
-            console.log('✅ Connected to SQLite database:', DB_PATH);
-
-            db.run(`CREATE TABLE IF NOT EXISTS active_channels (
-                channel_id TEXT PRIMARY KEY
-            )`, (createErr: Error | null) => {
-                if (createErr) {
-                    console.error('❌ ERROR: Could not create active_channels table:', createErr.message);
-                    return reject(createErr);
-                }
-                console.log('✅ Active channels table ensured.');
-                resolve();
-            });
-        });
-    });
-}
-
-async function loadActiveChannels() {
-    return new Promise<void>((resolve, reject) => {
-        db.all(`SELECT channel_id FROM active_channels`, (err: Error | null, rows: { channel_id: string }[]) => {
-            if (err) {
-                console.error('❌ ERROR: Could not load active channels:', err.message);
-                return reject(err);
-            }
-            rows.forEach(row => activeChannels.add(row.channel_id));
-            console.log(`✅ Loaded ${activeChannels.size} active channels.`);
-            resolve();
-        });
-    });
-}
 
 if (!TOKEN || !CLIENT_ID) {
 	console.error(
@@ -135,8 +44,8 @@ client.once('clientReady', async () => {
 	console.log(`🚀 Bot is online! Logged in as ${client.user?.tag}`);
 
 	try {
-		await initializeDatabase();
-		await loadActiveChannels();
+		await initializeDatabase(); // Initialize DB from persistence module
+		await loadActiveChannels(); // Load active channels from persistence module
 	} catch (error) {
 		console.error('❌ ERROR: Failed to initialize database or load active channels:', error);
 		process.exit(1);
@@ -145,7 +54,7 @@ client.once('clientReady', async () => {
 	// Set the bot's presence
 	client.user?.setPresence({
 		activities: [{ name: '🐒 Swinging through code!', type: 0 }], // Type 0 is PLAYING
-		status: 'online',
+		status: 'online'
 	});
 
 	// Register slash commands
@@ -154,7 +63,6 @@ client.once('clientReady', async () => {
 			name: 'ping',
 			description: 'Replies with Pong!'
 		},
-		// Removed listcomponents and componentdetails
 		{
 			name: 'startdm',
 			description: 'Initiates a direct message session with the bot.'
@@ -172,17 +80,11 @@ client.once('clientReady', async () => {
 	const rest = new REST({ version: '10' }).setToken(TOKEN);
 
 	try {
-		await rest.put(
-			Routes.applicationCommands(CLIENT_ID), // Register globally
-			{ body: commands }
-		);
+		await rest.put(Routes.applicationCommands(CLIENT_ID), { body: commands });
 		console.log('✅ Successfully reloaded application (/) commands globally.');
 	} catch (error) {
 		console.error('❌ ERROR: Failed to register slash commands:', error);
 	}
-
-	// No longer need to initialize MCP client directly here
-	// await initializeMcpClient();
 });
 
 client.on('interactionCreate', async (interaction: Interaction) => {
@@ -198,9 +100,9 @@ client.on('interactionCreate', async (interaction: Interaction) => {
 		try {
 			const user = chatInteraction.user;
 			const dmChannel = await user.createDM();
-			await sendMessageInChunks(
+			await messageUtils.sendMessageInChunks(
 				dmChannel,
-				`Hello! We can chat here directly now. You don\'t need to ping me in DMs.`
+				`Hello! We can chat here directly now. You don't need to ping me in DMs.`
 			);
 			await chatInteraction.editReply('DM session initiated! Check your private messages.');
 		} catch (error: unknown) {
@@ -214,44 +116,50 @@ client.on('interactionCreate', async (interaction: Interaction) => {
 		}
 	} else if (commandName === 'activatechannel') {
 		if (chatInteraction.channel && chatInteraction.channel.id) {
-			activeChannels.add(chatInteraction.channel.id);
-			db.run(`INSERT OR IGNORE INTO active_channels (channel_id) VALUES (?)`, [chatInteraction.channel.id], (err: Error | null) => {
-				if (err) {
-					console.error('❌ ERROR: Failed to save active channel to database:', err.message);
-					chatInteraction.editReply('❌ Failed to activate channel persistently. Please try again.');
-				} else {
-					chatInteraction.reply({
-						content: '✅ This channel has been activated for direct bot messaging. I will respond to all messages here without needing to be tagged.',
-						ephemeral: true,
-					});
-					console.log(`Channel ${chatInteraction.channel?.id} activated and saved.`);
-				}
-			});
+			const err = await saveActiveChannel(chatInteraction.channel.id);
+			if (err) {
+				console.error('❌ ERROR: Failed to save active channel to database:', err.message);
+				await chatInteraction.editReply(
+					'❌ Failed to activate channel persistently. Please try again.'
+				);
+			} else {
+				activeChannels.add(chatInteraction.channel.id); // Add to local set after successful DB save
+				await chatInteraction.reply({
+					content:
+						'✅ This channel has been activated for direct bot messaging. I will respond to all messages here without needing to be tagged.',
+					ephemeral: true
+				});
+				console.log(`Channel ${chatInteraction.channel?.id} activated and saved.`);
+			}
 		} else {
 			await chatInteraction.reply({
 				content: '❌ Could not activate this channel. Make sure this is a valid channel.',
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 	} else if (commandName === 'deactivatechannel') {
 		if (chatInteraction.channel && chatInteraction.channel.id) {
-			activeChannels.delete(chatInteraction.channel.id);
-			db.run(`DELETE FROM active_channels WHERE channel_id = ?`, [chatInteraction.channel.id], (err: Error | null) => {
-				if (err) {
-					console.error('❌ ERROR: Failed to remove active channel from database:', err.message);
-					chatInteraction.editReply('❌ Failed to deactivate channel persistently. Please try again.');
-				} else {
-					chatInteraction.reply({
-						content: '✅ This channel has been deactivated for direct bot messaging. I will only respond if tagged.',
-						ephemeral: true,
-					});
-					console.log(`Channel ${chatInteraction.channel?.id} deactivated and removed from persistence.`);
-				}
-			});
+			const err = await deleteActiveChannel(chatInteraction.channel.id);
+			if (err) {
+				console.error('❌ ERROR: Failed to remove active channel from database:', err.message);
+				await chatInteraction.editReply(
+					'❌ Failed to deactivate channel persistently. Please try again.'
+				);
+			} else {
+				activeChannels.delete(chatInteraction.channel.id); // Remove from local set after successful DB delete
+				await chatInteraction.reply({
+					content:
+						'✅ This channel has been deactivated for direct bot messaging. I will only respond if tagged.',
+					ephemeral: true
+				});
+				console.log(
+					`Channel ${chatInteraction.channel?.id} deactivated and removed from persistence.`
+				);
+			}
 		} else {
 			await chatInteraction.reply({
 				content: '❌ Could not deactivate this channel. Make sure this is a valid channel.',
-				ephemeral: true,
+				ephemeral: true
 			});
 		}
 	}
@@ -259,23 +167,22 @@ client.on('interactionCreate', async (interaction: Interaction) => {
 
 // Function to determine if the bot should respond to a message
 function shouldRespondToMessage(message: Message): boolean {
-    // Ignore messages from bots or empty content
-    if (message.author.bot || !message.content) {
-        return false;
-    }
+	// Ignore messages from bots or empty content
+	if (message.author.bot || !message.content) {
+		return false;
+	}
 
-    // Only process messages that mention the bot, or if it's a DM, or if the channel is active
-    const botMention = message.mentions.users.find((user) => user.id === client.user?.id);
-    const isDM = message.channel.type === 1; // 1 is DM channel type
-    const isActiveChannel = activeChannels.has(message.channel.id);
+	// Only process messages that mention the bot, or if it's a DM, or if the channel is active
+	const botMention = message.mentions.users.find((user) => user.id === client.user?.id);
+	const isDM = message.channel.type === 1; // 1 is DM channel type
+	const isActiveChannel = activeChannels.has(message.channel.id);
 
-    if (botMention || isDM || isActiveChannel) {
-        return true;
-    }
+	if (botMention || isDM || isActiveChannel) {
+		return true;
+	}
 
-    return false;
+	return false;
 }
-
 
 client.on('messageCreate', async (message: Message) => {
 	if (!shouldRespondToMessage(message)) {
@@ -285,6 +192,7 @@ client.on('messageCreate', async (message: Message) => {
 	// Re-evaluate botMention and isDM for cleanMessageContent
 	const botMention = message.mentions.users.find((user) => user.id === client.user?.id);
 	const isDM = message.channel.type === 1; // 1 is DM channel type
+	const isActiveChannel = activeChannels.has(message.channel.id);
 
 	// Remove bot mention from message content if present
 	const cleanMessageContent = botMention
@@ -292,12 +200,20 @@ client.on('messageCreate', async (message: Message) => {
 		: message.content.trim();
 
 	if (!cleanMessageContent) {
-		if (isDM)
-			await sendMessageInChunks(
-				message.channel,
-				'Please provide a message for the Fabled chat bot.'
-			);
+		await messageUtils.sendMessageInChunks(
+			message.channel,
+			'Please provide a message for the Fabled chat bot.'
+		);
 		return;
+	}
+
+	if (isActiveChannel && !botMention) {
+		// If we're in an active channel, we don't necessarily want to respond to _all_ messages.
+		// Only ones that have intent for the bot to respond to.
+		const respondToMessage = await shouldAnswer(cleanMessageContent);
+		if (!respondToMessage) {
+			return;
+		}
 	}
 
 	let typingInterval: NodeJS.Timeout | undefined;
@@ -315,16 +231,16 @@ client.on('messageCreate', async (message: Message) => {
 		const llmResponse = await chatWithGemini(cleanMessageContent);
 
 		if (isDM) {
-			await sendMessageInChunks(message.channel, llmResponse);
+			await messageUtils.sendMessageInChunks(message.channel, llmResponse);
 		} else {
-			await replyMessageInChunks(message, llmResponse);
+			await messageUtils.replyMessageInChunks(message, llmResponse);
 		}
 	} catch (error: unknown) {
 		console.error('❌ LLM Communication Error:', error);
 		if (isDM) {
-			await sendMessageInChunks(message.channel, 'Failed to get response from LLM.');
+			await messageUtils.sendMessageInChunks(message.channel, 'Failed to get response from LLM.');
 		} else {
-			await replyMessageInChunks(message, 'Failed to get response from LLM.');
+			await messageUtils.replyMessageInChunks(message, 'Failed to get response from LLM.');
 		}
 	} finally {
 		if (typingInterval) {
