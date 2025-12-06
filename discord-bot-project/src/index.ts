@@ -90,6 +90,12 @@ const client = new Client({
 client.once('clientReady', async () => {
 	console.log(`🚀 Bot is online! Logged in as ${client.user?.tag}`);
 
+	// Set the bot's presence
+	client.user?.setPresence({
+		activities: [{ name: '🐒 Swinging through code!', type: 0 }], // Type 0 is PLAYING
+		status: 'online',
+	});
+
 	// Register slash commands
 	const commands = [
 		{
@@ -154,6 +160,10 @@ client.on('messageCreate', async (message: Message) => {
 	if (message.author.bot || !message.content) {
 		return;
 	}
+
+	console.log(`📨 Received message from ${message.author.tag}: ${message.content}`);
+	console.log(`   In channel: ${message.channel.id}`);
+	console.log('   Mentions bot:', message.mentions.users.has(client.user?.id || ''));
 
 	// Only process messages that mention the bot, or if it's a DM
 	const botMention = message.mentions.users.find((user) => user.id === client.user?.id);

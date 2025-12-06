@@ -110,6 +110,28 @@ class FabledTools {
 		}
 		throw new Error(`Component '${component_name}' not found.`);
 	}
+
+	generate_random_number(input: { min?: number; max?: number; integer_only?: boolean }) {
+		const { min = 0, max = 1, integer_only = false } = input;
+		if (min >= max) {
+			throw new Error('Min value must be less than max value.');
+		}
+		let randomNumber = Math.random() * (max - min) + min;
+		if (integer_only) {
+			randomNumber = Math.floor(randomNumber);
+		}
+		const returnValue = {
+			content: [
+				{
+					type: 'text' as const,
+					text: `Generated random number between ${min} and ${max} (integer_only: ${integer_only}): ${randomNumber}`
+				}
+			],
+			structuredContent: { randomNumber, min, max, integer_only }
+		};
+		console.log('generate_random_number returning:', JSON.stringify(returnValue, null, 2));
+		return returnValue;
+	}
 }
 
 const toolsInstance = new FabledTools();
@@ -172,6 +194,27 @@ const getMcpServer = () => {
 			})
 		},
 		toolsInstance.get_component_details
+	);
+
+	mcpServer.registerTool(
+		'generate_random_number',
+		{
+			title: 'Generate Random Number',
+			description:
+				'Generates a random number. Accepts optional `min` and `max` parameters to specify the range, and an optional `integer_only` parameter to return an integer.',
+			inputSchema: z.object({
+				min: z.number().optional().describe('Optional: The minimum value for the random number (inclusive). Defaults to 0.'),
+				max: z.number().optional().describe('Optional: The maximum value for the random number (exclusive). Defaults to 1.'),
+				integer_only: z.boolean().optional().describe('Optional: If true, the generated number will be an integer. Defaults to false.'),
+			}),
+			outputSchema: z.object({
+				randomNumber: z.number().describe('A random number within the specified range.'),
+				min: z.number().optional().describe('The minimum value used for generation.'),
+				max: z.number().optional().describe('The maximum value used for generation.'),
+				integer_only: z.boolean().optional().describe('Whether the generated number was an integer.'),
+			})
+		},
+		toolsInstance.generate_random_number
 	);
 	return mcpServer;
 };
