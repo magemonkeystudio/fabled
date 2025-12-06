@@ -18,9 +18,19 @@ export async function initializeDatabase() {
             )`);
 			console.log('✅ Active channels table ensured.');
 			resolve();
-		} catch (err: any) {
-			console.error('❌ ERROR: Could not connect to SQLite database or create table:', err.message);
-			reject(err);
+		} catch (err) {
+			if (err instanceof Error) {
+				console.error(
+					'❌ ERROR: Could not connect to SQLite database or create table:',
+					err.message
+				);
+				reject(err);
+			} else {
+				console.error(
+					'❌ ERROR: An unknown error occurred while connecting to SQLite database or creating table.'
+				);
+				reject(new Error('Unknown error'));
+			}
 		}
 	});
 }
@@ -35,9 +45,14 @@ export async function loadActiveChannels() {
 			rows.forEach((row) => activeChannels.add(row.channel_id));
 			console.log(`✅ Loaded ${activeChannels.size} active channels.`);
 			resolve();
-		} catch (err: any) {
-			console.error('❌ ERROR: Could not load active channels:', err.message);
-			reject(err);
+		} catch (err) {
+			if (err instanceof Error) {
+				console.error('❌ ERROR: Could not load active channels:', err.message);
+				reject(err);
+			} else {
+				console.error('❌ ERROR: An unknown error occurred while loading active channels.');
+				reject(new Error('Unknown error'));
+			}
 		}
 	});
 }
@@ -48,9 +63,16 @@ export async function saveActiveChannel(channelId: string): Promise<Error | null
 			// better-sqlite3's run is synchronous
 			db.prepare(`INSERT OR IGNORE INTO active_channels (channel_id) VALUES (?)`).run(channelId);
 			resolve(null); // No error
-		} catch (err: any) {
-			console.error('❌ ERROR: Failed to save active channel to database:', err.message);
-			resolve(err);
+		} catch (err) {
+			if (err instanceof Error) {
+				console.error('❌ ERROR: Failed to save active channel to database:', err.message);
+				resolve(err);
+			} else {
+				console.error(
+					'❌ ERROR: An unknown error occurred while saving active channel to database.'
+				);
+				resolve(new Error('Unknown error'));
+			}
 		}
 	});
 }
@@ -61,9 +83,16 @@ export async function deleteActiveChannel(channelId: string): Promise<Error | nu
 			// better-sqlite3's run is synchronous
 			db.prepare(`DELETE FROM active_channels WHERE channel_id = ?`).run(channelId);
 			resolve(null); // No error
-		} catch (err: any) {
-			console.error('❌ ERROR: Failed to remove active channel from database:', err.message);
-			resolve(err);
+		} catch (err) {
+			if (err instanceof Error) {
+				console.error('❌ ERROR: Failed to remove active channel from database:', err.message);
+				resolve(err);
+			} else {
+				console.error(
+					'❌ ERROR: An unknown error occurred while removing active channel from database.'
+				);
+				resolve(new Error('Unknown error'));
+			}
 		}
 	});
 }
