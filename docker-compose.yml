@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  mcp-server:
+    build: ./mcp-server-project
+    container_name: mcp-server
+    ports:
+      - "3000:3000"
+    environment:
+      # These variables are read by the MCP server itself.
+      # MCP_PORT is set by the exposed port.
+      # Add any other environment variables your MCP server needs, e.g., for external APIs
+      - MCP_PORT=3000
+    restart: unless-stopped
+    networks:
+      - bot_network
+
+  discord-bot:
+    build: ./discord-bot-project
+    container_name: discord-bot
+    depends_on:
+      - mcp-server
+    environment:
+      # Ensure these are set in your .env file or passed directly
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - DISCORD_CLIENT_ID=${DISCORD_CLIENT_ID}
+      - DISCORD_GUILD_ID=${DISCORD_GUILD_ID} # Optional, if you use guild-specific commands
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL_NAME=${GEMINI_MODEL_NAME}
+      - MCP_SERVER_URL=http://mcp-server:3000/mcp # Internal Docker network URL
+    restart: unless-stopped
+    networks:
+      - bot_network
+
+networks:
+  bot_network:
+    driver: bridge
+
+volumes:
+  ollama_data:
