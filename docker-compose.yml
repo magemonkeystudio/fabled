@@ -1,15 +1,23 @@
 version: '3.8'
 
 services:
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+      - ./ollama_start.sh:/usr/local/bin/ollama_start.sh
+    restart: unless-stopped
+    entrypoint: ["/bin/sh", "/usr/local/bin/ollama_start.sh"]
+
   mcp-server:
     build: ./mcp-server-project
     container_name: mcp-server
     ports:
       - "3000:3000"
     environment:
-      # These variables are read by the MCP server itself.
-      # MCP_PORT is set by the exposed port.
-      # Add any other environment variables your MCP server needs, e.g., for external APIs
       - MCP_PORT=3000
     restart: unless-stopped
     networks:
@@ -21,13 +29,15 @@ services:
     depends_on:
       - mcp-server
     environment:
-      # Ensure these are set in your .env file or passed directly
       - DISCORD_TOKEN=${DISCORD_TOKEN}
       - DISCORD_CLIENT_ID=${DISCORD_CLIENT_ID}
-      - DISCORD_GUILD_ID=${DISCORD_GUILD_ID} # Optional, if you use guild-specific commands
+      - DISCORD_GUILD_ID=${DISCORD_GUILD_ID}
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - GEMINI_MODEL_NAME=${GEMINI_MODEL_NAME}
-      - MCP_SERVER_URL=http://mcp-server:3000/mcp # Internal Docker network URL
+      - MCP_SERVER_URL=http://mcp-server:3000/mcp
+      - SQLITE_DB_PATH=/data/active_channels.db # Point to the mounted volume
+    volumes:
+      - discord_bot_data:/data # Mount the volume to /data inside the container
     restart: unless-stopped
     networks:
       - bot_network
@@ -38,3 +48,4 @@ networks:
 
 volumes:
   ollama_data:
+  discord_bot_data: # New named volume for Discord bot data

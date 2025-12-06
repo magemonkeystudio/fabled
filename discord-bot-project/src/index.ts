@@ -12,8 +12,10 @@ import {
 } from 'discord.js';
 import 'dotenv/config'; // Loads .env file
 import { chatWithGemini } from './llm-service.js';
+import * as sqlite3 from 'sqlite3';
 
 const DISCORD_MSG_MAX_LENGTH = 1900; // Leave some room for markdown and ellipsis
+const DB_PATH = process.env.SQLITE_DB_PATH || './active_channels.db';
 
 async function chunkContent(content: string): Promise<string[]> {
 	const chunks: string[] = [];
@@ -165,11 +167,18 @@ client.on('interactionCreate', async (interaction: Interaction) => {
 	} else if (commandName === 'activatechannel') {
 		if (chatInteraction.channel && chatInteraction.channel.id) {
 			activeChannels.add(chatInteraction.channel.id);
-			await chatInteraction.reply({
-				content: '✅ This channel has been activated for direct bot messaging. I will respond to all messages here without needing to be tagged.',
-				ephemeral: true,
+			db.run(`INSERT OR IGNORE INTO active_channels (channel_id) VALUES (?)`, [chatInteraction.channel.id], (err) => {
+				if (err) {
+					console.error('❌ ERROR: Failed to save active channel to database:', err.message);
+					chatInteraction.editReply('❌ Failed to activate channel persistently. Please try again.');
+				} else {
+					chatInteraction.reply({
+						content: '✅ This channel has been activated for direct bot messaging. I will respond to all messages here without needing to be tagged.',
+						ephemeral: true,
+					});
+					console.log(`Channel ${chatInteraction.channel.id} activated and saved.`);
+				}
 			});
-			console.log(`Channel ${chatInteraction.channel.id} activated.`);
 		} else {
 			await chatInteraction.reply({
 				content: '❌ Could not activate this channel. Make sure this is a valid channel.',
@@ -179,11 +188,18 @@ client.on('interactionCreate', async (interaction: Interaction) => {
 	} else if (commandName === 'deactivatechannel') {
 		if (chatInteraction.channel && chatInteraction.channel.id) {
 			activeChannels.delete(chatInteraction.channel.id);
-			await chatInteraction.reply({
-				content: '✅ This channel has been deactivated for direct bot messaging. I will only respond if tagged.',
-				ephemeral: true,
+			db.run(`DELETE FROM active_channels WHERE channel_id = ?`, [chatInteraction.channel.id], (err) => {
+				if (err) {
+					console.error('❌ ERROR: Failed to remove active channel from database:', err.message);
+					chatInteraction.editReply('❌ Failed to deactivate channel persistently. Please try again.');
+				} else {
+					chatInteraction.reply({
+						content: '✅ This channel has been deactivated for direct bot messaging. I will only respond if tagged.',
+						ephemeral: true,
+					});
+					console.log(`Channel ${chatInteraction.channel.id} deactivated and removed from persistence.`);
+				}
 			});
-			console.log(`Channel ${chatInteraction.channel.id} deactivated.`);
 		} else {
 			await chatInteraction.reply({
 				content: '❌ Could not deactivate this channel. Make sure this is a valid channel.',
@@ -221,12 +237,6 @@ client.on('messageCreate', async (message: Message) => {
 	// Re-evaluate botMention and isDM for cleanMessageContent
 	const botMention = message.mentions.users.find((user) => user.id === client.user?.id);
 	const isDM = message.channel.type === 1; // 1 is DM channel type
-
-	// Remove bot mention from message content if present
-	const cleanMessageContent = botMention
-		? message.content.replace(`<@${client.user?.id}>`, '').trim()
-		: message.content.trim();
-
 
 	// Remove bot mention from message content if present
 	const cleanMessageContent = botMention
