@@ -193,24 +193,40 @@ client.on('interactionCreate', async (interaction: Interaction) => {
 	}
 });
 
+// Function to determine if the bot should respond to a message
+function shouldRespondToMessage(message: Message): boolean {
+    // Ignore messages from bots or empty content
+    if (message.author.bot || !message.content) {
+        return false;
+    }
+
+    // Only process messages that mention the bot, or if it's a DM, or if the channel is active
+    const botMention = message.mentions.users.find((user) => user.id === client.user?.id);
+    const isDM = message.channel.type === 1; // 1 is DM channel type
+    const isActiveChannel = activeChannels.has(message.channel.id);
+
+    if (botMention || isDM || isActiveChannel) {
+        return true;
+    }
+
+    return false;
+}
+
+
 client.on('messageCreate', async (message: Message) => {
-	// Ignore messages from bots or empty content
-	if (message.author.bot || !message.content) {
+	if (!shouldRespondToMessage(message)) {
 		return;
 	}
 
-	console.log(`📨 Received message from ${message.author.tag}: ${message.content}`);
-	console.log(`   In channel: ${message.channel.id}`);
-	console.log('   Mentions bot:', message.mentions.users.has(client.user?.id || ''));
-
-	// Only process messages that mention the bot, or if it's a DM, or if the channel is active
+	// Re-evaluate botMention and isDM for cleanMessageContent
 	const botMention = message.mentions.users.find((user) => user.id === client.user?.id);
 	const isDM = message.channel.type === 1; // 1 is DM channel type
-	const isActiveChannel = activeChannels.has(message.channel.id);
 
-	if (!botMention && !isDM && !isActiveChannel) {
-		return;
-	}
+	// Remove bot mention from message content if present
+	const cleanMessageContent = botMention
+		? message.content.replace(`<@${client.user?.id}>`, '').trim()
+		: message.content.trim();
+
 
 	// Remove bot mention from message content if present
 	const cleanMessageContent = botMention
