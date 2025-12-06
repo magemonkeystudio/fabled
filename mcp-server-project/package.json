@@ -18,5 +18,8 @@
     "express": "^5.2.1",
     "typescript": "^5.9.3",
     "zod": "^4.1.13"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3"
   }
 }

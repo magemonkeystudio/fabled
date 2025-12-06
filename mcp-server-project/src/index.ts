@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import 'dotenv/config'; // Load environment variables
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
@@ -77,9 +78,16 @@ class FabledTools {
 		return returnValue;
 	}
 
-	get_component_details(input: { component_name: string }) {
-		const { component_name } = input;
-		for (const type of ['triggers', 'targets', 'conditions', 'mechanics']) {
+	get_component_details(input: {
+		component_name: string;
+		component_type?: 'trigger' | 'target' | 'condition' | 'mechanic';
+	}) {
+		const { component_name, component_type } = input;
+		const componentTypesToSearch = component_type
+			? [component_type + 's']
+			: ['triggers', 'targets', 'conditions', 'mechanics'];
+
+		for (const type of componentTypesToSearch) {
 			const list = componentData[type];
 			const component = list?.find(
 				(comp: Component) => comp.name.toLowerCase() === component_name.toLowerCase()
@@ -147,7 +155,13 @@ const getMcpServer = () => {
 			title: 'Get Component Details',
 			description: `Retrieves detailed information about a specific Fabled component, including its purpose and parameters. This is useful for understanding how a component works, what inputs it requires, and how to use it to implement specific behaviors or check conditions. For example, "How can I check if a user has a permission?" or "What are the parameters for the 'Teleport' mechanic?"`,
 			inputSchema: z.object({
-				component_name: z.string().describe('The name of the component.')
+				component_name: z.string().describe('The name of the component.'),
+				component_type: z
+					.enum(['trigger', 'target', 'condition', 'mechanic'])
+					.describe(
+						'Optional: The type of component to retrieve (e.g., "trigger", "mechanic"). Specify this when the component name is ambiguous (e.g., "Heal" can be a trigger or a mechanic).'
+					)
+					.optional()
 			}),
 			outputSchema: z.object({
 				details: z.object({
