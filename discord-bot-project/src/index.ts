@@ -71,6 +71,8 @@ async function replyMessageInChunks(originalMessage: Message, content: string) {
 const TOKEN = process.env.DISCORD_TOKEN;
 const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 
+const activeChannels: Set<string> = new Set(); // Stores channel IDs where the bot is active without mentions
+
 if (!TOKEN || !CLIENT_ID) {
 	console.error(
 		'❌ ERROR: Missing critical environment variables! Please ensure DISCORD_TOKEN and DISCORD_CLIENT_ID are set.'
@@ -106,6 +108,14 @@ client.once('clientReady', async () => {
 		{
 			name: 'startdm',
 			description: 'Initiates a direct message session with the bot.'
+		},
+		{
+			name: 'activatechannel',
+			description: 'Activates the current channel for direct bot messaging without mentions.'
+		},
+		{
+			name: 'deactivatechannel',
+			description: 'Deactivates the current channel from direct bot messaging.'
 		}
 	];
 
@@ -152,6 +162,34 @@ client.on('interactionCreate', async (interaction: Interaction) => {
 				'Failed to initiate DM session. Please check your privacy settings or try again.'
 			);
 		}
+	} else if (commandName === 'activatechannel') {
+		if (chatInteraction.channel && chatInteraction.channel.id) {
+			activeChannels.add(chatInteraction.channel.id);
+			await chatInteraction.reply({
+				content: '✅ This channel has been activated for direct bot messaging. I will respond to all messages here without needing to be tagged.',
+				ephemeral: true,
+			});
+			console.log(`Channel ${chatInteraction.channel.id} activated.`);
+		} else {
+			await chatInteraction.reply({
+				content: '❌ Could not activate this channel. Make sure this is a valid channel.',
+				ephemeral: true,
+			});
+		}
+	} else if (commandName === 'deactivatechannel') {
+		if (chatInteraction.channel && chatInteraction.channel.id) {
+			activeChannels.delete(chatInteraction.channel.id);
+			await chatInteraction.reply({
+				content: '✅ This channel has been deactivated for direct bot messaging. I will only respond if tagged.',
+				ephemeral: true,
+			});
+			console.log(`Channel ${chatInteraction.channel.id} deactivated.`);
+		} else {
+			await chatInteraction.reply({
+				content: '❌ Could not deactivate this channel. Make sure this is a valid channel.',
+				ephemeral: true,
+			});
+		}
 	}
 });
 
@@ -165,11 +203,12 @@ client.on('messageCreate', async (message: Message) => {
 	console.log(`   In channel: ${message.channel.id}`);
 	console.log('   Mentions bot:', message.mentions.users.has(client.user?.id || ''));
 
-	// Only process messages that mention the bot, or if it's a DM
+	// Only process messages that mention the bot, or if it's a DM, or if the channel is active
 	const botMention = message.mentions.users.find((user) => user.id === client.user?.id);
 	const isDM = message.channel.type === 1; // 1 is DM channel type
+	const isActiveChannel = activeChannels.has(message.channel.id);
 
-	if (!botMention && !isDM) {
+	if (!botMention && !isDM && !isActiveChannel) {
 		return;
 	}
 
