@@ -12,10 +12,10 @@ import {
 } from 'discord.js';
 import 'dotenv/config'; // Loads .env file
 import { chatWithGemini } from './llm-service.js';
-import * as sqlite3 from 'sqlite3';
+import * as sqlite3 from 'sqlite3'; // Import sqlite3
 
 const DISCORD_MSG_MAX_LENGTH = 1900; // Leave some room for markdown and ellipsis
-const DB_PATH = process.env.SQLITE_DB_PATH || './active_channels.db';
+const DB_PATH = process.env.SQLITE_DB_PATH || './active_channels.db'; // SQLite DB path
 
 async function chunkContent(content: string): Promise<string[]> {
 	const chunks: string[] = [];
@@ -75,6 +75,46 @@ const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 
 const activeChannels: Set<string> = new Set(); // Stores channel IDs where the bot is active without mentions
 
+let db: sqlite3.Database; // Declare db globally
+
+async function initializeDatabase() {
+    return new Promise<void>((resolve, reject) => {
+        // Use OPEN_READWRITE | OPEN_CREATE to ensure the database file is created if it doesn't exist
+        db = new sqlite3.Database(DB_PATH, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err: Error | null) => {
+            if (err) {
+                console.error('❌ ERROR: Could not connect to SQLite database:', err.message);
+                return reject(err);
+            }
+            console.log('✅ Connected to SQLite database:', DB_PATH);
+
+            db.run(`CREATE TABLE IF NOT EXISTS active_channels (
+                channel_id TEXT PRIMARY KEY
+            )`, (createErr: Error | null) => {
+                if (createErr) {
+                    console.error('❌ ERROR: Could not create active_channels table:', createErr.message);
+                    return reject(createErr);
+                }
+                console.log('✅ Active channels table ensured.');
+                resolve();
+            });
+        });
+    });
+}
+
+async function loadActiveChannels() {
+    return new Promise<void>((resolve, reject) => {
+        db.all(`SELECT channel_id FROM active_channels`, (err: Error | null, rows: { channel_id: string }[]) => {
+            if (err) {
+                console.error('❌ ERROR: Could not load active channels:', err.message);
+                return reject(err);
+            }
+            rows.forEach(row => activeChannels.add(row.channel_id));
+            console.log(`✅ Loaded ${activeChannels.size} active channels.`);
+            resolve();
+        });
+    });
+}
+
 if (!TOKEN || !CLIENT_ID) {
 	console.error(
 		'❌ ERROR: Missing critical environment variables! Please ensure DISCORD_TOKEN and DISCORD_CLIENT_ID are set.'
@@ -93,6 +133,14 @@ const client = new Client({
 
 client.once('clientReady', async () => {
 	console.log(`🚀 Bot is online! Logged in as ${client.user?.tag}`);
+
+	try {
+		await initializeDatabase();
+		await loadActiveChannels();
+	} catch (error) {
+		console.error('❌ ERROR: Failed to initialize database or load active channels:', error);
+		process.exit(1);
+	}
 
 	// Set the bot's presence
 	client.user?.setPresence({
@@ -152,7 +200,7 @@ client.on('interactionCreate', async (interaction: Interaction) => {
 			const dmChannel = await user.createDM();
 			await sendMessageInChunks(
 				dmChannel,
-				`Hello! We can chat here directly now. You don't need to ping me in DMs.`
+				`Hello! We can chat here directly now. You don\'t need to ping me in DMs.`
 			);
 			await chatInteraction.editReply('DM session initiated! Check your private messages.');
 		} catch (error: unknown) {
@@ -167,7 +215,7 @@ client.on('interactionCreate', async (interaction: Interaction) => {
 	} else if (commandName === 'activatechannel') {
 		if (chatInteraction.channel && chatInteraction.channel.id) {
 			activeChannels.add(chatInteraction.channel.id);
-			db.run(`INSERT OR IGNORE INTO active_channels (channel_id) VALUES (?)`, [chatInteraction.channel.id], (err) => {
+			db.run(`INSERT OR IGNORE INTO active_channels (channel_id) VALUES (?)`, [chatInteraction.channel.id], (err: Error | null) => {
 				if (err) {
 					console.error('❌ ERROR: Failed to save active channel to database:', err.message);
 					chatInteraction.editReply('❌ Failed to activate channel persistently. Please try again.');
@@ -176,7 +224,7 @@ client.on('interactionCreate', async (interaction: Interaction) => {
 						content: '✅ This channel has been activated for direct bot messaging. I will respond to all messages here without needing to be tagged.',
 						ephemeral: true,
 					});
-					console.log(`Channel ${chatInteraction.channel.id} activated and saved.`);
+					console.log(`Channel ${chatInteraction.channel?.id} activated and saved.`);
 				}
 			});
 		} else {
@@ -188,7 +236,7 @@ client.on('interactionCreate', async (interaction: Interaction) => {
 	} else if (commandName === 'deactivatechannel') {
 		if (chatInteraction.channel && chatInteraction.channel.id) {
 			activeChannels.delete(chatInteraction.channel.id);
-			db.run(`DELETE FROM active_channels WHERE channel_id = ?`, [chatInteraction.channel.id], (err) => {
+			db.run(`DELETE FROM active_channels WHERE channel_id = ?`, [chatInteraction.channel.id], (err: Error | null) => {
 				if (err) {
 					console.error('❌ ERROR: Failed to remove active channel from database:', err.message);
 					chatInteraction.editReply('❌ Failed to deactivate channel persistently. Please try again.');
@@ -197,7 +245,7 @@ client.on('interactionCreate', async (interaction: Interaction) => {
 						content: '✅ This channel has been deactivated for direct bot messaging. I will only respond if tagged.',
 						ephemeral: true,
 					});
-					console.log(`Channel ${chatInteraction.channel.id} deactivated and removed from persistence.`);
+					console.log(`Channel ${chatInteraction.channel?.id} deactivated and removed from persistence.`);
 				}
 			});
 		} else {
