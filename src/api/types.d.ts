@@ -91,6 +91,7 @@ export interface ComponentData {
 	summaryItems?: string[];
 	description?: string;
 	comment?: string;
+	keywords?: string;
 }
 
 export interface TriggerData extends ComponentData {

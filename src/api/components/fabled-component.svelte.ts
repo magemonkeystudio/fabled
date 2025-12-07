@@ -10,6 +10,7 @@ export default abstract class FabledComponent extends Constructable {
 	public type: 'trigger' | 'condition' | 'mechanic' | 'target';
 	public name: string;
 	public description: string;
+	public keywords: string = '';
 	public comment: string                         = $state('');
 	public components: Writable<FabledComponent[]> = writable([]);
 	public data: ComponentOption[]                 = $state([]);
@@ -27,6 +28,7 @@ export default abstract class FabledComponent extends Constructable {
 		this.type         = type;
 		this.name         = data.name;
 		this.description  = data.description ?? '';
+		this.keywords     = data.keywords ?? '';
 		this.summaryItems = data.summaryItems ?? [];
 		this.comment      = data.comment ?? '';
 		this.setComponents(data.components || []);

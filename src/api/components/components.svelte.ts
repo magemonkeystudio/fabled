@@ -53,7 +53,8 @@ class AirTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Air',
-			description:  'Applies skill effects when an entity loses or gains air. This will fire every tick that the air value is updated.',
+			description:  'Applies skill effects when an entity loses or gains air, firing every tick the air value changes. This is useful for abilities that activate upon drowning, surfacing, or when underwater.',
+			keywords:     'air, oxygen, breathe, drown, underwater, suffocate, breath',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Increasing', 'Decreasing'])
 					.setTooltip('Whether the entity needs to be gaining or losing air to trigger')
@@ -69,7 +70,8 @@ class ArmorEquipTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Armor Equip',
-			description:  'Applies skill effects when a player equips a new item in an armor or hand slot',
+			description:  'Applies skill effects when a player equips or unequips an item in any armor slot or a hand slot. This can be used for abilities that activate when changing gear.',
+			keywords:     'armor, equip, unequip, gear, change, helmet, chestplate, leggings, boots, main hand, offhand',
 			data:         [new DropdownSelect('Slots', 'slots', ['Any', 'Helmet', 'Chestplate', 'Leggings', 'Boots', 'Main hand', 'Offhand'], ['Any'], true)
 				.setTooltip('The armor slots to check for')],
 			summaryItems: ['slots']
@@ -83,8 +85,8 @@ class AttributeChangeTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Attribute Change',
-			description:  'Applies skill effects when a player\'s attribute changes. <code>api-attribute</code> is the attribute name, '
-											+ '<code>api-change</code> is the change, and <code>api-value</code> is the new value',
+			description:  'Applies skill effects when a player\'s attribute changes, such as strength, dexterity, or custom attributes. The placeholders <code>api-attribute</code>, <code>api-change</code>, and <code>api-value</code> provide details about the change.',
+			keywords:     'attribute, stats, strength, dexterity, intelligence, health, mana, change, modify',
 			data:         [new DropdownSelect('Attribute', 'attr', () => ['Any', ...attributeStore.getAttributeNames()], ['Any'], true)
 				.setTooltip('The attribute to check for')],
 			summaryItems: ['attr']
@@ -98,7 +100,8 @@ class BlockBreakTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Block Break',
-			description:  'Applies skill effects when a player breaks a block matching the given details',
+			description:  'Applies skill effects when a player successfully breaks a specific type of block. This can be used for abilities that activate upon mining or destroying environmental elements.',
+			keywords:     'block, break, destroy, mine, mining, chop, digging',
 			data:         [new BlockSelect(
 				'The type of block expected to be broken',
 				'The expected data value of the block (-1 for any data value)'
@@ -114,7 +117,8 @@ class BlockPlaceTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Block Place',
-			description:  'Applies skill effects when a player places a block matching the given details',
+			description:  'Applies skill effects when a player places a specific type of block. This trigger is useful for abilities related to construction, building, or strategic placement of blocks.',
+			keywords:     'block, place, build, building, construction, lay, set, create',
 			data:         [new BlockSelect(
 				'The type of block expected to be placed',
 				'The expected data value of the block (-1 for any data value)'
@@ -130,7 +134,8 @@ class CastTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Cast',
-			description: 'Applies skill effects when a player casts the skill using either the cast command, the skill bar, or click combos'
+			description: 'Applies skill effects when a player actively casts a skill, whether through a command, the skill bar interface, or specific click combinations. This is the primary trigger for most active abilities.',
+			keywords:    'cast, skill, command, hotbar, ability, activate, use, execute'
 		});
 	}
 
@@ -141,7 +146,8 @@ class ChatTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Chat',
-			description:  'Applies skill effects when a player sends a chat message in the specified format',
+			description:  'Applies skill effects when a player sends a chat message that matches a specified format or regular expression. This can be used to create abilities that respond to spoken commands or keywords.',
+			keywords:     'chat, message, speak, talk, command, keyword, regex, communication',
 			data:         [
 				new BooleanSelect('Cancel', 'cancel', false)
 					.setTooltip('Whether to cancel message or not'),
@@ -161,7 +167,8 @@ class CleanupTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Cleanup',
-			description: 'Applies skill effects when the player disconnects or unlearns the skill. This is always applied with a skill level of 1 just for the sake of math'
+			description: 'Applies skill effects when a player disconnects from the server or unlearns the skill. This is useful for removing temporary effects, resetting states, or performing other actions when an ability is no longer active or the player leaves.',
+			keywords:    'cleanup, disconnect, logout, unlearn, remove, end, finish, state, reset'
 		});
 	}
 
@@ -172,7 +179,8 @@ class ConsumeTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Consume',
-			description:  'Applies skill effects when a player consumes an item',
+			description:  'Applies skill effects when a player consumes any item, such as food, potions, or other consumables. This can be used for abilities that activate upon eating or drinking.',
+			keywords:     'consume, eat, drink, food, potion, consumable, item, use',
 			data:         [
 				...itemConditionOptions(new DropdownSelect('Material', 'material', getAnyConsumable, 'Any', true)
 					.setTooltip('The type of item that the player has consumed.')
@@ -189,7 +197,8 @@ class CrouchTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Crouch',
-			description:  'Applies skill effects when a player starts or stops crouching using the shift key',
+			description:  'Applies skill effects when a player starts or stops crouching (sneaking) using the shift key. This can be used for stealth abilities or actions that require a lowered stance.',
+			keywords:     'crouch, sneak, shift, stealth, low stance, defensive, hide',
 			data:         [
 				new DropdownSelect('Crouching', 'type', ['Start Crouching', 'Stop Crouching', 'Both'])
 			],
@@ -204,7 +213,8 @@ class DeathTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Death',
-			description: 'Applies skill effects when a player dies'
+			description: 'Applies skill effects when a player dies. This is useful for abilities that trigger upon death, such as a final explosion, a resurrection effect, or dropping special items.',
+			keywords:    'death, die, dead, perish, killed, respawn, revive, sacrifice'
 		});
 	}
 
@@ -215,7 +225,8 @@ class DropItemTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Drop Item',
-			description:  'Applies skill effects upon dropping an item',
+			description:  'Applies skill effects when a player intentionally drops an item from their inventory. This can be used for abilities that trigger when discarding items or transferring them to the ground.',
+			keywords:     'drop, item, discard, throw, inventory, remove',
 			data:         [
 				new DropdownSelect('Drop multiple', 'drop multiple', ['True', 'False', 'Ignore'], 'Ignore')
 					.setTooltip('Whether the player has to drop multiple items or a single item')
@@ -231,7 +242,8 @@ class EntityResurrectTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Entity Resurrect',
-			description: 'Applies skill effects when an entity is resurrected.'
+			description: 'Applies skill effects when an entity, including players or mobs, is resurrected. This is useful for abilities that trigger upon a successful revival, such as granting temporary buffs or creating a visual effect.',
+			keywords:    'resurrect, revive, come back, afterlife, reborn, entity, mob, player'
 		});
 	}
 
@@ -242,7 +254,8 @@ class EntityTargetTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Entity Target',
-			description:  'Applies skill effects when an entity targets the caster',
+			description:  'Applies skill effects when an entity, typically a mob, targets the skill\'s caster. This is useful for abilities that activate when drawing aggro or becoming the focus of an enemy.',
+			keywords:     'entity, target, aggro, focus, mob, enemy, attention, attack, threat',
 			data:         [
 				new BooleanSelect('Target Caster', 'target', true)
 					.setTooltip('True makes children target the caster. False makes children target the attacking entity'),
@@ -262,7 +275,8 @@ class EnvironmentDamageTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Environment Damage',
-			description:  'Applies skill effects when a player takes environmental damage',
+			description:  'Applies skill effects when a player takes damage from environmental sources, such as falling, drowning, fire, or suffocation. This is useful for abilities that mitigate or react to hazards.',
+			keywords:     'environment, damage, fall, drowning, fire, suffocation, lava, hazard, natural damage',
 			data:         [
 				new DropdownSelect('Type', 'type', getAnyDamageTypes, ['Fall'], true)
 					.setTooltip('The source of damage to apply for')
@@ -278,7 +292,8 @@ class ExperienceTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Experience',
-			description:  'Applies skill effects when a player earns vanilla experience by natural sources. Use {api-experience} to get amount of experience picked up.',
+			description:  'Applies skill effects when a player earns vanilla experience from natural sources, such as killing mobs or mining. The placeholder {api-experience} can be used to reference the amount of experience collected. This is useful for abilities that scale with or react to experience gain.',
+			keywords:     'experience, exp, level, gain, earn, mob, mine, farm, vanilla experience',
 			data:         [new DoubleSelect('Min Experience', 'min-experience')
 				.setTooltip('The minimum amount of experience to collect to trigger the skill.')],
 			summaryItems: ['min-experience']
@@ -292,7 +307,8 @@ class FishingTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Fishing',
-			description: 'Applies skill effects upon right-clicking with a fishing rod'
+			description: 'Applies skill effects specifically when a player initiates the fishing action by right-clicking with a fishing rod. This trigger is distinct from events related to catching a fish.',
+			keywords:    'fishing, fish, rod, cast, right-click, initiate, start'
 		});
 	}
 
@@ -303,7 +319,8 @@ class FishingBiteTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Fishing Bite',
-			description: 'Applies skill effects when a fish bites the fishing rod of a player'
+			description: 'Applies skill effects when a fish or other catchable item bites a player\'s fishing rod. This occurs before the player reels in the catch.',
+			keywords:    'fishing, bite, fish, catch, bobber, tug, hook, reel'
 		});
 	}
 
@@ -314,7 +331,8 @@ class FishingFailTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Fishing Fail',
-			description: 'Applies skill effects when a player fails to catch a fish due to poor timing'
+			description: 'Applies skill effects when a player fails to catch a fish, typically due to poor timing or reeling too early/late. This can be used for abilities that trigger on fishing mishaps.',
+			keywords:    'fishing, fail, missed, miss, timing, too early, too late, reel, mishap'
 		});
 	}
 
@@ -325,7 +343,8 @@ class FishingGrabTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Fishing Grab',
-			description: 'Applies skill effects when a player catches a fish'
+			description: 'Applies skill effects when a player successfully catches a fish or other item with their fishing rod. This is ideal for abilities that reward successful fishing attempts.',
+			keywords:    'fishing, grab, catch, hooked, success, loot, item, fish'
 		});
 	}
 
@@ -336,7 +355,8 @@ class FishingGroundTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Fishing Ground',
-			description: 'Applies skill effects when the bobber of a fishing rod hits the ground'
+			description: 'Applies skill effects when a player\'s fishing bobber hits a solid block or the ground instead of water. This can be used for abilities that trigger on casting a line onto land.',
+			keywords:    'fishing, ground, bobber, land, hit, block, missed water, cast'
 		});
 	}
 
@@ -347,7 +367,8 @@ class FishingReelTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Fishing Reel',
-			description: 'Applies skill effects when a player reels in a fishing rod out of water or air with no fish on the rod'
+			description: 'Applies skill effects when a player reels in their fishing rod without catching anything, typically when the bobber is in the air or out of water. This is useful for abilities that trigger on failed retrieval attempts.',
+			keywords:    'fishing, reel, retrieve, pull, empty, fail, no catch'
 		});
 	}
 
@@ -358,7 +379,8 @@ class FlagTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Flag',
-			description:  'Applies skill effects when the player receives a flag from a mechanic.',
+			description:  'Applies skill effects when a player receives a specific flag from a mechanic. Flags are custom markers that can be used to track states or conditions on a player, enabling complex interactions between skills.',
+			keywords:     'flag, status, marker, condition, state, apply, receive, buff, debuff',
 			data:         [
 				new StringListSelect('Flags', 'flags', ['Any'])
 					.setTooltip('The flags to check for, "Any" will trigger regardless of flag name'),
@@ -378,7 +400,8 @@ class FlagExpireTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Flag Expire',
-			description:  'Applies skill effects when a flag expires on a player.',
+			description:  'Applies skill effects when a specific flag, previously applied to a player, expires. This is useful for cleaning up effects, resetting temporary states, or triggering follow-up actions after a timed condition ends.',
+			keywords:     'flag, expire, end, duration, cleanup, remove, status, condition, time out',
 			data:         [
 				new StringListSelect('Flags', 'flags', ['Any'])
 					.setTooltip('The flags to check for, "Any" will trigger regardless of flag name'),
@@ -396,7 +419,8 @@ class FlightToggleTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Flight Toggle',
-			description:  'Applies skill effects when a player starts or stops flying.',
+			description:  'Applies skill effects when a player starts or stops flying, either through creative mode, abilities, or other game mechanics. This is useful for triggering actions related to changes in a player\'s aerial mobility.',
+			keywords:     'flight, fly, toggle, start flying, stop flying, creative, wings, aerial, mobility',
 			data:         [
 				new DropdownSelect('Flying', 'type', ['Start Flying', 'Stop Flying', 'Both'])
 			],
@@ -411,7 +435,8 @@ class GlideTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Glide',
-			description:  'Applies skill effects when a player starts or stops gliding with an elytra.',
+			description:  'Applies skill effects when a player starts or stops gliding with an elytra. This is useful for abilities that enhance aerial movement, provide buffs during flight, or react to a player initiating or ending a glide.',
+			keywords:     'glide, elytra, fly, aerial, mobility, parachute, wingsuit, fall, slow fall',
 			data:         [
 				new DropdownSelect('Gliding', 'type', ['Start Gliding', 'Stop Gliding', 'Both'])
 			],
@@ -426,7 +451,8 @@ class HarvestTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Harvest',
-			description:  'Applies skill effects when a player harvests a block matching the given details. Typically crops such as Glow Berries.',
+			description:  'Applies skill effects when a player harvests a specific block, typically crops like wheat, carrots, potatoes, or Glow Berries. This is useful for farming-related abilities or automated collection systems.',
+			keywords:     'harvest, farm, farming, crop, gather, collect, break, grow, glow berries, wheat, carrots, potatoes',
 			data:         [new BlockSelect(
 				'The type of block expected to be harvested',
 				'The expected data value of the block (-1 for any data value)'
@@ -442,7 +468,8 @@ class HealTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Heal',
-			description:  'Applies skill effects when the player receives heal from any source. Use {api-heal} to get heal value',
+			description:  'Applies skill effects when a player receives healing from any source, including potions, regeneration, or other abilities. The {api-heal} placeholder provides the healing amount. This is useful for abilities that react to health restoration.',
+			keywords:     'heal, healing, health, restore, regeneration, recover, hp, medic',
 			data:         [
 				new DoubleSelect('Min Heal', 'heal-min', 0)
 					.setTooltip('The minimum health that needs to be received'),
@@ -460,7 +487,8 @@ class InitializeTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Initialize',
-			description: 'Applies skill effects immediately. This can be used for passive abilities'
+			description: 'Applies skill effects immediately upon a skill being learned or enabled. This is ideal for setting up passive abilities, permanent buffs, or initial conditions that persist throughout the skill\'s duration.',
+			keywords:    'initialize, init, start, passive, buff, permanent, setup, load, enable'
 		});
 	}
 
@@ -471,7 +499,8 @@ class ItemSwapTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Item Swap',
-			description:  'Applies skill effects upon pressing the swap-key on your keyboard',
+			description:  'Applies skill effects when a player presses the item swap key (typically off-hand swap). This can be used for abilities that quickly switch modes, apply temporary buffs, or react to combat stance changes.',
+			keywords:     'item, swap, off-hand, quick switch, combat stance, mode change, keybind',
 			data:         [
 				new BooleanSelect('Cancel Swap', 'cancel', true)
 					.setTooltip('True cancels the item swap. False allows the item swap')
@@ -487,7 +516,8 @@ class JumpTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Jump',
-			description: 'Applies skill effects whenever a player jumps.',
+			description: 'Applies skill effects whenever a player jumps. This can be used for abilities like double jumps, high jumps, or effects that trigger upon leaving the ground.',
+			keywords:    'jump, leap, hop, airborne, leave ground, double jump, high jump',
 			data:        []
 		});
 	}
@@ -499,7 +529,8 @@ class KillTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Kill',
-			description:  'Applies skill effects upon killing something',
+			description:  'Applies skill effects when a player successfully defeats (kills) another entity. This is useful for abilities that provide rewards, buffs, or special effects upon securing a kill.',
+			keywords:     'kill, death, defeat, vanquish, slain, eliminate, execute, bounty',
 			data:         [
 				new BooleanSelect('Target Caster', 'target', true)
 					.setTooltip('True makes children target the caster. False makes children target the attacking entity')
@@ -515,7 +546,8 @@ class LandTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Land',
-			description:  'Applies skill effects when a player lands on the ground',
+			description:  'Applies skill effects when a player lands on the ground after being airborne. This is useful for abilities that trigger on impact, such as a ground pound or a safe landing effect.',
+			keywords:     'land, fall, ground, impact, airborne, descent, shockwave, ground pound',
 			data:         [new DoubleSelect('Min Distance', 'min-distance')
 				.setTooltip('The minimum distance the player should fall before effects activate')],
 			summaryItems: ['min-distance']
@@ -529,7 +561,8 @@ class LaunchTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Launch',
-			description:  'Applies skill effects when a player launches a projectile',
+			description:  'Applies skill effects when a player launches any projectile, such as an arrow, snowball, or fire charge. This is useful for abilities that modify projectiles, apply effects to them, or trigger actions upon their firing.',
+			keywords:     'launch, projectile, fire, shoot, arrow, snowball, fire charge, throw, cast, ranged',
 			data:         [new DropdownSelect('Types', 'types', getAnyProjectiles, 'Any', true)
 				.setTooltip('The type of projectile that should be launched')],
 			summaryItems: ['types']
@@ -543,7 +576,8 @@ class LeftClickTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Left Click',
-			description:  'Applies skill effects upon performing a left-click',
+			description:  'Applies skill effects when a player performs a left-click action, typically an attack or interaction. This is a fundamental trigger for many combat abilities or quick actions.',
+			keywords:     'left click, attack, melee, punch, action, interact, primary action',
 			data:         [new DropdownSelect('Crouch', 'crouch', ['Crouch', 'Dont crouch', 'Both'], 'Crouch')
 				.setTooltip('If the player has to be crouching in order for this trigger to function')],
 			summaryItems: ['crouch']
@@ -557,7 +591,8 @@ class MoveTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Move',
-			description: 'Applies skill effects when a player moves around. This triggers every tick the player is moving, so use this sparingly. Use the \'api-moved\' value to check/use the distance traveled'
+			description: 'Applies skill effects every tick a player moves. Due to its high frequency, use this trigger sparingly for performance-intensive abilities. The \'api-moved\' placeholder can be used to access the distance the player has traveled.',
+			keywords:    'move, walk, run, sprint, travel, displacement, relocate, tick, constantly'
 		});
 	}
 
@@ -568,7 +603,8 @@ class PhysicalDamageTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Physical Damage',
-			description:  'Applies skill effects when a player deals physical (or non-skill) damage. This includes melee attacks and firing a bow',
+			description:  'Applies skill effects when a player deals physical damage through conventional means, such as melee attacks, unarmed strikes, or firing a bow. This trigger is distinct from skill-based damage and can be used for abilities that enhance basic attacks.',
+			keywords:     'physical, damage, melee, attack, bow, projectile, unarmed, conventional damage, basic attack',
 			data:         [
 				new BooleanSelect('Target Caster', 'target', true)
 					.setTooltip('True makes the children target the caster. False makes children target the damaged entity'),
@@ -590,7 +626,8 @@ class ProjectileHitTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Projectile Hit',
-			description:  'Applies skill effects when a projectile hits a block/entity',
+			description:  'Applies skill effects when a projectile, launched by a player or skill, makes contact with either an entity or a block. This is useful for abilities that trigger on successful hits or environmental interactions with projectiles.',
+			keywords:     'projectile, hit, impact, collision, entity, block, arrow, magic missile, shot',
 			data:         [
 				new BooleanSelect('Target Caster', 'target', true)
 					.setTooltip('True makes the children target the caster. False makes children target the damaged entity'),
@@ -610,7 +647,8 @@ class ProjectileTickTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Projectile Tick',
-			description:  'Applies skill effects every interval while a projectile is in the air',
+			description:  'Applies skill effects at regular intervals while a projectile is in mid-air. This is useful for creating dynamic projectile effects, such as a trail of particles, area-of-effect pulses, or homing behaviors.',
+			keywords:     'projectile, tick, in air, flight, interval, trail, particle, homing, dynamic, mid-air',
 			data:         [
 				new BooleanSelect('Target Caster', 'target', true)
 					.setTooltip('True makes the children target the caster. False makes children target the damaged entity'),
@@ -632,7 +670,8 @@ class RightClickTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Right Click',
-			description:  'Applies skill effects upon performing a right-click (NOTE: When clicking in air, you have to have an item in your hand)',
+			description:  'Applies skill effects when a player performs a right-click action, commonly used for interacting with blocks, using items, or activating secondary abilities. Note that when clicking in the air, an item must be held in hand for this to trigger.',
+			keywords:     'right click, interact, use item, secondary action, activate, cast, block interaction',
 			data:         [
 				new DropdownSelect('Crouch', 'crouch', ['Crouch', 'Dont crouch', 'Both'], 'Crouch')
 					.setTooltip('If the player has to be crouching in order for this trigger to function')
@@ -648,7 +687,8 @@ class RiptideTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:        'Riptide',
-			description: 'Applies skill effects when a player uses the riptide enchantment.'
+			description: 'Applies skill effects when a player successfully uses a trident with the Riptide enchantment, launching themselves forward in water or during rain. This is useful for abilities that enhance mobility or trigger effects during this unique movement.',
+			keywords:    'riptide, trident, enchantment, launch, water, rain, mobility, movement, dash'
 		});
 	}
 
@@ -659,7 +699,8 @@ class ShearTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Shear',
-			description:  'Applies skill effects when a player shears an entity',
+			description:  'Applies skill effects when a player uses shears on an entity, such as sheep, mooshrooms, or snow golems. This is useful for abilities that interact with resource gathering from mobs or special entity interactions.',
+			keywords:     'shear, sheep, mooshroom, snow golem, resource, gather, interact, mob, entity',
 			data:         [
 				new BooleanSelect('Target Caster', 'target', true)
 					.setTooltip('True makes children target the caster. False makes children target the sheared entity'),
@@ -679,7 +720,8 @@ class SkillCastTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Skill Cast',
-			description:  'Applies skill effects when a player casts a skill',
+			description:  'Applies skill effects when a player casts *any* skill. This can be used to create meta-abilities that react to skill usage, such as consuming mana, applying a global cooldown, or triggering a combined effect.',
+			keywords:     'skill, cast, ability, spell, activate, use, global cooldown, mana, combo',
 			data:         [
 				new BooleanSelect('Cancel Cast', 'cancel', false)
 					.setTooltip('True cancels the skill cast. False allows the skill cast'),
@@ -699,7 +741,8 @@ class SkillDamageTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Skill Damage',
-			description:  'Applies skill effects when a player deals damage with a skill',
+			description:  'Applies skill effects when a player deals damage using a skill or ability. This is useful for abilities that trigger on successful offensive skill use, such as applying secondary effects or generating resources.',
+			keywords:     'skill, damage, ability, spell, offensive, attack, hit, deal damage',
 			data:         [
 				new BooleanSelect('Target Caster', 'target', true)
 					.setTooltip('True makes children target the caster. False makes children target the damaged entity'),
@@ -721,7 +764,8 @@ class SprintTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Sprint',
-			description:  'Applies skill effects when a player starts or stops sprinting.',
+			description:  'Applies skill effects when a player starts or stops sprinting. This is useful for abilities that grant bonuses during high-speed movement or trigger effects upon entering/exiting a sprint.',
+			keywords:     'sprint, run, fast, speed, movement, toggle, start sprinting, stop sprinting',
 			data:         [
 				new DropdownSelect('Sprinting', 'type', ['Start Sprinting', 'Stop Sprinting', 'Both'])
 			],
@@ -736,7 +780,8 @@ class StripLogTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Strip Log',
-			description:  'Applies skill effects when a player strips a block matching the given details',
+			description:  'Applies skill effects when a player strips a log block (e.g., using an axe). This is useful for abilities related to logging, woodworking, or specialized resource gathering.',
+			keywords:     'strip, log, axe, wood, logging, woodworking, resource, gather, craft',
 			data:         [new BlockSelect(
 				'The type of block expected to be broken',
 				'The expected data value of the block (-1 for any data value)'
@@ -752,7 +797,8 @@ class TookPhysicalTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Took Physical Damage',
-			description:  'Applies skill effects when a player takes physical (or non-skill) damage. This includes melee attacks and projectiles not fired by a skill',
+			description:  'Applies skill effects when a player takes physical damage from conventional sources, such as melee attacks from mobs or non-skill projectiles. This is useful for abilities that trigger defensively, like counter-attacks or temporary invulnerability.',
+			keywords:     'took damage, physical, melee, projectile, defensive, hit, injured, combat',
 			data:         [
 				new BooleanSelect('Target Caster', 'target', true)
 					.setTooltip('True makes children target the caster. False makes children target the attacking entity'),
@@ -774,7 +820,8 @@ class TookSkillTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Took Skill Damage',
-			description:  'Applies skill effects when a player takes damage from a skill other than their own',
+			description:  'Applies skill effects when a player takes damage from a skill or ability originating from another source (not their own skill). This is useful for abilities that trigger in response to enemy skill attacks, such as defensive counter-measures or debuffs.',
+			keywords:     'took damage, skill, ability, spell, defensive, hit, injured, combat, magic damage',
 			data:         [
 				new BooleanSelect('Target Caster', 'target', true)
 					.setTooltip('True makes children target the caster. False makes children target the attacking entity'),
@@ -796,7 +843,8 @@ class ShieldTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Shield',
-			description:  'Applies skill effects when the player blocks damage with their shield. Use {api-blocked} to get amount of blocked damage.',
+			description:  'Applies skill effects when a player successfully blocks incoming damage using a shield. The {api-blocked} placeholder provides the amount of damage absorbed. This is useful for abilities that trigger defensive responses, such as a counter-attack or a temporary buff upon successful block.',
+			keywords:     'shield, block, guard, defend, absorb, damage reduction, counter, defensive',
 			data:         [
 				new BooleanSelect('Target Caster', 'target', true)
 					.setTooltip('True makes children target the caster. False makes children target the attacking entity'),
@@ -818,7 +866,8 @@ class SignalTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Signal',
-			description:  'Applies skill effects when the player receive a signal emitted from Signal Emit mechanic.',
+			description:  'Applies skill effects when a player receives a custom signal emitted from a "Signal Emit" mechanic. This enables complex inter-skill communication and custom event handling.',
+			keywords:     'signal, custom event, emit, receive, communicate, trigger, mechanic, inter-skill',
 			data:         [
 				new BooleanSelect('Target Receiver', 'target', true)
 					.setTooltip('True makes children target the receiver. False makes children target the emitter'),
@@ -836,7 +885,8 @@ class WorldChangeTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'World Change',
-			description:  'Applies skill effects when a player changes worlds',
+			description:  'Applies skill effects when a player transitions between different worlds (e.g., Overworld, Nether, End). This is useful for abilities that provide buffs/debuffs or special effects specific to certain dimensions.',
+			keywords:     'world, change, dimension, travel, portal, nether, end, overworld, transition, environment',
 			data:         [
 				new StringListSelect('Worlds', 'worlds', ['Any'])
 					.setTooltip('The worlds to check for, "Any" will trigger regardless of world'),
@@ -905,7 +955,8 @@ class AreaTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Area',
-			description:  'Targets all units in a radius from the current target (the casting player is the default target)',
+			description:  'Targets all eligible units within a specified radius around the current target (which is typically the casting player by default). This is useful for area-of-effect (AoE) abilities.',
+			keywords:     'area, aoe, radius, nearby, proximity, multiple targets, splash, zone',
 			data:         [
 				new AttributeSelect('Radius', 'radius', 3)
 					.setTooltip('The radius of the area to target in blocks'),
@@ -941,7 +992,8 @@ class ConeTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Cone',
-			description:  'Targets all units in a line in front of the current target (the casting player is the default target). If you include the caster, that counts towards the max amount',
+			description:  'Targets all eligible units within a specified cone-shaped area extending from the current target (typically the casting player by default). This is ideal for frontal area-of-effect abilities or directed attacks.',
+			keywords:     'cone, frontal aoe, directed, area, multiple targets, forward, fan, sweep',
 			data:         [
 				new AttributeSelect('Range', 'range', 5)
 					.setTooltip('The max distance away any target can be in blocks'),
@@ -987,7 +1039,8 @@ class LinearTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Linear',
-			description:  'Targets all units in a line in front of the current target (the casting player is the default target)',
+			description:  'Targets all eligible units in a straight line extending forward from the current target (typically the casting player by default). This is useful for beam-like abilities or piercing attacks.',
+			keywords:     'linear, line, straight, beam, pierce, pierce through, column, row, forward',
 			data:         [
 				new AttributeSelect('Range', 'range', 5)
 					.setTooltip('The max distance away any target can be in blocks'),
@@ -1029,7 +1082,8 @@ class LocationTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Location',
-			description:  'Targets the location the target or caster is looking at. Combine this with another targeting type for ranged area effects',
+			description:  'Targets a specific block location that the target or caster is currently looking at. This can be combined with other targeting types to create ranged area effects, ground-targeted abilities, or precision strikes.',
+			keywords:     'location, look, gaze, point, ground target, precision, ranged, area effect, block, position',
 			data:         [
 				new AttributeSelect('Range', 'range', 5)
 					.setTooltip('The max distance the location can be from the target\'s eyes'),
@@ -1056,7 +1110,8 @@ class NearestTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Nearest',
-			description:  'Targets the closest unit(s) in a radius from the current target (the casting player is the default target). If you include the caster, that counts towards the max number',
+			description:  'Targets the closest eligible unit(s) within a specified radius from the current target (typically the casting player by default). This is useful for auto-targeting abilities or effects that prioritize nearby threats/allies.',
+			keywords:     'nearest, closest, proximity, auto target, single target, nearby, ally, enemy',
 			data:         [
 				new AttributeSelect('Range', 'range', 3)
 					.setTooltip('The radius of the area to target in blocks'),
@@ -1090,7 +1145,8 @@ class OffsetTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Offset',
-			description:  'Targets a location that is the given offset away from each target',
+			description:  'Targets a specific location or entity by applying a directional offset relative to each existing target. This is useful for placing effects, summoning entities, or targeting areas adjacent to current targets.',
+			keywords:     'offset, relative, position, location, spawn, summon, displace, shift, move, custom position',
 			data:         [
 				new SectionMarker('Offset'),
 				new AttributeSelect('Forward', 'forward')
@@ -1114,7 +1170,8 @@ class PartyTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Party',
-			description:  'Targets players in your party (requires FabledParties to be installed)',
+			description:  'Targets all players who are currently in the caster\'s party. This component requires the "FabledParties" plugin to be installed. It is useful for cooperative abilities that affect allies.',
+			keywords:     'party, allies, cooperative, team, group, FabledParties, friends',
 			data:         [
 				new AttributeSelect('Range', 'range', 5)
 					.setTooltip('The max distance the location can be from the target\'s eyes'),
@@ -1134,7 +1191,8 @@ class RememberTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Remember',
-			description:  'Targets entities stored using the "Remember Targets" mechanic for the matching key. If it was never set, this will fail',
+			description:  'Targets entities that were previously stored using the "Remember Targets" mechanic, identified by a unique key. This allows for complex multi-stage abilities that track specific entities over time.',
+			keywords:     'remember, stored, recalled, saved, tracked, custom, key, multi-stage',
 			data:         [
 				new StringSelect('Key', 'key', 'target')
 					.setTooltip('The unique key for the target group that should match that used by the "Remember Targets" skill')
@@ -1153,7 +1211,8 @@ class SelfTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:        'Self',
-			description: 'Returns the current target back to the caster'
+			description: 'Ensures that the skill\'s effects are applied directly to the caster, regardless of any previous targeting. This is useful for self-buffs, personal healing, or abilities that only affect the origin.',
+			keywords:    'self, caster, personal, individual, origin, buff, heal, personal effect'
 		});
 	}
 
@@ -1164,7 +1223,8 @@ class SingleTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'Single',
-			description:  'Targets a single unit in front of the current target (the casting player is the default target)',
+			description:  'Targets a single eligible unit directly in front of the current target (typically the casting player by default). This is the most common targeting type for single-target offensive or supportive abilities.',
+			keywords:     'single target, direct, frontal, precision, one target, offensive, supportive, point and click',
 			data:         [
 				new AttributeSelect('Range', 'range', 5)
 					.setTooltip('The max distance away any target can be in blocks'),
@@ -1209,7 +1269,8 @@ class WorldTarget extends FabledTarget {
 	public constructor() {
 		super({
 			name:         'World',
-			description:  'Targets all entities in the caster\'s world',
+			description:  'Targets all eligible entities throughout the caster\'s current world. This is primarily used for global effects, world-wide events, or abilities that affect every entity in the dimension.',
+			keywords:     'world, global, all entities, all mobs, dimension, wide, area',
 			data:         [
 				...targetOptions()
 			],
@@ -1264,7 +1325,8 @@ class ActionBarCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Action Bar',
-			description:  'Applies child componenets whether or not the action bar is showing based on the boolean set.',
+			description:  'Applies child components based on whether the action bar (the bar above the hotbar) is currently displaying a message or not. This is useful for conditional effects tied to UI feedback.',
+			keywords:     'action bar, ui, display, message, hud, feedback, status, cast bar',
 			data:         [
 				new BooleanSelect('Casting', 'casting', true)
 					.setTooltip('Whether the Action Bar should be showing or not. True for yes, False for no.')
@@ -1280,7 +1342,8 @@ class AirCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Air',
-			description:  'Applies child components whenever the entity has an air value in the given range. Calculated in seconds left. By default, a player starts with 15 seconds of air.',
+			description:  'Applies child components based on the entity\'s remaining air supply, measured in seconds, within a specified range. This is useful for abilities that are restricted or empowered when an entity is underwater or suffocating.',
+			keywords:     'air, oxygen, breath, underwater, drown, suffocate, remaining air, time',
 			data:         [
 				new AttributeSelect('Min', 'min')
 					.setTooltip('The minimum number of seconds of remaining air the entity has.'),
@@ -1298,7 +1361,8 @@ class AltitudeCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Altitude',
-			description:  'Applies child components whenever the player is on a certain height-level',
+			description:  'Applies child components based on the player\'s current height level (Y-coordinate) within a specified range. This is useful for abilities that are restricted to certain elevations, like mountain-top spells or underwater specializations.',
+			keywords:     'altitude, height, elevation, y-coordinate, level, high, low, vertical',
 			data:         [
 				new AttributeSelect('Min', 'min')
 					.setTooltip('The minimum height a player has to be on'),
@@ -1316,7 +1380,8 @@ class ArmorCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Armor',
-			description:  'Applies child components when the target is wearing an armor item matching the given details',
+			description:  'Applies child components based on whether the target is wearing a specific type of armor or an armor item matching detailed criteria. This is useful for abilities that require certain gear, provide bonuses for wearing full sets, or react to an opponent\'s equipment.',
+			keywords:     'armor, gear, equipment, helmet, chestplate, leggings, boots, protection, set bonus, item check',
 			data:         [
 				new DropdownSelect('Armor', 'armor', ['Any', 'Helmet', 'Chestplate', 'Leggings', 'Boots'])
 					.setTooltip('The type of armor to check'),
@@ -1333,7 +1398,8 @@ class AttackIndicatorCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Attack Indicator',
-			description:  `Requires the target's attack to be charged to a certain amount.`,
+			description:  'Applies child components based on whether the target\'s attack indicator (charge bar) is filled to a certain extent. This is particularly useful for abilities that depend on the timing or power of a melee attack.',
+			keywords:     'attack indicator, charge, attack power, melee, combat, timing, full charge',
 			data:         [
 				new AttributeSelect('Min', 'min', 0)
 					.setTooltip('The minimum amount of charge the target requires (0-1)'),
@@ -1351,7 +1417,8 @@ class AttributeCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Attribute',
-			description:  'Requires the target to have a given number of attributes',
+			description:  'Applies child components based on whether the target possesses a specific attribute (e.g., strength, vitality) within a defined numerical range. This is useful for abilities that scale with or require certain character statistics.',
+			keywords:     'attribute, stats, strength, vitality, dexterity, intelligence, health, mana, check, requirement',
 			data:         [
 				new StringSelect('Attribute', 'attribute', 'Vitality')
 					.setTooltip('The name of the attribute you are checking the value of'),
@@ -1371,7 +1438,8 @@ class BiomeCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Biome',
-			description:  'Applies child components when in a specified biome',
+			description:  'Applies child components based on whether the target is currently located within a specified biome. This is useful for abilities that are biome-specific, such as buffs in a desert or debuffs in a cold biome.',
+			keywords:     'biome, environment, location, weather, desert, forest, ocean, plains, mountain, specific area',
 			data:         [
 				new DropdownSelect('Type', 'type', ['In Biome', 'Not In Biome'], 'In Biome')
 					.setTooltip('Whether the target should be in the biome. If checking for in the biome, they must be in any one of the checked biomes. If checking for the opposite, they must not be in any of the checked biomes'),
@@ -1390,7 +1458,8 @@ class BlockCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Block',
-			description:  'Applies child components if the target is currently standing on a block of the given type',
+			description:  'Applies child components based on the type of block the target is currently standing on or within. This is useful for abilities that interact with specific terrain types or block interactions.',
+			keywords:     'block, terrain, ground, material, standing on, in block, specific block, interaction',
 			data:         [
 				new DropdownSelect('Type', 'standing', ['On Block', 'Not On Block', 'In Block', 'Not In Block'])
 					.setTooltip('Specifies which block to check and whether it should match the selected material. "On Block" is directly below the player while "In Block" is the block a player\'s feet are in'),
@@ -1409,7 +1478,8 @@ class BlockingCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Blocking',
-			description:  'Applies child components if the target player(s) are blocking with a shield',
+			description:  'Applies child components based on whether the target player is actively blocking with a shield. This is useful for abilities that interact with defensive stances, such as breaking a block or empowering attacks against blocking targets.',
+			keywords:     'blocking, shield, defend, guard, defensive stance, parry, absorb, counter',
 			data:         [
 				new BooleanSelect('Blocking', 'blocking', true)
 					.setTooltip('Whether the player should be blocking')
@@ -1425,7 +1495,8 @@ class BurningCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Burning',
-			description:  'Applies child components if the caster burns or not',
+			description:  'Applies child components based on whether the caster is currently burning (on fire). This is useful for abilities that are empowered by fire, grant immunity to it, or react to the caster\'s fiery status.',
+			keywords:     'burning, fire, on fire, flame, ignite, hot, status, debuff',
 			data:         [
 				new DropdownSelect('Type', 'burn', ['Burn', 'Dont burn'], 'Burn')
 					.setTooltip('Specifies whether the player has to be burning for this skill to be performed')
@@ -1441,7 +1512,8 @@ class CeilingCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Ceiling',
-			description:  'Checks the height of the ceiling above each target',
+			description:  'Applies child components based on the height of the clear space (ceiling) directly above each target. This is useful for abilities that are restricted by overhead obstacles or require open vertical space.',
+			keywords:     'ceiling, overhead, height, obstacle, vertical space, clear space, above, block',
 			data:         [
 				new AttributeSelect('Distance', 'distance', 5)
 					.setTooltip('How high to check for the ceiling'),
@@ -1459,7 +1531,8 @@ class ChanceCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Chance',
-			description:  'Rolls a chance to apply child components',
+			description:  'Applies child components based on a percentage chance roll. This is useful for abilities that have a random element, such as proc effects, critical strikes, or 확률-based outcomes.',
+			keywords:     'chance, probability, random, percentage, proc, critical, luck, rng',
 			data:         [
 				new AttributeSelect('Chance', 'chance', 25)
 					.setTooltip('The chance to execute children as a percentage. "25" would be 25%')
@@ -1475,7 +1548,8 @@ class ClassCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Class',
-			description:  'Applies child components when the target is the given class or optionally a profession of that class. For example, if you check for "Fighter" which professes into "Warrior", a "Warrior" will pass the check if you do not enable "exact"',
+			description:  'Applies child components based on whether the target belongs to a specified class or a profession of that class. This is crucial for class-specific abilities, skill trees, or tier-based progressions.',
+			keywords:     'class, profession, subclass, skill tree, tier, progression, role, archetype',
 			data:         [
 				new ClassSelect('Class', 'class', false)
 					.setTooltip('The class the player should be'),
@@ -1493,7 +1567,8 @@ class ClassLevelCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Class Level',
-			description:  'Applies child components when the level of the class with this skill is within the range. This only checks the level of the caster, not the targets',
+			description:  'Applies child components based on whether the caster\'s class level for the skill\'s associated class falls within a specified range. This is useful for abilities that unlock or scale with progression in a specific class.',
+			keywords:     'class level, progression, skill level, rank, tier, experience, character level, requirement',
 			data:         [
 				new IntSelect('Min Level', 'min-level', 2)
 					.setTooltip('The minimum class level the player should be. If the player has multiple classes, this will be of their main class'),
@@ -1513,7 +1588,8 @@ class ColorCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Color',
-			description:  'Applies child components when the target entity is of the specified color. Currently, this only works for sheep and shulkers',
+			description:  'Applies child components based on the color of the target entity. Currently, this condition is primarily effective for color-changing mobs like sheep and shulkers. Useful for abilities that interact with or are specific to certain colored entities.',
+			keywords:     'color, dye, sheep, shulker, entity, mob, specific color, visual',
 			data:         [
 				new DropdownSelect('Color', 'color', [
 					...getDyes()
@@ -1531,7 +1607,8 @@ class CombatCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Combat',
-			description:  'Applies child components to targets that are in/out of combat, depending on the settings',
+			description:  'Applies child components based on whether the target is currently in or out of combat. This is useful for abilities that have different effects during combat engagements versus peaceful exploration, such as combat-only buffs or out-of-combat regeneration.',
+			keywords:     'combat, in combat, out of combat, fight, battle, engagement, aggression, pvp, pve',
 			data:         [
 				new BooleanSelect('In Combat', 'combat', true)
 					.setTooltip('Whether the target should be in or out of combat'),
@@ -1549,7 +1626,8 @@ class CrouchCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Crouch',
-			description:  'Applies child components if the target player(s) are crouching',
+			description:  'Applies child components based on whether the target player is currently crouching (sneaking). This is useful for abilities that are restricted to stealthy movement or provide bonuses while in a lowered stance.',
+			keywords:     'crouch, sneak, shift, stealth, low stance, defensive, hide, movement',
 			data:         [
 				new BooleanSelect('Crouching', 'crouch', true)
 					.setTooltip('Whether the player should be crouching')
@@ -1565,7 +1643,8 @@ class DirectionCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Direction',
-			description:  'Applies child components when the target or caster is facing the correct direction relative to the other',
+			description:  'Applies child components based on the relative facing direction between the caster and the target. This is useful for abilities that require precise positioning, backstabs, or frontal attacks.',
+			keywords:     'direction, facing, orientation, relative, position, backstab, frontal, precise, angle',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Target', 'Caster'])
 					.setTooltip('The entity to check the direction of'),
@@ -1583,7 +1662,8 @@ class DistanceCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Distance',
-			description:  'Applies child components when the distance between the caster and the target matches the settings',
+			description:  'Applies child components based on the physical distance between the caster and the target. This is useful for abilities with range limitations, proximity-based effects, or for determining optimal engagement distances.',
+			keywords:     'distance, range, proximity, close, far, within range, out of range, measurement, spatial',
 			data:         [
 				new AttributeSelect('Min Value', 'min-value')
 					.setTooltip('The minimum value for the distance required. This should be >= 0'),
@@ -1601,7 +1681,8 @@ class ElevationCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Elevation',
-			description:  'Applies child components when the elevation of the target matches the settings',
+			description:  'Applies child components based on the target\'s vertical position (elevation or Y-coordinate), either absolutely or relative to the caster. This is useful for abilities that are restricted to certain altitudes or take advantage of height differences.',
+			keywords:     'elevation, altitude, height, y-coordinate, vertical, up, down, above, below, relative, absolute',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Normal', 'Difference'])
 					.setTooltip('The type of comparison to make. Normal is just their Y-coordinate. Difference would be the difference between that the caster\'s Y-coordinate'),
@@ -1621,7 +1702,8 @@ class ElseCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:        'Else',
-			description: 'Applies child elements if the previous component failed to execute. This not only applies for conditions not passing, but mechanics failing due to no target or other cases'
+			description: 'Applies child components if the preceding condition or mechanic in the skill chain fails to execute or return a valid result. This acts as a fallback or alternative path, allowing for complex conditional logic.',
+			keywords:    'else, fallback, alternative, conditional, logic, failure, default, otherwise, if-else'
 		});
 	}
 
@@ -1632,7 +1714,8 @@ class EntityTypeCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Entity Type',
-			description:  'Applies child elements if the target matches one of the selected entity types',
+			description:  'Applies child components based on whether the target matches one or more specified entity types (e.g., Player, Zombie, Skeleton). This is useful for abilities that are restricted to certain mob categories or interact differently with various entities.',
+			keywords:     'entity, mob, type, category, filter, player, zombie, skeleton, creature, monster, animal',
 			data:         [
 				new DropdownSelect('Types', 'types', ['Location', ...getEntities()], [], true)
 					.setTooltip('The entity types to target'),
@@ -1650,7 +1733,8 @@ class FireCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Fire',
-			description:  'Applies child components when the target is on fire',
+			description:  'Applies child components based on whether the target is currently on fire. This is useful for abilities that deal bonus damage to burning targets, extinguish flames, or have special effects when interacting with fiery entities.',
+			keywords:     'fire, burning, flame, ignite, status, debuff, on fire, ablaze',
 			data:         [
 				new DropdownSelect('Type', 'type', ['On Fire', 'Not On Fire'], 'On Fire')
 					.setTooltip('Whether the target should be on fire')
@@ -1666,7 +1750,8 @@ class FlagCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Flag',
-			description:  'Applies child components when the target is marked by the appropriate flag',
+			description:  'Applies child components based on whether the target is currently marked with a specific custom flag. Flags are versatile markers used to track temporary states, buffs, debuffs, or unique conditions on entities. This is useful for complex conditional logic and inter-skill dependencies.',
+			keywords:     'flag, status, marker, custom condition, buff, debuff, temporary state, check, key',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Set', 'Not Set'], 'Set')
 					.setTooltip('Whether the flag should be set'),
@@ -1684,7 +1769,8 @@ class FoodCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Food',
-			description:  'Applies child components when the target\'s food level matches the settings',
+			description:  'Applies child components based on the target\'s current food level and saturation. This is useful for abilities that are restricted by hunger, empowered by being well-fed, or interact with food mechanics.',
+			keywords:     'food, hunger, saturation, well-fed, starved, appetite, sustenance',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Food', 'Percent', 'Difference', 'Difference Percent'])
 					.setTooltip('The type of measurement to use for the food. Food level is their flat food left. Percent is the percentage of food they have left. Difference is the difference between the target\'s flat food and the caster\'s. Difference percent is the difference between the target\'s percentage food left and the caster\'s'),
@@ -1704,7 +1790,8 @@ class GroundCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Ground',
-			description:  'Applies child components when the target is on the ground',
+			description:  'Applies child components based on whether the target is currently standing on the ground. This is useful for abilities that are restricted to ground-based movement, require solid footing, or interact with aerial units differently.',
+			keywords:     'ground, on ground, airborne, flying, solid footing, movement, stability',
 			data:         [
 				new DropdownSelect('Type', 'type', ['On Ground', 'Not On Ground'])
 					.setTooltip('Whether the target should be on the ground')
@@ -1721,7 +1808,8 @@ class GlideCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Glide',
-			description:  'Applies child components if the target player(s) are gliding with an elytra',
+			description:  'Applies child components based on whether the target player is currently gliding with an elytra. This is useful for abilities that enhance aerial movement, provide buffs during flight, or react to a player\'s gliding state.',
+			keywords:     'glide, elytra, flying, aerial, movement, mobility, control, momentum',
 			data:         [
 				new BooleanSelect('Gliding', 'glide', true)
 					.setTooltip('Whether the player should be gliding with an elytra')
@@ -1737,7 +1825,8 @@ class HealthCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Health',
-			description:  'Applies child components when the target\'s health matches the settings',
+			description:  'Applies child components based on the target\'s current health, either as a raw value, a percentage, or a difference relative to the caster. This is useful for abilities that trigger at low health, execute enemies, or provide emergency healing.',
+			keywords:     'health, hp, life, hit points, percent, low health, full health, missing health, damaged',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Health', 'Percent', 'Difference', 'Difference Percent'])
 					.setTooltip('The type of measurement to use for the health. Health is their flat health left. Percent is the percentage of health they have left. Difference is the difference between the target\'s flat health and the caster\'s. Difference percent is the difference between the target\'s percentage health left and the caster\'s'),
@@ -1757,7 +1846,8 @@ class ItemCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Item',
-			description:  'Applies child components when the target is wielding an item matching the given material',
+			description:  'Applies child components based on whether the target is wielding a specific item, or an item matching detailed criteria such as material, name, or lore. This is useful for abilities that require certain tools, weapons, or have special effects when certain items are equipped.',
+			keywords:     'item, equip, wield, hold, weapon, tool, gear, material, name, lore, check, requirement',
 			data:         [...itemConditionOptions()],
 			summaryItems: ['material', 'data', 'lore', 'name']
 		});
@@ -1770,7 +1860,8 @@ class InventoryCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Inventory',
-			description:  'Applies child components when the target player contains the given item in their inventory. This does not work on mobs',
+			description:  'Applies child components based on whether the target player\'s inventory contains a specific item, or an item matching detailed criteria and a minimum quantity. This is useful for abilities that require resources, consume items, or interact with a player\'s carried possessions.',
+			keywords:     'inventory, item, check, consume, resource, craft, material, quantity, storage, player only',
 			data:         [
 				new AttributeSelect('Amount', 'amount', 1)
 					.setTooltip('The amount of the item needed in the player\'s inventory'),
@@ -1787,7 +1878,8 @@ class LightCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Light',
-			description:  'Applies child components when the light level at the target\'s location matches the settings',
+			description:  'Applies child components based on the light level at the target\'s current location. This is useful for abilities that are stronger in darkness, weaker in light, or have special effects during day/night cycles or in specific environments.',
+			keywords:     'light, darkness, brightness, environment, day, night, shadow, illumination',
 			data:         [
 				new AttributeSelect('Min Light', 'min-light')
 					.setTooltip('The minimum light level needed. 16 is full brightness while 0 is complete darkness'),
@@ -1805,7 +1897,8 @@ class ManaCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Mana',
-			description:  'Applies child components when the target\'s mana matches the settings',
+			description:  'Applies child components based on the target\'s current mana, either as a raw value, a percentage, or a difference relative to the caster. This is useful for abilities that are restricted by mana costs, scale with mana, or provide mana regeneration effects.',
+			keywords:     'mana, energy, resource, mp, spell points, magic, resource management, regeneration',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Mana', 'Percent', 'Difference', 'Difference Percent'], 'Mana')
 					.setTooltip('The type of measurement to use for the mana. Mana is their flat mana left. Percent is the percentage of mana they have left. Difference is the difference between the target\'s flat mana and the caster\'s. Difference percent is the difference between the target\'s percentage mana left and the caster\'s'),
@@ -1825,7 +1918,8 @@ class MoneyCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Money',
-			description:  'Applies child components when the target\'s balance matches the settings (requires Vault and an economy plugin). Always is false for non-player targets',
+			description:  'Applies child components based on the target\'s current money balance. This condition requires a Vault-compatible economy plugin to be installed. It is useful for abilities with economic costs, conditional purchases, or wealth-based effects.',
+			keywords:     'money, economy, vault, balance, coins, gold, currency, wealth, cost, purchase',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Min', 'Max', 'Between'], 'Min')
 					.setTooltip('The type of comparison to make'),
@@ -1847,7 +1941,8 @@ class MoonCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Moon',
-			description:  'Applies child components if the target is in a world with a moon phase that matches.',
+			description:  'Applies child components based on the current moon phase in the target\'s world. This is useful for abilities that are tied to lunar cycles, such as werewolf transformations, nocturnal buffs, or spells that draw power from the moon.',
+			keywords:     'moon, lunar, phase, full moon, new moon, waxing, waning, night, cycle, werewolf, nocturnal',
 			data:         [
 				new DropdownSelect('Phases', 'phases', ['Full Moon', 'Waning Gibbous', 'Last Quarter', 'Waning Crescent', 'New Moon', 'Waxing Crescent', 'First Quarter', 'Waxing Gibbous'], [], true)
 					.setTooltip('The entity types to target'),
@@ -1865,7 +1960,8 @@ class MountedCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Mounted',
-			description:  'Applies child elements if the target is being mounted by one of the selected entity types',
+			description:  'Applies child components based on whether the target is currently being ridden (mounted) by a specific type of entity. This is useful for abilities that trigger when a player is on a horse, or when a mob is being controlled.',
+			keywords:     'mounted, ridden, ride, horse, entity, mob, player, controlled',
 			data:         [
 				new DropdownSelect('Types', 'types', getAnyEntities, ['Any'], true)
 					.setTooltip('The entity types that can be mounting the target')
@@ -1881,7 +1977,8 @@ class MountingCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Mounting',
-			description:  'Applies child elements if the target is mounting one of the selected entity types',
+			description:  'Applies child components based on whether the target is currently riding (mounting) a specific type of entity. This is useful for abilities that trigger when a player mounts a creature, or when a mob is riding another mob.',
+			keywords:     'mounting, riding, on mount, creature, entity, vehicle, control, passenger',
 			data:         [
 				new DropdownSelect('Types', 'types', getAnyEntities, ['Any'], true)
 					.setTooltip('The entity types the target can be mounting')
@@ -1897,7 +1994,8 @@ class MythicMobTypeCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'MythicMob Type',
-			description:  'Applies child elements if the target corresponds to one of the entered MythicMob types, or is not a MythicMob if left empty',
+			description:  'Applies child components based on whether the target is a specific MythicMob type, or a generic mob if the field is left empty. This is useful for abilities that interact exclusively with custom MythicMobs.',
+			keywords:     'mythicmob, custom mob, monster, entity, type, specific mob, boss, creature, unique mob',
 			data:         [
 				new StringListSelect('MythicMob Types', 'types')
 					.setTooltip('The MythicMob types to target')
@@ -1913,7 +2011,8 @@ class NameCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Name',
-			description:  'Applies child components when the target has a name matching the settings',
+			description:  'Applies child components based on whether the target\'s displayed name matches a specified text string or regular expression. This is useful for abilities that target named mobs, specific players, or entities with custom names.',
+			keywords:     'name, custom name, player name, mob name, regex, text, identifier, target by name',
 			data:         [
 				new BooleanSelect('Contains Text', 'contains', true)
 					.setTooltip('Whether the target should have a name containing the text'),
@@ -1933,7 +2032,8 @@ class OffhandCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Offhand',
-			description:  'Applies child components when the target is wielding an item matching the given material as an offhand item. This is for v1.9+ servers only',
+			description:  'Applies child components based on whether the target is wielding a specific item in their offhand slot. This condition is primarily for Minecraft versions 1.9 and above, allowing for abilities that leverage secondary equipment.',
+			keywords:     'offhand, secondary hand, shield, item, equipment, dual wield, 1.9+, inventory slot',
 			data:         [...itemConditionOptions()],
 			summaryItems: ['material', 'data', 'lore', 'name']
 		});
@@ -1946,7 +2046,8 @@ class PermissionCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Permission',
-			description:  'Applies child components if the caster has the required permission',
+			description:  'Applies child components based on whether the caster possesses a specific Minecraft permission. This is highly useful for abilities that are tied to player ranks, roles, or administrative privileges, ensuring only authorized users can activate them.',
+			keywords:     'permission, access, authorization, rank, role, privilege, whitelist, op',
 			data:         [
 				new StringSelect('Permission', 'perm', 'some.permission')
 					.setTooltip('The permission the player needs to have'),
@@ -1964,7 +2065,8 @@ class PotionCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Potion',
-			description:  'Applies child components when the target has the potion effect',
+			description:  'Applies child components based on whether the target currently has a specific potion effect applied, optionally checking its rank. This is useful for abilities that interact with status effects, such as cleansing, amplifying, or reacting to specific buffs/debuffs.',
+			keywords:     'potion, effect, status effect, buff, debuff, cleanse, amplify, rank, strength, active, not active',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Active', 'Not Active'], 'Active')
 					.setTooltip('Whether the potion should be active'),
@@ -1986,7 +2088,8 @@ class SkillLevelCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Skill Level',
-			description:  'Applies child components when the skill level is with the range. This checks the skill level of the caster, not the targets',
+			description:  'Applies child components based on the caster\'s level in a specific skill. This is useful for abilities that unlock or improve as the caster gains proficiency in a particular skill, ensuring progressive gameplay.',
+			keywords:     'skill level, proficiency, mastery, rank, progression, experience, unlock, improve',
 			data:         [
 				new SkillSelect('Skill', 'skill', false)
 					.setTooltip('The name of the skill to check the level of. If you want to check the current skill, enter the current skill\'s name anyway'),
@@ -2006,7 +2109,8 @@ class SlotCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Slot',
-			description:  'Applies child components when the target player has a matching item in the given slot',
+			description:  'Applies child components based on whether the target player has a specific item in a designated inventory slot. This is useful for abilities that require certain equipment to be in particular places, such as a tool in the hotbar or a specific armor piece.',
+			keywords:     'slot, inventory, item, equipment, hotbar, armor, offhand, check, position, gear',
 			data:         [
 				new StringListSelect('Slots (one per line)', 'slot', ['9'])
 					.setTooltip('The slots to look at. Slots 0-8 are the hot bar, 9-35 are the main inventory, 36-39 are armor, and 40 is the offhand slot. Multiple slots will check if any of the slots match'),
@@ -2023,7 +2127,8 @@ class SprintCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Sprint',
-			description:  'Applies child components if the target player(s) are sprinting',
+			description:  'Applies child components based on whether the target player is currently sprinting. This is useful for abilities that grant bonuses during high-speed movement, provide stealth when not sprinting, or react to changes in a player\'s movement state.',
+			keywords:     'sprint, running, fast, speed, movement, toggle, high speed, dash, run',
 			data:         [
 				new BooleanSelect('Sprinting', 'sprint', true)
 					.setTooltip('Whether the player should be sprinting')
@@ -2039,7 +2144,8 @@ class StatusCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Status',
-			description:  'Applies child components when the target has the status condition',
+			description:  'Applies child components based on whether the target currently has a specific custom status effect applied (e.g., Stun, Root, Silence). This is useful for abilities that interact with crowd control, buffs, or debuffs from other skills.',
+			keywords:     'status, effect, custom status, buff, debuff, crowd control, stun, root, silence, invincible, invulnerable',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Active', 'Not Active'])
 					.setTooltip('Whether the status should be active'),
@@ -2068,7 +2174,8 @@ class TimeCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Time',
-			description:  'Applies child components when the server time matches the settings',
+			description:  'Applies child components based on the current server time (day or night). This is useful for abilities that are restricted to certain times of day, or have different effects depending on whether it is day or night.',
+			keywords:     'time, day, night, clock, cycle, day-night cycle, schedule, light level',
 			data:         [
 				new DropdownSelect('Time', 'time', ['Day', 'Night'], 'Day')
 					.setTooltip('The time to check for in the current world')
@@ -2084,7 +2191,8 @@ class ToolCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Tool',
-			description:  'Applies child components when the target is wielding a matching tool',
+			description:  'Applies child components based on whether the target is currently wielding a tool of a specific type or material. This is useful for abilities that require certain tools for activation, provide bonuses when using a particular tool, or interact with crafting/gathering mechanics.',
+			keywords:     'tool, weapon, axe, pickaxe, shovel, hoe, sword, material, craft, gather, equipment, wield, hold',
 			data:         [
 				new DropdownSelect('Material', 'material', ['Any',
 					'Wood',
@@ -2108,7 +2216,8 @@ class ValueCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Value',
-			description:  'Applies child components if a stored value is within the given range',
+			description:  'Applies child components based on whether a dynamically stored numerical value (set by "Value" mechanics) falls within a specified range. This is useful for abilities that track custom statistics, counters, or game-state variables.',
+			keywords:     'value, stored value, custom stat, counter, game state, variable, numerical, range check',
 			data:         [
 				new StringSelect('Key', 'key', 'value')
 					.setTooltip('The unique string used for the value set by the Value mechanics'),
@@ -2128,7 +2237,8 @@ class ValueTextCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:        'Value Text',
-			description: 'Applies child components if text value match to the settings',
+			description: 'Applies child components based on whether a dynamically stored text value (set by "Value" mechanics) matches a specified string using various comparison modes (e.g., regex, exact match, contains). This is useful for abilities that react to custom text-based states or variables.',
+			keywords:    'value, stored text, string, regex, exact match, contains, start, end, custom variable, text comparison',
 			data:        [
 				new DropdownSelect('Mode', 'mode', ['REGEX', 'EXACTLY', 'CONTAIN', 'START', 'END'], 'EXACTLY')
 					.setTooltip('The comparison mode should be conditioned.'),
@@ -2147,7 +2257,8 @@ class WaterCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Water',
-			description:  'Applies child components when the target is in or out of water, depending on the settings',
+			description:  'Applies child components based on whether the target is currently in water. This is useful for abilities that are restricted to aquatic environments, provide buffs underwater, or react to a player entering/exiting water.',
+			keywords:     'water, in water, underwater, aquatic, swim, drown, wet, environment',
 			data:         [
 				new DropdownSelect('State', 'state', ['In Water', 'Out Of Water'])
 					.setTooltip('Whether the target needs to be in the water')
@@ -2163,7 +2274,8 @@ class WeatherCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Weather',
-			description:  'Applies child components when the target\'s location has the given weather condition',
+			description:  'Applies child components based on the current weather condition at the target\'s location (e.g., Rain, Snow, Thunder). This is useful for abilities that are influenced by environmental factors, such as spells that are stronger in a storm or provide shelter.',
+			keywords:     'weather, rain, snow, thunder, clear, storm, environment, climate, atmosphere',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Rain', 'None', 'Snow', 'Thunder'])
 					.setTooltip('Whether the target needs to be in the water')
@@ -2179,7 +2291,8 @@ class WorldCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'World',
-			description:  'Applies child components when the target is in a specific world',
+			description:  'Applies child components based on whether the target is currently located within a specific world (e.g., Overworld, Nether, End). This is useful for abilities that are exclusive to certain dimensions or have different effects depending on the world.',
+			keywords:     'world, dimension, overworld, nether, end, custom world, specific world, environment',
 			data:         [
 				new BooleanSelect('Blacklist', 'blacklist', false)
 					.setTooltip('Whether the list should be seen as a blacklist'),
@@ -2197,7 +2310,8 @@ class YawCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Yaw',
-			description:  'Applies child components when the target is facing the correct direction. This is on a scale of 0-360 degrees. 0 is south, 90 is west, 180 is north, and 270 is east',
+			description:  'Applies child components based on the target\'s horizontal facing direction (yaw), measured in degrees (0-360). This is useful for abilities that require the target to be looking in a specific direction, such as puzzles, directional attacks, or stealth mechanics.',
+			keywords:     'yaw, direction, facing, orientation, angle, horizontal, stealth, puzzle, view',
 			data:         [
 				new DoubleSelect('Min Yaw', 'min-yaw', 0)
 					.setTooltip('The minimum yaw the target should be facing'),
@@ -2507,7 +2621,8 @@ class AirModify extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Air Modify',
-			description:  'Modifies the remaining air of an entity by a set amount of seconds. Positive numbers will add air, negative numbers will remove air. Players have a starting value of 15 seconds of air.',
+			description:  'Modifies an entity\'s remaining air supply by a specified number of seconds. Positive values add air, while negative values deplete it. This can be used to simulate drowning, grant temporary underwater breathing, or react to environmental hazards.',
+			keywords:     'air, oxygen, breathe, drown, underwater, suffocate, modify, change, add, remove, seconds',
 			data:         [
 				new AttributeSelect('Air', 'air', 3)
 					.setTooltip('The amount of air, in seconds, to add/subtract.')],
@@ -2522,7 +2637,8 @@ class AirSet extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Air Set',
-			description:  'Sets the remaining air of an entity to a specific amount of seconds. Players have a starting value of 15 seconds of air.',
+			description:  'Sets an entity\'s remaining air supply to a specific, absolute number of seconds. This can be used to instantly grant full breath, fully deplete air for immediate drowning, or control underwater duration precisely.',
+			keywords:     'air, oxygen, breathe, drown, underwater, suffocate, set, absolute, seconds, control',
 			data:         [
 				new AttributeSelect('Air', 'air', 3)
 					.setTooltip('The amount of air, in seconds, to set to.')],
@@ -2533,12 +2649,12 @@ class AirSet extends FabledMechanic {
 	public static override new = () => new this();
 }
 
-
 class AbortSkillMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Abort Skill',
-			description:  'Cancels current skill mechanics',
+			description:  'Immediately cancels all currently active skill mechanics for the target. This is useful for stopping channeling abilities, breaking ongoing effects, or preventing further execution of a skill chain.',
+			keywords:     'abort, cancel, stop, terminate, interrupt, skill, ability, cease, halt',
 			data:         [],
 			summaryItems: []
 		}, false);
@@ -2551,7 +2667,8 @@ class ArmorMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Armor',
-			description:  'Sets the specified armor slot of the target to the item defined by the settings',
+			description:  'Sets or replaces an item in a specific armor or hand slot of the target, based on detailed item settings. This is useful for dynamically equipping gear, providing temporary armor, or transforming a target\'s appearance. Use with caution when overwriting existing items.',
+			keywords:     'armor, equip, gear, item, slot, hand, head, chest, legs, feet, replace, change, outfit',
 			data:         [
 				new DropdownSelect('Slot', 'slot', ['Hand', 'Off Hand', 'Feet', 'Legs', 'Chest', 'Head'])
 					.setTooltip('The slot number to set the item to'),
@@ -2570,7 +2687,8 @@ class ArmorStandMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Armor Stand',
-			description:  'Summons an armor stand that can be used as a marker or for item display (check Armor Mechanic for latter). Applies child components on the armor stand',
+			description:  'Summons a customizable armor stand at the target\'s location, which can serve as a visual marker, a temporary entity, or for displaying items. Child components will be applied to this summoned armor stand.',
+			keywords:     'armor stand, summon, marker, display, visual, temporary entity, hologram, item display',
 			data:         [
 				new StringSelect('Armor Stand Key', 'key', 'default')
 					.setTooltip('The key to refer to the armor stand by. Only one armor stand of each key can be active per target at a time'),
@@ -2614,7 +2732,8 @@ class ArmorStandPoseMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:        'Armor Stand Pose',
-			description: 'Sets the pose of an armor stand target. Values should be in the format x,y,z where rotations are in degrees. Example: 0.0,0.0,0.0',
+			description: 'Adjusts the rotational pose of an existing armor stand. Each body part (head, body, arms, legs) can be set with specific X, Y, Z rotation values in degrees, allowing for highly customized and dynamic visual effects.',
+			keywords:    'armor stand, pose, rotation, animate, visual, custom, articulate, head, body, arm, leg',
 			data:        [
 				new StringSelect('Head', 'head', '').setTooltip('The pose values of the head. Leave empty if should be ignored'),
 				new StringSelect('Body', 'body', '').setTooltip('The pose values of the body. Leave empty if should be ignored'),
@@ -2633,7 +2752,8 @@ class ArmorStandRemoveMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Armor Stand Remove',
-			description:  'Removes an armor stand with the given key',
+			description:  'Removes an existing armor stand that was previously summoned and identified by a unique key. This is useful for cleaning up temporary visual effects or entities.',
+			keywords:     'armor stand, remove, delete, despawn, clear, cleanup, temporary entity, destroy',
 			data:         [
 				new StringSelect('Armor Stand Key', 'key', 'default')
 					.setTooltip('The key to refer to the armor stand by. Only one armor stand of each key can be active per target at a time')
@@ -2649,7 +2769,8 @@ class AttributeMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Attribute',
-			description:  'Gives a player bonus attributes temporarily',
+			description:  'Temporarily modifies a player\'s attributes (e.g., strength, intelligence) by adding a flat bonus or a percentage multiplier. This is useful for applying buffs or debuffs to player stats for a limited duration.',
+			keywords:     'attribute, stats, strength, intelligence, vitality, dexterity, buff, debuff, modify, bonus, temporary, enhance',
 			data:         [
 				new DropdownSelect('Attribute', 'key', () => attributeStore.getAttributeNames(), ['Intelligence'], true)
 					.setTooltip('The attribute to add to'),
@@ -2673,7 +2794,8 @@ class BlockMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Block',
-			description:  'Changes blocks to the given type of block for a limited duration',
+			description:  'Transforms blocks within a defined area (sphere or cuboid) to a specified type for a limited duration or permanently. This is useful for environmental manipulation, creating temporary barriers, or altering terrain.',
+			keywords:     'block, terrain, manipulate, transform, create, destroy, barrier, environment, sphere, cuboid, shape',
 			data:         [
 				new DropdownSelect('Shape', 'shape', ['Sphere', 'Cuboid'], 'Sphere')
 					.setTooltip('The shape of the region to change the blocks for'),
@@ -2733,7 +2855,8 @@ class BuffMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Buff',
-			description:  'Buffs combat stats of the target',
+			description:  'Applies temporary buffs or debuffs to a target\'s combat statistics, affecting their damage dealt, damage taken, or healing received. This can be applied immediately with a damage trigger or persist for a duration.',
+			keywords:     'buff, debuff, combat stats, damage, defense, healing, modify, enhance, weaken, temporary effect',
 			data:         [
 				new BooleanSelect('Immediate', 'immediate', false)
 					.setTooltip('Whether to apply the buff to the current damage trigger'),
@@ -2764,7 +2887,8 @@ class CancelMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:        'Cancel',
-			description: 'Cancels the event that caused the trigger this is under to go off. For example, damage based triggers will stop the damage that was dealt while the Launch trigger would stop the projectile from firing'
+			description: 'Cancels the event that initiated the current trigger. For example, using this with a damage-based trigger would prevent the damage from being dealt, or with a Launch trigger would stop a projectile from firing. This is useful for defensive abilities, intercepts, or modifying game events.',
+			keywords:    'cancel, prevent, stop, interrupt, negate, block, event, trigger, damage, projectile'
 		});
 	}
 
@@ -2775,7 +2899,8 @@ class CancelEffectMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Cancel Effect',
-			description:  'Stops a particle effect prematurely',
+			description:  'Prematurely stops an active particle effect, identified by its unique key. This is useful for dynamic visual effects, allowing an effect to be stopped before its natural duration ends.',
+			keywords:     'cancel, stop, effect, particle, visual, prematurely, remove, clear, cleanup',
 			data:         [
 				new StringSelect('Effect Key', 'effect-key', 'default')
 					.setTooltip('The key used when setting up the effect')
@@ -2791,7 +2916,8 @@ class ChannelMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Channel',
-			description:  'Applies child effects after a duration which can be interrupted. During the channel, the player cannot move, attack, or use other spells',
+			description:  'Initiates a channeling period during which the player is typically immobilized and unable to perform other actions. After a set duration, child effects are applied. This channel can be interrupted, making it suitable for powerful, cast-time abilities.',
+			keywords:     'channel, cast time, interrupt, concentrate, hold position, casting, spell, ability, delay, duration',
 			data:         [
 				new BooleanSelect('Still', 'still', true)
 					.setTooltip('Whether to hold the player in place while channeling'),
@@ -2809,7 +2935,8 @@ class CleanseMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Cleanse',
-			description:  'Cleanses negative potion or status effects from the targets',
+			description:  'Removes specified negative potion effects or custom status effects from the targets. This is useful for support abilities, purifying allies, or counteracting enemy debuffs.',
+			keywords:     'cleanse, purify, remove effect, cure, dispel, debuff, potion, status, support, healing',
 			data:         [
 				new DropdownSelect('Potion', 'potion', getBadPotions, undefined, true)
 					.setTooltip('The type of potion effect to remove from the target'),
@@ -2827,7 +2954,8 @@ class CommandMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Command',
-			description:  'Executes a command for each of the targets',
+			description:  'Executes a specified server command for each targeted entity, allowing for integration with other plugins or direct server actions. Commands can be executed by the console or by an OP-level player, and support placeholders for dynamic values.',
+			keywords:     'command, server command, console, op, execute, custom action, plugin integration, dynamic',
 			data:         [
 				new StringSelect('Command', 'command', '')
 					.setTooltip('The command to execute. {player} = caster\'s name, {target} = target\'s name, {targetUUID} = target\'s UUID (useful if targets are non players), &lc: "{", &rc: "}", &sq: "\'"'),
@@ -2845,7 +2973,8 @@ class CooldownMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Cooldown',
-			description:  'Lowers the cooldowns of the target\'s skill(s). If you provide a negative amount, it will increase the cooldown',
+			description:  'Modifies the cooldown of a specific skill (or all skills) for the target. Positive values reduce cooldown, while negative values increase it. This is useful for abilities that refresh skills, apply global cooldowns, or penalize frequent ability use.',
+			keywords:     'cooldown, skill, ability, refresh, reduce, increase, global cooldown, reset, timer',
 			data:         [
 				new StringSelect('Skill (or "all")', 'skill', 'all')
 					.setTooltip('The skill to modify the cooldown for'),
@@ -2865,7 +2994,8 @@ class DamageMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Damage',
-			description:  'Inflicts skill damage to each target. Multiplier type would be a percentage of the target health',
+			description:  'Inflicts skill-based damage to each target, with options for flat, percentage-based, or true damage. This mechanic allows for various damage types (e.g., elemental, magical) and configurable effects like knockback and ignoring defense calculations.',
+			keywords:     'damage, harm, inflict, attack, hit, spell, ability, true damage, elemental, magical, physical, knockback',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Damage', 'Multiplier', 'Percent Left', 'Percent Missing'], 'Damage')
 					.setTooltip('The unit to use for the amount of damage. Damage will deal flat damage, Multiplier will deal a percentage of the target\'s max health, Percent Left will deal a percentage of their current health, and Percent Missing will deal a percentage of the difference between their max health and current health'),
@@ -2894,7 +3024,8 @@ class DamageBuffMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Damage Buff',
-			description:  'Modifies the physical damage dealt by each target by a multiplier or a flat amount for a limited duration. Negative flat amounts or multipliers less than one will reduce damage dealt while the opposite will increase damage dealt. (e.g. a 5% damage buff would be a multiplier or 1.05)',
+			description:  'Modifies the outgoing physical or skill damage dealt by each target, either by a flat amount or a multiplier, for a limited duration. This is useful for applying temporary offensive buffs or debuffs to individual entities.',
+			keywords:     'damage buff, damage dealt, physical damage, skill damage, offensive buff, debuff, modify, multiplier, flat, temporary, combat',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Flat', 'Multiplier'], 'Flat')
 					.setTooltip('The type of buff to apply. Flat increases damage by a fixed amount while multiplier increases it by a percentage'),
@@ -2919,7 +3050,8 @@ class DamageLoreMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Damage Lore',
-			description:  'Damages each target based on a value found in the lore of the item held by the caster',
+			description:  'Calculates and inflicts damage to each target based on a numerical value extracted from the lore of an item held by the caster. This allows for dynamic damage scaling tied to item properties.',
+			keywords:     'damage, lore, item, dynamic damage, scaling, custom item, text parsing, regex, held item',
 			data:         [
 				new DropdownSelect('Hand', 'hand', ['Main', 'Offhand'], 'Main')
 					.setTooltip('The hand to check for the item. Offhand items are MC 1.9+ only'),
@@ -2950,7 +3082,8 @@ class DefenseBuffMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Defense Buff',
-			description:  'Modifies the physical damage taken by each target by a multiplier or a flat amount for a limited duration. Negative flag amounts or multipliers less than one will reduce damage taken while the opposite will increase damage taken. (e.g. a 5% defense buff would be a multiplier or 0.95, since you would be taking 95% damage)',
+			description:  'Modifies the incoming physical or skill damage taken by each target, either by a flat amount or a multiplier, for a limited duration. This is useful for applying temporary defensive buffs or debuffs, reducing incoming damage, or increasing vulnerability.',
+			keywords:     'defense buff, damage taken, physical defense, skill defense, defensive buff, debuff, modify, multiplier, flat, temporary, combat, vulnerability',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Flat', 'Multiplier'], 'Flat')
 					.setTooltip('The type of buff to apply. Flat will increase/reduce incoming damage by a fixed amount where Multiplier does it by a percentage of the damage. Multipliers above 1 will increase damage taken while multipliers below 1 reduce damage taken'),
@@ -2975,7 +3108,8 @@ class DelayMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Delay',
-			description:  'Applies child components after a delay',
+			description:  'Pauses the execution of subsequent child components for a specified duration. This is useful for sequencing abilities, creating timed effects, or adding a brief pause before an effect triggers.',
+			keywords:     'delay, pause, wait, timer, timed effect, sequence, ability timing, cooldown, interruptible',
 			data:         [
 				new AttributeSelect('Delay', 'delay', 2)
 					.setTooltip('The amount of time to wait before applying child components in seconds'),
@@ -2996,7 +3130,8 @@ class DisguiseMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Disguise',
-			description:  'Disguises each target according to the settings. This mechanic requires the LibsDisguise plugin to be installed on your server',
+			description:  'Transforms the appearance of each target into a specified mob, player, or miscellaneous entity. This mechanic requires the "LibsDisguise" plugin to be installed. It is useful for stealth, role-playing, or creating unique visual effects.',
+			keywords:     'disguise, transform, hidden, stealth, roleplay, appearance, mob, player, libsdisguise, mimic, illusion',
 			data:         [
 				new AttributeSelect('Duration', 'duration', -1)
 					.setTooltip('How long to apply the disguise for in seconds. Use a negative number to permanently disguise the targets'),
@@ -3069,7 +3204,8 @@ class DurabilityMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Durability',
-			description:  'Lowers the durability of a held item',
+			description:  'Reduces the durability of an item held by the target, either in their main hand or offhand. This is useful for simulating wear and tear, adding weapon degradation, or as a consequence of certain abilities.',
+			keywords:     'durability, wear, tear, degrade, item, weapon, tool, damage item, reduce durability, main hand, offhand',
 			data:         [
 				new AttributeSelect('Amount', 'amount', 1)
 					.setTooltip('Amount to reduce the item\'s durability by'),
@@ -3087,7 +3223,8 @@ class ExperienceMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Experience',
-			description:  'Modifies target player\'s vanilla or specified group\'s class experience',
+			description:  'Modifies a target player\'s vanilla experience or their experience within a specific class group. This can be used to grant rewards, impose penalties, or adjust progression rates.',
+			keywords:     'experience, exp, level, gain, lose, set, vanilla, class, progression, reward, penalty',
 			data:         [
 				new BooleanSelect('Vanilla', 'vanilla', false)
 					.setTooltip('Whether to give the target vanilla experience levels instead of fabled class ones.'),
@@ -3113,7 +3250,8 @@ class ExplosionMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Explosion',
-			description:  'Causes an explosion at the current target\'s position',
+			description:  'Generates an explosion at the target\'s location, with configurable power, block damage, and fire effects. This is useful for offensive area-of-effect abilities, environmental destruction, or creating dynamic combat scenarios.',
+			keywords:     'explosion, blast, boom, area damage, aoe, destroy, ignite, tnt, bomb, environmental damage',
 			data:         [
 				new AttributeSelect('Power', 'power', 3)
 					.setTooltip('The strength of the explosion'),
@@ -3133,7 +3271,8 @@ class FireMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Fire',
-			description:  'Sets the target on fire for a duration',
+			description:  'Sets the target entity on fire for a specified duration, inflicting continuous fire damage. This is useful for offensive abilities that apply a burning debuff or interact with fire-sensitive enemies.',
+			keywords:     'fire, burn, ignite, flame, damage over time, dot, debuff, scorching, inferno',
 			data:         [
 				new AttributeSelect('Damage', 'damage', 1)
 					.setTooltip('The damage dealt by each fire tick'),
@@ -3151,7 +3290,8 @@ class FlagMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Flag',
-			description:  'Marks the target with a flag for a duration. Flags can be checked by other triggers, spells or the related for interesting synergies and effects',
+			description:  'Marks the target with a temporary custom flag for a specified duration. These flags can then be checked by other skills or conditions, enabling complex state-based abilities and inter-skill synergies.',
+			keywords:     'flag, custom flag, mark, status, temporary, buff, debuff, state, condition, key, synergy',
 			data:         [
 				new StringSelect('Key', 'key', 'key')
 					.setTooltip('The unique string for the flag. Use the same key when checking it in a Flag Condition'),
@@ -3169,7 +3309,8 @@ class FlagClearMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Flag Clear',
-			description:  'Clears a flag from the target',
+			description:  'Removes a specific custom flag from the target, effectively ending any state or condition associated with that flag. This is useful for cleaning up temporary effects, resetting states, or managing complex skill interactions.',
+			keywords:     'flag, clear, remove, reset, status, condition, temporary, cleanup, end, key',
 			data:         [
 				new StringSelect('Key', 'key', 'key')
 					.setTooltip('The unique string for the flag. This should match that of the mechanic that set the flag to begin with')
@@ -3185,7 +3326,8 @@ class FlagToggleMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Flag Toggle',
-			description:  'Toggles a flag on or off for the target. This can be used to make toggle effects',
+			description:  'Toggles a custom flag on or off for the target. If the flag is currently set, it will be removed; if it\'s not set, it will be applied. This is ideal for creating toggleable abilities or persistent state changes.',
+			keywords:     'flag, toggle, switch, custom condition, state change, persistent, on/off, key',
 			data:         [
 				new StringSelect('Key', 'key', 'key')
 					.setTooltip('The unique string for the flag. Use the same key when checking it in a Flag Condition')
@@ -3201,7 +3343,8 @@ class FlyMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Fly',
-			description:  'Grants creative flight to a target for a set duration. Can also be used to revoke flight.',
+			description:  'Grants or revokes creative flight capabilities to a target for a specified duration, along with control over flight speed. This is useful for temporary aerial movement, escape abilities, or controlling player mobility.',
+			keywords:     'fly, flight, aerial, creative flight, grants flight, revoke flight, speed, mobility, movement',
 			data:         [
 				new BooleanSelect('Allow Flight', 'allow-flight', true)
 					.setTooltip('Should the player be allowed to fly when in Survival or Adventure mode? Setting this to false will revoke flight in Survival or Adventure mode.'),
@@ -3226,7 +3369,8 @@ class FoodMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Food',
-			description:  'Adds or removes to a player\'s hunger and saturation',
+			description:  'Modifies a player\'s hunger and saturation levels. Positive values increase, while negative values decrease these stats. This is useful for healing, applying hunger debuffs, or interacting with food-related gameplay mechanics.',
+			keywords:     'food, hunger, saturation, consume, heal, debuff, restore, deplete, nutrition, appetite',
 			data:         [
 				new AttributeSelect('Food', 'food', 1, 1)
 					.setTooltip('The amount of food to give. Use a negative number to lower the food meter'),
@@ -3244,7 +3388,8 @@ class ForgetTargetsMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Forget Targets',
-			description:  'Clears targets stored by the "Remember Targets" mechanic',
+			description:  'Clears a group of entities previously stored by the "Remember Targets" mechanic, identified by a unique key. This is useful for managing multi-stage abilities that track specific entities, allowing them to be deselected or removed from tracking.',
+			keywords:     'forget, clear, remove, targets, stored, tracking, deselect, untrack, key',
 			data:         [
 				new StringSelect('Key', 'key', 'key')
 					.setTooltip('The unique key the targets were stored under')
@@ -3260,7 +3405,8 @@ class HealMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Heal',
-			description:  'Restores health to each target',
+			description:  'Restores health to each targeted entity, either by a flat amount or a percentage of their maximum health. This is a fundamental mechanic for supportive abilities, regeneration effects, or emergency health boosts.',
+			keywords:     'heal, restore, health, hp, life, regeneration, support, recovery, cure',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Health', 'Percent'], 'Health')
 					.setTooltip('The unit to use for the amount of health to restore. Health restores a flat amount while Percent restores a percentage of their max health'),
@@ -3278,7 +3424,8 @@ class HealthSetMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Health Set',
-			description:  'Sets the target\'s health to the specified amount, ignoring resistances, damage buffs, and so on',
+			description:  'Sets the target\'s health to a specific, absolute amount, overriding all resistances, damage buffs, and other modifiers. This provides precise control over an entity\'s health state.',
+			keywords:     'health, set, absolute health, override, precise, life, hp, hit points, exact',
 			data:         [
 				new AttributeSelect('Health', 'health', 1)
 					.setTooltip('The health to set to')
@@ -3294,7 +3441,8 @@ class HeldItemMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Held Item',
-			description:  'Sets the held item slot of the target player. This will do nothing if trying to set it to a skill slot',
+			description:  'Sets the currently held item slot for a target player. This is useful for automatically equipping specific items, changing a player\'s active tool/weapon, or preparing for a subsequent action. This mechanic will not affect skill slots.',
+			keywords:     'held item, equip, inventory, slot, main hand, offhand, weapon, tool, switch, change, quick equip',
 			data:         [
 				new AttributeSelect('Slot', 'slot')
 					.setTooltip('The slot to set it to')
@@ -3310,7 +3458,8 @@ class ImmunityMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Immunity',
-			description:  'Provides damage immunity from one source for a duration',
+			description:  'Grants temporary immunity or resistance to specific damage types for a limited duration. This is useful for defensive abilities, invulnerability frames, or mitigating incoming threats.',
+			keywords:     'immunity, resistance, invulnerability, damage reduction, defense, shield, absorb, temporary, buff',
 			data:         [
 				new DropdownSelect('Type', 'type', getDamageTypes, 'Poison')
 					.setTooltip('The damage type to give an immunity for'),
@@ -3330,7 +3479,8 @@ class InterruptMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:        'Interrupt',
-			description: 'Interrupts any channeling being done by each target if applicable'
+			description: 'Immediately stops any ongoing channeling abilities or other interruptible actions being performed by the targeted entities. This is useful for crowd control, breaking enemy spell casts, or preventing channeled effects.',
+			keywords:    'interrupt, stop, cancel, channeling, spell cast, crowd control, break, halt, silence'
 		});
 	}
 
@@ -3341,7 +3491,8 @@ class InvisibilityMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Invisibility',
-			description:  'Applies invisibility effect on target, optionally hiding equipment (Requires ProtocolLib).',
+			description:  'Applies the invisibility potion effect to the target, optionally hiding their equipment (requires ProtocolLib). This is useful for stealth abilities, escape mechanisms, or temporary visual concealment.',
+			keywords:     'invisibility, stealth, hidden, vanish, conceal, escape, visual, potion effect',
 			data:         [
 				new IntSelect('Duration', 'duration', 200)
 					.setTooltip('Duration in ticks'),
@@ -3359,7 +3510,8 @@ class ItemMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Item',
-			description:  'Gives each player target the item defined by the settings',
+			description:  'Grants each targeted player a specified item, with options for quantity, custom data, name, and lore. This is useful for rewarding players, giving quest items, or providing temporary consumables.',
+			keywords:     'item, give, grant, reward, inventory, add item, custom item, loot, material, amount',
 			data:         [...itemOptions()],
 			summaryItems: ['material', 'amount']
 		});
@@ -3372,7 +3524,8 @@ class ItemDropMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Item Drop',
-			description:  'Spawns a dropped item defined by the settings at the specified location',
+			description:  'Spawns a custom dropped item entity at a specified location, with configurable pickup delay and despawn duration. This is useful for creating loot drops, quest objectives, or interactive environmental elements.',
+			keywords:     'item, drop, spawn, loot, entity, custom item, ground item, reward, quest, material, amount',
 			data:         [
 				new AttributeSelect('Pickup Delay', 'pickup_delay', 10)
 					.setTooltip('How many ticks must pass before the item can be picked up, in ticks'),
@@ -3400,7 +3553,8 @@ class ItemProjectileMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Item Projectile',
-			description:  'Launches a projectile using an item as its visual that applies child components upon landing. The target passed on will be the collided target or the location where it landed if it missed',
+			description:  'Launches a projectile that uses a specified item as its visual representation. Upon landing or colliding, it applies child components to the hit entity or location. This is highly customizable with homing capabilities, various spread patterns, and collision handling.',
+			keywords:     'projectile, item, launch, fire, shoot, homing, collision, spread, visual, custom, ranged, attack',
 			data:         [
 				new DropdownSelect('Group', 'group', ['Ally', 'Enemy'], 'Enemy')
 					.setTooltip('The alignment of targets to hit'),
@@ -3584,7 +3738,8 @@ class ItemRemoveMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Item Remove',
-			description:  'Removes an item from a player inventory. This does nothing to mobs',
+			description:  'Removes a specified quantity of a particular item from a target player\'s inventory. This mechanic does not affect mobs. It\'s useful for implementing resource costs, consuming items, or clearing specific items from a player\'s possession.',
+			keywords:     'item, remove, inventory, consume, cost, resource, clear, delete, player only, material, amount',
 			data:         [
 				new AttributeSelect('Amount', 'amount', 1)
 					.setTooltip('The amount of the item needed in the player\'s inventory'),
@@ -3602,7 +3757,8 @@ class LaunchMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Launch',
-			description:  'Launches the target relative to their forward direction. Use negative values to go in the opposite direction (e.g. negative forward makes the target go backwards)',
+			description:  'Propels the target entity in a specified direction and with a defined speed, relative to their current facing. This is useful for creating knockbacks, dashes, or custom movement abilities.',
+			keywords:     'launch, propel, knockback, dash, move, movement, push, pull, propel, custom movement, physics',
 			data:         [
 				new DropdownSelect('Relative', 'relative', ['Target', 'Caster', 'Between'], 'Target')
 					.setTooltip('Determines what is considered "forward". Target uses the direction the target is facing, Caster uses the direction the caster is facing, and Between uses the direction from the target to the caster'),
@@ -3626,7 +3782,8 @@ class LightningMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Lightning',
-			description:  'Strikes lightning on or near the target, applying child components to the struck targets. Negative offsets will offset it in the opposite direction (e.g. negative forward offset puts it behind the target)',
+			description:  'Strikes a bolt of lightning at or near the target\'s position, inflicting damage and potentially setting blocks on fire. Child components are applied to any entity struck by the lightning. This is useful for offensive abilities, environmental destruction, or dramatic visual effects.',
+			keywords:     'lightning, strike, thunder, storm, electric, damage, fire, environmental, dramatic, offensive, weather',
 			data:         [
 				new AttributeSelect('Damage', 'damage', 5)
 					.setTooltip('The damage dealt by the lightning bolt'),
@@ -3654,7 +3811,8 @@ class ManaMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Mana',
-			description:  'Restores or deducts mana from the target',
+			description:  'Restores or depletes a target\'s mana (or other energy resource) by a flat amount or a percentage of their maximum. This is a fundamental mechanic for managing resource costs, granting mana regeneration, or applying energy drains.',
+			keywords:     'mana, energy, resource, mp, spell points, magic, restore, deplete, regeneration, drain, cost',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Mana', 'Percent'], 'Mana')
 					.setTooltip('The unit to use for the amount of mana to restore/drain. Mana does a flat amount while Percent does a percentage of their max mana'),
@@ -3672,7 +3830,8 @@ class MessageMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Message',
-			description:  'Sends a message to each player target. To include numbers from Value mechanics, use the filters {<key>} where <key> is the key the value is stored under',
+			description:  'Sends a customizable message to each targeted player, supporting dynamic placeholders for caster/target names and stored values. This is useful for providing feedback, quest updates, or role-playing interactions.',
+			keywords:     'message, chat, communicate, display, feedback, text, notification, broadcast, player, custom message',
 			data:         [
 				new StringSelect('Message', 'message', 'text')
 					.setTooltip('The message to display. {player} = caster\'s name, {target} = target\'s name, {targetUUID} = target\'s UUID (useful if targets are non players), &lc: "{", &rc: "}", &sq: "\'"')
@@ -3688,7 +3847,8 @@ class MineMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Mine',
-			description:  'Destroys a selection of blocks at the location of the target',
+			description:  'Destroys a selection of blocks at the target\'s location, with options for dropping items and using a virtual tool. This is useful for abilities that create excavations, clear paths, or interact with resource gathering in an area.',
+			keywords:     'mine, destroy, break, block, excavate, clear, path, resource, gather, explosion, area effect',
 			data:         [
 				new DropdownSelect('Material', 'materials', (() => ['Origin', 'Any', ...getBlocks()]), ['Origin'], true)
 					.setTooltip('The types of blocks allowed to be broken. \'Origin\' refers to the material at the targeted location'),
@@ -3737,7 +3897,8 @@ class MoneyMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Money',
-			description:  'Adds or multiplies the target\'s balance by some amount (requires Vault and an economy plugin). Fails if the resulting balance is not within the range allowed by the economy plugin',
+			description:  'Modifies a target player\'s money balance by adding or multiplying a specified amount. This requires a Vault-compatible economy plugin. It\'s useful for implementing economic costs, rewarding players, or creating dynamic marketplace interactions.',
+			keywords:     'money, economy, balance, vault, add, multiply, cost, reward, currency, financial',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Add', 'Multiply'], 'Add')
 					.setTooltip('Whether the target\'s balance will be added or multiplied by the set amount'),
@@ -3757,7 +3918,8 @@ class MountMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Mount',
-			description:  'Mounts entities',
+			description:  'Mounts one entity onto another, with options for direction (caster mounts target or target mounts caster) and stack size. This is useful for creating custom mounts, controlling mobs, or unique movement abilities.',
+			keywords:     'mount, ride, control, vehicle, entity, mob, player, custom mount, transport, stack',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Caster->Target', 'Target->Caster'], 'Caster->Target')
 					.setTooltip('The direction of the mounting'),
@@ -3775,7 +3937,8 @@ class MythicMobSkill extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'MythicMob Skill',
-			description:  'Casts a MythicMob skill on current the targets.',
+			description:  'Executes a specific skill defined within the MythicMobs plugin on the targeted entities. This allows for complex custom mob behaviors and interactions with Fabled skills.',
+			keywords:     'mythicmob, custom skill, mob ability, execute skill, trigger, summon, custom mob behavior',
 			data:         [
 				new StringSelect('MythicMob Skill', 'skill')
 					.setTooltip('The MythicMob skill to cast')
@@ -3791,7 +3954,8 @@ class ParticleMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Particle',
-			description:  'Plays a particle effect about the target',
+			description:  'Spawns a static or arranged particle effect at or around the target\'s location. This is useful for visual feedback, aesthetic enhancements, or marking specific areas.',
+			keywords:     'particle, visual, effect, static, arranged, sphere, circle, dust, smoke, spark, star, mark, indicate',
 			data:         [
 				...particleOptions(),
 				new SectionMarker('Offset'),
@@ -3813,7 +3977,8 @@ class ParticleAnimationMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Particle Animation',
-			description:  'Plays an animated particle effect at the location of each target over time by applying various transformations',
+			description:  'Plays a complex, animated particle effect at the location of each target, applying various transformations over time. This allows for highly dynamic and visually striking effects that evolve or move.',
+			keywords:     'particle, animation, dynamic, visual, effect, complex, transforming, motion, rotate, translate, scale',
 			data:         [
 				new IntSelect('Steps', 'steps', 1)
 					.setTooltip('The number of times to play particles and apply translations each application'),
@@ -3858,7 +4023,8 @@ class ParticleEffectMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Particle Effect',
-			description:  'Plays a particle effect that follows the current target, using formulas to determine shape, size, and motion',
+			description:  'Plays a particle effect that continuously follows the current target, utilizing custom formulas to define its shape, size, and motion. This is suitable for persistent visual auras, buffs, or environmental interactions that dynamically track an entity.',
+			keywords:     'particle, effect, follow, track, aura, persistent, visual, shape, size, motion, dynamic, formula',
 			data:         [
 				...effectOptions(false)
 			],
@@ -3873,7 +4039,8 @@ class ParticleImageMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Particle Image',
-			description:  'Displays an image using particles that (optionally) follows the current target',
+			description:  'Renders a static or animated image using particles, which can optionally follow the current target. This is useful for custom visual branding, spell effects, or creating dynamic scene elements.',
+			keywords:     'particle, image, visual, effect, custom image, animated, gif, display, branding, spell, scene',
 			data:         [
 				new StringSelect('Effect Key', 'effect-key', 'default')
 					.setTooltip('The key to refer to the effect by. Only one effect of each key can be active at a time.'),
@@ -4123,7 +4290,8 @@ class PassiveMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Passive',
-			description:  'Applies child components continuously every period. The seconds value below is the period or how often it applies',
+			description:  'Applies child components continuously at regular intervals (defined by the period). This is ideal for persistent buffs, damage over time effects, or ongoing area-of-effect abilities.',
+			keywords:     'passive, continuous, periodic, interval, buff, dot, damage over time, aura, persistent, ongoing',
 			data:         [
 				new AttributeSelect('Seconds', 'seconds', 1)
 					.setTooltip('The delay in seconds between each application')
@@ -4139,7 +4307,8 @@ class PermissionMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Permission',
-			description:  'Grants each player target a permission for a limited duration. This mechanic requires Vault with an accompanying permissions plugin in order to work',
+			description:  'Grants a specific Minecraft permission to each targeted player for a limited duration. This mechanic requires a Vault-compatible permissions plugin. It\'s useful for temporarily elevating player privileges, unlocking restricted areas, or granting access to special commands.',
+			keywords:     'permission, grant, temporary, access, privilege, role, rank, vault, security, command',
 			data:         [
 				new StringSelect('Permission', 'perm', 'plugin.perm.key')
 					.setTooltip('The permission to give to the player'),
@@ -4157,7 +4326,8 @@ class PotionMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Potion',
-			description:  'Applies a potion effect to the target for a duration',
+			description:  'Applies a standard Minecraft potion effect to the target for a specified duration and intensity. This is a versatile mechanic for applying buffs, debuffs, or special status effects like speed, strength, poison, or slowness.',
+			keywords:     'potion, effect, status, buff, debuff, speed, strength, poison, weakness, heal, damage, duration, tier, amplifier',
 			data:         [
 				new DropdownSelect('Potion', 'potion', getPotionTypes, 'Absorption')
 					.setTooltip('The type of potion effect to apply'),
@@ -4179,7 +4349,8 @@ class PotionProjectileMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Potion Projectile',
-			description:  'Drops a splash potion from each target that does not apply potion effects by default. This will apply child elements when the potion lands. The targets supplied will be everything hit by the potion. If nothing is hit by the potion, the target will be the location it landed',
+			description:  'Launches a projectile that visually appears as a splash potion (or lingering potion) and applies child components upon impact. The mechanic is highly configurable, allowing for custom colors, homing, spread patterns, and detailed area-of-effect clouds for lingering potions.',
+			keywords:     'projectile, potion, splash potion, lingering potion, launch, throw, impact, homing, area effect, cloud, custom color, ranged, support',
 			data:         [
 				new ColorSelect('Color', 'color', '#ff0000')
 					.setTooltip('The hex color code to use for the potion'),
@@ -4418,7 +4589,8 @@ class ProjectileMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Projectile',
-			description:  'Launches a projectile that applies child components on hit. The target supplied will be the struck target',
+			description:  'Launches a generic projectile (e.g., arrow, snowball, fire charge) that applies child components upon hitting a target. This mechanic is highly configurable, offering options for item overrides, flaming effects, and various projectile behaviors.',
+			keywords:     'projectile, launch, fire, shoot, arrow, snowball, fire charge, item override, custom projectile, homing, spread',
 			data:         [
 				new DropdownSelect('Projectile', 'projectile', getProjectiles, 'Arrow')
 					.setTooltip('The type of projectile to fire'),
@@ -4623,7 +4795,8 @@ class PurgeMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Purge',
-			description:  'Purges the target of positive potion effects or statuses',
+			description:  'Removes beneficial potion effects or custom positive status effects from the targeted entities. This is useful for counteracting enemy buffs, strategic debuffing, or specialized cleanse abilities that target only positive effects.',
+			keywords:     'purge, dispel, remove buff, cleanse, counter, debuff, status, potion, beneficial, positive',
 			data:         [
 				new DropdownSelect('Potion', 'potion', getGoodPotions, undefined, true)
 					.setTooltip('The potion effect to remove from the target, if any'),
@@ -4641,7 +4814,8 @@ class PushMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Push',
-			description:  'Pushes the target relative to the caster. This will do nothing if used with the caster as the target. Positive numbers apply knockback while negative numbers pull them in',
+			description:  'Applies a force to push or pull the target entity relative to the caster, creating knockback or drawing them closer. This is useful for crowd control, repositioning enemies, or aiding allies.',
+			keywords:     'push, pull, knockback, force, propel, reposition, crowd control, movement, physics, repel, attract',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Fixed', 'Inverse', 'Scaled'], 'Fixed')
 					.setTooltip('How to scale the speed based on relative position. Fixed does the same speed to all targets. Inverse pushes enemies farther away faster. Scaled pushes enemies closer faster'),
@@ -4661,7 +4835,8 @@ class RememberTargetsMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Remember Targets',
-			description:  'Stores the current targets for later use under a specified key',
+			description:  'Stores the currently targeted entities under a unique key, allowing them to be recalled and targeted by subsequent abilities. This is essential for creating multi-stage abilities or tracking specific entities across different parts of a skill chain.',
+			keywords:     'remember, store, save, track, recall, targets, multi-stage, chain, persistent, entities',
 			data:         [
 				new StringSelect('Key', 'key', 'target')
 					.setTooltip('The unique key to store the targets under. The "Remember" target will use this key to apply effects to the targets later on'),
@@ -4679,7 +4854,8 @@ class RepeatMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Repeat',
-			description:  'Applies child components multiple times. When it applies them is determined by the delay (seconds before the first application) and period (seconds between successive applications)',
+			description:  'Executes child components multiple times, with configurable delays between repetitions and an initial delay. This is useful for creating sustained effects, pulsing abilities, or multi-hit attacks.',
+			keywords:     'repeat, loop, iterate, multiple, delay, period, sustained, pulsing, multi-hit, interval',
 			data:         [
 				new AttributeSelect('Repetitions', 'repetitions', 3)
 					.setTooltip('How many times to activate child components'),
@@ -4701,7 +4877,8 @@ class ShieldMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Shield',
-			description:  'Applies a shield to the target that absorbs a certain amount of damage',
+			description:  'Applies a temporary shield to the target that absorbs a specified amount of incoming damage, optionally with a percentage reduction. This is useful for defensive abilities, mitigating bursts of damage, or granting temporary invulnerability.',
+			keywords:     'shield, absorb, damage reduction, defense, protect, guard, temporary, invulnerability, mitigation, buff',
 			data:         [
 				new StringSelect('Name', 'name', 'Shield')
 					.setTooltip('The name of the shield. This is used for display purposes'),
@@ -4745,7 +4922,8 @@ class SignalEmitMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Signal Emit',
-			description:  'Send a custom signal to all target that can be reused and processed separately.',
+			description:  'Emits a custom signal to targeted entities, allowing for complex inter-skill communication and event-driven abilities. This signal can carry arguments and be processed independently by other triggers or mechanics.',
+			keywords:     'signal, emit, custom event, communicate, trigger, event, inter-skill, arguments, broadcast',
 			data:         [
 				new StringSelect('Signal', 'signal')
 					.setTooltip('The name of signal will be emit.'),
@@ -4764,8 +4942,9 @@ class SignalEmitMechanic extends FabledMechanic {
 class SkillCastMechanic extends FabledMechanic {
 	public constructor() {
 		super({
-			name:         'Skill cast',
-			description:  'Make target cast other skill. Recommended for use on players.',
+			name:         'Skill Cast',
+			description:  'Forces targeted entities (recommended for players) to cast a specified skill, with options for cast mode (all, first, random) and force casting regardless of skill availability. This is useful for creating combined abilities, skill sequences, or AI behavior.',
+			keywords:     'skill cast, force cast, ability, spell, sequence, combo, ai behavior, combined ability, trigger skill',
 			data:         [
 				new DropdownSelect('Cast mode', 'mode', ['All', 'First', 'Random'], 'All')
 					.setTooltip('Choose which skills to cast (excluding unavailable skills).'),
@@ -4785,7 +4964,8 @@ class SoundMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Sound',
-			description:  'Plays a sound at the target\'s location',
+			description:  'Plays a specified sound effect at the target\'s location, with configurable volume and pitch. This can be a custom sound from a resource pack or a default game sound. It is useful for audio feedback, immersive spell effects, or environmental cues.',
+			keywords:     'sound, audio, play sound, custom sound, game sound, volume, pitch, feedback, immersive, effect',
 			data:         [
 				new DropdownSelect('Sound', 'sound', (() => ['Custom', ...getSounds()]), 'Ambient Cave')
 					.setTooltip('The sound clip to play. Select \'Custom\' to enter custom sounds from your resource pack'),
@@ -4808,7 +4988,8 @@ class StatMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Stat',
-			description:  'Gives a player bonus stat temporarily. All available <a href="https://github.com/magemonkeystudio/fabled/wiki/attributes.yml">attribute stats</a>',
+			description:  'Temporarily modifies a player\'s bonus statistics (stats) from the attributes system, suchs as movement speed, attack damage, or health regeneration. This is distinct from core attributes and provides granular control over temporary stat adjustments. All available stats are detailed in the <a href="https://github.com/magemonkeystudio/fabled/wiki/attributes.yml">attributes wiki</a>.',
+			keywords:     'stat, bonus, modify, temporary, player stats, movement speed, attack damage, health regeneration, buff, debuff, attribute, enhance, weaken',
 			data:         [
 				new StringSelect('Stat', 'key', 'health')
 					.setTooltip('The name of the stat to add to'),
@@ -4832,7 +5013,8 @@ class StatusMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Status',
-			description:  'Applies a status effect to the target for a duration',
+			description:  'Applies a custom status effect (e.g., Stun, Root, Silence) to the target for a specified duration. This is a powerful mechanic for crowd control, applying unique debuffs, or enforcing specific combat states.',
+			keywords:     'status, effect, custom status, buff, debuff, crowd control, stun, root, silence, invincible, invulnerable, duration',
 			data:         [
 				new DropdownSelect('Status', 'status', ['Absorb',
 					'Curse',
@@ -4857,7 +5039,8 @@ class SummonMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Summon',
-			description:  'Summons a mob on each target. Child components will start off targeting the mob so you can add effects to it. Hostile mobs may attack the caster',
+			description:  'Summons a specified mob at each target\'s location. Child components will then apply effects directly to the newly summoned mob. Hostile summoned mobs may attack the caster. This is useful for creating minions, temporary allies, or environmental hazards.',
+			keywords:     'summon, mob, creature, minion, ally, temporary, spawn, monster, entity, hostile, friendly',
 			data:         [
 				new DropdownSelect('Type', 'type', getEntities, 'Zombie'),
 				new StringSelect('Name', 'name', '{player}\'s Minion')
@@ -4878,7 +5061,8 @@ class TauntMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Taunt',
-			description:  'Draws aggro of targeted creatures. Regular mobs are set to attack the caster. The Spigot/Bukkit API for this was not functional on older versions, so it may not work on older servers. For MythicMobs, this uses their aggro system using the amount chosen below',
+			description:  'Forces targeted creatures to focus their aggression on the caster, effectively drawing aggro. This is useful for tanking abilities, crowd control, or protecting allies by redirecting enemy attention.',
+			keywords:     'taunt, aggro, draw aggro, threat, tank, focus, redirect, enemy, mob, hostile, control',
 			data:         [
 				new AttributeSelect('Amount', 'amount', 1)
 					.setTooltip('The amount of aggro to apply if MythicMobs is active. Use negative amounts to reduce aggro')
@@ -4894,7 +5078,8 @@ class ThrowMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Throw',
-			description:  'Throws entities off of the target\'s head and targets them for child components',
+			description:  'Throws entities that are currently mounted on the target\'s head, propelling them in a specified direction. The thrown entities then become the targets for subsequent child components. This is useful for dismounting effects, aerial combat maneuvers, or repositioning entities.',
+			keywords:     'throw, dismount, propel, cast, launch, physics, reposition, aerial, combat, crowd control',
 			data:         [
 				new DropdownSelect('Relative', 'relative', ['Target', 'Caster', 'Thrown'], 'Caster')
 					.setTooltip('Determines what is considered "forward". Target uses the direction the target is facing, Caster uses the direction the caster is facing, Thrown uses the direction of the entity to be thrown'),
@@ -4912,7 +5097,8 @@ class TriggerMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Trigger',
-			description:  'Listens for a trigger on the current targets for a duration',
+			description:  'Establishes a temporary listener on the targeted entities for a specific trigger event (e.g., Death, Block Break, Skill Cast) for a set duration. When the event occurs, child components are activated. This is useful for creating reactive abilities, traps, or conditional follow-up effects.',
+			keywords:     'trigger, listen, event, reactive, trap, conditional, follow-up, duration, monitor, detect',
 			data:         [
 				new DropdownSelect('Trigger', 'trigger', () => Object.values(get(triggers)).map((trigger: {
 					name: string,
@@ -5016,7 +5202,8 @@ class ValueAddMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Add',
-			description:  'Adds to a stored value under a unique key for the caster. If the value wasn\'t set before, this will set the value to the given amount',
+			description:  'Adds a specified amount to a dynamically stored numerical value, identified by a unique key, for the caster. If the value does not exist, it will be initialized with the given amount. This is useful for tracking counters, scores, or accumulating resources.',
+			keywords:     'value, add, increment, counter, score, resource, accumulate, custom stat, variable, store, modify',
 			data:         [
 				new StringSelect('Key', 'key', 'value')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
@@ -5036,7 +5223,8 @@ class ValueAttributeMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Attribute',
-			description:  'Loads a player\'s attribute count for a specific attribute as a stored value to be used in other mechanics',
+			description:  'Loads the numerical value of a player\'s specific attribute (e.g., Strength, Vitality) and stores it under a unique key, making it accessible for calculations or conditions in other mechanics. This is useful for dynamic scaling or attribute-based effects.',
+			keywords:     'value, attribute, load, store, player stats, strength, vitality, dexterity, intelligence, dynamic scaling, calculation',
 			data:         [
 				new StringSelect('Key', 'key', 'attribute')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
@@ -5056,7 +5244,8 @@ class ValueCopyMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Copy',
-			description:  'Copies a stored value from the caster to the target or vice versa',
+			description:  'Copies a dynamically stored value from the caster to the target, or from the target to the caster. This is useful for transferring statistics, sharing progress, or replicating data between entities.',
+			keywords:     'value, copy, transfer, replicate, share, data, statistics, caster, target, duplicate',
 			data:         [
 				new StringSelect('Key', 'key', 'value')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
@@ -5079,7 +5268,8 @@ class ValueDistanceMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Distance',
-			description:  'Stores the distance between the target and the caster into a value',
+			description:  'Calculates the physical distance between the caster and the target and stores this numerical value under a unique key. This is useful for abilities that need to know separation for scaling, targeting, or conditional effects.',
+			keywords:     'value, distance, range, proximity, measure, calculate, separation, spatial, numerical, store',
 			data:         [
 				new StringSelect('Key', 'key', 'attribute')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
@@ -5098,7 +5288,8 @@ class ValueDivideMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Divide',
-			description:  'Divides a stored value under a unique key for the caster. If the value wasn\'t set before, this will not do anything',
+			description:  'Divides a dynamically stored numerical value (identified by a unique key) for the caster by a specified divisor. This is useful for scaling values down, distributing resources, or performing proportional calculations.',
+			keywords:     'value, divide, scale, proportional, numerical, calculation, reduce, distribute, custom stat, variable',
 			data:         [
 				new StringSelect('Key', 'key', 'value')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
@@ -5119,7 +5310,8 @@ class ValueHealthMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Health',
-			description:  'Stores the target\'s current health as a value under a given key for the caster',
+			description:  'Stores the target\'s current health, maximum health, missing health, or health percentage as a numerical value under a unique key for the caster. This is useful for conditional healing, executing abilities at specific health thresholds, or displaying dynamic health information.',
+			keywords:     'value, health, hp, life, store, current health, max health, missing health, percent health, numerical, threshold, display',
 			data:         [
 				new StringSelect('Key', 'key', 'value')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
@@ -5140,7 +5332,8 @@ class ValueLocationMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Location',
-			description:  'Loads the first target\'s current location into a stored value for use at a later time',
+			description:  'Stores the current precise location of the first targeted entity under a unique key, making it available for subsequent teleportation, area-of-effect calculations, or positional checks. This allows for advanced spatial abilities.',
+			keywords:     'value, location, store, position, coordinates, spatial, teleport, waypoint, mark, retrieve',
 			data:         [
 				new StringSelect('Key', 'key', 'location')
 					.setTooltip('The unique key to store the location under. This key can be used in place of attribute values to use the stored value'),
@@ -5159,7 +5352,8 @@ class ValueLoadMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Load',
-			description:  'If there is a value already stored on the account, that value will be retrieved and then be used as a normal value.',
+			description:  'Retrieves a persistently stored numerical value from the player\'s account and makes it accessible for use in other mechanics during the current skill execution. This is useful for recalling saved progress, scores, or custom player data.',
+			keywords:     'value, load, retrieve, persistent, saved, account data, score, progress, custom data, recall',
 			data:         [
 				new StringSelect('Key', 'key')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value.'),
@@ -5179,7 +5373,8 @@ class ValueLoreMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Lore',
-			description:  'Loads a value from a held item\'s lore into a stored value under the given unique key for the caster',
+			description:  'Extracts a numerical value from the lore of an item held by the caster (main hand or offhand) and stores it under a unique key. This allows for dynamic skill effects that scale based on custom item properties defined in their lore.',
+			keywords:     'value, lore, item, held item, extract, custom item, dynamic scaling, regex, text parsing, inventory, read data',
 			data:         [
 				new StringSelect('Key', 'key', 'lore')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
@@ -5204,7 +5399,8 @@ class ValueLoreSlotMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Lore Slot',
-			description:  'Loads a value from an item\'s lore into a stored value under the given unique key for the caster',
+			description:  'Extracts a numerical value from the lore of an item located in a specific inventory slot of the caster and stores it under a unique key. This is similar to the Value Lore mechanic but allows specifying any inventory slot, not just held items.',
+			keywords:     'value, lore, item, inventory slot, extract, custom item, dynamic scaling, regex, text parsing, inventory, read data, specific slot',
 			data:         [
 				new StringSelect('Key', 'key', 'lore')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
@@ -5229,7 +5425,8 @@ class ValueManaMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Mana',
-			description:  'Stores the target player\'s current mana as a value under a given key for the caster',
+			description:  'Stores a target player\'s current mana, maximum mana, missing mana, or mana percentage as a numerical value under a unique key for the caster. This is useful for conditional mana usage, mana-scaling abilities, or displaying dynamic mana information.',
+			keywords:     'value, mana, energy, mp, store, current mana, max mana, missing mana, percent mana, numerical, resource, display',
 			data:         [
 				new StringSelect('Key', 'key', 'value')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
@@ -5256,6 +5453,7 @@ class ValueMathMechanic extends FabledMechanic {
 											'square root (<code>sqrt()</code>), exponents (<code>^</code>), and more. Use <code>random()</code> ' +
 											'to generate a psuedo-random number between 0 and 1. See the ' +
 											'<a href="https://github.com/magemonkeystudio/fabled/wiki/Formulas-‐-Complex">wiki</a> for more information',
+			keywords:     'value, math, calculate, formula, dynamic, scaling, damage, custom logic, numerical, random, store',
 			data:         [
 				new StringSelect('Key', 'key', 'value')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
@@ -5275,7 +5473,8 @@ class ValueMultiplyMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Multiply',
-			description:  'Multiplies a stored value under a unique key for the caster. If the value wasn\'t set before, this will not do anything',
+			description:  'Multiplies a dynamically stored numerical value (identified by a unique key) for the caster by a specified multiplier. If the value does not exist, this mechanic will not perform any action. This is useful for scaling values up or down proportionally.',
+			keywords:     'value, multiply, scale, proportional, numerical, calculation, increase, decrease, custom stat, variable',
 			data:         [
 				new StringSelect('Key', 'key', 'value')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
@@ -5296,7 +5495,8 @@ class ValuePlaceholderMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Placeholder',
-			description:  'Uses a placeholder string and stores it as a value for the caster',
+			description:  'Stores the result of a placeholder string (either a number or text) as a dynamic value under a unique key for the caster. This is highly versatile for capturing game data, player statistics, or custom text outputs from other plugins.',
+			keywords:     'value, placeholder, store, game data, player stats, custom text, variable, numerical, string, capture',
 			data:         [
 				new StringSelect('Key', 'key', 'value')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
@@ -5319,7 +5519,8 @@ class ValueRandomMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Random',
-			description:  'Stores a specified value under a given key for the caster',
+			description:  'Generates a random numerical value within a specified range (min/max), optionally as an integer, and stores it under a unique key for the caster. This is fundamental for abilities with probabilistic outcomes, loot generation, or dynamic spell effects.',
+			keywords:     'value, random, RNG, dice roll, chance, probability, generate, number, integer, float, store',
 			data:         [
 				new StringSelect('Key', 'key', 'value')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
@@ -5346,7 +5547,8 @@ class ValueRotationMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Rotation',
-			description:  'Stores a value as the rotation between the target\'s look direction and a remembered location as a source. The caster is used if no targets are remembered or no source key is passed',
+			description:  'Calculates the rotational difference (angle) between a target\'s current look direction and a specified source location (which can be a remembered location or the caster\'s position). This numerical value is then stored under a unique key, useful for directional spells or cinematic effects.',
+			keywords:     'value, rotation, angle, direction, look, facing, cinematic, spatial, store, numerical',
 			data:         [
 				new StringSelect('Key', 'key', 'value')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
@@ -5367,7 +5569,8 @@ class ValueRoundMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Round',
-			description:  'Rounds a stored value under a unique key for the caster. If the value wasn\'t set before, this will not do anything',
+			description:  'Applies various rounding operations (round, ceiling, floor) to a dynamically stored numerical value, identified by a unique key. This is useful for normalizing calculations, ensuring integer results, or adjusting values for display purposes.',
+			keywords:     'value, round, ceiling, floor, numerical, normalize, integer, calculation, modify, store',
 			data:         [
 				new StringSelect('Key', 'key', 'value')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
@@ -5388,7 +5591,8 @@ class ValueSetMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Value Set',
-			description:  'Stores a specified value under a given key for the caster',
+			description:  'Assigns a specific numerical value to a unique key for the caster, effectively creating or updating a dynamically stored variable. This is a fundamental mechanic for managing custom statistics, flags, or any numerical game state.',
+			keywords:     'value, set, assign, store, variable, custom stat, flag, game state, numerical, update, initialize',
 			data:         [
 				new StringSelect('Key', 'key', 'value')
 					.setTooltip('The unique key to store the value under. This key can be used in place of attribute values to use the stored value'),
@@ -5409,7 +5613,8 @@ class WarpMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Warp',
-			description:  'Warps the target relative to their forward direction. Use negative numbers to go in the opposite direction (e.g. negative forward will cause the target to warp backwards)',
+			description:  'Teleports the target entity a specified distance in a direction relative to their current facing, with options for passing through walls or landing only in open spaces. This is useful for dash abilities, tactical repositioning, or escaping danger.',
+			keywords:     'warp, teleport, dash, blink, movement, reposition, escape, evade, through walls, open space, tactical',
 			data:         [
 				new BooleanSelect('Through Walls', 'walls')
 					.setTooltip('Whether to allow the target to teleport through walls'),
@@ -5438,7 +5643,8 @@ class WarpLocMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Warp Location',
-			description:  'Warps the target to a specified location',
+			description:  'Teleports the target entity to a precise, predefined location in a specific world. This is useful for creating checkpoints, teleporting to safe zones, or initiating specific encounters.',
+			keywords:     'warp, teleport, location, coordinates, world, specific point, checkpoint, safe zone, travel',
 			data:         [
 				new StringSelect('World (or "current")', 'world', 'current')
 					.setTooltip('The name of the world that the location is in'),
@@ -5464,7 +5670,8 @@ class WarpRandomMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Warp Random',
-			description:  'Warps the target in a random direction the given distance',
+			description:  'Teleports the target entity a specified distance in a random direction, with options for horizontal-only movement and passing through walls. This is useful for escape abilities, disorienting enemies, or unpredictable movement spells.',
+			keywords:     'warp, teleport, random, unpredictable, escape, disorient, movement, evade, blink, dash',
 			data:         [
 				new BooleanSelect('Only Horizontal', 'horizontal', true)
 					.setTooltip('Whether to limit the random position to the horizontal plane'),
@@ -5485,7 +5692,8 @@ class WarpSwapMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Warp Swap',
-			description:  'Switches the location of the caster and the target. If multiple targets are provided, this takes the first one',
+			description:  'Exchanges the physical locations of the caster and the primary target. This is useful for tactical repositioning, saving allies, or disorienting enemies in close combat.',
+			keywords:     'warp, teleport, swap, exchange, switch, reposition, tactical, rescue, disorient, close combat',
 			data:         [...warpOptions()],
 			summaryItems: ['preserve']
 		});
@@ -5498,7 +5706,8 @@ class WarpTargetMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Warp Target',
-			description:  'Warps either the target or the caster to the other. This does nothing when the target is the caster',
+			description:  'Teleports either the targeted entity to the caster\'s position, or the caster to the target\'s position. This is useful for closing gaps, engaging enemies, or extracting allies.',
+			keywords:     'warp, teleport, target, caster, close gap, engage, disengage, extract, reposition, movement',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Caster to Target', 'Target to Caster'], 'Caster to Target')
 					.setTooltip('The direction to warp the involved targets'),
@@ -5515,7 +5724,8 @@ class WarpValueMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Warp Value',
-			description:  'Warps all targets to a location remembered using the Value Location mechanic',
+			description:  'Teleports all targeted entities to a specific location previously stored using the "Value Location" mechanic. This allows for complex, multi-point teleportation or precise recall abilities.',
+			keywords:     'warp, teleport, location, stored location, recall, reposition, move, custom location, multi-point',
 			data:         [
 				new StringSelect('Key', 'key', 'location')
 					.setTooltip('The unique key the location is stored under. This should be the same key used in the Value Location mechanic'),
@@ -5535,7 +5745,8 @@ class WolfMechanic extends FabledMechanic {
 	public constructor() {
 		super({
 			name:         'Wolf',
-			description:  'Summons a wolf on each target for a duration. Child components will start off targeting the wolf so you can add effects to it. You can also give it its own skillset, though Cast triggers will not occur',
+			description:  'Summons a tamed wolf companion for each targeted entity, with customizable color, name, health, and damage. The wolf persists for a duration and can be given its own skillset (excluding Cast triggers). Child components will apply to the summoned wolf, allowing for dynamic pet abilities or temporary allies.',
+			keywords:     'wolf, summon, companion, pet, tamed, ally, animal, summoner, minion, temporary, skillset',
 			data:         [
 				new DropdownSelect('Collar Color', 'color', getDyes, 'Black')
 					.setTooltip('The color of the collar that the wolf should wear'),
