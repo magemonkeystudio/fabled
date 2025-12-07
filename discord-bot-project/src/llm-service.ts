@@ -56,12 +56,17 @@ export async function chatWithGemini(message: string): Promise<string> {
 	}
 
 	try {
+		const tools = [mcpToTool(client)];
+		console.log('--- START OF GENERATED TOOL SCHEMA ---');
+		console.log(JSON.stringify(tools, null, 2));
+		console.log('--- END OF GENERATED TOOL SCHEMA ---');
+
 		const result = await ai.models.generateContent({
 			model: GEMINI_MODEL_NAME,
 			contents: message,
 			config: {
 				systemInstruction: systemPrompt,
-				tools: [mcpToTool(client)]
+				tools: tools
 			}
 		});
 
