@@ -31,7 +31,6 @@ classStore.persistClasses = () => {
 };
 attributeStore.saveAll    = () => {
 };
-const oldSave             = skillStore.getSkill('a')?.save;
 // @ts-ignore
 skillStore.getSkill       = (name: string) => ({
 	save:     () => {
