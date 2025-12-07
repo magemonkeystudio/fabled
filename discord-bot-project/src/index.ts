@@ -11,7 +11,7 @@ import {
 	DMChannel
 } from 'discord.js';
 import 'dotenv/config'; // Loads .env file
-import { chatWithGemini, shouldAnswer } from './llm-service.js';
+import { chatWithGemini, reloadSystemPrompt, shouldAnswer } from './llm-service.js';
 import {
 	activeChannels,
 	initializeDatabase,
@@ -23,10 +23,11 @@ import { messageUtils } from './message-utils.js';
 
 const TOKEN = process.env.DISCORD_TOKEN;
 const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
+const OWNER_ID = process.env.OWNER_ID;
 
-if (!TOKEN || !CLIENT_ID) {
+if (!TOKEN || !CLIENT_ID || !OWNER_ID) {
 	console.error(
-		'❌ ERROR: Missing critical environment variables! Please ensure DISCORD_TOKEN and DISCORD_CLIENT_ID are set.'
+		'❌ ERROR: Missing critical environment variables! Please ensure DISCORD_TOKEN, DISCORD_CLIENT_ID, and OWNER_ID are set.'
 	);
 	process.exit(1);
 }
@@ -74,6 +75,10 @@ client.once('clientReady', async () => {
 		{
 			name: 'deactivatechannel',
 			description: 'Deactivates the current channel from direct bot messaging.'
+		},
+		{
+			name: 'reload-system-prompt',
+			description: 'Reloads the system prompt for the LLM.'
 		}
 	];
 
@@ -162,8 +167,26 @@ client.on('interactionCreate', async (interaction: Interaction) => {
 				ephemeral: true
 			});
 		}
+	} else if (commandName === 'reload-system-prompt') {
+		if (chatInteraction.user.id !== OWNER_ID) {
+			await chatInteraction.reply({
+				content: '❌ You are not authorized to use this command.',
+				ephemeral: true
+			});
+			return;
+		}
+
+		await chatInteraction.deferReply({ ephemeral: true });
+		try {
+			await reloadSystemPrompt();
+			await chatInteraction.editReply('✅ System prompt reloaded successfully.');
+		} catch (error) {
+			console.error('❌ ERROR: Failed to reload system prompt:', error);
+			await chatInteraction.editReply('❌ Failed to reload system prompt.');
+		}
 	}
 });
+
 
 // Function to determine if the bot should respond to a message
 function shouldRespondToMessage(message: Message): boolean {

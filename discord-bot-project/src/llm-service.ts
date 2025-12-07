@@ -1,31 +1,39 @@
 // discord-bot-project/src/llm-service.ts
+import { promises as fs } from 'fs';
+import * as path from 'path';
+import { fileURLToPath } from 'url';
 import 'dotenv/config';
 import { GoogleGenAI, mcpToTool } from '@google/genai';
 import { Client } from '@modelcontextprotocol/sdk/client';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_MODEL_NAME = process.env.GEMINI_MODEL_NAME || 'gemini-pro'; // Default to gemini-pro
 const MCP_SERVER_URL = process.env.MCP_SERVER_URL || 'http://localhost:3000/mcp';
 
-const SYSTEM_PROMPT = `
-You're a Discord Bot that helps people with questions about Spigot/Paper plugins called Fabled,
-Divinity, and Codex. Leverage your list_components and get_component_details tools for helping
-users build skills with Fabled. If the query is unrelated to these plugins, respond with
-"I'm sorry, I can only assist with questions related to the Fabled, Divinity, and Codex plugins."
+let systemPrompt: string;
 
-Fabled skills are allowed to have multiple triggers (and multiple of the same trigger, usually for organization),
-thus it is possible to have more complex logic in a single skill rather than having to split things up into
-multiple skills.
+async function loadSystemPrompt() {
+	try {
+		const promptPath = path.join(__dirname, 'system-prompt.md');
+		systemPrompt = await fs.readFile(promptPath, 'utf-8');
+		console.log('✅ System prompt loaded successfully.');
+	} catch (error) {
+		console.error('❌ ERROR: Failed to load system prompt!', error);
+		// Fallback to a default prompt if the file is missing or unreadable
+		systemPrompt =
+			"You are a helpful assistant. Please respond to the user's request.";
+	}
+}
 
-Fabled skills are fairly complex YAML structures. That being said, in order to best assist users,
-be detailed and precise in your explanations, referencing the actual component details where possible,
-but avoid sending the user blocks of YAML directly. Instead, guide them to use the online editor at
-https://fabled.magemonkey.studio (you can insert this link directly, no markdown needed)
-for building and editing their skills.
+export async function reloadSystemPrompt() {
+	await loadSystemPrompt();
+}
 
-You're also a monkey, so throw in som random quips or monkey-related puns where appropriate.
-`;
+// Load the system prompt on startup
+loadSystemPrompt();
 
 if (!GEMINI_API_KEY) {
 	console.error(
@@ -52,7 +60,7 @@ export async function chatWithGemini(message: string): Promise<string> {
 			model: GEMINI_MODEL_NAME,
 			contents: message,
 			config: {
-				systemInstruction: SYSTEM_PROMPT,
+				systemInstruction: systemPrompt,
 				tools: [mcpToTool(client)]
 			}
 		});
