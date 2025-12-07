@@ -2,7 +2,6 @@ import { randomUUID } from 'node:crypto';
 import 'dotenv/config'; // Load environment variables
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
-import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
 import * as z from 'zod'; // Adjusted from 'zod/v4'
 import { isInitializeRequest } from '@modelcontextprotocol/sdk/types.js';
 import { createMcpExpressApp } from '@modelcontextprotocol/sdk/server/express.js';
@@ -10,10 +9,12 @@ import { createMcpExpressApp } from '@modelcontextprotocol/sdk/server/express.js
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { Request, Response } from 'express';
-import { enable } from 'blockly/core/events/utils';
 
 // Create Express application
-const app = createMcpExpressApp();
+const app = createMcpExpressApp({
+	host: '0.0.0.0',
+	allowedHosts: ['mcp-server', 'localhost', '127.0.0.1'] // Explicitly allow internal Docker hosts
+});
 const port = process.env.MCP_PORT ? parseInt(process.env.MCP_PORT) : 3000;
 
 interface Component {
@@ -30,7 +31,7 @@ let componentData: Record<string, Component[]> = {
 } as Record<string, Component[]>;
 
 try {
-	const jsonPath = path.join(process.cwd(), '../public', 'components.json'); // Adjusted path for nested project
+	const jsonPath = path.join(process.cwd(), 'components.json'); // Adjusted path for Docker
 	const jsonData = fs.readFileSync(jsonPath, 'utf-8');
 	componentData = JSON.parse(jsonData) as Record<string, Component[]>;
 	console.log('Successfully loaded components.json');
@@ -203,15 +204,33 @@ const getMcpServer = () => {
 			description:
 				'Generates a random number. Accepts optional `min` and `max` parameters to specify the range, and an optional `integer_only` parameter to return an integer.',
 			inputSchema: z.object({
-				min: z.number().optional().describe('Optional: The minimum value for the random number (inclusive). Defaults to 0.'),
-				max: z.number().optional().describe('Optional: The maximum value for the random number (exclusive). Defaults to 1.'),
-				integer_only: z.boolean().optional().describe('Optional: If true, the generated number will be an integer. Defaults to false.'),
+				min: z
+					.number()
+					.optional()
+					.describe(
+						'Optional: The minimum value for the random number (inclusive). Defaults to 0.'
+					),
+				max: z
+					.number()
+					.optional()
+					.describe(
+						'Optional: The maximum value for the random number (exclusive). Defaults to 1.'
+					),
+				integer_only: z
+					.boolean()
+					.optional()
+					.describe(
+						'Optional: If true, the generated number will be an integer. Defaults to false.'
+					)
 			}),
 			outputSchema: z.object({
 				randomNumber: z.number().describe('A random number within the specified range.'),
 				min: z.number().optional().describe('The minimum value used for generation.'),
 				max: z.number().optional().describe('The maximum value used for generation.'),
-				integer_only: z.boolean().optional().describe('Whether the generated number was an integer.'),
+				integer_only: z
+					.boolean()
+					.optional()
+					.describe('Whether the generated number was an integer.')
 			})
 		},
 		toolsInstance.generate_random_number
@@ -220,11 +239,15 @@ const getMcpServer = () => {
 };
 
 // Store transports by session ID
-const transports: Record<string, StreamableHTTPServerTransport | SSEServerTransport> = {};
+const transports: Record<string, StreamableHTTPServerTransport> = {};
 
 //=============================================================================
 // STREAMABLE HTTP TRANSPORT (PROTOCOL VERSION 2025-03-26)
 //=============================================================================
+
+app.get('/health', (req: Request, res: Response) => {
+	res.status(200).json({ status: 'healthy', timestamp: new Date().toISOString() });
+});
 
 // Handle all MCP Streamable HTTP requests (GET, POST, DELETE) on a single endpoint
 app.all('/mcp', async (req: Request, res: Response) => {
@@ -317,7 +340,7 @@ app.get('/sse', async (req: Request, res: Response) => {
 });
 
 // Start the server
-const httpServer = app.listen(port, (error) => {
+const httpServer = app.listen(port, '0.0.0.0', (error) => {
 	if (error) {
 		console.error('Failed to start server:', error);
 		process.exit(1);
@@ -345,30 +368,43 @@ SUPPORTED TRANSPORT OPTIONS:
 `);
 });
 
-// Enable graceful shutdown on 'q' key press
-process.stdin.setRawMode(true);
-process.stdin.resume();
-process.stdin.on('data', (data) => {
-	const input = data.toString().trim().toLowerCase();
-	if (input === 'q' || input === '\u0003') {
-		console.log('Shutting down MCP Server...');
-		// Close all active transports
-		const closePromises = Object.values(transports).map(async (transport) => {
-			try {
-				if (transport) {
-					console.log(`Closing transport for session ${transport.sessionId}`);
-					await transport.close();
-				}
-			} catch (error) {
-				console.error(`Error closing transport for session ${transport?.sessionId}:`, error);
-			}
-		});
+// Implement graceful shutdown
+const gracefulShutdown = () => {
+	console.log('Shutting down MCP Server...');
 
-		Promise.all(closePromises).finally(() => {
-			httpServer.close(() => {
-				console.log('MCP server gracefully terminated.');
-				process.exit(0);
-			});
+	// Close all active transports
+	const closePromises = Object.values(transports).map(async (transport) => {
+		try {
+			if (transport) {
+				console.log(`Closing transport for session ${transport.sessionId}`);
+				await transport.close();
+			}
+		} catch (error) {
+			console.error(`Error closing transport for session ${transport?.sessionId}:`, error);
+		}
+	});
+
+	Promise.all(closePromises).finally(() => {
+		httpServer.close(() => {
+			console.log('MCP server gracefully terminated.');
+			process.exit(0);
 		});
-	}
-});
+	});
+};
+
+// Enable graceful shutdown on 'q' key press (development)
+if (process.stdin.isTTY) {
+	console.log("Press 'q' or 'ctrl+c' to shut down the server.");
+	process.stdin.setRawMode(true);
+	process.stdin.resume();
+	process.stdin.on('data', (data) => {
+		const input = data.toString().trim().toLowerCase();
+		if (input === 'q' || input === '\u0003') {
+			// \u0003 is Ctrl+C
+			gracefulShutdown();
+		}
+	});
+}
+
+// Enable graceful shutdown on SIGTERM (production/container)
+process.on('SIGTERM', gracefulShutdown);

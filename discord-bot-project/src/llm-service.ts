@@ -56,6 +56,11 @@ export async function chatWithGemini(message: string): Promise<string> {
 				tools: [mcpToTool(client)]
 			}
 		});
+
+		if (result.usageMetadata) {
+			console.log('💸 Gemini Usage Metadata:', result.usageMetadata);
+		}
+
 		const text = result.text || 'Unknown response from Gemini model.';
 		return text;
 	} catch (error) {

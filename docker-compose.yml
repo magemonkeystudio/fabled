@@ -1,17 +1,4 @@
-version: '3.8'
-
 services:
-  ollama:
-    image: ollama/ollama
-    container_name: ollama
-    ports:
-      - "11434:11434"
-    volumes:
-      - ollama_data:/root/.ollama
-      - ./ollama_start.sh:/usr/local/bin/ollama_start.sh
-    restart: unless-stopped
-    entrypoint: ["/bin/sh", "/usr/local/bin/ollama_start.sh"]
-
   mcp-server:
     build: ./mcp-server-project
     container_name: mcp-server
@@ -19,6 +6,12 @@ services:
       - "3000:3000"
     environment:
       - MCP_PORT=3000
+    healthcheck: # Add healthcheck for mcp-server
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 3s # Give it time to start up
     restart: unless-stopped
     networks:
       - bot_network
@@ -27,7 +20,8 @@ services:
     build: ./discord-bot-project
     container_name: discord-bot
     depends_on:
-      - mcp-server
+      mcp-server:
+        condition: service_healthy # Depend on mcp-server being healthy
     environment:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
       - DISCORD_CLIENT_ID=${DISCORD_CLIENT_ID}
@@ -35,9 +29,14 @@ services:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - GEMINI_MODEL_NAME=${GEMINI_MODEL_NAME}
       - MCP_SERVER_URL=http://mcp-server:3000/mcp
-      - SQLITE_DB_PATH=/data/active_channels.db # Point to the mounted volume
+      - SQLITE_DB_PATH=/data/active_channels.db
     volumes:
-      - discord_bot_data:/data # Mount the volume to /data inside the container
+      - discord_bot_data:/data
+    healthcheck: # Add healthcheck for discord-bot (simple check)
+      test: ["CMD-SHELL", "pgrep node || exit 1"] # Check if node process is running
+      interval: 10s
+      timeout: 5s
+      retries: 3
     restart: unless-stopped
     networks:
       - bot_network
@@ -47,5 +46,4 @@ networks:
     driver: bridge
 
 volumes:
-  ollama_data:
-  discord_bot_data: # New named volume for Discord bot data
+  discord_bot_data:

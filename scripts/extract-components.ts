@@ -171,7 +171,7 @@ const extract = async () => {
 		mechanics:  Object.values(get(mechanics)).map(entry => serializeComponent(entry.component.new()))
 	};
 
-	fs.writeFileSync('public/components.json', JSON.stringify(componentData, null, 2));
+	fs.writeFileSync('mcp-server-project/components.json', JSON.stringify(componentData, null, 2));
 
 	console.log('Component data extracted to public/components.json');
 };
