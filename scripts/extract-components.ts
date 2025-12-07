@@ -1,51 +1,51 @@
-import { LocalStorage } from 'node-localstorage';
+import { LocalStorage }                             from 'node-localstorage';
+import { conditions, mechanics, targets, triggers } from '../src/api/components/registry';
+import { initComponents }                           from '../src/api/components/components.svelte';
+import { get }                                      from 'svelte/store';
+import * as fs                                      from 'fs';
+import type FabledComponent                         from '../src/api/components/fabled-component.svelte';
+import type { ComponentOption }                     from '../src/api/options/options';
+import type DropdownSelect                          from '../src/api/options/dropdownselect.svelte';
+import type StringListSelect                        from '../src/api/options/stringlistselect.svelte';
+import type ProAttributeSelect                      from '../src/api/options/attributeselect.svelte';
+import type ProBooleanSelect                        from '../src/api/options/booleanselect.svelte';
+import type ProClassSelect                          from '../src/api/options/classselect.svelte';
+import type ProColorSelect                          from '../src/api/options/colorselect.svelte';
+import type ProDoubleSelect                         from '../src/api/options/doubleselect.svelte';
+import type ProEnchantSelect                        from '../src/api/options/enchantselect.svelte';
+import type ProIntSelect                            from '../src/api/options/intselect.svelte';
+import type ProMaterialSelect                       from '../src/api/options/materialselect.svelte';
+import type ProSkillSelect                          from '../src/api/options/skillselect.svelte';
+import type ProStringSelect                         from '../src/api/options/stringselect.svelte';
+import type ProBlockSelect                          from '../src/api/options/blockselect.svelte';
+import type ProSectionMarker                        from '../src/api/options/sectionmarker.svelte';
+import { attributeStore }                           from '../src/data/attribute-store';
+import { classStore }                               from '../src/data/class-store.svelte';
+import { skillStore }                               from '../src/data/skill-store.svelte';
+
 global.localStorage = new LocalStorage('./scratch');
 
-import {
-	triggers,
-	targets,
-	conditions,
-	mechanics
-}                                  from '../src/api/components/registry';
-import { initComponents }          from '../src/api/components/components.svelte';
-import { get }                     from 'svelte/store';
-import * as fs                     from 'fs';
-import type FabledComponent        from '../src/api/components/fabled-component.svelte';
-import type { ComponentOption }    from '../src/api/options/options';
-import type DropdownSelect         from '../src/api/options/dropdownselect.svelte';
-import type StringListSelect       from '../src/api/options/stringlistselect.svelte';
-import type ProAttributeSelect     from '../src/api/options/attributeselect.svelte';
-import type ProBooleanSelect       from '../src/api/options/booleanselect.svelte';
-import type ProClassSelect         from '../src/api/options/classselect.svelte';
-import type ProColorSelect         from '../src/api/options/colorselect.svelte';
-import type ProDoubleSelect        from '../src/api/options/doubleselect.svelte';
-import type ProEnchantSelect       from '../src/api/options/enchantselect.svelte';
-import type ProIntSelect           from '../src/api/options/intselect.svelte';
-import type ProMaterialSelect      from '../src/api/options/materialselect.svelte';
-import type ProSkillSelect         from '../src/api/options/skillselect.svelte';
-import type ProStringSelect        from '../src/api/options/stringselect.svelte';
-import type ProBlockSelect         from '../src/api/options/blockselect.svelte';
-import type ProSectionMarker       from '../src/api/options/sectionmarker.svelte';
-import { attributeStore }          from '../src/data/attribute-store';
-import { classStore }              from '../src/data/class-store.svelte';
-import { skillStore }              from '../src/data/skill-store.svelte';
-import { folderStore }             from '../src/data/folder-store.svelte';
-import { setupStores }             from '../src/data/store';
-
-skillStore.persistSkills = () => {};
-classStore.persistClasses = () => {};
-attributeStore.saveAll = () => {};
-const oldSave = skillStore.getSkill('a')?.save;
+skillStore.persistSkills  = () => {
+};
+classStore.persistClasses = () => {
+};
+attributeStore.saveAll    = () => {
+};
+const oldSave             = skillStore.getSkill('a')?.save;
 // @ts-ignore
-skillStore.getSkill = (name: string) => ({
-	save: () => {},
-	postLoad: () => {}
+skillStore.getSkill       = (name: string) => ({
+	save:     () => {
+	},
+	postLoad: () => {
+	}
 });
-classStore.addClass = (name?: string) => new classStore.getClass(name);
+classStore.addClass       = (name?: string) => new classStore.getClass(name);
 // @ts-ignore
-classStore.getClass = (name: string) => ({
-	save: () => {},
-	postLoad: () => {}
+classStore.getClass       = (name: string) => ({
+	save:     () => {
+	},
+	postLoad: () => {
+	}
 });
 
 const serializeOption = (option: ComponentOption) => {
@@ -55,7 +55,7 @@ const serializeOption = (option: ComponentOption) => {
 		label:     option.label,
 		key:       option.key,
 		tooltip:   option.tooltip,
-		condition: option.condition,
+		condition: option.condition
 		// value:     option.value
 	};
 
@@ -172,8 +172,8 @@ const extract = async () => {
 	};
 
 	fs.writeFileSync('mcp-server-project/components.json', JSON.stringify(componentData, null, 2));
-
-	console.log('Component data extracted to public/components.json');
 };
 
-extract();
+extract().then(() => {
+	console.log('Component data extracted to mcp-server-project/components.json');
+});
