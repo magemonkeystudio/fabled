@@ -17,7 +17,7 @@ let systemPrompt: string;
 
 async function loadSystemPrompt() {
 	try {
-		const promptPath = path.join(__dirname, 'system-prompt.md');
+		const promptPath = path.join(__dirname, '../src', 'system-prompt.md');
 		systemPrompt = await fs.readFile(promptPath, 'utf-8');
 		console.log('✅ System prompt loaded successfully.');
 	} catch (error) {
