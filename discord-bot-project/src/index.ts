@@ -26,8 +26,15 @@ const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 const OWNER_ID = process.env.OWNER_ID;
 
 if (!TOKEN || !CLIENT_ID || !OWNER_ID) {
+	const missing = [];
+	if (!TOKEN) missing.push('DISCORD_TOKEN');
+	if (!CLIENT_ID) missing.push('DISCORD_CLIENT_ID');
+	if (!OWNER_ID) missing.push('OWNER_ID');
+
 	console.error(
-		'❌ ERROR: Missing critical environment variables! Please ensure DISCORD_TOKEN, DISCORD_CLIENT_ID, and OWNER_ID are set.'
+		`❌ ERROR: Missing critical environment variables: ${missing.join(
+			', '
+		)}. Please ensure these are set in your .env file.`
 	);
 	process.exit(1);
 }
@@ -186,7 +193,6 @@ client.on('interactionCreate', async (interaction: Interaction) => {
 		}
 	}
 });
-
 
 // Function to determine if the bot should respond to a message
 function shouldRespondToMessage(message: Message): boolean {
