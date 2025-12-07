@@ -147,6 +147,7 @@ const serializeComponent = (component: FabledComponent) => {
 	return {
 		name:        component.name,
 		description: component.description,
+		keywords:    component.keywords,
 		data:        component.data.map(serializeOption)
 	};
 };

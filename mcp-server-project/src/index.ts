@@ -20,6 +20,7 @@ const port = process.env.MCP_PORT ? parseInt(process.env.MCP_PORT) : 3000;
 interface Component {
 	name: string;
 	description?: string;
+	keywords?: string;
 	data?: Array<{ [k: string]: unknown }>;
 }
 
@@ -44,12 +45,10 @@ try {
 
 // Fabled Tools implementation
 class FabledTools {
-	list_components(input: { component_type?: 'trigger' | 'target' | 'condition' | 'mechanic' }) {
-		const { component_type } = input;
+	list_components(input: { component_type: 'trigger' | 'target' | 'condition' | 'mechanic'; keywords?: string }) {
+		const { component_type, keywords } = input;
 		let allComponents: Component[] = [];
-		const componentTypes = component_type
-			? [component_type + 's']
-			: ['triggers', 'targets', 'conditions', 'mechanics'];
+		const componentTypes = [component_type + 's']; // component_type is now mandatory
 
 		for (const type of componentTypes) {
 			if (componentData[type]) {
@@ -57,23 +56,40 @@ class FabledTools {
 			}
 		}
 
-		const componentsWithDescription = allComponents.map((comp: Component) => ({
+		let componentsWithDescription = allComponents.map((comp: Component) => ({
 			name: comp.name,
-			description: comp.description || 'No description provided.'
+			description: comp.description || 'No description provided.',
+			keywords: comp.keywords
 		}));
 
-		if (!componentsWithDescription.length && component_type) {
-			throw new Error(`Invalid component_type or no components found for type: ${component_type}`);
+		if (keywords) {
+			const lowerCaseKeywords = keywords.toLowerCase().split(/\s*,\s*/).filter(Boolean);
+			componentsWithDescription = componentsWithDescription.filter(comp =>
+				lowerCaseKeywords.some(keyword =>
+					comp.name.toLowerCase().includes(keyword) ||
+					(comp.description && comp.description.toLowerCase().includes(keyword)) ||
+					(comp.keywords && comp.keywords.toLowerCase().includes(keyword))
+				)
+			);
 		}
+
+		if (!componentsWithDescription.length && component_type) {
+			throw new Error(`No components found for type: ${component_type}${keywords ? ` with keywords: ${keywords}` : ''}`);
+		}
+
+		const componentsForOutput = componentsWithDescription.map(({ name, description }) => ({
+			name,
+			description
+		}));
 
 		const returnValue = {
 			content: [
 				{
 					type: 'text' as const,
-					text: JSON.stringify(componentsWithDescription)
+					text: JSON.stringify(componentsForOutput)
 				}
 			],
-			structuredContent: { items: componentsWithDescription }
+			structuredContent: { items: componentsForOutput }
 		};
 		console.log('list_components returning:', JSON.stringify(returnValue, null, 2));
 		return returnValue;
@@ -156,14 +172,19 @@ const getMcpServer = () => {
 		{
 			title: 'List Components',
 			description:
-				'Lists available Fabled components of a specified type (trigger, target, condition, mechanic). Use this tool to discover components that might deal with specific functionalities, like "teleporting", "movement", "damage", or "permissions". For example, you can ask "What fabled components deal with teleporting?" or "List components related to user permissions."',
+				'Lists available Fabled components of a specified type (trigger, target, condition, mechanic), optionally filtered by keywords. Use this tool to discover components that might deal with specific functionalities, like "teleporting", "movement", "damage", or "permissions". For example, you can ask "What fabled components deal with teleporting?" or "List components related to user permissions." Keywords can be used to further narrow down the search, e.g., "list_components(component_type=\'mechanic\', keywords=\'damage, area of effect\')".',
 			inputSchema: z.object({
 				component_type: z
 					.enum(['trigger', 'target', 'condition', 'mechanic'])
 					.describe(
-						'The type of component to list. If not provided, all component types will be searched.'
-					)
+						'The type of component to list (e.g., "trigger", "target", "condition", "mechanic"). This parameter is now mandatory.'
+					),
+				keywords: z
+					.string()
 					.optional()
+					.describe(
+						'Optional: Comma-separated keywords to filter component names and descriptions (e.g., "damage, healing").'
+					),
 			}),
 			outputSchema: z.object({
 				items: z.array(z.object({ name: z.string(), description: z.string().optional() }))
