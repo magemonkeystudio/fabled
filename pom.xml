@@ -86,7 +86,7 @@
         <dependency>
             <groupId>LibsDisguises</groupId>
             <artifactId>LibsDisguises</artifactId>
-            <version>10.0.44</version>
+            <version>11.0.9</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
