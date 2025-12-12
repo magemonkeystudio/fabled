@@ -78,6 +78,7 @@ public class ComponentRegistry {
         register(new RiptideTrigger());
         register(new ShearTrigger());
         register(new ShieldTrigger());
+        register(new SkillUpgradeTrigger());
         register(new SignalTrigger());
         register(new SprintTrigger());
         register(new SkillCastTrigger());

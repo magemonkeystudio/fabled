@@ -36,6 +36,16 @@
             <id>magemonkey-snapshots</id>
             <url>https://repo.travja.dev/snapshots</url>
         </repository>
+
+        <repository>
+            <id>libsdisguises</id>
+            <url>https://mvn.lib.co.nz/releases</url>
+        </repository>
+        <!-- PacketEvents, needed for LibsDisguises -->
+        <repository>
+            <id>codemc-releases</id>
+            <url>https://repo.codemc.io/repository/maven-releases/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -84,9 +94,9 @@
         </dependency>
 
         <dependency>
-            <groupId>LibsDisguises</groupId>
-            <artifactId>LibsDisguises</artifactId>
-            <version>10.0.44</version>
+            <groupId>me.libraryaddict.disguises</groupId>
+            <artifactId>libsdisguises</artifactId>
+            <version>11.0.13</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -98,6 +108,12 @@
                     <artifactId>asm</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.github.retrooper</groupId>
+            <artifactId>packetevents-spigot</artifactId>
+            <version>2.11.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>fr.neatmonster</groupId>
