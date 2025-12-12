@@ -13,7 +13,7 @@ import { Request, Response } from 'express';
 // Create Express application
 const app = createMcpExpressApp({
 	host: '0.0.0.0',
-	allowedHosts: ['mcp-server', 'localhost', '127.0.0.1'] // Explicitly allow internal Docker hosts
+	allowedHosts: ['mcp-server', 'localhost', '127.0.0.1', 'mcp.travja.dev'] // Explicitly allow internal Docker hosts
 });
 const port = process.env.MCP_PORT ? parseInt(process.env.MCP_PORT) : 3000;
 
