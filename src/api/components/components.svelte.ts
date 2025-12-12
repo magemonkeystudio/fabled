@@ -675,6 +675,18 @@ class ShearTrigger extends FabledTrigger {
 	public static override new = () => new this();
 }
 
+class SkillDowngradeTrigger extends FabledTrigger {
+	public constructor() {
+		super({
+			name:        'Skill Downgrade',
+			description: 'Applies skill effects when a player loses a level in a skill. The placeholders `api-refund`, `api-skill`, and `api-level` provide details about the downgrade.',
+			keywords:    'skill, downgrade, level down, player, API, refund, skill name, level',
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class SkillUpgradeTrigger extends FabledTrigger {
 	public constructor() {
 		super({
@@ -5678,6 +5690,7 @@ export const initComponents = () => {
 		SHIELD:           { name: 'Shield', component: ShieldTrigger },
 		SIGNAL:           { name: 'Signal', component: SignalTrigger },
 		SKILL_UPGRADE:    { name: 'Skill Upgrade', component: SkillUpgradeTrigger },
+		SKILL_DOWNGRADE:  { name: 'Skill Downgrade', component: SkillDowngradeTrigger },
 		SKILL_CAST:       { name: 'Skill Cast', component: SkillCastTrigger },
 		SPRINT:           { name: 'Sprint', component: SprintTrigger },
 		STRIP_LOG:        { name: 'Strip Log', component: StripLogTrigger },
