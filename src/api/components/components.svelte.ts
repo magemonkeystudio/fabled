@@ -716,6 +716,18 @@ class ShearTrigger extends FabledTrigger {
 	public static override new = () => new this();
 }
 
+class SkillUpgradeTrigger extends FabledTrigger {
+	public constructor() {
+		super({
+			name:        'Skill Upgrade',
+			description: 'Applies skill effects when a player levels up a skill. The placeholders `api-cost`, `api-skill`, and `api-level` provide details about the upgrade.',
+			keywords:    'skill, upgrade, level up, player, API, cost, skill name, level'
+		});
+	}
+
+	public static override new = () => new this();
+}
+
 class SkillCastTrigger extends FabledTrigger {
 	public constructor() {
 		super({
@@ -5876,6 +5888,7 @@ export const initComponents = () => {
 		SHEAR:            { name: 'Shear', component: ShearTrigger },
 		SHIELD:           { name: 'Shield', component: ShieldTrigger },
 		SIGNAL:           { name: 'Signal', component: SignalTrigger },
+		SKILL_UPGRADE:    { name: 'Skill Upgrade', component: SkillUpgradeTrigger },
 		SKILL_CAST:       { name: 'Skill Cast', component: SkillCastTrigger },
 		SPRINT:           { name: 'Sprint', component: SprintTrigger },
 		STRIP_LOG:        { name: 'Strip Log', component: StripLogTrigger },
