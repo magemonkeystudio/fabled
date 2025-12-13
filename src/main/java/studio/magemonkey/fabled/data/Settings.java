@@ -995,7 +995,8 @@ public class Settings extends com.sucy.skill.data.Settings {
      * @return true if an ally, false otherwise
      */
     public boolean isAlly(LivingEntity attacker, LivingEntity target) {
-        return !canAttack(attacker, target);
+        return !canAttack(attacker, target) || (target instanceof Wolf && ((Wolf) target).isTamed()
+                && (attacker.equals(((Wolf) target).getOwner())));
     }
 
     /**
