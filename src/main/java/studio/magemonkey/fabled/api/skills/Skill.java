@@ -34,7 +34,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -69,6 +68,7 @@ import studio.magemonkey.fabled.language.RPGFilter;
 import studio.magemonkey.fabled.language.SkillNodes;
 import studio.magemonkey.fabled.listener.MechanicListener;
 import studio.magemonkey.fabled.log.Logger;
+import studio.magemonkey.fabled.manager.AttributeManager;
 
 import java.text.DecimalFormat;
 import java.util.*;
