@@ -383,6 +383,10 @@ public abstract class Skill implements IconHolder {
      * @param level current level of the skill
      * @return mana cost
      */
+    public double getManaCost(int level) {
+        return settings.getAttr(SkillAttribute.MANA, level);
+    }
+
     public double getManaCost(int level, PlayerData player) {
         return player.scaleStat(AttributeManager.MANA_COST, settings.getAttr(SkillAttribute.MANA, level));
     }
