@@ -34,6 +34,14 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+
+    public double getManaCost(int level, PlayerData player) {
+        return player.scaleStat(AttributeManager.MANA_COST, settings.getAttr(SkillAttribute.MANA, level));
+    }
+
+    public double getManaCost(int level, Player player) {
+        return getManaCost(level, Fabled.getData(player));
+    }
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -383,7 +391,7 @@ public abstract class Skill implements IconHolder {
      * @return mana cost
      */
     public double getManaCost(int level) {
-        return settings.getAttr(SkillAttribute.MANA, level);
+        return player.scaleStat(AttributeManager.MANA_COST, settings.getAttr(SkillAttribute.MANA, level));
     }
 
     /**

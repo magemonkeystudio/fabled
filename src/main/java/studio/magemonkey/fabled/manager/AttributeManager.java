@@ -56,6 +56,7 @@ public class AttributeManager implements IAttributeManager {
     public static final String KNOCKBACK_RESIST               = "knockback-resist";
     public static final String LUCK                           = "luck";
     public static final String MANA                           = "mana";
+    public static final String MANA_COST                      = "mana-cost"; // New attribute for mana cost scaling
     public static final String MANA_REGEN                     = "mana-regen";
     public static final String MELEE_DAMAGE                   = "melee-damage";
     public static final String MELEE_DEFENSE                  = "melee-defense";
