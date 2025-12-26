@@ -30,7 +30,7 @@ public interface CombatProtection {
         } else {
             // If the attacking entity is owned by another player, use that player for logic instead
             if (attacker instanceof Tameable) {
-                Tameable entity = (Tameable) target;
+                Tameable entity = (Tameable) attacker;
                 if (entity.isTamed() && entity.getOwner() instanceof OfflinePlayer) {
                     OfflinePlayer owner = (OfflinePlayer) entity.getOwner();
                     if (owner.isOnline()) {
