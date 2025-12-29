@@ -37,7 +37,7 @@
   "dependencies": {
     "blockly": "^12.3.1",
     "socket.io": "^4.8.3",
-    "socket.io-client": "^4.8.1",
+    "socket.io-client": "^4.8.3",
     "uuid": "^13.0.0",
     "yaml": "^2.8.2"
   },
