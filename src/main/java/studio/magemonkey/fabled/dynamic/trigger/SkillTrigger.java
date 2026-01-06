@@ -1,6 +1,5 @@
 package studio.magemonkey.fabled.dynamic.trigger;
 
-import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.api.event.SkillDamageEvent;
