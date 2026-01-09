@@ -723,7 +723,7 @@ class SkillDamageTrigger extends FabledTrigger {
 	public constructor() {
 		super({
 			name:         'Skill Damage',
-			description:  'Applies skill effects when a player deals damage with a skill',
+			description:  'Applies skill effects when a player deals damage with a skill. <code>api-damage</code> is the damage the target took',
 			data:         [
 				new BooleanSelect('Target Caster', 'target', true)
 					.setTooltip('True makes children target the caster. False makes children target the damaged entity'),
