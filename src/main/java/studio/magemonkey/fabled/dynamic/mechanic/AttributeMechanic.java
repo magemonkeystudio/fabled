@@ -26,6 +26,7 @@
  */
 package studio.magemonkey.fabled.dynamic.mechanic;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -113,7 +114,10 @@ public class AttributeMechanic extends MechanicComponent {
                 if (casterTasks.containsKey(data.getPlayerName()) && !stackable) {
                     final AttribTask old = casterTasks.remove(data.getPlayerName());
                     data.removeAttributeModifier(old.modifier.getUUID(), false);
-                    old.cancel();
+                    try {
+                        old.cancel();
+                    } catch (IllegalStateException ignored) {
+                    }
                 }
 
                 for (String key : keys) {
