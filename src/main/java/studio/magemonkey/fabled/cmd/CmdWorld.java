@@ -46,6 +46,7 @@ import java.util.stream.Collectors;
 public class CmdWorld implements IFunction, TabCompleter {
 
     private static final String PLAYER_ONLY = "must-be-player";
+    private static final String WORLD_NOT_FOUND = "world-not-found";
 
     @Override
     public void execute(final ConfigurableCommand cmd,
@@ -57,19 +58,23 @@ public class CmdWorld implements IFunction, TabCompleter {
             return;
         } else if (args.length < 1) {
             cmd.displayHelp(sender);
+            return;
         }
 
-        String worldName = args[0];
-        for (int i = 1; i < args.length; i++) {
-            worldName += " " + args[i];
-        }
+        String worldName = String.join(" ", args);
 
         World world = Bukkit.getWorld(worldName);
         if (world == null) {
             world = Bukkit.createWorld(new WorldCreator(worldName));
         }
 
+        if (world == null) {
+            cmd.sendMessage(sender, WORLD_NOT_FOUND, ChatColor.RED + "World could not be found or created.", silent);
+            return;
+        }
+
         ((Player) sender).teleport(world.getSpawnLocation());
+        sender.sendMessage(ChatColor.GREEN + "Teleported to world: " + world.getName());
     }
 
     @Override
