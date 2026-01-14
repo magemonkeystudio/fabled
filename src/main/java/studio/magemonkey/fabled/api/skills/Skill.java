@@ -68,6 +68,7 @@ import studio.magemonkey.fabled.language.RPGFilter;
 import studio.magemonkey.fabled.language.SkillNodes;
 import studio.magemonkey.fabled.listener.MechanicListener;
 import studio.magemonkey.fabled.log.Logger;
+import studio.magemonkey.fabled.manager.AttributeManager;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -384,6 +385,14 @@ public abstract class Skill implements IconHolder {
      */
     public double getManaCost(int level) {
         return settings.getAttr(SkillAttribute.MANA, level);
+    }
+
+    public double getManaCost(int level, PlayerData player) {
+        return player.scaleStat(AttributeManager.MANA_COST, settings.getAttr(SkillAttribute.MANA, level));
+    }
+
+    public double getManaCost(int level, Player player) {
+        return getManaCost(level, Fabled.getData(player));
     }
 
     /**

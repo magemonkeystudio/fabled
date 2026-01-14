@@ -183,7 +183,7 @@ public final class PlayerSkill {
      * @return mana cost to use the skill
      */
     public double getManaCost() {
-        return skill.getManaCost(level);
+        return skill.getManaCost(level, player);
     }
 
     /**
@@ -241,7 +241,7 @@ public final class PlayerSkill {
 
         // If mana is enabled, check to see if the player has enough
         if (Fabled.getSettings().isManaEnabled()
-                && player.getMana() < skill.getManaCost(level)) {
+                && player.getMana() < getManaCost()) {
 
             return SkillStatus.MISSING_MANA;
         }

@@ -43,6 +43,11 @@ public final class SkillAttribute {
     public static final String MANA = "mana";
 
     /**
+     * <p>Global mana cost scaler applied after per-skill mana is calculated</p>
+     */
+    public static final String MANA_COST = "mana-cost";
+
+    /**
      * <p>Level requirement attribute of a skill</p>
      */
     public static final String LEVEL = "level";
