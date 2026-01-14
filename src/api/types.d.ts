@@ -96,6 +96,7 @@ export interface ComponentData {
 export interface TriggerData extends ComponentData {
 	mana?: boolean;
 	cooldown?: boolean;
+	keywords?: string;
 }
 
 export interface VersionData {
