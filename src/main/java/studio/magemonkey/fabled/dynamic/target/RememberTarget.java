@@ -30,7 +30,9 @@ import com.google.common.collect.ImmutableList;
 import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Applies a flag to each target
@@ -51,7 +53,7 @@ public class RememberTarget extends TargetComponent {
     public static List<LivingEntity> remember(final LivingEntity caster, final String key) {
         final Object data = DynamicSkill.getCastData(caster).getRaw(key);
         //proper skill setup should cause this to work
-        return data == null ? ImmutableList.of() : (List<LivingEntity>) data;
+        return data == null ? ImmutableList.of() : new ArrayList<>((Set<LivingEntity>) data);
     }
 
     @Override
