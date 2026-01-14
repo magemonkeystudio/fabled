@@ -34,7 +34,9 @@ import studio.magemonkey.fabled.api.util.BuffType;
 import java.util.List;
 
 /**
- * Applies a flag to each target
+ * Represents the mechanic for applying a damage buff to targets.
+ * This class handles the logic for adding either skill or flat damage buffs
+ * to a list of LivingEntity targets for a specified duration.
  */
 public class DamageBuffMechanic extends MechanicComponent {
     private static final String TYPE           = "type";

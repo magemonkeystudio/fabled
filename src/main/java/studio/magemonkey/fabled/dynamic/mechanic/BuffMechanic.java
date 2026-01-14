@@ -8,8 +8,11 @@ import studio.magemonkey.fabled.api.util.BuffType;
 import java.util.List;
 
 /**
- * Fabled © 2024
+ * Fabled © 2026
  * studio.magemonkey.fabled.dynamic.mechanic.BuffMechanic
+ *
+ * The BuffMechanic class is responsible for applying buffs to LivingEntity targets.
+ * It can apply immediate buffs or timed buffs based on the configuration settings.
  */
 public class BuffMechanic extends MechanicComponent {
     private static final String MODIFIER  = "modifier";
@@ -44,14 +47,16 @@ public class BuffMechanic extends MechanicComponent {
         BuffType buffType = BuffType.getByNameOrLocal(rawType);
         double   seconds  = parseValues(caster, SECONDS, level, 3.0);
         String   category = settings.getString(CATEGORY, null);
+
+        if (buffType != null && buffType != BuffType.SKILL_DAMAGE && buffType != BuffType.SKILL_DEFENSE) {
+            category = null;
+        }
+
         int      ticks    = (int) (seconds * 20);
 
         String qualifiedType;
         if (buffType != null) {
             qualifiedType = buffType.getLocalizedName();
-            if (category != null) {
-                qualifiedType += "_" + category;
-            }
         } else {
             qualifiedType = rawType;
         }
