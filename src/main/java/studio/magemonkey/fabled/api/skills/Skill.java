@@ -56,8 +56,7 @@ import studio.magemonkey.fabled.api.event.TrueDamageEvent;
 import studio.magemonkey.fabled.api.player.PlayerCombos;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.player.PlayerSkill;
-import studio.magemonkey.fabled.api.util.DamageLoreRemover;
-import studio.magemonkey.fabled.api.util.Data;
+import studio.magemonkey.fabled.api.util.*;
 import studio.magemonkey.fabled.data.Permissions;
 import studio.magemonkey.fabled.dynamic.TempEntity;
 import studio.magemonkey.fabled.gui.tool.IconHolder;
@@ -822,6 +821,29 @@ public abstract class Skill implements IconHolder {
                        boolean knockback,
                        boolean ignoreDivinity,
                        EntityDamageEvent.DamageCause cause) {
+        damage(target, damage, source, classification, knockback, ignoreDivinity, cause, false);
+    }
+
+    /**
+     * Applies skill damage to the target, launching the skill damage event
+     *
+     * @param target         target to receive the damage
+     * @param damage         amount of damage to deal
+     * @param source         source of the damage (skill caster)
+     * @param classification type of damage to deal
+     * @param knockback      whether the damage should apply knockback
+     * @param ignoreDivinity whether the skill's damage should use divinity's overrides
+     * @param cause          the cause of the damage, might affect death messages
+     * @param noShake        whether to disable the screen shake effect when damaged
+     */
+    public void damage(LivingEntity target,
+                       double damage,
+                       LivingEntity source,
+                       String classification,
+                       boolean knockback,
+                       boolean ignoreDivinity,
+                       EntityDamageEvent.DamageCause cause,
+                       boolean noShake) {
         if (target instanceof TempEntity) {
             return;
         }
@@ -833,9 +855,8 @@ public abstract class Skill implements IconHolder {
         if (!Fabled.getSettings().canAttack(source, target, cause)) {
             return;
         }
-
         SkillDamageEvent event =
-                new SkillDamageEvent(this, source, target, damage, classification, knockback, ignoreDivinity);
+                new SkillDamageEvent(this, source, target, damage, classification, knockback, ignoreDivinity, noShake);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return;
@@ -843,6 +864,7 @@ public abstract class Skill implements IconHolder {
 
         damage = event.getDamage();
         knockback = event.isKnockback();
+        noShake = event.isNoShake();
         target.setMetadata(MechanicListener.DAMAGE_CAUSE, new FixedMetadataValue(Fabled.inst(), cause));
         if (source instanceof Player) {
             if (PluginChecker.isNoCheatActive()) NoCheatHook.exempt((Player) source);
@@ -853,16 +875,13 @@ public abstract class Skill implements IconHolder {
         target.setNoDamageTicks(0);
         skillDamage = true;
 
-        if (knockback) {
-            if (!DamageRegistry.dealDamage(target, damage, classification, source))
-                target.damage(damage, source);
-        } else {
-            Vector velocity = target.getVelocity();
-            if (!DamageRegistry.dealDamage(target, damage, classification, source))
-                target.damage(damage, source);
+        Vector velocity = target.getVelocity();
+        if (noShake)
+            BuffManager.addBuff(target, BuffType.NO_SCREEN_SHAKE, new Buff("damage-" + classification, 0, false), 1);
+        if (!DamageRegistry.dealDamage(target, damage, classification, source))
+            target.damage(damage, source);
+        if (!knockback)
             target.setVelocity(velocity);
-        }
-
 
         // Reset damage timer to before the damage was applied
         target.setNoDamageTicks(ticks);

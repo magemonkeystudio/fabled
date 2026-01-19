@@ -81,6 +81,9 @@ public class SkillDamageEvent extends Event implements Cancellable {
     private              boolean      knockback;
     @Getter
     private              boolean      ignoreDivinity;
+    @Getter
+    @Setter
+    private              boolean      noShake;
     private              boolean      cancelled = false;
 
     /**
@@ -93,9 +96,10 @@ public class SkillDamageEvent extends Event implements Cancellable {
      * @param classification the damage type to use
      * @param knockback      whether to apply knockback to the target
      * @param ignoreDivinity whether to ignore divinity
+     * @param noShake        whether to prevent screen shake
      */
     public SkillDamageEvent(Skill skill, LivingEntity damager, LivingEntity target, double damage,
-                            @Nullable String classification, boolean knockback, boolean ignoreDivinity) {
+                            @Nullable String classification, boolean knockback, boolean ignoreDivinity, boolean noShake) {
         this.skill = skill;
         this.damager = damager;
         this.target = target;
@@ -103,6 +107,7 @@ public class SkillDamageEvent extends Event implements Cancellable {
         this.classification = classification;
         this.knockback = knockback;
         this.ignoreDivinity = ignoreDivinity;
+        this.noShake = noShake;
     }
 
     /**

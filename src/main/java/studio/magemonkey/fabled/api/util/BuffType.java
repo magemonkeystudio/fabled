@@ -39,7 +39,8 @@ public enum BuffType {
     SKILL_DAMAGE("FABLED_skill_damage"),
     SKILL_DEFENSE("FABLED_skill_defense"),
     HEALING("FABLED_healing"),
-    INVISIBILITY("FABLED_invisibility");
+    INVISIBILITY("FABLED_invisibility"),
+    NO_SCREEN_SHAKE("FABLED_no_screen_shake");
 
     private final String localizedName;
 

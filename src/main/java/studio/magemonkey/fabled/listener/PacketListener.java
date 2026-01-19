@@ -31,6 +31,7 @@ public class PacketListener extends FabledListener {
     public void init() {
         protocolLib = new ProtocolLibHook(Fabled.inst());
         addListener(new EntityEquipmentPacketAdapter(ListenerPriority.HIGH, PacketType.Play.Server.ENTITY_EQUIPMENT));
+        addListener(new PlayAnimationPacketAdapter(ListenerPriority.HIGH, PacketType.Play.Server.HURT_ANIMATION));
     }
 
     private void addListener(PacketAdapter listener) {
@@ -63,6 +64,28 @@ public class PacketListener extends FabledListener {
     @Override
     public void cleanup() {
         protocolLib.unregister(packetListeners);
+    }
+
+    /**
+     * Used for no screen shake damages
+     */
+    private class PlayAnimationPacketAdapter extends PacketAdapter {
+
+        public PlayAnimationPacketAdapter(ListenerPriority listenerPriority, PacketType... types) {
+            super(Fabled.inst(), listenerPriority, types);
+        }
+
+        @Override
+        public void onPacketSending(PacketEvent event) {
+            Entity entity = protocolLib.getProtocolManager()
+                    .getEntityFromID(event.getPlayer().getWorld(), event.getPacket().getIntegers().read(0));
+            if (!(entity instanceof LivingEntity)) return;
+
+            BuffData data = BuffManager.getBuffData((LivingEntity) entity, false);
+            if (data == null || !data.isActive(BuffType.NO_SCREEN_SHAKE)) return;
+
+            event.setCancelled(true);
+        }
     }
 
     /**
