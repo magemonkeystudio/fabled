@@ -2902,7 +2902,7 @@ class DamageMechanic extends FabledMechanic {
 				new BooleanSelect('Apply Knockback', 'knockback', true)
 					.setTooltip('Whether the damage will inflict knockback. Ignored if it is True Damage'),
 				new BooleanSelect('No Screen Shake', 'no-shake', false)
-					.setTooltip('Whether the damage will play the hurt animation(screen shake) to the target. Ignored if it is True Damage, requires ProtocolLib to function'),
+					.setTooltip('Whether the damage will play the hurt animation (screen shake) to the target. Ignored if it is True Damage, requires ProtocolLib to function'),
 				new BooleanSelect('Ignore Divinity', 'ignore-divinity', false)
 					.setTooltip('Whether to ignore Divinity\'s defenses and damage calculations'),
 				new DropdownSelect('Damage Cause', 'cause', ['Contact', 'Custom', 'Entity Attack', 'Entity Sweep Attack', 'Projectile', 'Suffocation', 'Fall', 'Fire', 'Fire Tick', 'Melting', 'Lava', 'Drowning', 'Block Explosion', 'Entity Explosion', 'Void', 'Lightning', 'Suicide', 'Starvation', 'Poison', 'Magic', 'Wither', 'Falling Block', 'Thorns', 'Dragon Breath', 'Fly Into Wall', 'Hot Floor', 'Cramming', 'Dryout', 'Freeze', 'Sonic Boom'], 'Custom')
