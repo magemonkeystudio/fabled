@@ -40,6 +40,7 @@ public class SkillTakenTrigger extends SkillTrigger {
      */
     @Override
     public void setValues(final SkillDamageEvent event, final CastData data) {
+        super.setValues(event, data);
         data.put("api-taken", event.getDamage());
     }
 }
