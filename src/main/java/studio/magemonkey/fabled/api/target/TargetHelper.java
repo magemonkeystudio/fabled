@@ -292,6 +292,8 @@ public abstract class TargetHelper {
                         .getRelative(BlockFace.UP)
                         .getType())) {
                     lastValid = temp.clone();
+                } else {
+                    break;
                 }
                 temp.add(slope);
                 steps--;
