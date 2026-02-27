@@ -190,7 +190,7 @@
 	};
 </script>
 
-{#if !page.url.pathname.endsWith('/migration') && !page.url.host.includes('void.travja.dev')}
+{#if !page.url.pathname.endsWith('/migration') && !page.url.host.includes('fabled.travja.dev')}
 	<div class="migration-banner">
 		We're moving! Expect changes! New URL: <a href="https://fabled.travja.dev">fabled.travja.dev</a
 		>.
