@@ -9,19 +9,21 @@ import { DATA_1_16 }        from './1.16';
 import { DATA_1_20_4 }      from './1.20.4';
 import { DATA_1_20_6 }      from './1.20.6';
 import { DATA_1_21 }        from './1.21';
+import { DATA_1_21_11 }     from './1.21.11';
 
 export const expSources = ['Mob', 'Block Break', 'Block Place', 'Craft', 'Command', 'Special', 'Exp Bottle', 'Smelt', 'Quest', 'Plugin'];
 
-type Versions = '21' | '20.6' | '20.4' | '19' | '18' | '17' | '16';
+type Versions = '21.11' | '21' | '20.6' | '20.4' | '19' | '18' | '17' | '16';
 
 export const VERSIONS                           = {
-	'21':   DATA_1_21,
-	'20.6': DATA_1_20_6,
-	'20.4': DATA_1_20_4,
-	'19':   DATA_1_19,
-	'18':   DATA_1_18,
-	'17':   DATA_1_17,
-	'16':   DATA_1_16
+	'21.11': DATA_1_21_11,
+	'21':    DATA_1_21,
+	'20.6':  DATA_1_20_6,
+	'20.4':  DATA_1_20_4,
+	'19':    DATA_1_19,
+	'18':    DATA_1_18,
+	'17':    DATA_1_17,
+	'16':    DATA_1_16
 };
 export const versionData: Writable<VersionData> = writable(VERSIONS[<Versions>Object.keys(VERSIONS)[Object.keys(VERSIONS).length - 1]]);
 
