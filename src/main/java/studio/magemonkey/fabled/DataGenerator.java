@@ -1,9 +1,15 @@
 package studio.magemonkey.fabled;
 
-import be.seeseemelk.mockbukkit.MockBukkit;
+import org.mockbukkit.mockbukkit.MockBukkit;
+
+import com.google.common.collect.Lists;
+
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
+
+import org.bukkit.Keyed;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.Registry;
 import org.bukkit.Server;
 import org.bukkit.Sound;
 import org.bukkit.block.Biome;
@@ -13,6 +19,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.OldEnum;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +27,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Predicate;
 
 public class DataGenerator {
@@ -72,7 +80,7 @@ public class DataGenerator {
             }
             out.write(("    ],\n    SOUNDS: [\n").getBytes());
             for (Sound sound : Sound.values()) {
-                writeEnumConstant(out, sound);
+                writeOldEnumConstant(out, sound);
             }
             out.write(("    ],\n    ENTITIES: [\n").getBytes());
             for (EntityType entityType : EntityType.values()) {
@@ -80,7 +88,7 @@ public class DataGenerator {
             }
             out.write(("    ],\n    BIOMES: [\n").getBytes());
             for (Biome biome : Biome.values()) {
-                writeEnumConstant(out, biome);
+                writeOldEnumConstant(out, biome);
             }
             out.write(("    ],\n    POTIONS: [\n").getBytes());
             for (Field field : PotionEffectType.class.getDeclaredFields()) {
@@ -179,6 +187,25 @@ public class DataGenerator {
             e.printStackTrace();
         }
     }
+
+    public static void writeOldEnumConstant(OutputStream out, OldEnum<?> oldEnum) throws IOException {
+        String name = oldEnum.name();
+        if (name.contains("LEGACY") || name.equals("UNKNOWN")) {
+            return;
+        }
+        out.write(("        \"" + sentenceCase(name) + "\",\n").getBytes());
+    }
+
+    // public static <T extends Keyed> void writeRegistry(OutputStream out, Registry<T> registry) throws IOException {
+    //     List<T> values = Lists.newArrayList(registry);
+    //     for (int i = 0; i < values.size(); i++) {
+    //         String name = values.get(i).name();
+    //         if (name.contains("LEGACY") || name.equals("UNKNOWN")) {
+    //             continue;
+    //         }
+    //         out.write(("        \"" + sentenceCase(name) + "\",\n").getBytes());
+    //     }
+    // }
 
     public static String sentenceCase(String value) {
         if (value.isEmpty()) {
