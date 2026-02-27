@@ -1,4 +1,4 @@
-<script lang='ts'>
+<script lang="ts">
 	import '../app.css';
 	import {
 		active,
@@ -19,6 +19,7 @@
 	import { quadInOut }                                                     from 'svelte/easing';
 	import { fly }                                                           from 'svelte/transition';
 	import { browser }                                                       from '$app/environment';
+	import { resolve }                                                       from '$app/paths';
 	import ImportModal                                                       from '$components/ImportModal.svelte';
 	import NavBar                                                            from '$components/NavBar.svelte';
 	import HeaderBar                                                         from '$components/HeaderBar.svelte';
@@ -27,6 +28,7 @@
 																																					 from '$components/modal/SettingsModal.svelte';
 	import Modal                                                             from '$components/Modal.svelte';
 	import { dcWarning, socketConnected, socketService, socketTrusted }      from '$api/socket/socket-connector';
+	import { page }                                                          from '$app/state';
 
 	interface Props {
 		children?: import('svelte').Snippet;
@@ -36,27 +38,33 @@
 
 	const isSaving = skillStore.isSaving;
 
-	let dragging    = $state(false);
+	let dragging = $state(false);
 	let displaySave = $state(false);
 	let saveTask: number;
 	let saveSub: Unsubscriber;
 
-	let button                                 = $state('');
-	let serverSaveStatus                       = $state('NONE');
+	let button = $state('');
+	let serverSaveStatus = $state('NONE');
 	const statusMap: { [key: string]: string } = {
-		'SAVING': 'hourglass_empty',
-		'SAVED':  'check',
-		'ERROR':  'error'
+		SAVING: 'hourglass_empty',
+		SAVED: 'check',
+		ERROR: 'error'
 	};
-	let copied                                 = $state(false);
+	let copied = $state(false);
 
 	const passphrase = socketService.keyphrase;
-	let numButtons   = derived<Writable<boolean>, number>(socketConnected, (connected, set) => set(connected ? 6 : 3));
-	let rotation     = derived<Readable<number>, number>(numButtons, (numButtons, set) => set(120 / ((numButtons - 1) * 2)));
-	let distance     = derived<Readable<number>, number>(numButtons, (numButtons, set) => set((4.725 * (numButtons - 1) + 1.5) / Math.PI));
-	let dcTime       = derived<Readable<number>, number>(dcWarning, (dcWarning, set) => {
+	let numButtons = derived<Writable<boolean>, number>(socketConnected, (connected, set) =>
+		set(connected ? 6 : 3)
+	);
+	let rotation = derived<Readable<number>, number>(numButtons, (numButtons, set) =>
+		set(120 / ((numButtons - 1) * 2))
+	);
+	let distance = derived<Readable<number>, number>(numButtons, (numButtons, set) =>
+		set((4.725 * (numButtons - 1) + 1.5) / Math.PI)
+	);
+	let dcTime = derived<Readable<number>, number>(dcWarning, (dcWarning, set) => {
 		let interval: number;
-		let seconds   = 0;
+		let seconds = 0;
 		const setTime = () => {
 			let time = dcWarning - ++seconds;
 			if (time <= 0) {
@@ -77,15 +85,15 @@
 		document.addEventListener('dragover', dragover);
 		document.addEventListener('drop', loadFiles);
 
-		saveSub = skillStore.isSaving.subscribe(saving => {
+		saveSub = skillStore.isSaving.subscribe((saving) => {
 			if (!saving) {
-				setTimeout(() => displaySave = false, 1000);
+				setTimeout(() => (displaySave = false), 1000);
 				return;
 			}
 
 			if (saveTask) clearTimeout(saveTask);
 
-			saveTask = <number><unknown>setTimeout(() => displaySave = true, 1000);
+			saveTask = <number>(<unknown>setTimeout(() => (displaySave = true), 1000));
 		});
 	});
 
@@ -98,7 +106,11 @@
 	});
 
 	const dragover = (e: DragEvent) => {
-		if (!e?.dataTransfer?.types || !(e.dataTransfer.types.length > 0 && e.dataTransfer?.types.includes('Files'))) return;
+		if (
+			!e?.dataTransfer?.types ||
+			!(e.dataTransfer.types.length > 0 && e.dataTransfer?.types.includes('Files'))
+		)
+			return;
 
 		e.dataTransfer.dropEffect = 'copy';
 		e.stopPropagation();
@@ -107,7 +119,7 @@
 	};
 
 	const dragleave = () => {
-		setTimeout(() => dragging = false, 50);
+		setTimeout(() => (dragging = false), 50);
 	};
 
 	const loadFiles = (e: DragEvent) => {
@@ -126,10 +138,10 @@
 
 	const save = () => {
 		skillStore.skills.set([...get(skillStore.skills)]);
-		const vActive = get(active)
+		const vActive = get(active);
 		if (vActive) {
 			vActive.save();
-			triggerAutoSync(vActive)
+			triggerAutoSync(vActive);
 		}
 	};
 
@@ -143,134 +155,165 @@
 
 	const saveServerInfo = async () => {
 		if (serverSaveStatus === 'SAVING') return;
-		button           = 'save';
+		button = 'save';
 		serverSaveStatus = 'SAVING';
-		let success      = await saveDataToServer();
+		let success = await saveDataToServer();
 		if (success) serverSaveStatus = 'SAVED';
 		else serverSaveStatus = 'ERROR';
-		setTimeout(() => serverSaveStatus = 'NONE', 2000);
+		setTimeout(() => (serverSaveStatus = 'NONE'), 2000);
 	};
 
 	const exportAllToServer = async () => {
 		if (serverSaveStatus === 'SAVING') return;
-		button           = 'export';
+		button = 'export';
 		serverSaveStatus = 'SAVING';
-		let success      = await saveAllToServer();
+		let success = await saveAllToServer();
 		if (success) serverSaveStatus = 'SAVED';
 		else serverSaveStatus = 'ERROR';
-		setTimeout(() => serverSaveStatus = 'NONE', 2000);
+		setTimeout(() => (serverSaveStatus = 'NONE'), 2000);
 	};
 
 	const reload = async () => {
 		if (serverSaveStatus === 'SAVING') return;
-		button           = 'reload';
+		button = 'reload';
 		serverSaveStatus = 'SAVING';
-		let success      = await socketService.reloadSapi();
+		let success = await socketService.reloadSapi();
 		if (success) serverSaveStatus = 'SAVED';
 		else serverSaveStatus = 'ERROR';
-		setTimeout(() => serverSaveStatus = 'NONE', 2000);
+		setTimeout(() => (serverSaveStatus = 'NONE'), 2000);
 	};
 
 	const copyText = () => {
 		navigator.clipboard.writeText('/synth trust ' + $passphrase);
 		copied = true;
-		setTimeout(() => copied = false, 2000);
+		setTimeout(() => (copied = false), 2000);
 	};
 </script>
 
+{#if !page.url.pathname.endsWith('/migration') && !page.url.host.includes('void.travja.dev')}
+	<div class="migration-banner">
+		We're moving! Expect changes. New URL: <a href="https://fabled.travja.dev">fabled.travja.dev</a
+		>.
+		<a href={resolve('/migration')} class="info-link">Learn more about the migration</a>
+	</div>
+{/if}
+
 <HeaderBar />
 <NavBar />
-<div class:empty={!$active} id='body-container'>
+<div class:empty={!$active} id="body-container">
 	{#if $showSidebar}
 		<Sidebar />
 	{/if}
-	<div class:centered={!$active} id='body'>
+	<div class:centered={!$active} id="body">
 		{@render children?.()}
 	</div>
 </div>
 <!--<SocketPanel />-->
 
-<div id='floating-buttons'>
-	<div class='button backup' onclick={saveAll}
-			 onkeypress={(e) => e.key === 'Enter' && saveAll()}
-			 role='button'
-			 style:--distance='{$distance}rem'
-			 style:--rotation='{$rotation}deg'
-			 tabindex='0'
-			 title='Backup All Data'
+<div id="floating-buttons">
+	<div
+		class="button backup"
+		onclick={saveAll}
+		onkeypress={(e) => e.key === 'Enter' && saveAll()}
+		role="button"
+		style:--distance="{$distance}rem"
+		style:--rotation="{$rotation}deg"
+		tabindex="0"
+		title="Backup All Data"
 	>
-		<span class='material-symbols-rounded'>cloud_download</span>
+		<span class="material-symbols-rounded">cloud_download</span>
 	</div>
-	<div class='button save' onclick={() => saveData()}
-			 onkeypress={(e) => { if (e.key === 'Enter') saveData() }}
-			 role='button'
-			 style:--distance='{$distance}rem'
-			 style:--rotation='{$rotation * 3}deg'
-			 tabindex='0'
-			 title='Save'
+	<div
+		class="button save"
+		onclick={() => saveData()}
+		onkeypress={(e) => {
+			if (e.key === 'Enter') saveData();
+		}}
+		role="button"
+		style:--distance="{$distance}rem"
+		style:--rotation="{$rotation * 3}deg"
+		tabindex="0"
+		title="Save"
 	>
-		<span class='material-symbols-rounded'>save</span>
+		<span class="material-symbols-rounded">save</span>
 	</div>
 	{#if $socketConnected}
 		<!-- Rotation goes up by 2 for each button -->
-		<div class='button socket-upload'
-				 title='Save to Server'
-				 tabindex='0'
-				 role='button'
-				 style:--rotation='{$rotation * 5}deg'
-				 style:--distance='{$distance}rem'
-				 transition:fly={{x: 100, easing: quadInOut}}
-				 onclick={() => saveServerInfo()}
-				 onkeypress={(e) => { if (e.key === 'Enter') saveServerInfo() }}
+		<div
+			class="button socket-upload"
+			title="Save to Server"
+			tabindex="0"
+			role="button"
+			style:--rotation="{$rotation * 5}deg"
+			style:--distance="{$distance}rem"
+			transition:fly={{ x: 100, easing: quadInOut }}
+			onclick={() => saveServerInfo()}
+			onkeypress={(e) => {
+				if (e.key === 'Enter') saveServerInfo();
+			}}
 		>
 			{#if button === 'save' && serverSaveStatus !== 'NONE'}
-				<span class='material-symbols-rounded' transition:fly={{y: -20}}>{statusMap[serverSaveStatus]}</span>
+				<span class="material-symbols-rounded" transition:fly={{ y: -20 }}
+					>{statusMap[serverSaveStatus]}</span
+				>
 			{:else}
-				<span class='material-symbols-rounded' transition:fly={{y: 20}}>upload_file</span>
+				<span class="material-symbols-rounded" transition:fly={{ y: 20 }}>upload_file</span>
 			{/if}
 		</div>
-		<div class='button socket-all'
-				 title='Upload All to Server'
-				 tabindex='0'
-				 role='button'
-				 style:--rotation='{$rotation * 7}deg'
-				 style:--distance='{$distance}rem'
-				 transition:fly={{x: 100, easing: quadInOut}}
-				 onclick={() => exportAllToServer()}
-				 onkeypress={(e) => { if (e.key === 'Enter') exportAllToServer() }}
+		<div
+			class="button socket-all"
+			title="Upload All to Server"
+			tabindex="0"
+			role="button"
+			style:--rotation="{$rotation * 7}deg"
+			style:--distance="{$distance}rem"
+			transition:fly={{ x: 100, easing: quadInOut }}
+			onclick={() => exportAllToServer()}
+			onkeypress={(e) => {
+				if (e.key === 'Enter') exportAllToServer();
+			}}
 		>
 			{#if button === 'export' && serverSaveStatus !== 'NONE'}
-				<span class='material-symbols-rounded' transition:fly={{y: -20}}>{statusMap[serverSaveStatus]}</span>
+				<span class="material-symbols-rounded" transition:fly={{ y: -20 }}
+					>{statusMap[serverSaveStatus]}</span
+				>
 			{:else}
-				<span class='material-symbols-rounded' transition:fly={{y: 20}}>cloud_upload</span>
+				<span class="material-symbols-rounded" transition:fly={{ y: 20 }}>cloud_upload</span>
 			{/if}
 		</div>
-		<div class='button socket-reload'
-				 title='Reload Fabled'
-				 tabindex='0'
-				 role='button'
-				 style:--rotation='{$rotation * 9}deg'
-				 style:--distance='{$distance}rem'
-				 transition:fly={{x: 100, easing: quadInOut}}
-				 onclick={() => reload()}
-				 onkeypress={(e) => { if (e.key === 'Enter') reload() }}
+		<div
+			class="button socket-reload"
+			title="Reload Fabled"
+			tabindex="0"
+			role="button"
+			style:--rotation="{$rotation * 9}deg"
+			style:--distance="{$distance}rem"
+			transition:fly={{ x: 100, easing: quadInOut }}
+			onclick={() => reload()}
+			onkeypress={(e) => {
+				if (e.key === 'Enter') reload();
+			}}
 		>
 			{#if button === 'reload' && serverSaveStatus !== 'NONE'}
-				<span class='material-symbols-rounded' transition:fly={{y: -20}}>{statusMap[serverSaveStatus]}</span>
+				<span class="material-symbols-rounded" transition:fly={{ y: -20 }}
+					>{statusMap[serverSaveStatus]}</span
+				>
 			{:else}
-				<span class='material-symbols-rounded' transition:fly={{y: 20}}>sync</span>
+				<span class="material-symbols-rounded" transition:fly={{ y: 20 }}>sync</span>
 			{/if}
 		</div>
 	{/if}
-	<div class='button settings' onclick={() => openModal(SettingsModal)}
-			 onkeypress={(e) => e.key === 'Enter' && openModal(SettingsModal)}
-			 role='button'
-			 style:--distance='1rem'
-			 style:--rotation='60deg'
-			 tabindex='0'
-			 title='Change Settings'
+	<div
+		class="button settings"
+		onclick={() => openModal(SettingsModal)}
+		onkeypress={(e) => e.key === 'Enter' && openModal(SettingsModal)}
+		role="button"
+		style:--distance="1rem"
+		style:--rotation="60deg"
+		tabindex="0"
+		title="Change Settings"
 	>
-		<span class='material-symbols-rounded'>settings</span>
+		<span class="material-symbols-rounded">settings</span>
 	</div>
 </div>
 
@@ -279,50 +322,59 @@
 {/if}
 
 {#if $saveError}
-	<div class='save-error' transition:fly={{y: -20}}>
+	<div class="save-error" transition:fly={{ y: -20 }}>
 		<strong>Failed to save {$saveError.name} - Data is too large.</strong>
-		<div>We can keep it in memory for you to use, but will be unable to persist it to your browser's storage.</div>
+		<div>
+			We can keep it in memory for you to use, but will be unable to persist it to your browser's
+			storage.
+		</div>
 		<div>Closing/Refreshing the page will cause you to lose this data.</div>
 		<div>You'll need to export it and re-import later if you want to keep working with this.</div>
-		<div class='acknowledge button'
-				 tabindex='0'
-				 role='button'
-				 onclick={() => { acknowledgeSaveError() }}
-				 onkeypress={(e) => { if (e.key === 'Enter') { acknowledgeSaveError() }}}
-		>I Understand
+		<div
+			class="acknowledge button"
+			tabindex="0"
+			role="button"
+			onclick={() => {
+				acknowledgeSaveError();
+			}}
+			onkeypress={(e) => {
+				if (e.key === 'Enter') {
+					acknowledgeSaveError();
+				}
+			}}
+		>
+			I Understand
 		</div>
 	</div>
 {/if}
 
 <!-- Display our active modal -->
 {#if ModalService.activeModal}
-	<ModalService.activeModal
-		data={$modalData}
-		onclose={closeModal}
-		onsave={save}
-	/>
+	<ModalService.activeModal data={$modalData} onclose={closeModal} onsave={save} />
 {/if}
 
 {#if displaySave}
-	<div class='saving' transition:fly={{y: -20}}>{$isSaving ? 'Saving...' : 'Saved!'}</div>
+	<div class="saving" transition:fly={{ y: -20 }}>{$isSaving ? 'Saving...' : 'Saved!'}</div>
 {/if}
 
 {#if dragging}
-	<div class='dragging' role='form' ondragleave={dragleave}>
-		Drop to Import
-	</div>
+	<div class="dragging" role="form" ondragleave={dragleave}>Drop to Import</div>
 {/if}
 
 {#if !!$passphrase && !$socketTrusted}
 	<Modal>
 		<h3>Untrusted Connection to Server</h3>
-		<div>Server is not trusted. Please run
-			<div class='code'
-					 class:copied
-					 onclick={copyText}
-					 onkeypress={(e) => { if (e.key === 'Enter') copyText() }}
-					 role='button'
-					 tabindex='0'
+		<div>
+			Server is not trusted. Please run
+			<div
+				class="code"
+				class:copied
+				onclick={copyText}
+				onkeypress={(e) => {
+					if (e.key === 'Enter') copyText();
+				}}
+				role="button"
+				tabindex="0"
 			>
 				/synth trust {$passphrase}
 			</div>
@@ -332,201 +384,236 @@
 {/if}
 
 {#if $dcWarning > 0}
-	<div class='dc-warning' transition:fly={{y: -20}}>
-		<strong>You will lose connection in { $dcTime } seconds</strong>
-		<div class='button'
-				 tabindex='0'
-				 role='button'
-				 onclick={() => socketService.ping()}
-				 onkeypress={(e) => { if (e.key === 'Enter') socketService.ping() }}
-		>Click to remain connected
+	<div class="dc-warning" transition:fly={{ y: -20 }}>
+		<strong>You will lose connection in {$dcTime} seconds</strong>
+		<div
+			class="button"
+			tabindex="0"
+			role="button"
+			onclick={() => socketService.ping()}
+			onkeypress={(e) => {
+				if (e.key === 'Enter') socketService.ping();
+			}}
+		>
+			Click to remain connected
 		</div>
 	</div>
 {/if}
 
 <style>
-    @property --rotation {
-        syntax: "<angle>";
-        inherits: false;
-        initial-value: 0deg;
-    }
+	@property --rotation {
+		syntax: '<angle>';
+		inherits: false;
+		initial-value: 0deg;
+	}
 
-    @property --distance {
-        syntax: "<length>";
-        inherits: false;
-        initial-value: 0;
-    }
+	@property --distance {
+		syntax: '<length>';
+		inherits: false;
+		initial-value: 0;
+	}
 
-    .dragging {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: fixed;
-        inset: 0;
-        background-color: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(5px);
-        z-index: 50;
-        font-size: 2rem;
-    }
+	.dragging {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: fixed;
+		inset: 0;
+		background-color: rgba(0, 0, 0, 0.5);
+		backdrop-filter: blur(5px);
+		z-index: 50;
+		font-size: 2rem;
+	}
 
-    @media screen and (min-width: 500px) {
-        #body-container {
-            /*max-height: 100%;*/
-            overflow: visible;
-        }
-    }
+	@media screen and (min-width: 500px) {
+		#body-container {
+			/*max-height: 100%;*/
+			overflow: visible;
+		}
+	}
 
-    #body-container {
-        max-width: 100dvw;
-        height: 10%;
-        flex-grow: 1;
-        display: flex;
-        flex-direction: row;
-    }
+	#body-container {
+		max-width: 100dvw;
+		height: 10%;
+		flex-grow: 1;
+		display: flex;
+		flex-direction: row;
+	}
 
-    #body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        /*padding-bottom: 1rem;*/
-        width: 10%;
-        flex: 1;
-        overflow: auto;
-    }
+	#body {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		/*padding-bottom: 1rem;*/
+		width: 10%;
+		flex: 1;
+		overflow: auto;
+	}
 
-    #body.centered {
-        justify-content: center;
-    }
+	#body.centered {
+		justify-content: center;
+	}
 
-    #floating-buttons .button {
-        --rotation: 0deg;
-        --distance: 3.5rem;
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        translate: calc(-1 * var(--distance) * sin(105deg - var(--rotation))) calc(-1 * var(--distance) * cos(105deg - var(--rotation)));
+	#floating-buttons .button {
+		--rotation: 0deg;
+		--distance: 3.5rem;
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		translate: calc(-1 * var(--distance) * sin(105deg - var(--rotation)))
+			calc(-1 * var(--distance) * cos(105deg - var(--rotation)));
 
-        background-color: #0083ef;
-        display: grid;
-        place-items: center;
-        border-radius: 50%;
-        padding: 0.7rem;
-        box-shadow: inset 0 0 10px #222;
-        margin: 0;
-        overflow: hidden;
+		background-color: #0083ef;
+		display: grid;
+		place-items: center;
+		border-radius: 50%;
+		padding: 0.7rem;
+		box-shadow: inset 0 0 10px #222;
+		margin: 0;
+		overflow: hidden;
 
-        transition: --rotation 0.5s ease, --distance 0.5s ease;
-    }
+		transition:
+			--rotation 0.5s ease,
+			--distance 0.5s ease;
+	}
 
-    #floating-buttons {
-        position: fixed;
-        right: 0.5rem;
-        bottom: 0.5rem;
-        z-index: 100;
-    }
+	#floating-buttons {
+		position: fixed;
+		right: 0.5rem;
+		bottom: 0.5rem;
+		z-index: 100;
+	}
 
-    #floating-buttons .button .material-symbols-rounded {
-        font-size: 1.75em;
-        grid-row: 1;
-        grid-column: 1;
-    }
+	#floating-buttons .button .material-symbols-rounded {
+		font-size: 1.75em;
+		grid-row: 1;
+		grid-column: 1;
+	}
 
-    #floating-buttons .save {
-        background-color: #1dad36;
-    }
+	#floating-buttons .save {
+		background-color: #1dad36;
+	}
 
-    #floating-buttons .settings {
-        background-color: #777;
-    }
+	#floating-buttons .settings {
+		background-color: #777;
+	}
 
-    #floating-buttons .socket-upload {
-        background-color: #ff9800;
-    }
+	#floating-buttons .socket-upload {
+		background-color: #ff9800;
+	}
 
-    #floating-buttons .socket-all {
-        background-color: #c21b1b;
-    }
+	#floating-buttons .socket-all {
+		background-color: #c21b1b;
+	}
 
-    #floating-buttons .socket-reload {
-        background-color: #363636;
-    }
+	#floating-buttons .socket-reload {
+		background-color: #363636;
+	}
 
-    #floating-buttons .settings .material-symbols-rounded {
-        font-size: 1em;
-    }
+	#floating-buttons .settings .material-symbols-rounded {
+		font-size: 1em;
+	}
 
-    #body-container.empty {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+	#body-container.empty {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
 
-    .saving {
-        position: fixed;
-        z-index: 100;
-        top: 0.75rem;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: rgba(130, 130, 130, 0.6);
-        backdrop-filter: blur(5px);
-        border-radius: 0.75rem;
-        padding: 0.75rem;
-        box-shadow: inset 0 0 5px #222;
-    }
+	.saving {
+		position: fixed;
+		z-index: 100;
+		top: 0.75rem;
+		left: 50%;
+		transform: translateX(-50%);
+		background-color: rgba(130, 130, 130, 0.6);
+		backdrop-filter: blur(5px);
+		border-radius: 0.75rem;
+		padding: 0.75rem;
+		box-shadow: inset 0 0 5px #222;
+	}
 
-    .save-error {
-        position: fixed;
-        z-index: 100;
-        top: 0.75rem;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: rgba(255, 29, 29, 0.6);
-        backdrop-filter: blur(5px);
-        border-radius: 0.75rem;
-        padding: 0.75rem;
-        box-shadow: inset 0 0 5px #222;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-    }
+	.save-error {
+		position: fixed;
+		z-index: 100;
+		top: 0.75rem;
+		left: 50%;
+		transform: translateX(-50%);
+		background-color: rgba(255, 29, 29, 0.6);
+		backdrop-filter: blur(5px);
+		border-radius: 0.75rem;
+		padding: 0.75rem;
+		box-shadow: inset 0 0 5px #222;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+	}
 
-    .code {
-        display: inline;
-        background-color: #555;
-        padding: 0.25rem;
-        border-radius: 0.25rem;
-        font-family: monospace;
-        font-size: 0.8em;
-        cursor: grab;
+	.code {
+		display: inline;
+		background-color: #555;
+		padding: 0.25rem;
+		border-radius: 0.25rem;
+		font-family: monospace;
+		font-size: 0.8em;
+		cursor: grab;
 
-        transition: background-color 0.5s ease;
-    }
+		transition: background-color 0.5s ease;
+	}
 
-    .code.copied {
-        background-color: #36ab36;
-    }
+	.code.copied {
+		background-color: #36ab36;
+	}
 
-    .dc-warning {
-        position: fixed;
-        z-index: 100;
-        top: 0.75rem;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: rgba(255, 29, 29, 0.6);
-        backdrop-filter: blur(5px);
-        border-radius: 0.75rem;
-        padding: 0.75rem;
-        box-shadow: inset 0 0 5px #222;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-    }
+	.dc-warning {
+		position: fixed;
+		z-index: 100;
+		top: 0.75rem;
+		left: 50%;
+		transform: translateX(-50%);
+		background-color: rgba(255, 29, 29, 0.6);
+		backdrop-filter: blur(5px);
+		border-radius: 0.75rem;
+		padding: 0.75rem;
+		box-shadow: inset 0 0 5px #222;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+	}
 
-    .dc-warning > .button {
-        background-color: #555555;
-    }
+	.dc-warning > .button {
+		background-color: #555555;
+	}
+
+	.migration-banner {
+		background-color: #ff9800;
+		color: #000;
+		text-align: center;
+		padding: 0.5rem;
+		font-weight: bold;
+		z-index: 1000;
+		font-family: sans-serif;
+	}
+
+	.migration-banner a {
+		color: #000;
+		text-decoration: underline;
+	}
+
+	.migration-banner .info-link {
+		margin-left: 1rem;
+		background: #333;
+		color: #fff;
+		padding: 0.25rem 0.75rem;
+		border-radius: 0.25rem;
+		text-decoration: none;
+	}
+
+	.migration-banner .info-link:hover {
+		background: #555;
+	}
 </style>

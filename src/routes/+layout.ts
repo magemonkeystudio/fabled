@@ -10,7 +10,7 @@ import { synthesisEnabled }        from '../data/settings';
 
 export const ssr = false;
 
-const expectedHost = ['fabled.magemonkey.studio', 'synthesis.travja.dev'];
+const expectedHost = ['fabled.travja.dev', 'synthesis.travja.dev'];
 const separator    = '\n\n\n~~~~~\n\n\n';
 
 export const load: LayoutLoad = async ({ url }) => {
