@@ -1,1 +1,0 @@
-import{f as u,b as g,H as o,h as t,g as _,C as m,j as i,k as l,m as n,n as p}from"./CHxvodoC.js";function E(d,r){let s=null,f=t;var a;if(t){s=p;for(var e=_(document.head);e!==null&&(e.nodeType!==m||e.data!==d);)e=i(e);if(e===null)l(!1);else{var y=i(e);e.remove(),n(y)}}t||(a=document.head.appendChild(u()));try{g(()=>r(a),o)}finally{f&&(l(!0),n(s))}}export{E as h};
