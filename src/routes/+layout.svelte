@@ -192,7 +192,7 @@
 
 {#if !page.url.pathname.endsWith('/migration') && !page.url.host.includes('void.travja.dev')}
 	<div class="migration-banner">
-		We're moving! Expect changes. New URL: <a href="https://fabled.travja.dev">fabled.travja.dev</a
+		We're moving! Expect changes! New URL: <a href="https://fabled.travja.dev">fabled.travja.dev</a
 		>.
 		<a href={resolve('/migration')} class="info-link">Learn more about the migration</a>
 	</div>
