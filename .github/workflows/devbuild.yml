@@ -7,7 +7,8 @@ on:
 
 jobs:
   deploy:
-    uses: magemonkeystudio/.github/.github/workflows/reusable-devbuild.yml@main
+    uses: magemonkeystudio/.github/.github/workflows/reusable-build.yml@main
     secrets: inherit
     with:
+      is_dev: true
       update_javadocs: true
