@@ -26,8 +26,8 @@ You can download Fabled from our marketplace
 
 # Development
 
-If you wish to use Fabled as a dependency in your projects, Fabled is available through Maven Central
-or snapshots through Sonatype.
+If you wish to use Fabled as a dependency in your projects, Fabled is available through our repository.
+
 
 ```xml
 <repository>

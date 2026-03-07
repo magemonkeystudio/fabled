@@ -26,8 +26,8 @@ You can download ${project.name} from our marketplace
 
 # Development
 
-If you wish to use ${project.name} as a dependency in your projects, ${project.name} is available through Maven Central
-or snapshots through Sonatype.
+If you wish to use ${project.name} as a dependency in your projects, ${project.name} is available through our repository.
+
 
 ```xml
 <repository>
