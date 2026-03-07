@@ -100,4 +100,4 @@ If you encounter any issues or need clarification, feel free to open an issue or
 
 Thank you for contributing to Fabled! Together, we can build something amazing.
 
-[![Discord](https://dcbadge.limes.pink/api/server/6UzkTe6RvW?style=flat)](https://discord.gg/6UzkTe6RvW)
+[![Discord](https://dcbadge.limes.pink/api/server/mQrkW4htUA?style=flat)](https://discord.gg/mQrkW4htUA)
