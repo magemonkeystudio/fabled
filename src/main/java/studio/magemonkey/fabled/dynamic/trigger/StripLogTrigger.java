@@ -12,7 +12,7 @@ import studio.magemonkey.fabled.api.Settings;
 import java.util.List;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.trigger.BlockBreakTrigger
  */
 public class StripLogTrigger implements Trigger<PlayerInteractEvent> {

@@ -9,7 +9,7 @@ import studio.magemonkey.fabled.api.Settings;
 import java.util.List;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.trigger.WorldChangeTrigger
  */
 public class WorldChangeTrigger implements Trigger<PlayerChangedWorldEvent> {

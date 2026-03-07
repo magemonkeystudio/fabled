@@ -5,7 +5,7 @@ import studio.magemonkey.fabled.dynamic.ComponentType;
 import java.util.List;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.custom.CustomComponent
  */
 public interface CustomComponent {

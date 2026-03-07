@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.trigger.BlockBreakTrigger
  */
 public class EnvironmentalTrigger implements Trigger<EntityDamageEvent> {

@@ -11,7 +11,7 @@ import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
 import java.util.List;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.mechanic.value.ValueDistanceMechanic
  */
 public class ValueDistanceMechanic extends MechanicComponent {

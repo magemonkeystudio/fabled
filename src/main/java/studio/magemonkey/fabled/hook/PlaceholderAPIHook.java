@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.hook.PlaceholderAPIHook
  */
 public class PlaceholderAPIHook extends PlaceholderExpansion {

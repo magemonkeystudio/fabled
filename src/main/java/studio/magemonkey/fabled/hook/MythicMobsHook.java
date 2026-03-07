@@ -6,7 +6,7 @@ import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.codex.CodexEngine;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.hook.MythicMobsHook
  */
 public class MythicMobsHook {

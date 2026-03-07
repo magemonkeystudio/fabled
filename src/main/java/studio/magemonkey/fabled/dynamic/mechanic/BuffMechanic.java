@@ -8,7 +8,7 @@ import studio.magemonkey.fabled.api.util.BuffType;
 import java.util.List;
 
 /**
- * Fabled © 2026
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.mechanic.BuffMechanic
  *
  * The BuffMechanic class is responsible for applying buffs to LivingEntity targets.

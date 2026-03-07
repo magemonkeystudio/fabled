@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.mechanic.FoodMechanic
  */
 public class FoodMechanic extends MechanicComponent {

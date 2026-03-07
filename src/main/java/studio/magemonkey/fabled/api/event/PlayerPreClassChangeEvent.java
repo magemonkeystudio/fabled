@@ -8,7 +8,7 @@ import studio.magemonkey.fabled.api.player.PlayerClass;
 import studio.magemonkey.fabled.api.player.PlayerData;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.api.event.PlayerPreClassChangeEvent
  */
 public class PlayerPreClassChangeEvent extends Event implements Cancellable {

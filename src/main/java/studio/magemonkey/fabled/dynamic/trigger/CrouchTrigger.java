@@ -6,7 +6,7 @@ import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.api.Settings;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.trigger.BlockBreakTrigger
  */
 public class CrouchTrigger implements Trigger<PlayerToggleSneakEvent> {

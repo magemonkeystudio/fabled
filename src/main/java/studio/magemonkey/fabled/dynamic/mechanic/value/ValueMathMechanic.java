@@ -4,7 +4,7 @@
  * <p>
  * The MIT License (MIT)
  * <p>
- * Copyright (c) 2025 MageMonkeyStudio
+ * © 2026 VoidEdge
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software") to deal

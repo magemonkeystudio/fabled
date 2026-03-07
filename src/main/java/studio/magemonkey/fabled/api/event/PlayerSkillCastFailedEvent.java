@@ -7,7 +7,7 @@ import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.player.PlayerSkill;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.api.event.PlayerSkillCastFailedEvent
  */
 public class PlayerSkillCastFailedEvent extends Event {

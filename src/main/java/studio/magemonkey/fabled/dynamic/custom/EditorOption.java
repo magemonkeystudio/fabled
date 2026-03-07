@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.custom.EditorOption
  */
 public class EditorOption {

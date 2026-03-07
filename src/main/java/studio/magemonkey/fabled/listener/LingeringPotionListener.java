@@ -19,7 +19,7 @@ import java.util.Locale;
 import static studio.magemonkey.fabled.listener.MechanicListener.*;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.listener.LingeringPotionListener
  */
 public class LingeringPotionListener extends FabledListener {

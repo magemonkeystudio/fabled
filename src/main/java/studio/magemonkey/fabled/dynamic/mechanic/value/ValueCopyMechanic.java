@@ -9,7 +9,7 @@ import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
 import java.util.List;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.mechanic.value.ValueCopyMechanic
  */
 public class ValueCopyMechanic extends MechanicComponent {

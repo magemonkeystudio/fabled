@@ -5,7 +5,7 @@ import studio.magemonkey.fabled.api.event.PhysicalDamageEvent;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.trigger.BlockBreakTrigger
  */
 public abstract class PhysicalTrigger implements Trigger<PhysicalDamageEvent> {

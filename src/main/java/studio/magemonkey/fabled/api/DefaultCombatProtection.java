@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.data.DefaultCombatProtection
  */
 public class DefaultCombatProtection implements CombatProtection {

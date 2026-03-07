@@ -20,7 +20,7 @@ import studio.magemonkey.fabled.hook.PluginChecker;
 import static studio.magemonkey.fabled.listener.attribute.AttributeListener.PHYSICAL;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.listener.BuffListener
  */
 public class BuffListener extends FabledListener {

@@ -25,7 +25,7 @@ import java.util.Objects;
 import static studio.magemonkey.fabled.dynamic.ComponentRegistry.getExecutor;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.TriggerHandler
  */
 public class TriggerHandler implements Listener {

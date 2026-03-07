@@ -5,7 +5,7 @@ import org.bukkit.entity.LivingEntity;
 import java.util.List;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.mechanic.HealthSetMechanic
  */
 public class AirModifyMechanic extends MechanicComponent {

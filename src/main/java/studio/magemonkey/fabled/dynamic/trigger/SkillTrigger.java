@@ -8,7 +8,7 @@ import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import java.util.List;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.trigger.BlockBreakTrigger
  */
 public abstract class SkillTrigger implements Trigger<SkillDamageEvent> {

@@ -6,7 +6,7 @@ import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.api.Settings;
 
 /**
- * Fabled © 2025 MageMonkey Studio
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.trigger.ToggleFlightTrigger
  */
 public class FlightToggleTrigger implements Trigger<PlayerToggleFlightEvent> {

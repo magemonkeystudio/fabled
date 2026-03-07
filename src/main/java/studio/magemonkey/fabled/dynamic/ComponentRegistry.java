@@ -25,7 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.ComponentRegistry
  */
 public class ComponentRegistry {

@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.cmd.CmdChangeClass
  */
 public class CmdChangeClass implements IFunction, TabCompleter {

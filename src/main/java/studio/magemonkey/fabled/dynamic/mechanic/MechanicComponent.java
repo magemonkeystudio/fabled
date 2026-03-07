@@ -4,7 +4,7 @@ import studio.magemonkey.fabled.dynamic.ComponentType;
 import studio.magemonkey.fabled.dynamic.EffectComponent;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent
  */
 public abstract class MechanicComponent extends EffectComponent {

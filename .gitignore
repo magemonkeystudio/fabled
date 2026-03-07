@@ -7,3 +7,6 @@ toolchains.xml
 log.txt
 .svelte-kit/
 node_modules/
+
+.gemini/
+gha-creds-*.json

@@ -13,7 +13,7 @@ import studio.magemonkey.codex.compat.VersionManager;
 import studio.magemonkey.fabled.Fabled;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.api.AllyChecker
  */
 public interface CombatProtection {

@@ -8,7 +8,7 @@ import studio.magemonkey.fabled.util.Lists;
 import java.util.List;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.trigger.TriggerComponent
  */
 public class TriggerComponent extends EffectComponent {

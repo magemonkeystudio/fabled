@@ -22,7 +22,7 @@ import java.util.OptionalInt;
 import java.util.Set;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.listener.ExperienceListener
  */
 public class ExperienceListener extends FabledListener {

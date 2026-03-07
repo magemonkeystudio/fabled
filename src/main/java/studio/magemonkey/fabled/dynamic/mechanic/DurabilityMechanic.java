@@ -10,7 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.List;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.mechanic.DurabilityMechanic
  */
 public class DurabilityMechanic extends MechanicComponent {

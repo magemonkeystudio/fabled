@@ -19,7 +19,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.target.TargetComponent
  */
 public abstract class TargetComponent extends EffectComponent {

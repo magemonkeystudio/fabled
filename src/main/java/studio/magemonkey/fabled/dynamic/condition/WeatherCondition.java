@@ -5,7 +5,7 @@ import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.condition.Weather
  */
 public class WeatherCondition extends ConditionComponent {

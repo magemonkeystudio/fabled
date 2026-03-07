@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Fabled © 2025
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.mechanic.ShieldMechanic
  */
 public class ShieldMechanic extends MechanicComponent {

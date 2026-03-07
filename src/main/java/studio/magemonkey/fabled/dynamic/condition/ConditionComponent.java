@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.condition.ConditionComponent
  */
 public abstract class ConditionComponent extends EffectComponent {

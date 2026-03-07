@@ -6,7 +6,7 @@ import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.api.Settings;
 
 /**
- * Fabled © 2025
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.trigger.EntityResurrectTrigger
  * <p>
  * Triggers when an entity is resurrected (e.g., by a totem of undying)

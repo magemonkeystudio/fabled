@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.hook.WorldGuardHook
  */
 public class WorldGuardHook {

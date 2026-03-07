@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.trigger.ProjectileTickTrigger
  */
 public class ProjectileTickTrigger implements Trigger<ProjectileTickEvent> {

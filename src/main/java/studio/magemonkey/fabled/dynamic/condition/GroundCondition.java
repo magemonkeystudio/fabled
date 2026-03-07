@@ -3,7 +3,7 @@ package studio.magemonkey.fabled.dynamic.condition;
 import org.bukkit.entity.LivingEntity;
 
 /**
- * Fabled © 2024
+ * © 2026 VoidEdge
  * studio.magemonkey.fabled.dynamic.condition.Ground
  */
 public class GroundCondition extends ConditionComponent {
