@@ -13,7 +13,6 @@ jobs:
       - uses: actions/checkout@v4
         name: Checkout repo
         with:
-          path: app
           token: ${{ secrets.ACTIONS_PAT }}
       - name: Configure git
         run: |
@@ -37,13 +36,11 @@ jobs:
         env:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          cd app
           mvn clean deploy -P gpg,publish -DcreateChecksum=true 2>&1 | tee log.txt
           result_code=${PIPESTATUS[0]}
           exit $result_code
       - name: Tag release version
         run: |
-          cd app
           git add .
           git commit -m "[ci skip] Deploy dev version $version"
           version=$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout)
@@ -56,23 +53,21 @@ jobs:
       - name: Update Javadocs
         run: |
           rm -rf editor/static/javadocs
-          cp -r app/gh-pages/apidocs/ editor/static/javadocs/
+          cp -r gh-pages/apidocs/ editor/static/javadocs/
           cd editor
           git add .
           git commit -m "Update javadocs"
           git push
       - name: Update version
-        run: cd app && python ./.github/update_version.py true
+        run: python ./.github/update_version.py true
       - name: Push to git
         run: |
-          cd app
           git add .
           git commit -m "[ci skip] Update dev version"
           git push
           git push --tags
       - name: Notify Discord
-        run: |
-          cd app
-          python -m venv .venv
-          .venv/bin/pip install simplejson requests
-          .venv/bin/python ./.github/notify_published.py ${{ secrets.WEBHOOK_URL }} true
+        uses: magemonkeystudio/.github/actions/notify-discord@main
+        with:
+          webhook_urls: ${{ secrets.WEBHOOK_URLS }}
+          is_dev: 'true'
