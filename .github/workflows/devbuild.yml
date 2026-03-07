@@ -7,67 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-        name: Checkout repo
-        with:
-          token: ${{ secrets.ACTIONS_PAT }}
-      - name: Configure git
-        run: |
-          git config --global user.name "Build Monkey"
-          git config --global user.email "<>"
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: 21
-          server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
-          settings-path: ${{ github.workspace }} # location for the settings.xml file
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
-      - name: 'Create settings.xml'
-        uses: s4u/maven-settings-action@v3.0.0
-        with:
-          githubServer: false
-          servers: '[{"id": "magemonkey-repo", "username": "${{ secrets.REPO_USERNAME }}", "password": "${{ secrets.DEPLOY_KEY }}"}]'
-      - name: Publish to Travja Repo
-        env:
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        run: |
-          mvn clean deploy -P gpg,publish -DcreateChecksum=true 2>&1 | tee log.txt
-          result_code=${PIPESTATUS[0]}
-          exit $result_code
-      - name: Tag release version
-        run: |
-          git add .
-          git commit -m "[ci skip] Deploy dev version $version"
-          version=$(mvn org.apache.maven.plugins:maven-help-plugin:3.1.0:evaluate -Dexpression=project.version -q -DforceStdout)
-          git tag -a $version -m "Dev $version"
-      - uses: actions/checkout@v4
-        name: Checkout editor branch
-        with:
-          ref: editor
-          path: editor
-      - name: Update Javadocs
-        run: |
-          rm -rf editor/static/javadocs
-          cp -r gh-pages/apidocs/ editor/static/javadocs/
-          cd editor
-          git add .
-          git commit -m "Update javadocs"
-          git push
-      - name: Update version
-        run: python ./.github/update_version.py true
-      - name: Push to git
-        run: |
-          git add .
-          git commit -m "[ci skip] Update dev version"
-          git push
-          git push --tags
-      - name: Notify Discord
-        uses: magemonkeystudio/.github/actions/notify-discord@main
-        with:
-          webhook_urls: ${{ secrets.WEBHOOK_URLS }}
-          is_dev: 'true'
+    uses: magemonkeystudio/.github/.github/workflows/reusable-devbuild.yml@main
+    secrets: inherit
+    with:
+      update_javadocs: true
