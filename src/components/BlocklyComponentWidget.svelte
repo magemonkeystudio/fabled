@@ -41,8 +41,7 @@
 		setupToolbox();
 		setupStyle();
 		workspace = Blockly.inject(node, { toolbox: Toolbox.get(), ...workspace_config });
-		new Blockly.WorkspaceAudio(workspace).preload();
-		
+
 		// Initialize block duplicator with update callback
 		blockDuplicator = new BlockDuplicator(workspace, () => {
 			workspaceToSkill(workspace, skill);
