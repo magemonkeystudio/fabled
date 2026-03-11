@@ -34,10 +34,15 @@ public class SkillHandler extends GUIHolder<Skill> {
     @Override
     public void onClick(Skill type, int slot, boolean left, boolean shift) {
         if (left) {
-            if (player.upgradeSkill(type)) setPage(page);
-        } else if (Fabled.getSettings().isAllowDowngrade() && player.getSkillLevel(type.getKey()) > 0
-                && player.downgradeSkill(type)) {
-            setPage(page);
+            boolean upgraded = shift ? player.upgradeSkill(type, 10) : player.upgradeSkill(type);
+            if (upgraded) setPage(page);
+        } else {
+            if (shift) {
+                if (player.upgradeSkillToMax(type)) setPage(page);
+            } else if (Fabled.getSettings().isAllowDowngrade() && player.getSkillLevel(type.getKey()) > 0
+                    && player.downgradeSkill(type)) {
+                setPage(page);
+            }
         }
     }
 

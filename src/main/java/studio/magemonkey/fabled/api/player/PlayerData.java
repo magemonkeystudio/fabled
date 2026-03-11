@@ -1131,6 +1131,42 @@ public class PlayerData {
     }
 
     /**
+     * Upgrades a skill for the player, spending the skill points of the player. The
+     * player must own the skill and have enough skill points to upgrade the skill. This
+     * will upgrade the skill up to the given number of levels, stopping early if the
+     * skill is maxed, the player does not meet the level requirement, or the player runs
+     * out of skill points.
+     *
+     * @param skill  skill to upgrade
+     * @param levels maximum number of levels to upgrade
+     * @return true if at least one level was upgraded, false otherwise
+     */
+    public boolean upgradeSkill(Skill skill, int levels) {
+        boolean upgraded = false;
+        for (int i = 0; i < levels; i++) {
+            if (!upgradeSkill(skill)) break;
+            upgraded = true;
+        }
+        return upgraded;
+    }
+
+    /**
+     * Upgrades a skill for the player to the maximum possible level, spending skill
+     * points of the player. This will keep upgrading the skill until it is maxed, the
+     * player does not meet the level requirement, or the player runs out of skill points.
+     *
+     * @param skill skill to upgrade to max
+     * @return true if at least one level was upgraded, false otherwise
+     */
+    public boolean upgradeSkillToMax(Skill skill) {
+        boolean upgraded = false;
+        while (upgradeSkill(skill)) {
+            upgraded = true;
+        }
+        return upgraded;
+    }
+
+    /**
      * Forcefully upgrades a skill, not letting other plugins
      * cancel it and ignoring any requirements to do so
      *
