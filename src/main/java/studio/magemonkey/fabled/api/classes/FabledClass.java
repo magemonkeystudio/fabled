@@ -60,21 +60,22 @@ import java.util.*;
  * the class to extend when creating your own classes.
  */
 public abstract class FabledClass implements IconHolder {
-    private static final String                   SKILLS        = "skills";
-    private static final String                   PARENT        = "parent";
-    private static final String                   NAME          = "name";
-    private static final String                   PREFIX        = "prefix";
-    private static final String                   ACTION_BAR    = "action-bar";
-    private static final String                   GROUP         = "group";
-    private static final String                   MANA          = "mana";
-    private static final String                   MAX           = "max-level";
-    private static final String                   EXP           = "exp-source";
-    private static final String                   REGEN         = "mana-regen";
-    private static final String                   PERM          = "needs-permission";
-    private static final String                   ATTR          = "attributes";
-    private static final String                   OLD_TREE      = "tree";
-    private static final String                   TREE          = "skill-tree";
-    private static final String                   BLACKLIST     = "blacklist";
+    private static final String                   SKILLS                   = "skills";
+    private static final String                   PARENT                   = "parent";
+    private static final String                   NAME                     = "name";
+    private static final String                   PREFIX                   = "prefix";
+    private static final String                   ACTION_BAR               = "action-bar";
+    private static final String                   GROUP                    = "group";
+    private static final String                   MANA                     = "mana";
+    private static final String                   MAX                      = "max-level";
+    private static final String                   EXP                      = "exp-source";
+    private static final String                   REGEN                    = "mana-regen";
+    private static final String                   PERM                     = "needs-permission";
+    private static final String                   ATTR                     = "attributes";
+    private static final String                   OLD_TREE                 = "tree";
+    private static final String                   TREE                     = "skill-tree";
+    private static final String                   BLACKLIST                = "blacklist";
+    private static final String                   REPLACE_PARENT_SKILL_LIST = "replace-parent-skill-list";
     /**
      * The settings for your class. This will include the
      * health and mana scaling for the class.
@@ -102,7 +103,7 @@ public abstract class FabledClass implements IconHolder {
     //                 Accessor Methods                  //
     //                                                   //
     ///////////////////////////////////////////////////////
-    protected     String           actionBar        = "";
+    protected     String           actionBar             = "";
     private       InventoryTree    skillTree;
     private       String           parent;
     private       ItemStack        icon;
@@ -114,6 +115,11 @@ public abstract class FabledClass implements IconHolder {
     private       int              maxLevel;
     private       int              expSources;
     private       double           manaRegen;
+    /**
+     * When true (default), the subclass skill list replaces the parent's in the skill tree UI.
+     * When false, the parent's skills are shown on separate pages before this class's own skills.
+     */
+    private       boolean          replaceParentSkillList = true;
 
     /**
      * Initializes a class template that does not profess from other
@@ -263,6 +269,27 @@ public abstract class FabledClass implements IconHolder {
         FabledClass root = this;
         while (root.parent != null) root = root.getParent();
         return root;
+    }
+
+    /**
+     * Returns whether this subclass replaces the parent skill list in the UI.
+     * When true (default), the subclass skill tree contains all skills (parent + own).
+     * When false, the parent's skills appear on separate preceding pages and this
+     * class's own skills appear on additional pages after them.
+     *
+     * @return true if this class replaces the parent skill list, false if additive
+     */
+    public boolean isReplaceParentSkillList() {
+        return replaceParentSkillList;
+    }
+
+    /**
+     * Sets whether this subclass replaces the parent skill list in the UI.
+     *
+     * @param replaceParentSkillList true to replace (default), false for additive mode
+     */
+    public void setReplaceParentSkillList(boolean replaceParentSkillList) {
+        this.replaceParentSkillList = replaceParentSkillList;
     }
 
     /**
@@ -617,6 +644,7 @@ public abstract class FabledClass implements IconHolder {
         config.set(MAX, maxLevel);
         config.set(PARENT, parent);
         config.set(PERM, needsPermission);
+        config.set(REPLACE_PARENT_SKILL_LIST, replaceParentSkillList);
         settings.save(config.createSection(ATTR));
         config.set(REGEN, manaRegen);
         config.set(TREE, tree.toString());
@@ -677,6 +705,7 @@ public abstract class FabledClass implements IconHolder {
         expSources = config.getInt(EXP, expSources);
         manaRegen = config.getDouble(REGEN, manaRegen);
         needsPermission = config.getString(PERM, needsPermission + "").equalsIgnoreCase("true");
+        replaceParentSkillList = config.getBoolean(REPLACE_PARENT_SKILL_LIST, true);
         String skillTree = config.getString(TREE);
         if (skillTree == null) { // Class is using old trees, load it as a custom tree to avoid losing customization
             tree = DefaultTreeType.CUSTOM;

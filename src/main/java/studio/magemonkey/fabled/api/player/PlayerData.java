@@ -1419,9 +1419,10 @@ public class PlayerData {
             return false;
         }
 
-        // Show skill tree of the class
+        // Show skill tree of the class -- use the display tree which combines parent pages
+        // in additive mode (replaceParentSkillList=false) or the normal tree otherwise.
         this.menuClass = playerClass.getData().getName();
-        GUITool.getSkillTree(playerClass.getData())
+        GUITool.getDisplaySkillTree(playerClass.getData())
                 .show(new SkillHandler(), this,
                         Fabled.getLanguage().getMessage(GUINodes.SKILL_TREE,
                                 true,

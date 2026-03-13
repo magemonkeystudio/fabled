@@ -74,9 +74,10 @@ public abstract class SkillTree {
      */
     public void arrange() throws SkillTreeException {
 
-        // Get included skills
+        // Get included skills -- when additive mode is enabled (replaceParentSkillList=false),
+        // only arrange this class's own skills so the parent skills appear on separate pages.
         ArrayList<Skill> skills = new ArrayList<>();
-        for (Skill skill : tree.getSkills()) {
+        for (Skill skill : tree.getSkills(tree.isReplaceParentSkillList())) {
             if (!Fabled.isSkillRegistered(skill)) {
                 Logger.invalid("Failed to add skill to tree - " + skill + ": Skill does not exist");
                 continue;
