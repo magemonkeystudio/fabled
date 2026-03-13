@@ -3198,9 +3198,11 @@ class FlagClearMechanic extends FabledMechanic {
 			description:  'Clears a flag from the target',
 			data:         [
 				new StringSelect('Key', 'key', 'key')
-					.setTooltip('The unique string for the flag. This should match that of the mechanic that set the flag to begin with')
+					.setTooltip('The unique string for the flag. This should match that of the mechanic that set the flag to begin with. When Regex is enabled, this is treated as a regular expression pattern that can match multiple flags at once'),
+				new BooleanSelect('Regex', 'regex', false)
+					.setTooltip('When true, the Key is treated as a regular expression pattern and all flags matching the pattern will be cleared')
 			],
-			summaryItems: ['key']
+			summaryItems: ['key', 'regex']
 		});
 	}
 
