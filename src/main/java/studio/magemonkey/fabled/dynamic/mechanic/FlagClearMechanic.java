@@ -27,15 +27,21 @@
 package studio.magemonkey.fabled.dynamic.mechanic;
 
 import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.util.FlagData;
 import studio.magemonkey.fabled.api.util.FlagManager;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * Applies a flag to each target
  */
 public class FlagClearMechanic extends MechanicComponent {
-    private static final String KEY = "key";
+    private static final String KEY   = "key";
+    private static final String REGEX = "regex";
 
     @Override
     public String getKey() {
@@ -57,9 +63,29 @@ public class FlagClearMechanic extends MechanicComponent {
             return false;
         }
 
-        String key = settings.getString(KEY);
-        for (LivingEntity target : targets) {
-            FlagManager.removeFlag(target, key);
+        String  key      = settings.getString(KEY);
+        boolean useRegex = settings.getBool(REGEX, false);
+
+        if (useRegex) {
+            Pattern pattern;
+            try {
+                pattern = Pattern.compile(key);
+            } catch (PatternSyntaxException e) {
+                Fabled.inst().getLogger().warning("Invalid regex pattern for flag clear mechanic: \"" + key + "\" - " + e.getDescription());
+                return false;
+            }
+            for (LivingEntity target : targets) {
+                FlagData data = FlagManager.getFlagData(target, false);
+                if (data != null) {
+                    new HashSet<>(data.flagList()).stream()
+                            .filter(f -> pattern.matcher(f).matches())
+                            .forEach(f -> FlagManager.removeFlag(target, f));
+                }
+            }
+        } else {
+            for (LivingEntity target : targets) {
+                FlagManager.removeFlag(target, key);
+            }
         }
         return targets.size() > 0;
     }
