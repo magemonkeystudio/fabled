@@ -100,7 +100,7 @@
         <dependency>
             <groupId>me.libraryaddict.disguises</groupId>
             <artifactId>libsdisguises</artifactId>
-            <version>11.0.15</version>
+            <version>11.0.16</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
