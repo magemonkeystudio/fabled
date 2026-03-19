@@ -285,11 +285,23 @@ public class ItemChecker {
                                    String key,
                                    double multiplier,
                                    boolean save) {
+        return findLore(caster, item, regex, key, multiplier, save, false);
+    }
+
+    public static boolean findLore(LivingEntity caster,
+                                   ItemStack item,
+                                   String regex,
+                                   String key,
+                                   double multiplier,
+                                   boolean save,
+                                   boolean sumAll) {
         Pattern pattern = Pattern.compile(regex.replace("{value}", "([+-]?[0-9]+([.,][0-9]+)?)"));
 
         if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasLore())
             return false;
 
+        double  total = 0;
+        boolean found = false;
         List<String> lore = item.getItemMeta().getLore();
         for (String line : lore) {
             line = ChatColor.stripColor(line);
@@ -298,14 +310,25 @@ public class ItemChecker {
                 String value = matcher.group(1);
                 try {
                     double base = NumberParser.parseDouble(value);
-                    DynamicSkill.getCastData(caster).put(key, base * multiplier);
-                    if (save) Fabled.getData((OfflinePlayer) caster)
-                            .setPersistentData(key, DynamicSkill.getCastData(caster).getRaw(key));
-                    break;
+                    if (!sumAll) {
+                        DynamicSkill.getCastData(caster).put(key, base * multiplier);
+                        if (save) Fabled.getData((OfflinePlayer) caster)
+                                .setPersistentData(key, DynamicSkill.getCastData(caster).getRaw(key));
+                        return true;
+                    }
+
+                    total += base;
+                    found = true;
                 } catch (Exception ex) {
                     // Not a valid value
                 }
             }
+        }
+
+        if (sumAll && found) {
+            DynamicSkill.getCastData(caster).put(key, total * multiplier);
+            if (save) Fabled.getData((OfflinePlayer) caster)
+                    .setPersistentData(key, DynamicSkill.getCastData(caster).getRaw(key));
         }
 
         return true;
