@@ -5217,6 +5217,8 @@ class ValueLoreMechanic extends FabledMechanic {
 					.setTooltip('The regex string to look for, using {value} as the number to store. If you do not know about regex, consider looking it up on Wikipedia or avoid using major characters such as [ ] { } ( ) . + ? * ^ \\ |'),
 				new AttributeSelect('Multiplier', 'multiplier', 1)
 					.setTooltip('The multiplier for the acquired value. If you want the value to remain unchanged, leave this value at 1'),
+				new BooleanSelect('Sum All', 'sum-all', false)
+					.setTooltip('If true, instead of taking the first lore line that matches the regex, this will sum the value of all lore lines that match the regex'),
 				new BooleanSelect('Save', 'save', false)
 					.setTooltip('If true, save the key value to persistent value. Persistent value is not lost when the player leaves the server and is stored separately on each account')
 
