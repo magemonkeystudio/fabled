@@ -1,14 +1,19 @@
 package studio.magemonkey.fabled.dynamic;
 
 import org.bukkit.Material;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import studio.magemonkey.fabled.api.Settings;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
@@ -16,6 +21,7 @@ import static org.mockito.Mockito.when;
 
 class ItemCheckerTest {
     private Settings settings;
+    private LivingEntity caster;
 
     @BeforeEach
     void setUp() {
@@ -26,6 +32,14 @@ class ItemCheckerTest {
         when(settings.getString(anyString(), anyString())).thenAnswer(ans -> ans.getArgument(1));
         when(settings.getStringList(anyString())).thenReturn(List.of());
         when(settings.getInt(anyString(), anyInt())).thenReturn(0);
+    }
+
+    @AfterEach
+    void tearDown() {
+        if (caster != null) {
+            DynamicSkill.clearCastData(caster);
+            caster = null;
+        }
     }
 
     @Test
@@ -110,4 +124,49 @@ class ItemCheckerTest {
 //        doReturn(List.of(baseType)).when(baseType).getPotionEffects();
 //        assertTrue(ItemChecker.check(item, 0, settings));
 //    }
+
+    @Test
+    void findLore_usesFirstMatchingLoreLineByDefault() {
+        LivingEntity caster = mockCaster(1);
+        ItemStack    item   = mockLoreItem("Damage: 2", "Damage: 5");
+
+        assertTrue(ItemChecker.findLore(caster, item, "Damage: {value}", "damage", 2, false));
+        assertEquals(4, DynamicSkill.getCastData(caster).getDouble("damage"));
+    }
+
+    @Test
+    void findLore_sumAllAddsMatchesAcrossLoreLines() {
+        LivingEntity caster = mockCaster(2);
+        ItemStack    item   = mockLoreItem("Damage: 2", "Flavor text", "Damage: 5.5");
+
+        assertTrue(ItemChecker.findLore(caster, item, "Damage: {value}", "damage", 2, false, true));
+        assertEquals(15, DynamicSkill.getCastData(caster).getDouble("damage"));
+    }
+
+    @Test
+    void findLore_noMatchDoesNotSetCastData() {
+        LivingEntity caster = mockCaster(3);
+        ItemStack    item   = mockLoreItem("Armor: 2", "Flavor text");
+
+        assertTrue(ItemChecker.findLore(caster, item, "Damage: {value}", "damage", 2, false, true));
+        assertNull(DynamicSkill.getCastData(caster).getRaw("damage"));
+    }
+
+    private LivingEntity mockCaster(int entityId) {
+        caster = mock(LivingEntity.class);
+        when(caster.getEntityId()).thenReturn(entityId);
+        return caster;
+    }
+
+    private ItemStack mockLoreItem(String... loreLines) {
+        ItemStack item = mock(ItemStack.class);
+        ItemMeta  meta = mock(ItemMeta.class);
+
+        when(item.hasItemMeta()).thenReturn(true);
+        when(item.getItemMeta()).thenReturn(meta);
+        when(meta.hasLore()).thenReturn(true);
+        when(meta.getLore()).thenReturn(List.of(loreLines));
+
+        return item;
+    }
 }
