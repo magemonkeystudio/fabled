@@ -42,30 +42,23 @@ public class ValueLoreMechanic extends MechanicComponent {
     private static final String MULTIPLIER = "multiplier";
     private static final String HAND       = "hand";
     private static final String SAVE       = "save";
+    private static final String SUM_ALL    = "sum-all";
 
     @Override
     public String getKey() {
         return "value lore";
     }
 
-    /**
-     * Executes the component
-     *
-     * @param caster  caster of the skill
-     * @param level   level of the skill
-     * @param targets targets to apply to
-     * @param force
-     * @return true if applied to something, false otherwise
-     */
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        if (targets.size() == 0 || !settings.has(KEY)) {
+        if (targets.isEmpty() || !settings.has(KEY)) {
             return false;
         }
 
         String  key        = settings.getString(KEY);
         double  multiplier = parseValues(caster, MULTIPLIER, level, 1);
         boolean offhand    = settings.getString(HAND, "").equalsIgnoreCase("offhand");
+        boolean sumAll     = settings.getBool(SUM_ALL, false);
         String  regex      = settings.getString(REGEX, "Damage: {value}");
 
         if (caster.getEquipment() == null) {
@@ -79,6 +72,6 @@ public class ValueLoreMechanic extends MechanicComponent {
             hand = caster.getEquipment().getItemInHand();
         }
 
-        return ItemChecker.findLore(caster, hand, regex, key, multiplier, settings.getBool(SAVE, false));
+        return ItemChecker.findLore(caster, hand, regex, key, multiplier, settings.getBool(SAVE, false), sumAll);
     }
 }
