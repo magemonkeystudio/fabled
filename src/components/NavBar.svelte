@@ -2,17 +2,16 @@
 	import { active, activeType, setImporting, toggleSidebar } from '../data/store';
 	import { get }                                             from 'svelte/store';
 	import { createPaste }                                     from '$api/hastebin';
-	import YAML                                                from 'yaml';
 	import type FabledClass                                    from '../data/class-store.svelte';
 	import type FabledSkill                                    from '../data/skill-store.svelte';
-	import type FabledAttribute                                from '$api/fabled-attribute.svelte';
+	import YAML                                                from 'yaml';
+	import AIModal                                             from '$components/modal/AIModal.svelte';
 
-	const haste = (e?: Event) => {
-		e?.stopPropagation();
-		let act: FabledClass | FabledSkill | FabledAttribute | undefined = get(active);
+	const haste = () => {
+		let act: FabledClass | FabledSkill | undefined = get(active);
 		if (!act) return;
 
-		let data = YAML.stringify({ [act.name]: act.serializeYaml() }, { lineWidth: 0, aliasDuplicateObjects: false });
+		let data = YAML.stringify({ [act.name]: act.serializeYaml() });
 		createPaste(data)
 			.then((urlToPaste) => {
 				navigator?.clipboard?.writeText(urlToPaste);
@@ -21,55 +20,77 @@
 			.catch((requestError) => console.error(requestError));
 	};
 
-	const openImport = (e?: Event) => {
-		e?.stopPropagation();
+	const openImport = () => {
 		setImporting(true);
 	};
+
+	let openAIModal = $state(false);
 </script>
+
+{#if openAIModal}
+	<AIModal onclose={() => openAIModal = false} />
+{/if}
 
 <div class='nav-wrap'>
 	<nav>
 		<div class='chip hamburger'
-				 onclick={toggleSidebar}
-				 onkeypress={(e) => {
+				 tabindex='0'
+				 role='button'
+				 on:click|stopPropagation={toggleSidebar}
+				 on:keypress={(e) => {
 					 if (e.key === 'Enter') {
-             toggleSidebar(e);
+             e.stopPropagation();
+             toggleSidebar();
            }
          }}
-				 role='button'
-				 tabindex='0'
 		>
 			<span class='material-symbols-rounded'>menu</span>
 		</div>
 
-		<div></div>
+		<div />
 
 		<div class='transfer'>
 			<div class='chip import'
-					 onclick={openImport}
-					 onkeypress={(e) => {
+					 tabindex='0'
+					 role='button'
+					 on:click|stopPropagation={openImport}
+					 on:keypress={(e) => {
 						 if (e.key === 'Enter') {
-							 openImport(e);
+							 e.stopPropagation();
+							 openImport();
 						 }
 					 }}
-					 role='button'
-					 tabindex='0'
 					 title='Import Data'>
 				Import
+			</div>
+
+			<div class='chip ai-gen'
+					 tabindex='0'
+					 role='button'
+					 on:click|stopPropagation={() => openAIModal = true}
+					 on:keypress={(e) => {
+						 if (e.key === 'Enter') {
+							 e.stopPropagation();
+							 openAIModal = true;
+						 }
+					 }}
+					 title='Generate Skill with AI'>
+				✨ AI
 			</div>
 
 			{#if $activeType}
 				<div class='chip share'
 						 tabindex='0'
 						 role='button'
-						 onclick={haste}
-						 onkeypress={(e) => {
+						 on:click|stopPropagation={haste}
+						 on:keypress={(e) => {
 							 if (e.key === 'Enter') {
-								 haste(e);
+								 e.stopPropagation();
+								 haste();
 							 }
 						 }}
-						 title='Share {$activeType.substring(0, 1).toUpperCase() + $activeType.substring(1)}'>
-					Share {$activeType.substring(0, 1).toUpperCase() + $activeType.substring(1)}
+						 title="Share {$activeType === 'class' ? 'Class' : 'Skill'}">
+					Share {$activeType === 'class' ? 'Class' : 'Skill'}
 				</div>
 			{/if}
 		</div>
@@ -112,6 +133,10 @@
 
     nav .chip.import {
         background-color: #077e1c;
+    }
+
+    nav .chip.ai-gen {
+        background-color: #6a1b9a; /* Purple theme for AI */
     }
 
     .chip:hover {
