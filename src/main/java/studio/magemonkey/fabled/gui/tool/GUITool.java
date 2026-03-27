@@ -225,7 +225,7 @@ public class GUITool implements ToolMenu {
             config.clear();
             DataSection data = config.getConfig();
             for (Map.Entry<String, GUIData> entry : setups.entrySet())
-                if (entry.getValue().isValid())
+                if (entry.getValue().isValid() && !entry.getKey().startsWith("DISPLAY_"))
                     entry.getValue().save(data.createSection(entry.getKey()));
             config.save();
         }
@@ -259,6 +259,46 @@ public class GUITool implements ToolMenu {
 
     public static GUIData getSkillTree(FabledClass fabledClass) {
         return get(GUIType.SKILL_TREE.getPrefix() + fabledClass.getName());
+    }
+
+    /**
+     * Returns the GUIData to display when a player views their skill tree.
+     * <p>
+     * When the class has {@code replaceParentSkillList = false} (additive mode) and has a parent,
+     * the returned GUIData combines the parent's display tree pages first, followed by this
+     * class's own skill pages, creating a paged skill view spanning the full progression chain.
+     * <p>
+     * Otherwise (default behaviour), the class's own skill tree is returned, which already
+     * includes skills inherited from parent classes.
+     *
+     * @param fabledClass the class whose display tree is requested
+     * @return the GUIData used to display the player's skill list
+     */
+    public static GUIData getDisplaySkillTree(FabledClass fabledClass) {
+        if (!fabledClass.isReplaceParentSkillList() && fabledClass.hasParent()) {
+            String displayKey = "DISPLAY_" + GUIType.SKILL_TREE.getPrefix() + fabledClass.getName();
+            if (!setups.containsKey(displayKey)) {
+                List<GUIData> parts = new ArrayList<>();
+                buildAdditiveParts(fabledClass, parts);
+                setups.put(displayKey, GUIData.combined(parts));
+            }
+            return setups.get(displayKey);
+        }
+        return getSkillTree(fabledClass);
+    }
+
+    /**
+     * Recursively collects GUIData parts for the additive skill tree display.
+     * Parent parts are prepended before the current class's own part.
+     *
+     * @param fabledClass the class to collect parts for
+     * @param parts       the list that accumulates parts in display order
+     */
+    private static void buildAdditiveParts(FabledClass fabledClass, List<GUIData> parts) {
+        if (fabledClass.hasParent() && !fabledClass.isReplaceParentSkillList()) {
+            buildAdditiveParts(fabledClass.getParent(), parts);
+        }
+        parts.add(getSkillTree(fabledClass));
     }
 
     public static GUIData getProfessMenu(FabledClass current) {
@@ -365,6 +405,8 @@ public class GUITool implements ToolMenu {
                 guiData = new GUIData(fabledClass.getSkillTree());
             }
             setups.put(name, guiData);
+            // Invalidate any cached additive display trees that include this class
+            setups.remove("DISPLAY_" + name);
         }
     }
 
