@@ -116,7 +116,7 @@ public abstract class TargetComponent extends EffectComponent {
         if (target instanceof Player && (((Player) target).getGameMode() == GameMode.SPECTATOR
                 || ((Player) target).getGameMode() == GameMode.CREATIVE)) return false;
 
-        return target != caster && Fabled.getSettings().isValidTarget(target) && (throughWall
+        return (self != IncludeCaster.FALSE || target != caster) && Fabled.getSettings().isValidTarget(target) && (throughWall
                 || !TargetHelper.isObstructed(from.getEyeLocation(), target.getEyeLocation())) && (everyone
                 || allies == Fabled.getSettings().isAlly(caster, target));
     }
