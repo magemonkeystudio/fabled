@@ -67,6 +67,19 @@ public class GUIPage {
         }
     }
 
+    /**
+     * Creates a copy of this page bound to a different parent GUIData.
+     *
+     * @param newParent the GUIData that will own the new page
+     * @return a new GUIPage with the same slot layout but referencing newParent
+     */
+    GUIPage copy(GUIData newParent) {
+        GUIPage copy = new GUIPage(newParent);
+        copy.slots.putAll(this.slots);
+        copy.lookup.putAll(this.lookup);
+        return copy;
+    }
+
     public String get(int index) {
         return lookup.get(index);
     }

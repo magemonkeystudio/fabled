@@ -40,6 +40,7 @@ import studio.magemonkey.fabled.tree.basic.InventoryTree;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -110,6 +111,35 @@ public class GUIData {
         }
         while (pageMap.size() < pages)
             pageMap.add(new GUIPage(this));
+    }
+
+    /**
+     * Creates a combined, non-editable GUIData by merging pages from multiple GUIData parts.
+     * Pages from the first part appear first, followed by pages from subsequent parts.
+     * The combined GUIData uses the maximum row count of all parts.
+     *
+     * @param parts the GUIData instances to merge, in order
+     * @return a new combined GUIData, or an empty GUIData if the list is empty
+     */
+    static GUIData combined(List<GUIData> parts) {
+        GUIData result = new GUIData();
+        result.pageMap.clear();
+        result.editable = false;
+        int maxRows = 3;
+        for (GUIData part : parts) {
+            maxRows = Math.max(maxRows, part.rows);
+        }
+        result.rows = maxRows;
+        for (GUIData part : parts) {
+            for (int i = 0; i < part.pages; i++) {
+                result.pageMap.add(part.getPage(i).copy(result));
+            }
+        }
+        if (result.pageMap.isEmpty()) {
+            result.pageMap.add(new GUIPage(result));
+        }
+        result.pages = result.pageMap.size();
+        return result;
     }
 
     public void show(GUIHolder handler, PlayerData player, String title, Map<String, ? extends IconHolder> data) {
