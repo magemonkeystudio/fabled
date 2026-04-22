@@ -31,8 +31,13 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import studio.magemonkey.codex.CodexEngine;
+import studio.magemonkey.codex.api.items.ItemType;
+import studio.magemonkey.codex.api.items.exception.MissingItemException;
+import studio.magemonkey.codex.items.CodexItemManager;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.codex.util.StringUT;
+import studio.magemonkey.fabled.Fabled;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,12 +54,18 @@ public class Data {
 
     private static ItemStack parse(final String mat, final int dur, final int data, final List<String> lore) {
         try {
-            Material material = Material.matchMaterial(mat);
+            CodexItemManager itemManager = CodexEngine.get().getItemManager();
+            ItemType         itemType    = null;
+            try {
+                itemType = itemManager.getItemType(mat);
+            } catch (MissingItemException mie) {
+            }
+            Material material = itemType == null ? Material.matchMaterial(mat) : null;
             if (material == null) {
                 material = Material.JACK_O_LANTERN;
             }
 
-            final ItemStack item = new ItemStack(material);
+            final ItemStack item = itemType != null ? itemType.create() : new ItemStack(material);
             final ItemMeta  meta = item.getItemMeta();
             if (meta != null) {
                 if (data != 0) {
@@ -84,7 +95,13 @@ public class Data {
      * @param config config to serialize into
      */
     public static void serializeIcon(ItemStack item, DataSection config) {
-        config.set(MAT, item.getType().name());
+        CodexItemManager itemManager = CodexEngine.get().getItemManager();
+        ItemType         itemType    = itemManager.getMainItemType(item);
+        if (itemType != null) {
+            config.set(MAT, itemType.getID());
+        } else {
+            config.set(MAT, item.getType().name());
+        }
 
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
