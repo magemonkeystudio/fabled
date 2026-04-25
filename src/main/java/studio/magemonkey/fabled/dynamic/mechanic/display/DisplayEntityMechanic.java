@@ -9,6 +9,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
+import studio.magemonkey.codex.CodexEngine;
+import studio.magemonkey.codex.api.items.ItemType;
+import studio.magemonkey.codex.api.items.exception.MissingItemException;
+import studio.magemonkey.codex.items.CodexItemManager;
 import studio.magemonkey.codex.util.StringUT;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.displayentity.DisplayEntityInstance;
@@ -232,16 +236,33 @@ public class DisplayEntityMechanic extends MechanicComponent {
     }
 
     private Entity spawnItemDisplay(Location loc, LivingEntity caster, int level) {
-        String   itemMaterialName = settings.getString(ITEM_MATERIAL, "STONE");
-        Material material;
+        String itemMaterialName = settings.getString(ITEM_MATERIAL, "STONE");
+
+        // Resolve via Codex ItemManager first so custom providers (Divinity, Nexo, etc.) are supported.
+        CodexItemManager itemManager = CodexEngine.get().getItemManager();
+        ItemType         itemType    = null;
         try {
-            material = Material.valueOf(itemMaterialName.toUpperCase(Locale.US).replace(" ", "_"));
-        } catch (IllegalArgumentException e) {
-            Logger.invalid("Invalid item-material '" + itemMaterialName
-                    + "' for display entity mechanic – defaulting to STONE.");
-            material = Material.STONE;
+            itemType = itemManager.getItemType(itemMaterialName);
+        } catch (MissingItemException ignored) {
         }
-        Material finalMaterial = material;
+
+        ItemStack itemStack;
+        if (itemType != null) {
+            itemStack = itemType.create();
+        } else {
+            Material material = Material.matchMaterial(itemMaterialName);
+            if (material == null) {
+                try {
+                    material = Material.valueOf(itemMaterialName.toUpperCase(Locale.US).replace(" ", "_"));
+                } catch (IllegalArgumentException e) {
+                    Logger.invalid("Invalid item-material '" + itemMaterialName
+                            + "' for display entity mechanic – defaulting to STONE.");
+                    material = Material.STONE;
+                }
+            }
+            itemStack = new ItemStack(material);
+        }
+        final ItemStack finalItemStack = itemStack;
 
         String transformName = settings.getString(ITEM_TRANSFORM, "GROUND")
                 .toUpperCase(Locale.US).replace(" ", "_");
@@ -254,7 +275,7 @@ public class DisplayEntityMechanic extends MechanicComponent {
         ItemDisplay.ItemDisplayTransform finalTransform = transform;
 
         return loc.getWorld().spawn(loc, ItemDisplay.class, entity -> {
-            entity.setItemStack(new ItemStack(finalMaterial));
+            entity.setItemStack(finalItemStack);
             entity.setItemDisplayTransform(finalTransform);
         });
     }
