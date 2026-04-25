@@ -107,7 +107,7 @@ public class DisplayEntityMechanic extends MechanicComponent {
         double  right    = parseValues(caster, RIGHT, level, 0);
 
         // ── Transformation ────────────────────────────────────────────────────
-        DisplayEntityTransform transform            = new DisplayEntityTransform(settings);
+        DisplayEntityTransform entityTransform       = new DisplayEntityTransform(settings);
         int                    interpolationDuration = settings.getInt(INTERPOLATION_DURATION, 0);
 
         // ── Other appearance settings ─────────────────────────────────────────
@@ -129,7 +129,7 @@ public class DisplayEntityMechanic extends MechanicComponent {
             loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
 
             Entity entity = spawnDisplay(typeName, loc, caster, level,
-                    transform.compute(0, level), billboard, viewRange,
+                    entityTransform.compute(0, level), billboard, viewRange,
                     shadowRadius, shadowStrength, glow, glowColor,
                     brightnessBlock, brightnessSky);
 
@@ -141,7 +141,7 @@ public class DisplayEntityMechanic extends MechanicComponent {
             DisplayEntityInstance instance = new DisplayEntityInstance(
                     entity, target, follow,
                     forward, upward, right,
-                    transform, level, interpolationDuration);
+                    entityTransform, level, interpolationDuration);
             DisplayEntityManager.register(instance, target, key);
         }
 
