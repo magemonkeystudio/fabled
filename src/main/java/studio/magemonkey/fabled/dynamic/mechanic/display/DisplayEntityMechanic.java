@@ -12,11 +12,10 @@ import org.bukkit.entity.TextDisplay.TextAlignment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import studio.magemonkey.codex.util.StringUT;
 import studio.magemonkey.fabled.api.displayentity.DisplayEntityInstance;
 import studio.magemonkey.fabled.api.displayentity.DisplayEntityManager;
+import studio.magemonkey.fabled.api.displayentity.DisplayEntityTransform;
 import studio.magemonkey.fabled.dynamic.TempEntity;
 import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
 import studio.magemonkey.fabled.log.Logger;
@@ -31,7 +30,19 @@ import java.util.function.Supplier;
  * Spawns a Display entity (block, item, or text) at the target location.
  * Supports per-axis scale, local-space translation, and left/right rotation
  * expressed as Euler angles in degrees.
- * Requires Minecraft 1.19.4 or later.
+ *
+ * <p>All transformation settings ({@code scale-x/y/z}, {@code translate-x/y/z},
+ * {@code left-rotation-x/y/z}, {@code right-rotation-x/y/z}) accept formula
+ * expressions with two variables:
+ * <ul>
+ *   <li>{@code t} – elapsed ticks since the entity was spawned</li>
+ *   <li>{@code l} – skill level</li>
+ * </ul>
+ * A plain constant (e.g. {@code "2.5"}) or a level-scaled expression
+ * (e.g. {@code "1+0.5*(l-1)"}) works as before. A time-driven expression
+ * (e.g. {@code "t*5"} for left-rotation-y) animates the entity continuously.</p>
+ *
+ * <p>Requires Minecraft 1.19.4 or later.</p>
  */
 public class DisplayEntityMechanic extends MechanicComponent {
 
@@ -54,27 +65,9 @@ public class DisplayEntityMechanic extends MechanicComponent {
     private static final String BRIGHTNESS_BLOCK = "brightness-block";
     private static final String BRIGHTNESS_SKY   = "brightness-sky";
 
-    // ── Transformation settings ───────────────────────────────────────────────
-    // Scale (multiplier per axis, default 1)
-    private static final String SCALE_X = "scale-x";
-    private static final String SCALE_Y = "scale-y";
-    private static final String SCALE_Z = "scale-z";
-
-    // Local-space translation offset applied inside the Transformation
-    // (distinct from the world-space forward/upward/right spawn offset)
-    private static final String TRANSLATE_X = "translate-x";
-    private static final String TRANSLATE_Y = "translate-y";
-    private static final String TRANSLATE_Z = "translate-z";
-
-    // Left rotation – applied before scale – Euler angles in degrees
-    private static final String LEFT_ROTATION_X = "left-rotation-x";
-    private static final String LEFT_ROTATION_Y = "left-rotation-y";
-    private static final String LEFT_ROTATION_Z = "left-rotation-z";
-
-    // Right rotation – applied after scale – Euler angles in degrees
-    private static final String RIGHT_ROTATION_X = "right-rotation-x";
-    private static final String RIGHT_ROTATION_Y = "right-rotation-y";
-    private static final String RIGHT_ROTATION_Z = "right-rotation-z";
+    // ── Interpolation ─────────────────────────────────────────────────────────
+    /** Client-side interpolation ticks for smooth animated transforms (0 = instant). */
+    private static final String INTERPOLATION_DURATION = "interpolation-duration";
 
     // ── Block display settings ────────────────────────────────────────────────
     private static final String BLOCK_TYPE = "block-type";
@@ -114,7 +107,8 @@ public class DisplayEntityMechanic extends MechanicComponent {
         double  right    = parseValues(caster, RIGHT, level, 0);
 
         // ── Transformation ────────────────────────────────────────────────────
-        Transformation transformation = buildTransformation(caster, level);
+        DisplayEntityTransform transform            = new DisplayEntityTransform(settings);
+        int                    interpolationDuration = settings.getInt(INTERPOLATION_DURATION, 0);
 
         // ── Other appearance settings ─────────────────────────────────────────
         Billboard billboard    = parseBillboard(settings.getString(BILLBOARD, "FIXED"));
@@ -135,7 +129,7 @@ public class DisplayEntityMechanic extends MechanicComponent {
             loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
 
             Entity entity = spawnDisplay(typeName, loc, caster, level,
-                    transformation, billboard, viewRange,
+                    transform.compute(0, level), billboard, viewRange,
                     shadowRadius, shadowStrength, glow, glowColor,
                     brightnessBlock, brightnessSky);
 
@@ -144,9 +138,10 @@ public class DisplayEntityMechanic extends MechanicComponent {
             DisplayEntityManager.tag(entity);
             spawnedEntities.add(entity);
 
-            DisplayEntityInstance instance = follow
-                    ? new DisplayEntityInstance(entity, target, true, forward, upward, right)
-                    : new DisplayEntityInstance(entity, target, false);
+            DisplayEntityInstance instance = new DisplayEntityInstance(
+                    entity, target, follow,
+                    forward, upward, right,
+                    transform, level, interpolationDuration);
             DisplayEntityManager.register(instance, target, key);
         }
 
@@ -155,46 +150,6 @@ public class DisplayEntityMechanic extends MechanicComponent {
         }
 
         return !targets.isEmpty();
-    }
-
-    // ── Transformation builder ────────────────────────────────────────────────
-
-    /**
-     * Reads scale, local translation, and left/right rotation from settings and
-     * assembles a {@link Transformation}.
-     *
-     * <p>Rotation values are Euler angles in <b>degrees</b> applied in X→Y→Z order.</p>
-     */
-    private Transformation buildTransformation(LivingEntity caster, int level) {
-        // Scale
-        float scaleX = (float) parseValues(caster, SCALE_X, level, 1.0);
-        float scaleY = (float) parseValues(caster, SCALE_Y, level, 1.0);
-        float scaleZ = (float) parseValues(caster, SCALE_Z, level, 1.0);
-
-        // Local-space translation
-        float transX = (float) parseValues(caster, TRANSLATE_X, level, 0.0);
-        float transY = (float) parseValues(caster, TRANSLATE_Y, level, 0.0);
-        float transZ = (float) parseValues(caster, TRANSLATE_Z, level, 0.0);
-
-        // Left rotation (degrees → quaternion, XYZ order)
-        float lrX = (float) Math.toRadians(parseValues(caster, LEFT_ROTATION_X, level, 0.0));
-        float lrY = (float) Math.toRadians(parseValues(caster, LEFT_ROTATION_Y, level, 0.0));
-        float lrZ = (float) Math.toRadians(parseValues(caster, LEFT_ROTATION_Z, level, 0.0));
-
-        // Right rotation (degrees → quaternion, XYZ order)
-        float rrX = (float) Math.toRadians(parseValues(caster, RIGHT_ROTATION_X, level, 0.0));
-        float rrY = (float) Math.toRadians(parseValues(caster, RIGHT_ROTATION_Y, level, 0.0));
-        float rrZ = (float) Math.toRadians(parseValues(caster, RIGHT_ROTATION_Z, level, 0.0));
-
-        Quaternionf leftRotation  = new Quaternionf().rotationXYZ(lrX, lrY, lrZ);
-        Quaternionf rightRotation = new Quaternionf().rotationXYZ(rrX, rrY, rrZ);
-
-        return new Transformation(
-                new Vector3f(transX, transY, transZ),
-                leftRotation,
-                new Vector3f(scaleX, scaleY, scaleZ),
-                rightRotation
-        );
     }
 
     // ── Spawn helpers ─────────────────────────────────────────────────────────
