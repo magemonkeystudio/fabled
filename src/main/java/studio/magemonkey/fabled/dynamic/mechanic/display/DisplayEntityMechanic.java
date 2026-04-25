@@ -1,10 +1,6 @@
 package studio.magemonkey.fabled.dynamic.mechanic.display;
 
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Display.Billboard;
 import org.bukkit.entity.Display.Brightness;
@@ -12,7 +8,9 @@ import org.bukkit.entity.TextDisplay.TextAlignment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 import studio.magemonkey.codex.util.StringUT;
+import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.displayentity.DisplayEntityInstance;
 import studio.magemonkey.fabled.api.displayentity.DisplayEntityManager;
 import studio.magemonkey.fabled.api.displayentity.DisplayEntityTransform;
@@ -66,7 +64,9 @@ public class DisplayEntityMechanic extends MechanicComponent {
     private static final String BRIGHTNESS_SKY   = "brightness-sky";
 
     // ── Interpolation ─────────────────────────────────────────────────────────
-    /** Client-side interpolation ticks for smooth animated transforms (0 = instant). */
+    /**
+     * Client-side interpolation ticks for smooth animated transforms (0 = instant).
+     */
     private static final String INTERPOLATION_DURATION = "interpolation-duration";
 
     // ── Block display settings ────────────────────────────────────────────────
@@ -111,12 +111,12 @@ public class DisplayEntityMechanic extends MechanicComponent {
         int                    interpolationDuration = settings.getInt(INTERPOLATION_DURATION, 0);
 
         // ── Other appearance settings ─────────────────────────────────────────
-        Billboard billboard    = parseBillboard(settings.getString(BILLBOARD, "FIXED"));
-        float     viewRange    = (float) parseValues(caster, VIEW_RANGE, level, 64.0);
-        float     shadowRadius = (float) parseValues(caster, SHADOW_RADIUS, level, 0.0);
-        float     shadowStrength = (float) parseValues(caster, SHADOW_STRENGTH, level, 1.0);
-        boolean   glow         = settings.getBool(GLOW, false);
-        Color     glowColor    = parseColor(settings.getString(GLOW_COLOR, ""), null);
+        Billboard billboard       = parseBillboard(settings.getString(BILLBOARD, "FIXED"));
+        float     viewRange       = (float) parseValues(caster, VIEW_RANGE, level, 64.0);
+        float     shadowRadius    = (float) parseValues(caster, SHADOW_RADIUS, level, 0.0);
+        float     shadowStrength  = (float) parseValues(caster, SHADOW_STRENGTH, level, 1.0);
+        boolean   glow            = settings.getBool(GLOW, false);
+        Color     glowColor       = parseColor(settings.getString(GLOW_COLOR, ""), null);
         int       brightnessBlock = (int) parseValues(caster, BRIGHTNESS_BLOCK, level, -1);
         int       brightnessSky   = (int) parseValues(caster, BRIGHTNESS_SKY, level, -1);
 
@@ -222,7 +222,8 @@ public class DisplayEntityMechanic extends MechanicComponent {
         try {
             material = Material.valueOf(blockTypeName.toUpperCase(Locale.US).replace(" ", "_"));
         } catch (IllegalArgumentException e) {
-            Logger.invalid("Invalid block-type '" + blockTypeName + "' for display entity mechanic – defaulting to STONE.");
+            Logger.invalid(
+                    "Invalid block-type '" + blockTypeName + "' for display entity mechanic – defaulting to STONE.");
             material = Material.STONE;
         }
         Material finalMaterial = material;
@@ -236,7 +237,8 @@ public class DisplayEntityMechanic extends MechanicComponent {
         try {
             material = Material.valueOf(itemMaterialName.toUpperCase(Locale.US).replace(" ", "_"));
         } catch (IllegalArgumentException e) {
-            Logger.invalid("Invalid item-material '" + itemMaterialName + "' for display entity mechanic – defaulting to STONE.");
+            Logger.invalid("Invalid item-material '" + itemMaterialName
+                    + "' for display entity mechanic – defaulting to STONE.");
             material = Material.STONE;
         }
         Material finalMaterial = material;
@@ -252,20 +254,21 @@ public class DisplayEntityMechanic extends MechanicComponent {
         ItemDisplay.ItemDisplayTransform finalTransform = transform;
 
         return loc.getWorld().spawn(loc, ItemDisplay.class, entity -> {
-            entity.setItem(new ItemStack(finalMaterial));
+            entity.setItemStack(new ItemStack(finalMaterial));
             entity.setItemDisplayTransform(finalTransform);
         });
     }
 
+    @Nullable
     private Entity spawnTextDisplay(Location loc, LivingEntity caster, int level) {
-        String        rawText     = settings.getString(TEXT, "");
-        String        coloredText = StringUT.color(rawText);
-        int           textOpacity = (int) parseValues(caster, TEXT_OPACITY, level, -1);
-        boolean       seeThrough  = settings.getBool(TEXT_SEE_THROUGH, false);
-        boolean       textShadow  = settings.getBool(TEXT_SHADOW, false);
-        int           lineWidth   = (int) parseValues(caster, TEXT_LINE_WIDTH, level, 200);
-        String        alignName   = settings.getString(TEXT_ALIGNMENT, "CENTER").toUpperCase(Locale.US);
-        Color         bgColor     = parseColor(settings.getString(TEXT_BG_COLOR, ""), null);
+        String  rawText     = settings.getString(TEXT, "");
+        String  coloredText = StringUT.color(rawText);
+        int     textOpacity = (int) parseValues(caster, TEXT_OPACITY, level, -1);
+        boolean seeThrough  = settings.getBool(TEXT_SEE_THROUGH, false);
+        boolean textShadow  = settings.getBool(TEXT_SHADOW, false);
+        int     lineWidth   = (int) parseValues(caster, TEXT_LINE_WIDTH, level, 200);
+        String  alignName   = settings.getString(TEXT_ALIGNMENT, "CENTER").toUpperCase(Locale.US);
+        Color   bgColor     = parseColor(settings.getString(TEXT_BG_COLOR, ""), null);
 
         TextAlignment alignment;
         try {
@@ -275,10 +278,14 @@ public class DisplayEntityMechanic extends MechanicComponent {
         }
 
         TextAlignment finalAlignment = alignment;
-        Color         finalBgColor   = bgColor;
+        World         world          = loc.getWorld();
+        if (world == null) {
+            Fabled.inst().getLogger().warning("Failed to spawn text display: location world is null");
+            return null;
+        }
 
         return loc.getWorld().spawn(loc, TextDisplay.class, entity -> {
-            entity.text(LegacyComponentSerializer.legacyAmpersand().deserialize(coloredText));
+            entity.setText(coloredText);
             entity.setSeeThrough(seeThrough);
             entity.setShadowed(textShadow);
             entity.setLineWidth(lineWidth);
@@ -286,8 +293,8 @@ public class DisplayEntityMechanic extends MechanicComponent {
             if (textOpacity >= 0) {
                 entity.setTextOpacity((byte) Math.min(255, textOpacity));
             }
-            if (finalBgColor != null) {
-                entity.setBackgroundColor(finalBgColor);
+            if (bgColor != null) {
+                entity.setBackgroundColor(bgColor);
             }
         });
     }
