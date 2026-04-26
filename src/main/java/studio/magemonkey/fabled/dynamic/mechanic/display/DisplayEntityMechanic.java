@@ -144,19 +144,14 @@ public class DisplayEntityMechanic extends MechanicComponent {
             Location loc  = target.getLocation().clone();
             // Compute offset direction from actual facing BEFORE zeroing yaw/pitch,
             // so forward/right always point relative to the entity's real orientation.
-            // When following, use the full 3D look direction for 'forward' so pitch is preserved
-            // (the entity needs to track the player's view in 3-D space).
-            // When not following, flatten 'forward' to the horizontal plane so the spawn
-            // position does not shift unexpectedly based on the player's vertical aim;
-            // 'upward' remains the explicit way to control height.
-            // 'right' is always derived from the horizontal projection.
-            Vector   dir        = loc.getDirection(); // full 3D (normalized)
-            Vector   horizDir   = new Vector(dir.getX(), 0, dir.getZ());
+            // Use the full 3D look direction for 'forward' so pitch is preserved;
+            // derive 'right' from the horizontal projection to keep it a sensible strafe axis.
+            Vector   dir      = loc.getDirection(); // full 3D (normalized)
+            Vector   horizDir = new Vector(dir.getX(), 0, dir.getZ());
             if (horizDir.lengthSquared() > 1e-6) horizDir.normalize();
             else horizDir = new Vector(0, 0, -1); // fallback when looking straight up/down
-            Vector   side       = horizDir.crossProduct(UP);
-            Vector   forwardDir = follow ? dir : horizDir;
-            loc.add(forwardDir.clone().multiply(forward)).add(0, upward, 0).add(side.clone().multiply(right));
+            Vector   side = horizDir.crossProduct(UP);
+            loc.add(dir.clone().multiply(forward)).add(0, upward, 0).add(side.clone().multiply(right));
             if (!inheritRotation) {
                 loc.setYaw(0);
                 loc.setPitch(0);
@@ -175,7 +170,7 @@ public class DisplayEntityMechanic extends MechanicComponent {
             DisplayEntityInstance instance = new DisplayEntityInstance(
                     entity, target, follow,
                     forward, upward, right,
-                    entityTransform, forwardDir, side,
+                    entityTransform, dir, side,
                     level, interpolationDuration, teleportDuration, inheritRotation);
             DisplayEntityManager.register(instance, target, key);
         }
@@ -393,19 +388,17 @@ public class DisplayEntityMechanic extends MechanicComponent {
         double  fwd             = parseValues(caster, FORWARD, level, 0);
         double  upw             = parseValues(caster, UPWARD, level, 0);
         double  rgt             = parseValues(caster, RIGHT, level, 0);
-        boolean follow          = settings.getBool(FOLLOW, false);
         boolean inheritRotation = settings.getBool(INHERIT_ROTATION, true);
         super.playPreview(onPreviewStop, caster, level, () -> {
             List<LivingEntity> newTargets = new ArrayList<>();
             for (LivingEntity target : targetSupplier.get()) {
-                Location loc        = target.getLocation().clone();
-                Vector   dir        = loc.getDirection(); // full 3D
-                Vector   horizDir   = new Vector(dir.getX(), 0, dir.getZ());
+                Location loc      = target.getLocation().clone();
+                Vector   dir      = loc.getDirection(); // full 3D
+                Vector   horizDir = new Vector(dir.getX(), 0, dir.getZ());
                 if (horizDir.lengthSquared() > 1e-6) horizDir.normalize();
                 else horizDir = new Vector(0, 0, -1);
-                Vector   side       = horizDir.crossProduct(UP);
-                Vector   forwardDir = follow ? dir : horizDir;
-                loc.add(forwardDir.clone().multiply(fwd)).add(0, upw, 0).add(side.clone().multiply(rgt));
+                Vector   side     = horizDir.crossProduct(UP);
+                loc.add(dir.clone().multiply(fwd)).add(0, upw, 0).add(side.clone().multiply(rgt));
                 if (!inheritRotation) {
                     loc.setYaw(0);
                     loc.setPitch(0);

@@ -18,11 +18,7 @@ public class DisplayEntityInstance {
     private final double                forward;
     private final double                upward;
     private final double                right;
-    /**
-     * Facing direction captured at cast time, used for formula-based world-space offsets.
-     * When {@code follow=true} this is the full 3D direction (pitch included).
-     * When {@code follow=false} this is the horizontally-flattened direction (pitch stripped).
-     */
+    /** Full 3D facing direction captured at cast time (used for formula-based offsets). */
     private final Vector                castDir;
     /** Horizontal right direction captured at cast time (used for formula-based offsets). */
     private final Vector                castSide;
