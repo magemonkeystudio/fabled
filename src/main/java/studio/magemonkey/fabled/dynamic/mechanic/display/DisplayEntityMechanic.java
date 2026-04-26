@@ -78,6 +78,11 @@ public class DisplayEntityMechanic extends MechanicComponent {
      * Client-side interpolation ticks for smooth animated transforms (0 = instant).
      */
     private static final String INTERPOLATION_DURATION = "interpolation-duration";
+    /**
+     * Client-side interpolation ticks for follow position updates (0 = instant teleport).
+     * Defaults to {@code 3} when {@code follow} is enabled so movement looks smooth.
+     */
+    private static final String TELEPORT_DURATION = "teleport-duration";
 
     // ── Block display settings ────────────────────────────────────────────────
     private static final String BLOCK_TYPE = "block-type";
@@ -120,6 +125,7 @@ public class DisplayEntityMechanic extends MechanicComponent {
         // ── Transformation ────────────────────────────────────────────────────
         DisplayEntityTransform entityTransform       = new DisplayEntityTransform(settings);
         int                    interpolationDuration = settings.getInt(INTERPOLATION_DURATION, 0);
+        int                    teleportDuration      = settings.getInt(TELEPORT_DURATION, follow ? 3 : 0);
 
         // ── Other appearance settings ─────────────────────────────────────────
         Billboard billboard       = parseBillboard(settings.getString(BILLBOARD, "FIXED"));
@@ -156,7 +162,7 @@ public class DisplayEntityMechanic extends MechanicComponent {
             DisplayEntityInstance instance = new DisplayEntityInstance(
                     entity, target, follow,
                     forward, upward, right,
-                    entityTransform, level, interpolationDuration, inheritRotation);
+                    entityTransform, level, interpolationDuration, teleportDuration, inheritRotation);
             DisplayEntityManager.register(instance, target, key);
         }
 
