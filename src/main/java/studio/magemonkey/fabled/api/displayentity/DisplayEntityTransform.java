@@ -29,6 +29,11 @@ import studio.magemonkey.fabled.data.formula.value.CustomValue;
  *   <li>{@code translate-x}, {@code translate-y}, {@code translate-z} – defaults to {@code "0"}</li>
  *   <li>{@code left-rotation-x/y/z} – degrees, defaults to {@code "0"}</li>
  *   <li>{@code right-rotation-x/y/z} – degrees, defaults to {@code "0"}</li>
+ *   <li>{@code center-rotation} – boolean, defaults to {@code false}.  When {@code true},
+ *       the translation is automatically adjusted each tick so that the visual centre of the
+ *       display entity (the centre of its unit-cube in model space) stays at the entity's
+ *       origin regardless of rotation.  The user-configured {@code translate-x/y/z} values
+ *       are then treated as additive offsets from that centre.</li>
  * </ul>
  */
 public class DisplayEntityTransform {
@@ -55,6 +60,8 @@ public class DisplayEntityTransform {
     private final Formula rightRotY;
     private final Formula rightRotZ;
 
+    private final boolean centerRotation;
+
     public DisplayEntityTransform(Settings settings) {
         scaleX = formula(settings, "scale-x", "1");
         scaleY = formula(settings, "scale-y", "1");
@@ -71,6 +78,8 @@ public class DisplayEntityTransform {
         rightRotX = formula(settings, "right-rotation-x", "0");
         rightRotY = formula(settings, "right-rotation-y", "0");
         rightRotZ = formula(settings, "right-rotation-z", "0");
+
+        centerRotation = settings.getBool("center-rotation", false);
     }
 
     private static Formula formula(Settings settings, String key, String defaultValue) {
@@ -80,6 +89,14 @@ public class DisplayEntityTransform {
     /**
      * Evaluates all formulas at the given tick and level and assembles a
      * {@link Transformation}.
+     *
+     * <p>When {@code center-rotation} is enabled the translation is automatically
+     * adjusted so that the visual centre of the unit-cube model stays at the
+     * entity's origin.  The formula is:
+     * <pre>T_final = T_user − LR × (S × (RR × [0.5, 0.5, 0.5]))</pre>
+     * where LR / RR are the left / right rotation quaternions and S is the
+     * diagonal scale matrix.  This keeps the block centred at the entity
+     * position for every rotation angle, including animated ones.</p>
      *
      * @param tick  elapsed tick count (the {@code t} variable)
      * @param level skill level (the {@code l} variable)
@@ -102,11 +119,27 @@ public class DisplayEntityTransform {
         float rrY = (float) Math.toRadians(rightRotY.compute(tick, level));
         float rrZ = (float) Math.toRadians(rightRotZ.compute(tick, level));
 
+        Quaternionf leftQ  = new Quaternionf().rotationXYZ(lrX, lrY, lrZ);
+        Quaternionf rightQ = new Quaternionf().rotationXYZ(rrX, rrY, rrZ);
+
+        if (centerRotation) {
+            // Compute LR × (S × (RR × [0.5, 0.5, 0.5])) and subtract it from
+            // the user-supplied translation so the visual centre of the block
+            // sits at the entity origin (+ user translate).
+            Vector3f center = new Vector3f(0.5f, 0.5f, 0.5f);
+            rightQ.transform(center);          // RR * [0.5, 0.5, 0.5]
+            center.mul(sx, sy, sz);            // S  * (RR * center)
+            leftQ.transform(center);           // LR * (S * (RR * center))
+            tx -= center.x;
+            ty -= center.y;
+            tz -= center.z;
+        }
+
         return new Transformation(
                 new Vector3f(tx, ty, tz),
-                new Quaternionf().rotationXYZ(lrX, lrY, lrZ),
+                leftQ,
                 new Vector3f(sx, sy, sz),
-                new Quaternionf().rotationXYZ(rrX, rrY, rrZ)
+                rightQ
         );
     }
 }

@@ -66,6 +66,12 @@ public class DisplayEntityMechanic extends MechanicComponent {
     private static final String GLOW_COLOR       = "glow-color";
     private static final String BRIGHTNESS_BLOCK = "brightness-block";
     private static final String BRIGHTNESS_SKY   = "brightness-sky";
+    /**
+     * When {@code false} the spawn location (and follow-teleport locations) have their
+     * yaw and pitch zeroed so the entity does not inherit the caster's facing direction.
+     * Defaults to {@code true} for backwards compatibility.
+     */
+    private static final String INHERIT_ROTATION = "inherit-rotation";
 
     // ── Interpolation ─────────────────────────────────────────────────────────
     /**
@@ -102,13 +108,14 @@ public class DisplayEntityMechanic extends MechanicComponent {
             return false;
         }
 
-        String  key      = settings.getString(KEY, skill.getName());
-        int     duration = (int) (20 * parseValues(caster, DURATION, level, 5));
-        String  typeName = settings.getString(TYPE, "BLOCK").toUpperCase(Locale.US);
-        boolean follow   = settings.getBool(FOLLOW, false);
-        double  forward  = parseValues(caster, FORWARD, level, 0);
-        double  upward   = parseValues(caster, UPWARD, level, 0);
-        double  right    = parseValues(caster, RIGHT, level, 0);
+        String  key             = settings.getString(KEY, skill.getName());
+        int     duration        = (int) (20 * parseValues(caster, DURATION, level, 5));
+        String  typeName        = settings.getString(TYPE, "BLOCK").toUpperCase(Locale.US);
+        boolean follow          = settings.getBool(FOLLOW, false);
+        boolean inheritRotation = settings.getBool(INHERIT_ROTATION, true);
+        double  forward         = parseValues(caster, FORWARD, level, 0);
+        double  upward          = parseValues(caster, UPWARD, level, 0);
+        double  right           = parseValues(caster, RIGHT, level, 0);
 
         // ── Transformation ────────────────────────────────────────────────────
         DisplayEntityTransform entityTransform       = new DisplayEntityTransform(settings);
@@ -128,6 +135,10 @@ public class DisplayEntityMechanic extends MechanicComponent {
 
         for (LivingEntity target : targets) {
             Location loc  = target.getLocation().clone();
+            if (!inheritRotation) {
+                loc.setYaw(0);
+                loc.setPitch(0);
+            }
             Vector   dir  = loc.getDirection().setY(0).normalize();
             Vector   side = dir.clone().crossProduct(UP);
             loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
@@ -145,7 +156,7 @@ public class DisplayEntityMechanic extends MechanicComponent {
             DisplayEntityInstance instance = new DisplayEntityInstance(
                     entity, target, follow,
                     forward, upward, right,
-                    entityTransform, level, interpolationDuration);
+                    entityTransform, level, interpolationDuration, inheritRotation);
             DisplayEntityManager.register(instance, target, key);
         }
 

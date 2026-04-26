@@ -21,20 +21,21 @@ public class DisplayEntityInstance {
     private final DisplayEntityTransform transform;
     private final int                   level;
     private final int                   interpolationDuration;
+    private final boolean               inheritRotation;
     private       int                   tickCount;
 
     /**
      * Creates a static (non-animated, non-follow) instance.
      */
     public DisplayEntityInstance(Entity display, LivingEntity target) {
-        this(display, target, false, 0, 0, 0, null, 0, 0);
+        this(display, target, false, 0, 0, 0, null, 0, 0, true);
     }
 
     /**
      * Creates an instance with optional follow but no time-based transform.
      */
     public DisplayEntityInstance(Entity display, LivingEntity target, boolean follow) {
-        this(display, target, follow, 0, 0, 0, null, 0, 0);
+        this(display, target, follow, 0, 0, 0, null, 0, 0, true);
     }
 
     /**
@@ -42,7 +43,7 @@ public class DisplayEntityInstance {
      */
     public DisplayEntityInstance(Entity display, LivingEntity target, boolean follow,
                                  double forward, double upward, double right) {
-        this(display, target, follow, forward, upward, right, null, 0, 0);
+        this(display, target, follow, forward, upward, right, null, 0, 0, true);
     }
 
     /**
@@ -57,11 +58,13 @@ public class DisplayEntityInstance {
      * @param transform             time-based transform formulas, or {@code null} for a static transform
      * @param level                 skill level passed to transform formulas as {@code l}
      * @param interpolationDuration Bukkit interpolation ticks; 0 = instant snap
+     * @param inheritRotation       when {@code true} the entity keeps the target's yaw/pitch on
+     *                              follow teleports; when {@code false} yaw and pitch are zeroed
      */
     public DisplayEntityInstance(Entity display, LivingEntity target, boolean follow,
                                  double forward, double upward, double right,
                                  DisplayEntityTransform transform, int level,
-                                 int interpolationDuration) {
+                                 int interpolationDuration, boolean inheritRotation) {
         this.display = display;
         this.target = target;
         this.follow = follow;
@@ -71,6 +74,7 @@ public class DisplayEntityInstance {
         this.transform = transform;
         this.level = level;
         this.interpolationDuration = interpolationDuration;
+        this.inheritRotation = inheritRotation;
         this.tickCount = 0;
     }
 
@@ -112,6 +116,10 @@ public class DisplayEntityInstance {
             if (follow) {
                 boolean sameWorld = display.getWorld().equals(target.getWorld());
                 Location loc  = target.getLocation().clone();
+                if (!inheritRotation) {
+                    loc.setYaw(0);
+                    loc.setPitch(0);
+                }
                 Vector   dir  = loc.getDirection().setY(0).normalize();
                 Vector   side = dir.clone().crossProduct(UP);
                 loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
