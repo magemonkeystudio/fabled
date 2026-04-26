@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import studio.magemonkey.codex.CodexEngine;
 import studio.magemonkey.codex.api.items.ItemType;
 import studio.magemonkey.codex.api.items.exception.MissingItemException;
+import studio.magemonkey.codex.api.items.exception.MissingProviderException;
 import studio.magemonkey.codex.items.CodexItemManager;
 import studio.magemonkey.codex.util.StringUT;
 import studio.magemonkey.fabled.Fabled;
@@ -42,9 +43,9 @@ import java.util.function.Supplier;
  * </ul>
  * A plain constant (e.g. {@code "2.5"}) or a level-scaled expression
  * (e.g. {@code "1+0.5*(l-1)"}) works as before. A time-driven expression
- * (e.g. {@code "t*5"} for left-rotation-y) animates the entity continuously.</p>
+ * (e.g. {@code "t*5"} for left-rotation-y) animates the entity continuously.
  *
- * <p>Requires Minecraft 1.19.4 or later.</p>
+ * <p>Requires Minecraft 1.19.4 or later.
  */
 public class DisplayEntityMechanic extends MechanicComponent {
 
@@ -263,7 +264,7 @@ public class DisplayEntityMechanic extends MechanicComponent {
         ItemType         itemType    = null;
         try {
             itemType = itemManager.getItemType(itemMaterialName);
-        } catch (MissingItemException ignored) {
+        } catch (MissingItemException | MissingProviderException ignored) {
         }
 
         ItemStack itemStack;
@@ -282,7 +283,7 @@ public class DisplayEntityMechanic extends MechanicComponent {
             }
             itemStack = new ItemStack(material);
         }
-        final ItemStack finalItemStack = itemStack;
+
 
         String transformName = settings.getString(ITEM_TRANSFORM, "GROUND")
                 .toUpperCase(Locale.US).replace(" ", "_");
@@ -294,6 +295,7 @@ public class DisplayEntityMechanic extends MechanicComponent {
         }
         ItemDisplay.ItemDisplayTransform finalTransform = transform;
 
+        final ItemStack finalItemStack = itemStack;
         return loc.getWorld().spawn(loc, ItemDisplay.class, entity -> {
             entity.setItemStack(finalItemStack);
             entity.setItemDisplayTransform(finalTransform);

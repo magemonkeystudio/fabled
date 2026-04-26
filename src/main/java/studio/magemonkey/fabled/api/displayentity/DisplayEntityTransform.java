@@ -20,10 +20,10 @@ import studio.magemonkey.fabled.data.formula.value.CustomValue;
  * A plain number (e.g. {@code "1"} or {@code "2.5"}) behaves identically
  * to a static value. A level-scaled expression like {@code "1+0.5*(l-1)"}
  * replicates the old base+scale pattern. A time-driven expression like
- * {@code "t*5"} rotates the entity over time.</p>
+ * {@code "t*5"} rotates the entity over time.
  *
  * <p>Settings read (all plain string keys, not the {@code -base}/{@code -scale}
- * suffixed variants used by {@code parseValues}):</p>
+ * suffixed variants used by {@code parseValues}):
  * <ul>
  *   <li>{@code scale-x}, {@code scale-y}, {@code scale-z} – defaults to {@code "1"}</li>
  *   <li>{@code translate-x}, {@code translate-y}, {@code translate-z} – defaults to {@code "0"}</li>
@@ -44,7 +44,9 @@ import studio.magemonkey.fabled.data.formula.value.CustomValue;
  */
 public class DisplayEntityTransform {
 
-    /** Shared formula variables: index 0 = t (tick), index 1 = l (level). */
+    /**
+     * Shared formula variables: index 0 = t (tick), index 1 = l (level).
+     */
     private static final CustomValue[] VALUES = {
             new CustomValue("t"),
             new CustomValue("l")
@@ -137,7 +139,7 @@ public class DisplayEntityTransform {
      * <pre>T_final = T_user − LR × (S × (RR × [0.5, 0.5, 0.5]))</pre>
      * where LR / RR are the left / right rotation quaternions and S is the
      * diagonal scale matrix.  This keeps the block centred at the entity
-     * position for every rotation angle, including animated ones.</p>
+     * position for every rotation angle, including animated ones.
      *
      * @param tick  elapsed tick count (the {@code t} variable)
      * @param level skill level (the {@code l} variable)
