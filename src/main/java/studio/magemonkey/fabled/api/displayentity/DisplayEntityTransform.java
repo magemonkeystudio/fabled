@@ -115,7 +115,7 @@ public class DisplayEntityTransform {
      * A formula of {@code "0"} (the default) produces no offset.  A
      * time-varying formula such as {@code "sin(t*0.1)*2"} animates the
      * entity's world position relative to the direction the caster was
-     * looking <em>when the skill was cast</em>.</p>
+     * looking <em>when the skill was cast</em>.
      *
      * @param tick  elapsed tick count (the {@code t} variable)
      * @param level skill level (the {@code l} variable)

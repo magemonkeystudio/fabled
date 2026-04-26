@@ -162,7 +162,7 @@ public class DisplayEntityMechanic extends MechanicComponent {
                 loc.setPitch(0);
             }
 
-            Entity entity = spawnDisplay(typeName, loc, caster, level,
+            Entity entity = spawnDisplay(typeName, loc, caster, target, level,
                     entityTransform.compute(0, level), billboard, viewRange,
                     shadowRadius, shadowStrength, glow, glowColor,
                     brightnessBlock, brightnessSky);
@@ -192,6 +192,7 @@ public class DisplayEntityMechanic extends MechanicComponent {
     private Entity spawnDisplay(String typeName,
                                 Location loc,
                                 LivingEntity caster,
+                                LivingEntity target,
                                 int level,
                                 Transformation transformation,
                                 Billboard billboard,
@@ -206,13 +207,13 @@ public class DisplayEntityMechanic extends MechanicComponent {
             Entity entity;
             switch (typeName) {
                 case "BLOCK":
-                    entity = spawnBlockDisplay(loc, caster, level);
+                    entity = spawnBlockDisplay(loc, caster, target, level);
                     break;
                 case "ITEM":
-                    entity = spawnItemDisplay(loc, caster, level);
+                    entity = spawnItemDisplay(loc, caster, target, level);
                     break;
                 case "TEXT":
-                    entity = spawnTextDisplay(loc, caster, level);
+                    entity = spawnTextDisplay(loc, caster, target, level);
                     break;
                 default:
                     Logger.invalid("Unknown display-type '" + typeName + "' – expected BLOCK, ITEM, or TEXT.");
@@ -251,7 +252,7 @@ public class DisplayEntityMechanic extends MechanicComponent {
         }
     }
 
-    private Entity spawnBlockDisplay(Location loc, LivingEntity caster, int level) {
+    private Entity spawnBlockDisplay(Location loc, LivingEntity caster, LivingEntity target, int level) {
         String   blockTypeName = settings.getString(BLOCK_TYPE, "STONE");
         Material material;
         try {
@@ -266,7 +267,7 @@ public class DisplayEntityMechanic extends MechanicComponent {
                 entity -> entity.setBlock(Bukkit.createBlockData(finalMaterial)));
     }
 
-    private Entity spawnItemDisplay(Location loc, LivingEntity caster, int level) {
+    private Entity spawnItemDisplay(Location loc, LivingEntity caster, LivingEntity target, int level) {
         String itemMaterialName = settings.getString(ITEM_MATERIAL, "STONE");
 
         // Resolve via Codex ItemManager first so custom providers (Divinity, Nexo, etc.) are supported.
@@ -313,10 +314,10 @@ public class DisplayEntityMechanic extends MechanicComponent {
     }
 
     @Nullable
-    private Entity spawnTextDisplay(Location loc, LivingEntity caster, int level) {
+    private Entity spawnTextDisplay(Location loc, LivingEntity caster, LivingEntity target, int level) {
         String  rawText     = settings.getString(TEXT, "");
-        String  coloredText = StringUT.color(rawText);
-        int     textOpacity = (int) parseValues(caster, TEXT_OPACITY, level, -1);
+        String  coloredText = filter(caster, target, StringUT.color(rawText));
+        int     textOpacity = (int) Math.round(parseValues(caster, TEXT_OPACITY, level, -1) * 255);
         boolean seeThrough  = settings.getBool(TEXT_SEE_THROUGH, false);
         boolean textShadow  = settings.getBool(TEXT_SHADOW, false);
         int     lineWidth   = (int) parseValues(caster, TEXT_LINE_WIDTH, level, 200);
