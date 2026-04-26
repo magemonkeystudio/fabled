@@ -145,7 +145,7 @@ public class DisplayEntityMechanic extends MechanicComponent {
             // so forward/right always point relative to the entity's real orientation.
             Vector   dir  = loc.getDirection().setY(0).normalize();
             Vector   side = dir.clone().crossProduct(UP);
-            loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
+            loc.add(dir.clone().multiply(forward)).add(0, upward, 0).add(side.clone().multiply(right));
             if (!inheritRotation) {
                 loc.setYaw(0);
                 loc.setPitch(0);
@@ -164,7 +164,8 @@ public class DisplayEntityMechanic extends MechanicComponent {
             DisplayEntityInstance instance = new DisplayEntityInstance(
                     entity, target, follow,
                     forward, upward, right,
-                    entityTransform, level, interpolationDuration, teleportDuration, inheritRotation);
+                    entityTransform, dir, side,
+                    level, interpolationDuration, teleportDuration, inheritRotation);
             DisplayEntityManager.register(instance, target, key);
         }
 

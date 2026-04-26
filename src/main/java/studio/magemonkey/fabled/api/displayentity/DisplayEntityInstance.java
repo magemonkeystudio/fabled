@@ -18,6 +18,10 @@ public class DisplayEntityInstance {
     private final double                forward;
     private final double                upward;
     private final double                right;
+    /** Horizontal facing direction captured at cast time (used for formula-based offsets). */
+    private final Vector                castDir;
+    /** Horizontal right direction captured at cast time (used for formula-based offsets). */
+    private final Vector                castSide;
     private final DisplayEntityTransform transform;
     private final int                   level;
     private final int                   interpolationDuration;
@@ -29,14 +33,14 @@ public class DisplayEntityInstance {
      * Creates a static (non-animated, non-follow) instance.
      */
     public DisplayEntityInstance(Entity display, LivingEntity target) {
-        this(display, target, false, 0, 0, 0, null, 0, 0, 0, true);
+        this(display, target, false, 0, 0, 0, null, null, null, 0, 0, 0, true);
     }
 
     /**
      * Creates an instance with optional follow but no time-based transform.
      */
     public DisplayEntityInstance(Entity display, LivingEntity target, boolean follow) {
-        this(display, target, follow, 0, 0, 0, null, 0, 0, 0, true);
+        this(display, target, follow, 0, 0, 0, null, null, null, 0, 0, 0, true);
     }
 
     /**
@@ -44,7 +48,7 @@ public class DisplayEntityInstance {
      */
     public DisplayEntityInstance(Entity display, LivingEntity target, boolean follow,
                                  double forward, double upward, double right) {
-        this(display, target, follow, forward, upward, right, null, 0, 0, 0, true);
+        this(display, target, follow, forward, upward, right, null, null, null, 0, 0, 0, true);
     }
 
     /**
@@ -57,6 +61,9 @@ public class DisplayEntityInstance {
      * @param upward                follow upward offset
      * @param right                 follow right offset
      * @param transform             time-based transform formulas, or {@code null} for a static transform
+     * @param castDir               the horizontal facing direction at cast time, used for formula-based
+     *                              world-space offsets; may be {@code null} to fall back to current facing
+     * @param castSide              the horizontal right direction at cast time; may be {@code null}
      * @param level                 skill level passed to transform formulas as {@code l}
      * @param interpolationDuration Bukkit interpolation ticks for transform changes; 0 = instant snap
      * @param teleportDuration      Bukkit interpolation ticks for follow position updates; 0 = instant teleport
@@ -65,7 +72,9 @@ public class DisplayEntityInstance {
      */
     public DisplayEntityInstance(Entity display, LivingEntity target, boolean follow,
                                  double forward, double upward, double right,
-                                 DisplayEntityTransform transform, int level,
+                                 DisplayEntityTransform transform,
+                                 Vector castDir, Vector castSide,
+                                 int level,
                                  int interpolationDuration, int teleportDuration, boolean inheritRotation) {
         this.display = display;
         this.target = target;
@@ -73,6 +82,8 @@ public class DisplayEntityInstance {
         this.forward = forward;
         this.upward = upward;
         this.right = right;
+        this.castDir = castDir != null ? castDir.clone() : null;
+        this.castSide = castSide != null ? castSide.clone() : null;
         this.transform = transform;
         this.level = level;
         this.interpolationDuration = interpolationDuration;
@@ -119,10 +130,27 @@ public class DisplayEntityInstance {
             if (follow) {
                 boolean sameWorld = display.getWorld().equals(target.getWorld());
                 Location loc  = target.getLocation().clone();
-                // Compute offset direction from actual facing BEFORE zeroing yaw/pitch.
+                // Compute current-facing offset direction BEFORE zeroing yaw/pitch.
                 Vector   dir  = loc.getDirection().setY(0).normalize();
                 Vector   side = dir.clone().crossProduct(UP);
                 loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
+
+                // Apply formula-based world-space offsets relative to the cast-time
+                // facing direction (so slashing/orbiting effects hold their orientation).
+                if (transform != null) {
+                    double[] offset = transform.computeWorldOffset(currentTick, level);
+                    double   fwd    = offset[0];
+                    double   upw    = offset[1];
+                    double   rgt    = offset[2];
+                    if (fwd != 0 || upw != 0 || rgt != 0) {
+                        Vector oDir  = castDir  != null ? castDir  : loc.getDirection().setY(0).normalize();
+                        Vector oSide = castSide != null ? castSide : oDir.clone().crossProduct(UP);
+                        loc.add(oDir.clone().multiply(fwd))
+                           .add(0, upw, 0)
+                           .add(oSide.clone().multiply(rgt));
+                    }
+                }
+
                 if (!inheritRotation) {
                     loc.setYaw(0);
                     loc.setPitch(0);
