@@ -18,7 +18,7 @@ public class DisplayEntityInstance {
     private final double                forward;
     private final double                upward;
     private final double                right;
-    /** Full 3D facing direction captured at cast time (used for formula-based offsets). */
+    /** Horizontal facing direction captured at cast time (used for formula-based offsets). */
     private final Vector                castDir;
     /** Horizontal right direction captured at cast time (used for formula-based offsets). */
     private final Vector                castSide;
@@ -61,7 +61,7 @@ public class DisplayEntityInstance {
      * @param upward                follow upward offset
      * @param right                 follow right offset
      * @param transform             time-based transform formulas, or {@code null} for a static transform
-     * @param castDir               the full 3D facing direction at cast time, used for formula-based
+     * @param castDir               the horizontal facing direction at cast time, used for formula-based
      *                              world-space offsets; may be {@code null} to fall back to current facing
      * @param castSide              the horizontal right direction at cast time; may be {@code null}
      * @param level                 skill level passed to transform formulas as {@code l}
@@ -129,15 +129,11 @@ public class DisplayEntityInstance {
 
             if (follow) {
                 boolean sameWorld = display.getWorld().equals(target.getWorld());
-                Location loc      = target.getLocation().clone();
-                // Use the full 3D look direction for 'forward' so pitch is included;
-                // derive 'right' from the horizontal projection only.
-                Vector   dir      = loc.getDirection();
-                Vector   horizDir = new Vector(dir.getX(), 0, dir.getZ());
-                if (horizDir.lengthSquared() > 1e-6) horizDir.normalize();
-                else horizDir = new Vector(0, 0, -1);
-                Vector   side     = horizDir.crossProduct(UP);
-                loc.add(dir.clone().multiply(forward)).add(0, upward, 0).add(side.clone().multiply(right));
+                Location loc  = target.getLocation().clone();
+                // Compute current-facing offset direction BEFORE zeroing yaw/pitch.
+                Vector   dir  = loc.getDirection().setY(0).normalize();
+                Vector   side = dir.clone().crossProduct(UP);
+                loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
 
                 // Apply formula-based world-space offsets relative to the cast-time
                 // facing direction (so slashing/orbiting effects hold their orientation).
@@ -147,22 +143,8 @@ public class DisplayEntityInstance {
                     double   upw    = offset[1];
                     double   rgt    = offset[2];
                     if (fwd != 0 || upw != 0 || rgt != 0) {
-                        Vector oDir;
-                        Vector oSide;
-                        if (castDir != null) {
-                            oDir  = castDir;
-                            if (castSide != null) {
-                                oSide = castSide;
-                            } else {
-                                Vector h = new Vector(castDir.getX(), 0, castDir.getZ());
-                                if (h.lengthSquared() > 1e-6) h.normalize();
-                                else h = new Vector(0, 0, -1);
-                                oSide = h.crossProduct(UP);
-                            }
-                        } else {
-                            oDir  = dir;
-                            oSide = side;
-                        }
+                        Vector oDir  = castDir  != null ? castDir  : loc.getDirection().setY(0).normalize();
+                        Vector oSide = castSide != null ? castSide : oDir.clone().crossProduct(UP);
                         loc.add(oDir.clone().multiply(fwd))
                            .add(0, upw, 0)
                            .add(oSide.clone().multiply(rgt));
