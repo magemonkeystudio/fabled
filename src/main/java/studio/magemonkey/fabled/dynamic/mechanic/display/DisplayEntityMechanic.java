@@ -141,13 +141,15 @@ public class DisplayEntityMechanic extends MechanicComponent {
 
         for (LivingEntity target : targets) {
             Location loc  = target.getLocation().clone();
+            // Compute offset direction from actual facing BEFORE zeroing yaw/pitch,
+            // so forward/right always point relative to the entity's real orientation.
+            Vector   dir  = loc.getDirection().setY(0).normalize();
+            Vector   side = dir.clone().crossProduct(UP);
+            loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
             if (!inheritRotation) {
                 loc.setYaw(0);
                 loc.setPitch(0);
             }
-            Vector   dir  = loc.getDirection().setY(0).normalize();
-            Vector   side = dir.clone().crossProduct(UP);
-            loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
 
             Entity entity = spawnDisplay(typeName, loc, caster, level,
                     entityTransform.compute(0, level), billboard, viewRange,
@@ -374,9 +376,10 @@ public class DisplayEntityMechanic extends MechanicComponent {
                             Player caster,
                             int level,
                             Supplier<List<LivingEntity>> targetSupplier) {
-        double fwd = parseValues(caster, FORWARD, level, 0);
-        double upw = parseValues(caster, UPWARD, level, 0);
-        double rgt = parseValues(caster, RIGHT, level, 0);
+        double  fwd             = parseValues(caster, FORWARD, level, 0);
+        double  upw             = parseValues(caster, UPWARD, level, 0);
+        double  rgt             = parseValues(caster, RIGHT, level, 0);
+        boolean inheritRotation = settings.getBool(INHERIT_ROTATION, true);
         super.playPreview(onPreviewStop, caster, level, () -> {
             List<LivingEntity> newTargets = new ArrayList<>();
             for (LivingEntity target : targetSupplier.get()) {
@@ -384,6 +387,10 @@ public class DisplayEntityMechanic extends MechanicComponent {
                 Vector   dir  = loc.getDirection().setY(0).normalize();
                 Vector   side = dir.clone().crossProduct(UP);
                 loc.add(dir.multiply(fwd)).add(0, upw, 0).add(side.multiply(rgt));
+                if (!inheritRotation) {
+                    loc.setYaw(0);
+                    loc.setPitch(0);
+                }
                 newTargets.add(new TempEntity(loc));
             }
             return newTargets;

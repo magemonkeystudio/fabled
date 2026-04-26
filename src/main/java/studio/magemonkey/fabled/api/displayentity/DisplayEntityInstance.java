@@ -119,13 +119,14 @@ public class DisplayEntityInstance {
             if (follow) {
                 boolean sameWorld = display.getWorld().equals(target.getWorld());
                 Location loc  = target.getLocation().clone();
+                // Compute offset direction from actual facing BEFORE zeroing yaw/pitch.
+                Vector   dir  = loc.getDirection().setY(0).normalize();
+                Vector   side = dir.clone().crossProduct(UP);
+                loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
                 if (!inheritRotation) {
                     loc.setYaw(0);
                     loc.setPitch(0);
                 }
-                Vector   dir  = loc.getDirection().setY(0).normalize();
-                Vector   side = dir.clone().crossProduct(UP);
-                loc.add(dir.multiply(forward)).add(0, upward, 0).add(side.multiply(right));
 
                 if (!sameWorld) {
                     Chunk chunk = display.getLocation().getChunk();
