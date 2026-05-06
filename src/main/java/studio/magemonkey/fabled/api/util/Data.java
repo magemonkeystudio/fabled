@@ -98,7 +98,7 @@ public class Data {
         CodexItemManager itemManager = CodexEngine.get().getItemManager();
         ItemType         itemType    = itemManager.getMainItemType(item);
         if (itemType != null) {
-            config.set(MAT, itemType.getID());
+            config.set(MAT, itemType.getNamespacedID());
         } else {
             config.set(MAT, item.getType().name());
         }
