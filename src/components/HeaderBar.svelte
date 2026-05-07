@@ -17,7 +17,7 @@
 	</div>
 
 	<div class='socials'>
-		<a class='social discord' href='https://discord.gg/6UzkTe6RvW' title='Join our Discord'>
+		<a class='social discord' href='https://discord.gg/mQrkW4htUA' title='Join our Discord'>
 			<DiscordLogo />
 		</a>
 		<a class='social github'
