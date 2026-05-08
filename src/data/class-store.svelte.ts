@@ -442,7 +442,7 @@ class ClassStoreSvelte {
 			});
 
 			// If we already have this class, don't add it
-			if (tempClasses.find((cl) => cl.name === c)) return;
+			if (tempClasses.find((cl) => cl.name === name)) return;
 
 			const clazz = new FabledClass({ name, location: 'server' });
 			if (folder) folder.add(clazz);
