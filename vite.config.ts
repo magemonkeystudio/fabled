@@ -8,6 +8,9 @@ const config = {
 		supported: {
 			'top-level-await': true
 		}
+	},
+	test: {
+		environment: 'jsdom'
 	}
 };
 

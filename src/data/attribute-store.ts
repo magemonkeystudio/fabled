@@ -1,16 +1,44 @@
-import type { Writable }               from 'svelte/store';
-import { get, writable }               from 'svelte/store';
-import { browser }                     from '$app/environment';
-import YAML                            from 'yaml';
-import FabledAttribute                 from '$api/fabled-attribute.svelte';
-import type { MultiAttributeYamlData } from '$api/types';
-import { sort }                        from '$api/api';
-import { parseYaml }                   from '$api/yaml';
-import { active, saveError }           from './store';
-import { base }                        from '$app/paths';
-import { goto }                        from '$app/navigation';
-import { socketService }               from '$api/socket/socket-connector';
-import { classStore }                  from './class-store.svelte';
+import type { Writable } from 'svelte/store';
+import {
+	get,
+	writable
+}                        from 'svelte/store';
+import FabledAttribute   from '$api/fabled-attribute.svelte';
+import type {
+	MultiAttributeYamlData
+}                        from '$api/types';
+import {
+	sort
+}                        from '$api/api';
+import {
+	parseYaml
+}                        from '$api/yaml';
+import {
+	active,
+	saveError
+}                        from './store';
+import {
+	base
+}                        from '$app/paths';
+import {
+	goto
+}                        from '$app/navigation';
+import {
+	socketService
+}                        from '$api/socket/socket-connector';
+import {
+	classStore
+}                        from './class-store.svelte';
+import {
+	beginPersistenceSave,
+	finishPersistenceSave
+}                        from './persistence-state';
+import {
+	deletePersistedAttribute,
+	getPersistedAttribute,
+	listPersistedAttributeRecords,
+	savePersistedAttributes
+}                        from './editor-persistence';
 
 class AttributeStore {
 	tooBig: Writable<boolean>       = writable(false);
@@ -47,25 +75,16 @@ class AttributeStore {
 	}
 
 	private setupAttributeStore = <T extends FabledAttribute[]>(
-		key: string,
+		_key: string,
 		def: T,
 		mapper: (data: string) => T,
 		setAction: (data: T) => T,
-		postLoad?: (saved: T) => void): Writable<T> => {
+		postLoad?: (saved: T) => void
+	): Writable<T> => {
 		let saved: T = def;
-		if (browser) {
-			const stored = localStorage.getItem(key);
-			if (stored) {
-				saved = mapper(stored);
-				if (postLoad) postLoad(saved);
-			}
-		}
+		if (postLoad) postLoad(saved);
 
-		const {
-						subscribe,
-						set,
-						update
-					} = writable<T>(saved);
+		const { subscribe, set, update } = writable<T>(saved);
 		return {
 			subscribe,
 			set: (value: T) => {
@@ -76,36 +95,39 @@ class AttributeStore {
 		};
 	};
 
+	hydratePersistedData = async () => {
+		const attributes = listPersistedAttributeRecords().map((record) => {
+			const attribute = new FabledAttribute({ name: record.name, location: 'local' });
+			attribute.load(record.data);
+			return attribute;
+		});
+
+		this.attributes.set(sort<FabledAttribute>(attributes));
+	};
+
 	getDefaultAttributes = async (): Promise<FabledAttribute[]> => {
-		const yaml = parseYaml(await fetch('https://raw.githubusercontent.com/magemonkeystudio/fabled/dev/src/main/resources/attributes.yml').then(r => r.text()));
+		const yaml = parseYaml(
+			await fetch(
+				'https://raw.githubusercontent.com/magemonkeystudio/fabled/dev/src/main/resources/attributes.yml'
+			).then((r) => r.text())
+		);
 		if (!yaml) return [];
 		return Object.keys(yaml).map((key: string) => {
 			const attrib: FabledAttribute = new FabledAttribute({ name: key });
 			attrib.load(yaml[key]);
 			return attrib;
 		});
-
 	};
 
 	attributes: Writable<FabledAttribute[]> = this.setupAttributeStore<FabledAttribute[]>(
-		'attribs',
+		'attributes',
 		[],
-		(data: string) => {
-			if (data.split('\n').length < 3 && data.charAt(0) !== '{') { // Old format
-				return data.replace('\n', '').split(',').map((key: string) => new FabledAttribute({ name: key }));
-			}
-			const yaml = <MultiAttributeYamlData>parseYaml(data);
-			if (!yaml) return [];
-			return Object.keys(yaml).map((key: string) => {
-				const attrib: FabledAttribute = new FabledAttribute({ name: key });
-				attrib.load(yaml[key]);
-				return attrib;
-			});
-		},
+		(_data: string) => [],
 		(value: FabledAttribute[]) => {
 			classStore.updateAllAttributes(value.map((attr: FabledAttribute) => attr.name));
 			return sort<FabledAttribute>(value);
-		});
+		}
+	);
 
 	getAttributeNames = (): string[] => {
 		return get(this.attributes).map((attr) => attr.name);
@@ -127,14 +149,13 @@ class AttributeStore {
 		while (!name && this.isAttributeNameTaken(name || 'attribute ' + index)) {
 			index++;
 		}
-		const attrib = new FabledAttribute({ name: (name || 'attribute ' + index) });
+		const attrib = new FabledAttribute({ name: name || 'attribute ' + index });
 		allAttributes.push(attrib);
 
 		this.attributes.set(allAttributes);
 		attrib.save();
 		return attrib;
 	};
-
 
 	loadAttributes = (e: ProgressEvent<FileReader>) => {
 		const text: string = <string>e.target?.result;
@@ -154,7 +175,7 @@ class AttributeStore {
 		// Get the current attributes
 		const currentAttributes    = get(this.attributes);
 		// Create a map of current attributes for easy lookup
-		const currentAttributesMap = new Map(currentAttributes.map(attr => [attr.name, attr]));
+		const currentAttributesMap = new Map(currentAttributes.map((attr) => [attr.name, attr]));
 
 		// Merge the current attributes with the new ones
 		const mergedAttributes = [...currentAttributes];
@@ -172,14 +193,13 @@ class AttributeStore {
 		this.refreshAttributes();
 	};
 
-	loadAttribute = (data: FabledAttribute) => {
+	loadAttribute = async (data: FabledAttribute) => {
 		if (data.loaded) return;
 
 		if (data.location === 'local') {
-			const yamlData = <MultiAttributeYamlData>parseYaml(localStorage.getItem('attribs') || '');
+			const yamlData = await getPersistedAttribute(data.name);
 			if (!yamlData) return;
-			const attrib = yamlData[data.name];
-			data.load(attrib);
+			data.load(yamlData);
 		}
 	};
 
@@ -207,26 +227,30 @@ class AttributeStore {
 	refreshAttributes = () => this.attributes.set(sort<FabledAttribute>(get(this.attributes)));
 
 	deleteAttribute = (data: FabledAttribute) => {
-		const filtered = get(this.attributes).filter(c => c != data);
+		const filtered = get(this.attributes).filter((c) => c != data);
 		const act      = get(active);
 		this.attributes.set(filtered);
 		this.saveAll();
+		void deletePersistedAttribute(data.name);
 
 		if (!(act instanceof FabledAttribute)) return;
 
 		if (filtered.length === 0) {
 			goto(`${base}/`).then(() => {
 			});
-		} else if (!filtered.find(attr => attr === get(active))) {
+		} else if (!filtered.find((attr) => attr === get(active))) {
 			goto(`${base}/attribute/${filtered[0].name}/edit`).then(() => {
 			});
 		}
 	};
 
 	saveAll = () => {
-		if (get(this.tooBig)) return;
-
-		if (get(this.tooBig) && !get(this.acknowledged)) {
+		const pendingPersist = beginPersistenceSave({
+			name:         'Attributes',
+			tooBig:       get(this.tooBig),
+			acknowledged: get(this.acknowledged)
+		});
+		if (!pendingPersist.shouldPersist) {
 			saveError.set({ name: 'Attributes', acknowledged: false });
 			return;
 		}
@@ -235,23 +259,47 @@ class AttributeStore {
 		for (const attr of get(this.attributes)) {
 			attributeYaml[attr.name] = attr.serializeYaml();
 		}
-		const yaml = YAML.stringify(attributeYaml, { lineWidth: 0, aliasDuplicateObjects: false });
 
-		try {
-			localStorage.setItem('attribs', yaml);
-			this.tooBig.set(false);
-		} catch (e: any) {
-			// If the data is too big
-			if (!e?.message?.includes('quota')) {
-				console.error('Attributes Save error', e);
+		void savePersistedAttributes(
+			Object.entries(attributeYaml).map(([name, data]) => ({
+				name,
+				data
+			}))
+		).then((result) => {
+			if (!result.ok) {
+				if (!result.quotaExceeded) {
+					console.error('Attributes Save error', result.error);
+				} else {
+					const persistState = finishPersistenceSave(
+						{
+							name:         'Attributes',
+							tooBig:       get(this.tooBig),
+							acknowledged: get(this.acknowledged)
+						},
+						result
+					);
+					this.tooBig.set(persistState.state.tooBig);
+					this.acknowledged.set(persistState.state.acknowledged);
+					saveError.set({ name: 'Attributes', acknowledged: false });
+				}
 			} else {
-				localStorage.removeItem('attribs');
-				this.tooBig.set(true);
-				saveError.set({ name: 'Attributes', acknowledged: false });
+				const persistState = finishPersistenceSave(
+					{
+						name:         'Attributes',
+						tooBig:       get(this.tooBig),
+						acknowledged: get(this.acknowledged)
+					},
+					result
+				);
+				this.tooBig.set(persistState.state.tooBig);
+				this.acknowledged.set(persistState.state.acknowledged);
+				if (persistState.clearSaveError && get(saveError)?.name === 'Attributes') {
+					saveError.set(undefined);
+				}
 			}
-		}
 
-		console.log('Saved attributes 😎');
+			console.log('Saved attributes 😎');
+		});
 	};
 }
 
