@@ -34,7 +34,6 @@ import {
 	finishPersistenceSave
 }                        from './persistence-state';
 import {
-	deletePersistedAttribute,
 	getPersistedAttribute,
 	listPersistedAttributeRecords,
 	savePersistedAttributes
@@ -203,8 +202,8 @@ class AttributeStore {
 		}
 	};
 
-	cloneAttribute = (data: FabledAttribute): FabledAttribute => {
-		if (!data.loaded) this.loadAttribute(data);
+	cloneAttribute = async (data: FabledAttribute): Promise<FabledAttribute> => {
+		if (!data.loaded) await this.loadAttribute(data);
 
 		const attr: FabledAttribute[] = get(this.attributes);
 		let name                      = data.name + ' (Copy)';
@@ -231,7 +230,6 @@ class AttributeStore {
 		const act      = get(active);
 		this.attributes.set(filtered);
 		this.saveAll();
-		void deletePersistedAttribute(data.name);
 
 		if (!(act instanceof FabledAttribute)) return;
 

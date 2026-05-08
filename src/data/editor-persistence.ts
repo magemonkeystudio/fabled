@@ -24,6 +24,7 @@ import {
 import type { AttributeYamlData, ClassYamlData, SkillYamlData }                   from '$api/types';
 import type { FolderProperties }                                                  from './folder-store.svelte';
 import type { PersistenceWriteResult }                                            from './persistence-state';
+import { isStorageQuotaError }                                                    from './persistence-state';
 
 const cache = {
 	skills:     new Map<string, SkillYamlData>(),
@@ -212,25 +213,29 @@ export const savePersistedAttributes = async (
 		return unsupportedResult();
 	}
 
-	const db                = await openEditorDatabase();
-	const normalizedRecords = normalizeForPersistence(records);
-	await replaceIndexedDbData(
-		db,
-		{
-			skills:       [...cache.skills.entries()].map(([name, data]) => ({ name, data })),
-			classes:      [...cache.classes.entries()].map(([name, data]) => ({ name, data })),
-			attributes:   normalizedRecords,
-			skillFolders: getPersistedFolders('skill'),
-			classFolders: getPersistedFolders('class')
-		},
-		{
-			skills:     [...cache.skills.keys()],
-			classes:    [...cache.classes.keys()],
-			attributes: [...cache.attributes.keys()]
-		}
-	);
-	replacePersistedAttributeCache(normalizedRecords);
-	return { ok: true, quotaExceeded: false };
+	try {
+		const db                = await openEditorDatabase();
+		const normalizedRecords = normalizeForPersistence(records);
+		await replaceIndexedDbData(
+			db,
+			{
+				skills:       [...cache.skills.entries()].map(([name, data]) => ({ name, data })),
+				classes:      [...cache.classes.entries()].map(([name, data]) => ({ name, data })),
+				attributes:   normalizedRecords,
+				skillFolders: getPersistedFolders('skill'),
+				classFolders: getPersistedFolders('class')
+			},
+			{
+				skills:     [...cache.skills.keys()],
+				classes:    [...cache.classes.keys()],
+				attributes: [...cache.attributes.keys()]
+			}
+		);
+		replacePersistedAttributeCache(normalizedRecords);
+		return { ok: true, quotaExceeded: false };
+	} catch (error) {
+		return { ok: false, quotaExceeded: isStorageQuotaError(error), error };
+	}
 };
 
 export const savePersistedFolders = async (
