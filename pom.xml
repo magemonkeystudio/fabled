@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>fabled</artifactId>
-    <version>1.0.4-R0.92-SNAPSHOT</version>
+    <version>1.0.4-R0.90-SNAPSHOT</version>
     <name>Fabled</name>
     <description>A Minecraft Bukkit plugin aiming to provide an easy code API and skill editor for all server owners to
         create unique and fully custom classes and skills.
@@ -116,7 +116,7 @@
         <dependency>
             <groupId>com.github.retrooper</groupId>
             <artifactId>packetevents-spigot</artifactId>
-            <version>2.12.1</version>
+            <version>2.11.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

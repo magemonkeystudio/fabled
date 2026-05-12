@@ -46,8 +46,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <p>Skill API Registration Manager.</p>
@@ -63,7 +61,6 @@ public class RegistrationManager {
     private final        Fabled          api;
     private final        CommentedConfig skillConfig;
     private final        CommentedConfig classConfig;
-    private final        List<DeferredSave> deferredSaves = new ArrayList<>();
     private              Mode            mode         = Mode.STARTUP;
 
     /**
@@ -174,17 +171,21 @@ public class RegistrationManager {
                     continue;
                 }
                 try {
-                        DynamicSkill skill = new DynamicSkill(key);
-                        skill.load(skillConfig.getConfig().getSection(key));
-                        if (!Fabled.isSkillRegistered(skill.getName())) {
-                            api.addDynamicSkill(skill);
-                            skill.registerEvents(api);
-                            String path = getPath(Fabled.inst().getDataFolder() + File.separator + SKILL_DIR, key);
-                            if (path == null) path = key;
-                            queueDynamicSkillSave(skill, path, key);
-                            Logger.log(LogType.REGISTRATION, 2, "Loaded the dynamic skill: " + key);
-                        } else {
-                            Logger.invalid("Duplicate skill detected: " + key);
+                    DynamicSkill skill = new DynamicSkill(key);
+                    skill.load(skillConfig.getConfig().getSection(key));
+                    if (!Fabled.isSkillRegistered(skill.getName())) {
+                        api.addDynamicSkill(skill);
+                        skill.registerEvents(api);
+                        String path = getPath(Fabled.inst().getDataFolder() + File.separator + SKILL_DIR, key);
+                        if (path == null) path = key;
+                        CommentedConfig sConfig = new CommentedConfig(api, SKILL_DIR + path);
+                        sConfig.clear();
+                        skill.save(sConfig.getConfig().createSection(key));
+                        skill.save(skillConfig.getConfig().createSection(key));
+                        sConfig.save();
+                        Logger.log(LogType.REGISTRATION, 2, "Loaded the dynamic skill: " + key);
+                    } else {
+                        Logger.invalid("Duplicate skill detected: " + key);
                     }
                 } catch (Exception ex) {
                     Logger.invalid("Failed to load skill: " + key + " - " + ex.getMessage());
@@ -213,7 +214,10 @@ public class RegistrationManager {
                         if (!Fabled.isSkillRegistered(skill.getName())) {
                             api.addDynamicSkill(skill);
                             skill.registerEvents(api);
-                            queueDynamicSkillSave(skill, longName, name);
+                            sConfig.clear();
+                            skill.save(sConfig.getConfig().createSection(name));
+                            skill.save(skillConfig.getConfig().createSection(name));
+                            sConfig.save();
                             Logger.log(LogType.REGISTRATION, 2, "Loaded the dynamic skill: " + name);
                         } else if (Fabled.getSkill(name) instanceof DynamicSkill) {
                             Logger.log(LogType.REGISTRATION, 3, name + " is already loaded, skipping it");
@@ -259,16 +263,20 @@ public class RegistrationManager {
                     continue;
                 }
                 try {
-                        DynamicClass tree = new DynamicClass(api, key);
-                        tree.load(classConfig.getConfig().getSection(key));
-                        if (!Fabled.isClassRegistered(tree.getName())) {
-                            api.addDynamicClass(tree);
-                            String path = getPath(Fabled.inst().getDataFolder() + File.separator + CLASS_DIR, key);
-                            if (path == null) path = key;
-                            queueDynamicClassSave(tree, path, key);
-                            Logger.log(LogType.REGISTRATION, 2, "Loaded the dynamic class: " + key);
-                        } else {
-                            Logger.invalid("Duplicate class detected: " + key);
+                    DynamicClass tree = new DynamicClass(api, key);
+                    tree.load(classConfig.getConfig().getSection(key));
+                    if (!Fabled.isClassRegistered(tree.getName())) {
+                        api.addDynamicClass(tree);
+                        String path = getPath(Fabled.inst().getDataFolder() + File.separator + CLASS_DIR, key);
+                        if (path == null) path = key;
+                        CommentedConfig cConfig = new CommentedConfig(api, CLASS_DIR + path);
+                        cConfig.clear();
+                        tree.save(cConfig.getConfig().createSection(key));
+                        tree.save(classConfig.getConfig().createSection(key));
+                        cConfig.save();
+                        Logger.log(LogType.REGISTRATION, 2, "Loaded the dynamic class: " + key);
+                    } else {
+                        Logger.invalid("Duplicate class detected: " + key);
                     }
                 } catch (Exception ex) {
                     Logger.invalid("Failed to load class \"" + key + "\"");
@@ -296,7 +304,10 @@ public class RegistrationManager {
                         tree.load(section);
                         if (!Fabled.isClassRegistered(tree.getName())) {
                             api.addDynamicClass(tree);
-                            queueDynamicClassSave(tree, longName, name);
+                            cConfig.clear();
+                            tree.save(cConfig.getConfig().createSection(name));
+                            tree.save(classConfig.getConfig().createSection(name));
+                            cConfig.save();
                             Logger.log(LogType.REGISTRATION, 2, "Loaded the dynamic class: " + name);
                         } else if (Fabled.getClass(name) instanceof DynamicClass) {
                             Logger.log(LogType.REGISTRATION, 3, name + " is already loaded, skipping it");
@@ -327,68 +338,6 @@ public class RegistrationManager {
         Logger.log(LogType.REGISTRATION, 0, " - " + Fabled.getSkills().size() + " skills");
         Logger.log(LogType.REGISTRATION, 0, " - " + Fabled.getClasses().size() + " classes");
         Logger.log(LogType.REGISTRATION, 0, " Took " + (System.currentTimeMillis() - start) + "ms");
-        Bukkit.getScheduler().runTask(api, this::flushDeferredSaves);
-    }
-
-    private void queueDeferredSave(String description, Runnable saveTask) {
-        deferredSaves.add(new DeferredSave(description, saveTask));
-    }
-
-    private void flushDeferredSaves() {
-        if (deferredSaves.isEmpty()) return;
-
-        List<DeferredSave> savesToRun = new ArrayList<>(deferredSaves);
-        deferredSaves.clear();
-
-        for (DeferredSave deferredSave : savesToRun) {
-            try {
-                deferredSave.saveTask.run();
-            } catch (Exception ex) {
-                Logger.bug("Failed to save deferred " + deferredSave.description);
-                ex.printStackTrace();
-            }
-        }
-
-        skillConfig.save();
-        classConfig.save();
-    }
-
-    private void queueSkillFileSave(Skill skill) {
-        String skillName = skill.getName();
-        queueDeferredSave("skill \"" + skillName + "\"", () -> {
-            CommentedConfig singleFile = new CommentedConfig(api, "skill" + File.separator + skillName);
-            skill.save(singleFile.getConfig());
-            singleFile.save();
-        });
-    }
-
-    private void queueClassFileSave(FabledClass fabledClass) {
-        String className = fabledClass.getName();
-        queueDeferredSave("class \"" + className + "\"", () -> {
-            CommentedConfig singleFile = new CommentedConfig(api, "class" + File.separator + className);
-            fabledClass.save(singleFile.getConfig());
-            singleFile.save();
-        });
-    }
-
-    private void queueDynamicSkillSave(DynamicSkill skill, String path, String key) {
-        queueDeferredSave("dynamic skill \"" + key + "\"", () -> {
-            CommentedConfig singleFile = new CommentedConfig(api, SKILL_DIR + path);
-            singleFile.clear();
-            skill.save(singleFile.getConfig().createSection(key));
-            skill.save(skillConfig.getConfig().createSection(key));
-            singleFile.save();
-        });
-    }
-
-    private void queueDynamicClassSave(DynamicClass tree, String path, String key) {
-        queueDeferredSave("dynamic class \"" + key + "\"", () -> {
-            CommentedConfig singleFile = new CommentedConfig(api, CLASS_DIR + path);
-            singleFile.clear();
-            tree.save(singleFile.getConfig().createSection(key));
-            tree.save(classConfig.getConfig().createSection(key));
-            singleFile.save();
-        });
     }
 
     private String getQualifiedFileName(Path root, Path path) {
@@ -456,10 +405,15 @@ public class RegistrationManager {
             DataSection     config     = singleFile.getConfig();
 
             try {
-                if (!config.keys().isEmpty()) {
-                    skill.load(config);
-                }
-                queueSkillFileSave(skill);
+                // Soft save to ensure optional data starts off in the config
+                skill.softSave(config);
+
+                // Load the config data to apply any previous data
+                skill.load(config);
+
+                // Finally, do a full save to make sure the config is up to date
+                skill.save(config);
+                singleFile.save();
 
                 if (skill instanceof Listener) {
                     Bukkit.getServer().getPluginManager().registerEvents((Listener) skill, api);
@@ -509,10 +463,16 @@ public class RegistrationManager {
             DataSection     config     = singleFile.getConfig();
 
             try {
-                if (!config.keys().isEmpty()) {
-                    fabledClass.load(config);
-                }
-                queueClassFileSave(fabledClass);
+
+                // Soft save to ensure optional data starts off in the config
+                fabledClass.softSave(config);
+
+                // Load the config data to apply any previous data
+                fabledClass.load(config);
+
+                // Finally, do a full save to make sure the config is up to date
+                fabledClass.save(config);
+                singleFile.save();
 
                 // Skill is ready to be registered
                 return fabledClass;
@@ -543,15 +503,5 @@ public class RegistrationManager {
         CLASS,
         DYNAMIC,
         DONE
-    }
-
-    private static class DeferredSave {
-        private final String   description;
-        private final Runnable saveTask;
-
-        private DeferredSave(String description, Runnable saveTask) {
-            this.description = description;
-            this.saveTask = saveTask;
-        }
     }
 }
