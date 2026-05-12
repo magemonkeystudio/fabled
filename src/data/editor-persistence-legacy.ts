@@ -17,7 +17,7 @@ import type {
 } from './editor-persistence-shared';
 import {
 	CLASS_FOLDERS_KEY,
-	SKILL_FOLDERS_KEY,
+	SKILL_FOLDERS_KEY
 } from './editor-persistence-shared';
 
 const SKILL_PREFIX = 'sapi.skill.';
