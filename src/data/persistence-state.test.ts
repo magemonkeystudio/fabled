@@ -85,33 +85,20 @@ describe('storage save state machine', () => {
 
 	it('builds an active skill warning for memory-only data', () => {
 		expect(
-			getPersistenceWarning(
-				{
-					dataType: 'skill',
-					name: 'Meteor',
-					tooBig: true
-				},
-				false
-			)
+			getPersistenceWarning({
+				dataType: 'skill',
+				name: 'Meteor',
+				tooBig: true
+			})
 		).toEqual({
 			label: 'Skill only in memory',
 			detail: 'Meteor is too large for browser storage. Export before refreshing or closing.'
 		});
 	});
 
-	it('builds an attribute warning when the attribute dataset is too large', () => {
-		expect(
-			getPersistenceWarning(
-				{
-					dataType: 'attribute',
-					name: 'Strength'
-				},
-				true
-			)
-		).toEqual({
-			label: 'Attributes only in memory',
-			detail:
-				'Your attributes are too large for browser storage. Export before refreshing or closing.'
-		});
+	it('does not build a warning for attributes', () => {
+		expect(getPersistenceWarning({ dataType: 'attribute', name: 'Strength', tooBig: true })).toBe(
+			undefined
+		);
 	});
 });

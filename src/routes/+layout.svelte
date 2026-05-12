@@ -13,7 +13,6 @@
 		triggerAutoSync
 	}                                                                        from '../data/store';
 	import { closeModal, modalData, ModalService, openModal }                from '../data/modal-service.svelte';
-	import { attributeStore }                                                from '../data/attribute-store';
 	import { editorPersistenceUnsupported }                                  from '../data/editor-persistence';
 	import { skillStore }                                                    from '../data/skill-store.svelte.js';
 	import { getPersistenceWarning }                                         from '../data/persistence-state';
@@ -84,10 +83,7 @@
 		interval = window.setInterval(() => setTime(), 1000);
 		return () => clearInterval(interval);
 	});
-	const persistenceWarning = derived(
-		[active, attributeStore.tooBig],
-		([$active, $attributesTooBig]) => getPersistenceWarning($active, $attributesTooBig)
-	);
+	const persistenceWarning = derived(active, ($active) => getPersistenceWarning($active));
 
 	onMount(() => {
 		if (!browser) return;

@@ -14,8 +14,7 @@ import {
 	parseYaml
 }                        from '$api/yaml';
 import {
-	active,
-	saveError
+	active
 }                        from './store';
 import {
 	base
@@ -30,19 +29,12 @@ import {
 	classStore
 }                        from './class-store.svelte';
 import {
-	beginPersistenceSave,
-	finishPersistenceSave
-}                        from './persistence-state';
-import {
 	getPersistedAttribute,
 	listPersistedAttributeRecords,
 	savePersistedAttributes
 }                        from './editor-persistence';
 
 class AttributeStore {
-	tooBig: Writable<boolean>       = writable(false);
-	acknowledged: Writable<boolean> = writable(false);
-
 	loadAttributesFromServer = async () => {
 		let serverAttributes: string = '';
 		try {
@@ -243,16 +235,6 @@ class AttributeStore {
 	};
 
 	saveAll = () => {
-		const pendingPersist = beginPersistenceSave({
-			name:         'Attributes',
-			tooBig:       get(this.tooBig),
-			acknowledged: get(this.acknowledged)
-		});
-		if (!pendingPersist.shouldPersist) {
-			saveError.set({ name: 'Attributes', acknowledged: false });
-			return;
-		}
-
 		const attributeYaml: MultiAttributeYamlData = {};
 		for (const attr of get(this.attributes)) {
 			attributeYaml[attr.name] = attr.serializeYaml();
@@ -265,35 +247,7 @@ class AttributeStore {
 			}))
 		).then((result) => {
 			if (!result.ok) {
-				if (!result.quotaExceeded) {
-					console.error('Attributes Save error', result.error);
-				} else {
-					const persistState = finishPersistenceSave(
-						{
-							name:         'Attributes',
-							tooBig:       get(this.tooBig),
-							acknowledged: get(this.acknowledged)
-						},
-						result
-					);
-					this.tooBig.set(persistState.state.tooBig);
-					this.acknowledged.set(persistState.state.acknowledged);
-					saveError.set({ name: 'Attributes', acknowledged: false });
-				}
-			} else {
-				const persistState = finishPersistenceSave(
-					{
-						name:         'Attributes',
-						tooBig:       get(this.tooBig),
-						acknowledged: get(this.acknowledged)
-					},
-					result
-				);
-				this.tooBig.set(persistState.state.tooBig);
-				this.acknowledged.set(persistState.state.acknowledged);
-				if (persistState.clearSaveError && get(saveError)?.name === 'Attributes') {
-					saveError.set(undefined);
-				}
+				console.error('Attributes Save error', result.error);
 			}
 
 			console.log('Saved attributes 😎');

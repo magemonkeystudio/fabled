@@ -114,17 +114,8 @@ export const finishPersistenceSave = (
 };
 
 export const getPersistenceWarning = (
-	active: ActivePersistenceTarget | undefined,
-	attributesTooBig: boolean
+	active: ActivePersistenceTarget | undefined
 ): PersistenceWarning | undefined => {
-	if (active?.dataType === 'attribute' && attributesTooBig) {
-		return {
-			label: 'Attributes only in memory',
-			detail:
-				'Your attributes are too large for browser storage. Export before refreshing or closing.'
-		};
-	}
-
 	if (!active?.tooBig || (active.dataType !== 'skill' && active.dataType !== 'class')) {
 		return undefined;
 	}
