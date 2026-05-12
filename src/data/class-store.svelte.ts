@@ -521,7 +521,7 @@ class ClassStoreSvelte {
 
 		try {
 			return JSON.parse(serialized, (key: string, value) => {
-				if (!value) return;
+				if (value === null) return;
 				if (/\d+/.test(key)) {
 					if (typeof value === 'string') {
 						return this.getClass(value);
