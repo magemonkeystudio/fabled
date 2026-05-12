@@ -194,8 +194,10 @@ class AttributeStore {
 		}
 	};
 
-	cloneAttribute = async (data: FabledAttribute): Promise<FabledAttribute> => {
-		if (!data.loaded) await this.loadAttribute(data);
+	cloneAttribute = (data: FabledAttribute): FabledAttribute => {
+		if (!data.loaded) {
+			throw new Error(`Cannot clone unloaded attribute "${data.name}". Load it before cloning.`);
+		}
 
 		const attr: FabledAttribute[] = get(this.attributes);
 		let name                      = data.name + ' (Copy)';
