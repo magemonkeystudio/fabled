@@ -274,9 +274,24 @@ export const deletePersistedClass = async (name: string): Promise<void> => {
 
 export const deletePersistedAttribute = async (name: string): Promise<void> => {
 	await ensureEditorPersistence();
+	const previousAttribute = cache.attributes.get(name);
 	cache.attributes.delete(name);
 	if (persistenceMode !== 'indexeddb') return;
-	await savePersistedAttributes(listPersistedAttributeRecords());
+
+	try {
+		const result = await savePersistedAttributes(listPersistedAttributeRecords());
+		if (!result.ok) {
+			if (previousAttribute !== undefined) {
+				cache.attributes.set(name, previousAttribute);
+			}
+			throw new Error(`Failed to persist deletion of attribute "${name}"`);
+		}
+	} catch (error) {
+		if (previousAttribute !== undefined && !cache.attributes.has(name)) {
+			cache.attributes.set(name, previousAttribute);
+		}
+		throw error;
+	}
 };
 
 export const replacePersistedEditorData = async (data: ReplaceEditorDataInput): Promise<void> => {
