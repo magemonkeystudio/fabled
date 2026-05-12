@@ -1,37 +1,14 @@
-// UI/state helpers for persistence failures. IndexedDB owns the actual editor storage,
-// but the editor still needs a shared way to classify quota-like errors and drive the
-// "memory only" warning/acknowledgement flow for oversized data.
-export interface PersistenceSaveErrorTarget {
+// Shared helpers for browser-persistence failures. IndexedDB owns editor storage, but
+// the UI still needs a consistent way to classify failures and explain them to users.
+export interface PersistenceSaveError {
 	name: string;
-	acknowledged: boolean;
-}
-
-export interface PersistenceSaveState extends PersistenceSaveErrorTarget {
-	tooBig: boolean;
+	message: string;
 }
 
 export interface PersistenceWriteResult {
 	ok: boolean;
 	quotaExceeded: boolean;
 	error?: unknown;
-}
-
-export interface PersistenceSaveDecision {
-	shouldPersist: boolean;
-	state: PersistenceSaveState;
-	saveError?: PersistenceSaveErrorTarget;
-	clearSaveError: boolean;
-}
-
-export interface PersistenceWarning {
-	label: string;
-	detail: string;
-}
-
-interface ActivePersistenceTarget {
-	dataType?: 'class' | 'skill' | 'attribute' | string;
-	name?: string;
-	tooBig?: boolean;
 }
 
 const storageQuotaNames = new Set(['QuotaExceededError', 'NS_ERROR_DOM_QUOTA_REACHED']);
@@ -54,75 +31,7 @@ export const isStorageQuotaError = (error: unknown): boolean => {
 	return maybeDomException.message.toLowerCase().includes('quota');
 };
 
-export const beginPersistenceSave = (state: PersistenceSaveState): PersistenceSaveDecision => {
-	if (!state.tooBig || state.acknowledged) {
-		return {
-			shouldPersist: true,
-			state,
-			clearSaveError: false
-		};
-	}
-
-	return {
-		shouldPersist: false,
-		state,
-		saveError: {
-			name: state.name,
-			acknowledged: state.acknowledged
-		},
-		clearSaveError: false
-	};
-};
-
-export const finishPersistenceSave = (
-	state: PersistenceSaveState,
-	result: PersistenceWriteResult
-): PersistenceSaveDecision => {
-	if (result.ok) {
-		return {
-			shouldPersist: true,
-			state: {
-				...state,
-				tooBig: false,
-				acknowledged: false
-			},
-			clearSaveError: true
-		};
-	}
-
-	if (result.quotaExceeded) {
-		return {
-			shouldPersist: false,
-			state: {
-				...state,
-				tooBig: true,
-				acknowledged: false
-			},
-			saveError: {
-				name: state.name,
-				acknowledged: false
-			},
-			clearSaveError: false
-		};
-	}
-
-	return {
-		shouldPersist: false,
-		state,
-		clearSaveError: false
-	};
-};
-
-export const getPersistenceWarning = (
-	active: ActivePersistenceTarget | undefined
-): PersistenceWarning | undefined => {
-	if (!active?.tooBig || (active.dataType !== 'skill' && active.dataType !== 'class')) {
-		return undefined;
-	}
-
-	const itemType = active.dataType === 'skill' ? 'Skill' : 'Class';
-	return {
-		label: `${itemType} only in memory`,
-		detail: `${active.name || itemType} is too large for browser storage. Export before refreshing or closing.`
-	};
-};
+export const getPersistenceFailureMessage = (result: PersistenceWriteResult): string =>
+	result.quotaExceeded
+		? 'Browser storage is full. Export before refreshing or closing this page.'
+		: "The editor couldn't persist this change to browser storage. Your latest edits remain only in memory until you refresh or close this page.";
