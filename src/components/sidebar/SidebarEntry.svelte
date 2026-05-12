@@ -109,7 +109,7 @@
     } else if (data instanceof FabledSkill) {
       skillStore.cloneSkill(data);
     } else if (data instanceof FabledAttribute) {
-      attributeStore.cloneAttribute(data);
+      void attributeStore.cloneAttribute(data);
     }
   };
 </script>
