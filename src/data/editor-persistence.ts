@@ -1,6 +1,10 @@
-import { browser }                                                                from '$app/environment';
-import { writable }                                                               from 'svelte/store';
-import { clearLegacyEditorStorage, collectLegacyEditorData, hasLegacyEditorData } from './editor-persistence-legacy';
+import { browser } from '$app/environment';
+import { writable } from 'svelte/store';
+import {
+	clearLegacyEditorStorage,
+	collectLegacyEditorData,
+	hasLegacyEditorData
+} from './editor-persistence-legacy';
 import {
 	deleteIndexedDbRecord,
 	loadEditorDbData,
@@ -9,8 +13,9 @@ import {
 	resetEditorDatabaseForTests,
 	writeIndexedDbMeta,
 	writeIndexedDbRecord
-}                                                                                 from './editor-persistence-db';
+} from './editor-persistence-db';
 import {
+	ATTRIBUTES_STORE,
 	CLASS_FOLDERS_KEY,
 	CLASSES_STORE,
 	MIGRATION_KEY,
@@ -20,17 +25,17 @@ import {
 	type ReplaceEditorDataInput,
 	SKILL_FOLDERS_KEY,
 	SKILLS_STORE
-}                                                                                 from './editor-persistence-shared';
-import type { AttributeYamlData, ClassYamlData, SkillYamlData }                   from '$api/types';
-import type { FolderProperties }                                                  from './folder-store.svelte';
-import type { PersistenceWriteResult }                                            from './persistence-state';
-import { isStorageQuotaError }                                                    from './persistence-state';
+} from './editor-persistence-shared';
+import type { AttributeYamlData, ClassYamlData, SkillYamlData } from '$api/types';
+import type { FolderProperties } from './folder-store.svelte';
+import type { PersistenceWriteResult } from './persistence-state';
+import { isStorageQuotaError } from './persistence-state';
 
 const cache = {
-	skills:     new Map<string, SkillYamlData>(),
-	classes:    new Map<string, ClassYamlData>(),
+	skills: new Map<string, SkillYamlData>(),
+	classes: new Map<string, ClassYamlData>(),
 	attributes: new Map<string, AttributeYamlData>(),
-	meta:       new Map<string, unknown>()
+	meta: new Map<string, unknown>()
 };
 
 export const editorPersistenceUnsupported = writable<string | null>(null);
@@ -53,7 +58,7 @@ const unsupportedPersistenceError = (cause?: unknown) =>
 	);
 
 const loadCache = async () => {
-	const db   = await openEditorDatabase();
+	const db = await openEditorDatabase();
 	const data = await loadEditorDbData(db);
 
 	resetCache();
@@ -79,10 +84,10 @@ const migrateLegacyLocalStorage = async (): Promise<void> => {
 	}
 
 	const data = collectLegacyEditorData();
-	const db   = await openEditorDatabase();
+	const db = await openEditorDatabase();
 	await replaceIndexedDbData(db, data, {
-		skills:     [...cache.skills.keys()],
-		classes:    [...cache.classes.keys()],
+		skills: [...cache.skills.keys()],
+		classes: [...cache.classes.keys()],
 		attributes: [...cache.attributes.keys()]
 	});
 	clearLegacyEditorStorage();
@@ -162,12 +167,11 @@ export const getPersistedFolders = (type: 'skill' | 'class'): FolderProperties[]
 		) as FolderProperties[]) || []
 	).map((folder) => structuredClone(folder));
 
-const unsupportedResult = (): PersistenceWriteResult =>
-	({
-		ok:            false,
-		quotaExceeded: false,
-		error:         unsupportedPersistenceError()
-	});
+const unsupportedResult = (): PersistenceWriteResult => ({
+	ok: false,
+	quotaExceeded: false,
+	error: unsupportedPersistenceError()
+});
 
 export const savePersistedSkill = async (
 	name: string,
@@ -214,23 +218,22 @@ export const savePersistedAttributes = async (
 	}
 
 	try {
-		const db                = await openEditorDatabase();
+		const db = await openEditorDatabase();
 		const normalizedRecords = normalizeForPersistence(records);
-		await replaceIndexedDbData(
-			db,
-			{
-				skills:       [...cache.skills.entries()].map(([name, data]) => ({ name, data })),
-				classes:      [...cache.classes.entries()].map(([name, data]) => ({ name, data })),
-				attributes:   normalizedRecords,
-				skillFolders: getPersistedFolders('skill'),
-				classFolders: getPersistedFolders('class')
-			},
-			{
-				skills:     [...cache.skills.keys()],
-				classes:    [...cache.classes.keys()],
-				attributes: [...cache.attributes.keys()]
-			}
-		);
+		const transaction = db.transaction(ATTRIBUTES_STORE, 'readwrite');
+		const store = transaction.store;
+		const incomingNames = new Set(normalizedRecords.map((record) => record.name));
+
+		[...cache.attributes.keys()]
+			.filter((name) => !incomingNames.has(name))
+			.forEach((name) => {
+				void store.delete(name);
+			});
+		normalizedRecords.forEach((record) => {
+			void store.put(record);
+		});
+
+		await transaction.done;
 		replacePersistedAttributeCache(normalizedRecords);
 		return { ok: true, quotaExceeded: false };
 	} catch (error) {
@@ -247,7 +250,7 @@ export const savePersistedFolders = async (
 		return unsupportedResult();
 	}
 
-	const key    = type === 'skill' ? SKILL_FOLDERS_KEY : CLASS_FOLDERS_KEY;
+	const key = type === 'skill' ? SKILL_FOLDERS_KEY : CLASS_FOLDERS_KEY;
 	const result = await writeIndexedDbMeta(key, folders);
 	if (result.ok) {
 		cache.meta.set(key, normalizeForPersistence(folders));
@@ -284,8 +287,8 @@ export const replacePersistedEditorData = async (data: ReplaceEditorDataInput): 
 
 	const db = await openEditorDatabase();
 	await replaceIndexedDbData(db, data, {
-		skills:     [...cache.skills.keys()],
-		classes:    [...cache.classes.keys()],
+		skills: [...cache.skills.keys()],
+		classes: [...cache.classes.keys()],
 		attributes: [...cache.attributes.keys()]
 	});
 	await loadCache();
@@ -299,19 +302,21 @@ export const importLegacyMigrationData = async (input: {
 	classFolders: string;
 }): Promise<void> => {
 	const { parseYaml } = await import('$api/yaml');
-	const skills        = Object.entries((parseYaml(input.skillData) as Record<string, SkillYamlData>) || {})
+	const skills = Object.entries((parseYaml(input.skillData) as Record<string, SkillYamlData>) || {})
 		.filter(([name]) => name !== 'loaded')
 		.map(([name, data]) => ({
 			name,
 			data
 		}));
-	const classes       = Object.entries((parseYaml(input.classData) as Record<string, ClassYamlData>) || {})
+	const classes = Object.entries(
+		(parseYaml(input.classData) as Record<string, ClassYamlData>) || {}
+	)
 		.filter(([name]) => name !== 'loaded')
 		.map(([name, data]) => ({
 			name,
 			data
 		}));
-	const attributes    = Object.entries(
+	const attributes = Object.entries(
 		(parseYaml(input.attributes) as Record<string, AttributeYamlData>) || {}
 	).map(([name, data]) => ({
 		name,
@@ -346,7 +351,7 @@ export { normalizeForPersistence };
 export const resetEditorPersistenceForTests = async () => {
 	resetCache();
 	initializationPromise = undefined;
-	persistenceMode       = 'indexeddb';
+	persistenceMode = 'indexeddb';
 	editorPersistenceUnsupported.set(null);
 
 	await resetEditorDatabaseForTests();

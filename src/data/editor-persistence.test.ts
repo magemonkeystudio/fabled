@@ -3,6 +3,7 @@ import 'fake-indexeddb/auto';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import YAML from 'yaml';
 import type { AttributeYamlData, ClassYamlData, SkillYamlData } from '$api/types';
+import { ATTRIBUTES_STORE, SKILLS_STORE } from './editor-persistence-shared';
 
 vi.mock('$app/environment', () => ({
 	browser: true
@@ -193,4 +194,30 @@ describe('editor persistence', () => {
 		});
 	});
 
+	it('does not overwrite newer persisted skills when saving attributes', async () => {
+		const persistence = await import('./editor-persistence');
+		const updatedSkillData: SkillYamlData = {
+			...skillData,
+			msg: 'updated'
+		};
+		const { openEditorDatabase, writeIndexedDbRecord } = await import('./editor-persistence-db');
+
+		await persistence.savePersistedSkill('Meteor', skillData);
+		await writeIndexedDbRecord(SKILLS_STORE, {
+			name: 'Meteor',
+			data: updatedSkillData
+		});
+
+		await persistence.savePersistedAttributes([{ name: 'Spirit', data: attributeData }]);
+
+		const db = await openEditorDatabase();
+		expect(await db.get(SKILLS_STORE, 'Meteor')).toEqual({
+			name: 'Meteor',
+			data: updatedSkillData
+		});
+		expect(await db.get(ATTRIBUTES_STORE, 'Spirit')).toEqual({
+			name: 'Spirit',
+			data: attributeData
+		});
+	});
 });
