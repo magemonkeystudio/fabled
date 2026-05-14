@@ -252,14 +252,9 @@
         cursor: pointer;
     }
 
-    .sidebar-entry:not(.in-folder):last-child {
-        position: sticky;
-        margin-top: 0.5rem;
-        bottom: 0;
-        background-color: unset;
-    }
-
-    .sidebar-entry:not(:last-child), :global(.folder-content .sidebar-entry) {
+    /* Border on every entry — Sidebar handles the "new" row separately,
+       so we no longer rely on :last-child to detect the bottom button. */
+    .sidebar-entry, :global(.folder-content .sidebar-entry) {
         border-bottom: 1px solid #aaa;
     }
 

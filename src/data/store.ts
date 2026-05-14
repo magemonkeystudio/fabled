@@ -36,6 +36,14 @@ export const shownTab: Writable<Tab>                                            
 export const importing: Writable<boolean>                                                   = writable(false);
 export const localSyncList: Writable<Map<FileSystemFileHandle, FabledSkill | FabledClass | FabledAttribute>> = writable(new Map());
 
+/** Progress of a chunked YAML load (0–1). -1 = idle, not loading. */
+export interface LoadProgress {
+	label:     string;  // e.g. "Loading skills.yml…"
+	processed: number;
+	total:     number;
+}
+export const loadProgress: Writable<LoadProgress | null> = writable(null);
+
 export const toggleSidebar = (e: Event) => {
 	e.stopPropagation();
 	showSidebar.set(!get(showSidebar));

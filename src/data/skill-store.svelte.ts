@@ -3,7 +3,7 @@ import { get, writable }               from 'svelte/store';
 import { sort, toEditorCase }          from '$api/api';
 import { parseYaml }                   from '$api/yaml';
 import { browser }                     from '$app/environment';
-import { active, saveError }           from './store';
+import { active, loadProgress, saveError } from './store';
 import { goto }                        from '$app/navigation';
 import { base }                        from '$app/paths';
 import Registry, { initialized }       from '$api/components/registry';
@@ -22,6 +22,8 @@ import FabledTrigger                   from '$api/components/triggers.svelte';
 import type FabledComponent            from '$api/components/fabled-component.svelte';
 import { FabledFolder, folderStore }   from './folder-store.svelte';
 import YAML                            from 'yaml';
+import { idbDelete, idbGet, idbGetAllKeys, idbSet, migrateFromLocalStorage } from '$api/idb';
+import { workerParseChunked }          from '$api/worker-yaml';
 
 export default class FabledSkill implements Serializable {
 	dataType                     = 'skill';
@@ -276,27 +278,20 @@ export default class FabledSkill implements Serializable {
 
 	private saveDebounceTimeout: number | undefined;
 	public save = () => {
-		if (!this.name || this.tooBig) return;
-
-		if (this.tooBig && !this.acknowledged) {
-			saveError.set(this);
-			return;
-		}
-
-			if (this.location === 'server') {
-				return;
-			}
+		if (!this.name) return;
+		if (this.location === 'server') return;
 
 		if (this.saveDebounceTimeout) {
 			window.clearTimeout(this.saveDebounceTimeout);
 		}
 
 		this.changed();
-		this.saveDebounceTimeout = window.setTimeout(() => {
+		this.saveDebounceTimeout = window.setTimeout(async () => {
 			skillStore.isSaving.set(true);
 
+			// Rename: remove old IDB entry
 			if (this.previousName && this.previousName !== this.name) {
-				localStorage.removeItem('sapi.skill.' + this.previousName);
+				await idbDelete('skills', this.previousName);
 			}
 			this.previousName = this.name;
 
@@ -305,28 +300,33 @@ export default class FabledSkill implements Serializable {
 					lineWidth:             0,
 					aliasDuplicateObjects: false
 				});
-				localStorage.setItem('sapi.skill.' + this.name, yaml);
+				await idbSet('skills', this.name, yaml);
 				this.tooBig = false;
 			} catch (e: any) {
-				// If the data is too big
-				if (!e?.message?.includes('quota')) {
-					console.error(this.name + ' Save error', e);
-				} else {
-					localStorage.removeItem('sapi.skill.' + this.name);
-					this.tooBig = true;
-					saveError.set(this);
-				}
+				console.error(this.name + ' Save error', e);
+				this.tooBig = true;
+				saveError.set(this);
 			}
 
 			this.saveDebounceTimeout = undefined;
 			skillStore.isSaving.set(false);
 			console.log('Saved ' + this.name + ' 😎');
-		}, 600); // Adjust the debounce delay as needed
+		}, 600);
 	};
 }
 
 class SkillStore {
-	isLegacy                     = false;
+	isLegacy = false;
+
+	// ---- O(1) name → skill lookup ----------------------------------------
+	private skillMap = new Map<string, FabledSkill>();
+
+	private syncMap(skills: FabledSkill[]) {
+		this.skillMap.clear();
+		for (const sk of skills) this.skillMap.set(sk.name, sk);
+	}
+
+	// ---- Server skills ----------------------------------------------------
 	private loadSkillsFromServer = async () => {
 		let serverSkills: string[];
 		try {
@@ -384,6 +384,12 @@ class SkillStore {
 	constructor() {
 		socketService.onConnect(this.loadSkillsFromServer);
 		socketService.onDisconnect(this.removeServerSkills);
+
+		// Start async IDB init here — all arrow-function fields are guaranteed
+		// to be initialised by the time the constructor body runs.
+		if (browser) {
+			this.initSkillsFromIdb();
+		}
 
 		get(this.skills).forEach(sk => {
 			if (sk.loaded) {
@@ -467,32 +473,64 @@ class SkillStore {
 		};
 	};
 
-	skills: Writable<FabledSkill[]> = this.setupSkillStore<FabledSkill[]>(
-		browser && localStorage.getItem('skillNames') ? 'skillNames' : 'skillData',
-		[],
-		(data: string) => {
-			if (localStorage.getItem('skillNames')) {
-				return data.split(', ').map(name => new FabledSkill({
-					name,
-					location: 'local'
-				})).filter(sk => localStorage.getItem('sapi.skill.' + sk.name));
-			} else {
-				localStorage.removeItem('skillData');
-				this.isLegacy = true;
-				return sort<FabledSkill>(this.loadSkillTextToArray(data));
-			}
-		},
-		(value: FabledSkill[]) => {
-			this.persistSkills();
-			return sort<FabledSkill>(value);
-		});
+	skills: Writable<FabledSkill[]> = (() => {
+		const { subscribe, set, update } = writable<FabledSkill[]>([]);
+
+		return {
+			subscribe,
+			set: (value: FabledSkill[]) => {
+				const sorted = sort<FabledSkill>(value);
+				this.syncMap(sorted);
+				this.persistSkills(sorted);
+				return set(sorted);
+			},
+			update
+		};
+	})();
 
 	getSkill = (name: string): FabledSkill | undefined => {
-		for (const c of get(this.skills)) {
-			if (c.name == name) return c;
+		return this.skillMap.get(name);
+	};
+
+	/**
+	 * Load skill names from IndexedDB on startup (replaces localStorage init).
+	 * Falls back to localStorage migration if IDB is empty.
+	 */
+	initSkillsFromIdb = async () => {
+		let names = await idbGetAllKeys('skills');
+
+		// --- one-time migration from localStorage ---
+		if (names.length === 0) {
+			const lsNames = localStorage.getItem('skillNames');
+			if (lsNames) {
+				// Legacy new-format: comma-separated names
+				const legacyNames = lsNames.split(', ').filter(Boolean);
+				await migrateFromLocalStorage(n => 'sapi.skill.' + n, 'skills', legacyNames);
+				localStorage.removeItem('skillNames');
+				names = await idbGetAllKeys('skills');
+			} else {
+				// Very old format: skillData key had full YAML
+				const oldData = localStorage.getItem('skillData');
+				if (oldData) {
+					localStorage.removeItem('skillData');
+					this.isLegacy = true;
+					const legacy  = sort<FabledSkill>(this.loadSkillTextToArray(oldData));
+					this.skills.set(legacy);
+					legacy.forEach(sk => sk.save());
+					return;
+				}
+			}
 		}
 
-		return undefined;
+		if (names.length === 0) return;
+
+		const skills = names.map(name => new FabledSkill({ name, location: 'local' }));
+		// Bypass the Writable.set wrapper to avoid double-persistSkills
+		const sorted = sort<FabledSkill>(skills);
+		this.syncMap(sorted);
+		// Use the raw writable update to seed the store
+		get(this.skills); // ensure writable is subscribed
+		(this.skills as any).set(sorted);
 	};
 
 	skillFolders: Writable<FabledFolder[]> = this.setupSkillStore<FabledFolder[]>('skillFolders', [],
@@ -550,7 +588,8 @@ class SkillStore {
 		let yamlData: MultiSkillYamlData;
 
 		if (data.location === 'local') {
-			yamlData = <MultiSkillYamlData>parseYaml(localStorage.getItem(`sapi.skill.${data.name}`) || '');
+			const raw = await idbGet('skills', data.name) ?? '';
+			yamlData  = <MultiSkillYamlData>parseYaml(raw);
 		} else {
 			const yaml = await socketService.getSkillYaml(data.name);
 			if (!yaml) return;
@@ -624,7 +663,7 @@ class SkillStore {
 		const filtered = get(this.skills).filter(c => c != data);
 		const act      = get(active);
 		this.skills.set(filtered);
-		localStorage.removeItem('sapi.skill.' + data.name);
+		idbDelete('skills', data.name); // fire & forget
 
 		if (!(act instanceof FabledSkill)) return;
 
@@ -642,43 +681,57 @@ class SkillStore {
 
 
 	/**
-	 *  Loads skill data from a string
+	 * Loads skill data from a YAML string.
+	 * Uses the Web Worker + chunked parsing for large files (all-in-one skills.yml).
+	 * Falls back to synchronous parse for server-sourced single skills.
 	 */
 	loadSkillText = async (text: string, fromServer: boolean = false) => {
-		// Load new skills
-		const data = <MultiSkillYamlData>parseYaml(text);
-
-		if (!data || Object.keys(data).length === 0) {
-			// If there is no data or the object is empty... return
-			return;
-		}
-
-		const keys = Object.keys(data);
-
-		let skill: FabledSkill;
-		// If we only have one skill, and it is the current YAML,
-		// the structure is a bit different
-		if (keys.length == 1) {
-			const key: string = keys[0];
-			skill             = (<FabledSkill>(this.isSkillNameTaken(key)
+		// For server single-skill loads, stay synchronous (they're tiny)
+		if (fromServer) {
+			const data = <MultiSkillYamlData>parseYaml(text);
+			if (!data || Object.keys(data).length === 0) return;
+			const keys = Object.keys(data);
+			const key  = keys[0];
+			if (!key || key === 'loaded') return;
+			const skill = <FabledSkill>(this.isSkillNameTaken(key)
 				? this.getSkill(key)
-				: this.addSkill(key)));
-			if (fromServer) skill.location = 'server';
+				: this.addSkill(key));
+			skill.location = 'server';
 			await skill.load(data[key]);
-			skill.save();
 			this.refreshSkills();
 			return;
 		}
 
-		for (const key of Object.keys(data)) {
-			if (key != 'loaded' && !this.isSkillNameTaken(key)) {
-				skill = (<FabledSkill>(this.isSkillNameTaken(key)
-					? this.getSkill(key)
-					: this.addSkill(key)));
-				await skill.load(data[key]);
-				skill.save();
-			}
-		}
+		// --- Chunked loading via Web Worker ---
+		const tempSkills: FabledSkill[] = get(this.skills).slice();
+
+		await workerParseChunked(
+			text,
+			async (batch, processed, total) => {
+				// Update progress bar
+				loadProgress.set({ label: 'Loading skills…', processed, total });
+
+				for (const [key, yamlData] of Object.entries(batch)) {
+					if (key === 'loaded') continue;
+					if (this.isSkillNameTaken(key)) continue; // skip duplicates
+
+					const skill = new FabledSkill({ name: key });
+					// load() resolves when Registry is initialized
+					await skill.load(<SkillYamlData>yamlData);
+					skill.save(); // persist to IDB (fire & forget)
+					tempSkills.push(skill);
+				}
+
+				// Flush to store so sidebar updates incrementally
+				const sorted = sort<FabledSkill>(tempSkills);
+				this.syncMap(sorted);
+				// Directly trigger the Writable without calling persistSkills
+				(this.skills as any).set(sorted);
+			},
+			25 // batch size — 25 skills per message
+		);
+
+		loadProgress.set(null);
 		this.refreshSkills();
 	};
 
@@ -692,18 +745,9 @@ class SkillStore {
 	isSaving: Writable<boolean> = writable(false);
 	saveTask: number            = 0;
 
-	persistSkills = (list?: FabledSkill[]) => {
-		if (get(this.isSaving) && this.saveTask) {
-			clearTimeout(this.saveTask);
-		}
-
-		this.isSaving.set(true);
-
-		this.saveTask = window.setTimeout(() => {
-			const skillList = (list || get(this.skills)).filter(sk => sk.location === 'local');
-			localStorage.setItem('skillNames', skillList.map(sk => sk.name).join(', '));
-			this.isSaving.set(false);
-		});
+	persistSkills = (_list?: FabledSkill[]) => {
+		// Skill YAML is now persisted per-skill via idbSet() inside FabledSkill.save().
+		// This method intentionally left as a no-op to maintain call-site compatibility.
 	};
 }
 

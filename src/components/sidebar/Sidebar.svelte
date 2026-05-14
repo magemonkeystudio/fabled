@@ -1,5 +1,5 @@
 <script lang='ts'>
-	import { closeSidebar, shownTab, sidebarOpen } from '../../data/store';
+	import { closeSidebar, loadProgress, shownTab, sidebarOpen } from '../../data/store';
 	import SidebarEntry                            from './SidebarEntry.svelte';
 	import { squish }                              from '../../data/squish';
 	import { goto }                                from '$app/navigation';
@@ -19,6 +19,7 @@
 	import { attributeStore }                      from '../../data/attribute-store';
 	import { FabledFolder }                        from '../../data/folder-store.svelte';
 	import { sort }                                from '$api/api';
+	import VirtualList                             from '../VirtualList.svelte';
 
 	let folders: FabledFolder[]                         = [];
 	let tabSub: Unsubscriber;
@@ -108,99 +109,131 @@
 		/>
 		<hr />
 	</div>
+
+	{#if $loadProgress}
+		<div class='progress-wrap'>
+			<span class='progress-label'>{$loadProgress.label}</span>
+			<div class='progress-track'>
+				<div
+					class='progress-fill'
+					style:width='{Math.round($loadProgress.processed / $loadProgress.total * 100)}%'
+				></div>
+			</div>
+			<span class='progress-count'>{$loadProgress.processed} / {$loadProgress.total}</span>
+		</div>
+	{/if}
+
 	{#if built}
-		{#if $shownTab === Tab.CLASSES}
-			<div class='items' in:fly={{ x: -100 }} out:fly={{ x: -100 }}>
-				{#each sort($classFolders) as cf (cf.key)}
-					<Folder folder={cf} />
-				{/each}
-				{#each sort($classes).filter((c) => !classIncluded.includes(c)) as cl, i (cl.key)}
-					<SidebarEntry
-						data={cl}
-						delay={200 + 100 * i}
-						onclick={() => goto(`${base}/class/${cl.name}/edit`)}
-					>
-						{cl.name}{cl.location === 'server' ? '*' : ''}
-					</SidebarEntry>
-				{/each}
-				<SidebarEntry delay={200 + 100 * ($classes.length + 1)}>
-					<div class='new'>
-					<span
-						tabindex='0'
-						role='button'
-						onclick={() => classStore.addClass()}
-						onkeypress={(e) => e.key === 'Enter' && classStore.addClass()}>New Class</span
-					>
-						<span
-							class='new-folder'
-							tabindex='0'
-							role='button'
-							onclick={() => classStore.addClassFolder(new FabledFolder())}
-							onkeypress={(e) => e.key === 'Enter' && classStore.addClassFolder(new FabledFolder())}
-						>New Folder</span
+		<div class='list-area'>
+			{#if $shownTab === Tab.CLASSES}
+				<div class='items' in:fly={{ x: -100 }} out:fly={{ x: -100 }}>
+					{#each sort($classFolders) as cf (cf.key)}
+						<Folder folder={cf} />
+					{/each}
+					<div class='vl-wrap'>
+						<VirtualList
+							items={sort($classes).filter((c) => !classIncluded.includes(c))}
+							itemHeight={44}
+							key={(item) => item.key}
 						>
+							{#snippet children({ item: cl })}
+								<SidebarEntry
+									data={cl}
+									onclick={() => goto(`${base}/class/${cl.name}/edit`)}
+								>
+									{cl.name}{cl.location === 'server' ? '*' : ''}
+								</SidebarEntry>
+							{/snippet}
+						</VirtualList>
 					</div>
-				</SidebarEntry>
-			</div>
-		{:else if $shownTab === Tab.SKILLS}
-			<div class='items' in:fly={{ x: 100 }} out:fly={{ x: 100 }}>
-				{#each sort($skillFolders) as sk}
-					<Folder folder={sk} />
-				{/each}
-				{#each sort($skills).filter((s) => !skillIncluded.includes(s)) as sk, i (sk.key)}
-					<SidebarEntry
-						data={sk}
-						direction='right'
-						delay={200 + 100 * i}
-						onclick={() => goto(`${base}/skill/${sk.name}`)}
-					>
-						{sk.name}{sk.location === 'server' ? '*' : ''}
-					</SidebarEntry>
-				{/each}
-				<SidebarEntry delay={200 + 100 * ($skills.length + 1)} direction='right'>
-					<div class='new'>
-					<span
-						tabindex='0'
-						role='button'
-						onclick={() => skillStore.addSkill()}
-						onkeypress={(e) => e.key === 'Enter' && skillStore.addSkill()}>New Skill</span
-					>
-						<span
-							class='new-folder'
-							tabindex='0'
-							role='button'
-							onclick={() => skillStore.addSkillFolder(new FabledFolder())}
-							onkeypress={(e) => e.key === 'Enter' && skillStore.addSkillFolder(new FabledFolder())}
-						>New Folder</span
+					<div class='new-row'>
+						<div class='new'>
+							<span
+								tabindex='0'
+								role='button'
+								onclick={() => classStore.addClass()}
+								onkeypress={(e) => e.key === 'Enter' && classStore.addClass()}>New Class</span>
+							<span
+								class='new-folder'
+								tabindex='0'
+								role='button'
+								onclick={() => classStore.addClassFolder(new FabledFolder())}
+								onkeypress={(e) => e.key === 'Enter' && classStore.addClassFolder(new FabledFolder())}
+							>New Folder</span>
+						</div>
+					</div>
+				</div>
+			{:else if $shownTab === Tab.SKILLS}
+				<div class='items' in:fly={{ x: 100 }} out:fly={{ x: 100 }}>
+					{#each sort($skillFolders) as sk}
+						<Folder folder={sk} />
+					{/each}
+					<div class='vl-wrap'>
+						<VirtualList
+							items={sort($skills).filter((s) => !skillIncluded.includes(s))}
+							itemHeight={44}
+							key={(item) => item.key}
 						>
+							{#snippet children({ item: sk })}
+								<SidebarEntry
+									data={sk}
+									direction='right'
+									onclick={() => goto(`${base}/skill/${sk.name}`)}
+								>
+									{sk.name}{sk.location === 'server' ? '*' : ''}
+								</SidebarEntry>
+							{/snippet}
+						</VirtualList>
 					</div>
-				</SidebarEntry>
-			</div>
-		{:else if $shownTab === Tab.ATTRIBUTES}
-			<div class='items' in:fly={{ x: 100 }} out:fly={{ x: 100 }}>
-				{#each sort($attributes) as att, i (att.key)}
-					<SidebarEntry
-						data={att}
-						direction='right'
-						delay={200 + 100 * i}
-						onclick={() => goto(`${base}/attribute/${att.name}/edit`)}
-					>
-						{att.name}{att.location === 'server' ? '*' : ''}
-					</SidebarEntry>
-				{/each}
-				<SidebarEntry delay={200 + 100 * ($attributes.length + 1)} direction='right'>
-					<div class='new'>
-					<span
-						tabindex='0'
-						role='button'
-						onclick={() => attributeStore.addAttribute()}
-						onkeypress={(e) => e.key === 'Enter' && attributeStore.addAttribute()}
-					>New Attribute</span
-					>
+					<div class='new-row'>
+						<div class='new'>
+							<span
+								tabindex='0'
+								role='button'
+								onclick={() => skillStore.addSkill()}
+								onkeypress={(e) => e.key === 'Enter' && skillStore.addSkill()}>New Skill</span>
+							<span
+								class='new-folder'
+								tabindex='0'
+								role='button'
+								onclick={() => skillStore.addSkillFolder(new FabledFolder())}
+								onkeypress={(e) => e.key === 'Enter' && skillStore.addSkillFolder(new FabledFolder())}
+							>New Folder</span>
+						</div>
 					</div>
-				</SidebarEntry>
-			</div>
-		{/if}
+				</div>
+			{:else if $shownTab === Tab.ATTRIBUTES}
+				<div class='items' in:fly={{ x: 100 }} out:fly={{ x: 100 }}>
+					<div class='vl-wrap'>
+						<VirtualList
+							items={sort($attributes)}
+							itemHeight={44}
+							key={(item) => item.key}
+						>
+							{#snippet children({ item: att })}
+								<SidebarEntry
+									data={att}
+									direction='right'
+									onclick={() => goto(`${base}/attribute/${att.name}/edit`)}
+								>
+									{att.name}{att.location === 'server' ? '*' : ''}
+								</SidebarEntry>
+							{/snippet}
+						</VirtualList>
+					</div>
+					<div class='new-row'>
+						<div class='new'>
+							<span
+								tabindex='0'
+								role='button'
+								onclick={() => attributeStore.addAttribute()}
+								onkeypress={(e) => e.key === 'Enter' && attributeStore.addAttribute()}
+							>New Attribute</span>
+						</div>
+					</div>
+				</div>
+			{/if}
+		</div>
 	{/if}
 </div>
 
@@ -213,8 +246,10 @@
         background-color: #222;
         max-height: var(--height);
         height: var(--height);
-        overflow-y: auto;
         width: 75%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
     }
 
     hr {
@@ -222,18 +257,82 @@
     }
 
     .type-wrap {
-        position: sticky;
+        flex-shrink: 0;
         z-index: 2;
-        top: 0;
         background-color: #222;
         padding: 0.4rem;
         user-select: none;
         -webkit-user-select: none;
     }
 
+    /* Progress bar */
+    .progress-wrap {
+        flex-shrink: 0;
+        padding: 0.4rem 0.6rem 0.3rem;
+        background-color: #1a1a1a;
+        border-bottom: 1px solid #333;
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+
+    .progress-label {
+        font-size: 0.7rem;
+        color: #aaa;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .progress-track {
+        width: 100%;
+        height: 4px;
+        background-color: #333;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background-color: #0083ef;
+        border-radius: 2px;
+        transition: width 0.1s linear;
+    }
+
+    .progress-count {
+        font-size: 0.65rem;
+        color: #666;
+        text-align: right;
+    }
+
+    /* List area fills remaining height; acts as the positioning context for .items */
+    .list-area {
+        flex: 1;
+        min-height: 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Each tab's content pane fills the list-area absolutely so fly transitions overlap cleanly */
     .items {
         position: absolute;
-        width: 100%;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* VirtualList wrapper — takes all remaining height after folders + new-button */
+    .vl-wrap {
+        flex: 1;
+        min-height: 0;
+    }
+
+    /* "New X / New Folder" row — sticky at the bottom of the list pane */
+    .new-row {
+        position: sticky;
+        bottom: 0;
+        flex-shrink: 0;
+        margin-top: 0.5rem;
     }
 
     .new {
@@ -271,8 +370,6 @@
             top: 3rem;
             width: 15rem;
             min-width: 10rem;
-            overflow-x: hidden;
-            overflow-y: auto;
         }
     }
 </style>

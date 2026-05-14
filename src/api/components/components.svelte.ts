@@ -2905,6 +2905,16 @@ class DamageMechanic extends FabledMechanic {
 					.setTooltip('Whether the damage will play the hurt animation (screen shake) to the target. Ignored if it is True Damage, requires ProtocolLib to function'),
 				new BooleanSelect('Ignore Divinity', 'ignore-divinity', false)
 					.setTooltip('Whether to ignore Divinity\'s defenses and damage calculations'),
+				new BooleanSelect('Ignore Crit', 'divinity-ignore-crit', false)
+					.setTooltip('Whether to prevent the caster\'s critical hit stat from applying to this hit'),
+				new BooleanSelect('Ignore Dodge', 'divinity-ignore-dodge', false)
+					.setTooltip('Whether to prevent the target from dodging this hit using their dodge rate stat'),
+				new BooleanSelect('Ignore Block', 'divinity-ignore-block', false)
+					.setTooltip('Whether to prevent the target from blocking this hit using their block rate stat'),
+				new BooleanSelect('No Bleed', 'divinity-no-bleed', false)
+					.setTooltip('Whether to suppress the caster\'s bleed on-hit effect for this hit'),
+				new BooleanSelect('No Vamp', 'divinity-no-vamp', false)
+					.setTooltip('Whether to suppress the caster\'s vampirism (lifesteal) effect for this hit'),
 				new DropdownSelect('Damage Cause', 'cause', ['Contact', 'Custom', 'Entity Attack', 'Entity Sweep Attack', 'Projectile', 'Suffocation', 'Fall', 'Fire', 'Fire Tick', 'Melting', 'Lava', 'Drowning', 'Block Explosion', 'Entity Explosion', 'Void', 'Lightning', 'Suicide', 'Starvation', 'Poison', 'Magic', 'Wither', 'Falling Block', 'Thorns', 'Dragon Breath', 'Fly Into Wall', 'Hot Floor', 'Cramming', 'Dryout', 'Freeze', 'Sonic Boom'], 'Custom')
 					.setTooltip('Damage Cause considered by the server. This will have influence over the death message and Divinity\' defenses')
 					.requireValue('true', [false])
@@ -4847,7 +4857,9 @@ class StatMechanic extends FabledMechanic {
 				new AttributeSelect('Seconds', 'seconds', 3)
 					.setTooltip('How long in seconds to give the stat to the player'),
 				new BooleanSelect('Stackable', 'stackable')
-					.setTooltip('Whether applying multiple times stacks the effects')
+					.setTooltip('Whether applying multiple times stacks the effects'),
+				new BooleanSelect('Ignore Divinity Cap', 'ignore-divinity-cap', false)
+					.setTooltip('Whether to bypass the Divinity stat cap for this stat, allowing values above the configured maximum')
 			],
 			summaryItems: ['key', 'operation', 'amount', 'seconds']
 		});
@@ -4872,7 +4884,11 @@ class StatusMechanic extends FabledMechanic {
 					'Stun'], 'Stun')
 					.setTooltip('The status to apply'),
 				new AttributeSelect('Duration', 'duration', 3, 1)
-					.setTooltip('How long in seconds to apply the status')
+					.setTooltip('How long in seconds to apply the status'),
+				new BooleanSelect('Ignore CC Resistance', 'ignore-cc-resistance', false)
+					.setTooltip('Whether to ignore the target\'s CC resistance stat, applying the full duration regardless'),
+				new BooleanSelect('Ignore CC Duration', 'ignore-cc-duration', false)
+					.setTooltip('Whether to ignore the caster\'s CC duration stat, skipping the duration extension')
 			],
 			summaryItems: ['status', 'duration']
 		});

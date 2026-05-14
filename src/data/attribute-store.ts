@@ -11,6 +11,7 @@ import { base }                        from '$app/paths';
 import { goto }                        from '$app/navigation';
 import { socketService }               from '$api/socket/socket-connector';
 import { classStore }                  from './class-store.svelte';
+import { idbGet, idbSet }              from '$api/idb';
 
 class AttributeStore {
 	tooBig: Writable<boolean>       = writable(false);
@@ -87,25 +88,52 @@ class AttributeStore {
 
 	};
 
-	attributes: Writable<FabledAttribute[]> = this.setupAttributeStore<FabledAttribute[]>(
-		'attribs',
-		[],
-		(data: string) => {
-			if (data.split('\n').length < 3 && data.charAt(0) !== '{') { // Old format
-				return data.replace('\n', '').split(',').map((key: string) => new FabledAttribute({ name: key }));
-			}
-			const yaml = <MultiAttributeYamlData>parseYaml(data);
-			if (!yaml) return [];
-			return Object.keys(yaml).map((key: string) => {
-				const attrib: FabledAttribute = new FabledAttribute({ name: key });
-				attrib.load(yaml[key]);
-				return attrib;
+	attributes: Writable<FabledAttribute[]> = (() => {
+		const { subscribe, set, update } = writable<FabledAttribute[]>([]);
+
+		if (browser) {
+			// Async init from IDB, with localStorage migration fallback
+			idbGet('attributes', 'all').then(async stored => {
+				if (!stored) {
+					// Migrate from localStorage
+					const lsData = localStorage.getItem('attribs');
+					if (lsData) {
+						await idbSet('attributes', 'all', lsData);
+						localStorage.removeItem('attribs');
+						stored = lsData;
+					}
+				}
+
+				if (!stored) return;
+
+				let attrs: FabledAttribute[];
+				if (stored.split('\n').length < 3 && stored.charAt(0) !== '{') {
+					// Old comma-separated format
+					attrs = stored.replace('\n', '').split(',').map(key => new FabledAttribute({ name: key }));
+				} else {
+					const yaml = <MultiAttributeYamlData>parseYaml(stored);
+					if (!yaml) return;
+					attrs = Object.keys(yaml).map(key => {
+						const attrib = new FabledAttribute({ name: key });
+						attrib.load(yaml[key]);
+						return attrib;
+					});
+				}
+
+				classStore.updateAllAttributes(attrs.map(a => a.name));
+				set(sort<FabledAttribute>(attrs));
 			});
-		},
-		(value: FabledAttribute[]) => {
-			classStore.updateAllAttributes(value.map((attr: FabledAttribute) => attr.name));
-			return sort<FabledAttribute>(value);
-		});
+		}
+
+		return {
+			subscribe,
+			set: (value: FabledAttribute[]) => {
+				classStore.updateAllAttributes(value.map(a => a.name));
+				return set(sort<FabledAttribute>(value));
+			},
+			update
+		};
+	})();
 
 	getAttributeNames = (): string[] => {
 		return get(this.attributes).map((attr) => attr.name);
@@ -172,11 +200,12 @@ class AttributeStore {
 		this.refreshAttributes();
 	};
 
-	loadAttribute = (data: FabledAttribute) => {
+	loadAttribute = async (data: FabledAttribute) => {
 		if (data.loaded) return;
 
 		if (data.location === 'local') {
-			const yamlData = <MultiAttributeYamlData>parseYaml(localStorage.getItem('attribs') || '');
+			const raw      = await idbGet('attributes', 'all') ?? '';
+			const yamlData = <MultiAttributeYamlData>parseYaml(raw);
 			if (!yamlData) return;
 			const attrib = yamlData[data.name];
 			data.load(attrib);
@@ -223,14 +252,7 @@ class AttributeStore {
 		}
 	};
 
-	saveAll = () => {
-		if (get(this.tooBig)) return;
-
-		if (get(this.tooBig) && !get(this.acknowledged)) {
-			saveError.set({ name: 'Attributes', acknowledged: false });
-			return;
-		}
-
+	saveAll = async () => {
 		const attributeYaml: MultiAttributeYamlData = {};
 		for (const attr of get(this.attributes)) {
 			attributeYaml[attr.name] = attr.serializeYaml();
@@ -238,20 +260,14 @@ class AttributeStore {
 		const yaml = YAML.stringify(attributeYaml, { lineWidth: 0, aliasDuplicateObjects: false });
 
 		try {
-			localStorage.setItem('attribs', yaml);
+			await idbSet('attributes', 'all', yaml);
 			this.tooBig.set(false);
+			console.log('Saved attributes 😎');
 		} catch (e: any) {
-			// If the data is too big
-			if (!e?.message?.includes('quota')) {
-				console.error('Attributes Save error', e);
-			} else {
-				localStorage.removeItem('attribs');
-				this.tooBig.set(true);
-				saveError.set({ name: 'Attributes', acknowledged: false });
-			}
+			console.error('Attributes Save error', e);
+			this.tooBig.set(true);
+			saveError.set({ name: 'Attributes', acknowledged: false });
 		}
-
-		console.log('Saved attributes 😎');
 	};
 }
 
