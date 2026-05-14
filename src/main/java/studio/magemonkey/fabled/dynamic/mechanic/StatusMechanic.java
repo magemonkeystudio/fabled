@@ -37,16 +37,10 @@ import java.util.List;
  * Applies a flag to each target
  */
 public class StatusMechanic extends MechanicComponent {
-<<<<<<< Updated upstream
-    private static final String KEY            = "status";
-    private static final String DURATION       = "duration";
-    private static final String IGNORE_CC_RES  = "ignore-cc-resistance";
-=======
     private static final String KEY              = "status";
     private static final String DURATION         = "duration";
     private static final String IGNORE_CC_RES    = "ignore-cc-resistance";
     private static final String IGNORE_CC_DUR    = "ignore-cc-duration";
->>>>>>> Stashed changes
 
     @Override
     public String getKey() {
@@ -59,27 +53,6 @@ public class StatusMechanic extends MechanicComponent {
             return false;
         }
 
-<<<<<<< Updated upstream
-        String  key          = settings.getString(KEY, "stun").toLowerCase();
-        double  seconds      = parseValues(caster, DURATION, level, 3.0);
-        boolean ignoreCCRes  = settings.getBool(IGNORE_CC_RES, false);
-<<<<<<< Updated upstream
-        for (LivingEntity target : targets) {
-            int ticks = (int) (seconds * 20);
-=======
-        int baseTicks = (int) (seconds * 20);
-        try {
-            EntityStats casterStats = EntityStats.get(caster);
-            double      ccDuration  = casterStats.getItemStat(TypedStat.Type.CC_DURATION, false);
-            if (ccDuration != 0) {
-                baseTicks = (int) (baseTicks * (1.0 + ccDuration / 100.0));
-            }
-        } catch (Exception ignored) { /* Divinity not loaded */ }
-
-        for (LivingEntity target : targets) {
-            int ticks = baseTicks;
->>>>>>> Stashed changes
-=======
         String  key           = settings.getString(KEY, "stun").toLowerCase();
         double  seconds       = parseValues(caster, DURATION, level, 3.0);
         boolean ignoreCCRes   = settings.getBool(IGNORE_CC_RES, false);
@@ -97,7 +70,6 @@ public class StatusMechanic extends MechanicComponent {
 
         for (LivingEntity target : targets) {
             int ticks = baseTicks;
->>>>>>> Stashed changes
             if (!ignoreCCRes) {
                 try {
                     EntityStats stats      = EntityStats.get(target);
