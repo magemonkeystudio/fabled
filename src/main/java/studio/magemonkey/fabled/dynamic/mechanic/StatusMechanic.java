@@ -55,8 +55,22 @@ public class StatusMechanic extends MechanicComponent {
         String  key          = settings.getString(KEY, "stun").toLowerCase();
         double  seconds      = parseValues(caster, DURATION, level, 3.0);
         boolean ignoreCCRes  = settings.getBool(IGNORE_CC_RES, false);
+<<<<<<< Updated upstream
         for (LivingEntity target : targets) {
             int ticks = (int) (seconds * 20);
+=======
+        int baseTicks = (int) (seconds * 20);
+        try {
+            EntityStats casterStats = EntityStats.get(caster);
+            double      ccDuration  = casterStats.getItemStat(TypedStat.Type.CC_DURATION, false);
+            if (ccDuration != 0) {
+                baseTicks = (int) (baseTicks * (1.0 + ccDuration / 100.0));
+            }
+        } catch (Exception ignored) { /* Divinity not loaded */ }
+
+        for (LivingEntity target : targets) {
+            int ticks = baseTicks;
+>>>>>>> Stashed changes
             if (!ignoreCCRes) {
                 try {
                     EntityStats stats      = EntityStats.get(target);

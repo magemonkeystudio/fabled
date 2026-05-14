@@ -28,6 +28,8 @@ package studio.magemonkey.fabled.dynamic.mechanic;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.metadata.FixedMetadataValue;
+import studio.magemonkey.fabled.Fabled;
 
 import java.util.List;
 import java.util.Locale;
@@ -44,6 +46,13 @@ public class DamageMechanic extends MechanicComponent {
     private static final String IGNORE_DIVINITY = "ignore-divinity";
     private static final String CAUSE           = "cause";
     private static final String NO_SHAKE        = "no-shake";
+    private static final String IGNORE_CRIT     = "divinity-ignore-crit";
+    private static final String IGNORE_DODGE    = "divinity-ignore-dodge";
+    private static final String IGNORE_BLOCK    = "divinity-ignore-block";
+    private static final String NO_BLEED        = "divinity-no-bleed";
+    private static final String NO_VAMP         = "divinity-no-vamp";
+
+    static final String DMG_FLAGS_META = "fabled_dmg_flags";
 
     @Override
     public String getKey() {
@@ -65,6 +74,16 @@ public class DamageMechanic extends MechanicComponent {
         if (damage < 0) {
             return false;
         }
+
+        int dmgFlags = 0;
+        if (settings.getBool(IGNORE_CRIT,  false)) dmgFlags |= 0x01;
+        if (settings.getBool(IGNORE_DODGE, false)) dmgFlags |= 0x02;
+        if (settings.getBool(IGNORE_BLOCK, false)) dmgFlags |= 0x04;
+        if (settings.getBool(NO_BLEED,     false)) dmgFlags |= 0x08;
+        if (settings.getBool(NO_VAMP,      false)) dmgFlags |= 0x10;
+        if (dmgFlags != 0)
+            caster.setMetadata(DMG_FLAGS_META, new FixedMetadataValue(Fabled.inst(), dmgFlags));
+
         for (LivingEntity target : targets) {
             if (target.isDead()) {
                 continue;
@@ -93,6 +112,10 @@ public class DamageMechanic extends MechanicComponent {
                         noShake);
             }
         }
+
+        if (dmgFlags != 0)
+            caster.removeMetadata(DMG_FLAGS_META, Fabled.inst());
+
         return !targets.isEmpty();
     }
 }
