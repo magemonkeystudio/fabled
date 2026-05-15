@@ -1357,14 +1357,16 @@ class AttackIndicatorCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Attack Indicator',
-			description:  `Requires the target's attack to be charged to a certain amount.`,
+			description:  `Requires the caster's attack/draw charge to be within a certain range (0-1).`,
 			data:         [
+				new DropdownSelect('Weapon', 'weapon', ['auto', 'melee', 'bow', 'crossbow'], 'auto')
+					.setTooltip('auto = detect from main hand item; melee = attack cooldown; bow = draw charge (0-1); crossbow = load progress/charged state (0-1). Active-item detection uses Paper APIs via reflection (getActiveItem / CrossbowMeta.isCharged) — requires Paper runtime for precise bow vs crossbow disambiguation when both are equipped; on Spigot falls back to main-hand check.'),
 				new AttributeSelect('Min', 'min', 0)
-					.setTooltip('The minimum amount of charge the target requires (0-1)'),
+					.setTooltip('The minimum charge value required (0-1)'),
 				new AttributeSelect('Max', 'max', 1)
-					.setTooltip('The maximum amount of charge the target requires (0-1)')
+					.setTooltip('The maximum charge value allowed (0-1)')
 			],
-			summaryItems: ['min', 'max']
+			summaryItems: ['weapon', 'min', 'max']
 		});
 	}
 
@@ -1455,6 +1457,24 @@ class BurningCondition extends FabledCondition {
 					.setTooltip('Specifies whether the player has to be burning for this skill to be performed')
 			],
 			summaryItems: ['burn']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
+class CastLevelCondition extends FabledCondition {
+	public constructor() {
+		super({
+			name:         'Cast Level',
+			description:  'Applies child components when the cast level of the skill is within the range.',
+			data:         [
+				new IntSelect('Min Level', 'min-level', 1)
+					.setTooltip('The minimum cast level required'),
+				new IntSelect('Max Level', 'max-level', 99)
+					.setTooltip('The maximum cast level allowed')
+			],
+			summaryItems: ['min-level', 'max-level']
 		});
 	}
 
@@ -1819,6 +1839,24 @@ class LightCondition extends FabledCondition {
 					.setTooltip('The maximum light level needed. 16 is full brightness while 0 is complete darkness')
 			],
 			summaryItems: ['min-light', 'max-light']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
+class LoreCondition extends FabledCondition {
+	public constructor() {
+		super({
+			name:         'Lore',
+			description:  `Applies child components when the target's main-hand item lore contains (or matches as regex) a string.`,
+			data:         [
+				new BooleanSelect('Regex', 'regex', false)
+					.setTooltip('If true, treat the string as a regex pattern; otherwise check substring containment'),
+				new StringSelect('String', 'str', '')
+					.setTooltip('Text (or regex pattern) to look for in lore lines')
+			],
+			summaryItems: ['str', 'regex']
 		});
 	}
 
@@ -2527,37 +2565,6 @@ const effectOptions = (optional: boolean): ComponentOption[] => {
 	];
 };
 
-class AirModify extends FabledMechanic {
-	public constructor() {
-		super({
-			name:         'Air Modify',
-			description:  'Modifies the remaining air of an entity by a set amount of seconds. Positive numbers will add air, negative numbers will remove air. Players have a starting value of 15 seconds of air.',
-			data:         [
-				new AttributeSelect('Air', 'air', 3)
-					.setTooltip('The amount of air, in seconds, to add/subtract.')],
-			summaryItems: []
-		}, false);
-	}
-
-	public static override new = () => new this();
-}
-
-class AirSet extends FabledMechanic {
-	public constructor() {
-		super({
-			name:         'Air Set',
-			description:  'Sets the remaining air of an entity to a specific amount of seconds. Players have a starting value of 15 seconds of air.',
-			data:         [
-				new AttributeSelect('Air', 'air', 3)
-					.setTooltip('The amount of air, in seconds, to set to.')],
-			summaryItems: []
-		}, false);
-	}
-
-	public static override new = () => new this();
-}
-
-
 class AbortSkillMechanic extends FabledMechanic {
 	public constructor() {
 		super({
@@ -2566,6 +2573,38 @@ class AbortSkillMechanic extends FabledMechanic {
 			data:         [],
 			summaryItems: []
 		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
+class AirModifyMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Air Modify',
+			description:  `Adds (or subtracts, if negative) air to the target's remaining air supply. Air is in seconds; vanilla max is 15 (300 ticks).`,
+			data:         [
+				new AttributeSelect('Air', 'air', 1)
+					.setTooltip('Seconds of air to add (negative subtracts). Bounded by [-1, target max air]')
+			],
+			summaryItems: ['air']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
+class AirSetMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Air Set',
+			description:  `Sets the target's remaining air supply to an absolute value. Air is in seconds; vanilla max is 15 (300 ticks).`,
+			data:         [
+				new AttributeSelect('Air', 'air', 3)
+					.setTooltip('Seconds of air to set. Bounded by [-1, target max air]')
+			],
+			summaryItems: ['air']
+		});
 	}
 
 	public static override new = () => new this();
@@ -2903,11 +2942,24 @@ class DamageMechanic extends FabledMechanic {
 					.setTooltip('Whether the damage will inflict knockback. Ignored if it is True Damage'),
 				new BooleanSelect('No Screen Shake', 'no-shake', false)
 					.setTooltip('Whether the damage will play the hurt animation (screen shake) to the target. Ignored if it is True Damage, requires ProtocolLib to function'),
-				new BooleanSelect('Ignore Divinity', 'ignore-divinity', false)
-					.setTooltip('Whether to ignore Divinity\'s defenses and damage calculations'),
 				new DropdownSelect('Damage Cause', 'cause', ['Contact', 'Custom', 'Entity Attack', 'Entity Sweep Attack', 'Projectile', 'Suffocation', 'Fall', 'Fire', 'Fire Tick', 'Melting', 'Lava', 'Drowning', 'Block Explosion', 'Entity Explosion', 'Void', 'Lightning', 'Suicide', 'Starvation', 'Poison', 'Magic', 'Wither', 'Falling Block', 'Thorns', 'Dragon Breath', 'Fly Into Wall', 'Hot Floor', 'Cramming', 'Dryout', 'Freeze', 'Sonic Boom'], 'Custom')
 					.setTooltip('Damage Cause considered by the server. This will have influence over the death message and Divinity\' defenses')
-					.requireValue('true', [false])
+					.requireValue('true', [false]),
+				new SectionMarker('Divinity Exclusive'),
+				new BooleanSelect('Ignore Divinity', 'ignore-divinity', false)
+					.setTooltip('Whether to ignore Divinity\'s defenses and damage calculations'),
+				new BooleanSelect('Ignore Crit', 'divinity-ignore-crit', false)
+					.setTooltip('Whether to prevent the caster\'s critical hit stat from applying to this hit'),
+				new BooleanSelect('Ignore Skill Crit', 'ignore-skill-crit', false)
+					.setTooltip('Whether to prevent skill_critical_rate and skill_critical_damage from applying to this hit'),
+				new BooleanSelect('Ignore Dodge', 'divinity-ignore-dodge', false)
+					.setTooltip('Whether to prevent the target from dodging this hit using their dodge rate stat'),
+				new BooleanSelect('Ignore Block', 'divinity-ignore-block', false)
+					.setTooltip('Whether to prevent the target from blocking this hit using their block rate stat'),
+				new BooleanSelect('No Bleed', 'divinity-no-bleed', false)
+					.setTooltip('Whether to suppress the caster\'s bleed on-hit effect for this hit'),
+				new BooleanSelect('No Vamp', 'divinity-no-vamp', false)
+					.setTooltip('Whether to suppress the caster\'s vampirism (lifesteal) effect for this hit')
 			],
 			summaryItems: ['value', 'true', 'knockback']
 		}, false);
@@ -3293,7 +3345,12 @@ class HealMechanic extends FabledMechanic {
 				new DropdownSelect('Type', 'type', ['Health', 'Percent'], 'Health')
 					.setTooltip('The unit to use for the amount of health to restore. Health restores a flat amount while Percent restores a percentage of their max health'),
 				new AttributeSelect('Value', 'value', 3, 1)
-					.setTooltip('The amount of health to restore')
+					.setTooltip('The amount of health to restore'),
+				new SectionMarker('Divinity Exclusive'),
+				new BooleanSelect('Ignore Healing Cast', 'ignore-healing-cast', false)
+					.setTooltip('Whether to ignore the caster\'s healing_cast stat, skipping the outgoing-heal bonus'),
+				new BooleanSelect('Ignore Healing Received', 'ignore-healing-received', false)
+					.setTooltip('Whether to ignore the target\'s healing_received stat, skipping the incoming-heal bonus')
 			],
 			summaryItems: ['type', 'value']
 		}, false);
@@ -3807,6 +3864,22 @@ class MythicMobSkill extends FabledMechanic {
 			data:         [
 				new StringSelect('MythicMob Skill', 'skill')
 					.setTooltip('The MythicMob skill to cast')
+			],
+			summaryItems: ['skill']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
+class MythicMobSkillMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'MythicMob Skill',
+			description:  'Casts a MythicMobs skill from each target entity. Requires MythicMobs plugin to be loaded.',
+			data:         [
+				new StringSelect('Skill', 'skill', '')
+					.setTooltip('Internal MythicMobs skill name to cast')
 			],
 			summaryItems: ['skill']
 		});
@@ -4847,7 +4920,10 @@ class StatMechanic extends FabledMechanic {
 				new AttributeSelect('Seconds', 'seconds', 3)
 					.setTooltip('How long in seconds to give the stat to the player'),
 				new BooleanSelect('Stackable', 'stackable')
-					.setTooltip('Whether applying multiple times stacks the effects')
+					.setTooltip('Whether applying multiple times stacks the effects'),
+				new SectionMarker('Divinity Exclusive'),
+				new BooleanSelect('Ignore Divinity Cap', 'ignore-divinity-cap', false)
+					.setTooltip('Whether to bypass the Divinity stat cap for this stat, allowing values above the configured maximum')
 			],
 			summaryItems: ['key', 'operation', 'amount', 'seconds']
 		});
@@ -4872,7 +4948,12 @@ class StatusMechanic extends FabledMechanic {
 					'Stun'], 'Stun')
 					.setTooltip('The status to apply'),
 				new AttributeSelect('Duration', 'duration', 3, 1)
-					.setTooltip('How long in seconds to apply the status')
+					.setTooltip('How long in seconds to apply the status'),
+				new SectionMarker('Divinity Exclusive'),
+				new BooleanSelect('Ignore CC Resistance', 'ignore-cc-resistance', false)
+					.setTooltip('Whether to ignore the target\'s CC resistance stat, applying the full duration regardless'),
+				new BooleanSelect('Ignore CC Duration', 'ignore-cc-duration', false)
+					.setTooltip('Whether to ignore the caster\'s CC duration stat, skipping the duration extension')
 			],
 			summaryItems: ['status', 'duration']
 		});
@@ -5750,6 +5831,7 @@ export const initComponents = () => {
 		BLOCK:          { name: 'Block', component: BlockCondition },
 		BURNING:        { name: 'Burning', component: BurningCondition },
 		BLOCKING:       { name: 'Blocking', component: BlockingCondition },
+		CAST_LEVEL:     { name: 'Cast Level', component: CastLevelCondition },
 		CEILING:        { name: 'Ceiling', component: CeilingCondition },
 		CHANCE:         { name: 'Chance', component: ChanceCondition },
 		CLASS:          { name: 'Class', component: ClassCondition },
@@ -5771,6 +5853,7 @@ export const initComponents = () => {
 		INVENTORY:      { name: 'Inventory', component: InventoryCondition },
 		ITEM:           { name: 'Item', component: ItemCondition },
 		LIGHT:          { name: 'Light', component: LightCondition },
+		LORE:           { name: 'Lore', component: LoreCondition },
 		MANA:           { name: 'Mana', component: ManaCondition },
 		MONEY:          { name: 'Money', component: MoneyCondition },
 		MOON:           { name: 'Moon', component: MoonCondition },
@@ -5795,9 +5878,9 @@ export const initComponents = () => {
 		YAW:            { name: 'Yaw', component: YawCondition }
 	});
 	mechanics.set({
-		AIR_MODIFY:         { name: 'Air Modify', component: AirModify },
-		AIR_SET:            { name: 'Air Set', component: AirSet },
 		ABORT_SKILL:        { name: 'Abort Skill', component: AbortSkillMechanic },
+		AIR_MODIFY:         { name: 'Air Modify', component: AirModifyMechanic },
+		AIR_SET:            { name: 'Air Set', component: AirSetMechanic },
 		ARMOR:              { name: 'Armor', component: ArmorMechanic },
 		ARMOR_STAND:        { name: 'Armor Stand', component: ArmorStandMechanic },
 		ARMOR_STAND_POSE:   { name: 'Armor Stand Pose', component: ArmorStandPoseMechanic },
@@ -5840,6 +5923,7 @@ export const initComponents = () => {
 		MINE:               { name: 'Mine', component: MineMechanic },
 		MONEY:              { name: 'Money', component: MoneyMechanic },
 		MOUNT:              { name: 'Mount', component: MountMechanic },
+		MYTHIC_MOB_SKILL:   { name: 'MythicMob Skill', component: MythicMobSkillMechanic },
 		MYTHICMOB_SKILL:    { name: 'MythicMob Skill', component: MythicMobSkill },
 		PASSIVE:            { name: 'Passive', component: PassiveMechanic },
 		PERMISSION:         { name: 'Permission', component: PermissionMechanic },
