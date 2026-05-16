@@ -1,0 +1,6312 @@
+{
+  "Trigger": {
+    "Air": {
+      "description": "Applies skill effects when an entity loses or gains air. This will fire every tick that the air value is updated.",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Increasing', 'Decreasing']",
+          "yamlKey": "type",
+          "options": [
+            "Increasing",
+            "Decreasing"
+          ],
+          "label": "Type"
+        }
+      }
+    },
+    "Armor Equip": {
+      "description": "Applies skill effects when a player equips a new item in an armor or hand slot",
+      "fields": {
+        "slots": {
+          "type": "DropdownSelect",
+          "default": "['Any', 'Helmet', 'Chestplate', 'Leggings', 'Boots', 'Main hand', 'Offhand']",
+          "yamlKey": "slots",
+          "options": [
+            "Any",
+            "Helmet",
+            "Chestplate",
+            "Leggings",
+            "Boots",
+            "Main hand",
+            "Offhand"
+          ],
+          "label": "Slots"
+        }
+      }
+    },
+    "Attribute Change": {
+      "description": "Applies skill effects when a player\\",
+      "fields": {
+        "attr": {
+          "type": "DropdownSelect",
+          "default": "(",
+          "yamlKey": "attr",
+          "label": "Attribute"
+        }
+      }
+    },
+    "Block Break": {
+      "description": "Applies skill effects when a player breaks a block matching the given details",
+      "fields": {}
+    },
+    "Block Place": {
+      "description": "Applies skill effects when a player places a block matching the given details",
+      "fields": {}
+    },
+    "Cast": {
+      "description": "Applies skill effects when a player casts the skill using either the cast command, the skill bar, or click combos",
+      "fields": {}
+    },
+    "Chat": {
+      "description": "Applies skill effects when a player sends a chat message in the specified format",
+      "fields": {
+        "cancel": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "cancel",
+          "label": "Cancel"
+        },
+        "regex": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "regex",
+          "label": "Regex"
+        },
+        "format": {
+          "type": "StringSelect",
+          "yamlKey": "format",
+          "label": "Format"
+        }
+      }
+    },
+    "Cleanup": {
+      "description": "Applies skill effects when the player disconnects or unlearns the skill. This is always applied with a skill level of 1 just for the sake of math",
+      "fields": {}
+    },
+    "Consume": {
+      "description": "Applies skill effects when a player consumes an item",
+      "fields": {
+        "material": {
+          "type": "DropdownSelect",
+          "default": "getAnyConsumable",
+          "yamlKey": "material",
+          "label": "Material"
+        }
+      }
+    },
+    "Crouch": {
+      "description": "Applies skill effects when a player starts or stops crouching using the shift key",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Start Crouching', 'Stop Crouching', 'Both']",
+          "yamlKey": "type",
+          "options": [
+            "Start Crouching",
+            "Stop Crouching",
+            "Both"
+          ],
+          "label": "Crouching"
+        }
+      }
+    },
+    "Death": {
+      "description": "Applies skill effects when a player dies",
+      "fields": {}
+    },
+    "Drop Item": {
+      "description": "Applies skill effects upon dropping an item",
+      "fields": {
+        "drop multiple": {
+          "type": "DropdownSelect",
+          "default": "['True', 'False', 'Ignore']",
+          "yamlKey": "drop multiple",
+          "options": [
+            "True",
+            "False",
+            "Ignore"
+          ],
+          "label": "Drop multiple"
+        }
+      }
+    },
+    "Entity Resurrect": {
+      "description": "Applies skill effects when an entity is resurrected.",
+      "fields": {}
+    },
+    "Entity Target": {
+      "description": "Applies skill effects when an entity targets the caster",
+      "fields": {
+        "target": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "target",
+          "label": "Target Caster"
+        },
+        "types": {
+          "type": "DropdownSelect",
+          "default": "['Any', ...getEntities(",
+          "yamlKey": "types",
+          "label": "Types"
+        },
+        "blacklist": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "blacklist",
+          "label": "Blacklist"
+        }
+      }
+    },
+    "Environment Damage": {
+      "description": "Applies skill effects when a player takes environmental damage",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "getAnyDamageTypes",
+          "yamlKey": "type",
+          "options": [
+            "Fall"
+          ],
+          "label": "Type"
+        }
+      }
+    },
+    "Experience": {
+      "description": "Applies skill effects when a player earns vanilla experience by natural sources. Use {api-experience} to get amount of experience picked up.",
+      "fields": {
+        "min-experience": {
+          "type": "DoubleSelect",
+          "yamlKey": "min-experience",
+          "label": "Min Experience"
+        }
+      }
+    },
+    "Fishing": {
+      "description": "Applies skill effects upon right-clicking with a fishing rod",
+      "fields": {}
+    },
+    "Fishing Bite": {
+      "description": "Applies skill effects when a fish bites the fishing rod of a player",
+      "fields": {}
+    },
+    "Fishing Fail": {
+      "description": "Applies skill effects when a player fails to catch a fish due to poor timing",
+      "fields": {}
+    },
+    "Fishing Grab": {
+      "description": "Applies skill effects when a player catches a fish",
+      "fields": {}
+    },
+    "Fishing Ground": {
+      "description": "Applies skill effects when the bobber of a fishing rod hits the ground",
+      "fields": {}
+    },
+    "Fishing Reel": {
+      "description": "Applies skill effects when a player reels in a fishing rod out of water or air with no fish on the rod",
+      "fields": {}
+    },
+    "Flag": {
+      "description": "Applies skill effects when the player receives a flag from a mechanic.",
+      "fields": {
+        "min-duration": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "min-duration",
+          "label": "Min Duration"
+        },
+        "inverse": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "inverse",
+          "label": "Inverse"
+        }
+      }
+    },
+    "Flag Expire": {
+      "description": "Applies skill effects when a flag expires on a player.",
+      "fields": {
+        "inverse": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "inverse",
+          "label": "Inverse"
+        }
+      }
+    },
+    "Flight Toggle": {
+      "description": "Applies skill effects when a player starts or stops flying.",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Start Flying', 'Stop Flying', 'Both']",
+          "yamlKey": "type",
+          "options": [
+            "Start Flying",
+            "Stop Flying",
+            "Both"
+          ],
+          "label": "Flying"
+        }
+      }
+    },
+    "Glide": {
+      "description": "Applies skill effects when a player starts or stops gliding with an elytra.",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Start Gliding', 'Stop Gliding', 'Both']",
+          "yamlKey": "type",
+          "options": [
+            "Start Gliding",
+            "Stop Gliding",
+            "Both"
+          ],
+          "label": "Gliding"
+        }
+      }
+    },
+    "Harvest": {
+      "description": "Applies skill effects when a player harvests a block matching the given details. Typically crops such as Glow Berries.",
+      "fields": {}
+    },
+    "Heal": {
+      "description": "Applies skill effects when the player receives heal from any source. Use {api-heal} to get heal value",
+      "fields": {
+        "heal-min": {
+          "type": "DoubleSelect",
+          "default": 0,
+          "yamlKey": "heal-min",
+          "label": "Min Heal"
+        },
+        "heal-max": {
+          "type": "DoubleSelect",
+          "default": 999,
+          "yamlKey": "heal-max",
+          "label": "Max Heal"
+        }
+      }
+    },
+    "Initialize": {
+      "description": "Applies skill effects immediately. This can be used for passive abilities",
+      "fields": {}
+    },
+    "Item Swap": {
+      "description": "Applies skill effects upon pressing the swap-key on your keyboard",
+      "fields": {
+        "cancel": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "cancel",
+          "label": "Cancel Swap"
+        }
+      }
+    },
+    "Jump": {
+      "description": "Applies skill effects whenever a player jumps.",
+      "fields": {}
+    },
+    "Kill": {
+      "description": "Applies skill effects upon killing something",
+      "fields": {
+        "target": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "target",
+          "label": "Target Caster"
+        }
+      }
+    },
+    "Land": {
+      "description": "Applies skill effects when a player lands on the ground",
+      "fields": {
+        "min-distance": {
+          "type": "DoubleSelect",
+          "yamlKey": "min-distance",
+          "label": "Min Distance"
+        }
+      }
+    },
+    "Launch": {
+      "description": "Applies skill effects when a player launches a projectile",
+      "fields": {
+        "types": {
+          "type": "DropdownSelect",
+          "default": "getAnyProjectiles",
+          "yamlKey": "types",
+          "label": "Types"
+        }
+      }
+    },
+    "Left Click": {
+      "description": "Applies skill effects upon performing a left-click",
+      "fields": {
+        "crouch": {
+          "type": "DropdownSelect",
+          "default": "['Crouch', 'Dont crouch', 'Both']",
+          "yamlKey": "crouch",
+          "options": [
+            "Crouch",
+            "Dont crouch",
+            "Both"
+          ],
+          "label": "Crouch"
+        }
+      }
+    },
+    "Move": {
+      "description": "Applies skill effects when a player moves around. This triggers every tick the player is moving, so use this sparingly. Use the \\",
+      "fields": {}
+    },
+    "Physical Damage": {
+      "description": "Applies skill effects when a player deals physical (or non-skill) damage. This includes melee attacks and firing a bow",
+      "fields": {
+        "target": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "target",
+          "label": "Target Caster"
+        },
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Both', 'Melee', 'Projectile']",
+          "yamlKey": "type",
+          "options": [
+            "Both",
+            "Melee",
+            "Projectile"
+          ],
+          "label": "Type"
+        },
+        "dmg-min": {
+          "type": "DoubleSelect",
+          "default": 0,
+          "yamlKey": "dmg-min",
+          "label": "Min Damage"
+        },
+        "dmg-max": {
+          "type": "DoubleSelect",
+          "default": 999,
+          "yamlKey": "dmg-max",
+          "label": "Max Damage"
+        }
+      }
+    },
+    "Projectile Hit": {
+      "description": "Applies skill effects when a projectile hits a block/entity",
+      "fields": {
+        "target": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "target",
+          "label": "Target Caster"
+        },
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Both', 'Entity', 'Block']",
+          "yamlKey": "type",
+          "options": [
+            "Both",
+            "Entity",
+            "Block"
+          ],
+          "label": "Type"
+        },
+        "projectile": {
+          "type": "DropdownSelect",
+          "default": "getAnyProjectiles",
+          "yamlKey": "projectile",
+          "options": [
+            "Any"
+          ],
+          "label": "Projectile"
+        }
+      }
+    },
+    "Projectile Tick": {
+      "description": "Applies skill effects every interval while a projectile is in the air",
+      "fields": {
+        "target": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "target",
+          "label": "Target Caster"
+        },
+        "interval": {
+          "type": "IntSelect",
+          "default": 1,
+          "yamlKey": "interval",
+          "label": "Interval"
+        },
+        "delay": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "delay",
+          "label": "Delay"
+        },
+        "projectile": {
+          "type": "DropdownSelect",
+          "default": "getAnyProjectiles",
+          "yamlKey": "projectile",
+          "options": [
+            "Any"
+          ],
+          "label": "Projectile"
+        }
+      }
+    },
+    "Right Click": {
+      "description": "Applies skill effects upon performing a right-click (NOTE: When clicking in air, you have to have an item in your hand)",
+      "fields": {
+        "crouch": {
+          "type": "DropdownSelect",
+          "default": "['Crouch', 'Dont crouch', 'Both']",
+          "yamlKey": "crouch",
+          "options": [
+            "Crouch",
+            "Dont crouch",
+            "Both"
+          ],
+          "label": "Crouch"
+        }
+      }
+    },
+    "Riptide": {
+      "description": "Applies skill effects when a player uses the riptide enchantment.",
+      "fields": {}
+    },
+    "Shear": {
+      "description": "Applies skill effects when a player shears an entity",
+      "fields": {
+        "target": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "target",
+          "label": "Target Caster"
+        },
+        "types": {
+          "type": "DropdownSelect",
+          "default": "['Any', ...getEntities(",
+          "yamlKey": "types",
+          "label": "Types"
+        },
+        "blacklist": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "blacklist",
+          "label": "Blacklist"
+        }
+      }
+    },
+    "Skill Downgrade": {
+      "description": "Applies skill effects when a player loses a level in a skill. The placeholders api-refund, api-skill, and api-level provide details about the downgrade.",
+      "fields": {}
+    },
+    "Skill Upgrade": {
+      "description": "Applies skill effects when a player levels up a skill. The placeholders api-cost, api-skill, and api-level provide details about the upgrade.",
+      "fields": {}
+    },
+    "Skill Cast": {
+      "description": "Applies skill effects when a player casts a skill",
+      "fields": {
+        "cancel": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "cancel",
+          "label": "Cancel Cast"
+        }
+      }
+    },
+    "Skill Damage": {
+      "description": "Applies skill effects when a player deals damage with a skill. api-damage is the damage the target took",
+      "fields": {
+        "target": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "target",
+          "label": "Target Caster"
+        },
+        "dmg-min": {
+          "type": "DoubleSelect",
+          "default": 0,
+          "yamlKey": "dmg-min",
+          "label": "Min Damage"
+        },
+        "dmg-max": {
+          "type": "DoubleSelect",
+          "default": 999,
+          "yamlKey": "dmg-max",
+          "label": "Max Damage"
+        }
+      }
+    },
+    "Sprint": {
+      "description": "Applies skill effects when a player starts or stops sprinting.",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Start Sprinting', 'Stop Sprinting', 'Both']",
+          "yamlKey": "type",
+          "options": [
+            "Start Sprinting",
+            "Stop Sprinting",
+            "Both"
+          ],
+          "label": "Sprinting"
+        }
+      }
+    },
+    "Strip Log": {
+      "description": "Applies skill effects when a player strips a block matching the given details",
+      "fields": {}
+    },
+    "Took Physical Damage": {
+      "description": "Applies skill effects when a player takes physical (or non-skill) damage. This includes melee attacks and projectiles not fired by a skill",
+      "fields": {
+        "target": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "target",
+          "label": "Target Caster"
+        },
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Both', 'Melee', 'Projectile']",
+          "yamlKey": "type",
+          "options": [
+            "Both",
+            "Melee",
+            "Projectile"
+          ],
+          "label": "Type"
+        },
+        "dmg-min": {
+          "type": "DoubleSelect",
+          "default": 0,
+          "yamlKey": "dmg-min",
+          "label": "Min Damage"
+        },
+        "dmg-max": {
+          "type": "DoubleSelect",
+          "default": 999,
+          "yamlKey": "dmg-max",
+          "label": "Max Damage"
+        }
+      }
+    },
+    "Took Skill Damage": {
+      "description": "Applies skill effects when a player takes damage from a skill other than their own",
+      "fields": {
+        "target": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "target",
+          "label": "Target Caster"
+        },
+        "dmg-min": {
+          "type": "DoubleSelect",
+          "default": 0,
+          "yamlKey": "dmg-min",
+          "label": "Min Damage"
+        },
+        "dmg-max": {
+          "type": "DoubleSelect",
+          "default": 999,
+          "yamlKey": "dmg-max",
+          "label": "Max Damage"
+        }
+      }
+    },
+    "Shield": {
+      "description": "Applies skill effects when the player blocks damage with their shield. Use {api-blocked} to get amount of blocked damage.",
+      "fields": {
+        "target": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "target",
+          "label": "Target Caster"
+        },
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Both', 'Melee', 'Projectile']",
+          "yamlKey": "type",
+          "options": [
+            "Both",
+            "Melee",
+            "Projectile"
+          ],
+          "label": "Type"
+        },
+        "dmg-min": {
+          "type": "DoubleSelect",
+          "default": 0,
+          "yamlKey": "dmg-min",
+          "label": "Damage Blocked"
+        },
+        "dmg-max": {
+          "type": "DoubleSelect",
+          "default": 999,
+          "yamlKey": "dmg-max",
+          "label": "Damage Blocked"
+        }
+      }
+    },
+    "Signal": {
+      "description": "Applies skill effects when the player receive a signal emitted from Signal Emit mechanic.",
+      "fields": {
+        "target": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "target",
+          "label": "Target Receiver"
+        },
+        "signal": {
+          "type": "StringSelect",
+          "yamlKey": "signal",
+          "label": "Signal"
+        }
+      }
+    },
+    "World Change": {
+      "description": "Applies skill effects when a player changes worlds",
+      "fields": {
+        "inverse": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "inverse",
+          "label": "Inverse"
+        },
+        "direction": {
+          "type": "DropdownSelect",
+          "default": "['To', 'From', 'Both']",
+          "yamlKey": "direction",
+          "options": [
+            "To",
+            "From",
+            "Both"
+          ],
+          "label": "Direction"
+        }
+      }
+    }
+  },
+  "Target": {
+    "Area": {
+      "description": "Targets all units in a radius from the current target (the casting player is the default target)",
+      "fields": {
+        "radius": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "radius-base",
+            "radius-scale"
+          ],
+          "label": "Radius"
+        },
+        "random": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "random",
+          "label": "Random"
+        },
+        "circle": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "circle",
+          "label": "Circle Preview"
+        },
+        "circle-density": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "circle-density",
+          "label": "Density"
+        },
+        "sphere": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "sphere",
+          "label": "Sphere Preview"
+        },
+        "sphere-density": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "sphere-density",
+          "label": "Density"
+        }
+      }
+    },
+    "Cone": {
+      "description": "Targets all units in a line in front of the current target (the casting player is the default target). If you include the caster, that counts towards the max amount",
+      "fields": {
+        "range": {
+          "type": "AttributeSelect",
+          "default": 5,
+          "yamlKeys": [
+            "range-base",
+            "range-scale"
+          ],
+          "label": "Range"
+        },
+        "angle": {
+          "type": "AttributeSelect",
+          "default": 90,
+          "yamlKeys": [
+            "angle-base",
+            "angle-scale"
+          ],
+          "label": "Angle"
+        },
+        "rotation": {
+          "type": "AttributeSelect",
+          "default": 0,
+          "yamlKeys": [
+            "rotation-base",
+            "rotation-scale"
+          ],
+          "label": "Rotation"
+        },
+        "reset-y": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "reset-y",
+          "label": "Reset Y"
+        },
+        "triangle": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "triangle",
+          "label": "Triangle Preview"
+        },
+        "triangle-density": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "triangle-density",
+          "label": "Density"
+        },
+        "triangle-start-distance": {
+          "type": "DoubleSelect",
+          "default": 2,
+          "yamlKey": "triangle-start-distance",
+          "label": "Start distance"
+        },
+        "cone": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "cone",
+          "label": "Cone Preview"
+        },
+        "cone-density": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "cone-density",
+          "label": "Density"
+        },
+        "cone-start-distance": {
+          "type": "DoubleSelect",
+          "default": 2,
+          "yamlKey": "cone-start-distance",
+          "label": "Start distance"
+        }
+      }
+    },
+    "Linear": {
+      "description": "Targets all units in a line in front of the current target (the casting player is the default target)",
+      "fields": {
+        "range": {
+          "type": "AttributeSelect",
+          "default": 5,
+          "yamlKeys": [
+            "range-base",
+            "range-scale"
+          ],
+          "label": "Range"
+        },
+        "tolerance": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "tolerance-base",
+            "tolerance-scale"
+          ],
+          "label": "Tolerance"
+        },
+        "line": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "line",
+          "label": "Line Preview"
+        },
+        "line-density": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "line-density",
+          "label": "Density"
+        },
+        "line-start-distance": {
+          "type": "DoubleSelect",
+          "default": 2,
+          "yamlKey": "line-start-distance",
+          "label": "Start distance"
+        },
+        "cylinder": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "cylinder",
+          "label": "Cylinder Preview"
+        },
+        "cylinder-density": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "cylinder-density",
+          "label": "Density"
+        },
+        "cylinder-start-distance": {
+          "type": "DoubleSelect",
+          "default": 2,
+          "yamlKey": "cylinder-start-distance",
+          "label": "Start distance"
+        }
+      }
+    },
+    "Location": {
+      "description": "Targets the location the target or caster is looking at. Combine this with another targeting type for ranged area effects",
+      "fields": {
+        "range": {
+          "type": "AttributeSelect",
+          "default": 5,
+          "yamlKeys": [
+            "range-base",
+            "range-scale"
+          ],
+          "label": "Range"
+        },
+        "entities": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "entities",
+          "label": "Entities"
+        },
+        "fluids": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "fluids",
+          "label": "Fluids"
+        },
+        "passable": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "passable",
+          "label": "Passable blocks"
+        },
+        "center": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "center",
+          "label": "Center"
+        }
+      }
+    },
+    "Nearest": {
+      "description": "Targets the closest unit(s) in a radius from the current target (the casting player is the default target). If you include the caster, that counts towards the max number",
+      "fields": {
+        "range": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "range-base",
+            "range-scale"
+          ],
+          "label": "Range"
+        },
+        "circle": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "circle",
+          "label": "Circle Preview"
+        },
+        "circle-density": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "circle-density",
+          "label": "Density"
+        },
+        "sphere": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "sphere",
+          "label": "Sphere Preview"
+        },
+        "sphere-density": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "sphere-density",
+          "label": "Density"
+        }
+      }
+    },
+    "Offset": {
+      "description": "Targets a location that is the given offset away from each target",
+      "fields": {
+        "forward": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "forward-base",
+            "forward-scale"
+          ],
+          "label": "Forward"
+        },
+        "upward": {
+          "type": "AttributeSelect",
+          "default": 2,
+          "yamlKeys": [
+            "upward-base",
+            "upward-scale"
+          ],
+          "label": "Upward"
+        },
+        "right": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "right-base",
+            "right-scale"
+          ],
+          "label": "Right"
+        }
+      }
+    },
+    "Party": {
+      "description": "Targets players in your party (requires FabledParties to be installed)",
+      "fields": {
+        "range": {
+          "type": "AttributeSelect",
+          "default": 5,
+          "yamlKeys": [
+            "range-base",
+            "range-scale"
+          ],
+          "label": "Range"
+        }
+      }
+    },
+    "Remember": {
+      "description": "Targets entities stored using the \"Remember Targets\" mechanic for the matching key. If it was never set, this will fail",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "target",
+          "yamlKey": "key",
+          "label": "Key"
+        }
+      }
+    },
+    "Self": {
+      "description": "Returns the current target back to the caster",
+      "fields": {}
+    },
+    "Single": {
+      "description": "Targets a single unit in front of the current target (the casting player is the default target)",
+      "fields": {
+        "range": {
+          "type": "AttributeSelect",
+          "default": 5,
+          "yamlKeys": [
+            "range-base",
+            "range-scale"
+          ],
+          "label": "Range"
+        },
+        "tolerance": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "tolerance-base",
+            "tolerance-scale"
+          ],
+          "label": "Tolerance"
+        },
+        "group": {
+          "type": "DropdownSelect",
+          "default": "['Ally', 'Enemy', 'Both']",
+          "yamlKey": "group",
+          "options": [
+            "Ally",
+            "Enemy",
+            "Both"
+          ],
+          "label": "Group"
+        },
+        "wall": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "wall",
+          "label": "Through Wall"
+        },
+        "line": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "line",
+          "label": "Line Preview"
+        },
+        "line-density": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "line-density",
+          "label": "Density"
+        },
+        "line-start-distance": {
+          "type": "DoubleSelect",
+          "default": 2,
+          "yamlKey": "line-start-distance",
+          "label": "Start distance"
+        },
+        "cylinder": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "cylinder",
+          "label": "Cylinder Preview"
+        },
+        "cylinder-density": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "cylinder-density",
+          "label": "Density"
+        },
+        "cylinder-start-distance": {
+          "type": "DoubleSelect",
+          "default": 2,
+          "yamlKey": "cylinder-start-distance",
+          "label": "Start distance"
+        }
+      }
+    },
+    "World": {
+      "description": "Targets all entities in the caster\\",
+      "fields": {}
+    }
+  },
+  "Mechanic": {
+    "Air Modify": {
+      "description": "Modifies the remaining air of an entity by a set amount of seconds. Positive numbers will add air, negative numbers will remove air. Players have a starting value of 15 seconds of air.",
+      "fields": {
+        "air": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "air-base",
+            "air-scale"
+          ],
+          "label": "Air"
+        }
+      }
+    },
+    "Air Set": {
+      "description": "Sets the remaining air of an entity to a specific amount of seconds. Players have a starting value of 15 seconds of air.",
+      "fields": {
+        "air": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "air-base",
+            "air-scale"
+          ],
+          "label": "Air"
+        }
+      }
+    },
+    "Abort Skill": {
+      "description": "Cancels current skill mechanics",
+      "fields": {}
+    },
+    "Armor": {
+      "description": "Sets the specified armor slot of the target to the item defined by the settings",
+      "fields": {
+        "slot": {
+          "type": "DropdownSelect",
+          "default": "['Hand', 'Off Hand', 'Feet', 'Legs', 'Chest', 'Head']",
+          "yamlKey": "slot",
+          "options": [
+            "Hand",
+            "Off Hand",
+            "Feet",
+            "Legs",
+            "Chest",
+            "Head"
+          ],
+          "label": "Slot"
+        },
+        "overwrite": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "overwrite",
+          "label": "Overwrite"
+        }
+      }
+    },
+    "Armor Stand": {
+      "description": "Summons an armor stand that can be used as a marker or for item display (check Armor Mechanic for latter). Applies child components on the armor stand",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "default",
+          "yamlKey": "key",
+          "label": "Armor Stand Key"
+        },
+        "duration": {
+          "type": "AttributeSelect",
+          "default": 5,
+          "yamlKeys": [
+            "duration-base",
+            "duration-scale"
+          ],
+          "label": "Duration"
+        },
+        "name": {
+          "type": "StringSelect",
+          "default": "Armor Stand",
+          "yamlKey": "name",
+          "label": "Name"
+        },
+        "name-visible": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "name-visible",
+          "label": "Name visible"
+        },
+        "follow": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "follow",
+          "label": "Follow target"
+        },
+        "marker": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "marker",
+          "label": "Marker"
+        },
+        "gravity": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "gravity",
+          "label": "Apply gravity"
+        },
+        "tiny": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "tiny",
+          "label": "Small"
+        },
+        "arms": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "arms",
+          "label": "Show arms"
+        },
+        "base": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "base",
+          "label": "Show base plate"
+        },
+        "visible": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "visible",
+          "label": "Visible"
+        },
+        "forward": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "forward-base",
+            "forward-scale"
+          ],
+          "label": "Forward Offset"
+        },
+        "upward": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "upward-base",
+            "upward-scale"
+          ],
+          "label": "Upward Offset"
+        },
+        "right": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "right-base",
+            "right-scale"
+          ],
+          "label": "Right Offset"
+        }
+      }
+    },
+    "Armor Stand Pose": {
+      "description": "Sets the pose of an armor stand target. Values should be in the format x,y,z where rotations are in degrees. Example: 0.0,0.0,0.0",
+      "fields": {
+        "head": {
+          "type": "StringSelect",
+          "yamlKey": "head",
+          "label": "Head"
+        },
+        "body": {
+          "type": "StringSelect",
+          "yamlKey": "body",
+          "label": "Body"
+        },
+        "left-arm": {
+          "type": "StringSelect",
+          "yamlKey": "left-arm",
+          "label": "Left Arm"
+        },
+        "right-arm": {
+          "type": "StringSelect",
+          "yamlKey": "right-arm",
+          "label": "Right Arm"
+        },
+        "left-leg": {
+          "type": "StringSelect",
+          "yamlKey": "left-leg",
+          "label": "Left Leg"
+        },
+        "right-leg": {
+          "type": "StringSelect",
+          "yamlKey": "right-leg",
+          "label": "Right Leg"
+        }
+      }
+    },
+    "Armor Stand Remove": {
+      "description": "Removes an armor stand with the given key",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "default",
+          "yamlKey": "key",
+          "label": "Armor Stand Key"
+        }
+      }
+    },
+    "Attribute": {
+      "description": "Gives a player bonus attributes temporarily",
+      "fields": {
+        "key": {
+          "type": "DropdownSelect",
+          "default": "(",
+          "yamlKey": "key",
+          "label": "Attribute"
+        },
+        "operation": {
+          "type": "DropdownSelect",
+          "default": "['ADD_NUMBER', 'MULTIPLY_PERCENTAGE']",
+          "yamlKey": "operation",
+          "options": [
+            "ADD_NUMBER",
+            "MULTIPLY_PERCENTAGE"
+          ],
+          "label": "Operation"
+        },
+        "amount": {
+          "type": "AttributeSelect",
+          "default": 5,
+          "yamlKeys": [
+            "amount-base",
+            "amount-scale"
+          ],
+          "label": "Amount"
+        },
+        "seconds": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "seconds-base",
+            "seconds-scale"
+          ],
+          "label": "Seconds"
+        },
+        "stackable": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "stackable",
+          "label": "Stackable"
+        }
+      }
+    },
+    "Block": {
+      "description": "Changes blocks to the given type of block for a limited duration",
+      "fields": {
+        "shape": {
+          "type": "DropdownSelect",
+          "default": "['Sphere', 'Cuboid']",
+          "yamlKey": "shape",
+          "options": [
+            "Sphere",
+            "Cuboid"
+          ],
+          "label": "Shape"
+        },
+        "type": {
+          "type": "DropdownSelect",
+          "default": "((",
+          "yamlKey": "type",
+          "label": "Type"
+        },
+        "block": {
+          "type": "DropdownSelect",
+          "default": "getBlocks",
+          "yamlKey": "block",
+          "label": "Block"
+        },
+        "data": {
+          "type": "IntSelect",
+          "yamlKey": "data",
+          "label": "Block Data"
+        },
+        "reset-yaw": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "reset-yaw",
+          "label": "Reset Yaw"
+        },
+        "permanent": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "permanent",
+          "label": "Permanent"
+        },
+        "seconds": {
+          "type": "AttributeSelect",
+          "default": 5,
+          "yamlKeys": [
+            "seconds-base",
+            "seconds-scale"
+          ],
+          "label": "Seconds"
+        },
+        "radius": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "radius-base",
+            "radius-scale"
+          ],
+          "label": "Radius"
+        },
+        "forward": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "forward-base",
+            "forward-scale"
+          ],
+          "label": "Forward Offset"
+        },
+        "upward": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "upward-base",
+            "upward-scale"
+          ],
+          "label": "Upward Offset"
+        },
+        "right": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "right-base",
+            "right-scale"
+          ],
+          "label": "Right Offset"
+        },
+        "per-target-center-only": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "per-target-center-only",
+          "label": "Center only"
+        }
+      }
+    },
+    "Buff": {
+      "description": "Buffs combat stats of the target",
+      "fields": {
+        "immediate": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "immediate",
+          "label": "Immediate"
+        },
+        "type": {
+          "type": "StringSelect",
+          "default": "DAMAGE",
+          "yamlKey": "type",
+          "label": "Type"
+        },
+        "modifier": {
+          "type": "DropdownSelect",
+          "default": "['Flat', 'Multiplier']",
+          "yamlKey": "modifier",
+          "options": [
+            "Flat",
+            "Multiplier"
+          ],
+          "label": "Modifier"
+        },
+        "category": {
+          "type": "StringSelect",
+          "yamlKey": "category",
+          "label": "Category"
+        },
+        "value": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "value-base",
+            "value-scale"
+          ],
+          "label": "Value"
+        },
+        "seconds": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "seconds-base",
+            "seconds-scale"
+          ],
+          "label": "Seconds"
+        }
+      }
+    },
+    "Cancel": {
+      "description": "Cancels the event that caused the trigger this is under to go off. For example, damage based triggers will stop the damage that was dealt while the Launch trigger would stop the projectile from firing",
+      "fields": {}
+    },
+    "Cancel Effect": {
+      "description": "Stops a particle effect prematurely",
+      "fields": {
+        "effect-key": {
+          "type": "StringSelect",
+          "default": "default",
+          "yamlKey": "effect-key",
+          "label": "Effect Key"
+        }
+      }
+    },
+    "Channel": {
+      "description": "Applies child effects after a duration which can be interrupted. During the channel, the player cannot move, attack, or use other spells",
+      "fields": {
+        "still": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "still",
+          "label": "Still"
+        },
+        "time": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "time-base",
+            "time-scale"
+          ],
+          "label": "Time"
+        }
+      }
+    },
+    "Cleanse": {
+      "description": "Cleanses negative potion or status effects from the targets",
+      "fields": {
+        "potion": {
+          "type": "DropdownSelect",
+          "default": "getBadPotions",
+          "yamlKey": "potion",
+          "label": "Potion"
+        },
+        "status": {
+          "type": "DropdownSelect",
+          "default": "['All', 'Curse', 'Disarm', 'Root', 'Silence', 'Stun']",
+          "yamlKey": "status",
+          "options": [
+            "All",
+            "Curse",
+            "Disarm",
+            "Root",
+            "Silence",
+            "Stun"
+          ],
+          "label": "Status"
+        }
+      }
+    },
+    "Command": {
+      "description": "Executes a command for each of the targets",
+      "fields": {
+        "command": {
+          "type": "StringSelect",
+          "yamlKey": "command",
+          "label": "Command"
+        },
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Console', 'OP']",
+          "yamlKey": "type",
+          "options": [
+            "Console",
+            "OP"
+          ],
+          "label": "Execute Type"
+        }
+      }
+    },
+    "Cooldown": {
+      "description": "Lowers the cooldowns of the target\\",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Seconds', 'Percent']",
+          "yamlKey": "type",
+          "options": [
+            "Seconds",
+            "Percent"
+          ],
+          "label": "Type"
+        },
+        "value": {
+          "type": "AttributeSelect",
+          "default": -1,
+          "yamlKeys": [
+            "value-base",
+            "value-scale"
+          ],
+          "label": "Value"
+        }
+      }
+    },
+    "Damage": {
+      "description": "Inflicts skill damage to each target. Multiplier type would be a percentage of the target health",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Damage', 'Multiplier', 'Percent Left', 'Percent Missing']",
+          "yamlKey": "type",
+          "options": [
+            "Damage",
+            "Multiplier",
+            "Percent Left",
+            "Percent Missing"
+          ],
+          "label": "Type"
+        },
+        "value": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "value-base",
+            "value-scale"
+          ],
+          "label": "Value"
+        },
+        "true": {
+          "type": "BooleanSelect",
+          "yamlKey": "true",
+          "label": "True Damage"
+        },
+        "classifier": {
+          "type": "StringSelect",
+          "default": "default",
+          "yamlKey": "classifier",
+          "label": "Damage Type"
+        },
+        "knockback": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "knockback",
+          "label": "Apply Knockback"
+        },
+        "no-shake": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "no-shake",
+          "label": "No Screen Shake"
+        },
+        "ignore-divinity": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "ignore-divinity",
+          "label": "Ignore Divinity"
+        },
+        "cause": {
+          "type": "DropdownSelect",
+          "default": "['Contact', 'Custom', 'Entity Attack', 'Entity Sweep Attack', 'Projectile', 'Suffocation', 'Fall', 'Fire', 'Fire Tick', 'Melting', 'Lava', 'Drowning', 'Block Explosion', 'Entity Explosion', 'Void', 'Lightning', 'Suicide', 'Starvation', 'Poison', 'Magic', 'Wither', 'Falling Block', 'Thorns', 'Dragon Breath', 'Fly Into Wall', 'Hot Floor', 'Cramming', 'Dryout', 'Freeze', 'Sonic Boom']",
+          "yamlKey": "cause",
+          "options": [
+            "Contact",
+            "Custom",
+            "Entity Attack",
+            "Entity Sweep Attack",
+            "Projectile",
+            "Suffocation",
+            "Fall",
+            "Fire",
+            "Fire Tick",
+            "Melting",
+            "Lava",
+            "Drowning",
+            "Block Explosion",
+            "Entity Explosion",
+            "Void",
+            "Lightning",
+            "Suicide",
+            "Starvation",
+            "Poison",
+            "Magic",
+            "Wither",
+            "Falling Block",
+            "Thorns",
+            "Dragon Breath",
+            "Fly Into Wall",
+            "Hot Floor",
+            "Cramming",
+            "Dryout",
+            "Freeze",
+            "Sonic Boom"
+          ],
+          "label": "Damage Cause"
+        }
+      }
+    },
+    "Damage Buff": {
+      "description": "Modifies the physical damage dealt by each target by a multiplier or a flat amount for a limited duration. Negative flat amounts or multipliers less than one will reduce damage dealt while the opposite will increase damage dealt. (e.g. a 5% damage buff would be a multiplier or 1.05)",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Flat', 'Multiplier']",
+          "yamlKey": "type",
+          "options": [
+            "Flat",
+            "Multiplier"
+          ],
+          "label": "Type"
+        },
+        "skill": {
+          "type": "BooleanSelect",
+          "yamlKey": "skill",
+          "label": "Skill Damage"
+        },
+        "value": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "value-base",
+            "value-scale"
+          ],
+          "label": "Value"
+        },
+        "seconds": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "seconds-base",
+            "seconds-scale"
+          ],
+          "label": "Seconds"
+        },
+        "classification": {
+          "type": "StringSelect",
+          "default": "default",
+          "yamlKey": "classification",
+          "label": "Classification"
+        }
+      }
+    },
+    "Damage Lore": {
+      "description": "Damages each target based on a value found in the lore of the item held by the caster",
+      "fields": {
+        "hand": {
+          "type": "DropdownSelect",
+          "default": "['Main', 'Offhand']",
+          "yamlKey": "hand",
+          "options": [
+            "Main",
+            "Offhand"
+          ],
+          "label": "Hand"
+        },
+        "regex": {
+          "type": "StringSelect",
+          "default": "Damage: {value}",
+          "yamlKey": "regex",
+          "label": "Regex"
+        },
+        "multiplier": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "multiplier-base",
+            "multiplier-scale"
+          ],
+          "label": "Multiplier"
+        },
+        "true": {
+          "type": "BooleanSelect",
+          "yamlKey": "true",
+          "label": "True Damage"
+        },
+        "classifier": {
+          "type": "StringSelect",
+          "default": "default",
+          "yamlKey": "classifier",
+          "label": "Classifier"
+        },
+        "knockback": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "knockback",
+          "label": "Apply Knockback"
+        },
+        "ignore-divinity": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "ignore-divinity",
+          "label": "Ignore Divinity"
+        },
+        "cause": {
+          "type": "DropdownSelect",
+          "default": "['Contact', 'Entity Attack', 'Entity Sweep Attack', 'Projectile', 'Suffocation', 'Fall', 'Fire', 'Fire Tick', 'Melting', 'Lava', 'Drowning', 'Block Explosion', 'Entity Explosion', 'Void', 'Lightning', 'Suicide', 'Starvation', 'Poison', 'Magic', 'Wither', 'Falling Block', 'Thorns', 'Dragon Breath', 'Custom', 'Fly Into Wall', 'Hot Floor', 'Cramming', 'Dryout', 'Freeze', 'Sonic Boom']",
+          "yamlKey": "cause",
+          "options": [
+            "Contact",
+            "Entity Attack",
+            "Entity Sweep Attack",
+            "Projectile",
+            "Suffocation",
+            "Fall",
+            "Fire",
+            "Fire Tick",
+            "Melting",
+            "Lava",
+            "Drowning",
+            "Block Explosion",
+            "Entity Explosion",
+            "Void",
+            "Lightning",
+            "Suicide",
+            "Starvation",
+            "Poison",
+            "Magic",
+            "Wither",
+            "Falling Block",
+            "Thorns",
+            "Dragon Breath",
+            "Custom",
+            "Fly Into Wall",
+            "Hot Floor",
+            "Cramming",
+            "Dryout",
+            "Freeze",
+            "Sonic Boom"
+          ],
+          "label": "Damage Cause"
+        }
+      }
+    },
+    "Defense Buff": {
+      "description": "Modifies the physical damage taken by each target by a multiplier or a flat amount for a limited duration. Negative flag amounts or multipliers less than one will reduce damage taken while the opposite will increase damage taken. (e.g. a 5% defense buff would be a multiplier or 0.95, since you would be taking 95% damage)",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Flat', 'Multiplier']",
+          "yamlKey": "type",
+          "options": [
+            "Flat",
+            "Multiplier"
+          ],
+          "label": "Type"
+        },
+        "skill": {
+          "type": "BooleanSelect",
+          "yamlKey": "skill",
+          "label": "Skill Defense"
+        },
+        "value": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "value-base",
+            "value-scale"
+          ],
+          "label": "Value"
+        },
+        "seconds": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "seconds-base",
+            "seconds-scale"
+          ],
+          "label": "Seconds"
+        },
+        "classification": {
+          "type": "StringSelect",
+          "default": "default",
+          "yamlKey": "classification",
+          "label": "Classification"
+        }
+      }
+    },
+    "Delay": {
+      "description": "Applies child components after a delay",
+      "fields": {
+        "delay": {
+          "type": "AttributeSelect",
+          "default": 2,
+          "yamlKeys": [
+            "delay-base",
+            "delay-scale"
+          ],
+          "label": "Delay"
+        },
+        "cleanup": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "cleanup",
+          "label": "Cleanup"
+        },
+        "single-instance": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "single-instance",
+          "label": "Single Instance"
+        }
+      }
+    },
+    "Disguise": {
+      "description": "Disguises each target according to the settings. This mechanic requires the LibsDisguise plugin to be installed on your server",
+      "fields": {
+        "duration": {
+          "type": "AttributeSelect",
+          "default": -1,
+          "yamlKeys": [
+            "duration-base",
+            "duration-scale"
+          ],
+          "label": "Duration"
+        },
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Mob', 'Player', 'Misc']",
+          "yamlKey": "type",
+          "options": [
+            "Mob",
+            "Player",
+            "Misc"
+          ],
+          "label": "Type"
+        },
+        "mob": {
+          "type": "DropdownSelect",
+          "default": "getMobDisguises",
+          "yamlKey": "mob",
+          "label": "Mob"
+        },
+        "adult": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "adult",
+          "label": "Adult"
+        },
+        "player": {
+          "type": "StringSelect",
+          "default": "Eniripsa96",
+          "yamlKey": "player",
+          "label": "Player"
+        },
+        "misc": {
+          "type": "DropdownSelect",
+          "default": "getMiscDisguises",
+          "yamlKey": "misc",
+          "label": "Misc"
+        },
+        "data": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "data",
+          "label": "Data"
+        },
+        "mat": {
+          "type": "DropdownSelect",
+          "default": "((",
+          "yamlKey": "mat",
+          "label": "Material"
+        }
+      }
+    },
+    "Durability": {
+      "description": "Lowers the durability of a held item",
+      "fields": {
+        "amount": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "amount-base",
+            "amount-scale"
+          ],
+          "label": "Amount"
+        },
+        "offhand": {
+          "type": "BooleanSelect",
+          "yamlKey": "offhand",
+          "label": "Offhand"
+        }
+      }
+    },
+    "Experience": {
+      "description": "Modifies target player\\",
+      "fields": {
+        "vanilla": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "vanilla",
+          "label": "Vanilla"
+        },
+        "value": {
+          "type": "IntSelect",
+          "default": 1,
+          "yamlKey": "value",
+          "label": "Value"
+        },
+        "mode": {
+          "type": "DropdownSelect",
+          "default": "['give', 'set', 'take']",
+          "yamlKey": "mode",
+          "options": [
+            "give",
+            "set",
+            "take"
+          ],
+          "label": "Mode"
+        },
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['flat', 'percent', 'levels']",
+          "yamlKey": "type",
+          "options": [
+            "flat",
+            "percent",
+            "levels"
+          ],
+          "label": "Type"
+        },
+        "group": {
+          "type": "StringSelect",
+          "default": "class",
+          "yamlKey": "group",
+          "label": "Group"
+        },
+        "level-down": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "level-down",
+          "label": "Level Down"
+        }
+      }
+    },
+    "Explosion": {
+      "description": "Causes an explosion at the current target\\",
+      "fields": {
+        "power": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "power-base",
+            "power-scale"
+          ],
+          "label": "Power"
+        },
+        "damage": {
+          "type": "BooleanSelect",
+          "yamlKey": "damage",
+          "label": "Damage Blocks"
+        },
+        "fire": {
+          "type": "BooleanSelect",
+          "yamlKey": "fire",
+          "label": "Fire"
+        }
+      }
+    },
+    "Fire": {
+      "description": "Sets the target on fire for a duration",
+      "fields": {
+        "damage": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "damage-base",
+            "damage-scale"
+          ],
+          "label": "Damage"
+        },
+        "seconds": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "seconds-base",
+            "seconds-scale"
+          ],
+          "label": "Seconds"
+        }
+      }
+    },
+    "Flag": {
+      "description": "Marks the target with a flag for a duration. Flags can be checked by other triggers, spells or the related for interesting synergies and effects",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "key",
+          "yamlKey": "key",
+          "label": "Key"
+        },
+        "seconds": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "seconds-base",
+            "seconds-scale"
+          ],
+          "label": "Seconds"
+        }
+      }
+    },
+    "Flag Clear": {
+      "description": "Clears a flag from the target",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "key",
+          "yamlKey": "key",
+          "label": "Key"
+        }
+      }
+    },
+    "Flag Toggle": {
+      "description": "Toggles a flag on or off for the target. This can be used to make toggle effects",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "key",
+          "yamlKey": "key",
+          "label": "Key"
+        }
+      }
+    },
+    "Fly": {
+      "description": "Grants creative flight to a target for a set duration. Can also be used to revoke flight.",
+      "fields": {
+        "allow-flight": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "allow-flight",
+          "label": "Allow Flight"
+        },
+        "seconds": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "seconds-base",
+            "seconds-scale"
+          ],
+          "label": "Seconds"
+        },
+        "flyspeed": {
+          "type": "AttributeSelect",
+          "default": 0.1,
+          "yamlKeys": [
+            "flyspeed-base",
+            "flyspeed-scale"
+          ],
+          "label": "Flyspeed"
+        },
+        "flying": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "flying",
+          "label": "Force Flight"
+        }
+      }
+    },
+    "Food": {
+      "description": "Adds or removes to a player\\",
+      "fields": {
+        "food": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "food-base",
+            "food-scale"
+          ],
+          "label": "Food"
+        },
+        "saturation": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "saturation-base",
+            "saturation-scale"
+          ],
+          "label": "Saturation"
+        }
+      }
+    },
+    "Forget Targets": {
+      "description": "Clears targets stored by the \"Remember Targets\" mechanic",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "key",
+          "yamlKey": "key",
+          "label": "Key"
+        }
+      }
+    },
+    "Heal": {
+      "description": "Restores health to each target",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Health', 'Percent']",
+          "yamlKey": "type",
+          "options": [
+            "Health",
+            "Percent"
+          ],
+          "label": "Type"
+        },
+        "value": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "value-base",
+            "value-scale"
+          ],
+          "label": "Value"
+        }
+      }
+    },
+    "Health Set": {
+      "description": "Sets the target\\",
+      "fields": {
+        "health": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "health-base",
+            "health-scale"
+          ],
+          "label": "Health"
+        }
+      }
+    },
+    "Held Item": {
+      "description": "Sets the held item slot of the target player. This will do nothing if trying to set it to a skill slot",
+      "fields": {
+        "slot": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "slot-base",
+            "slot-scale"
+          ],
+          "label": "Slot"
+        }
+      }
+    },
+    "Immunity": {
+      "description": "Provides damage immunity from one source for a duration",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "getDamageTypes",
+          "yamlKey": "type",
+          "label": "Type"
+        },
+        "seconds": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "seconds-base",
+            "seconds-scale"
+          ],
+          "label": "Seconds"
+        },
+        "multiplier": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "multiplier-base",
+            "multiplier-scale"
+          ],
+          "label": "Multiplier"
+        }
+      }
+    },
+    "Interrupt": {
+      "description": "Interrupts any channeling being done by each target if applicable",
+      "fields": {}
+    },
+    "Invisibility": {
+      "description": "Applies invisibility effect on target, optionally hiding equipment (Requires ProtocolLib).",
+      "fields": {
+        "duration": {
+          "type": "IntSelect",
+          "default": 200,
+          "yamlKey": "duration",
+          "label": "Duration"
+        },
+        "hideEquipment": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "hideEquipment",
+          "label": "Hide Equipment"
+        }
+      }
+    },
+    "Item": {
+      "description": "Gives each player target the item defined by the settings",
+      "fields": {}
+    },
+    "Item Drop": {
+      "description": "Spawns a dropped item defined by the settings at the specified location",
+      "fields": {
+        "pickup_delay": {
+          "type": "AttributeSelect",
+          "default": 10,
+          "yamlKeys": [
+            "pickup_delay-base",
+            "pickup_delay-scale"
+          ],
+          "label": "Pickup Delay"
+        },
+        "duration": {
+          "type": "AttributeSelect",
+          "default": 6000,
+          "yamlKeys": [
+            "duration-base",
+            "duration-scale"
+          ],
+          "label": "Duration"
+        },
+        "forward": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "forward-base",
+            "forward-scale"
+          ],
+          "label": "Forward offset"
+        },
+        "upward": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "upward-base",
+            "upward-scale"
+          ],
+          "label": "Upward offset"
+        },
+        "right": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "right-base",
+            "right-scale"
+          ],
+          "label": "Right offset"
+        }
+      }
+    },
+    "Item Projectile": {
+      "description": "Launches a projectile using an item as its visual that applies child components upon landing. The target passed on will be the collided target or the location where it landed if it missed",
+      "fields": {
+        "group": {
+          "type": "DropdownSelect",
+          "default": "['Ally', 'Enemy']",
+          "yamlKey": "group",
+          "options": [
+            "Ally",
+            "Enemy"
+          ],
+          "label": "Group"
+        },
+        "walls": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "walls",
+          "label": "Wall Collisions"
+        },
+        "collision-radius": {
+          "type": "AttributeSelect",
+          "default": 0.2,
+          "yamlKeys": [
+            "collision-radius-base",
+            "collision-radius-scale"
+          ],
+          "label": "Collision Radius"
+        },
+        "period": {
+          "type": "IntSelect",
+          "default": 5,
+          "yamlKey": "period",
+          "label": "Refresh period"
+        },
+        "per-target": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "per-target",
+          "label": "Particles at target"
+        },
+        "per-target-particle": {
+          "type": "DropdownSelect",
+          "default": "getParticles",
+          "yamlKey": "per-target-particle",
+          "label": "Particle"
+        },
+        "per-target-material": {
+          "type": "DropdownSelect",
+          "default": "((",
+          "yamlKey": "per-target-material",
+          "label": "Material"
+        },
+        "per-target-durability": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "per-target-durability",
+          "label": "Durability"
+        },
+        "per-target-type": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "per-target-type",
+          "label": "CustomModelData"
+        },
+        "per-target-dust-color": {
+          "type": "ColorSelect",
+          "default": "#FF0000",
+          "yamlKey": "per-target-dust-color",
+          "label": "Dust Color"
+        },
+        "per-target-final-dust-color": {
+          "type": "ColorSelect",
+          "default": "#FF0000",
+          "yamlKey": "per-target-final-dust-color",
+          "label": "Final Dust Color"
+        },
+        "per-target-dust-size": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "per-target-dust-size",
+          "label": "Dust Size"
+        },
+        "per-target-data": {
+          "type": "IntSelect",
+          "yamlKey": "per-target-data",
+          "label": "Effect Data"
+        },
+        "per-target-dx": {
+          "type": "DoubleSelect",
+          "yamlKey": "per-target-dx",
+          "label": "DX"
+        },
+        "per-target-dy": {
+          "type": "DoubleSelect",
+          "yamlKey": "per-target-dy",
+          "label": "DY"
+        },
+        "per-target-dz": {
+          "type": "DoubleSelect",
+          "yamlKey": "per-target-dz",
+          "label": "DZ"
+        },
+        "per-target-amount": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "per-target-amount",
+          "label": "Amount"
+        },
+        "per-target-speed": {
+          "type": "DoubleSelect",
+          "default": 0.1,
+          "yamlKey": "per-target-speed",
+          "label": "Speed"
+        },
+        "per-target-arrangement": {
+          "type": "DropdownSelect",
+          "default": "['Sphere', 'Circle', 'Hemisphere']",
+          "yamlKey": "per-target-arrangement",
+          "options": [
+            "Sphere",
+            "Circle",
+            "Hemisphere"
+          ],
+          "label": "Arrangement"
+        },
+        "per-target-direction": {
+          "type": "DropdownSelect",
+          "default": "['XY', 'XZ', 'YZ']",
+          "yamlKey": "per-target-direction",
+          "options": [
+            "XY",
+            "XZ",
+            "YZ"
+          ],
+          "label": "Circle Direction"
+        },
+        "per-target-radius": {
+          "type": "AttributeSelect",
+          "default": 0.5,
+          "yamlKeys": [
+            "per-target-radius-base",
+            "per-target-radius-scale"
+          ],
+          "label": "Radius"
+        },
+        "per-target-hitbox": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "per-target-hitbox",
+          "label": "Increase size by hitbox"
+        },
+        "per-target-particles": {
+          "type": "AttributeSelect",
+          "default": 20,
+          "yamlKeys": [
+            "per-target-particles-base",
+            "per-target-particles-scale"
+          ],
+          "label": "Points"
+        },
+        "path": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "path",
+          "label": "Path Preview"
+        },
+        "path-steps": {
+          "type": "DoubleSelect",
+          "default": 2,
+          "yamlKey": "path-steps",
+          "label": "Steps per particle"
+        },
+        "path-particle": {
+          "type": "DropdownSelect",
+          "default": "getParticles",
+          "yamlKey": "path-particle",
+          "label": "Particle"
+        },
+        "path-material": {
+          "type": "DropdownSelect",
+          "default": "((",
+          "yamlKey": "path-material",
+          "label": "Material"
+        },
+        "path-durability": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "path-durability",
+          "label": "Durability"
+        },
+        "path-type": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "path-type",
+          "label": "CustomModelData"
+        },
+        "path-dust-color": {
+          "type": "ColorSelect",
+          "default": "#FF0000",
+          "yamlKey": "path-dust-color",
+          "label": "Dust Color"
+        },
+        "path-final-dust-color": {
+          "type": "ColorSelect",
+          "default": "#FF0000",
+          "yamlKey": "path-final-dust-color",
+          "label": "Final Dust Color"
+        },
+        "path-dust-size": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "path-dust-size",
+          "label": "Dust Size"
+        },
+        "path-data": {
+          "type": "IntSelect",
+          "yamlKey": "path-data",
+          "label": "Effect Data"
+        },
+        "path-dx": {
+          "type": "DoubleSelect",
+          "yamlKey": "path-dx",
+          "label": "DX"
+        },
+        "path-dy": {
+          "type": "DoubleSelect",
+          "yamlKey": "path-dy",
+          "label": "DY"
+        },
+        "path-dz": {
+          "type": "DoubleSelect",
+          "yamlKey": "path-dz",
+          "label": "DZ"
+        },
+        "path-amount": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "path-amount",
+          "label": "Amount"
+        },
+        "path-speed": {
+          "type": "DoubleSelect",
+          "default": 0.1,
+          "yamlKey": "path-speed",
+          "label": "Speed"
+        }
+      }
+    },
+    "Item Remove": {
+      "description": "Removes an item from a player inventory. This does nothing to mobs",
+      "fields": {
+        "amount": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "amount-base",
+            "amount-scale"
+          ],
+          "label": "Amount"
+        }
+      }
+    },
+    "Launch": {
+      "description": "Launches the target relative to their forward direction. Use negative values to go in the opposite direction (e.g. negative forward makes the target go backwards)",
+      "fields": {
+        "relative": {
+          "type": "DropdownSelect",
+          "default": "['Target', 'Caster', 'Between']",
+          "yamlKey": "relative",
+          "options": [
+            "Target",
+            "Caster",
+            "Between"
+          ],
+          "label": "Relative"
+        },
+        "reset-y": {
+          "type": "BooleanSelect",
+          "yamlKey": "reset-y",
+          "label": "Reset Y"
+        },
+        "forward": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "forward-base",
+            "forward-scale"
+          ],
+          "label": "Forward Speed"
+        },
+        "upward": {
+          "type": "AttributeSelect",
+          "default": 2,
+          "yamlKeys": [
+            "upward-base",
+            "upward-scale"
+          ],
+          "label": "Upward Speed"
+        },
+        "right": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "right-base",
+            "right-scale"
+          ],
+          "label": "Right Speed"
+        }
+      }
+    },
+    "Lightning": {
+      "description": "Strikes lightning on or near the target, applying child components to the struck targets. Negative offsets will offset it in the opposite direction (e.g. negative forward offset puts it behind the target)",
+      "fields": {
+        "damage": {
+          "type": "AttributeSelect",
+          "default": 5,
+          "yamlKeys": [
+            "damage-base",
+            "damage-scale"
+          ],
+          "label": "Damage"
+        },
+        "group": {
+          "type": "DropdownSelect",
+          "default": "['Ally', 'Enemy', 'Both']",
+          "yamlKey": "group",
+          "options": [
+            "Ally",
+            "Enemy",
+            "Both"
+          ],
+          "label": "Group"
+        },
+        "caster": {
+          "type": "BooleanSelect",
+          "yamlKey": "caster",
+          "label": "Include Caster"
+        },
+        "fire": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "fire",
+          "label": "Fire"
+        },
+        "forward": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "forward-base",
+            "forward-scale"
+          ],
+          "label": "Forward Offset"
+        },
+        "right": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "right-base",
+            "right-scale"
+          ],
+          "label": "Right Offset"
+        }
+      }
+    },
+    "Mana": {
+      "description": "Restores or deducts mana from the target",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Mana', 'Percent']",
+          "yamlKey": "type",
+          "options": [
+            "Mana",
+            "Percent"
+          ],
+          "label": "Type"
+        },
+        "value": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "value-base",
+            "value-scale"
+          ],
+          "label": "Value"
+        }
+      }
+    },
+    "Message": {
+      "description": "Sends a message to each player target. To include numbers from Value mechanics, use the filters {} where  is the key the value is stored under",
+      "fields": {
+        "message": {
+          "type": "StringSelect",
+          "default": "text",
+          "yamlKey": "message",
+          "label": "Message"
+        }
+      }
+    },
+    "Mine": {
+      "description": "Destroys a selection of blocks at the location of the target",
+      "fields": {
+        "materials": {
+          "type": "DropdownSelect",
+          "default": "((",
+          "yamlKey": "materials",
+          "label": "Material"
+        },
+        "drop": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "drop",
+          "label": "Drop"
+        },
+        "tool": {
+          "type": "DropdownSelect",
+          "default": "((",
+          "yamlKey": "tool",
+          "label": "Tool"
+        },
+        "shape": {
+          "type": "DropdownSelect",
+          "default": "['Sphere', 'Cuboid']",
+          "yamlKey": "shape",
+          "options": [
+            "Sphere",
+            "Cuboid"
+          ],
+          "label": "Shape"
+        },
+        "radius": {
+          "type": "AttributeSelect",
+          "default": 2,
+          "yamlKeys": [
+            "radius-base",
+            "radius-scale"
+          ],
+          "label": "Radius"
+        },
+        "forward": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "forward-base",
+            "forward-scale"
+          ],
+          "label": "Forward Offset"
+        },
+        "upward": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "upward-base",
+            "upward-scale"
+          ],
+          "label": "Upward Offset"
+        },
+        "right": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "right-base",
+            "right-scale"
+          ],
+          "label": "Right Offset"
+        },
+        "per-target-center-only": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "per-target-center-only",
+          "label": "Center only"
+        }
+      }
+    },
+    "Money": {
+      "description": "Adds or multiplies the target\\",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Add', 'Multiply']",
+          "yamlKey": "type",
+          "options": [
+            "Add",
+            "Multiply"
+          ],
+          "label": "Type"
+        },
+        "amount": {
+          "type": "AttributeSelect",
+          "default": 5,
+          "yamlKeys": [
+            "amount-base",
+            "amount-scale"
+          ],
+          "label": "Amount"
+        },
+        "allows_negative": {
+          "type": "BooleanSelect",
+          "yamlKey": "allows_negative",
+          "label": "Allows negative"
+        }
+      }
+    },
+    "Mount": {
+      "description": "Mounts entities",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Caster->Target', 'Target->Caster']",
+          "yamlKey": "type",
+          "options": [
+            "Caster->Target",
+            "Target->Caster"
+          ],
+          "label": "Type"
+        },
+        "max": {
+          "type": "AttributeSelect",
+          "default": 5,
+          "yamlKeys": [
+            "max-base",
+            "max-scale"
+          ],
+          "label": "Stack Size"
+        }
+      }
+    },
+    "MythicMob Skill": {
+      "description": "Casts a MythicMob skill on current the targets.",
+      "fields": {
+        "skill": {
+          "type": "StringSelect",
+          "yamlKey": "skill",
+          "label": "MythicMob Skill"
+        }
+      }
+    },
+    "Particle": {
+      "description": "Plays a particle effect about the target",
+      "fields": {
+        "forward": {
+          "type": "DoubleSelect",
+          "yamlKey": "forward",
+          "label": "Forward Offset"
+        },
+        "upward": {
+          "type": "DoubleSelect",
+          "yamlKey": "upward",
+          "label": "Upward Offset"
+        },
+        "right": {
+          "type": "DoubleSelect",
+          "yamlKey": "right",
+          "label": "Right Offset"
+        }
+      }
+    },
+    "Particle Animation": {
+      "description": "Plays an animated particle effect at the location of each target over time by applying various transformations",
+      "fields": {
+        "steps": {
+          "type": "IntSelect",
+          "default": 1,
+          "yamlKey": "steps",
+          "label": "Steps"
+        },
+        "frequency": {
+          "type": "DoubleSelect",
+          "default": 0.05,
+          "yamlKey": "frequency",
+          "label": "Frequency"
+        },
+        "angle": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "angle",
+          "label": "Angle"
+        },
+        "start": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "start",
+          "label": "Start Angle"
+        },
+        "duration": {
+          "type": "AttributeSelect",
+          "default": 5,
+          "yamlKeys": [
+            "duration-base",
+            "duration-scale"
+          ],
+          "label": "Duration"
+        },
+        "h-translation": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "h-translation-base",
+            "h-translation-scale"
+          ],
+          "label": "H-Translation"
+        },
+        "v-translation": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "v-translation-base",
+            "v-translation-scale"
+          ],
+          "label": "V-Translation"
+        },
+        "h-cycles": {
+          "type": "IntSelect",
+          "default": 1,
+          "yamlKey": "h-cycles",
+          "label": "H-Cycles"
+        },
+        "v-cycles": {
+          "type": "IntSelect",
+          "default": 1,
+          "yamlKey": "v-cycles",
+          "label": "V-Cycles"
+        },
+        "forward": {
+          "type": "DoubleSelect",
+          "default": 0,
+          "yamlKey": "forward",
+          "label": "Forward Offset"
+        },
+        "upward": {
+          "type": "DoubleSelect",
+          "default": 0,
+          "yamlKey": "upward",
+          "label": "Upward Offset"
+        },
+        "right": {
+          "type": "DoubleSelect",
+          "default": 0,
+          "yamlKey": "right",
+          "label": "Right Offset"
+        },
+        "-with-rotation": {
+          "type": "BooleanSelect",
+          "yamlKey": "-with-rotation",
+          "label": "Rotate w/ Player"
+        }
+      }
+    },
+    "Particle Effect": {
+      "description": "Plays a particle effect that follows the current target, using formulas to determine shape, size, and motion",
+      "fields": {}
+    },
+    "Particle Image": {
+      "description": "Displays an image using particles that (optionally) follows the current target",
+      "fields": {
+        "effect-key": {
+          "type": "StringSelect",
+          "default": "default",
+          "yamlKey": "effect-key",
+          "label": "Effect Key"
+        },
+        "img": {
+          "type": "StringSelect",
+          "default": "default.png",
+          "yamlKey": "img",
+          "label": "Image"
+        },
+        "duration": {
+          "type": "AttributeSelect",
+          "default": 5,
+          "yamlKeys": [
+            "duration-base",
+            "duration-scale"
+          ],
+          "label": "Duration"
+        },
+        "interval": {
+          "type": "IntSelect",
+          "default": 5,
+          "yamlKey": "interval",
+          "label": "Interval"
+        },
+        "iterations-per-frame": {
+          "type": "IntSelect",
+          "default": 3,
+          "yamlKey": "iterations-per-frame",
+          "label": "Frame Frequency"
+        },
+        "view-range": {
+          "type": "IntSelect",
+          "default": 25,
+          "yamlKey": "view-range",
+          "label": "View Range"
+        },
+        "direction": {
+          "type": "DropdownSelect",
+          "default": "['XY', 'YZ', 'XZ']",
+          "yamlKey": "direction",
+          "options": [
+            "XY",
+            "YZ",
+            "XZ"
+          ],
+          "label": "Direction"
+        },
+        "width": {
+          "type": "DoubleSelect",
+          "default": 3,
+          "yamlKey": "width",
+          "label": "Width"
+        },
+        "height": {
+          "type": "DoubleSelect",
+          "default": 3,
+          "yamlKey": "height",
+          "label": "Height"
+        },
+        "lock-aspect": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "lock-aspect",
+          "label": "Lock Aspect Ratio"
+        },
+        "resolution": {
+          "type": "IntSelect",
+          "default": 6,
+          "yamlKey": "resolution",
+          "label": "Resolution"
+        },
+        "dust-size": {
+          "type": "StringSelect",
+          "default": 1,
+          "yamlKey": "dust-size",
+          "label": "Dust Size"
+        },
+        "rotate": {
+          "type": "StringSelect",
+          "default": 0,
+          "yamlKey": "rotate",
+          "label": "Rotate"
+        },
+        "tilt": {
+          "type": "StringSelect",
+          "default": 0,
+          "yamlKey": "tilt",
+          "label": "Tilt"
+        },
+        "spin": {
+          "type": "StringSelect",
+          "default": 0,
+          "yamlKey": "spin",
+          "label": "Spin"
+        },
+        "scale": {
+          "type": "StringSelect",
+          "default": 1,
+          "yamlKey": "scale",
+          "label": "Scale"
+        },
+        "forward": {
+          "type": "StringSelect",
+          "default": 0,
+          "yamlKey": "forward",
+          "label": "Forward Offset"
+        },
+        "upward": {
+          "type": "StringSelect",
+          "default": 0,
+          "yamlKey": "upward",
+          "label": "Upward Offset"
+        },
+        "right": {
+          "type": "StringSelect",
+          "default": 0,
+          "yamlKey": "right",
+          "label": "Right Offset"
+        },
+        "with-rotation": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "with-rotation",
+          "label": "Rotate w/ Player"
+        }
+      }
+    },
+    "Particle Projectile": {
+      "description": "Launches a projectile using particles as its visual that applies child components upon landing. The target passed on will be the collided target or the location where it landed if it missed",
+      "fields": {
+        "pierce": {
+          "type": "BooleanSelect",
+          "yamlKey": "pierce",
+          "label": "Pierce"
+        },
+        "group": {
+          "type": "DropdownSelect",
+          "default": "['Ally', 'Enemy']",
+          "yamlKey": "group",
+          "options": [
+            "Ally",
+            "Enemy"
+          ],
+          "label": "Group"
+        },
+        "steps": {
+          "type": "IntSelect",
+          "default": 2,
+          "yamlKey": "steps",
+          "label": "Steps"
+        },
+        "collision-radius": {
+          "type": "AttributeSelect",
+          "default": 1.5,
+          "yamlKeys": [
+            "collision-radius-base",
+            "collision-radius-scale"
+          ],
+          "label": "Collision Radius"
+        },
+        "gravity": {
+          "type": "AttributeSelect",
+          "default": -0.04,
+          "yamlKeys": [
+            "gravity-base",
+            "gravity-scale"
+          ],
+          "label": "Gravity"
+        },
+        "drag": {
+          "type": "AttributeSelect",
+          "default": 0.02,
+          "yamlKeys": [
+            "drag-base",
+            "drag-scale"
+          ],
+          "label": "Drag"
+        },
+        "period": {
+          "type": "IntSelect",
+          "default": 5,
+          "yamlKey": "period",
+          "label": "Refresh period"
+        },
+        "per-target": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "per-target",
+          "label": "Particles at target"
+        },
+        "per-target-particle": {
+          "type": "DropdownSelect",
+          "default": "getParticles",
+          "yamlKey": "per-target-particle",
+          "label": "Particle"
+        },
+        "per-target-material": {
+          "type": "DropdownSelect",
+          "default": "((",
+          "yamlKey": "per-target-material",
+          "label": "Material"
+        },
+        "per-target-durability": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "per-target-durability",
+          "label": "Durability"
+        },
+        "per-target-type": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "per-target-type",
+          "label": "CustomModelData"
+        },
+        "per-target-dust-color": {
+          "type": "ColorSelect",
+          "default": "#FF0000",
+          "yamlKey": "per-target-dust-color",
+          "label": "Dust Color"
+        },
+        "per-target-final-dust-color": {
+          "type": "ColorSelect",
+          "default": "#FF0000",
+          "yamlKey": "per-target-final-dust-color",
+          "label": "Final Dust Color"
+        },
+        "per-target-dust-size": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "per-target-dust-size",
+          "label": "Dust Size"
+        },
+        "per-target-data": {
+          "type": "IntSelect",
+          "yamlKey": "per-target-data",
+          "label": "Effect Data"
+        },
+        "per-target-dx": {
+          "type": "DoubleSelect",
+          "yamlKey": "per-target-dx",
+          "label": "DX"
+        },
+        "per-target-dy": {
+          "type": "DoubleSelect",
+          "yamlKey": "per-target-dy",
+          "label": "DY"
+        },
+        "per-target-dz": {
+          "type": "DoubleSelect",
+          "yamlKey": "per-target-dz",
+          "label": "DZ"
+        },
+        "per-target-amount": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "per-target-amount",
+          "label": "Amount"
+        },
+        "per-target-speed": {
+          "type": "DoubleSelect",
+          "default": 0.1,
+          "yamlKey": "per-target-speed",
+          "label": "Speed"
+        },
+        "per-target-arrangement": {
+          "type": "DropdownSelect",
+          "default": "['Sphere', 'Circle', 'Hemisphere']",
+          "yamlKey": "per-target-arrangement",
+          "options": [
+            "Sphere",
+            "Circle",
+            "Hemisphere"
+          ],
+          "label": "Arrangement"
+        },
+        "per-target-direction": {
+          "type": "DropdownSelect",
+          "default": "['XY', 'XZ', 'YZ']",
+          "yamlKey": "per-target-direction",
+          "options": [
+            "XY",
+            "XZ",
+            "YZ"
+          ],
+          "label": "Circle Direction"
+        },
+        "per-target-radius": {
+          "type": "AttributeSelect",
+          "default": 0.5,
+          "yamlKeys": [
+            "per-target-radius-base",
+            "per-target-radius-scale"
+          ],
+          "label": "Radius"
+        },
+        "per-target-hitbox": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "per-target-hitbox",
+          "label": "Increase size by hitbox"
+        },
+        "per-target-particles": {
+          "type": "AttributeSelect",
+          "default": 20,
+          "yamlKeys": [
+            "per-target-particles-base",
+            "per-target-particles-scale"
+          ],
+          "label": "Points"
+        },
+        "path": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "path",
+          "label": "Path Preview"
+        },
+        "path-steps": {
+          "type": "DoubleSelect",
+          "default": 2,
+          "yamlKey": "path-steps",
+          "label": "Steps per particle"
+        },
+        "path-particle": {
+          "type": "DropdownSelect",
+          "default": "getParticles",
+          "yamlKey": "path-particle",
+          "label": "Particle"
+        },
+        "path-material": {
+          "type": "DropdownSelect",
+          "default": "((",
+          "yamlKey": "path-material",
+          "label": "Material"
+        },
+        "path-durability": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "path-durability",
+          "label": "Durability"
+        },
+        "path-type": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "path-type",
+          "label": "CustomModelData"
+        },
+        "path-dust-color": {
+          "type": "ColorSelect",
+          "default": "#FF0000",
+          "yamlKey": "path-dust-color",
+          "label": "Dust Color"
+        },
+        "path-final-dust-color": {
+          "type": "ColorSelect",
+          "default": "#FF0000",
+          "yamlKey": "path-final-dust-color",
+          "label": "Final Dust Color"
+        },
+        "path-dust-size": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "path-dust-size",
+          "label": "Dust Size"
+        },
+        "path-data": {
+          "type": "IntSelect",
+          "yamlKey": "path-data",
+          "label": "Effect Data"
+        },
+        "path-dx": {
+          "type": "DoubleSelect",
+          "yamlKey": "path-dx",
+          "label": "DX"
+        },
+        "path-dy": {
+          "type": "DoubleSelect",
+          "yamlKey": "path-dy",
+          "label": "DY"
+        },
+        "path-dz": {
+          "type": "DoubleSelect",
+          "yamlKey": "path-dz",
+          "label": "DZ"
+        },
+        "path-amount": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "path-amount",
+          "label": "Amount"
+        },
+        "path-speed": {
+          "type": "DoubleSelect",
+          "default": 0.1,
+          "yamlKey": "path-speed",
+          "label": "Speed"
+        }
+      }
+    },
+    "Passive": {
+      "description": "Applies child components continuously every period. The seconds value below is the period or how often it applies",
+      "fields": {
+        "seconds": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "seconds-base",
+            "seconds-scale"
+          ],
+          "label": "Seconds"
+        }
+      }
+    },
+    "Permission": {
+      "description": "Grants each player target a permission for a limited duration. This mechanic requires Vault with an accompanying permissions plugin in order to work",
+      "fields": {
+        "perm": {
+          "type": "StringSelect",
+          "default": "plugin.perm.key",
+          "yamlKey": "perm",
+          "label": "Permission"
+        },
+        "seconds": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "seconds-base",
+            "seconds-scale"
+          ],
+          "label": "Seconds"
+        }
+      }
+    },
+    "Potion": {
+      "description": "Applies a potion effect to the target for a duration",
+      "fields": {
+        "potion": {
+          "type": "DropdownSelect",
+          "default": "getPotionTypes",
+          "yamlKey": "potion",
+          "label": "Potion"
+        },
+        "ambient": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "ambient",
+          "label": "Ambient Particles"
+        },
+        "tier": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "tier-base",
+            "tier-scale"
+          ],
+          "label": "Tier"
+        },
+        "seconds": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "seconds-base",
+            "seconds-scale"
+          ],
+          "label": "Seconds"
+        }
+      }
+    },
+    "Potion Projectile": {
+      "description": "Drops a splash potion from each target that does not apply potion effects by default. This will apply child elements when the potion lands. The targets supplied will be everything hit by the potion. If nothing is hit by the potion, the target will be the location it landed",
+      "fields": {
+        "color": {
+          "type": "ColorSelect",
+          "default": "#ff0000",
+          "yamlKey": "color",
+          "label": "Color"
+        },
+        "group": {
+          "type": "DropdownSelect",
+          "default": "['Ally', 'Enemy', 'Both']",
+          "yamlKey": "group",
+          "options": [
+            "Ally",
+            "Enemy",
+            "Both"
+          ],
+          "label": "Group"
+        },
+        "flaming": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "flaming",
+          "label": "Flaming"
+        },
+        "linger": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "linger",
+          "label": "Linger"
+        },
+        "duration": {
+          "type": "AttributeSelect",
+          "default": 30,
+          "yamlKeys": [
+            "duration-base",
+            "duration-scale"
+          ],
+          "label": "Duration"
+        },
+        "wait-time": {
+          "type": "AttributeSelect",
+          "default": 0.5,
+          "yamlKeys": [
+            "wait-time-base",
+            "wait-time-scale"
+          ],
+          "label": "Wait time"
+        },
+        "reapplication-delay": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "reapplication-delay-base",
+            "reapplication-delay-scale"
+          ],
+          "label": "Reapplication delay"
+        },
+        "duration-on-use": {
+          "type": "AttributeSelect",
+          "default": 0,
+          "yamlKeys": [
+            "duration-on-use-base",
+            "duration-on-use-scale"
+          ],
+          "label": "Duration on use"
+        },
+        "cloud-radius": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "cloud-radius-base",
+            "cloud-radius-scale"
+          ],
+          "label": "Radius"
+        },
+        "radius-on-use": {
+          "type": "AttributeSelect",
+          "default": -0.5,
+          "yamlKeys": [
+            "radius-on-use-base",
+            "radius-on-use-scale"
+          ],
+          "label": "Radius on use"
+        },
+        "radius-per-tick": {
+          "type": "AttributeSelect",
+          "default": -0.1,
+          "yamlKeys": [
+            "radius-per-tick-base",
+            "radius-per-tick-scale"
+          ],
+          "label": "Radius per tick"
+        },
+        "cloud-particle": {
+          "type": "DropdownSelect",
+          "default": "getParticles",
+          "yamlKey": "cloud-particle",
+          "label": "Cloud Particle"
+        },
+        "cloud-material": {
+          "type": "DropdownSelect",
+          "default": "((",
+          "yamlKey": "cloud-material",
+          "label": "Material"
+        },
+        "cloud-durability": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "cloud-durability",
+          "label": "Durability"
+        },
+        "cloud-type": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "cloud-type",
+          "label": "CustomModelData"
+        },
+        "cloud-dust-color": {
+          "type": "ColorSelect",
+          "default": "#FF0000",
+          "yamlKey": "cloud-dust-color",
+          "label": "Dust Color"
+        },
+        "cloud-final-dust-color": {
+          "type": "ColorSelect",
+          "default": "#FF0000",
+          "yamlKey": "cloud-final-dust-color",
+          "label": "Final Dust Color"
+        },
+        "cloud-dust-size": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "cloud-dust-size",
+          "label": "Dust Size"
+        },
+        "period": {
+          "type": "IntSelect",
+          "default": 5,
+          "yamlKey": "period",
+          "label": "Refresh period"
+        },
+        "per-target": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "per-target",
+          "label": "Particles at target"
+        },
+        "per-target-particle": {
+          "type": "DropdownSelect",
+          "default": "getParticles",
+          "yamlKey": "per-target-particle",
+          "label": "Particle"
+        },
+        "per-target-material": {
+          "type": "DropdownSelect",
+          "default": "((",
+          "yamlKey": "per-target-material",
+          "label": "Material"
+        },
+        "per-target-durability": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "per-target-durability",
+          "label": "Durability"
+        },
+        "per-target-type": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "per-target-type",
+          "label": "CustomModelData"
+        },
+        "per-target-dust-color": {
+          "type": "ColorSelect",
+          "default": "#FF0000",
+          "yamlKey": "per-target-dust-color",
+          "label": "Dust Color"
+        },
+        "per-target-final-dust-color": {
+          "type": "ColorSelect",
+          "default": "#FF0000",
+          "yamlKey": "per-target-final-dust-color",
+          "label": "Final Dust Color"
+        },
+        "per-target-dust-size": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "per-target-dust-size",
+          "label": "Dust Size"
+        },
+        "per-target-data": {
+          "type": "IntSelect",
+          "yamlKey": "per-target-data",
+          "label": "Effect Data"
+        },
+        "per-target-dx": {
+          "type": "DoubleSelect",
+          "yamlKey": "per-target-dx",
+          "label": "DX"
+        },
+        "per-target-dy": {
+          "type": "DoubleSelect",
+          "yamlKey": "per-target-dy",
+          "label": "DY"
+        },
+        "per-target-dz": {
+          "type": "DoubleSelect",
+          "yamlKey": "per-target-dz",
+          "label": "DZ"
+        },
+        "per-target-amount": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "per-target-amount",
+          "label": "Amount"
+        },
+        "per-target-speed": {
+          "type": "DoubleSelect",
+          "default": 0.1,
+          "yamlKey": "per-target-speed",
+          "label": "Speed"
+        },
+        "per-target-arrangement": {
+          "type": "DropdownSelect",
+          "default": "['Sphere', 'Circle', 'Hemisphere']",
+          "yamlKey": "per-target-arrangement",
+          "options": [
+            "Sphere",
+            "Circle",
+            "Hemisphere"
+          ],
+          "label": "Arrangement"
+        },
+        "per-target-direction": {
+          "type": "DropdownSelect",
+          "default": "['XY', 'XZ', 'YZ']",
+          "yamlKey": "per-target-direction",
+          "options": [
+            "XY",
+            "XZ",
+            "YZ"
+          ],
+          "label": "Circle Direction"
+        },
+        "per-target-radius": {
+          "type": "AttributeSelect",
+          "default": 0.5,
+          "yamlKeys": [
+            "per-target-radius-base",
+            "per-target-radius-scale"
+          ],
+          "label": "Radius"
+        },
+        "per-target-hitbox": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "per-target-hitbox",
+          "label": "Increase size by hitbox"
+        },
+        "per-target-particles": {
+          "type": "AttributeSelect",
+          "default": 20,
+          "yamlKeys": [
+            "per-target-particles-base",
+            "per-target-particles-scale"
+          ],
+          "label": "Points"
+        },
+        "path": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "path",
+          "label": "Path Preview"
+        },
+        "path-steps": {
+          "type": "DoubleSelect",
+          "default": 2,
+          "yamlKey": "path-steps",
+          "label": "Steps per particle"
+        },
+        "path-particle": {
+          "type": "DropdownSelect",
+          "default": "getParticles",
+          "yamlKey": "path-particle",
+          "label": "Particle"
+        },
+        "path-material": {
+          "type": "DropdownSelect",
+          "default": "((",
+          "yamlKey": "path-material",
+          "label": "Material"
+        },
+        "path-durability": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "path-durability",
+          "label": "Durability"
+        },
+        "path-type": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "path-type",
+          "label": "CustomModelData"
+        },
+        "path-dust-color": {
+          "type": "ColorSelect",
+          "default": "#FF0000",
+          "yamlKey": "path-dust-color",
+          "label": "Dust Color"
+        },
+        "path-final-dust-color": {
+          "type": "ColorSelect",
+          "default": "#FF0000",
+          "yamlKey": "path-final-dust-color",
+          "label": "Final Dust Color"
+        },
+        "path-dust-size": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "path-dust-size",
+          "label": "Dust Size"
+        },
+        "path-data": {
+          "type": "IntSelect",
+          "yamlKey": "path-data",
+          "label": "Effect Data"
+        },
+        "path-dx": {
+          "type": "DoubleSelect",
+          "yamlKey": "path-dx",
+          "label": "DX"
+        },
+        "path-dy": {
+          "type": "DoubleSelect",
+          "yamlKey": "path-dy",
+          "label": "DY"
+        },
+        "path-dz": {
+          "type": "DoubleSelect",
+          "yamlKey": "path-dz",
+          "label": "DZ"
+        },
+        "path-amount": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "path-amount",
+          "label": "Amount"
+        },
+        "path-speed": {
+          "type": "DoubleSelect",
+          "default": 0.1,
+          "yamlKey": "path-speed",
+          "label": "Speed"
+        }
+      }
+    },
+    "Projectile": {
+      "description": "Launches a projectile that applies child components on hit. The target supplied will be the struck target",
+      "fields": {
+        "projectile": {
+          "type": "DropdownSelect",
+          "default": "getProjectiles",
+          "yamlKey": "projectile",
+          "label": "Projectile"
+        },
+        "flaming": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "flaming",
+          "label": "Flaming"
+        },
+        "cost": {
+          "type": "DropdownSelect",
+          "default": "['None', 'All', 'One']",
+          "yamlKey": "cost",
+          "options": [
+            "None",
+            "All",
+            "One"
+          ],
+          "label": "Cost"
+        },
+        "override-item": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "override-item",
+          "label": "Override item"
+        },
+        "material": {
+          "type": "DropdownSelect",
+          "default": "((",
+          "yamlKey": "material",
+          "label": "Material"
+        },
+        "enchanted": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "enchanted",
+          "label": "Enchanted"
+        },
+        "durability": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "durability",
+          "label": "Durability"
+        },
+        "custom-model-data": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "custom-model-data",
+          "label": "CustomModelData"
+        },
+        "period": {
+          "type": "IntSelect",
+          "default": 5,
+          "yamlKey": "period",
+          "label": "Refresh period"
+        },
+        "per-target": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "per-target",
+          "label": "Particles at target"
+        },
+        "per-target-particle": {
+          "type": "DropdownSelect",
+          "default": "getParticles",
+          "yamlKey": "per-target-particle",
+          "label": "Particle"
+        },
+        "per-target-material": {
+          "type": "DropdownSelect",
+          "default": "((",
+          "yamlKey": "per-target-material",
+          "label": "Material"
+        },
+        "per-target-durability": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "per-target-durability",
+          "label": "Durability"
+        },
+        "per-target-type": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "per-target-type",
+          "label": "CustomModelData"
+        },
+        "per-target-dust-color": {
+          "type": "ColorSelect",
+          "default": "#FF0000",
+          "yamlKey": "per-target-dust-color",
+          "label": "Dust Color"
+        },
+        "per-target-final-dust-color": {
+          "type": "ColorSelect",
+          "default": "#FF0000",
+          "yamlKey": "per-target-final-dust-color",
+          "label": "Final Dust Color"
+        },
+        "per-target-dust-size": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "per-target-dust-size",
+          "label": "Dust Size"
+        },
+        "per-target-data": {
+          "type": "IntSelect",
+          "yamlKey": "per-target-data",
+          "label": "Effect Data"
+        },
+        "per-target-dx": {
+          "type": "DoubleSelect",
+          "yamlKey": "per-target-dx",
+          "label": "DX"
+        },
+        "per-target-dy": {
+          "type": "DoubleSelect",
+          "yamlKey": "per-target-dy",
+          "label": "DY"
+        },
+        "per-target-dz": {
+          "type": "DoubleSelect",
+          "yamlKey": "per-target-dz",
+          "label": "DZ"
+        },
+        "per-target-amount": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "per-target-amount",
+          "label": "Amount"
+        },
+        "per-target-speed": {
+          "type": "DoubleSelect",
+          "default": 0.1,
+          "yamlKey": "per-target-speed",
+          "label": "Speed"
+        },
+        "per-target-arrangement": {
+          "type": "DropdownSelect",
+          "default": "['Sphere', 'Circle', 'Hemisphere']",
+          "yamlKey": "per-target-arrangement",
+          "options": [
+            "Sphere",
+            "Circle",
+            "Hemisphere"
+          ],
+          "label": "Arrangement"
+        },
+        "per-target-direction": {
+          "type": "DropdownSelect",
+          "default": "['XY', 'XZ', 'YZ']",
+          "yamlKey": "per-target-direction",
+          "options": [
+            "XY",
+            "XZ",
+            "YZ"
+          ],
+          "label": "Circle Direction"
+        },
+        "per-target-radius": {
+          "type": "AttributeSelect",
+          "default": 0.5,
+          "yamlKeys": [
+            "per-target-radius-base",
+            "per-target-radius-scale"
+          ],
+          "label": "Radius"
+        },
+        "per-target-hitbox": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "per-target-hitbox",
+          "label": "Increase size by hitbox"
+        },
+        "per-target-particles": {
+          "type": "AttributeSelect",
+          "default": 20,
+          "yamlKeys": [
+            "per-target-particles-base",
+            "per-target-particles-scale"
+          ],
+          "label": "Points"
+        },
+        "path": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "path",
+          "label": "Path Preview"
+        },
+        "path-steps": {
+          "type": "DoubleSelect",
+          "default": 2,
+          "yamlKey": "path-steps",
+          "label": "Steps per particle"
+        },
+        "path-particle": {
+          "type": "DropdownSelect",
+          "default": "getParticles",
+          "yamlKey": "path-particle",
+          "label": "Particle"
+        },
+        "path-material": {
+          "type": "DropdownSelect",
+          "default": "((",
+          "yamlKey": "path-material",
+          "label": "Material"
+        },
+        "path-durability": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "path-durability",
+          "label": "Durability"
+        },
+        "path-type": {
+          "type": "IntSelect",
+          "default": 0,
+          "yamlKey": "path-type",
+          "label": "CustomModelData"
+        },
+        "path-dust-color": {
+          "type": "ColorSelect",
+          "default": "#FF0000",
+          "yamlKey": "path-dust-color",
+          "label": "Dust Color"
+        },
+        "path-final-dust-color": {
+          "type": "ColorSelect",
+          "default": "#FF0000",
+          "yamlKey": "path-final-dust-color",
+          "label": "Final Dust Color"
+        },
+        "path-dust-size": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "path-dust-size",
+          "label": "Dust Size"
+        },
+        "path-data": {
+          "type": "IntSelect",
+          "yamlKey": "path-data",
+          "label": "Effect Data"
+        },
+        "path-dx": {
+          "type": "DoubleSelect",
+          "yamlKey": "path-dx",
+          "label": "DX"
+        },
+        "path-dy": {
+          "type": "DoubleSelect",
+          "yamlKey": "path-dy",
+          "label": "DY"
+        },
+        "path-dz": {
+          "type": "DoubleSelect",
+          "yamlKey": "path-dz",
+          "label": "DZ"
+        },
+        "path-amount": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "path-amount",
+          "label": "Amount"
+        },
+        "path-speed": {
+          "type": "DoubleSelect",
+          "default": 0.1,
+          "yamlKey": "path-speed",
+          "label": "Speed"
+        }
+      }
+    },
+    "Purge": {
+      "description": "Purges the target of positive potion effects or statuses",
+      "fields": {
+        "potion": {
+          "type": "DropdownSelect",
+          "default": "getGoodPotions",
+          "yamlKey": "potion",
+          "label": "Potion"
+        },
+        "status": {
+          "type": "DropdownSelect",
+          "default": "['All', 'Absorb', 'Invincible']",
+          "yamlKey": "status",
+          "options": [
+            "All",
+            "Absorb",
+            "Invincible"
+          ],
+          "label": "Status"
+        }
+      }
+    },
+    "Push": {
+      "description": "Pushes the target relative to the caster. This will do nothing if used with the caster as the target. Positive numbers apply knockback while negative numbers pull them in",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Fixed', 'Inverse', 'Scaled']",
+          "yamlKey": "type",
+          "options": [
+            "Fixed",
+            "Inverse",
+            "Scaled"
+          ],
+          "label": "Type"
+        },
+        "speed": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "speed-base",
+            "speed-scale"
+          ],
+          "label": "Speed"
+        },
+        "source": {
+          "type": "StringSelect",
+          "default": "none",
+          "yamlKey": "source",
+          "label": "Source"
+        }
+      }
+    },
+    "Remember Targets": {
+      "description": "Stores the current targets for later use under a specified key",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "target",
+          "yamlKey": "key",
+          "label": "Key"
+        },
+        "overwrite": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "overwrite",
+          "label": "Overwrite"
+        }
+      }
+    },
+    "Repeat": {
+      "description": "Applies child components multiple times. When it applies them is determined by the delay (seconds before the first application) and period (seconds between successive applications)",
+      "fields": {
+        "repetitions": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "repetitions-base",
+            "repetitions-scale"
+          ],
+          "label": "Repetitions"
+        },
+        "period": {
+          "type": "DoubleSelect",
+          "default": 1,
+          "yamlKey": "period",
+          "label": "Period"
+        },
+        "delay": {
+          "type": "DoubleSelect",
+          "yamlKey": "delay",
+          "label": "Delay"
+        },
+        "stop-on-fail": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "stop-on-fail",
+          "label": "Stop on Fail"
+        }
+      }
+    },
+    "Shield": {
+      "description": "Applies a shield to the target that absorbs a certain amount of damage",
+      "fields": {
+        "name": {
+          "type": "StringSelect",
+          "default": "Shield",
+          "yamlKey": "name",
+          "label": "Name"
+        },
+        "amount": {
+          "type": "AttributeSelect",
+          "default": 5,
+          "yamlKeys": [
+            "amount-base",
+            "amount-scale"
+          ],
+          "label": "Amount"
+        },
+        "duration": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "duration-base",
+            "duration-scale"
+          ],
+          "label": "Duration"
+        },
+        "classifier": {
+          "type": "StringSelect",
+          "default": "skill_defense_default",
+          "yamlKey": "classifier",
+          "label": "Classifier"
+        },
+        "percent": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "percent-base",
+            "percent-scale"
+          ],
+          "label": "Percent"
+        },
+        "display": {
+          "type": "DropdownSelect",
+          "default": "['Action Bar', 'Title', 'Chat', 'Boss Bar']",
+          "yamlKey": "display",
+          "options": [
+            "Action Bar",
+            "Title",
+            "Chat",
+            "Boss Bar"
+          ],
+          "label": "Display"
+        },
+        "color": {
+          "type": "DropdownSelect",
+          "default": "[\r\n\t\t\t\t\t'Blue',\r\n\t\t\t\t\t'Green',\r\n\t\t\t\t\t'Pink',\r\n\t\t\t\t\t'Purple',\r\n\t\t\t\t\t'Red',\r\n\t\t\t\t\t'White',\r\n\t\t\t\t\t'Yellow'\r\n\t\t\t\t]",
+          "yamlKey": "color",
+          "options": [
+            "Blue",
+            "Green",
+            "Pink",
+            "Purple",
+            "Red",
+            "White",
+            "Yellow"
+          ],
+          "label": "Bar Color"
+        },
+        "style": {
+          "type": "DropdownSelect",
+          "default": "['Solid', 'Segmented 6', 'Segmented 10', 'Segmented 12', 'Segmented 20']",
+          "yamlKey": "style",
+          "options": [
+            "Solid",
+            "Segmented 6",
+            "Segmented 10",
+            "Segmented 12",
+            "Segmented 20"
+          ],
+          "label": "Bar Style"
+        },
+        "hit-sound": {
+          "type": "DropdownSelect",
+          "default": "(",
+          "yamlKey": "hit-sound",
+          "label": "Hit Sound"
+        },
+        "break-sound": {
+          "type": "DropdownSelect",
+          "default": "(",
+          "yamlKey": "break-sound",
+          "label": "Break Sound"
+        }
+      }
+    },
+    "Signal Emit": {
+      "description": "Send a custom signal to all target that can be reused and processed separately.",
+      "fields": {
+        "signal": {
+          "type": "StringSelect",
+          "yamlKey": "signal",
+          "label": "Signal"
+        },
+        "handler": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "handler",
+          "label": "Self-handling"
+        }
+      }
+    },
+    "Skill cast": {
+      "description": "Make target cast other skill. Recommended for use on players.",
+      "fields": {
+        "mode": {
+          "type": "DropdownSelect",
+          "default": "['All', 'First', 'Random']",
+          "yamlKey": "mode",
+          "options": [
+            "All",
+            "First",
+            "Random"
+          ],
+          "label": "Cast mode"
+        },
+        "force": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "force",
+          "label": "Force cast"
+        }
+      }
+    },
+    "Sound": {
+      "description": "Plays a sound at the target\\",
+      "fields": {
+        "sound": {
+          "type": "DropdownSelect",
+          "default": "((",
+          "yamlKey": "sound",
+          "label": "Sound"
+        },
+        "custom": {
+          "type": "StringSelect",
+          "default": "myrp:some_sound",
+          "yamlKey": "custom",
+          "label": "Custom sound name"
+        },
+        "volume": {
+          "type": "AttributeSelect",
+          "default": 100,
+          "yamlKeys": [
+            "volume-base",
+            "volume-scale"
+          ],
+          "label": "Volume"
+        },
+        "pitch": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "pitch-base",
+            "pitch-scale"
+          ],
+          "label": "Pitch"
+        }
+      }
+    },
+    "Stat": {
+      "description": "Gives a player bonus stat temporarily. All available attribute stats",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "health",
+          "yamlKey": "key",
+          "label": "Stat"
+        },
+        "operation": {
+          "type": "DropdownSelect",
+          "default": "['ADD_NUMBER', 'MULTIPLY_PERCENTAGE']",
+          "yamlKey": "operation",
+          "options": [
+            "ADD_NUMBER",
+            "MULTIPLY_PERCENTAGE"
+          ],
+          "label": "Operation"
+        },
+        "amount": {
+          "type": "AttributeSelect",
+          "default": 5,
+          "yamlKeys": [
+            "amount-base",
+            "amount-scale"
+          ],
+          "label": "Amount"
+        },
+        "seconds": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "seconds-base",
+            "seconds-scale"
+          ],
+          "label": "Seconds"
+        },
+        "stackable": {
+          "type": "BooleanSelect",
+          "yamlKey": "stackable",
+          "label": "Stackable"
+        }
+      }
+    },
+    "Status": {
+      "description": "Applies a status effect to the target for a duration",
+      "fields": {
+        "status": {
+          "type": "DropdownSelect",
+          "default": "['Absorb',\r\n\t\t\t\t\t'Curse',\r\n\t\t\t\t\t'Disarm',\r\n\t\t\t\t\t'Invincible',\r\n\t\t\t\t\t'Invulnerable',\r\n\t\t\t\t\t'Root',\r\n\t\t\t\t\t'Silence',\r\n\t\t\t\t\t'Stun']",
+          "yamlKey": "status",
+          "options": [
+            "Absorb",
+            "Curse",
+            "Disarm",
+            "Invincible",
+            "Invulnerable",
+            "Root",
+            "Silence",
+            "Stun"
+          ],
+          "label": "Status"
+        },
+        "duration": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "duration-base",
+            "duration-scale"
+          ],
+          "label": "Duration"
+        }
+      }
+    },
+    "Summon": {
+      "description": "Summons a mob on each target. Child components will start off targeting the mob so you can add effects to it. Hostile mobs may attack the caster",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "getEntities",
+          "yamlKey": "type",
+          "label": "Type"
+        },
+        "name": {
+          "type": "StringSelect",
+          "default": "{player}\\'s Minion",
+          "yamlKey": "name",
+          "label": "Name"
+        },
+        "health": {
+          "type": "AttributeSelect",
+          "default": 10,
+          "yamlKeys": [
+            "health-base",
+            "health-scale"
+          ],
+          "label": "Health"
+        },
+        "amount": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "amount-base",
+            "amount-scale"
+          ],
+          "label": "Amount"
+        }
+      }
+    },
+    "Taunt": {
+      "description": "Draws aggro of targeted creatures. Regular mobs are set to attack the caster. The Spigot/Bukkit API for this was not functional on older versions, so it may not work on older servers. For MythicMobs, this uses their aggro system using the amount chosen below",
+      "fields": {
+        "amount": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "amount-base",
+            "amount-scale"
+          ],
+          "label": "Amount"
+        }
+      }
+    },
+    "Throw": {
+      "description": "Throws entities off of the target\\",
+      "fields": {
+        "relative": {
+          "type": "DropdownSelect",
+          "default": "['Target', 'Caster', 'Thrown']",
+          "yamlKey": "relative",
+          "options": [
+            "Target",
+            "Caster",
+            "Thrown"
+          ],
+          "label": "Relative"
+        },
+        "speed": {
+          "type": "AttributeSelect",
+          "default": 2,
+          "yamlKeys": [
+            "speed-base",
+            "speed-scale"
+          ],
+          "label": "Speed"
+        }
+      }
+    },
+    "Trigger": {
+      "description": "Listens for a trigger on the current targets for a duration",
+      "fields": {
+        "trigger": {
+          "type": "DropdownSelect",
+          "default": "(",
+          "yamlKey": "trigger",
+          "label": "Trigger"
+        },
+        "duration": {
+          "type": "AttributeSelect",
+          "default": 5,
+          "yamlKeys": [
+            "duration-base",
+            "duration-scale"
+          ],
+          "label": "Duration"
+        },
+        "stackable": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "stackable",
+          "label": "Stackable"
+        },
+        "once": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "once",
+          "label": "Once"
+        },
+        "material": {
+          "type": "DropdownSelect",
+          "default": "getAnyMaterials",
+          "yamlKey": "material",
+          "options": [
+            "Any"
+          ],
+          "label": "Material"
+        },
+        "data": {
+          "type": "IntSelect",
+          "default": -1,
+          "yamlKey": "data",
+          "label": "Data"
+        },
+        "crouch": {
+          "type": "DropdownSelect",
+          "default": "['Crouch', 'Dont crouch', 'Both']",
+          "yamlKey": "crouch",
+          "options": [
+            "Crouch",
+            "Dont crouch",
+            "Both"
+          ],
+          "label": "Crouch"
+        },
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Both', 'Melee', 'Projectile']",
+          "yamlKey": "type",
+          "options": [
+            "Both",
+            "Melee",
+            "Projectile"
+          ],
+          "label": "Type"
+        },
+        "drop multiple": {
+          "type": "DropdownSelect",
+          "default": "['True', 'False', 'Ignore']",
+          "yamlKey": "drop multiple",
+          "options": [
+            "True",
+            "False",
+            "Ignore"
+          ],
+          "label": "Drop multiple"
+        },
+        "heal-min": {
+          "type": "DoubleSelect",
+          "default": 0,
+          "yamlKey": "heal-min",
+          "label": "Min Heal"
+        },
+        "heal-max": {
+          "type": "DoubleSelect",
+          "default": 999,
+          "yamlKey": "heal-max",
+          "label": "Max Heal"
+        },
+        "cancel": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "cancel",
+          "label": "Cancel swap"
+        },
+        "min-distance": {
+          "type": "DoubleSelect",
+          "default": 0,
+          "yamlKey": "min-distance",
+          "label": "Min Distance"
+        },
+        "category": {
+          "type": "StringSelect",
+          "yamlKey": "category",
+          "label": "Category"
+        },
+        "target": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "target",
+          "label": "Target Listen Target"
+        },
+        "dmg-min": {
+          "type": "DoubleSelect",
+          "default": 0,
+          "yamlKey": "dmg-min",
+          "label": "Min Damage"
+        },
+        "dmg-max": {
+          "type": "DoubleSelect",
+          "default": 999,
+          "yamlKey": "dmg-max",
+          "label": "Max Damage"
+        },
+        "signal": {
+          "type": "StringSelect",
+          "yamlKey": "signal",
+          "label": "Signal"
+        }
+      }
+    },
+    "Value Add": {
+      "description": "Adds to a stored value under a unique key for the caster. If the value wasn\\",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "value",
+          "yamlKey": "key",
+          "label": "Key"
+        },
+        "amount": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "amount-base",
+            "amount-scale"
+          ],
+          "label": "Amount"
+        },
+        "save": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "save",
+          "label": "Save"
+        }
+      }
+    },
+    "Value Attribute": {
+      "description": "Loads a player\\",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "attribute",
+          "yamlKey": "key",
+          "label": "Key"
+        },
+        "attribute": {
+          "type": "DropdownSelect",
+          "default": "attributeStore.getAttributeNames",
+          "yamlKey": "attribute",
+          "label": "Attribute"
+        },
+        "save": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "save",
+          "label": "Save"
+        }
+      }
+    },
+    "Value Copy": {
+      "description": "Copies a stored value from the caster to the target or vice versa",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "value",
+          "yamlKey": "key",
+          "label": "Key"
+        },
+        "destination": {
+          "type": "StringSelect",
+          "default": "value",
+          "yamlKey": "destination",
+          "label": "Destination"
+        },
+        "to-target": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "to-target",
+          "label": "To target"
+        },
+        "save": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "save",
+          "label": "Save"
+        }
+      }
+    },
+    "Value Distance": {
+      "description": "Stores the distance between the target and the caster into a value",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "attribute",
+          "yamlKey": "key",
+          "label": "Key"
+        },
+        "save": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "save",
+          "label": "Save"
+        }
+      }
+    },
+    "Value Divide": {
+      "description": "Divides a stored value under a unique key for the caster. If the value wasn\\",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "value",
+          "yamlKey": "key",
+          "label": "Key"
+        },
+        "divisor": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "divisor-base",
+            "divisor-scale"
+          ],
+          "label": "Divisor"
+        },
+        "save": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "save",
+          "label": "Save"
+        }
+      }
+    },
+    "Value Health": {
+      "description": "Stores the target\\",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "value",
+          "yamlKey": "key",
+          "label": "Key"
+        },
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Current', 'Max', 'Missing', 'Percent']",
+          "yamlKey": "type",
+          "options": [
+            "Current",
+            "Max",
+            "Missing",
+            "Percent"
+          ],
+          "label": "Type"
+        },
+        "save": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "save",
+          "label": "Save"
+        }
+      }
+    },
+    "Value Location": {
+      "description": "Loads the first target\\",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "location",
+          "yamlKey": "key",
+          "label": "Key"
+        },
+        "save": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "save",
+          "label": "Save"
+        }
+      }
+    },
+    "Value Load": {
+      "description": "If there is a value already stored on the account, that value will be retrieved and then be used as a normal value.",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "yamlKey": "key",
+          "label": "Key"
+        },
+        "override": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "override",
+          "label": "Override"
+        },
+        "save": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "save",
+          "label": "Save"
+        }
+      }
+    },
+    "Value Lore": {
+      "description": "Loads a value from a held item\\",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "lore",
+          "yamlKey": "key",
+          "label": "Key"
+        },
+        "hand": {
+          "type": "DropdownSelect",
+          "default": "['Main', 'Offhand']",
+          "yamlKey": "hand",
+          "options": [
+            "Main",
+            "Offhand"
+          ],
+          "label": "Hand"
+        },
+        "regex": {
+          "type": "StringSelect",
+          "default": "Damage: {value}",
+          "yamlKey": "regex",
+          "label": "Regex"
+        },
+        "multiplier": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "multiplier-base",
+            "multiplier-scale"
+          ],
+          "label": "Multiplier"
+        },
+        "save": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "save",
+          "label": "Save"
+        }
+      }
+    },
+    "Value Lore Slot": {
+      "description": "Loads a value from an item\\",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "lore",
+          "yamlKey": "key",
+          "label": "Key"
+        },
+        "slot": {
+          "type": "IntSelect",
+          "default": 9,
+          "yamlKey": "slot",
+          "label": "Slot"
+        },
+        "regex": {
+          "type": "StringSelect",
+          "default": "Damage: {value}",
+          "yamlKey": "regex",
+          "label": "Regex"
+        },
+        "multiplier": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "multiplier-base",
+            "multiplier-scale"
+          ],
+          "label": "Multiplier"
+        },
+        "save": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "save",
+          "label": "Save"
+        }
+      }
+    },
+    "Value Mana": {
+      "description": "Stores the target player\\",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "value",
+          "yamlKey": "key",
+          "label": "Key"
+        },
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Current', 'Max', 'Missing', 'Percent']",
+          "yamlKey": "type",
+          "options": [
+            "Current",
+            "Max",
+            "Missing",
+            "Percent"
+          ],
+          "label": "Type"
+        },
+        "save": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "save",
+          "label": "Save"
+        }
+      }
+    },
+    "Value Math": {
+      "description": "Performs mathematical calculations using a custom formula to determine the value to set.The formula can use values as {value} type placeholders and complex math operationsincluding addition, subtraction, multiplication, division, modulo (%),square root (sqrt()), exponents (^), and more. Use random()to generate a psuedo-random number between 0 and 1. See thewiki for more information",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "value",
+          "yamlKey": "key",
+          "label": "Key"
+        },
+        "function": {
+          "type": "StringSelect",
+          "default": "1 + {value}",
+          "yamlKey": "function",
+          "label": "Function"
+        },
+        "save": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "save",
+          "label": "Save"
+        }
+      }
+    },
+    "Value Multiply": {
+      "description": "Multiplies a stored value under a unique key for the caster. If the value wasn\\",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "value",
+          "yamlKey": "key",
+          "label": "Key"
+        },
+        "multiplier": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "multiplier-base",
+            "multiplier-scale"
+          ],
+          "label": "Multiplier"
+        },
+        "save": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "save",
+          "label": "Save"
+        }
+      }
+    },
+    "Value Placeholder": {
+      "description": "Uses a placeholder string and stores it as a value for the caster",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "value",
+          "yamlKey": "key",
+          "label": "Key"
+        },
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Number', 'String']",
+          "yamlKey": "type",
+          "options": [
+            "Number",
+            "String"
+          ],
+          "label": "Type"
+        },
+        "placeholder": {
+          "type": "StringSelect",
+          "default": "{value}",
+          "yamlKey": "placeholder",
+          "label": "Placeholder"
+        },
+        "evaluate": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "evaluate",
+          "label": "Evaluate"
+        },
+        "save": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "save",
+          "label": "Save"
+        }
+      }
+    },
+    "Value Random": {
+      "description": "Stores a specified value under a given key for the caster",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "value",
+          "yamlKey": "key",
+          "label": "Key"
+        },
+        "integer": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "integer",
+          "label": "Integer"
+        },
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Normal', 'Triangular']",
+          "yamlKey": "type",
+          "options": [
+            "Normal",
+            "Triangular"
+          ],
+          "label": "Type"
+        },
+        "min": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "min-base",
+            "min-scale"
+          ],
+          "label": "Min"
+        },
+        "max": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "max-base",
+            "max-scale"
+          ],
+          "label": "Max"
+        },
+        "save": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "save",
+          "label": "Save"
+        }
+      }
+    },
+    "Value Rotation": {
+      "description": "Stores a value as the rotation between the target\\",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "value",
+          "yamlKey": "key",
+          "label": "Key"
+        },
+        "source": {
+          "type": "StringSelect",
+          "yamlKey": "source",
+          "label": "Source"
+        },
+        "save": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "save",
+          "label": "Save"
+        }
+      }
+    },
+    "Value Round": {
+      "description": "Rounds a stored value under a unique key for the caster. If the value wasn\\",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "value",
+          "yamlKey": "key",
+          "label": "Key"
+        },
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Round', 'Ceiling', 'Floor']",
+          "yamlKey": "type",
+          "options": [
+            "Round",
+            "Ceiling",
+            "Floor"
+          ],
+          "label": "Type"
+        },
+        "save": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "save",
+          "label": "Save"
+        }
+      }
+    },
+    "Value Set": {
+      "description": "Stores a specified value under a given key for the caster",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "value",
+          "yamlKey": "key",
+          "label": "Key"
+        },
+        "value": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "value-base",
+            "value-scale"
+          ],
+          "label": "Value"
+        },
+        "save": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "save",
+          "label": "Save"
+        }
+      }
+    },
+    "Warp": {
+      "description": "Warps the target relative to their forward direction. Use negative numbers to go in the opposite direction (e.g. negative forward will cause the target to warp backwards)",
+      "fields": {
+        "walls": {
+          "type": "BooleanSelect",
+          "yamlKey": "walls",
+          "label": "Through Walls"
+        },
+        "open": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "open",
+          "label": "Open Spaces Only"
+        },
+        "forward": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "forward-base",
+            "forward-scale"
+          ],
+          "label": "Forward"
+        },
+        "upward": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "upward-base",
+            "upward-scale"
+          ],
+          "label": "Upward"
+        },
+        "right": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "right-base",
+            "right-scale"
+          ],
+          "label": "Right"
+        }
+      }
+    },
+    "Warp Location": {
+      "description": "Warps the target to a specified location",
+      "fields": {
+        "x": {
+          "type": "DoubleSelect",
+          "default": 0,
+          "yamlKey": "x",
+          "label": "X"
+        },
+        "y": {
+          "type": "DoubleSelect",
+          "default": 0,
+          "yamlKey": "y",
+          "label": "Y"
+        },
+        "z": {
+          "type": "DoubleSelect",
+          "default": 0,
+          "yamlKey": "z",
+          "label": "Z"
+        }
+      }
+    },
+    "Warp Random": {
+      "description": "Warps the target in a random direction the given distance",
+      "fields": {
+        "horizontal": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "horizontal",
+          "label": "Only Horizontal"
+        },
+        "walls": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "walls",
+          "label": "Through Walls"
+        },
+        "distance": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "distance-base",
+            "distance-scale"
+          ],
+          "label": "Distance"
+        }
+      }
+    },
+    "Warp Swap": {
+      "description": "Switches the location of the caster and the target. If multiple targets are provided, this takes the first one",
+      "fields": {}
+    },
+    "Warp Target": {
+      "description": "Warps either the target or the caster to the other. This does nothing when the target is the caster",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Caster to Target', 'Target to Caster']",
+          "yamlKey": "type",
+          "options": [
+            "Caster to Target",
+            "Target to Caster"
+          ],
+          "label": "Type"
+        }
+      }
+    },
+    "Warp Value": {
+      "description": "Warps all targets to a location remembered using the Value Location mechanic",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "location",
+          "yamlKey": "key",
+          "label": "Key"
+        }
+      }
+    },
+    "Wolf": {
+      "description": "Summons a wolf on each target for a duration. Child components will start off targeting the wolf so you can add effects to it. You can also give it its own skillset, though Cast triggers will not occur",
+      "fields": {
+        "color": {
+          "type": "DropdownSelect",
+          "default": "getDyes",
+          "yamlKey": "color",
+          "label": "Collar Color"
+        },
+        "name": {
+          "type": "StringSelect",
+          "default": "{player}\\'s Wolf",
+          "yamlKey": "name",
+          "label": "Wolf Name"
+        },
+        "health": {
+          "type": "AttributeSelect",
+          "default": 10,
+          "yamlKeys": [
+            "health-base",
+            "health-scale"
+          ],
+          "label": "Health"
+        },
+        "damage": {
+          "type": "AttributeSelect",
+          "default": 3,
+          "yamlKeys": [
+            "damage-base",
+            "damage-scale"
+          ],
+          "label": "Damage"
+        },
+        "sitting": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "sitting",
+          "label": "Sitting"
+        },
+        "seconds": {
+          "type": "AttributeSelect",
+          "default": 10,
+          "yamlKeys": [
+            "seconds-base",
+            "seconds-scale"
+          ],
+          "label": "Duration"
+        },
+        "amount": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "amount-base",
+            "amount-scale"
+          ],
+          "label": "Amount"
+        }
+      }
+    }
+  },
+  "Condition": {
+    "Action Bar": {
+      "description": "Applies child componenets whether or not the action bar is showing based on the boolean set.",
+      "fields": {
+        "casting": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "casting",
+          "label": "Casting"
+        }
+      }
+    },
+    "Air": {
+      "description": "Applies child components whenever the entity has an air value in the given range. Calculated in seconds left. By default, a player starts with 15 seconds of air.",
+      "fields": {
+        "min": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "min-base",
+            "min-scale"
+          ],
+          "label": "Min"
+        },
+        "max": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "max-base",
+            "max-scale"
+          ],
+          "label": "Max"
+        }
+      }
+    },
+    "Altitude": {
+      "description": "Applies child components whenever the player is on a certain height-level",
+      "fields": {
+        "min": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "min-base",
+            "min-scale"
+          ],
+          "label": "Min"
+        },
+        "max": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "max-base",
+            "max-scale"
+          ],
+          "label": "Max"
+        }
+      }
+    },
+    "Armor": {
+      "description": "Applies child components when the target is wearing an armor item matching the given details",
+      "fields": {
+        "armor": {
+          "type": "DropdownSelect",
+          "default": "['Any', 'Helmet', 'Chestplate', 'Leggings', 'Boots']",
+          "yamlKey": "armor",
+          "options": [
+            "Any",
+            "Helmet",
+            "Chestplate",
+            "Leggings",
+            "Boots"
+          ],
+          "label": "Armor"
+        }
+      }
+    },
+    "Attack Indicator": {
+      "description": "Requires the target's attack to be charged to a certain amount.",
+      "fields": {
+        "min": {
+          "type": "AttributeSelect",
+          "default": 0,
+          "yamlKeys": [
+            "min-base",
+            "min-scale"
+          ],
+          "label": "Min"
+        },
+        "max": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "max-base",
+            "max-scale"
+          ],
+          "label": "Max"
+        }
+      }
+    },
+    "Attribute": {
+      "description": "Requires the target to have a given number of attributes",
+      "fields": {
+        "attribute": {
+          "type": "StringSelect",
+          "default": "Vitality",
+          "yamlKey": "attribute",
+          "label": "Attribute"
+        },
+        "min": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "min-base",
+            "min-scale"
+          ],
+          "label": "Min"
+        },
+        "max": {
+          "type": "AttributeSelect",
+          "default": 999,
+          "yamlKeys": [
+            "max-base",
+            "max-scale"
+          ],
+          "label": "Max"
+        }
+      }
+    },
+    "Biome": {
+      "description": "Applies child components when in a specified biome",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['In Biome', 'Not In Biome']",
+          "yamlKey": "type",
+          "options": [
+            "In Biome",
+            "Not In Biome"
+          ],
+          "label": "Type"
+        },
+        "biome": {
+          "type": "DropdownSelect",
+          "default": "getBiomes",
+          "yamlKey": "biome",
+          "options": [
+            "Forest"
+          ],
+          "label": "Biome"
+        }
+      }
+    },
+    "Block": {
+      "description": "Applies child components if the target is currently standing on a block of the given type",
+      "fields": {
+        "standing": {
+          "type": "DropdownSelect",
+          "default": "['On Block', 'Not On Block', 'In Block', 'Not In Block']",
+          "yamlKey": "standing",
+          "options": [
+            "On Block",
+            "Not On Block",
+            "In Block",
+            "Not In Block"
+          ],
+          "label": "Type"
+        }
+      }
+    },
+    "Blocking": {
+      "description": "Applies child components if the target player(s) are blocking with a shield",
+      "fields": {
+        "blocking": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "blocking",
+          "label": "Blocking"
+        }
+      }
+    },
+    "Burning": {
+      "description": "Applies child components if the caster burns or not",
+      "fields": {
+        "burn": {
+          "type": "DropdownSelect",
+          "default": "['Burn', 'Dont burn']",
+          "yamlKey": "burn",
+          "options": [
+            "Burn",
+            "Dont burn"
+          ],
+          "label": "Type"
+        }
+      }
+    },
+    "Ceiling": {
+      "description": "Checks the height of the ceiling above each target",
+      "fields": {
+        "distance": {
+          "type": "AttributeSelect",
+          "default": 5,
+          "yamlKeys": [
+            "distance-base",
+            "distance-scale"
+          ],
+          "label": "Distance"
+        },
+        "at-least": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "at-least",
+          "label": "At least"
+        }
+      }
+    },
+    "Chance": {
+      "description": "Rolls a chance to apply child components",
+      "fields": {
+        "chance": {
+          "type": "AttributeSelect",
+          "default": 25,
+          "yamlKeys": [
+            "chance-base",
+            "chance-scale"
+          ],
+          "label": "Chance"
+        }
+      }
+    },
+    "Class": {
+      "description": "Applies child components when the target is the given class or optionally a profession of that class. For example, if you check for \"Fighter\" which professes into \"Warrior\", a \"Warrior\" will pass the check if you do not enable \"exact\"",
+      "fields": {
+        "exact": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "exact",
+          "label": "Exact"
+        }
+      }
+    },
+    "Class Level": {
+      "description": "Applies child components when the level of the class with this skill is within the range. This only checks the level of the caster, not the targets",
+      "fields": {
+        "min-level": {
+          "type": "IntSelect",
+          "default": 2,
+          "yamlKey": "min-level",
+          "label": "Min Level"
+        },
+        "max-level": {
+          "type": "IntSelect",
+          "default": 99,
+          "yamlKey": "max-level",
+          "label": "Max Level"
+        },
+        "group": {
+          "type": "StringSelect",
+          "default": "main",
+          "yamlKey": "group",
+          "label": "Group"
+        }
+      }
+    },
+    "Color": {
+      "description": "Applies child components when the target entity is of the specified color. Currently, this only works for sheep and shulkers",
+      "fields": {
+        "color": {
+          "type": "DropdownSelect",
+          "default": "[\r\n\t\t\t\t\t...getDyes(",
+          "yamlKey": "color",
+          "label": "Color"
+        }
+      }
+    },
+    "Combat": {
+      "description": "Applies child components to targets that are in/out of combat, depending on the settings",
+      "fields": {
+        "combat": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "combat",
+          "label": "In Combat"
+        },
+        "seconds": {
+          "type": "DoubleSelect",
+          "default": 10,
+          "yamlKey": "seconds",
+          "label": "Seconds"
+        }
+      }
+    },
+    "Crouch": {
+      "description": "Applies child components if the target player(s) are crouching",
+      "fields": {
+        "crouch": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "crouch",
+          "label": "Crouching"
+        }
+      }
+    },
+    "Direction": {
+      "description": "Applies child components when the target or caster is facing the correct direction relative to the other",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Target', 'Caster']",
+          "yamlKey": "type",
+          "options": [
+            "Target",
+            "Caster"
+          ],
+          "label": "Type"
+        },
+        "direction": {
+          "type": "DropdownSelect",
+          "default": "['Away', 'Towards']",
+          "yamlKey": "direction",
+          "options": [
+            "Away",
+            "Towards"
+          ],
+          "label": "Direction"
+        }
+      }
+    },
+    "Distance": {
+      "description": "Applies child components when the distance between the caster and the target matches the settings",
+      "fields": {
+        "min-value": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "min-value-base",
+            "min-value-scale"
+          ],
+          "label": "Min Value"
+        },
+        "max-value": {
+          "type": "AttributeSelect",
+          "default": 50,
+          "yamlKeys": [
+            "max-value-base",
+            "max-value-scale"
+          ],
+          "label": "Max Value"
+        }
+      }
+    },
+    "Elevation": {
+      "description": "Applies child components when the elevation of the target matches the settings",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Normal', 'Difference']",
+          "yamlKey": "type",
+          "options": [
+            "Normal",
+            "Difference"
+          ],
+          "label": "Type"
+        },
+        "min-value": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "min-value-base",
+            "min-value-scale"
+          ],
+          "label": "Min Value"
+        },
+        "max-value": {
+          "type": "AttributeSelect",
+          "default": 255,
+          "yamlKeys": [
+            "max-value-base",
+            "max-value-scale"
+          ],
+          "label": "Max Value"
+        }
+      }
+    },
+    "Else": {
+      "description": "Applies child elements if the previous component failed to execute. This not only applies for conditions not passing, but mechanics failing due to no target or other cases",
+      "fields": {}
+    },
+    "Entity Type": {
+      "description": "Applies child elements if the target matches one of the selected entity types",
+      "fields": {
+        "types": {
+          "type": "DropdownSelect",
+          "default": "['Location', ...getEntities(",
+          "yamlKey": "types",
+          "label": "Types"
+        },
+        "blacklist": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "blacklist",
+          "label": "Blacklist"
+        }
+      }
+    },
+    "Fire": {
+      "description": "Applies child components when the target is on fire",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['On Fire', 'Not On Fire']",
+          "yamlKey": "type",
+          "options": [
+            "On Fire",
+            "Not On Fire"
+          ],
+          "label": "Type"
+        }
+      }
+    },
+    "Flag": {
+      "description": "Applies child components when the target is marked by the appropriate flag",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Set', 'Not Set']",
+          "yamlKey": "type",
+          "options": [
+            "Set",
+            "Not Set"
+          ],
+          "label": "Type"
+        },
+        "key": {
+          "type": "StringSelect",
+          "default": "key",
+          "yamlKey": "key",
+          "label": "Key"
+        }
+      }
+    },
+    "Food": {
+      "description": "Applies child components when the target\\",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Food', 'Percent', 'Difference', 'Difference Percent']",
+          "yamlKey": "type",
+          "options": [
+            "Food",
+            "Percent",
+            "Difference",
+            "Difference Percent"
+          ],
+          "label": "Type"
+        },
+        "min-value": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "min-value-base",
+            "min-value-scale"
+          ],
+          "label": "Min Value"
+        },
+        "max-value": {
+          "type": "AttributeSelect",
+          "default": 10,
+          "yamlKeys": [
+            "max-value-base",
+            "max-value-scale"
+          ],
+          "label": "Max Value"
+        }
+      }
+    },
+    "Ground": {
+      "description": "Applies child components when the target is on the ground",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['On Ground', 'Not On Ground']",
+          "yamlKey": "type",
+          "options": [
+            "On Ground",
+            "Not On Ground"
+          ],
+          "label": "Type"
+        }
+      }
+    },
+    "Glide": {
+      "description": "Applies child components if the target player(s) are gliding with an elytra",
+      "fields": {
+        "glide": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "glide",
+          "label": "Gliding"
+        }
+      }
+    },
+    "Health": {
+      "description": "Applies child components when the target\\",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Health', 'Percent', 'Difference', 'Difference Percent']",
+          "yamlKey": "type",
+          "options": [
+            "Health",
+            "Percent",
+            "Difference",
+            "Difference Percent"
+          ],
+          "label": "Type"
+        },
+        "min-value": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "min-value-base",
+            "min-value-scale"
+          ],
+          "label": "Min Value"
+        },
+        "max-value": {
+          "type": "AttributeSelect",
+          "default": 10,
+          "yamlKeys": [
+            "max-value-base",
+            "max-value-scale"
+          ],
+          "label": "Max Value"
+        }
+      }
+    },
+    "Item": {
+      "description": "Applies child components when the target is wielding an item matching the given material",
+      "fields": {}
+    },
+    "Inventory": {
+      "description": "Applies child components when the target player contains the given item in their inventory. This does not work on mobs",
+      "fields": {
+        "amount": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "amount-base",
+            "amount-scale"
+          ],
+          "label": "Amount"
+        }
+      }
+    },
+    "Light": {
+      "description": "Applies child components when the light level at the target\\",
+      "fields": {
+        "min-light": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "min-light-base",
+            "min-light-scale"
+          ],
+          "label": "Min Light"
+        },
+        "max-light": {
+          "type": "AttributeSelect",
+          "default": 16,
+          "yamlKeys": [
+            "max-light-base",
+            "max-light-scale"
+          ],
+          "label": "Max Light"
+        }
+      }
+    },
+    "Mana": {
+      "description": "Applies child components when the target\\",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Mana', 'Percent', 'Difference', 'Difference Percent']",
+          "yamlKey": "type",
+          "options": [
+            "Mana",
+            "Percent",
+            "Difference",
+            "Difference Percent"
+          ],
+          "label": "Type"
+        },
+        "min-value": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "min-value-base",
+            "min-value-scale"
+          ],
+          "label": "Min Value"
+        },
+        "max-value": {
+          "type": "AttributeSelect",
+          "default": 10,
+          "yamlKeys": [
+            "max-value-base",
+            "max-value-scale"
+          ],
+          "label": "Max Value"
+        }
+      }
+    },
+    "Money": {
+      "description": "Applies child components when the target\\",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Min', 'Max', 'Between']",
+          "yamlKey": "type",
+          "options": [
+            "Min",
+            "Max",
+            "Between"
+          ],
+          "label": "Type"
+        },
+        "min-value": {
+          "type": "AttributeSelect",
+          "default": 10,
+          "yamlKeys": [
+            "min-value-base",
+            "min-value-scale"
+          ],
+          "label": "Min Value"
+        },
+        "max-value": {
+          "type": "AttributeSelect",
+          "default": 100,
+          "yamlKeys": [
+            "max-value-base",
+            "max-value-scale"
+          ],
+          "label": "Max Value"
+        }
+      }
+    },
+    "Moon": {
+      "description": "Applies child components if the target is in a world with a moon phase that matches.",
+      "fields": {
+        "phases": {
+          "type": "DropdownSelect",
+          "default": "['Full Moon', 'Waning Gibbous', 'Last Quarter', 'Waning Crescent', 'New Moon', 'Waxing Crescent', 'First Quarter', 'Waxing Gibbous']",
+          "yamlKey": "phases",
+          "options": [
+            "Full Moon",
+            "Waning Gibbous",
+            "Last Quarter",
+            "Waning Crescent",
+            "New Moon",
+            "Waxing Crescent",
+            "First Quarter",
+            "Waxing Gibbous"
+          ],
+          "label": "Phases"
+        },
+        "blacklist": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "blacklist",
+          "label": "Blacklist"
+        }
+      }
+    },
+    "Mounted": {
+      "description": "Applies child elements if the target is being mounted by one of the selected entity types",
+      "fields": {
+        "types": {
+          "type": "DropdownSelect",
+          "default": "getAnyEntities",
+          "yamlKey": "types",
+          "options": [
+            "Any"
+          ],
+          "label": "Types"
+        }
+      }
+    },
+    "Mounting": {
+      "description": "Applies child elements if the target is mounting one of the selected entity types",
+      "fields": {
+        "types": {
+          "type": "DropdownSelect",
+          "default": "getAnyEntities",
+          "yamlKey": "types",
+          "options": [
+            "Any"
+          ],
+          "label": "Types"
+        }
+      }
+    },
+    "MythicMob Type": {
+      "description": "Applies child elements if the target corresponds to one of the entered MythicMob types, or is not a MythicMob if left empty",
+      "fields": {}
+    },
+    "Name": {
+      "description": "Applies child components when the target has a name matching the settings",
+      "fields": {
+        "contains": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "contains",
+          "label": "Contains Text"
+        },
+        "regex": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "regex",
+          "label": "Regex"
+        },
+        "text": {
+          "type": "StringSelect",
+          "default": "text",
+          "yamlKey": "text",
+          "label": "Text"
+        }
+      }
+    },
+    "Offhand": {
+      "description": "Applies child components when the target is wielding an item matching the given material as an offhand item. This is for v1.9servers only",
+      "fields": {}
+    },
+    "Permission": {
+      "description": "Applies child components if the caster has the required permission",
+      "fields": {
+        "perm": {
+          "type": "StringSelect",
+          "default": "some.permission",
+          "yamlKey": "perm",
+          "label": "Permission"
+        },
+        "negate": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "negate",
+          "label": "Negate"
+        }
+      }
+    },
+    "Potion": {
+      "description": "Applies child components when the target has the potion effect",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Active', 'Not Active']",
+          "yamlKey": "type",
+          "options": [
+            "Active",
+            "Not Active"
+          ],
+          "label": "Type"
+        },
+        "potion": {
+          "type": "DropdownSelect",
+          "default": "getAnyPotion",
+          "yamlKey": "potion",
+          "label": "Potion"
+        },
+        "min-rank": {
+          "type": "AttributeSelect",
+          "yamlKeys": [
+            "min-rank-base",
+            "min-rank-scale"
+          ],
+          "label": "Min Rank"
+        },
+        "max-rank": {
+          "type": "AttributeSelect",
+          "default": 999,
+          "yamlKeys": [
+            "max-rank-base",
+            "max-rank-scale"
+          ],
+          "label": "Max Rank"
+        }
+      }
+    },
+    "Skill Level": {
+      "description": "Applies child components when the skill level is with the range. This checks the skill level of the caster, not the targets",
+      "fields": {
+        "min-level": {
+          "type": "IntSelect",
+          "default": 2,
+          "yamlKey": "min-level",
+          "label": "Min Level"
+        },
+        "max-level": {
+          "type": "IntSelect",
+          "default": 99,
+          "yamlKey": "max-level",
+          "label": "Max Level"
+        }
+      }
+    },
+    "Slot": {
+      "description": "Applies child components when the target player has a matching item in the given slot",
+      "fields": {}
+    },
+    "Sprint": {
+      "description": "Applies child components if the target player(s) are sprinting",
+      "fields": {
+        "sprint": {
+          "type": "BooleanSelect",
+          "default": "true",
+          "yamlKey": "sprint",
+          "label": "Sprinting"
+        }
+      }
+    },
+    "Status": {
+      "description": "Applies child components when the target has the status condition",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Active', 'Not Active']",
+          "yamlKey": "type",
+          "options": [
+            "Active",
+            "Not Active"
+          ],
+          "label": "Type"
+        },
+        "status": {
+          "type": "DropdownSelect",
+          "default": "[\r\n\t\t\t\t\t\t'Any',\r\n\t\t\t\t\t\t'Absorb',\r\n\t\t\t\t\t\t'Curse',\r\n\t\t\t\t\t\t'Disarm',\r\n\t\t\t\t\t\t'Invincible',\r\n\t\t\t\t\t\t'Invulnerable',\r\n\t\t\t\t\t\t'Root',\r\n\t\t\t\t\t\t'Silence',\r\n\t\t\t\t\t\t'Stun'\r\n\t\t\t\t\t]",
+          "yamlKey": "status",
+          "options": [
+            "Any",
+            "Absorb",
+            "Curse",
+            "Disarm",
+            "Invincible",
+            "Invulnerable",
+            "Root",
+            "Silence",
+            "Stun"
+          ],
+          "label": "Status"
+        }
+      }
+    },
+    "Time": {
+      "description": "Applies child components when the server time matches the settings",
+      "fields": {
+        "time": {
+          "type": "DropdownSelect",
+          "default": "['Day', 'Night']",
+          "yamlKey": "time",
+          "options": [
+            "Day",
+            "Night"
+          ],
+          "label": "Time"
+        }
+      }
+    },
+    "Tool": {
+      "description": "Applies child components when the target is wielding a matching tool",
+      "fields": {
+        "material": {
+          "type": "DropdownSelect",
+          "default": "['Any',\r\n\t\t\t\t\t'Wood',\r\n\t\t\t\t\t'Stone',\r\n\t\t\t\t\t'Iron',\r\n\t\t\t\t\t'Gold',\r\n\t\t\t\t\t'Diamond',\r\n\t\t\t\t\t'Netherite']",
+          "yamlKey": "material",
+          "options": [
+            "Any",
+            "Wood",
+            "Stone",
+            "Iron",
+            "Gold",
+            "Diamond",
+            "Netherite"
+          ],
+          "label": "Material"
+        },
+        "tool": {
+          "type": "DropdownSelect",
+          "default": "['Any', 'Axe', 'Hoe', 'Pickaxe', 'Shovel', 'Sword']",
+          "yamlKey": "tool",
+          "options": [
+            "Any",
+            "Axe",
+            "Hoe",
+            "Pickaxe",
+            "Shovel",
+            "Sword"
+          ],
+          "label": "Tool"
+        }
+      }
+    },
+    "Value": {
+      "description": "Applies child components if a stored value is within the given range",
+      "fields": {
+        "key": {
+          "type": "StringSelect",
+          "default": "value",
+          "yamlKey": "key",
+          "label": "Key"
+        },
+        "min-value": {
+          "type": "AttributeSelect",
+          "default": 1,
+          "yamlKeys": [
+            "min-value-base",
+            "min-value-scale"
+          ],
+          "label": "Min Value"
+        },
+        "max-value": {
+          "type": "AttributeSelect",
+          "default": 999,
+          "yamlKeys": [
+            "max-value-base",
+            "max-value-scale"
+          ],
+          "label": "Max Value"
+        }
+      }
+    },
+    "Value Text": {
+      "description": "Applies child components if text value match to the settings",
+      "fields": {
+        "mode": {
+          "type": "DropdownSelect",
+          "default": "['REGEX', 'EXACTLY', 'CONTAIN', 'START', 'END']",
+          "yamlKey": "mode",
+          "options": [
+            "REGEX",
+            "EXACTLY",
+            "CONTAIN",
+            "START",
+            "END"
+          ],
+          "label": "Mode"
+        },
+        "value": {
+          "type": "StringSelect",
+          "yamlKey": "value",
+          "label": "Key"
+        },
+        "expect": {
+          "type": "StringSelect",
+          "yamlKey": "expect",
+          "label": "Expect"
+        }
+      }
+    },
+    "Water": {
+      "description": "Applies child components when the target is in or out of water, depending on the settings",
+      "fields": {
+        "state": {
+          "type": "DropdownSelect",
+          "default": "['In Water', 'Out Of Water']",
+          "yamlKey": "state",
+          "options": [
+            "In Water",
+            "Out Of Water"
+          ],
+          "label": "State"
+        }
+      }
+    },
+    "Weather": {
+      "description": "Applies child components when the target\\",
+      "fields": {
+        "type": {
+          "type": "DropdownSelect",
+          "default": "['Rain', 'None', 'Snow', 'Thunder']",
+          "yamlKey": "type",
+          "options": [
+            "Rain",
+            "None",
+            "Snow",
+            "Thunder"
+          ],
+          "label": "Type"
+        }
+      }
+    },
+    "World": {
+      "description": "Applies child components when the target is in a specific world",
+      "fields": {
+        "blacklist": {
+          "type": "BooleanSelect",
+          "default": "false",
+          "yamlKey": "blacklist",
+          "label": "Blacklist"
+        }
+      }
+    },
+    "Yaw": {
+      "description": "Applies child components when the target is facing the correct direction. This is on a scale of 0-360 degrees. 0 is south, 90 is west, 180 is north, and 270 is east",
+      "fields": {
+        "min-yaw": {
+          "type": "DoubleSelect",
+          "default": 0,
+          "yamlKey": "min-yaw",
+          "label": "Min Yaw"
+        },
+        "max-yaw": {
+          "type": "DoubleSelect",
+          "default": 60,
+          "yamlKey": "max-yaw",
+          "label": "Max Yaw"
+        }
+      }
+    }
+  }
+}
