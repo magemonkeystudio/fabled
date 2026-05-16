@@ -1,5 +1,7 @@
 <script lang="ts">
 	import '../app.css';
+	import '@xyflow/svelte/dist/base.css';
+	import '@xyflow/svelte/dist/style.css';
 	import {
 		active,
 		importing,

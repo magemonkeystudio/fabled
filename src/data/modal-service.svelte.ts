@@ -15,15 +15,22 @@ export const ModalService: {
 // 	| typeof ComponentSelectModal | typeof SettingsModal | undefined>(undefined);
 export const modalData = writable<unknown>(undefined);
 
+export const modalOnSave = writable<(() => void) | undefined>(undefined);
+export const modalOnClose = writable<(() => void) | undefined>(undefined);
+
 export const openModal = (modal: typeof Modal | typeof ComponentModal | typeof ComponentSelectModal | typeof SettingsModal,
-													data?: FabledComponent) => {
+													data?: FabledComponent, onclose?: () => void, onsave?: () => void) => {
 	ModalService.activeModal = modal;
 	if (data) modalData.set(data);
+	modalOnClose.set(onclose);
+	modalOnSave.set(onsave);
 };
 
 export const closeModal = () => {
 	ModalService.activeModal = undefined;
 	modalData.set(undefined);
+	modalOnClose.set(undefined);
+	modalOnSave.set(undefined);
 };
 
 export const isModalOpen = () => {

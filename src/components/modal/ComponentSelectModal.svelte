@@ -3,8 +3,9 @@
 	import ProInput             from '$input/ProInput.svelte';
 	import Modal                from '$components/Modal.svelte';
 	import {
-		closeModal
+		closeModal, modalOnSave, modalOnClose
 	}                           from '../../data/modal-service.svelte';
+	import { get }              from 'svelte/store';
 	import {
 		filteredConditions,
 		filteredMechanics,
@@ -35,7 +36,10 @@
 		data.addComponent(component);
 		filterParams.set('');
 		onsave?.();
+		get(modalOnSave)?.();
+		const onClose = get(modalOnClose) as (() => void) | undefined;
 		closeModal();
+		onClose?.();
 	};
 </script>
 
