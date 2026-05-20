@@ -2012,6 +2012,12 @@ public class PlayerData {
         this.maxHealth = this.scaleStat(AttributeManager.HEALTH, maxHealth);
         this.maxMana = this.scaleStat(AttributeManager.MANA, maxMana);
 
+        PlayerMaxManaChangeEvent maxManaEvent = new PlayerMaxManaChangeEvent(this, this.maxMana);
+        if (Bukkit.getPluginManager() != null) {
+            Bukkit.getPluginManager().callEvent(maxManaEvent);
+            this.maxMana = maxManaEvent.getMaxMana();
+        }
+
         this.mana = Math.min(mana, maxMana);
 
         // AsyncPlayerPreLoginEvent has to call this without player object to update Mana

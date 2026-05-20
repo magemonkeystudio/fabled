@@ -642,6 +642,8 @@ public class Fabled extends SkillAPI {
         listen(new ToolListener(), true);
         listen(new KillListener(), true);
         listen(new AddonListener(), true);
+        Bukkit.getPluginManager().registerEvents(
+                new studio.magemonkey.fabled.dynamic.condition.AttackIndicatorCondition.ShootListener(), this);
         listen(new ClickListener(), true);
         listen(new BarListener(), settings.isSkillBarEnabled());
         listen(new ComboListener(), settings.isCombosEnabled());

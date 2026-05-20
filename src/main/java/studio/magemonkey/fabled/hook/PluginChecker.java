@@ -50,6 +50,7 @@ public class PluginChecker extends FabledListener {
     private static boolean parties;
     private static boolean mimic;
     private static boolean protocolLib;
+    private static boolean divinity;
 
     /**
      * Checks if vault permissions is active on the server
@@ -95,6 +96,8 @@ public class PluginChecker extends FabledListener {
 
     public static boolean isProtocolLibActive() {return protocolLib;}
 
+    public static boolean isDivinityActive() {return divinity;}
+
     public static boolean isPartiesActive() {
         return parties || Bukkit.getPluginManager()
                 .isPluginEnabled("FabledParties");
@@ -124,6 +127,7 @@ public class PluginChecker extends FabledListener {
         parties = pluginManager.isPluginEnabled("FabledParties");
         mimic = pluginManager.isPluginEnabled("Mimic");
         protocolLib = pluginManager.isPluginEnabled("ProtocolLib");
+        divinity = pluginManager.isPluginEnabled("Divinity");
     }
 
     @EventHandler
@@ -164,6 +168,9 @@ public class PluginChecker extends FabledListener {
                 break;
             case "ProtocolLib":
                 protocolLib = isEnabled;
+                break;
+            case "Divinity":
+                divinity = isEnabled;
                 break;
         }
     }
