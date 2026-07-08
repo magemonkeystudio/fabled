@@ -38,6 +38,7 @@ abstract class AbstractWarpingMechanic extends MechanicComponent {
     protected static final String SET_PITCH = "setPitch";
     protected static final String YAW       = "yaw";
     protected static final String PITCH     = "pitch";
+    protected static final String DISMOUNT  = "dismount";
 
     public boolean preserveVelocity() {
         return settings.getBool(PRESERVE, false);
@@ -59,6 +60,10 @@ abstract class AbstractWarpingMechanic extends MechanicComponent {
         return settings.getBool("relative-pitch", false);
     }
 
+    public boolean dismountOnTeleport() {
+        return settings.getBool(DISMOUNT, false);
+    }
+
     public void warp(LivingEntity target, LivingEntity caster, Location location, int level) {
         if (setYaw()) {
             boolean relative = relativeYaw();
@@ -75,6 +80,11 @@ abstract class AbstractWarpingMechanic extends MechanicComponent {
                 pitch += target.getLocation().getPitch();
             }
             location.setPitch(pitch);
+        }
+
+        if (dismountOnTeleport()) {
+            target.leaveVehicle();
+            target.eject();
         }
 
         Vector  velocity = target.getVelocity().clone();
