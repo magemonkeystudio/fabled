@@ -35,7 +35,9 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@xyflow/svelte": "^1.5.2",
 		"blockly": "^12.5.1",
+		"material-symbols": "^0.45.6",
 		"socket.io": "^4.8.3",
 		"socket.io-client": "^4.8.3",
 		"uuid": "^14.0.0",

@@ -1,4 +1,12 @@
+@font-face {
+    font-family: 'Material Symbols Rounded';
+    font-style: normal;
+    font-weight: 100 700;
+    src: url('/material-symbols-rounded.woff2') format('woff2');
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Exo+2&display=swap');
+
 
 /*noinspection CssUnknownTarget*/
 @font-face {

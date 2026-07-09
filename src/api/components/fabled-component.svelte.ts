@@ -21,6 +21,8 @@ export default abstract class FabledComponent extends Constructable {
 	public id                                      = {};
 	public _defaultOpen                            = false;
 	public parent: FabledComponent | undefined;
+	/** Saved graph node position X (persisted in YAML, ignored by the plugin) */
+	/** Saved graph node position Y (persisted in YAML, ignored by the plugin) */
 
 	protected constructor(type: 'trigger' | 'condition' | 'mechanic' | 'target', data: ComponentData) {
 		super();

@@ -1110,6 +1110,72 @@ class NearestTarget extends FabledTarget {
 	public static override new = () => new this();
 }
 
+	class ChainTarget extends FabledTarget {
+		public constructor() {
+			super({
+				name:         'Chain',
+				description:  'Bounces between nearby enemies, starting from the first target. Each bounce finds the closest valid target within range that has not been hit yet. Ideal for chain lightning / bouncing projectile skills.',
+				data:         [
+					new AttributeSelect('Range', 'range', 5)
+						.setTooltip('How far each bounce can travel in blocks'),
+					new AttributeSelect('Bounces', 'bounces', 3)
+						.setTooltip('The maximum number of bounces to perform. Each bounce finds one new target'),
+					new BooleanSelect('Unique Targets', 'unique', true)
+						.setTooltip('When true, the same target will not be hit twice. When false, the chain can bounce back to previously hit targets.'),
+					new AttributeSelect('Delay', 'delay')
+						.setTooltip('Seconds between each bounce. 0 = all bounces happen instantly together. Set >0 for a sequential chain lightning effect'),
+					new SectionMarker('Chain Line Particles'),
+					new BooleanSelect('Show Chain Line', 'show-line', false)
+						.setTooltip('Draw particle lines between each bounce target'),
+					new DropdownSelect('Line Particle', 'line-particle', ['Dust', 'Spell', 'Flame', 'Enchant', 'Spark', 'Firework', 'Wax On', 'Wax Off', 'Portal', 'End Rod', 'Dragon Breath', 'Soul Fire Flame', 'Electric Spark', 'None'], 'Dust')
+						.setTooltip('Particle type drawn as a line between bounces')
+						.requireValue('show-line', [true]),
+					new AttributeSelect('Line Amount', 'line-amount', 15)
+						.setTooltip('Number of particles per chain line segment')
+						.requireValue('show-line', [true]),
+					new DoubleSelect('Line DX', 'line-dx', 0)
+						.requireValue('show-line', [true]),
+					new DoubleSelect('Line DY', 'line-dy', 0)
+						.requireValue('show-line', [true]),
+					new DoubleSelect('Line DZ', 'line-dz', 0)
+						.requireValue('show-line', [true]),
+					new DoubleSelect('Line Speed', 'line-speed', 0.1)
+						.requireValue('show-line', [true]),
+					new ColorSelect('Line Dust Color', 'line-dust-color', '#58a6ff')
+						.setTooltip('Color of chain line particles (Dust type)')
+						.requireValue('show-line', [true]),
+					new DoubleSelect('Line Dust Size', 'line-dust-size', 1)
+						.setTooltip('Size of dust particles in the chain line')
+						.requireValue('show-line', [true]),
+					new AttributeSelect('Line Visible Radius', 'line-visible-radius', 25)
+						.setTooltip('How far away players can see the chain line particles')
+						.requireValue('show-line', [true]),
+					...targetOptions(false)
+				],
+				preview:      [
+					...particlesAtTargetPreviewOptions(),
+					new SectionMarker('Circle Preview'),
+					new BooleanSelect('Circle Preview', 'circle', false)
+						.setTooltip('Displays particles as a circle around each bounce'),
+					new DoubleSelect('Density', 'circle-density', 1)
+						.setTooltip('The minimum amount of points to display per meter')
+						.requireValue('circle', [true]),
+					...particlePreviewOptions('circle'),
+					new SectionMarker('Sphere Preview'),
+					new BooleanSelect('Sphere Preview', 'sphere', false)
+						.setTooltip('Displays particles as a sphere around each bounce'),
+					new DoubleSelect('Density', 'sphere-density', 1)
+						.setTooltip('The minimum amount of points to display per meter')
+						.requireValue('sphere', [true]),
+					...particlePreviewOptions('sphere')
+				],
+				summaryItems: ['range', 'bounces', 'group', 'wall']
+			});
+		}
+
+		public static override new = () => new this();
+	}
+
 class OffsetTarget extends FabledTarget {
 	public constructor() {
 		super({
@@ -2122,6 +2188,22 @@ class ToolCondition extends FabledCondition {
 					.setTooltip('The type of tool it needs to be')
 			],
 			summaryItems: ['material', 'tool']
+		});
+	}
+
+	public static override new = () => new this();
+}
+
+class TreeNodeCondition extends FabledCondition {
+	public constructor() {
+		super({
+			name:         'Tree Node',
+			description:  'Applies child components if the target player has unlocked the specified skill tree node',
+			data:         [
+				new StringSelect('Node', 'node', 'node_id')
+					.setTooltip('The ID of the node to check from the FabledSkillTree configuration')
+			],
+			summaryItems: ['node']
 		});
 	}
 
@@ -3810,6 +3892,65 @@ class MythicMobSkill extends FabledMechanic {
 			],
 			summaryItems: ['skill']
 		});
+	}
+
+	public static override new = () => new this();
+}
+
+class ModelEffectMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Model Effect',
+			description:  'Plays a BetterModel 3D model effect at the target location for a configurable duration. The model is automatically removed when the duration expires.',
+			data:         [
+				new StringSelect('Model', 'model')
+					.setTooltip('The BetterModel model ID to display (e.g. vfx_sword_slash)'),
+				new AttributeSelect('Duration', 'seconds', 2)
+					.setTooltip('How long the model should be visible in seconds'),
+				new BooleanSelect('Sight Trace', 'sight-trace', true)
+					.setTooltip('Whether to hide the model when not in line of sight'),
+				new AttributeSelect('Forward', 'forward', 0)
+					.setTooltip('Forward offset from the target in blocks'),
+				new AttributeSelect('Upward', 'upward', 0)
+					.setTooltip('Upward offset from the target in blocks'),
+				new AttributeSelect('Right', 'right', 0)
+					.setTooltip('Right offset from the target in blocks'),
+			],
+			summaryItems: ['model', 'seconds']
+		}, false);
+	}
+
+	public static override new = () => new this();
+}
+
+class ModelProjectileMechanic extends FabledMechanic {
+	public constructor() {
+		super({
+			name:         'Model Projectile',
+			description:  'Launches a BetterModel 3D model as a projectile. Child components are executed when the projectile hits an entity. The model is attached to an invisible armor stand that moves each tick.',
+			data:         [
+				new StringSelect('Model', 'model')
+					.setTooltip('The BetterModel model ID for the projectile (e.g. vfx_sword_qi)'),
+				new AttributeSelect('Velocity', 'velocity', 2)
+					.setTooltip('The speed of the projectile in blocks per tick'),
+				new AttributeSelect('Range', 'range', 50)
+					.setTooltip('Maximum travel distance in blocks before the projectile expires'),
+				new DropdownSelect('Spread', 'spread', ['cone', 'horizontal cone', 'rain'], 'cone')
+					.setTooltip('The spread pattern for multiple projectiles'),
+				new AttributeSelect('Amount', 'amount', 1)
+					.setTooltip('Number of projectiles to fire per target'),
+				new AttributeSelect('Lifespan', 'lifespan', 10)
+					.setTooltip('Maximum lifetime in seconds regardless of distance'),
+				new AttributeSelect('Hit Radius', 'hit-radius', 1)
+					.setTooltip('Collision detection radius in blocks'),
+				new BooleanSelect('Sight Trace', 'sight-trace', true)
+					.setTooltip('Whether to hide the model when not in line of sight'),
+				new AttributeSelect('Forward', 'forward', 0),
+				new AttributeSelect('Upward', 'upward', 0),
+				new AttributeSelect('Right', 'right', 0),
+			],
+			summaryItems: ['model', 'velocity', 'range']
+		}, true);
 	}
 
 	public static override new = () => new this();
@@ -5787,6 +5928,7 @@ export const initComponents = () => {
 		STATUS:         { name: 'Status', component: StatusCondition },
 		TIME:           { name: 'Time', component: TimeCondition },
 		TOOL:           { name: 'Tool', component: ToolCondition },
+		TREE_NODE:      { name: 'Tree Node', component: TreeNodeCondition },
 		VALUE:          { name: 'Value', component: ValueCondition },
 		VALUETEXT:      { name: 'Value Text', component: ValueTextCondition },
 		WATER:          { name: 'Water', component: WaterCondition },
@@ -5840,6 +5982,8 @@ export const initComponents = () => {
 		MINE:               { name: 'Mine', component: MineMechanic },
 		MONEY:              { name: 'Money', component: MoneyMechanic },
 		MOUNT:              { name: 'Mount', component: MountMechanic },
+		MODEL_EFFECT:       { name: 'Model Effect',     component: ModelEffectMechanic,     section: 'BetterModel' },
+		MODEL_PROJECTILE:   { name: 'Model Projectile', component: ModelProjectileMechanic, section: 'BetterModel' },
 		MYTHICMOB_SKILL:    { name: 'MythicMob Skill', component: MythicMobSkill },
 		PASSIVE:            { name: 'Passive', component: PassiveMechanic },
 		PERMISSION:         { name: 'Permission', component: PermissionMechanic },
