@@ -48,9 +48,9 @@ public final class PlayerSkill {
     private long        cooldown;
     /**
      * -- SETTER --
-     *  Sets the level of the skill. This will not update passive
-     *  effects. To level up/down the skill properly, use the
-     *  upgrade and downgrade methods in PlayerData.
+     * Sets the level of the skill. This will not update passive
+     * effects. To level up/down the skill properly, use the
+     * upgrade and downgrade methods in PlayerData.
      *
      * @param level new level of the skill
      */
@@ -221,9 +221,22 @@ public final class PlayerSkill {
     public int getCooldownLeft() {
         if (isOnCooldown()) {
             return (int) ((cooldown - System.currentTimeMillis() + 999) / 1000);
-        } else {
-            return 0;
         }
+
+        return 0;
+    }
+
+    /**
+     * Gets the current cooldown of the skill in seconds with decimal precision.
+     *
+     * @return current cooldown in seconds or 0 if not on cooldown
+     */
+    public float getPreciseCooldownLeft() {
+        if (isOnCooldown()) {
+            return (float) ((cooldown - System.currentTimeMillis()) / 1000);
+        }
+
+        return 0;
     }
 
     /**

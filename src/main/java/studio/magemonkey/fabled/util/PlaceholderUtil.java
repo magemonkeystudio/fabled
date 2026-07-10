@@ -107,6 +107,7 @@ public class PlaceholderUtil {
         actions.put("skillcooldown", PlaceholderUtil::skillCooldownPlaceholder);
         actions.put("fskillcooldown", PlaceholderUtil::formatSkillCooldownPlaceholder);
         actions.put("skillcooldownleft", PlaceholderUtil::skillCooldownLeftPlaceholder);
+        actions.put("fskillcooldownleft", PlaceholderUtil::formatSkillCooldownLeftPlaceholder);
         actions.put("skillmessage", PlaceholderUtil::skillMessagePlaceholder);
         actions.put("fskillmessage", PlaceholderUtil::formatSkillMessagePlaceholder);
         actions.put("skillmodeldata", PlaceholderUtil::skillModelDataPlaceholder);
@@ -814,6 +815,19 @@ public class PlaceholderUtil {
     private static String skillCooldownLeftPlaceholder(OfflinePlayer player,
                                                        List<String> arguments,
                                                        Integer accountId) {
+        try {
+            PlayerData playerData = getPlayerData(player, accountId);
+            String     skill      = String.join("_", arguments);
+            // Truncate precise cooldown to two decimal places
+            return String.format("%.2f", playerData.getSkill(skill).getPreciseCooldownLeft());
+        } catch (Exception e) {
+            return "0";
+        }
+    }
+
+    private static String formatSkillCooldownLeftPlaceholder(OfflinePlayer player,
+                                                             List<String> arguments,
+                                                             Integer accountId) {
         try {
             PlayerData playerData = getPlayerData(player, accountId);
             String     skill      = String.join("_", arguments);
