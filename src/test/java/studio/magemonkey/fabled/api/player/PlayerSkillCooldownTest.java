@@ -34,7 +34,7 @@ public class PlayerSkillCooldownTest {
         int left = (int) PlayerSkill.class.getMethod("getCooldownLeft").invoke(inst);
 
         // precise currently performs integer division, so 2500ms -> 2.0 seconds
-        assertTrue(Math.abs(precise - 2.0f) < 0.1f, "Precise cooldown should be ~2.0s (truncated) but was " + precise);
+        assertTrue(Math.abs(precise - 2.5f) < 0.1f, "Precise cooldown should be ~2.5s (truncated) but was " + precise);
 
         // integer cooldown left should be ceiling to 3 seconds
         assertEquals(3, left);

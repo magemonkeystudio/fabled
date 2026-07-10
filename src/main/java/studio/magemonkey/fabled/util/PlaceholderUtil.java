@@ -24,6 +24,7 @@ import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.hook.PlaceholderAPIHook;
 import studio.magemonkey.fabled.hook.PluginChecker;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -818,8 +819,9 @@ public class PlaceholderUtil {
         try {
             PlayerData playerData = getPlayerData(player, accountId);
             String     skill      = String.join("_", arguments);
-            // Truncate precise cooldown to two decimal places
-            return String.format("%.2f", playerData.getSkill(skill).getPreciseCooldownLeft());
+            // Round to 2 decimals, or an even whole number
+            DecimalFormat format = new DecimalFormat("#.##");
+            return format.format(playerData.getSkill(skill).getPreciseCooldownLeft());
         } catch (Exception e) {
             return "0";
         }

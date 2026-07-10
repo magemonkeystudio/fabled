@@ -233,7 +233,7 @@ public final class PlayerSkill {
      */
     public float getPreciseCooldownLeft() {
         if (isOnCooldown()) {
-            return (float) ((cooldown - System.currentTimeMillis()) / 1000);
+            return ((cooldown - System.currentTimeMillis()) / 1000f);
         }
 
         return 0;
