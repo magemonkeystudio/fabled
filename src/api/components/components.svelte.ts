@@ -2289,6 +2289,8 @@ const itemOptions = (): ComponentOption[] => {
 const warpOptions = (): ComponentOption[] => {
 	return [
 		// General data
+		new BooleanSelect("Dismount", "dismount")
+			.setTooltip('Legacy Spigot behavior dismounts the entity before teleportation. Modern Paper does not. Set this to <code>true</code> to enable legacy behavior'),
 		new BooleanSelect('Preserve Velocity', 'preserve')
 			.setTooltip('Whether to preserve the target\'s velocity post-warp'),
 		new BooleanSelect('Set Yaw', 'setYaw', false)
