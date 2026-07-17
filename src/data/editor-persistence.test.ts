@@ -194,6 +194,44 @@ describe('editor persistence', () => {
 		});
 	});
 
+	it('removes deleted attributes from IndexedDB so they stay gone after reload', async () => {
+		const persistence = await import('./editor-persistence');
+		const { openEditorDatabase } = await import('./editor-persistence-db');
+
+		await persistence.savePersistedAttributes([
+			{ name: 'Spirit', data: attributeData },
+			{ name: 'Vitality', data: attributeData }
+		]);
+
+		await persistence.deletePersistedAttribute('Spirit');
+
+		expect(persistence.listPersistedAttributeRecords().map((record) => record.name)).toEqual([
+			'Vitality'
+		]);
+		const db = await openEditorDatabase();
+		expect(await db.get(ATTRIBUTES_STORE, 'Spirit')).toBeUndefined();
+		expect(await db.get(ATTRIBUTES_STORE, 'Vitality')).toBeDefined();
+	});
+
+	it('returns clones from read APIs so callers cannot mutate the cache', async () => {
+		const persistence = await import('./editor-persistence');
+
+		await persistence.savePersistedSkill('Meteor', skillData);
+		await persistence.savePersistedAttributes([{ name: 'Spirit', data: attributeData }]);
+
+		const skill = await persistence.getPersistedSkill('Meteor');
+		skill!['icon-lore'].push('mutated');
+		skill!.msg = 'mutated';
+
+		const attribute = persistence.listPersistedAttributeRecords()[0];
+		attribute.data['icon-lore'].push('mutated');
+
+		expect(await persistence.getPersistedSkill('Meteor')).toEqual(skillData);
+		expect(persistence.listPersistedAttributeRecords()).toEqual([
+			{ name: 'Spirit', data: attributeData }
+		]);
+	});
+
 	it('does not overwrite newer persisted skills when saving attributes', async () => {
 		const persistence = await import('./editor-persistence');
 		const updatedSkillData: SkillYamlData = {

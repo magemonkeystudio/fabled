@@ -10,6 +10,7 @@
     toggleSyncLocal
   } from '../../data/store';
   import { browser } from '$app/environment';
+  import { notify } from '$api/notification-service';
   import FabledAttribute from '$api/fabled-attribute.svelte';
   import { get } from 'svelte/store';
   import { fly, type TransitionConfig } from 'svelte/transition';
@@ -109,7 +110,10 @@
     } else if (data instanceof FabledSkill) {
       skillStore.cloneSkill(data);
     } else if (data instanceof FabledAttribute) {
-      void attributeStore.cloneAttribute(data);
+      attributeStore.cloneAttribute(data).catch((error) => {
+        console.error('Failed to clone attribute', error);
+        notify(`Failed to clone attribute "${data.name}"`);
+      });
     }
   };
 </script>

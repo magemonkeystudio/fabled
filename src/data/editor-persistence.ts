@@ -22,7 +22,6 @@ import {
   normalizeForPersistence,
   type PersistedAttributeRecord,
   type PersistenceMode,
-  type ReplaceEditorDataInput,
   SKILL_FOLDERS_KEY,
   SKILLS_STORE
 } from './editor-persistence-shared';
@@ -138,26 +137,30 @@ export const listPersistedSkillNames = (): string[] =>
 export const listPersistedClassNames = (): string[] =>
   [...cache.classes.keys()].sort((left, right) => left.localeCompare(right));
 
+// Read APIs hand out clones so consumers can't mutate the cache behind the DB's back
 export const listPersistedAttributeRecords = (): PersistedAttributeRecord[] =>
   [...cache.attributes.entries()]
     .sort(([left], [right]) => left.localeCompare(right))
-    .map(([name, data]) => ({ name, data }));
+    .map(([name, data]) => ({ name, data: structuredClone(data) }));
+
+const cloneOf = <T>(value: T | undefined): T | undefined =>
+  value === undefined ? undefined : structuredClone(value);
 
 export const getPersistedSkill = async (name: string): Promise<SkillYamlData | undefined> => {
   await ensureEditorPersistence();
-  return cache.skills.get(name);
+  return cloneOf(cache.skills.get(name));
 };
 
 export const getPersistedClass = async (name: string): Promise<ClassYamlData | undefined> => {
   await ensureEditorPersistence();
-  return cache.classes.get(name);
+  return cloneOf(cache.classes.get(name));
 };
 
 export const getPersistedAttribute = async (
   name: string
 ): Promise<AttributeYamlData | undefined> => {
   await ensureEditorPersistence();
-  return cache.attributes.get(name);
+  return cloneOf(cache.attributes.get(name));
 };
 
 export const getPersistedFolders = (type: 'skill' | 'class'): FolderProperties[] =>
@@ -270,91 +273,9 @@ export const deletePersistedClass = async (name: string): Promise<void> => {
 
 export const deletePersistedAttribute = async (name: string): Promise<void> => {
   await ensureEditorPersistence();
-  const previousAttribute = cache.attributes.get(name);
   cache.attributes.delete(name);
   if (persistenceMode !== 'indexeddb') return;
-
-  try {
-    const result = await savePersistedAttributes(listPersistedAttributeRecords());
-    if (!result.ok) {
-      if (previousAttribute !== undefined) {
-        cache.attributes.set(name, previousAttribute);
-      }
-      throw new Error(`Failed to persist deletion of attribute "${name}"`);
-    }
-  } catch (error) {
-    if (previousAttribute !== undefined && !cache.attributes.has(name)) {
-      cache.attributes.set(name, previousAttribute);
-    }
-    throw error;
-  }
-};
-
-export const replacePersistedEditorData = async (data: ReplaceEditorDataInput): Promise<void> => {
-  await ensureEditorPersistence();
-  if (persistenceMode !== 'indexeddb') {
-    throw unsupportedPersistenceError();
-  }
-
-  const db = await openEditorDatabase();
-  await replaceIndexedDbData(db, data, {
-    skills: [...cache.skills.keys()],
-    classes: [...cache.classes.keys()],
-    attributes: [...cache.attributes.keys()]
-  });
-  await loadCache();
-};
-
-export const importLegacyMigrationData = async (input: {
-  skillData: string;
-  classData: string;
-  attributes: string;
-  skillFolders: string;
-  classFolders: string;
-}): Promise<void> => {
-  const { parseYaml } = await import('$api/yaml');
-  const skills = Object.entries((parseYaml(input.skillData) as Record<string, SkillYamlData>) || {})
-    .filter(([name]) => name !== 'loaded')
-    .map(([name, data]) => ({
-      name,
-      data
-    }));
-  const classes = Object.entries(
-    (parseYaml(input.classData) as Record<string, ClassYamlData>) || {}
-  )
-    .filter(([name]) => name !== 'loaded')
-    .map(([name, data]) => ({
-      name,
-      data
-    }));
-  const attributes = Object.entries(
-    (parseYaml(input.attributes) as Record<string, AttributeYamlData>) || {}
-  ).map(([name, data]) => ({
-    name,
-    data
-  }));
-
-  let skillFolders: FolderProperties[] = [];
-  let classFolders: FolderProperties[] = [];
-  try {
-    skillFolders = input.skillFolders ? (JSON.parse(input.skillFolders) as FolderProperties[]) : [];
-  } catch (_) {
-    skillFolders = [];
-  }
-
-  try {
-    classFolders = input.classFolders ? (JSON.parse(input.classFolders) as FolderProperties[]) : [];
-  } catch (_) {
-    classFolders = [];
-  }
-
-  await replacePersistedEditorData({
-    skills,
-    classes,
-    attributes,
-    skillFolders,
-    classFolders
-  });
+  await deleteIndexedDbRecord(ATTRIBUTES_STORE, name);
 };
 
 export { normalizeForPersistence };
