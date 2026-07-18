@@ -9,6 +9,10 @@ vi.mock('$app/environment', () => ({
 	browser: true
 }));
 
+vi.mock('$api/notification-service', () => ({
+	notify: vi.fn()
+}));
+
 const skillData: SkillYamlData = {
 	name: 'Meteor',
 	type: 'Dynamic',
@@ -192,6 +196,118 @@ describe('editor persistence', () => {
 				}
 			}
 		});
+	});
+
+	it('migrates the oldest monolithic skillData/classData format', async () => {
+		localStorage.setItem(
+			'skillData',
+			YAML.stringify(
+				{ loaded: false, Meteor: skillData },
+				{ lineWidth: 0, aliasDuplicateObjects: false }
+			)
+		);
+		localStorage.setItem(
+			'classData',
+			YAML.stringify(
+				{ loaded: false, Mage: classData },
+				{ lineWidth: 0, aliasDuplicateObjects: false }
+			)
+		);
+
+		const persistence = await import('./editor-persistence');
+		await persistence.ensureEditorPersistence();
+
+		expect(persistence.listPersistedSkillNames()).toEqual(['Meteor']);
+		expect(persistence.listPersistedClassNames()).toEqual(['Mage']);
+		expect(await persistence.getPersistedSkill('Meteor')).toEqual(skillData);
+		expect(localStorage.getItem('skillData')).toBeNull();
+		expect(localStorage.getItem('classData')).toBeNull();
+	});
+
+	it('preserves corrupt legacy entries in localStorage while migrating the rest', async () => {
+		localStorage.setItem('skillNames', 'Meteor, Broken');
+		localStorage.setItem(
+			'sapi.skill.Meteor',
+			YAML.stringify({ Meteor: skillData }, { lineWidth: 0, aliasDuplicateObjects: false })
+		);
+		localStorage.setItem('sapi.skill.Broken', '{unclosed: [yaml');
+
+		const persistence = await import('./editor-persistence');
+		await persistence.ensureEditorPersistence();
+
+		expect(persistence.getEditorPersistenceMode()).toBe('indexeddb');
+		expect(persistence.listPersistedSkillNames()).toEqual(['Meteor']);
+		expect(localStorage.getItem('sapi.skill.Meteor')).toBeNull();
+		expect(localStorage.getItem('sapi.skill.Broken')).not.toBeNull();
+	});
+
+	it('does not re-run migration or clobber IndexedDB data on later page loads', async () => {
+		localStorage.setItem('skillNames', 'Meteor');
+		localStorage.setItem(
+			'sapi.skill.Meteor',
+			YAML.stringify({ Meteor: skillData }, { lineWidth: 0, aliasDuplicateObjects: false })
+		);
+
+		let persistence = await import('./editor-persistence');
+		await persistence.ensureEditorPersistence();
+		expect(persistence.listPersistedSkillNames()).toEqual(['Meteor']);
+
+		// Work saved after migration, then a stale tab re-writes legacy keys
+		await persistence.savePersistedSkill('Fireball', { ...skillData, name: 'Fireball' });
+		localStorage.setItem('skillNames', 'Zombie');
+		localStorage.setItem(
+			'sapi.skill.Zombie',
+			YAML.stringify({ Zombie: skillData }, { lineWidth: 0, aliasDuplicateObjects: false })
+		);
+
+		// Fresh page load: new module state, same IndexedDB
+		const { closeEditorDatabaseForTests } = await import('./editor-persistence-db');
+		await closeEditorDatabaseForTests();
+		vi.resetModules();
+		persistence = await import('./editor-persistence');
+		await persistence.ensureEditorPersistence();
+
+		expect(persistence.listPersistedSkillNames()).toEqual(['Fireball', 'Meteor']);
+		expect(persistence.listPersistedSkillNames()).not.toContain('Zombie');
+		expect(localStorage.getItem('sapi.skill.Zombie')).not.toBeNull();
+	});
+
+	it('removes the old record from IndexedDB when a skill is renamed', async () => {
+		const persistence = await import('./editor-persistence');
+		const { openEditorDatabase } = await import('./editor-persistence-db');
+
+		await persistence.savePersistedSkill('Meteor', skillData);
+		await persistence.savePersistedSkill(
+			'Comet',
+			{ ...skillData, name: 'Comet' },
+			'Meteor'
+		);
+
+		expect(persistence.listPersistedSkillNames()).toEqual(['Comet']);
+		const db = await openEditorDatabase();
+		expect(await db.get(SKILLS_STORE, 'Meteor')).toBeUndefined();
+		expect(await db.get(SKILLS_STORE, 'Comet')).toBeDefined();
+	});
+
+	it('reports failed saves without corrupting the cache or stored data', async () => {
+		const persistence = await import('./editor-persistence');
+
+		await persistence.savePersistedSkill('Meteor', skillData);
+
+		const circular = { ...skillData } as SkillYamlData & { self?: unknown };
+		circular.self = circular;
+		const result = await persistence.savePersistedSkill('Meteor', circular);
+
+		expect(result.ok).toBe(false);
+		expect(await persistence.getPersistedSkill('Meteor')).toEqual(skillData);
+
+		// A fresh load from IndexedDB also still sees the last good save
+		const { closeEditorDatabaseForTests } = await import('./editor-persistence-db');
+		await closeEditorDatabaseForTests();
+		vi.resetModules();
+		const reloaded = await import('./editor-persistence');
+		await reloaded.ensureEditorPersistence();
+		expect(await reloaded.getPersistedSkill('Meteor')).toEqual(skillData);
 	});
 
 	it('removes deleted attributes from IndexedDB so they stay gone after reload', async () => {

@@ -72,18 +72,20 @@ const getLegacyNamedKeys = (prefix: string, metadataKey: string): string[] => {
 	return fromKeys;
 };
 
-const readLegacySkillRecords = (): PersistedSkillRecord[] => {
+const readLegacySkillRecords = (consumedKeys: string[]): PersistedSkillRecord[] => {
 	if (!browser) return [];
 
 	const names = getLegacyNamedKeys(SKILL_PREFIX, 'skillNames');
 	if (names.length > 0) {
 		return names
 			.map((name) => {
-				const stored = localStorage.getItem(`${SKILL_PREFIX}${name}`);
+				const storageKey = `${SKILL_PREFIX}${name}`;
+				const stored = localStorage.getItem(storageKey);
 				if (!stored) return undefined;
 				const parsed = parseYaml(stored) as MultiSkillYamlData | undefined;
 				const record = normalizeMultiYamlRecords<SkillYamlData>(parsed)[0];
 				if (!record) return undefined;
+				consumedKeys.push(storageKey);
 				return { name: record.name, data: record.data };
 			})
 			.filter((record): record is PersistedSkillRecord => !!record);
@@ -91,26 +93,30 @@ const readLegacySkillRecords = (): PersistedSkillRecord[] => {
 
 	const legacyData = localStorage.getItem('skillData');
 	if (!legacyData) return [];
-	return normalizeMultiYamlRecords<SkillYamlData>(parseYaml(legacyData) as MultiSkillYamlData).map(
-		(record) => ({
-			name: record.name,
-			data: record.data
-		})
-	);
+	const records = normalizeMultiYamlRecords<SkillYamlData>(
+		parseYaml(legacyData) as MultiSkillYamlData
+	).map((record) => ({
+		name: record.name,
+		data: record.data
+	}));
+	if (records.length > 0) consumedKeys.push('skillData');
+	return records;
 };
 
-const readLegacyClassRecords = (): PersistedClassRecord[] => {
+const readLegacyClassRecords = (consumedKeys: string[]): PersistedClassRecord[] => {
 	if (!browser) return [];
 
 	const names = getLegacyNamedKeys(CLASS_PREFIX, 'classNames');
 	if (names.length > 0) {
 		return names
 			.map((name) => {
-				const stored = localStorage.getItem(`${CLASS_PREFIX}${name}`);
+				const storageKey = `${CLASS_PREFIX}${name}`;
+				const stored = localStorage.getItem(storageKey);
 				if (!stored) return undefined;
 				const parsed = parseYaml(stored) as MultiClassYamlData | undefined;
 				const record = normalizeMultiYamlRecords<ClassYamlData>(parsed)[0];
 				if (!record) return undefined;
+				consumedKeys.push(storageKey);
 				return { name: record.name, data: record.data };
 			})
 			.filter((record): record is PersistedClassRecord => !!record);
@@ -118,22 +124,24 @@ const readLegacyClassRecords = (): PersistedClassRecord[] => {
 
 	const legacyData = localStorage.getItem('classData');
 	if (!legacyData) return [];
-	return normalizeMultiYamlRecords<ClassYamlData>(parseYaml(legacyData) as MultiClassYamlData).map(
-		(record) => ({
-			name: record.name,
-			data: record.data
-		})
-	);
+	const records = normalizeMultiYamlRecords<ClassYamlData>(
+		parseYaml(legacyData) as MultiClassYamlData
+	).map((record) => ({
+		name: record.name,
+		data: record.data
+	}));
+	if (records.length > 0) consumedKeys.push('classData');
+	return records;
 };
 
-const readLegacyAttributeRecords = (): PersistedAttributeRecord[] => {
+const readLegacyAttributeRecords = (consumedKeys: string[]): PersistedAttributeRecord[] => {
 	if (!browser) return [];
 
 	const stored = localStorage.getItem('attribs');
 	if (!stored) return [];
 
 	if (stored.split('\n').length < 3 && stored.charAt(0) !== '{') {
-		return stored
+		const records = stored
 			.replace('\n', '')
 			.split(',')
 			.map((name) => name.trim())
@@ -142,25 +150,31 @@ const readLegacyAttributeRecords = (): PersistedAttributeRecord[] => {
 				name,
 				data: defaultAttributeYaml(name)
 			}));
+		if (records.length > 0) consumedKeys.push('attribs');
+		return records;
 	}
 
 	const parsed = parseYaml(stored) as MultiAttributeYamlData | undefined;
 	if (!parsed) return [];
 
-	return Object.entries(parsed).map(([name, data]) => ({
+	const records = Object.entries(parsed).map(([name, data]) => ({
 		name,
 		data
 	}));
+	if (records.length > 0) consumedKeys.push('attribs');
+	return records;
 };
 
-const parseFolderMeta = (key: string): FolderProperties[] => {
+const parseFolderMeta = (key: string, consumedKeys: string[]): FolderProperties[] => {
 	if (!browser) return [];
 
 	const stored = localStorage.getItem(key);
 	if (!stored || stored === 'null') return [];
 
 	try {
-		return JSON.parse(stored) as FolderProperties[];
+		const folders = JSON.parse(stored) as FolderProperties[];
+		consumedKeys.push(key);
+		return folders;
 	} catch (error) {
 		console.error(`Failed to parse ${key} from localStorage`, error);
 		return [];
@@ -181,28 +195,30 @@ export const hasLegacyEditorData = () => {
 	);
 };
 
-export const collectLegacyEditorData = (): ReplaceEditorDataInput => ({
-	skills: readLegacySkillRecords(),
-	classes: readLegacyClassRecords(),
-	attributes: readLegacyAttributeRecords(),
-	skillFolders: parseFolderMeta(SKILL_FOLDERS_KEY),
-	classFolders: parseFolderMeta(CLASS_FOLDERS_KEY)
-});
+export interface CollectedLegacyData extends ReplaceEditorDataInput {
+	consumedKeys: string[];
+}
 
-export const clearLegacyEditorStorage = () => {
+export const collectLegacyEditorData = (): CollectedLegacyData => {
+	const consumedKeys: string[] = [];
+	return {
+		skills: readLegacySkillRecords(consumedKeys),
+		classes: readLegacyClassRecords(consumedKeys),
+		attributes: readLegacyAttributeRecords(consumedKeys),
+		skillFolders: parseFolderMeta(SKILL_FOLDERS_KEY, consumedKeys),
+		classFolders: parseFolderMeta(CLASS_FOLDERS_KEY, consumedKeys),
+		consumedKeys
+	};
+};
+
+// Only keys whose data actually made it into IndexedDB are removed; anything
+// that failed to parse stays behind in localStorage as an inert backup rather
+// than being destroyed. The name indexes are only meaningful to the old editor,
+// so they are always dropped.
+export const clearLegacyEditorStorage = (consumedKeys: string[]) => {
 	if (!browser) return;
 
-	const skillNames = getLegacyNamedKeys(SKILL_PREFIX, 'skillNames');
-	const classNames = getLegacyNamedKeys(CLASS_PREFIX, 'classNames');
-
-	skillNames.forEach((name) => localStorage.removeItem(`${SKILL_PREFIX}${name}`));
-	classNames.forEach((name) => localStorage.removeItem(`${CLASS_PREFIX}${name}`));
-
+	consumedKeys.forEach((key) => localStorage.removeItem(key));
 	localStorage.removeItem('skillNames');
 	localStorage.removeItem('classNames');
-	localStorage.removeItem('skillData');
-	localStorage.removeItem('classData');
-	localStorage.removeItem('attribs');
-	localStorage.removeItem(SKILL_FOLDERS_KEY);
-	localStorage.removeItem(CLASS_FOLDERS_KEY);
 };

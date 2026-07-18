@@ -188,6 +188,12 @@ export const deleteIndexedDbRecord = async (
   await db.delete(storeName, name);
 };
 
+export const closeEditorDatabaseForTests = async () => {
+  const db = await databasePromise?.catch(() => undefined);
+  db?.close();
+  databasePromise = undefined;
+};
+
 export const resetEditorDatabaseForTests = async () => {
   if (!browser || typeof indexedDB === 'undefined') {
     databasePromise = undefined;

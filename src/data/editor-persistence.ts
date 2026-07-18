@@ -89,7 +89,7 @@ const migrateLegacyLocalStorage = async (): Promise<void> => {
     classes: [...cache.classes.keys()],
     attributes: [...cache.attributes.keys()]
   });
-  clearLegacyEditorStorage();
+  clearLegacyEditorStorage(data.consumedKeys);
 };
 
 export const ensureEditorPersistence = async (): Promise<PersistenceMode> => {
