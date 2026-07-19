@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { sveltekit } from '@sveltejs/kit/vite';
 import { webSocketServer } from './src/api/socket/socket-io-server';
 
@@ -8,6 +9,9 @@ const config = {
 		supported: {
 			'top-level-await': true
 		}
+	},
+	test: {
+		environment: 'jsdom'
 	}
 };
 
