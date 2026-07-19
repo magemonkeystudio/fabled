@@ -28,12 +28,14 @@ package studio.magemonkey.fabled.api.util;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import studio.magemonkey.codex.CodexEngine;
 import studio.magemonkey.codex.api.items.ItemType;
-import studio.magemonkey.codex.api.items.exception.MissingItemException;
+import studio.magemonkey.codex.api.items.exception.CodexItemException;
 import studio.magemonkey.codex.items.CodexItemManager;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.codex.util.StringUT;
@@ -52,21 +54,46 @@ public class Data {
     private static final String LORE       = "icon-lore";
     private static final String NAME       = "name";
 
+    /**
+     * Marks a placeholder icon as standing in for a custom item (e.g. Nexo) that couldn't be
+     * resolved yet, carrying the original raw icon key so a save doesn't overwrite it with the
+     * placeholder before the item provider has actually loaded the item (e.g. Nexo indexes its
+     * items asynchronously after enabling, so it may not be ready the moment Fabled starts up).
+     */
+    private static NamespacedKey pendingIconKey() {
+        return new NamespacedKey(Fabled.inst(), "pending-icon-id");
+    }
+
     private static ItemStack parse(final String mat, final int dur, final int data, final List<String> lore) {
         try {
             CodexItemManager itemManager = CodexEngine.get().getItemManager();
             ItemType         itemType    = null;
             try {
                 itemType = itemManager.getItemType(mat);
-            } catch (MissingItemException mie) {
-            }
-            Material material = itemType == null ? Material.matchMaterial(mat) : null;
-            if (material == null) {
-                material = Material.JACK_O_LANTERN;
+            } catch (CodexItemException ignored) {
+                // Provider may not be hooked in yet (e.g. Nexo hasn't finished enabling), or
+                // there's simply no item registered under this key. Either way, fall through
+                // and try to treat it as a vanilla material below.
             }
 
-            final ItemStack item = itemType != null ? itemType.create() : new ItemStack(material);
-            final ItemMeta  meta = item.getItemMeta();
+            ItemStack item       = itemType != null ? itemType.create() : null;
+            boolean   unresolved = false;
+
+            if (item == null) {
+                Material material = Material.matchMaterial(mat);
+                if (material != null) {
+                    item = new ItemStack(material);
+                } else {
+                    // Not a vanilla material either, so this is almost certainly a reference to
+                    // a custom item (e.g. NEXO_something) whose provider just hasn't loaded the
+                    // item yet. Don't collapse it down to a plain Jack O'Lantern permanently --
+                    // remember the original key so a save doesn't clobber it.
+                    item = new ItemStack(Material.JACK_O_LANTERN);
+                    unresolved = true;
+                }
+            }
+
+            final ItemMeta meta = item.getItemMeta();
             if (meta != null) {
                 if (data != 0) {
                     meta.setCustomModelData(data);
@@ -80,6 +107,11 @@ public class Data {
                 if (meta instanceof Damageable) {
                     ((Damageable) meta).setDamage(dur);
                 }
+
+                if (unresolved) {
+                    meta.getPersistentDataContainer().set(pendingIconKey(), PersistentDataType.STRING, mat);
+                }
+
                 item.setItemMeta(meta);
             }
             return DamageLoreRemover.removeAttackDmg(item);
@@ -95,15 +127,26 @@ public class Data {
      * @param config config to serialize into
      */
     public static void serializeIcon(ItemStack item, DataSection config) {
-        CodexItemManager itemManager = CodexEngine.get().getItemManager();
-        ItemType         itemType    = itemManager.getMainItemType(item);
-        if (itemType != null) {
-            config.set(MAT, itemType.getNamespacedID());
+        ItemMeta meta    = item.getItemMeta();
+        String   pending = meta == null
+                ? null
+                : meta.getPersistentDataContainer().get(pendingIconKey(), PersistentDataType.STRING);
+
+        if (pending != null) {
+            // The referenced custom item still hasn't loaded (e.g. Nexo hasn't finished
+            // indexing yet on this restart). Preserve the original reference instead of
+            // overwriting it with the placeholder's material.
+            config.set(MAT, pending);
         } else {
-            config.set(MAT, item.getType().name());
+            CodexItemManager itemManager = CodexEngine.get().getItemManager();
+            ItemType         itemType    = itemManager.getMainItemType(item);
+            if (itemType != null) {
+                config.set(MAT, itemType.getNamespacedID());
+            } else {
+                config.set(MAT, item.getType().name());
+            }
         }
 
-        ItemMeta meta = item.getItemMeta();
         if (meta != null) {
             config.set(DATA, meta.hasCustomModelData() ? meta.getCustomModelData() : 0);
 
