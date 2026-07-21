@@ -25,6 +25,11 @@ public class TargetComponentSelfTargetTest extends MockedTest {
         public List<LivingEntity> getTargets(LivingEntity caster, int level, List<LivingEntity> targets) {
             return targets;
         }
+
+        @Override
+        public String getKey() {
+            return "stub";
+        }
     }
 
     @BeforeEach
