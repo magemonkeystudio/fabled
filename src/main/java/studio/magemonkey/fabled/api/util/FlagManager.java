@@ -29,13 +29,22 @@ package studio.magemonkey.fabled.api.util;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The manager for temporary entity flag data
  */
 public class FlagManager {
-    private static final Map<Integer, FlagData> data = new HashMap<>();
+    private static final Map<Integer, FlagData> data            = new HashMap<>();
+    /**
+     * Guards against reentrant clearFlags calls on the same entity.
+     * Prevents infinite recursion when FlagExpireTrigger skills add new flags
+     * during flag-clearing (e.g., on player death), which would re-create a
+     * FlagData entry and cause clearFlags → clear → removeFlag → clearFlags → ∞.
+     */
+    private static final Set<Integer>           clearingEntities = new HashSet<>();
 
     /**
      * Retrieves the flag data for an entity. This creates new data if
@@ -128,9 +137,21 @@ public class FlagManager {
         if (entity == null) {
             return;
         }
-        FlagData result = data.remove(entity.getEntityId());
-        if (result != null) {
-            result.clear();
+        // Guard against reentrant calls on the same entity.
+        // FlagExpireTrigger skills may call addFlag during clearing,
+        // re-creating a FlagData entry; without this guard that would
+        // cause infinite recursion (clearFlags → clear → removeFlag → clearFlags …).
+        int id = entity.getEntityId();
+        if (!clearingEntities.add(id)) {
+            return; // already being cleared — skip
+        }
+        try {
+            FlagData result = data.remove(id);
+            if (result != null) {
+                result.clear();
+            }
+        } finally {
+            clearingEntities.remove(id);
         }
     }
 }
