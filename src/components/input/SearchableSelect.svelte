@@ -111,7 +111,7 @@
 		const cancelled = onremove?.(<never>item) || true;
 		if (!cancelled) return;
 
-		if (multiple) selected = (<Array<unknown>>selected).filter((s: unknown) => s != item);
+		if (multiple && selected instanceof Array) selected = selected.filter((s: unknown) => s != item);
 		else selected = undefined;
 	};
 
