@@ -45,7 +45,7 @@ public class RepeatMechanic extends MechanicComponent {
     private static final String STOP_ON_FAIL    = "stop-on-fail";
     private static final String SINGLE_INSTANCE = "single-instance";
 
-    private final Map<Integer, List<RepeatTask>> tasks = new HashMap<>();
+    final Map<Integer, List<RepeatTask>> tasks = new HashMap<>();
 
     /**
      * Executes the component
