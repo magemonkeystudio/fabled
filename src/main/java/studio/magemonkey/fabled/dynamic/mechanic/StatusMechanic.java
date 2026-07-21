@@ -30,6 +30,7 @@ import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.divinity.stats.EntityStats;
 import studio.magemonkey.divinity.stats.items.attributes.api.TypedStat;
 import studio.magemonkey.fabled.api.util.FlagManager;
+import studio.magemonkey.fabled.hook.PluginChecker;
 
 import java.util.List;
 
@@ -58,26 +59,26 @@ public class StatusMechanic extends MechanicComponent {
         boolean ignoreCCRes   = settings.getBool(IGNORE_CC_RES, false);
         boolean ignoreCCDur   = settings.getBool(IGNORE_CC_DUR, false);
         int baseTicks = (int) (seconds * 20);
-        if (!ignoreCCDur) {
+        if (!ignoreCCDur && PluginChecker.isDivinityActive()) {
             try {
                 EntityStats casterStats = EntityStats.get(caster);
                 double      ccDuration  = casterStats.getItemStat(TypedStat.Type.CC_DURATION, false);
                 if (ccDuration != 0) {
                     baseTicks = (int) (baseTicks * (1.0 + ccDuration / 100.0));
                 }
-            } catch (Exception ignored) { /* Divinity not loaded */ }
+            } catch (Throwable ignored) { /* Divinity present but incompatible/misbehaving */ }
         }
 
         for (LivingEntity target : targets) {
             int ticks = baseTicks;
-            if (!ignoreCCRes) {
+            if (!ignoreCCRes && PluginChecker.isDivinityActive()) {
                 try {
                     EntityStats stats      = EntityStats.get(target);
                     double      resistance = stats.getItemStat(TypedStat.Type.CC_RESISTANCE, false);
                     if (resistance > 0) {
                         ticks = (int) (ticks * (1.0 - resistance / 100.0));
                     }
-                } catch (Exception ignored) { /* Divinity not loaded */ }
+                } catch (Throwable ignored) { /* Divinity present but incompatible/misbehaving */ }
             }
             FlagManager.addFlag(target, key, ticks);
         }

@@ -31,6 +31,7 @@ import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.divinity.stats.EntityStats;
 import studio.magemonkey.divinity.stats.items.attributes.api.TypedStat;
 import studio.magemonkey.fabled.api.event.SkillHealEvent;
+import studio.magemonkey.fabled.hook.PluginChecker;
 
 import java.util.List;
 
@@ -67,18 +68,18 @@ public class HealMechanic extends MechanicComponent {
                 amount = target.getMaxHealth() * value / 100;
             }
 
-            if (!ignoreHealingCast) {
+            if (!ignoreHealingCast && PluginChecker.isDivinityActive()) {
                 try {
                     double healCast = EntityStats.get(caster).getItemStat(TypedStat.Type.HEALING_CAST, false);
                     if (healCast != 0) amount *= (1.0 + healCast / 100.0);
-                } catch (Exception ignored) { /* Divinity not loaded */ }
+                } catch (Throwable ignored) { /* Divinity present but incompatible/misbehaving */ }
             }
 
-            if (!ignoreHealingReceived) {
+            if (!ignoreHealingReceived && PluginChecker.isDivinityActive()) {
                 try {
                     double healReceived = EntityStats.get(target).getItemStat(TypedStat.Type.HEALING_RECEIVED, false);
                     if (healReceived != 0) amount *= (1.0 + healReceived / 100.0);
-                } catch (Exception ignored) { /* Divinity not loaded */ }
+                } catch (Throwable ignored) { /* Divinity present but incompatible/misbehaving */ }
             }
 
             SkillHealEvent event = new SkillHealEvent(caster, target, amount);
