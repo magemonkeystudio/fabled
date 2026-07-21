@@ -25,13 +25,21 @@ export const VERSIONS                           = {
 	'17':    DATA_1_17,
 	'16':    DATA_1_16
 };
-export const versionData: Writable<VersionData> = writable(VERSIONS[<Versions>Object.keys(VERSIONS)[Object.keys(VERSIONS).length - 1]]);
+// Object.keys() lists integer-like keys ('21', '16', ...) before keys with dots,
+// so sort numerically instead of relying on insertion order to find the latest version
+const compareVersions = (a: string, b: string) => {
+	const [aMajor, aMinor = 0] = a.split('.').map(Number);
+	const [bMajor, bMinor = 0] = b.split('.').map(Number);
+	return aMajor - bMajor || aMinor - bMinor;
+};
+const LATEST_VERSION = <Versions>Object.keys(VERSIONS).sort(compareVersions).pop();
 
-export const version: Writable<Versions> = localStore<Versions>('server-version', <Versions>Object.keys(VERSIONS)[Object.keys(VERSIONS).length - 1]);
+export const versionData: Writable<VersionData> = writable(VERSIONS[LATEST_VERSION]);
+
+export const version: Writable<Versions> = localStore<Versions>('server-version', LATEST_VERSION);
 version.subscribe((ver: Versions) => {
 	if (!(ver in VERSIONS)) {
-		ver = <Versions>Object.keys(VERSIONS)[0];
-		version.set(ver);
+		version.set(LATEST_VERSION);
 		return;
 	}
 

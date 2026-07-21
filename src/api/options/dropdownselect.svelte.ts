@@ -27,13 +27,25 @@ export default class DropdownSelect extends Requirements implements ComponentOpt
 		if (typeof items === 'function') this.dataSource = items;
 		else this.data.value = items;
 		if (multiple) this.data.selected = [];
-		if (def) this.data.selected = def;
+		if (def) {
+			// Normalize the default so it always matches the select mode,
+			// as a scalar default on a multi-select breaks filtering/removal
+			if (multiple && !(def instanceof Array)) this.data.selected = [def];
+			else if (!multiple && def instanceof Array) this.data.selected = def[0];
+			else this.data.selected = def;
+		}
 
 		this.data.multiple = multiple;
 	}
 
 	public init = () => {
-		if (this.dataSource) this.data.value = this.dataSource();
+		if (this.dataSource) {
+			const value = this.dataSource();
+			// Only write when the contents actually changed. init() runs inside an
+			// effect that also reads this state, so an unconditional write loops forever
+			if (value.length !== this.data.value.length || value.some((item, i) => item !== this.data.value[i]))
+				this.data.value = value;
+		}
 
 		if (!this.data.selected && this.data.value.length > 0 && !this.data.multiple)
 			this.data.selected = this.data.value[0];
