@@ -873,20 +873,23 @@ public abstract class Skill implements IconHolder {
         target.setNoDamageTicks(0);
         skillDamage = true;
 
-        Vector velocity = target.getVelocity();
-        if (noShake)
-            BuffManager.addBuff(target, BuffType.NO_SCREEN_SHAKE, new Buff("damage-" + classification, 0, false), 1);
-        if (!DamageRegistry.dealDamage(target, damage, classification, source))
-            target.damage(damage, source);
-        if (!knockback)
-            target.setVelocity(velocity);
+        try {
+            Vector velocity = target.getVelocity();
+            if (noShake)
+                BuffManager.addBuff(target, BuffType.NO_SCREEN_SHAKE, new Buff("damage-" + classification, 0, false), 1);
+            if (!DamageRegistry.dealDamage(target, damage, classification, source))
+                target.damage(damage, source);
+            if (!knockback)
+                target.setVelocity(velocity);
 
-        // Reset damage timer to before the damage was applied
-        target.setNoDamageTicks(ticks);
-        if (source instanceof Player) {
-            if (PluginChecker.isNoCheatActive()) NoCheatHook.unexempt((Player) source);
+            // Reset damage timer to before the damage was applied
+            target.setNoDamageTicks(ticks);
+            if (source instanceof Player) {
+                if (PluginChecker.isNoCheatActive()) NoCheatHook.unexempt((Player) source);
+            }
+        } finally {
+            skillDamage = false;
         }
-        skillDamage = false;
     }
 
     /**
