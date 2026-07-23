@@ -15,6 +15,8 @@ import org.bukkit.inventory.meta.CrossbowMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import studio.magemonkey.fabled.Fabled;
 
+import java.lang.reflect.Method;
+
 public class AttackIndicatorCondition extends ConditionComponent {
     private static final String MIN    = "min";
     private static final String MAX    = "max";
@@ -25,8 +27,8 @@ public class AttackIndicatorCondition extends ConditionComponent {
     private static final String LAST_SHOOT_FORCE_META = "fabled_last_shoot_force";
 
     // Paper-only APIs accessed via reflection — runtime is Paper, but compile classpath is Spigot.
-    private static java.lang.reflect.Method ACTIVE_ITEM_METHOD;
-    private static java.lang.reflect.Method IS_CHARGED_METHOD;
+    private static Method ACTIVE_ITEM_METHOD;
+    private static Method IS_CHARGED_METHOD;
 
     private static ItemStack getActiveItemSafe(Player player) {
         try {
