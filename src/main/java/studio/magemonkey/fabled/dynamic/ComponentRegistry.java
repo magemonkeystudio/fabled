@@ -98,6 +98,7 @@ public class ComponentRegistry {
         register(new RememberTarget());
         register(new SelfTarget());
         register(new SingleTarget());
+        register(new WorldTarget());
 
         // Conditions
         register(new ActionBarCondition());

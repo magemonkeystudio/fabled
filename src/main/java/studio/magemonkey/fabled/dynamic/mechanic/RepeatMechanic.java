@@ -39,12 +39,13 @@ import java.util.Map;
  * Executes child components multiple times
  */
 public class RepeatMechanic extends MechanicComponent {
-    private static final String REPETITIONS  = "repetitions";
-    private static final String DELAY        = "delay";
-    private static final String PERIOD       = "period";
-    private static final String STOP_ON_FAIL = "stop-on-fail";
+    private static final String REPETITIONS     = "repetitions";
+    private static final String DELAY           = "delay";
+    private static final String PERIOD          = "period";
+    private static final String STOP_ON_FAIL    = "stop-on-fail";
+    private static final String SINGLE_INSTANCE = "single-instance";
 
-    private final Map<Integer, List<RepeatTask>> tasks = new HashMap<>();
+    final Map<Integer, List<RepeatTask>> tasks = new HashMap<>();
 
     /**
      * Executes the component
@@ -63,9 +64,19 @@ public class RepeatMechanic extends MechanicComponent {
                 return false;
             }
 
-            final int     delay      = (int) (settings.getDouble(DELAY, 0.0) * 20);
-            final int     period     = (int) (settings.getDouble(PERIOD, 1.0) * 20);
-            final boolean stopOnFail = settings.getBool(STOP_ON_FAIL, false);
+            final int     delay          = (int) (settings.getDouble(DELAY, 0.0) * 20);
+            final int     period         = (int) (settings.getDouble(PERIOD, 1.0) * 20);
+            final boolean stopOnFail     = settings.getBool(STOP_ON_FAIL, false);
+            final boolean singleInstance = settings.getBool(SINGLE_INSTANCE, false);
+
+            // Cancel all existing tasks for this caster when single-instance is enabled
+            if (singleInstance) {
+                final List<RepeatTask> existing = tasks.remove(caster.getEntityId());
+                if (existing != null) {
+                    existing.forEach(RepeatTask::cancel);
+                }
+            }
+
             if (period <= 0) {
                 // 0 tick loop
                 while (count > 0) {
