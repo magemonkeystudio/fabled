@@ -5,10 +5,14 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import studio.magemonkey.codex.util.DataUT;
+import studio.magemonkey.divinity.manager.effects.main.AdjustStatEffect;
 import studio.magemonkey.divinity.stats.EntityStats;
 import studio.magemonkey.divinity.stats.items.ItemStats;
+import studio.magemonkey.divinity.stats.items.api.ItemLoreStat;
 import studio.magemonkey.divinity.stats.items.attributes.api.TypedStat;
 import studio.magemonkey.fabled.api.enums.Operation;
+
+import java.util.function.DoubleUnaryOperator;
 
 public class DivinityHook {
     private static final NamespacedKey KEY_MODULE  = NamespacedKey.fromString("prorpgitems:qrpg_item_module");
@@ -28,8 +32,7 @@ public class DivinityHook {
      * Returns the original amount unchanged if the stat is unknown, has no cap (-1),
      * or the operation is unrecognized.
      * <p>
-     * NOTE: All Divinity class references are confined to this method body to allow
-     * lazy class-loading — this method must only be called when Divinity is confirmed active.
+     * NOTE: this method must only be called when Divinity is confirmed active.
      *
      * @param key       Divinity stat key (e.g. "critical_rate")
      * @param operation Fabled Operation (ADD_NUMBER or MULTIPLY_PERCENTAGE)
@@ -66,7 +69,7 @@ public class DivinityHook {
 
     /**
      * Applies a temporary stat modifier to a non-player entity via Divinity's AdjustStatEffect.
-     * Returns the effect as Object to avoid eager class-loading of Divinity types in callers.
+     * Returns the effect as Object so callers don't need to reference Divinity types directly.
      * Only call when Divinity is confirmed active.
      *
      * @param seconds negative value = permanent
@@ -74,10 +77,10 @@ public class DivinityHook {
      */
     public static Object applyStatToMob(LivingEntity target, LivingEntity caster,
                                         String key, String operation, double amount, double seconds) {
-        studio.magemonkey.divinity.stats.items.api.ItemLoreStat<?> stat = ItemStats.getAttribute(key);
+        ItemLoreStat<?> stat = ItemStats.getAttribute(key);
         if (stat == null) return null;
 
-        java.util.function.DoubleUnaryOperator operator;
+        DoubleUnaryOperator operator;
         switch (operation) {
             case "ADD_NUMBER":
                 operator = v -> v + amount;
@@ -89,8 +92,8 @@ public class DivinityHook {
                 return null;
         }
 
-        studio.magemonkey.divinity.manager.effects.main.AdjustStatEffect effect =
-                new studio.magemonkey.divinity.manager.effects.main.AdjustStatEffect.Builder(seconds)
+        AdjustStatEffect effect =
+                new AdjustStatEffect.Builder(seconds)
                         .withCaster(caster)
                         .withAdjust(stat, operator)
                         .build();
@@ -104,7 +107,6 @@ public class DivinityHook {
      */
     public static void removeStatFromMob(LivingEntity target, Object effect) {
         if (effect == null) return;
-        EntityStats.get(target).removeEffect(
-                (studio.magemonkey.divinity.manager.effects.main.AdjustStatEffect) effect);
+        EntityStats.get(target).removeEffect((AdjustStatEffect) effect);
     }
 }
