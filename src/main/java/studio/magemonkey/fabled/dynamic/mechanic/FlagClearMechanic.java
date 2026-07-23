@@ -63,18 +63,21 @@ public class FlagClearMechanic extends MechanicComponent {
             return false;
         }
 
-        String  key      = settings.getString(KEY);
+        String  rawKey   = settings.getString(KEY);
         boolean useRegex = settings.getBool(REGEX, false);
+        boolean hadError = false;
 
         if (useRegex) {
-            Pattern pattern;
-            try {
-                pattern = Pattern.compile(key);
-            } catch (PatternSyntaxException e) {
-                Fabled.inst().getLogger().warning("Invalid regex pattern for flag clear mechanic: \"" + key + "\" - " + e.getDescription());
-                return false;
-            }
             for (LivingEntity target : targets) {
+                String key = filter(caster, target, rawKey);
+                Pattern pattern;
+                try {
+                    pattern = Pattern.compile(key);
+                } catch (PatternSyntaxException e) {
+                    Fabled.inst().getLogger().warning("Invalid regex pattern for flag clear mechanic: \"" + key + "\" - " + e.getDescription());
+                    hadError = true;
+                    continue;
+                }
                 FlagData data = FlagManager.getFlagData(target, false);
                 if (data != null) {
                     new HashSet<>(data.flagList()).stream()
@@ -84,9 +87,10 @@ public class FlagClearMechanic extends MechanicComponent {
             }
         } else {
             for (LivingEntity target : targets) {
+                String key = filter(caster, target, rawKey);
                 FlagManager.removeFlag(target, key);
             }
         }
-        return targets.size() > 0;
+        return targets.size() > 0 && !hadError;
     }
 }
