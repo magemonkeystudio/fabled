@@ -244,6 +244,9 @@ public class MechanicListener extends FabledListener {
      */
     @EventHandler
     public void onLand(final ProjectileHitEvent event) {
+        // Entity hits are already handled by onDamageByEntity(); only handle block landings here
+        // to avoid double-firing the callback (and thus child mechanics) on a single hit.
+        if (event.getHitEntity() != null) return;
         if (event.getEntity().hasMetadata(P_CALL))
             Fabled.schedule(() -> {
                 final Object obj = Fabled.getMeta(event.getEntity(), P_CALL);
