@@ -398,7 +398,7 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
         int                minZ   = (int) (loc.getZ() - radius) >> 4;
         int                maxZ   = (int) (loc.getZ() + radius) >> 4;
         for (int i = minX; i <= maxX; i++)
-            for (int j = minZ; j < maxZ; j++)
+            for (int j = minZ; j <= maxZ; j++)
                 for (Entity entity : loc.getWorld().getChunkAt(i, j).getEntities())
                     if (entity instanceof LivingEntity)
                         list.add((LivingEntity) entity);
