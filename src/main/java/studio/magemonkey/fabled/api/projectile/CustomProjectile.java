@@ -35,68 +35,21 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.metadata.Metadatable;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
-import studio.magemonkey.codex.core.Version;
-import studio.magemonkey.codex.util.Reflex;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.api.particle.target.Followable;
-import studio.magemonkey.fabled.log.Logger;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.*;
-import java.util.function.Predicate;
 
 /**
  * Base class for custom projectiles
  */
 public abstract class CustomProjectile extends BukkitRunnable implements Metadatable, Followable {
-    private static final Vector                                   X_VEC           = new Vector(1, 0, 0);
-    private static final double                                   DEGREE_TO_RAD   = Math.PI / 180;
-    private static final Vector                                   vel             = new Vector();
-    private static       Constructor<?>                           aabbConstructor;
-    private static       Method                                   getEntities;
-    private static       Method                                   getBukkitEntity;
-    private static final Predicate<Object>                        JAVA_PREDICATE  = CustomProjectile::isLivingEntity;
-    private static final com.google.common.base.Predicate<Object> GUAVA_PREDICATE = CustomProjectile::isLivingEntity;
-    private static       Method                                   getEntitiesGuava;
-    private static       Method                                   getHandle;
-
-    static {
-        try {
-            Class<?> aabbClass =
-                    Version.CURRENT.isAtLeast(Version.V1_17_R1) ? Reflex.getClass(
-                            "net.minecraft.world.phys.AxisAlignedBB")
-                            : Reflex.getNMSClass("AxisAlignedBB");
-            Class<?> entityClass =
-                    Version.CURRENT.isAtLeast(Version.V1_17_R1) ? Reflex.getClass("net.minecraft.world.entity.Entity")
-                            : Reflex.getNMSClass("Entity");
-            aabbConstructor = aabbClass.getConstructor(double.class,
-                    double.class,
-                    double.class,
-                    double.class,
-                    double.class,
-                    double.class);
-            getBukkitEntity = entityClass.getDeclaredMethod("getBukkitEntity");
-            getHandle = Reflex.getCraftClass("CraftWorld").getDeclaredMethod("getHandle");
-            Class<?> worldClass =
-                    Version.CURRENT.isAtLeast(Version.V1_17_R1) ? Reflex.getClass("net.minecraft.world.level.World")
-                            : Reflex.getNMSClass("World");
-            try {
-                getEntities =
-                        worldClass.getDeclaredMethod(Version.CURRENT.isAtLeast(Version.V1_18_R1) ? "a" : "getEntities",
-                                entityClass, aabbClass, Predicate.class);
-            } catch (Exception e) {
-                getEntitiesGuava = worldClass.getDeclaredMethod(Version.CURRENT.isAtLeast(Version.V1_18_R1)
-                        ? "a"
-                        : "getEntities", entityClass, aabbClass, com.google.common.base.Predicate.class);
-            }
-        } catch (Exception ex) {
-            Logger.log("Unable to use reflection for accurate collision - will resort to simple radius check");
-            ex.printStackTrace();
-        }
-    }
+    private static final Vector X_VEC         = new Vector(1, 0, 0);
+    private static final double DEGREE_TO_RAD = Math.PI / 180;
+    private static final Vector vel           = new Vector();
 
     private final   HashMap<String, List<MetadataValue>> metadata = new HashMap<>();
     private final   Set<Integer>                         hit      = new HashSet<>();
@@ -116,14 +69,6 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
         this.thrower = thrower;
         this.settings = settings;
         runTaskTimer(Fabled.inst(), 1, 1);
-    }
-
-    private static boolean isLivingEntity(Object thing) {
-        try {
-            return getBukkitEntity.invoke(thing) instanceof LivingEntity;
-        } catch (Exception ex) {
-            return false;
-        }
     }
 
     /**
@@ -348,61 +293,21 @@ public abstract class CustomProjectile extends BukkitRunnable implements Metadat
      * @return list of entities colliding with the projectile
      */
     private List<LivingEntity> getColliding() {
-        // Reflection for nms collision
         List<LivingEntity> result = new ArrayList<>(1);
-        try {
-            Object nmsWorld  = getHandle.invoke(getLocation().getWorld());
-            Object predicate = getEntities == null ? GUAVA_PREDICATE : JAVA_PREDICATE;
-            Object list = (getEntities == null ? getEntitiesGuava : getEntities)
-                    .invoke(nmsWorld, null, getBoundingBox(), predicate);
-            for (Object item : (List) list) {
-                result.add((LivingEntity) getBukkitEntity.invoke(item));
-            }
-        }
-        // Fallback when reflection fails
-        catch (Exception ex) {
-            double radiusSq = getCollisionRadius();
-            radiusSq *= radiusSq;
-            for (LivingEntity entity : getNearbyEntities()) {
-                if (entity == thrower)
-                    continue;
-
-                if (getLocation().distanceSquared(entity.getLocation()) < radiusSq)
-                    result.add(entity);
+        for (Entity entity : getLocation().getWorld().getNearbyEntities(getBoundingBox())) {
+            if (entity != thrower && entity instanceof LivingEntity) {
+                result.add((LivingEntity) entity);
             }
         }
         return result;
     }
 
     /**
-     * @return NMS bounding box of the projectile
+     * @return bounding box of the projectile, sized by its collision radius
      */
-    private Object getBoundingBox() throws Exception {
-        Location loc = getLocation();
-        double   rad = getCollisionRadius();
-        return aabbConstructor.newInstance(
-                loc.getX() - rad, loc.getY() - rad, loc.getZ() - rad,
-                loc.getX() + rad, loc.getY() + rad, loc.getZ() + rad
-        );
-    }
-
-    /**
-     * @return list of nearby living entities
-     */
-    private List<LivingEntity> getNearbyEntities() {
-        List<LivingEntity> list   = new ArrayList<>();
-        Location           loc    = getLocation();
-        double             radius = getCollisionRadius();
-        int                minX   = (int) (loc.getX() - radius) >> 4;
-        int                maxX   = (int) (loc.getX() + radius) >> 4;
-        int                minZ   = (int) (loc.getZ() - radius) >> 4;
-        int                maxZ   = (int) (loc.getZ() + radius) >> 4;
-        for (int i = minX; i <= maxX; i++)
-            for (int j = minZ; j <= maxZ; j++)
-                for (Entity entity : loc.getWorld().getChunkAt(i, j).getEntities())
-                    if (entity instanceof LivingEntity)
-                        list.add((LivingEntity) entity);
-        return list;
+    private BoundingBox getBoundingBox() {
+        double rad = getCollisionRadius();
+        return BoundingBox.of(getLocation(), rad, rad, rad);
     }
 
     /**
