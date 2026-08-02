@@ -63,6 +63,7 @@ import studio.magemonkey.fabled.data.io.ConfigIO;
 import studio.magemonkey.fabled.data.io.IOManager;
 import studio.magemonkey.fabled.data.io.PlayerLoader;
 import studio.magemonkey.fabled.data.sql.SQLManager;
+import studio.magemonkey.fabled.dynamic.condition.AttackIndicatorCondition;
 import studio.magemonkey.fabled.dynamic.DynamicClass;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 import studio.magemonkey.fabled.exception.FabledNotEnabledException;
@@ -642,6 +643,8 @@ public class Fabled extends SkillAPI {
         listen(new ToolListener(), true);
         listen(new KillListener(), true);
         listen(new AddonListener(), true);
+        Bukkit.getPluginManager().registerEvents(
+                new AttackIndicatorCondition.ShootListener(), this);
         listen(new ClickListener(), true);
         listen(new BarListener(), settings.isSkillBarEnabled());
         listen(new ComboListener(), settings.isCombosEnabled());
