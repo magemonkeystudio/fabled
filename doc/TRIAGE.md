@@ -11,7 +11,7 @@ GitHub are the source of truth.
 | Priority | `priority: critical` / `high` / `medium` / `low` | Urgency and impact |
 | Effort | `effort: small` / `medium` / `large` | Small ≈ hours, medium ≈ days, large ≈ architectural |
 | Area | `area: mechanics`, `area: gui`, `area: commands`, `area: data/storage`, `area: combat/damage`, `area: attributes`, `area: integrations`, `area: particles`, `area: api`, `editor` | Where the work lands |
-| Status | `confirmed`, `possibly fixed`, `needs info`, `stale` | Triage state |
+| Status | `confirmed`, `possibly fixed`, `needs info`, `stale`, `upstream` | Triage state |
 | Contributor | `good first issue`, `help wanted` | Onboarding signals |
 
 The legacy `low-priority` label was folded into `priority: low`.
@@ -31,7 +31,8 @@ The legacy `low-priority` label was folded into `priority: low`.
 | | | | | | | editor | 5 |
 | | | | | | | api | 2 |
 
-Also tagged: **42** `good first issue`, **11** `needs info`, **9** `stale`, **2** `possibly fixed`.
+Also tagged: **42** `good first issue`, **10** `needs info`, **9** `stale`, **2** `possibly fixed`,
+**1** `upstream`.
 
 The shape of the backlog: it is overwhelmingly a *feature request* queue (145 enhancements vs 5
 bugs), heavily concentrated in the dynamic-component system, and roughly 40% of it is small enough
@@ -71,7 +72,7 @@ Broken core behaviour, or the most-requested features by comment/reaction volume
 
 | # | Title | Note |
 |---|---|---|
-| #1791 | Divinity menus — options past page 1 don't respond | GUI pagination; `needs info` |
+| #1791 | Divinity menus — options past page 1 don't respond | **Root-caused, `upstream`** — see below |
 | #1719 | `Mechanic: Armor stand remove` doesn't remove | `needs info` — likely a target/key mismatch, see below |
 | #1697 | Projectile children fire twice | **`possibly fixed`** by 5349f49 |
 | #1582 | Mana Regen resets to 1 on editor import | Editor-side; small and self-contained |
@@ -94,6 +95,31 @@ Broken core behaviour, or the most-requested features by comment/reaction volume
 `#485` deserves attention out of proportion to its age: it is an interoperability correctness
 problem (vanilla XP/loot drops, MythicMobs threat tables, friendly-fire cancellation all read the
 damage source), not a cosmetic feature.
+
+### #1791 — paginated codex menus fire the wrong slot's handler
+
+**Root-caused during triage; the defect is in `magemonkeystudio/codex`, not Fabled.**
+
+`Menu.open(int page)` renders display slot `i` from virtual slot `page * size + i`
+(`codex-api/.../menu/Menu.java:110`), but `MenuManager.onInventoryClick` resolves the click with
+`getSlot(event.getSlot())` — the raw display slot, no page offset
+(`codex-api/.../menu/MenuManager.java:53`). On page 1 that mapping is the identity, so page 1 works
+and every later page does not.
+
+The click is not dropped, it fires the **wrong slot's handler**: clicking a flag on page 2 runs the
+handler of the flag at the same grid position on page 1, whose closure captured page 1's flag name,
+and writes that to the generator config. Hence "nothing changed" — the change landed on a page the
+user was not looking at. Existing item generators may carry flags toggled this way.
+
+Page navigation kept working because every page's prev/next buttons are functionally identical, so
+hitting page 1's copy still does the right thing — which is why this read as "options are broken"
+rather than "slot mapping is broken".
+
+`Slot` already stores its virtual index (`Slot.i`, set in `setMenu`) but `MenuManager` ignores it.
+The fix is a few lines in codex and resolves every paginated Divinity editor at once. Recommend
+transferring the issue to `codex`.
+
+A new `upstream` label marks issues whose root cause lives in a dependency.
 
 ---
 
@@ -160,11 +186,14 @@ Bold = the one to keep.
 
 ## Needs info (11)
 
-Cannot be actioned as filed. #1791, #1719, #1582 have had specific questions posted; the rest are
-older and vague: #698, #414, #395, #368, #253, #173, #165, #79, #23.
+Cannot be actioned as filed. #1719 and #1582 have had specific questions posted; the rest are older
+and vague: #698, #414, #395, #368, #253, #173, #165, #79, #23. (#1791 started here but was
+root-caused during triage and is now `confirmed` + `upstream`.)
 
-The three recent bug reports all left the template's **Environment** and **Steps To Reproduce**
-sections blank. Making those required in the bug template would prevent the recurrence.
+All three recent bug reports left the template's **Environment** and **Steps To Reproduce** sections
+blank. Making those required in the bug template would help — though #1791 is a caution against
+leaning on that signal alone: it was actionable despite the blank template, because the described
+behaviour (page 1 works, later pages don't) was itself a precise enough clue to find the defect.
 
 On #1719 specifically: `ArmorStandRemoveMechanic` resolves the stand by `key` **on the current
 target**, defaulting to the skill name, and `ArmorStandMechanic` registers with the same default.
