@@ -297,7 +297,7 @@ public class ProjectileMechanic extends MechanicComponent {
                     if (data == null) return null;
                     try {
                         //noinspection unchecked
-                        return ((List<LivingEntity>) data).stream()
+                        return ((Collection<LivingEntity>) data).stream()
                                 .filter(tar -> settings.getBool(WALL, false)
                                         || !TargetHelper.isObstructed(proj.getLocation(), tar.getEyeLocation()))
                                 .min(Comparator.comparingDouble(o -> o.getLocation()

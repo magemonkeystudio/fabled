@@ -50,6 +50,7 @@ import studio.magemonkey.fabled.api.util.Nearby;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Supplier;
@@ -130,7 +131,7 @@ public class ItemProjectile extends CustomProjectile {
                             .getRaw(ItemProjectile.this.settings.getString(REMEMBER, "target"));
                     if (data == null) return null;
                     try {
-                        return ((List<LivingEntity>) data).stream()
+                        return ((Collection<LivingEntity>) data).stream()
                                 .filter(tar -> ItemProjectile.this.settings.getBool(WALL, false)
                                         || !TargetHelper.isObstructed(getLocation(), tar.getEyeLocation()))
                                 .min(comparator)

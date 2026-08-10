@@ -204,7 +204,7 @@ public class PotionProjectileMechanic extends MechanicComponent {
                             .getRaw(settings.getString(REMEMBER, "target"));
                     if (data == null) return null;
                     try {
-                        return ((List<LivingEntity>) data).stream()
+                        return ((Collection<LivingEntity>) data).stream()
                                 .filter(tar -> settings.getBool(WALL, false)
                                         || !TargetHelper.isObstructed(proj.getLocation(), tar.getEyeLocation()))
                                 .min(Comparator.comparingDouble(o -> o.getLocation()
