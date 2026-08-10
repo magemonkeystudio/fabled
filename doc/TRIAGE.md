@@ -33,9 +33,11 @@ The legacy `low-priority` label was folded into `priority: low`.
 
 Also tagged: **42** `good first issue`, **11** `needs info`, **9** `stale`, **2** `possibly fixed`.
 
-The shape of the backlog: it is overwhelmingly a *feature request* queue (144 enhancements vs 6
+The shape of the backlog: it is overwhelmingly a *feature request* queue (145 enhancements vs 5
 bugs), heavily concentrated in the dynamic-component system, and roughly 40% of it is small enough
 for a first-time contributor to land.
+
+Two issues (#478, #159) had no type label at all and were given `enhancement`.
 
 ---
 
