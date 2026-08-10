@@ -4,6 +4,9 @@ A full pass over all **150 open issues** (as of 2026-08-10). Every open issue no
 priority, an area, and an effort estimate. This document is the narrative summary; the labels on
 GitHub are the source of truth.
 
+*Since the pass, #1697 and #405 were confirmed and closed as completed, leaving 148 open. The
+counts below describe the original 150 unless noted.*
+
 ## Label scheme
 
 | Group | Labels | Meaning |
@@ -31,7 +34,7 @@ The legacy `low-priority` label was folded into `priority: low`.
 | | | | | | | editor | 5 |
 | | | | | | | api | 2 |
 
-Also tagged: **42** `good first issue`, **10** `needs info`, **9** `stale`, **2** `possibly fixed`,
+Also tagged: **42** `good first issue`, **10** `needs info`, **9** `stale`, **2** `confirmed`,
 **1** `upstream`.
 
 The shape of the backlog: it is overwhelmingly a *feature request* queue (145 enhancements vs 5
@@ -74,7 +77,7 @@ Broken core behaviour, or the most-requested features by comment/reaction volume
 |---|---|---|
 | #1791 | Divinity menus — options past page 1 don't respond | **Root-caused, `upstream`** — see below |
 | #1719 | `Mechanic: Armor stand remove` doesn't remove | `needs info` — likely a target/key mismatch, see below |
-| #1697 | Projectile children fire twice | **`possibly fixed`** by 5349f49 |
+| #1697 | Projectile children fire twice | **Closed** — was already fixed by 5349f49 |
 | #1582 | Mana Regen resets to 1 on editor import | Editor-side; small and self-contained |
 
 **Features with the most demand**
@@ -125,12 +128,12 @@ A new `upstream` label marks issues whose root cause lives in a dependency.
 
 ## Already resolved — verify and close
 
-| # | Finding |
-|---|---|
-| #1697 | Fixed by 5349f49 (2026-07-24), *after* the issue was filed. The commit adds the `getHitEntity() != null` guard in `MechanicListener.onLand` that stops the callback firing from both `onDamageByEntity` and `ProjectileHitEvent`. |
-| #405 | `ExperienceMechanic` already implements give/set/take × flat/percent/levels, with `group`, `level-down` and `vanilla` options. The request is fully covered. |
+| # | Finding | Outcome |
+|---|---|---|
+| #1697 | Fixed by 5349f49 (2026-07-24), *after* the issue was filed. The commit adds the `getHitEntity() != null` guard in `MechanicListener.onLand` that stops the callback firing from both `onDamageByEntity` and `ProjectileHitEvent`. | **Closed as completed** |
+| #405 | `ExperienceMechanic` already implements give/set/take × flat/percent/levels, with `group`, `level-down` and `vanilla` options. The request is fully covered. | **Closed as completed** |
 
-Both are labelled `possibly fixed` rather than closed, so a maintainer confirms before they go.
+Both were flagged `possibly fixed` for a maintainer to confirm, and both were confirmed and closed.
 
 ---
 
