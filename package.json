@@ -38,7 +38,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"blockly": "^13.2.0",
+		"blockly": "^13.2.1",
 		"idb": "^8.0.3",
 		"socket.io": "^4.8.3",
 		"socket.io-client": "^4.8.3",
