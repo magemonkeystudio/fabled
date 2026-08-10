@@ -29,18 +29,30 @@ package studio.magemonkey.fabled.dynamic.condition;
 import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.fabled.api.util.FlagManager;
 
+import java.util.List;
+
 /**
- * A condition for dynamic skills that requires the target to have a specified flag active
+ * A condition for dynamic skills that requires the target to have a specified flag (or set of flags) active
  */
 public class FlagCondition extends ConditionComponent {
-    private static final String TYPE = "type";
-    private static final String KEY  = "key";
+    private static final String TYPE  = "type";
+    private static final String MATCH = "match";
+    private static final String KEY   = "key";
 
     @Override
     boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
-        final String  flag = filter(caster, target, settings.getString(KEY));
-        final boolean set  = !settings.getString(TYPE, "set").toLowerCase().equals("not set");
-        return FlagManager.hasFlag(target, flag) == set;
+        final List<String> keys = settings.getStringList(KEY);
+        final boolean      set  = !settings.getString(TYPE, "set").toLowerCase().equals("not set");
+
+        // No key configured behaves the same as the legacy single-key default of an unset flag
+        if (keys.isEmpty()) {
+            return !set;
+        }
+
+        final boolean matchAll = !settings.getString(MATCH, "all").equalsIgnoreCase("any");
+        return matchAll
+                ? keys.stream().allMatch(key -> FlagManager.hasFlag(target, filter(caster, target, key)) == set)
+                : keys.stream().anyMatch(key -> FlagManager.hasFlag(target, filter(caster, target, key)) == set);
     }
 
     @Override
