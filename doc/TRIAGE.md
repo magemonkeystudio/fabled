@@ -119,8 +119,12 @@ hitting page 1's copy still does the right thing — which is why this read as "
 rather than "slot mapping is broken".
 
 `Slot` already stores its virtual index (`Slot.i`, set in `setMenu`) but `MenuManager` ignores it.
-The fix is a few lines in codex and resolves every paginated Divinity editor at once. Recommend
-transferring the issue to `codex`.
+The fix is a few lines in codex and resolves every paginated Divinity editor at once.
+
+Filed upstream as [`magemonkeystudio/codex#156`](https://github.com/magemonkeystudio/codex/issues/156)
+with the full analysis, rather than transferred, so both repos keep their issue history —
+`#1791` stays open here as the tracking record for the original report, and closes once codex
+ships the fix and Fabled picks up the updated dependency.
 
 A new `upstream` label marks issues whose root cause lives in a dependency.
 
