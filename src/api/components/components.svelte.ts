@@ -1690,14 +1690,16 @@ class FlagCondition extends FabledCondition {
 	public constructor() {
 		super({
 			name:         'Flag',
-			description:  'Applies child components when the target is marked by the appropriate flag',
+			description:  'Applies child components when the target is marked by the appropriate flag(s)',
 			data:         [
 				new DropdownSelect('Type', 'type', ['Set', 'Not Set'], 'Set')
-					.setTooltip('Whether the flag should be set'),
-				new StringSelect('Key', 'key', 'key')
-					.setTooltip('The unique key representing the flag. This should match the key for when you set it using the Flag mechanic or the Flat Toggle mechanic')
+					.setTooltip('Whether the flag(s) should be set'),
+				new DropdownSelect('Match', 'match', ['All', 'Any'], 'All')
+					.setTooltip('Whether all of the keys must match, or just any one of them'),
+				new StringListSelect('Key', 'key', ['key'])
+					.setTooltip('The unique key(s) representing the flag(s). Add more lines to check multiple flags. This should match the key used when setting it via the Flag mechanic or the Flag Toggle mechanic')
 			],
-			summaryItems: ['type', 'key']
+			summaryItems: ['type', 'match', 'key']
 		});
 	}
 
