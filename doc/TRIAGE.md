@@ -65,6 +65,11 @@ returns the backing map directly, and four call sites iterate it while the async
 mutating it — `ConfigIO.java:114`, `FabledPlayersSQL.java:142`, `IOManager.java:117`, and
 `Fabled.java:696`. The fix should return an unmodifiable copy as well as changing the map type.
 
+**Update:** fix up for review at [#1800](https://github.com/magemonkeystudio/fabled/pull/1800) —
+`ConcurrentHashMap` plus 128-way per-player lock striping (a bare type swap isn't enough, since the
+racing sequences are compound reads-then-writes, not single operations), the snapshot fix for the
+four extra call sites above, and a concurrency regression test.
+
 ---
 
 ## High priority
@@ -125,6 +130,11 @@ Filed upstream as [`magemonkeystudio/codex#156`](https://github.com/magemonkeyst
 with the full analysis, rather than transferred, so both repos keep their issue history —
 `#1791` stays open here as the tracking record for the original report, and closes once codex
 ships the fix and Fabled picks up the updated dependency.
+
+**Update:** fixed and merged upstream in
+[`codex#157`](https://github.com/magemonkeystudio/codex/pull/157) — added a page-aware
+`Menu.getSlotOnCurrentPage` accessor so render and click resolve through the same code path and
+can't drift apart again. `#1791` stays open until Fabled/Divinity pick up the updated dependency.
 
 A new `upstream` label marks issues whose root cause lives in a dependency.
 
@@ -221,6 +231,7 @@ bug. The attached skill YAML will settle it.
 
 | PR | Issue | State |
 |---|---|---|
+| #1800 | #1795 PlayerLoader concurrency fix | open, awaiting review |
 | #1647 | #467 Display entities | draft (Copilot) |
 | #1594 | #1592 Additive skill lists | draft (Copilot) |
 | #1775 | relates #1134, #210 (Divinity stats) | open |
@@ -236,7 +247,7 @@ bug. The attached skill YAML will settle it.
 
 ## Suggested order of work
 
-1. **#1795** — ship the concurrency fix. It is a whole-server hang with a patch already offered.
+1. ~~**#1795** — ship the concurrency fix.~~ Fix is up for review at #1800.
 2. **Close the two resolved issues** (#1697, #405) and the duplicate clusters above. That is ~14
    issues off the board for very little effort.
 3. **#1582** — small, self-contained editor bug.
