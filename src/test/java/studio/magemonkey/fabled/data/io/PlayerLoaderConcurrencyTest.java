@@ -25,6 +25,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.LockSupport;
+import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -148,6 +149,76 @@ class PlayerLoaderConcurrencyTest {
     }
 
     /**
+     * A bulk clear must not discard players who joined during the pass.
+     *
+     * <p>Clearing the whole map at the end of {@code saveAllPlayerAccounts(true)} would drop a
+     * player whose stripe had already been visited before they joined. They were never saved, and
+     * {@code unloadPlayer} skips players it finds nothing cached for, so their session would be
+     * lost outright when they quit.</p>
+     */
+    @Test
+    void saveAllWithClear_doesNotDiscardAPlayerThatJoinedDuringThePass() {
+        UUID joiner = uuids.get(0);
+        UUID cached = uuids.get(1);
+        PlayerLoader.getPlayerAccounts(players.get(cached));
+
+        // Join from inside the pass, at the point where the joining player's stripe may already
+        // have been visited
+        io.onSave = () -> PlayerLoader.getPlayerAccounts(players.get(joiner));
+        PlayerLoader.saveAllPlayerAccounts(true);
+        io.onSave = null;
+
+        assertTrue(PlayerLoader.hasPlayerAccounts(players.get(joiner)),
+                "a player who joined during the clearing pass was dropped without being saved");
+        assertSame(expected.get(joiner), PlayerLoader.getPlayerAccounts(players.get(joiner)));
+    }
+
+    /**
+     * The I/O layer is not a leaf. {@code IOManager#load} fires Bukkit events - {@code setClass} →
+     * {@code updatePlayerStat} → {@code PlayerMaxManaChangeEvent} - and a third-party listener may
+     * ask for another player's data from inside one. Two threads doing that for two players in
+     * opposite orders would deadlock if each could hold two stripes, so a nested request must not
+     * take a second one. Without that guard this test hangs rather than fails.
+     */
+    @Test
+    @Timeout(value = 60, unit = TimeUnit.SECONDS)
+    void reentrantLookupForAnotherPlayer_fromInsideTheIoLayer_doesNotDeadlock() throws Exception {
+        UUID a = uuids.get(0);
+        UUID b = uuids.get(1);
+
+        // Each load reaches back into the loader for the *other* player, as a listener would
+        io.onLoad = id -> {
+            UUID other = id.equals(a) ? b : a;
+            PlayerLoader.getPlayerAccounts(players.get(other));
+        };
+
+        List<Throwable> failures = new CopyOnWriteArrayList<>();
+        CountDownLatch  start    = new CountDownLatch(1);
+        List<Thread>    threads  = List.of(
+                worker("nested-a", start, failures, i -> {
+                    PlayerLoader.unloadPlayer(players.get(a));
+                    assertSame(expected.get(a), PlayerLoader.getPlayerAccounts(players.get(a)));
+                }, 400),
+                worker("nested-b", start, failures, i -> {
+                    PlayerLoader.unloadPlayer(players.get(b));
+                    assertSame(expected.get(b), PlayerLoader.getPlayerAccounts(players.get(b)));
+                }, 400));
+
+        threads.forEach(Thread::start);
+        start.countDown();
+        for (Thread thread : threads) {
+            thread.join(TimeUnit.SECONDS.toMillis(30));
+            if (thread.isAlive()) {
+                failures.add(new AssertionError(thread.getName() + " never finished - deadlocked "
+                        + "acquiring a second stripe"));
+            }
+        }
+        io.onLoad = null;
+
+        assertTrue(failures.isEmpty(), () -> "nested lookup deadlocked or failed: " + describe(failures));
+    }
+
+    /**
      * Hammers the loader from several threads at once and returns everything that went wrong.
      *
      * @param loaders   threads calling {@code getPlayerAccounts}, as a join would
@@ -265,6 +336,13 @@ class PlayerLoaderConcurrencyTest {
         private final Map<UUID, AtomicInteger> inFlight = new ConcurrentHashMap<>();
         private final AtomicInteger            overlaps = new AtomicInteger();
 
+        /** Fired from inside a load, standing in for a Bukkit event with a third-party listener. */
+        private volatile Consumer<UUID> onLoad;
+        /** Fired from inside a save, standing in for a player joining mid-pass. */
+        private volatile Runnable       onSave;
+        /** A listener triggered by a load fires its own load; only go one level deep. */
+        private final ThreadLocal<Boolean> inHook = ThreadLocal.withInitial(() -> false);
+
         FakeIO(Fabled api) {
             super(api);
         }
@@ -272,6 +350,8 @@ class PlayerLoaderConcurrencyTest {
         void reset() {
             inFlight.clear();
             overlaps.set(0);
+            onLoad = null;
+            onSave = null;
         }
 
         @Override
@@ -284,6 +364,15 @@ class PlayerLoaderConcurrencyTest {
             UUID id = player.getUniqueId();
             enter(id);
             try {
+                Consumer<UUID> hook = onLoad;
+                if (hook != null && !inHook.get()) {
+                    inHook.set(true);
+                    try {
+                        hook.accept(id);
+                    } finally {
+                        inHook.set(false);
+                    }
+                }
                 return expected.get(id);
             } finally {
                 exit(id);
@@ -294,7 +383,19 @@ class PlayerLoaderConcurrencyTest {
         public void saveData(PlayerAccounts data) {
             UUID id = idOf(data);
             enter(id);
-            exit(id);
+            try {
+                Runnable hook = onSave;
+                if (hook != null && !inHook.get()) {
+                    inHook.set(true);
+                    try {
+                        hook.run();
+                    } finally {
+                        inHook.set(false);
+                    }
+                }
+            } finally {
+                exit(id);
+            }
         }
 
         private void enter(UUID id) {

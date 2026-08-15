@@ -32,6 +32,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * exclusive <em>per player</em> by a small array of lock stripes, so a join and a quit for the same
  * player can never interleave, while unrelated players still load and save in parallel. No global
  * lock is ever held across I/O.</p>
+ *
+ * <p><b>A thread never holds more than one stripe at a time.</b> That matters because the I/O layer
+ * is not a leaf: {@code IOManager#load} fires Bukkit events (for example
+ * {@code PlayerData#setClass} &rarr; {@code updatePlayerStat} &rarr; {@code PlayerMaxManaChangeEvent}),
+ * and a third-party listener is free to ask for another player's data from inside one. Nothing in
+ * Fabled itself does that, but if something did, two threads taking two stripes in opposite orders
+ * would deadlock. Rather than rely on nobody ever doing it, a nested request runs without taking a
+ * second stripe - see {@link #getPlayerAccounts(OfflinePlayer)}.</p>
  */
 public class PlayerLoader {
 
@@ -52,6 +60,14 @@ public class PlayerLoader {
         }
     }
 
+    /**
+     * The stripe this thread is currently holding, if any.
+     *
+     * <p>Used to guarantee that no thread ever holds two stripes at once, which is what makes
+     * lock-ordering deadlock structurally impossible rather than merely unlikely.</p>
+     */
+    private static final ThreadLocal<Object> heldStripe = new ThreadLocal<>();
+
     private static final Map<UUID, PlayerAccounts> cachedPlayers = new ConcurrentHashMap<>();
 
     /**
@@ -71,21 +87,36 @@ public class PlayerLoader {
      * Retrieves the cached accounts for the player, loading them from storage if they are not
      * cached yet.
      *
-     * <p>The lock is taken even when the entry is likely to be present. Reading the map without it
-     * would let a fast rejoin hand back an instance that a concurrent unload is about to evict and
-     * write to disk, leaving the returned object detached from the cache.</p>
+     * <p>The stripe is taken even when the entry is likely to be present. This method hands back a
+     * <em>reference</em>, and reading the map without the stripe could return an instance that a
+     * concurrent unload is about to save and evict - leaving the caller holding an object that is
+     * no longer the cached one, so any further changes to it are written over by the next load.
+     * That is why this cannot keep an unlocked fast path, while
+     * {@link #hasPlayerAccounts(OfflinePlayer)}, which only reports a boolean and hands back no
+     * reference, can.</p>
+     *
+     * <p>If this thread already holds a stripe - which happens when a Bukkit event fired from
+     * inside the I/O layer leads back here for a different player - the lookup runs without taking
+     * a second one. That trades the compound-sequence guarantee for that nested call, which is no
+     * worse than the behaviour before striping existed and cannot corrupt the map, against the
+     * possibility of deadlocking the server.</p>
      *
      * @param player player to get the accounts for
      * @return the player's accounts, or null if storage could not produce any
      */
     public static PlayerAccounts getPlayerAccounts(OfflinePlayer player) {
-        UUID id = player.getUniqueId();
-        synchronized (lockFor(id)) {
-            PlayerAccounts accounts = cachedPlayers.get(id);
-            if (accounts == null) {
-                accounts = load(player, id);
+        UUID   id     = player.getUniqueId();
+        Object stripe = lockFor(id);
+        if (heldStripe.get() != null) {
+            return getOrLoad(player, id);
+        }
+        synchronized (stripe) {
+            heldStripe.set(stripe);
+            try {
+                return getOrLoad(player, id);
+            } finally {
+                heldStripe.remove();
             }
-            return accounts;
         }
     }
 
@@ -95,31 +126,20 @@ public class PlayerLoader {
      * @param player player to load the accounts for
      */
     public static void loadPlayer(OfflinePlayer player) {
-        UUID id = player.getUniqueId();
-        synchronized (lockFor(id)) {
+        UUID   id     = player.getUniqueId();
+        Object stripe = lockFor(id);
+        if (heldStripe.get() != null) {
             load(player, id);
+            return;
         }
-    }
-
-    /**
-     * Reads the player's accounts from storage and caches them. Must be called while holding the
-     * player's stripe.
-     *
-     * @param player player to load the accounts for
-     * @param id     the player's UUID
-     * @return the loaded accounts, or null if storage returned nothing
-     */
-    private static PlayerAccounts load(OfflinePlayer player, UUID id) {
-        PlayerAccounts accounts = Fabled.getIO().loadData(player);
-        if (accounts == null) {
-            // FabledPlayersSQL#loadPlayerAccounts returns null for a player with no known name.
-            // ConcurrentHashMap rejects null values, so leave the entry absent rather than throwing
-            // from inside the map - the caller sees the same null it saw before.
-            cachedPlayers.remove(id);
-            return null;
+        synchronized (stripe) {
+            heldStripe.set(stripe);
+            try {
+                load(player, id);
+            } finally {
+                heldStripe.remove();
+            }
         }
-        cachedPlayers.put(id, accounts);
-        return accounts;
     }
 
     /**
@@ -132,18 +152,29 @@ public class PlayerLoader {
      * @param player player to unload
      */
     public static void unloadPlayer(OfflinePlayer player) {
-        UUID id = player.getUniqueId();
-        synchronized (lockFor(id)) {
-            PlayerAccounts accounts = cachedPlayers.get(id);
-            if (accounts != null) {
-                Fabled.getIO().saveData(accounts);
-                cachedPlayers.remove(id);
+        UUID   id     = player.getUniqueId();
+        Object stripe = lockFor(id);
+        if (heldStripe.get() != null) {
+            saveAndDrop(id);
+            return;
+        }
+        synchronized (stripe) {
+            heldStripe.set(stripe);
+            try {
+                saveAndDrop(id);
+            } finally {
+                heldStripe.remove();
             }
         }
     }
 
     /**
      * Checks whether accounts are currently cached for the player.
+     *
+     * <p>Deliberately unlocked. This reports a boolean rather than handing out a reference, so
+     * there is nothing for a concurrent unload to detach. Every caller is doing check-then-act,
+     * which is racy whether or not the read itself is guarded - the stripe would be released before
+     * the caller acted on the answer either way - so taking one here would buy nothing.</p>
      *
      * @param player player to check for
      * @return true if the player's accounts are cached
@@ -160,26 +191,39 @@ public class PlayerLoader {
     }
 
     /**
-     * Saves every cached player's accounts, optionally emptying the cache afterwards.
+     * Saves every cached player's accounts, optionally dropping them from the cache as they are
+     * saved.
      *
      * <p>Each player is saved while holding only that player's stripe, and the stripe is released
      * before moving on to the next one. That keeps this from racing an unload of the same player
      * onto the same file without ever blocking every player at once.</p>
      *
-     * @param clearCache whether to empty the cache once everything is saved
+     * <p>When {@code clearCache} is set, each entry is dropped under the same stripe that saved it,
+     * rather than emptying the whole map at the end. A bulk {@code clear()} afterwards would also
+     * discard players who joined <em>during</em> the pass and were never saved, and since
+     * {@link #unloadPlayer(OfflinePlayer)} skips players it finds nothing cached for, their session
+     * would be lost outright on quit. Anything that appears after its stripe has been visited
+     * simply stays cached for the next pass.</p>
+     *
+     * @param clearCache whether to drop each player from the cache once saved
      */
     public static void saveAllPlayerAccounts(boolean clearCache) {
         List<UUID> ids = new ArrayList<>(cachedPlayers.keySet());
         for (UUID id : ids) {
-            synchronized (lockFor(id)) {
-                // Re-read under the lock; the player may have been unloaded since the snapshot
-                PlayerAccounts accounts = cachedPlayers.get(id);
-                if (accounts != null) {
-                    Fabled.getIO().saveData(accounts);
+            Object stripe = lockFor(id);
+            if (heldStripe.get() != null) {
+                saveOne(id, clearCache);
+                continue;
+            }
+            synchronized (stripe) {
+                heldStripe.set(stripe);
+                try {
+                    saveOne(id, clearCache);
+                } finally {
+                    heldStripe.remove();
                 }
             }
         }
-        if (clearCache) cachedPlayers.clear();
     }
 
     /**
@@ -201,6 +245,70 @@ public class PlayerLoader {
     public static void loadAllPlayerAccounts() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             loadPlayer(player);
+        }
+    }
+
+    /**
+     * Returns the cached accounts for the player, loading them if absent. Callers hold the player's
+     * stripe unless this thread already holds another one.
+     *
+     * @param player player to get the accounts for
+     * @param id     the player's UUID
+     * @return the player's accounts, or null if storage returned nothing
+     */
+    private static PlayerAccounts getOrLoad(OfflinePlayer player, UUID id) {
+        PlayerAccounts accounts = cachedPlayers.get(id);
+        return accounts != null ? accounts : load(player, id);
+    }
+
+    /**
+     * Reads the player's accounts from storage and caches them.
+     *
+     * @param player player to load the accounts for
+     * @param id     the player's UUID
+     * @return the loaded accounts, or null if storage returned nothing
+     */
+    private static PlayerAccounts load(OfflinePlayer player, UUID id) {
+        PlayerAccounts accounts = Fabled.getIO().loadData(player);
+        if (accounts == null) {
+            // FabledPlayersSQL#loadPlayerAccounts returns null for a player with no known name.
+            // ConcurrentHashMap rejects null values, so leave the entry absent rather than throwing
+            // from inside the map - the caller sees the same null it saw before.
+            cachedPlayers.remove(id);
+            return null;
+        }
+        cachedPlayers.put(id, accounts);
+        return accounts;
+    }
+
+    /**
+     * Saves the player's cached accounts, if any, and removes them.
+     *
+     * @param id the player's UUID
+     */
+    private static void saveAndDrop(UUID id) {
+        PlayerAccounts accounts = cachedPlayers.get(id);
+        if (accounts != null) {
+            Fabled.getIO().saveData(accounts);
+            cachedPlayers.remove(id);
+        }
+    }
+
+    /**
+     * Saves one player during a bulk pass, optionally dropping them from the cache afterwards.
+     *
+     * @param id    the player's UUID
+     * @param drop  whether to remove the entry once saved
+     */
+    private static void saveOne(UUID id, boolean drop) {
+        if (drop) {
+            saveAndDrop(id);
+            return;
+        }
+        // Re-read under the lock; the player may have been unloaded since the snapshot
+        PlayerAccounts accounts = cachedPlayers.get(id);
+        if (accounts != null) {
+            Fabled.getIO().saveData(accounts);
         }
     }
 }
