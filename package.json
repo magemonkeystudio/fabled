@@ -19,7 +19,7 @@
 		"@sveltejs/vite-plugin-svelte": "^7.2.0",
 		"@types/uuid": "^11.0.0",
 		"@typescript-eslint/eslint-plugin": "^8.65.0",
-		"@typescript-eslint/parser": "^8.66.0",
+		"@typescript-eslint/parser": "^8.67.0",
 		"eslint": "^10.8.1",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.22.0",
