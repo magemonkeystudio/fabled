@@ -6,6 +6,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import studio.magemonkey.divinity.stats.items.ItemStats;
+import studio.magemonkey.divinity.stats.items.attributes.api.TypedStat;
+import studio.magemonkey.divinity.stats.items.attributes.stats.DurabilityStat;
+import studio.magemonkey.fabled.hook.PluginChecker;
 
 import java.util.List;
 
@@ -59,6 +63,16 @@ public class DurabilityMechanic extends MechanicComponent {
         }
         im.setDamage(im.getDamage() + amount);
         item.setItemMeta(im);
+
+        if (PluginChecker.isDivinityActive()) {
+            try {
+                DurabilityStat duraStat = (DurabilityStat) ItemStats.getStat(TypedStat.Type.DURABILITY);
+                if (duraStat != null && ItemStats.hasStat(item, player, TypedStat.Type.DURABILITY)) {
+                    duraStat.reduceDurability(player, item, amount);
+                }
+            } catch (Throwable ignored) { /* Divinity present but incompatible/misbehaving */ }
+        }
+
         return true;
     }
 }
