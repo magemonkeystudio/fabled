@@ -138,6 +138,12 @@
             <artifactId>codex</artifactId>
             <version>${codex.version}</version>
         </dependency>
+        <dependency>
+            <groupId>studio.magemonkey</groupId>
+            <artifactId>divinity</artifactId>
+            <version>1.0.2-R0.57-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- Test Dependencies -->
         <dependency>
             <groupId>com.mojang</groupId>
