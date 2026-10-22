@@ -1,5 +1,6 @@
 package studio.magemonkey.fabled.api.armorstand;
 
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 
 import java.util.HashMap;
@@ -76,6 +77,25 @@ public class ArmorStandData {
         ArmorStandInstance armorStand = armorStands.get(key);
         if (armorStand != null) armorStand.remove();
         armorStands.remove(key);
+    }
+
+    /**
+     * Removes and unregisters the instance wrapping the given armor stand entity
+     *
+     * @param armorStand armor stand entity to remove
+     * @return true if an instance was found and removed, false otherwise
+     */
+    public boolean remove(ArmorStand armorStand) {
+        Iterator<ArmorStandInstance> iterator = armorStands.values().iterator();
+        while (iterator.hasNext()) {
+            ArmorStandInstance instance = iterator.next();
+            if (instance.getArmorStand().equals(armorStand)) {
+                instance.remove();
+                iterator.remove();
+                return true;
+            }
+        }
+        return false;
     }
 
     public void remove(ArmorStandInstance armorStand) {

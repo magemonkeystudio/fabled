@@ -68,6 +68,20 @@ public class ArmorStandManager {
     }
 
     /**
+     * Removes and unregisters an armor stand spawned by the armor stand mechanic,
+     * regardless of which target or key it was registered for
+     *
+     * @param armorStand armor stand entity to remove
+     * @return true if the armor stand was registered and has been removed, false otherwise
+     */
+    public static boolean remove(ArmorStand armorStand) {
+        for (ArmorStandData data : instances.values()) {
+            if (data.remove(armorStand)) return true;
+        }
+        return false;
+    }
+
+    /**
      * Registers an active armor stand for the given target
      *
      * @param armorStand armor stand to register
