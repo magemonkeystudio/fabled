@@ -1,5 +1,5 @@
-[![Build](https://github.com/magemonkeystudio/fabled/actions/workflows/release.yml/badge.svg?branch=main)](https://repo.travja.dev/releases/studio/magemonkey/fabled/1.0.4-R0.103-SNAPSHOT)
-[![Build](https://github.com/magemonkeystudio/fabled/actions/workflows/devbuild.yml/badge.svg?branch=dev)](https://repo.travja.dev/snapshots/studio/magemonkey/fabled/1.0.4-R0.103-SNAPSHOT)
+[![Release](https://img.shields.io/github/v/release/magemonkeystudio/fabled?label=release)](https://github.com/magemonkeystudio/fabled/releases/latest)
+[![Dev Build](https://github.com/magemonkeystudio/fabled/actions/workflows/devbuild.yml/badge.svg?branch=dev)](https://github.com/magemonkeystudio/fabled/actions/workflows/devbuild.yml)
 [![Discord](https://dcbadge.limes.pink/api/server/mQrkW4htUA?style=flat)](https://discord.gg/mQrkW4htUA)
 
 # Fabled
@@ -28,6 +28,7 @@ You can download Fabled from our marketplace
 
 If you wish to use Fabled as a dependency in your projects, Fabled is available through our repository.
 
+Use the latest release version shown above, or `X.Y.Z-SNAPSHOT` (the next release) for the weekly dev build.
 
 ```xml
 <repository>
@@ -38,7 +39,7 @@ If you wish to use Fabled as a dependency in your projects, Fabled is available 
 <dependency>
     <groupId>studio.magemonkey</groupId>
     <artifactId>fabled</artifactId>
-    <version>1.0.4-R0.103-SNAPSHOT</version>
+    <version>VERSION</version>
 </dependency>
 ```
 

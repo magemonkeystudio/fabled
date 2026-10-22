@@ -1,13 +1,27 @@
 name: Release Build
 
+# Monthly X.Y.Z release of dev. The bump is the highest major/minor/patch label among
+# the PRs merged since the last release. Tags the release, publishes it, creates a
+# GitHub release and fast-forwards main to it. Skipped when nothing changed.
 on:
-  push:
-    branches: [ main ]
-    paths: [ src/** ]
+  schedule:
+    - cron: '53 14 1 * *'   # 1st of the month 14:53 UTC, before Divinity
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Only compute and print the version'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: read
 
 jobs:
   deploy:
-    uses: magemonkeystudio/.github/.github/workflows/reusable-build.yml@main
+    uses: magemonkeystudio/.github/.github/workflows/reusable-semver-build.yml@main
     secrets: inherit
     with:
-      is_dev: false
+      mode: release
+      release_branch: main
+      dry_run: ${{ inputs.dry_run || false }}
