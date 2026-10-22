@@ -33,7 +33,7 @@ updates:
     target-branch: "dev"
     labels:
       - "dependencies"
-      - "patch"
+      - "build:patch"
     registries:
       - magemonkey-releases
       - magemonkey-snapshots

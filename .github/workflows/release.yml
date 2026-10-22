@@ -1,6 +1,6 @@
 name: Release Build
 
-# Monthly X.Y.Z release of dev. The bump is the highest major/minor/patch label among
+# Monthly X.Y.Z release of dev. The bump is the highest build:major/minor/patch label among
 # the PRs merged since the last release. Tags the release, publishes it, creates a
 # GitHub release and fast-forwards main to it. Skipped when nothing changed.
 on:

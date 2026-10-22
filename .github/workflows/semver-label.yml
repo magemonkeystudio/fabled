@@ -1,6 +1,6 @@
 name: Semver Label
 
-# Every PR into dev needs exactly one of: major, minor, patch
+# Every PR into dev needs exactly one of: build:major, build:minor, build:patch
 on:
   pull_request:
     types: [ opened, reopened, labeled, unlabeled, synchronize ]
