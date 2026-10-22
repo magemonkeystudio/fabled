@@ -1,6 +1,7 @@
 package studio.magemonkey.fabled.api.armorstand;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -13,6 +14,7 @@ import studio.magemonkey.fabled.Fabled;
 @RequiredArgsConstructor
 public class ArmorStandInstance {
     private static final Vector       UP = new Vector(0, 1, 0);
+    @Getter
     private final        ArmorStand   armorStand;
     private final        LivingEntity target;
     private final        boolean      follow;
