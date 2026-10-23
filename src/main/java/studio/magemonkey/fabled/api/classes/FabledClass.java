@@ -54,7 +54,6 @@ import studio.magemonkey.fabled.log.Logger;
 import studio.magemonkey.fabled.tree.basic.InventoryTree;
 
 import java.util.*;
-import java.util.function.Supplier;
 
 /**
  * Represents a template for a class used in the RPG system. This is
@@ -90,31 +89,31 @@ public abstract class FabledClass implements IconHolder {
     //                                                   //
     //                   Constructors                    //
     //                                                   //
-    /// ////////////////////////////////////////////////////
-    private final ReadOnlySettings    readOnlySettings = new ReadOnlySettings(settings);
+    ///////////////////////////////////////////////////////
+    private final ReadOnlySettings readOnlySettings = new ReadOnlySettings(settings);
     /**
      * Whether the class requires permissions
      * in order to be professed into
      */
     @Getter
-    protected     boolean             needsPermission;
+    protected     boolean          needsPermission;
     ///////////////////////////////////////////////////////
     //                                                   //
     //                 Accessor Methods                  //
     //                                                   //
-    /// ////////////////////////////////////////////////////
-    protected     String              actionBar        = "";
-    private       InventoryTree       skillTree;
-    private       String              parent;
-    private       Supplier<ItemStack> iconFn;
-    private       TreeType            tree;
-    private       String              name;
-    private       String              prefix;
-    private       String              group;
-    private       String              mana;
-    private       int                 maxLevel;
-    private       int                 expSources;
-    private       double              manaRegen;
+    ///////////////////////////////////////////////////////
+    protected     String           actionBar        = "";
+    private       InventoryTree    skillTree;
+    private       String           parent;
+    private       ItemStack        icon;
+    private       TreeType         tree;
+    private       String           name;
+    private       String           prefix;
+    private       String           group;
+    private       String           mana;
+    private       int              maxLevel;
+    private       int              expSources;
+    private       double           manaRegen;
 
     /**
      * Initializes a class template that does not profess from other
@@ -160,7 +159,7 @@ public abstract class FabledClass implements IconHolder {
      */
     protected FabledClass(String name, ItemStack icon, int maxLevel, String group, String parent) {
         this.parent = parent;
-        this.iconFn = () -> icon;
+        this.icon = icon;
         this.name = name;
         this.prefix = name;
         this.group = group == null ? "class" : group.toLowerCase();
@@ -272,7 +271,7 @@ public abstract class FabledClass implements IconHolder {
      * @return icon representation of the class
      */
     public ItemStack getIcon() {
-        return iconFn.get();
+        return icon;
     }
 
     /**
@@ -314,8 +313,8 @@ public abstract class FabledClass implements IconHolder {
      * @return GUI tool indicator
      */
     public ItemStack getToolIcon() {
-        ItemStack item     = new ItemStack(getIcon().getType());
-        ItemMeta  iconMeta = getIcon().getItemMeta();
+        ItemStack item     = new ItemStack(icon.getType());
+        ItemMeta  iconMeta = icon.getItemMeta();
         if (iconMeta != null) {
             ItemMeta     meta = item.getItemMeta();
             List<String> lore = iconMeta.hasLore() ? iconMeta.getLore() : new ArrayList<>();
@@ -629,7 +628,7 @@ public abstract class FabledClass implements IconHolder {
         }
         config.set(SKILLS, skillNames);
 
-        Data.serializeIcon(getIcon(), config);
+        Data.serializeIcon(icon, config);
         config.set(EXP, expSources);
 
         DataSection comboStartersSection = config.createSection("combo-starters");
@@ -661,19 +660,14 @@ public abstract class FabledClass implements IconHolder {
      */
     public void load(DataSection config) {
         parent = config.getString(PARENT);
+        icon = Data.parseIcon(config);
         name = config.getString(NAME, name);
 
-        iconFn = () -> {
-            ItemStack icon = Data.parseIcon(config);
-
-            ItemMeta iconMeta = icon.getItemMeta();
-            if (iconMeta != null && !iconMeta.hasDisplayName()) {
-                iconMeta.setDisplayName(name);
-                icon.setItemMeta(iconMeta);
-            }
-
-            return icon;
-        };
+        ItemMeta iconMeta = icon.getItemMeta();
+        if (iconMeta != null && !iconMeta.hasDisplayName()) {
+            iconMeta.setDisplayName(name);
+            icon.setItemMeta(iconMeta);
+        }
 
         actionBar = StringUT.color(config.getString(ACTION_BAR, ""));
         prefix = StringUT.color(config.getString(PREFIX, prefix));
