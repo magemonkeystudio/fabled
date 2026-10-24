@@ -8,6 +8,9 @@ package me.libraryaddict.disguise.utilities.reflection;
  * ends up in Fabled's jar. Keep signatures in sync with upstream:
  * https://github.com/libraryaddict/LibsDisguises/blob/master/shared/src/main/java/me/libraryaddict/disguise/utilities/reflection/FakeBoundingBox.java
  * <p>
+ * Delete this stub once LibsDisguises publishes its {@code shared} classes:
+ * https://github.com/libraryaddict/LibsDisguises/issues/844
+ * <p>
  * Dimensions are (width, height, depth). Since LibsDisguises 26.x, {@link #getX()} and {@link #getZ()} return full
  * widths; use {@link #getHalvedX()} and {@link #getHalvedZ()} for half-widths.
  */

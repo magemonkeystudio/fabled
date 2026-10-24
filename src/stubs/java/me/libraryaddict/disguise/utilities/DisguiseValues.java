@@ -9,6 +9,9 @@ import me.libraryaddict.disguise.utilities.reflection.FakeBoundingBox;
  * Only javac's {@code -sourcepath} sees this file ({@code -implicit:none}), so no class file is produced and it never
  * ends up in Fabled's jar. Keep signatures in sync with upstream:
  * https://github.com/libraryaddict/LibsDisguises/blob/master/shared/src/main/java/me/libraryaddict/disguise/utilities/DisguiseValues.java
+ * <p>
+ * Delete this stub once LibsDisguises publishes its {@code shared} classes:
+ * https://github.com/libraryaddict/LibsDisguises/issues/844
  */
 public class DisguiseValues {
     public DisguiseValues(double maxHealth, int ambientSoundInterval) {
