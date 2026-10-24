@@ -104,7 +104,7 @@
         <dependency>
             <groupId>me.libraryaddict.disguises</groupId>
             <artifactId>libsdisguises</artifactId>
-            <version>11.0.18</version>
+            <version>26.9.26</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -189,6 +189,17 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <!-- LibsDisguises 26.x's Maven artifact leaves out classes from its unpublished `shared` module.
+                         src/stubs/java stands in for them at compile time only: -implicit:none stops javac from
+                         emitting class files for -sourcepath types, so the stubs never reach target/classes or the
+                         jar, and the real classes come from the LibsDisguises plugin at runtime. -->
+                    <compilerArgs>
+                        <arg>-sourcepath</arg>
+                        <arg>${project.basedir}/src/main/java${path.separator}${project.basedir}/src/stubs/java</arg>
+                        <arg>-implicit:none</arg>
+                    </compilerArgs>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.projectlombok</groupId>
@@ -213,7 +224,9 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.12.0</version>
                 <configuration>
-                    <sourcepath>${delombok.dir}</sourcepath>
+                    <!-- The LibsDisguises stubs (see maven-compiler-plugin) resolve types but aren't documented. -->
+                    <sourcepath>${delombok.dir}${path.separator}${project.basedir}/src/stubs/java</sourcepath>
+                    <excludePackageNames>me.libraryaddict.*</excludePackageNames>
                     <outputDirectory>gh-pages</outputDirectory>
                     <doclint>all,-missing</doclint>
                 </configuration>

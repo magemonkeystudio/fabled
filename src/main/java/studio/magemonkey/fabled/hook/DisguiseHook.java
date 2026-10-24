@@ -46,6 +46,43 @@ import java.util.Locale;
  */
 public class DisguiseHook {
     /**
+     * Disguise hitboxes need the LibsDisguises 26.x API ({@code DisguiseType#getEntityInfo},
+     * {@code Disguise#getServerBoundingBox}); older versions don't have it.
+     */
+    private static final boolean BOUNDING_BOX_SUPPORTED = hasMethod(DisguiseType.class, "getEntityInfo")
+            && hasMethod(Disguise.class, "getServerBoundingBox");
+
+    private static boolean hasMethod(Class<?> type, String name) {
+        try {
+            type.getMethod(name);
+            return true;
+        } catch (NoSuchMethodException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Checks whether disguise hitboxes can be read from the installed LibsDisguises version
+     *
+     * @return true if LibsDisguises 26.x or newer is installed
+     */
+    public static boolean isBoundingBoxSupported() {
+        return BOUNDING_BOX_SUPPORTED;
+    }
+
+    /**
+     * Checks whether the entity's disguise replaces its server-side hitbox
+     *
+     * @param entity disguised entity
+     * @return true if the disguise's hitbox should be used
+     */
+    public static boolean isServerBoundingBoxEnabled(Entity entity) {
+        if (!BOUNDING_BOX_SUPPORTED) return false;
+        Disguise disguise = DisguiseAPI.getDisguise(entity);
+        return disguise != null && disguise.isServerBoundingBoxEnabled();
+    }
+
+    /**
      * Disguises the target as a mob
      *
      * @param target target to disguise
@@ -136,15 +173,25 @@ public class DisguiseHook {
             disguise.removeDisguise();
     }
 
+    /**
+     * Gets the server-side hitbox of a disguised entity, as (width, height, depth).
+     *
+     * @param entity disguised entity
+     * @return the disguise's bounding box, or null if it isn't known
+     */
     public static FakeBoundingBox getFakeBoundingBox(Entity entity) {
+        if (!BOUNDING_BOX_SUPPORTED) return null;
         Disguise disguise = DisguiseAPI.getDisguise(entity);
+        if (disguise == null) return null;
+        if (disguise.getServerBoundingBox() != null) return disguise.getServerBoundingBox();
+
         if (disguise instanceof MiscDisguise) {
-            DisguiseValues values = DisguiseValues.getDisguiseValues(disguise.getType());
+            DisguiseValues values = disguise.getType().getEntityInfo();
             if (values == null) return null;
             else return values.getAdultBox();
         } else if (disguise instanceof MobDisguise) {
             MobDisguise    mobDisguise = (MobDisguise) disguise;
-            DisguiseValues values      = DisguiseValues.getDisguiseValues(mobDisguise.getType());
+            DisguiseValues values      = mobDisguise.getType().getEntityInfo();
             if (values != null && values.getAdultBox() != null) {
                 if (!mobDisguise.isAdult() && values.getBabyBox() != null) {
                     return values.getBabyBox();
@@ -170,13 +217,13 @@ public class DisguiseHook {
             return null;
         } else if (disguise instanceof PlayerDisguise) {
             if (disguise.getWatcher() == null) {
-                return new FakeBoundingBox(0.6, 0.6, 1.8);
+                return new FakeBoundingBox(0.6, 1.8, 0.6);
             } else if (disguise.getEntity() != null && !disguise.getWatcher().getModifiedEntityAnimations()[1]) {
                 return disguise.getEntity() instanceof Player && ((Player) disguise.getEntity()).isSneaking()
-                        ? new FakeBoundingBox(0.6, 0.6, 1.5) : new FakeBoundingBox(0.6, 0.6, 1.8);
+                        ? new FakeBoundingBox(0.6, 1.5, 0.6) : new FakeBoundingBox(0.6, 1.8, 0.6);
             } else {
-                return disguise.getWatcher().isSneaking() ? new FakeBoundingBox(0.6, 0.6, 1.5)
-                        : new FakeBoundingBox(0.6, 0.6, 1.8);
+                return disguise.getWatcher().isSneaking() ? new FakeBoundingBox(0.6, 1.5, 0.6)
+                        : new FakeBoundingBox(0.6, 1.8, 0.6);
             }
         } else return null;
     }
