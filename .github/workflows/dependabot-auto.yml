@@ -1,0 +1,12 @@
+name: Dependabot approve and auto-merge
+
+# Runs only on the branches Dependabot pushes, so it never shows up as a skipped check on
+# other PRs. Needs ACTIONS_PAT as a Dependabot secret (see reusable-dependabot-auto.yml).
+on:
+  push:
+    branches: [ 'dependabot/**' ]
+
+jobs:
+  dependabot:
+    uses: magemonkeystudio/.github/.github/workflows/reusable-dependabot-auto.yml@main
+    secrets: inherit

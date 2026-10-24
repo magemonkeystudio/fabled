@@ -20,7 +20,7 @@ public class ExperienceMechanic extends MechanicComponent {
     private static final String TYPE       = "type"; // Flat, Percent, Levels
     private static final String GROUP      = "group"; // Specified Class Group
     private static final String LEVEL_DOWN = "level-down"; // Whether to Level Down or not
-    private static final String VANILLA    = "vanilla"; // Boolean whether to give vanills experience instead.
+    private static final String VANILLA    = "vanilla"; // Boolean whether to give vanilla experience instead.
 
     @Override
     public String getKey() {

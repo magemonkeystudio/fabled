@@ -1,8 +1,0 @@
-name: Dependabot auto-approve
-on: pull_request_target
-
-jobs:
-  dependabot:
-    uses: magemonkeystudio/.github/.github/workflows/reusable-dependabot-autoapprove.yml@main
-    secrets: inherit
-

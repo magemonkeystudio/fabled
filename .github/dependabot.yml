@@ -4,6 +4,19 @@
 # https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
 
 version: 2
+# Dependabot can only reach hosts on its default egress allowlist or declared
+# here, even when a registry allows anonymous access. These are the Maven
+# repositories from the poms that its proxy blocked.
+registries:
+  magemonkey-releases:
+    type: maven-repository
+    url: https://repo.travja.dev/releases
+  magemonkey-snapshots:
+    type: maven-repository
+    url: https://repo.travja.dev/snapshots
+  libsdisguises:
+    type: maven-repository
+    url: https://mvn.lib.co.nz/releases
 updates:
   - package-ecosystem: "npm" # See documentation for possible values
     directory: "/" # Location of package manifests
@@ -18,6 +31,13 @@ updates:
     schedule:
       interval: "weekly"
     target-branch: "dev"
+    labels:
+      - "dependencies"
+      - "build:patch"
+    registries:
+      - magemonkey-releases
+      - magemonkey-snapshots
+      - libsdisguises
     open-pull-requests-limit: 10
     reviewers:
       - Travja

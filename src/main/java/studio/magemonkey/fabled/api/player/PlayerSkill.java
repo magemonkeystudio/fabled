@@ -31,6 +31,7 @@ import lombok.Setter;
 import org.bukkit.Material;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.enums.SkillStatus;
+import studio.magemonkey.fabled.api.event.PlayerSkillCooldownEvent;
 import studio.magemonkey.fabled.api.skills.Skill;
 import studio.magemonkey.fabled.manager.AttributeManager;
 
@@ -44,7 +45,6 @@ public final class PlayerSkill {
     private PlayerData  player;
     private PlayerClass parent;
     @Getter
-    @Setter
     private long        cooldown;
     /**
      * -- SETTER --
@@ -292,11 +292,35 @@ public final class PlayerSkill {
     }
 
     /**
+     * Sets the cooldown timestamp of the skill directly, firing
+     * {@link studio.magemonkey.fabled.api.event.PlayerSkillCooldownEvent}
+     * if the value actually changes.
+     *
+     * @param cooldown new cooldown timestamp (epoch millis)
+     */
+    public void setCooldown(long cooldown) {
+        updateCooldown(cooldown);
+    }
+
+    /**
+     * Updates the cooldown timestamp and notifies listeners via
+     * {@link studio.magemonkey.fabled.api.event.PlayerSkillCooldownEvent}
+     * when the value changes.
+     *
+     * @param newCooldown new cooldown timestamp (epoch millis)
+     */
+    private void updateCooldown(long newCooldown) {
+        if (newCooldown == this.cooldown) return;
+        this.cooldown = newCooldown;
+        PlayerSkillCooldownEvent.invoke(this);
+    }
+
+    /**
      * Starts the cooldown of the skill
      */
     public void startCooldown() {
         long cd = (long) player.scaleStat(AttributeManager.COOLDOWN, skill.getCooldown(level) * 1000L);
-        cooldown = System.currentTimeMillis() + cd;
+        updateCooldown(System.currentTimeMillis() + cd);
     }
 
     /**
@@ -304,7 +328,7 @@ public final class PlayerSkill {
      * player to cast the skill again.
      */
     public void refreshCooldown() {
-        cooldown = 0;
+        updateCooldown(0);
     }
 
     /**
@@ -325,9 +349,9 @@ public final class PlayerSkill {
      */
     public void addCooldown(double seconds) {
         if (isOnCooldown())
-            cooldown += (int) (seconds * 1000);
+            updateCooldown(cooldown + (long) (seconds * 1000));
         else
-            cooldown = System.currentTimeMillis() + (int) (seconds * 1000);
+            updateCooldown(System.currentTimeMillis() + (long) (seconds * 1000));
     }
 
     /**

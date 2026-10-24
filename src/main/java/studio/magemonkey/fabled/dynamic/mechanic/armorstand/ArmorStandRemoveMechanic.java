@@ -1,9 +1,12 @@
 package studio.magemonkey.fabled.dynamic.mechanic.armorstand;
 
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.armorstand.ArmorStandData;
 import studio.magemonkey.fabled.api.armorstand.ArmorStandManager;
 import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
+import studio.magemonkey.fabled.listener.MechanicListener;
 
 import java.util.List;
 
@@ -24,8 +27,12 @@ public class ArmorStandRemoveMechanic extends MechanicComponent {
 
         for (LivingEntity target : targets) {
             ArmorStandData data = ArmorStandManager.getArmorStandData(target);
-            if (data == null) continue;
-            data.remove(key);
+            if (data != null && data.getArmorStands(key) != null) {
+                data.remove(key);
+            } else if (target instanceof ArmorStand && Fabled.getMeta(target, MechanicListener.ARMOR_STAND) != null) {
+                // Children of the armor stand mechanic target the armor stand itself, remove it directly
+                if (!ArmorStandManager.remove((ArmorStand) target)) target.remove();
+            }
         }
         return !targets.isEmpty();
     }

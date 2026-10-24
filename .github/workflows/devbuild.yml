@@ -1,14 +1,26 @@
 name: Dev Build
 
+# Weekly X.Y.Z-SNAPSHOT build of dev, where X.Y.Z is the next release (see release.yml).
+# Skipped when nothing was committed that week; run it by hand to publish one sooner.
 on:
-  push:
-    branches: [ dev ]
-    paths: [ src/** ]
+  schedule:
+    - cron: '47 13 * * 1'   # Mondays 13:47 UTC
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Only compute and print the version'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: read
 
 jobs:
   deploy:
-    uses: magemonkeystudio/.github/.github/workflows/reusable-build.yml@main
+    uses: magemonkeystudio/.github/.github/workflows/reusable-semver-build.yml@main
     secrets: inherit
     with:
-      is_dev: true
+      mode: dev
+      dry_run: ${{ inputs.dry_run || false }}
       update_javadocs: true
