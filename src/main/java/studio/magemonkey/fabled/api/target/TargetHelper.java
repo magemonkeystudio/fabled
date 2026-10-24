@@ -326,11 +326,15 @@ public abstract class TargetHelper {
     public static AABB getAABB(Entity entity) {
         AABB.Vec3D origin = AABB.Vec3D.fromLocation(entity.getLocation());
         try {
-            if (PluginChecker.isDisguiseActive() && DisguiseAPI.isDisguised(entity) && DisguiseAPI.getDisguise(entity)
-                    .isModifyBoundingBox()) {
+            if (PluginChecker.isDisguiseActive() && DisguiseAPI.isDisguised(entity)
+                    && DisguiseHook.isServerBoundingBoxEnabled(entity)) {
                 FakeBoundingBox boundingBox = DisguiseHook.getFakeBoundingBox(entity);
-                return new AABB(origin.add(new AABB.Vec3D(-boundingBox.getX(), 0, -boundingBox.getZ())),
-                        origin.add(new AABB.Vec3D(boundingBox.getX(), boundingBox.getY(), boundingBox.getZ())));
+                if (boundingBox != null) {
+                    return new AABB(origin.add(new AABB.Vec3D(-boundingBox.getHalvedX(), 0, -boundingBox.getHalvedZ())),
+                            origin.add(new AABB.Vec3D(boundingBox.getHalvedX(),
+                                    boundingBox.getY(),
+                                    boundingBox.getHalvedZ())));
+                }
             }
         } catch (NullPointerException ignored) {
         }
@@ -340,8 +344,10 @@ public abstract class TargetHelper {
     }
 
     public static double getHeight(Entity entity) {
-        return (PluginChecker.isDisguiseActive() && DisguiseAPI.isDisguised(entity))
-                ? DisguiseHook.getFakeBoundingBox(entity).getY()
-                : entity.getHeight();
+        if (PluginChecker.isDisguiseActive() && DisguiseAPI.isDisguised(entity)) {
+            FakeBoundingBox boundingBox = DisguiseHook.getFakeBoundingBox(entity);
+            if (boundingBox != null) return boundingBox.getY();
+        }
+        return entity.getHeight();
     }
 }
