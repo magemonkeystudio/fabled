@@ -2,16 +2,17 @@ package studio.magemonkey.fabled.data.io;
 
 import org.bukkit.OfflinePlayer;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.parallel.Isolated;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.player.PlayerAccounts;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,50 +29,53 @@ import java.util.concurrent.locks.LockSupport;
 import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 /**
- * Regression tests for <a href="https://github.com/magemonkeystudio/fabled/issues/1795">#1795</a>.
+ * Regression tests for <a href="https://github.com/magemonkeystudio/fabled/issues/1795">#1795</a>:
+ * {@link PlayerLoader}'s cache was an unsynchronised {@code TreeMap} mutated by joins on the main
+ * thread and by async unloads, which could corrupt it into a cycle that spun the main thread forever.
  *
- * <p>{@link PlayerLoader} used to hold its cache in a plain {@code TreeMap} while the main thread
- * loaded players on join and an async thread saved-and-removed them on quit. Interleaving those
- * mutations could corrupt the red-black tree into a cycle, after which a lookup on the main thread
- * span forever and the server stopped ticking.</p>
- *
- * <p>These tests run without a Bukkit server: {@code Fabled.singleton} is replaced with a stand-in
- * whose {@link IOManager} is a fake that reports how long it spends "on disk", and players are
- * lightweight proxies that only answer {@code getUniqueId()}.</p>
+ * <p>Runs without a Bukkit server: {@code Fabled.singleton} is swapped reflectively for a mock whose
+ * {@link IOManager} is a fake, hence {@link Isolated}.</p>
  */
+@Isolated
 class PlayerLoaderConcurrencyTest {
 
-    /** Enough players that different UUIDs land on different lock stripes. */
+    /**
+     * Players 0-11 sit on stripes 0-11; players 12-15 share stripes 0-3 with players 0-3, so the
+     * stress test also covers different players colliding on one stripe.
+     */
     private static final int PLAYER_COUNT = 16;
+    private static final int DISTINCT     = 12;
 
-    private static Fabled     fabled;
-    private static Fabled     previousSingleton;
-    private static FakeIO     io;
-    private static List<UUID> uuids;
-    /** Stable accounts instance per player, so a wrong lookup is detectable by identity. */
+    private static Fabled                    previousSingleton;
+    private static FakeIO                    io;
+    private static List<UUID>                uuids;
+    /** One accounts instance per player, so a wrong lookup is detectable by identity. */
     private static Map<UUID, PlayerAccounts> expected;
     private static Map<UUID, OfflinePlayer>  players;
 
+    private final List<Thread> workers = new CopyOnWriteArrayList<>();
+
     @BeforeAll
     static void installFakeFabled() throws Exception {
-        uuids = new ArrayList<>();
+        List<UUID> ids = new ArrayList<>();
         expected = new HashMap<>();
         players = new HashMap<>();
         for (int i = 0; i < PLAYER_COUNT; i++) {
-            UUID id = UUID.randomUUID();
-            uuids.add(id);
+            UUID id = new UUID(0L, i < DISTINCT ? i : 128 + (i - DISTINCT));
+            ids.add(id);
             expected.put(id, mock(PlayerAccounts.class));
             players.put(id, offlinePlayer(id));
         }
-        uuids = Collections.unmodifiableList(uuids);
+        uuids = Collections.unmodifiableList(ids);
 
-        fabled = mock(Fabled.class);
+        Fabled fabled = mock(Fabled.class);
         io = new FakeIO(fabled);
 
         Field ioField = Fabled.class.getDeclaredField("io");
@@ -98,6 +102,36 @@ class PlayerLoaderConcurrencyTest {
         io.reset();
     }
 
+    /**
+     * A regressed run can leave workers blocked on, or spinning inside, the loader. Monitors cannot
+     * be released from outside, so swap in fresh stripes to keep later tests off the stuck ones.
+     */
+    @AfterEach
+    void detachStuckWorkers() throws Exception {
+        boolean stuck = false;
+        for (Thread worker : workers) {
+            if (worker.isAlive()) {
+                worker.interrupt();
+                stuck = true;
+            }
+        }
+        workers.clear();
+        io.reset();
+        if (stuck) {
+            try {
+                Field    field   = PlayerLoader.class.getDeclaredField("STRIPES");
+                field.setAccessible(true);
+                Object[] stripes = (Object[]) field.get(null);
+                for (int i = 0; i < stripes.length; i++) {
+                    stripes[i] = new Object();
+                }
+            } catch (NoSuchFieldException ignored) {
+                // An unstriped implementation has no monitors to detach
+            }
+            clearCache();
+        }
+    }
+
     @SuppressWarnings("unchecked")
     private static void clearCache() throws Exception {
         Field cache = PlayerLoader.class.getDeclaredField("cachedPlayers");
@@ -105,16 +139,18 @@ class PlayerLoaderConcurrencyTest {
         ((Map<UUID, PlayerAccounts>) cache.get(null)).clear();
     }
 
+    @Test
+    void fixedPlayers_landOnTheIntendedStripes() {
+        for (int i = 0; i < PLAYER_COUNT; i++) {
+            int stripe = i < DISTINCT ? i : i - DISTINCT;
+            assertEquals(stripe, PlayerLoader.stripeIndex(uuids.get(i)), "stripe of player " + i);
+        }
+    }
+
     /**
-     * The whole of #1795 in one run.
-     *
-     * <p>Under the old {@code TreeMap} this either threw from inside the map internals (the reporter
-     * saw {@code NullPointerException} in {@code fixAfterDeletion}), threw
-     * {@link java.util.ConcurrentModificationException} out of the reader threads, or - once the
-     * tree had been corrupted into a cycle - span forever inside {@code getEntry}, which is what
-     * froze the server. The worker assertions cover the first two and the timeout covers the spin.
-     * The overlap counter separately checks the invariant that keeps a rejoin from reading a data
-     * file that the quit is still writing.</p>
+     * Under the old {@code TreeMap} this threw from inside the map, threw
+     * {@link java.util.ConcurrentModificationException} from the readers, or spun forever in
+     * {@code getEntry} (caught by the timeout).
      */
     @Test
     @Timeout(value = 120, unit = TimeUnit.SECONDS)
@@ -124,11 +160,12 @@ class PlayerLoaderConcurrencyTest {
         assertTrue(failures.isEmpty(), () -> "concurrent access failed: " + describe(failures));
         assertEquals(0, io.overlaps.get(),
                 "load and save overlapped for a single player - the per-player lock is not holding");
+        assertEquals(0, io.redundantLoads.get(),
+                "a player was loaded while already cached - a miss did not re-check under the lock");
     }
 
     /**
-     * {@code getAllPlayerAccounts} used to return the live cache, so the four call sites that
-     * iterate it raced the async unloader. It now returns a snapshot.
+     * {@code getAllPlayerAccounts} used to return the live cache to five call sites that iterate it.
      */
     @Test
     void getAllPlayerAccounts_returnsAnIndependentUnmodifiableSnapshot() {
@@ -139,7 +176,6 @@ class PlayerLoaderConcurrencyTest {
         Map<UUID, PlayerAccounts> snapshot = PlayerLoader.getAllPlayerAccounts();
         assertEquals(1, snapshot.size());
 
-        // Mutating the cache afterwards must not be visible through the snapshot
         PlayerLoader.getPlayerAccounts(players.get(second));
         PlayerLoader.unloadPlayer(players.get(first));
 
@@ -149,12 +185,8 @@ class PlayerLoaderConcurrencyTest {
     }
 
     /**
-     * A bulk clear must not discard players who joined during the pass.
-     *
-     * <p>Clearing the whole map at the end of {@code saveAllPlayerAccounts(true)} would drop a
-     * player whose stripe had already been visited before they joined. They were never saved, and
-     * {@code unloadPlayer} skips players it finds nothing cached for, so their session would be
-     * lost outright when they quit.</p>
+     * Clearing the whole map after {@code saveAllPlayerAccounts(true)} would drop a player who
+     * joined after their stripe was visited, unsaved. Here the join happens from inside the pass.
      */
     @Test
     void saveAllWithClear_doesNotDiscardAPlayerThatJoinedDuringThePass() {
@@ -162,8 +194,6 @@ class PlayerLoaderConcurrencyTest {
         UUID cached = uuids.get(1);
         PlayerLoader.getPlayerAccounts(players.get(cached));
 
-        // Join from inside the pass, at the point where the joining player's stripe may already
-        // have been visited
         io.onSave = () -> PlayerLoader.getPlayerAccounts(players.get(joiner));
         PlayerLoader.saveAllPlayerAccounts(true);
         io.onSave = null;
@@ -174,23 +204,18 @@ class PlayerLoaderConcurrencyTest {
     }
 
     /**
-     * The I/O layer is not a leaf. {@code IOManager#load} fires Bukkit events - {@code setClass} →
-     * {@code updatePlayerStat} → {@code PlayerMaxManaChangeEvent} - and a third-party listener may
-     * ask for another player's data from inside one. Two threads doing that for two players in
-     * opposite orders would deadlock if each could hold two stripes, so a nested request must not
-     * take a second one. Without that guard this test hangs rather than fails.
+     * A listener fired from inside a load may ask for another player's data. If that took a second
+     * stripe, two threads doing it in opposite orders would deadlock.
      */
     @Test
     @Timeout(value = 60, unit = TimeUnit.SECONDS)
     void reentrantLookupForAnotherPlayer_fromInsideTheIoLayer_doesNotDeadlock() throws Exception {
-        UUID a = uuids.get(0);
-        UUID b = uuids.get(1);
+        UUID a = uuids.get(4);
+        UUID b = uuids.get(5);
+        assertNotEquals(PlayerLoader.stripeIndex(a), PlayerLoader.stripeIndex(b),
+                "the two players must be on different stripes for this test to mean anything");
 
-        // Each load reaches back into the loader for the *other* player, as a listener would
-        io.onLoad = id -> {
-            UUID other = id.equals(a) ? b : a;
-            PlayerLoader.getPlayerAccounts(players.get(other));
-        };
+        io.onLoad = id -> PlayerLoader.getPlayerAccounts(players.get(id.equals(a) ? b : a));
 
         List<Throwable> failures = new CopyOnWriteArrayList<>();
         CountDownLatch  start    = new CountDownLatch(1);
@@ -213,7 +238,6 @@ class PlayerLoaderConcurrencyTest {
                         + "acquiring a second stripe"));
             }
         }
-        io.onLoad = null;
 
         assertTrue(failures.isEmpty(), () -> "nested lookup deadlocked or failed: " + describe(failures));
     }
@@ -223,7 +247,7 @@ class PlayerLoaderConcurrencyTest {
      *
      * @param loaders   threads calling {@code getPlayerAccounts}, as a join would
      * @param unloaders threads calling {@code unloadPlayer}, as an async quit would
-     * @param readers   threads iterating {@code getAllPlayerAccounts} and running a full save pass
+     * @param readers   threads iterating {@code getAllPlayerAccounts} or running a full save pass
      * @param rounds    iterations per thread
      * @return the failures observed across all threads
      */
@@ -289,6 +313,7 @@ class PlayerLoaderConcurrencyTest {
             }
         }, name);
         thread.setDaemon(true);
+        workers.add(thread);
         return thread;
     }
 
@@ -327,20 +352,21 @@ class PlayerLoaderConcurrencyTest {
     }
 
     /**
-     * Stands in for the real IO layer. Every call spends a little time "on disk", which is what
-     * makes the race in the original code reachable, and records whether two calls were ever inside
-     * the layer for the same player at once.
+     * Stands in for the real IO layer. Every call spends a little time "on disk" to widen the race
+     * window, and records loads and saves that overlapped for one player, and loads of a player who
+     * was already cached.
      */
     private static class FakeIO extends IOManager {
 
-        private final Map<UUID, AtomicInteger> inFlight = new ConcurrentHashMap<>();
-        private final AtomicInteger            overlaps = new AtomicInteger();
+        private final Map<UUID, AtomicInteger> inFlight       = new ConcurrentHashMap<>();
+        private final AtomicInteger            overlaps       = new AtomicInteger();
+        private final AtomicInteger            redundantLoads = new AtomicInteger();
 
         /** Fired from inside a load, standing in for a Bukkit event with a third-party listener. */
         private volatile Consumer<UUID> onLoad;
         /** Fired from inside a save, standing in for a player joining mid-pass. */
         private volatile Runnable       onSave;
-        /** A listener triggered by a load fires its own load; only go one level deep. */
+        /** A hook's own nested load or save must not fire the hook again. */
         private final ThreadLocal<Boolean> inHook = ThreadLocal.withInitial(() -> false);
 
         FakeIO(Fabled api) {
@@ -350,6 +376,7 @@ class PlayerLoaderConcurrencyTest {
         void reset() {
             inFlight.clear();
             overlaps.set(0);
+            redundantLoads.set(0);
             onLoad = null;
             onSave = null;
         }
@@ -362,6 +389,9 @@ class PlayerLoaderConcurrencyTest {
         @Override
         public PlayerAccounts loadData(OfflinePlayer player) {
             UUID id = player.getUniqueId();
+            if (PlayerLoader.hasPlayerAccounts(player)) {
+                redundantLoads.incrementAndGet();
+            }
             enter(id);
             try {
                 Consumer<UUID> hook = onLoad;
@@ -403,7 +433,6 @@ class PlayerLoaderConcurrencyTest {
             if (count.incrementAndGet() != 1) {
                 overlaps.incrementAndGet();
             }
-            // Stand in for the file write that widens the window in the real code
             LockSupport.parkNanos(20_000L);
         }
 
