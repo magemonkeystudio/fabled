@@ -4,8 +4,41 @@ A full pass over all **150 open issues** (as of 2026-08-10). Every open issue no
 priority, an area, and an effort estimate. This document is the narrative summary; the labels on
 GitHub are the source of truth.
 
-*Since the pass, #1697 and #405 were confirmed and closed as completed, leaving 148 open. The
-counts below describe the original 150 unless noted.*
+*The counts below describe the original 150 unless noted.*
+
+## Check-in — 2026-10-24
+
+The backlog has barely moved in either direction: **one** new issue in ten weeks, and four of the
+original 150 closed. 147 issues are open (plus this triage board, #1799).
+
+| # | Change |
+|---|---|
+| #1697, #405 | Closed — both were already resolved, as flagged in the first pass |
+| #1791 | Closed — fixed upstream in codex#157, shipped in **Codex 1.2.0**, which Fabled now depends on (#1880). Divinity still needs its own bump to 1.2.0 to pick it up. |
+| #1719 | Closed by #1867. The cause was the target mismatch suggested here: a remove placed under the armor stand mechanic's children targets the stand itself, which has nothing registered under it. Fixed in code rather than docs — the stand is now removed directly. |
+| **#1809** | **New** — triaged `bug` · `area: data/storage` · `priority: medium` · `effort: medium`. See below. |
+
+**#1800 is the one thing that needs attention.** The fix for the only critical issue (#1795) has
+been open for ten weeks with no maintainer review. CI was green, the reporter endorsed it over
+their own patch, and review feedback was addressed in a283560. It is 92 commits behind `dev` but
+merges cleanly — no file overlaps — so the only step before merging is re-running CI against
+current `dev`.
+
+### #1809 — quit-then-rejoin can detach a player's data from the cache
+
+Filed during review of #1800, and separate from it. `Fabled.unloadPlayerData` decides whether to
+unload on the main thread, then runs the unload in an async task that starts later. If the player
+rejoins in between, the join picks up the still-cached accounts, and the late unload then saves
+and evicts that same instance. The player ends up bound to an object the cache no longer holds,
+the next `getData` loads a second copy, and progress made on the first is never saved. With
+`use-sql` and a non-zero `sql-delay` the window is as wide as the delay.
+
+`priority: medium` rather than high: this is silent data loss, but the window is narrow, it has
+been worked out from reading the code but not reproduced, and no player has reported it. It isn't
+`confirmed` for the same reason. The issue proposes a per-entry generation counter, so a stale
+unload becomes a no-op. That is the right shape, but it needs a maintainer's read on intended
+unload semantics. It should land after #1800, since it builds on that PR's locking and test
+harness.
 
 ## Label scheme
 
@@ -80,8 +113,8 @@ Broken core behaviour, or the most-requested features by comment/reaction volume
 
 | # | Title | Note |
 |---|---|---|
-| #1791 | Divinity menus — options past page 1 don't respond | **Root-caused, `upstream`** — see below |
-| #1719 | `Mechanic: Armor stand remove` doesn't remove | `needs info` — likely a target/key mismatch, see below |
+| #1791 | Divinity menus — options past page 1 don't respond | **Closed** — fixed upstream, see below |
+| #1719 | `Mechanic: Armor stand remove` doesn't remove | **Closed** by #1867 — was the target mismatch |
 | #1697 | Projectile children fire twice | **Closed** — was already fixed by 5349f49 |
 | #1582 | Mana Regen resets to 1 on editor import | Editor-side; small and self-contained |
 
@@ -231,7 +264,8 @@ bug. The attached skill YAML will settle it.
 
 | PR | Issue | State |
 |---|---|---|
-| #1800 | #1795 PlayerLoader concurrency fix | open, awaiting review |
+| #1800 | #1795 PlayerLoader concurrency fix | open, awaiting review since 2026-08-10 |
+| #1867 | #1719 Armor stand remove | merged |
 | #1647 | #467 Display entities | draft (Copilot) |
 | #1594 | #1592 Additive skill lists | draft (Copilot) |
 | #1775 | relates #1134, #210 (Divinity stats) | open |
@@ -247,7 +281,8 @@ bug. The attached skill YAML will settle it.
 
 ## Suggested order of work
 
-1. ~~**#1795** — ship the concurrency fix.~~ Fix is up for review at #1800.
+1. **#1795** — review and merge #1800 (update the branch first so CI re-runs on current `dev`),
+   then follow with #1809.
 2. **Close the two resolved issues** (#1697, #405) and the duplicate clusters above. That is ~14
    issues off the board for very little effort.
 3. **#1582** — small, self-contained editor bug.
