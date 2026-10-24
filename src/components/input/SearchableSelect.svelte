@@ -3,7 +3,7 @@
 	import { flip }               from 'svelte/animate';
 	import { clickOutside }       from '$api/clickoutside';
 	import { onDestroy, onMount } from 'svelte';
-	import { browser }            from '$app/environment';
+	import { browser }            from '$app/env';
 	import type { Transformer }   from '$api/transformer';
 	import { NameTransformer }    from '$api/transformer';
 

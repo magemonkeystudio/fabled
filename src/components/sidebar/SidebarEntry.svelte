@@ -9,14 +9,14 @@
     sidebarOpen,
     toggleSyncLocal
   } from '../../data/store';
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
   import { notify } from '$api/notification-service';
   import FabledAttribute from '$api/fabled-attribute.svelte';
   import { get } from 'svelte/store';
   import { fly, type TransitionConfig } from 'svelte/transition';
   import Modal from '../Modal.svelte';
   import { animationEnabled } from '../../data/settings';
-  import { base } from '$app/paths';
+  import { resolve } from '$app/paths';
   import { Tab } from '$api/tab';
   import FabledSkill, { skillStore } from '../../data/skill-store.svelte';
   import FabledClass, { classStore } from '../../data/class-store.svelte';
@@ -147,7 +147,7 @@
   {#if data}
     <div class="buttons">
       {#if data instanceof FabledSkill}
-        <a href="{base}/skill/{data.name}/edit" class="edit" title="Edit Skill">
+        <a href={resolve(`skill/${data.name}/edit`)} class="edit" title="Edit Skill">
           <span class="material-symbols-rounded"> edit </span>
         </a>
       {/if}

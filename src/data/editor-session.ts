@@ -1,4 +1,4 @@
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import { attributeStore } from './attribute-store';
 import { classStore } from './class-store.svelte';
 import { ensureEditorPersistence } from './editor-persistence';

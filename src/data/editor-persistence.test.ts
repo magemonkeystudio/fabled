@@ -5,7 +5,7 @@ import YAML from 'yaml';
 import type { AttributeYamlData, ClassYamlData, SkillYamlData } from '$api/types';
 import { ATTRIBUTES_STORE, SKILLS_STORE } from './editor-persistence-shared';
 
-vi.mock('$app/environment', () => ({
+vi.mock('$app/env', () => ({
 	browser: true
 }));
 

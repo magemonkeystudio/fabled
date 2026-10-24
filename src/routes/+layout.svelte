@@ -19,7 +19,7 @@
   import { derived, get, type Readable, type Unsubscriber, type Writable } from 'svelte/store';
   import { quadInOut } from 'svelte/easing';
   import { fly } from 'svelte/transition';
-  import { browser } from '$app/environment';
+  import { browser } from '$app/env';
   import { resolve } from '$app/paths';
   import ImportModal from '$components/ImportModal.svelte';
   import NavBar from '$components/NavBar.svelte';

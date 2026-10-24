@@ -1,5 +1,5 @@
 {
-	"extends": "./.svelte-kit/tsconfig.json",
+	"extends": "$app/tsconfig",
 	"compilerOptions": {
 		"allowJs": true,
 		"checkJs": true,
@@ -10,7 +10,7 @@
 		"sourceMap": true,
 		"strict": true,
 		"moduleResolution": "bundler",
-		"types": ["node", "svelte"],
+		"types": ["$app/types", "node", "svelte"],
 		"paths": {
 			"$api": ["./src/api"],
 			"$api/*": ["./src/api/*"],
@@ -19,7 +19,11 @@
 			"$components": ["./src/components"],
 			"$components/*": ["./src/components/*"]
 		}
-	}
+	},
+	// Overriding include/exclude replaces SvelteKit's defaults, so these restate them. The generated
+	// javadocs are vendored static assets, not editor source, and stay out of `npm run check`.
+	"include": ["src", "test", "*"],
+	"exclude": ["src/service-worker", "static/javadocs"]
 	// Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
 	//
 	// If you want to overwrite includes/excludes, make sure to copy over the relevant includes/excludes

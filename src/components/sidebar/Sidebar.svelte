@@ -9,9 +9,9 @@
 	import Folder                                  from '../Folder.svelte';
 	import { fly }                                 from 'svelte/transition';
 	import { clickOutside }                        from '$api/clickoutside';
-	import { browser }                             from '$app/environment';
+	import { browser }                             from '$app/env';
 	import Tabs                                    from '../input/Tabs.svelte';
-	import { base }                                from '$app/paths';
+	import { resolve }                                from '$app/paths';
 	import { socketService }                       from '$api/socket/socket-connector';
 	import { Tab }                                 from '$api/tab';
 	import FabledSkill, { skillStore }             from '../../data/skill-store.svelte';
@@ -118,7 +118,7 @@
 					<SidebarEntry
 						data={cl}
 						delay={200 + 100 * i}
-						onclick={() => goto(`${base}/class/${cl.name}/edit`)}
+						onclick={() => goto(resolve(`class/${cl.name}/edit`))}
 					>
 						{cl.name}{cl.location === 'server' ? '*' : ''}
 					</SidebarEntry>
@@ -152,7 +152,7 @@
 						data={sk}
 						direction='right'
 						delay={200 + 100 * i}
-						onclick={() => goto(`${base}/skill/${sk.name}`)}
+						onclick={() => goto(resolve(`skill/${sk.name}`))}
 					>
 						{sk.name}{sk.location === 'server' ? '*' : ''}
 					</SidebarEntry>
@@ -183,7 +183,7 @@
 						data={att}
 						direction='right'
 						delay={200 + 100 * i}
-						onclick={() => goto(`${base}/attribute/${att.name}/edit`)}
+						onclick={() => goto(resolve(`attribute/${att.name}/edit`))}
 					>
 						{att.name}{att.location === 'server' ? '*' : ''}
 					</SidebarEntry>

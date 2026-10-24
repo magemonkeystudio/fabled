@@ -5,7 +5,7 @@ import type { MultiAttributeYamlData } from '$api/types';
 import { sort } from '$api/api';
 import { parseYaml } from '$api/yaml';
 import { active, saveError } from './store';
-import { base } from '$app/paths';
+import { resolve } from '$app/paths';
 import { goto } from '$app/navigation';
 import { socketService } from '$api/socket/socket-connector';
 import { classStore } from './class-store.svelte';
@@ -214,9 +214,9 @@ class AttributeStore {
     if (!(act instanceof FabledAttribute)) return;
 
     if (filtered.length === 0) {
-      goto(`${base}/`).then(() => {});
+      goto(resolve(`/`)).then(() => {});
     } else if (!filtered.find((attr) => attr === get(active))) {
-      goto(`${base}/attribute/${filtered[0].name}/edit`).then(() => {});
+      goto(resolve(`attribute/${filtered[0].name}/edit`)).then(() => {});
     }
   };
 

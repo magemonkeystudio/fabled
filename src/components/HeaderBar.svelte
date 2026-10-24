@@ -1,15 +1,15 @@
 <script lang='ts'>
 	import DiscordLogo from './DiscordLogo.svelte';
 	import { goto }    from '$app/navigation';
-	import { base }    from '$app/paths';
+	import { asset, resolve }    from '$app/paths';
 </script>
 
 <div id='header'>
 	<div class='home'
 			 tabindex='0'
 			 role='button'
-			 onclick={() => goto(`${base}/`)}
-			 onkeypress={(e) => e.key === "Enter" && goto(`${base}/`)}
+			 onclick={() => goto(resolve(`/`))}
+			 onkeypress={(e) => e.key === "Enter" && goto(resolve(`/`))}
 	>
 		<h1 class='accent'>Fabled</h1>
 		<h2>Dynamic Editor</h2>
@@ -23,12 +23,12 @@
 		<a class='social github'
 			 href='https://github.com/magemonkeystudio/fabled'
 			 title='Check out our GitHub'>
-			<img src='{base}/github-mark-white.svg' alt='Github' />
+			<img src={asset('github-mark-white.svg')} alt='Github' />
 		</a>
 		<a class='social spigot'
 			 href='https://www.spigotmc.org/resources/proskillapi-create-custom-races-classes-skills-spells-with-an-easy-online-editor.91913/'
 			 title='Check out our resource on Spigot'>
-			<img src='{base}/spigot.png' alt='Spigot' />
+			<img src={asset('spigot.png')} alt='Spigot' />
 		</a>
 		<a class='social wiki'
 			 href='https://github.com/magemonkeystudio/fabled/wiki'
