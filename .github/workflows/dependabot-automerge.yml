@@ -1,8 +1,0 @@
-name: Dependabot auto-merge
-on: pull_request_target
-
-jobs:
-  dependabot:
-    uses: magemonkeystudio/.github/.github/workflows/reusable-dependabot-automerge.yml@main
-    secrets: inherit
-
