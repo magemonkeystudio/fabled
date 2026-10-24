@@ -1,4 +1,4 @@
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 import { deleteDB, openDB, type IDBPDatabase } from 'idb';
 import type { PersistenceWriteResult } from './persistence-state';
 import { isStorageQuotaError } from './persistence-state';

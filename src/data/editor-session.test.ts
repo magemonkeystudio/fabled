@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { get } from 'svelte/store';
 import type { ClassYamlData, SkillYamlData } from '$api/types';
 
-vi.mock('$app/environment', () => ({
+vi.mock('$app/env', () => ({
 	browser: true
 }));
 
@@ -13,7 +13,7 @@ vi.mock('$app/navigation', () => ({
 }));
 
 vi.mock('$app/paths', () => ({
-	base: ''
+	resolve: (path: string) => (path.startsWith('/') ? path : `/${path}`)
 }));
 
 vi.mock('$api/notification-service', () => ({

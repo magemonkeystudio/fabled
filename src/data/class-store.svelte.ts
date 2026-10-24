@@ -4,7 +4,7 @@ import { active, saveError } from './store';
 import { parseBool, sort, toEditorCase, toProperCase } from '$api/api';
 import { parseYaml } from '$api/yaml';
 import { goto } from '$app/navigation';
-import { base } from '$app/paths';
+import { resolve } from '$app/paths';
 import type {
   ClassYamlData,
   FabledClassData,
@@ -675,9 +675,9 @@ class ClassStoreSvelte {
 
     if (!(act instanceof FabledClass)) return;
 
-    if (filtered.length === 0) goto(`${base}/`);
+    if (filtered.length === 0) goto(resolve(`/`));
     else if (!filtered.find((cl) => cl === get(active)))
-      goto(`${base}/class/${filtered[0].name}/edit`).then(() => {});
+      goto(resolve(`class/${filtered[0].name}/edit`)).then(() => {});
   };
 
   refreshClasses = () => this.classes.set(sort<FabledClass>(get(this.classes)));

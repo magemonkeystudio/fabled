@@ -1,7 +1,7 @@
 import { active, shownTab } from '../../../../data/store';
 import { get } from 'svelte/store';
 import { redirect } from '@sveltejs/kit';
-import { base } from '$app/paths';
+import { resolve } from '$app/paths';
 import { Tab } from '$api/tab';
 import FabledSkill, { skillStore } from '../../../../data/skill-store.svelte';
 import { hydrateEditorData } from '../../../../data/editor-session';
@@ -36,5 +36,5 @@ export async function load({ params }) {
 			return { data };
 		}
 	}
-	redirect(302, `${base}/${params.type}/${params.id}/edit`);
+	redirect(302, resolve(`${params.type}/${params.id}/edit`));
 }

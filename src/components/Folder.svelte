@@ -6,7 +6,7 @@
 	import { get }                       from 'svelte/store';
 	import SidebarEntry                  from '$components/sidebar/SidebarEntry.svelte';
 	import { goto }                      from '$app/navigation';
-	import { base }                      from '$app/paths';
+	import { resolve }                      from '$app/paths';
 	import type FabledAttribute          from '$api/fabled-attribute.svelte';
 	import type FabledClass              from '../data/class-store.svelte';
 	import type FabledSkill              from '../data/skill-store.svelte';
@@ -182,7 +182,7 @@
 				<Folder folder={data} />
 			{:else}
 				<SidebarEntry {data}
-											onclick={() => goto(`${base}/${data.dataType === 'class' ? 'class' : 'skill'}/${data.name}${data.dataType === 'class' ? '/edit' : ''}`)}>
+											onclick={() => goto(resolve(`${data.dataType === 'class' ? 'class' : 'skill'}/${data.name}${data.dataType === 'class' ? '/edit' : ''}`))}>
 					{data.name}{data.location === 'server' ? '*' : ''}
 				</SidebarEntry>
 			{/if}

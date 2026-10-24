@@ -1,4 +1,4 @@
-import { browser }           from '$app/environment';
+import { browser }           from '$app/env';
 import { writable }          from 'svelte/store';
 import type FabledAttribute  from './fabled-attribute.svelte';
 import type FabledClass      from '../data/class-store.svelte';

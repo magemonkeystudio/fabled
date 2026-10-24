@@ -4,7 +4,7 @@ import { sort, toEditorCase } from '$api/api';
 import { parseYaml } from '$api/yaml';
 import { active, saveError } from './store';
 import { goto } from '$app/navigation';
-import { base } from '$app/paths';
+import { resolve } from '$app/paths';
 import Registry, { initialized } from '$api/components/registry';
 import type {
   FabledSkillData,
@@ -640,9 +640,9 @@ class SkillStore {
 
     if (!(act instanceof FabledSkill)) return;
 
-    if (filtered.length === 0) goto(`${base}/`).then(() => {});
+    if (filtered.length === 0) goto(resolve(`/`)).then(() => {});
     else if (!filtered.find((sk) => sk === get(active)))
-      goto(`${base}/skill/${filtered[0].name}`).then(() => {});
+      goto(resolve(`skill/${filtered[0].name}`)).then(() => {});
   };
 
   refreshSkills = () => this.skills.set(sort<FabledSkill>(get(this.skills)));

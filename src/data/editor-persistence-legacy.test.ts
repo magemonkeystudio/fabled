@@ -3,7 +3,7 @@ import YAML from 'yaml';
 import type { SkillYamlData } from '$api/types';
 import { clearLegacyEditorStorage, collectLegacyEditorData } from './editor-persistence-legacy';
 
-vi.mock('$app/environment', () => ({
+vi.mock('$app/env', () => ({
 	browser: true
 }));
 
