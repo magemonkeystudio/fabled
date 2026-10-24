@@ -551,11 +551,12 @@ public class Fabled extends SkillAPI {
             MainListener.unload(player);
         }
 
-        io.saveAll();
+        // Takes PlayerLoader's per-player locks, so it never writes a player's data at the same
+        // time as an async unload that is still saving them
+        PlayerLoader.saveAllPlayerAccounts();
 
         skills.clear();
         classes.clear();
-        PlayerLoader.saveAllPlayerAccounts();
 
         HandlerList.unregisterAll(this);
         cmd.clear();
