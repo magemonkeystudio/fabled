@@ -17,12 +17,17 @@ original 150 closed. 147 issues are open (plus this triage board, #1799).
 | #1791 | Closed — fixed upstream in codex#157, shipped in **Codex 1.2.0**, which Fabled now depends on (#1880). Divinity still needs its own bump to 1.2.0 to pick it up. |
 | #1719 | Closed by #1867. The cause was the target mismatch suggested here: a remove placed under the armor stand mechanic's children targets the stand itself, which has nothing registered under it. Fixed in code rather than docs — the stand is now removed directly. |
 | **#1809** | **New** — triaged `bug` · `area: data/storage` · `priority: medium` · `effort: medium`. See below. |
+| **#1891** | **New**, filed from the #1800 audit — `PlayerSkillCooldownEvent` fires for every saved skill on every player load, even with no cooldown, because `IOManager` restores cooldowns through `addCooldown`, which rebases `0` to `now`. A listener that looks the player up mid-load recurses until `StackOverflowError`. `bug` · `area: api` · `area: data/storage` · `priority: medium` · `effort: small` · `confirmed` (verified in the code, not reproduced on a server). |
 
-**#1800 is the one thing that needs attention.** The fix for the only critical issue (#1795) has
-been open for ten weeks with no maintainer review. CI was green, the reporter endorsed it over
-their own patch, and review feedback was addressed in a283560. It is 92 commits behind `dev` but
-merges cleanly — no file overlaps — so the only step before merging is re-running CI against
-current `dev`.
+**#1800 is the one thing that needs attention.** The fix for the only critical issue (#1795) had
+been open for ten weeks with no maintainer review. On 2026-10-24 it was audited, brought up to date
+with `dev`, and revised:
+- cached reads skip the lock, so the main thread no longer waits on other players' saves;
+- shutdown saves once, under the lock;
+- the misleading comments were corrected and the test tightened.
+
+The full suite passes, 296 tests, and the concurrency test fails against every broken variant
+tried. It needs a `build:*` semver label for the new label check, then a maintainer review.
 
 ### #1809 — quit-then-rejoin can detach a player's data from the cache
 
@@ -264,7 +269,7 @@ bug. The attached skill YAML will settle it.
 
 | PR | Issue | State |
 |---|---|---|
-| #1800 | #1795 PlayerLoader concurrency fix | open, awaiting review since 2026-08-10 |
+| #1800 | #1795 PlayerLoader concurrency fix | open — audited and revised 2026-10-24, awaiting maintainer review |
 | #1867 | #1719 Armor stand remove | merged |
 | #1647 | #467 Display entities | draft (Copilot) |
 | #1594 | #1592 Additive skill lists | draft (Copilot) |
@@ -281,8 +286,8 @@ bug. The attached skill YAML will settle it.
 
 ## Suggested order of work
 
-1. **#1795** — review and merge #1800 (update the branch first so CI re-runs on current `dev`),
-   then follow with #1809.
+1. **#1795**: label and review #1800 (it's up to date with `dev` and audited), then follow
+   with #1809. #1891 is small and independent.
 2. **Close the two resolved issues** (#1697, #405) and the duplicate clusters above. That is ~14
    issues off the board for very little effort.
 3. **#1582** — small, self-contained editor bug.
