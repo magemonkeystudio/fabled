@@ -19,7 +19,11 @@ original 150 closed. 147 issues are open (plus this triage board, #1799).
 | **#1809** | **New** — triaged `bug` · `area: data/storage` · `priority: medium` · `effort: medium`. See below. |
 | **#1891** | **New**, filed from the #1800 audit — `PlayerSkillCooldownEvent` fires for every saved skill on every player load, even with no cooldown, because `IOManager` restores cooldowns through `addCooldown`, which rebases `0` to `now`. A listener that looks the player up mid-load recurses until `StackOverflowError`. `bug` · `area: api` · `area: data/storage` · `priority: medium` · `effort: small` · `confirmed` (verified in the code, not reproduced on a server). |
 
-**#1800 is the one thing that needs attention.** The fix for the only critical issue (#1795) had
+**Update: #1800 merged on 2026-10-24 and #1795 is closed — no critical issues remain open.** Before
+release, it's worth asking @qhashofficial to run their rapid-rejoin harness against a dev build;
+the tests mock Bukkit and storage, so it has not yet run on a live server.
+
+**#1800 was the one thing that needed attention.** The fix for the only critical issue (#1795) had
 been open for ten weeks with no maintainer review. On 2026-10-24 it was audited, brought up to date
 with `dev`, and revised:
 - cached reads skip the lock, so the main thread no longer waits on other players' saves;
@@ -269,7 +273,7 @@ bug. The attached skill YAML will settle it.
 
 | PR | Issue | State |
 |---|---|---|
-| #1800 | #1795 PlayerLoader concurrency fix | open — audited and revised 2026-10-24, awaiting maintainer review |
+| #1800 | #1795 PlayerLoader concurrency fix | merged 2026-10-24 |
 | #1867 | #1719 Armor stand remove | merged |
 | #1647 | #467 Display entities | draft (Copilot) |
 | #1594 | #1592 Additive skill lists | draft (Copilot) |
@@ -286,8 +290,8 @@ bug. The attached skill YAML will settle it.
 
 ## Suggested order of work
 
-1. **#1795**: label and review #1800 (it's up to date with `dev` and audited), then follow
-   with #1809. #1891 is small and independent.
+1. ~~**#1795**~~: fixed by #1800 (merged). Next in that area is #1809, which builds on #1800's
+   locking. #1891 is small and independent.
 2. **Close the two resolved issues** (#1697, #405) and the duplicate clusters above. That is ~14
    issues off the board for very little effort.
 3. **#1582** — small, self-contained editor bug.
