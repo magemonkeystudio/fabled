@@ -1,0 +1,11 @@
+name: Semver Label
+
+# Every PR into dev needs exactly one of: build:major, build:minor, build:patch
+on:
+  pull_request:
+    types: [ opened, reopened, labeled, unlabeled, synchronize ]
+    branches: [ dev ]
+
+jobs:
+  label:
+    uses: magemonkeystudio/.github/.github/workflows/reusable-semver-label.yml@main
