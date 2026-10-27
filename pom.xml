@@ -185,7 +185,8 @@
                 <configuration>
                     <systemPropertyVariables>
                         <CODEX_VERSION>${codex.version}</CODEX_VERSION>
-                        <FABLED_VERSION>${project.version}</FABLED_VERSION>
+                        <!-- MockBukkit names the data folder after the plugin.yml version, which is display.version -->
+                        <FABLED_VERSION>${display.version}</FABLED_VERSION>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
