@@ -1,6 +1,6 @@
 name: ${project.name}
 main: studio.magemonkey.fabled.Fabled
-version: ${project.version}
+version: ${display.version}
 authors: [ Travja, goflish, Eniripsa96, Sentropic ]
 depend: [ CodexCore ]
 softdepend:

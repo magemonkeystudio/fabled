@@ -25,6 +25,9 @@
     <properties>
         <revision>1.0.4</revision>
         <changelist>-SNAPSHOT</changelist>
+        <!-- Version plugin.yml shows. CI sets it to the build's name (X.Y.Z-dev.N for a dev
+             build, X.Y.Z for a release) so users can tell exactly which build they run. -->
+        <display.version>${project.version}</display.version>
         <java.version>14</java.version>
         <codex.version>1.2.0</codex.version>
 
@@ -182,7 +185,8 @@
                 <configuration>
                     <systemPropertyVariables>
                         <CODEX_VERSION>${codex.version}</CODEX_VERSION>
-                        <FABLED_VERSION>${project.version}</FABLED_VERSION>
+                        <!-- MockBukkit names the data folder after the plugin.yml version, which is display.version -->
+                        <FABLED_VERSION>${display.version}</FABLED_VERSION>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
