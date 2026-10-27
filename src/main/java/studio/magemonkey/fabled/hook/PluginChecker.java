@@ -32,6 +32,7 @@ import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.hook.mimic.MimicHook;
 import studio.magemonkey.fabled.listener.FabledListener;
 
@@ -111,6 +112,10 @@ public class PluginChecker extends FabledListener {
 
         vault = pluginManager.isPluginEnabled("Vault");
         libsDisguises = pluginManager.isPluginEnabled("LibsDisguises");
+        if (libsDisguises && !DisguiseHook.isBoundingBoxSupported()) {
+            Fabled.inst().getLogger().warning("This LibsDisguises version is too old for Fabled to read disguise "
+                    + "hitboxes; targeting will use entities' real hitboxes. Update LibsDisguises to 26.x or newer.");
+        }
         noCheatPlus = pluginManager.isPluginEnabled("NoCheatPlus");
         papi = pluginManager.isPluginEnabled("PlaceholderAPI");
         try {
