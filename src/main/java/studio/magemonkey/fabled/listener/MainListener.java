@@ -129,11 +129,17 @@ public class MainListener extends FabledListener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
-        if (player.hasMetadata("NPC") || !Fabled.getSettings().isWorldEnabled(player.getWorld()))
+        if (player.hasMetadata("NPC"))
+            return;
+
+        // A player whose quit has not been unloaded yet carries on with the cached accounts. They
+        // hold progress that storage lacks, so they are not reloaded after the SQL delay either.
+        final boolean resumed = PlayerLoader.cancelPendingUnload(player);
+        if (!Fabled.getSettings().isWorldEnabled(player.getWorld()))
             return;
 
         final int delay = Fabled.getSettings().getSqlDelay();
-        if (Fabled.getSettings().isUseSql() && delay > 0) {
+        if (Fabled.getSettings().isUseSql() && delay > 0 && !resumed) {
             final BukkitTask task = Fabled.schedule(() -> {
                 try {
                     PlayerLoader.loadPlayer(player);

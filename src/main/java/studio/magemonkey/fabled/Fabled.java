@@ -347,21 +347,22 @@ public class Fabled extends SkillAPI {
 
     /**
      * Unloads player data from memory, saving it to the config
-     * first and then removing it from the map.
+     * first and then removing it from the map. The unload runs
+     * asynchronously, and is cancelled if the player rejoins first.
      *
      * @param player     player to unload data for
      * @param skipSaving whether to skip saving the data
      *                   before unloading
      */
     public static void unloadPlayerData(final OfflinePlayer player, final boolean skipSaving) {
-        if (singleton == null || player == null || singleton.disabling || !PlayerLoader.hasPlayerAccounts(player)) {
+        if (singleton == null || player == null || singleton.disabling || skipSaving
+                || !PlayerLoader.hasPlayerAccounts(player)) {
             return;
         }
 
-        singleton.getServer().getScheduler().runTaskAsynchronously(singleton, () -> {
-            if (!skipSaving)
-                PlayerLoader.unloadPlayer(player);
-        });
+        final long ticket = PlayerLoader.prepareUnload(player);
+        singleton.getServer().getScheduler().runTaskAsynchronously(singleton,
+                () -> PlayerLoader.unloadPlayer(player, ticket));
     }
 
     /**
