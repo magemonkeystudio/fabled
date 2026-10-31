@@ -16,7 +16,7 @@ original 150 closed. 147 issues are open (plus this triage board, #1799).
 | #1697, #405 | Closed — both were already resolved, as flagged in the first pass |
 | #1791 | Closed — fixed upstream in codex#157, shipped in **Codex 1.2.0**, which Fabled now depends on (#1880). Divinity still needs its own bump to 1.2.0 to pick it up. |
 | #1719 | Closed by #1867. The cause was the target mismatch suggested here: a remove placed under the armor stand mechanic's children targets the stand itself, which has nothing registered under it. Fixed in code rather than docs — the stand is now removed directly. |
-| **#1809** | **New** — triaged `bug` · `area: data/storage` · `priority: medium` · `effort: medium`. See below. |
+| **#1809** | **New** — triaged `bug` · `area: data/storage` · `priority: medium` · `effort: medium`. See below. **Fixed by #1896 (merged 2026-10-31).** |
 | **#1891** | **New**, filed from the #1800 audit — `PlayerSkillCooldownEvent` fires for every saved skill on every player load, even with no cooldown, because `IOManager` restores cooldowns through `addCooldown`, which rebases `0` to `now`. A listener that looks the player up mid-load recurses until `StackOverflowError`. `bug` · `area: api` · `area: data/storage` · `priority: medium` · `effort: small` · `confirmed` (verified in the code, not reproduced on a server). |
 
 **Update: #1800 merged on 2026-10-24 and #1795 is closed — no critical issues remain open.** Before
@@ -48,6 +48,18 @@ been worked out from reading the code but not reproduced, and no player has repo
 unload becomes a no-op. That is the right shape, but it needs a maintainer's read on intended
 unload semantics. It should land after #1800, since it builds on that PR's locking and test
 harness.
+
+**Update: fixed by #1896, merged 2026-10-31.** The issue's suggestion of bumping a counter on every
+load wouldn't have been enough, because a fast rejoin finds the player still cached and loads
+nothing. Instead, quit registers an unload ticket, and a rejoin cancels it under the player's lock.
+A stale unload then does nothing. If the unload is already saving, the rejoin waits for the save
+and then loads the saved data. With `sql-delay`, a rejoin that cancelled an unload keeps the
+cached accounts and skips the delayed reload. Nine new tests cover both orderings and repeated
+quit/rejoin; six of them fail or error on the previous `dev`. Not yet reproduced on a live server.
+
+Found while fixing it, not yet filed: `SkillAPI#unloadPlayerData(OfflinePlayer)` and
+`SkillAPI#reloadPlayerData(Player)` in the deprecated compatibility layer call themselves forever.
+`Fabled` doesn't declare them, so the calls resolve back to `SkillAPI`.
 
 ## Label scheme
 
@@ -274,6 +286,7 @@ bug. The attached skill YAML will settle it.
 | PR | Issue | State |
 |---|---|---|
 | #1800 | #1795 PlayerLoader concurrency fix | merged 2026-10-24 |
+| #1896 | #1809 quit-then-rejoin unload race | merged 2026-10-31 |
 | #1867 | #1719 Armor stand remove | merged |
 | #1647 | #467 Display entities | draft (Copilot) |
 | #1594 | #1592 Additive skill lists | draft (Copilot) |
@@ -290,8 +303,8 @@ bug. The attached skill YAML will settle it.
 
 ## Suggested order of work
 
-1. ~~**#1795**~~: fixed by #1800 (merged). Next in that area is #1809, which builds on #1800's
-   locking. #1891 is small and independent.
+1. ~~**#1795**~~ and ~~**#1809**~~: fixed by #1800 and #1896 (both merged). Before the next
+   release, run a live-server rejoin test against a dev build. #1891 is small and independent.
 2. **Close the two resolved issues** (#1697, #405) and the duplicate clusters above. That is ~14
    issues off the board for very little effort.
 3. **#1582** — small, self-contained editor bug.
