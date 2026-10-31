@@ -297,11 +297,13 @@ public class SkillAPI extends JavaPlugin {
      * Do not use this method outside onJoin. This will delete any progress a player
      * has made since joining.
      *
-     * @deprecated use {@link Fabled#reloadPlayerData(Player)} (OfflinePlayer)}
+     * @deprecated use {@link PlayerLoader#reloadPlayer(OfflinePlayer)}
      */
     @Deprecated(forRemoval = true)
     public static void reloadPlayerData(final Player player) {
-        Fabled.reloadPlayerData(player);
+        if (player != null) {
+            PlayerLoader.reloadPlayer(player);
+        }
     }
 
     /**
@@ -336,11 +338,11 @@ public class SkillAPI extends JavaPlugin {
      * first and then removing it from the map.
      *
      * @param player player to unload data for
-     * @deprecated use {@link Fabled#unloadPlayerData(OfflinePlayer)}
+     * @deprecated use {@link Fabled#unloadPlayerData(OfflinePlayer, boolean)}
      */
     @Deprecated(forRemoval = true)
     public static void unloadPlayerData(final OfflinePlayer player) {
-        Fabled.unloadPlayerData(player);
+        Fabled.unloadPlayerData(player, false);
     }
 
     /**
