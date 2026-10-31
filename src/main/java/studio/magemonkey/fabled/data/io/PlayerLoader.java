@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 
 /**
@@ -23,6 +24,10 @@ import java.util.function.Supplier;
  * in parallel. A thread never holds more than one stripe: the I/O layer fires Bukkit events, and a
  * listener that asks for another player's data runs without taking a second stripe rather than
  * risking a lock-ordering deadlock.</p>
+ *
+ * <p>An unload that runs some time after the player quits is tracked by a ticket, so a rejoin in
+ * the meantime can cancel it and keep the cached accounts, instead of the unload saving and evicting
+ * them from under the new session.</p>
  */
 public class PlayerLoader {
 
@@ -44,13 +49,20 @@ public class PlayerLoader {
     private static final Map<UUID, PlayerAccounts> cachedPlayers = new ConcurrentHashMap<>();
 
     /**
+     * The ticket of each player's pending unload. Entries only live between a quit and its unload
+     * or the next rejoin, whichever comes first.
+     */
+    private static final Map<UUID, Long> pendingUnloads = new ConcurrentHashMap<>();
+    private static final AtomicLong      unloadTickets  = new AtomicLong();
+
+    /**
      * Retrieves the cached accounts for the player, loading them from storage if they are not
      * cached yet.
      *
      * <p>Cache hits are lock-free, so the server thread never waits on another thread's save. A
      * miss takes the player's stripe and checks again before loading, so a player is loaded once
-     * and never while an unload of the same player is in progress. A hit that lands while an
-     * unload is saving can still return the instance that unload is about to evict (#1809).</p>
+     * and never while an unload of the same player is in progress. A lookup for a player who has
+     * just quit can still return the instance their unload is about to evict.</p>
      *
      * @param player player to get the accounts for
      * @return the player's accounts, or null if storage could not produce any
@@ -88,6 +100,47 @@ public class PlayerLoader {
     public static void unloadPlayer(OfflinePlayer player) {
         UUID id = player.getUniqueId();
         withStripe(id, () -> save(id, true));
+    }
+
+    /**
+     * Registers an unload of the player that will run later, such as from an async task after they
+     * quit. Pass the returned ticket to {@link #unloadPlayer(OfflinePlayer, long)}. Registering a
+     * new unload supersedes any earlier one that is still pending.
+     *
+     * @param player player who is going to be unloaded
+     * @return the ticket of the unload
+     */
+    public static long prepareUnload(OfflinePlayer player) {
+        long ticket = unloadTickets.incrementAndGet();
+        pendingUnloads.put(player.getUniqueId(), ticket);
+        return ticket;
+    }
+
+    /**
+     * Saves the player's accounts and drops them from the cache, unless the unload has been
+     * cancelled by {@link #cancelPendingUnload(OfflinePlayer)} or superseded since it was prepared.
+     *
+     * @param player player to unload
+     * @param ticket ticket returned by {@link #prepareUnload(OfflinePlayer)}
+     */
+    public static void unloadPlayer(OfflinePlayer player, long ticket) {
+        UUID id = player.getUniqueId();
+        withStripe(id, () -> {
+            if (pendingUnloads.remove(id, ticket)) save(id, true);
+        });
+    }
+
+    /**
+     * Cancels the player's pending unload, for a player who rejoins before it has run. This takes
+     * the player's stripe, so an unload that is already saving finishes and evicts first, and a
+     * later lookup loads the saved data.
+     *
+     * @param player player who rejoined
+     * @return true if an unload was cancelled and the accounts it would have evicted are still cached
+     */
+    public static boolean cancelPendingUnload(OfflinePlayer player) {
+        UUID id = player.getUniqueId();
+        return withStripe(id, () -> pendingUnloads.remove(id) != null && cachedPlayers.containsKey(id));
     }
 
     /**
