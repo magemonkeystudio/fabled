@@ -90,6 +90,23 @@ public class PlayerLoader {
     }
 
     /**
+     * Discards the player's cached accounts and loads them again from storage, losing anything not
+     * saved since they were loaded.
+     *
+     * <p>If an unload of the player is still pending, it runs first, so the progress it was going to
+     * save is kept and it cannot evict the reloaded accounts later.</p>
+     *
+     * @param player player to reload
+     */
+    public static void reloadPlayer(OfflinePlayer player) {
+        UUID id = player.getUniqueId();
+        withStripe(id, () -> {
+            if (pendingUnloads.remove(id) != null) save(id, true);
+            load(player, id);
+        });
+    }
+
+    /**
      * Saves the player's accounts and drops them from the cache.
      *
      * <p>The built-in backends log and swallow write failures, so the entry is dropped even if the
