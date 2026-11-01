@@ -29,7 +29,7 @@
              build, X.Y.Z for a release) so users can tell exactly which build they run. -->
         <display.version>${project.version}</display.version>
         <java.version>14</java.version>
-        <codex.version>1.2.0</codex.version>
+        <codex.version>1.2.1</codex.version>
 
         <delombok.dir>${project.build.directory}/javadoc-delombok</delombok.dir>
     </properties>
