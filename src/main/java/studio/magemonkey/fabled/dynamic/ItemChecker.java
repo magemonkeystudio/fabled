@@ -26,8 +26,8 @@
  */
 package studio.magemonkey.fabled.dynamic;
 
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -50,6 +50,7 @@ import java.util.regex.Pattern;
  */
 public class ItemChecker {
     private static final String CHECK_MAT         = "check-mat";
+    private static final String CHECK_TAG         = "check-tag";
     private static final String MATERIAL          = "material";
     private static final String MATERIALS          = "materials";
     private static final String CHECK_DATA        = "check-data";
@@ -61,6 +62,7 @@ public class ItemChecker {
     private static final String REGEX             = "regex";
     private static final String CHECK_NAME        = "check-name";
     private static final String NAME              = "name";
+    private static final String TAG               = "tag";
     private static final String AMOUNT            = "amount";
 
     /**
@@ -139,6 +141,7 @@ public class ItemChecker {
         boolean lore        = settings.getBool(CHECK_LORE, false);
         boolean name        = settings.getBool(CHECK_NAME, false);
         boolean regex       = settings.getBool(REGEX, false);
+        boolean tags        = settings.getBool(CHECK_TAG, false);
 
         // Values to compare to
         String  material    = settings.getString(MATERIAL, "ARROW").toUpperCase(Locale.US).replace(" ", "_");
@@ -149,6 +152,8 @@ public class ItemChecker {
         int     customData  = settings.getInt(CUSTOM_DATA, 0);
         String  text        = settings.getString(LORE, "");
         String  display     = settings.getString(NAME, "");
+        String  tag         = settings.getString(TAG, "");
+
 
         List<String> potionTypes = new ArrayList<>();
         if (item != null && item.hasItemMeta() && item.getItemMeta() instanceof PotionMeta) {
@@ -168,7 +173,13 @@ public class ItemChecker {
                 && (!checkCustom || (item.hasItemMeta() && item.getItemMeta().hasCustomModelData()
                 && item.getItemMeta().getCustomModelData() == customData))
                 && (!lore || checkLore(item, text, regex))
-                && (!name || checkName(item, display, regex));
+                && (!name || checkName(item, display, regex))
+                && (!tags || checkTag(item, tag));
+    }
+
+    private static boolean checkTag(ItemStack item, String tag) {
+        Tag<Material> entityTypes = Bukkit.getTag("items", NamespacedKey.minecraft(tag.toLowerCase(Locale.US)), Material.class);
+        return entityTypes.isTagged(item.getType());
     }
 
     /**
