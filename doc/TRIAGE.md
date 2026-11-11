@@ -57,9 +57,12 @@ and then loads the saved data. With `sql-delay`, a rejoin that cancelled an unlo
 cached accounts and skips the delayed reload. Nine new tests cover both orderings and repeated
 quit/rejoin; six of them fail or error on the previous `dev`. Not yet reproduced on a live server.
 
-Found while fixing it, not yet filed: `SkillAPI#unloadPlayerData(OfflinePlayer)` and
-`SkillAPI#reloadPlayerData(Player)` in the deprecated compatibility layer call themselves forever.
-`Fabled` doesn't declare them, so the calls resolve back to `SkillAPI`.
+Found while fixing it: `SkillAPI#unloadPlayerData(OfflinePlayer)` and
+`SkillAPI#reloadPlayerData(Player)` in the deprecated compatibility layer called themselves forever,
+because `Fabled` doesn't declare them and the calls resolved back to `SkillAPI`. Filed as #1897 and
+fixed by #1898 (merged 2026-11-11). Both methods now work, and `reloadPlayerData` respects the
+unload tickets. A bytecode audit of all 32 `Fabled` calls in `SkillAPI` found no other cases, and a
+guard test now fails if a delegated method goes missing.
 
 ## Label scheme
 
@@ -287,6 +290,7 @@ bug. The attached skill YAML will settle it.
 |---|---|---|
 | #1800 | #1795 PlayerLoader concurrency fix | merged 2026-10-24 |
 | #1896 | #1809 quit-then-rejoin unload race | merged 2026-10-31 |
+| #1898 | #1897 SkillAPI delegation recursion | merged 2026-11-11 |
 | #1867 | #1719 Armor stand remove | merged |
 | #1647 | #467 Display entities | draft (Copilot) |
 | #1594 | #1592 Additive skill lists | draft (Copilot) |
