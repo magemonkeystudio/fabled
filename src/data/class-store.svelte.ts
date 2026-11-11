@@ -90,7 +90,7 @@ export default class FabledClass implements Serializable {
     if (data?.expSources) this.expSources = data.expSources;
     if (data?.health) this.health = data.health;
     if (data?.mana) this.mana = data.mana;
-    if (data?.manaRegen) this.manaRegen = data.manaRegen;
+    if (data?.manaRegen !== undefined) this.manaRegen = data.manaRegen;
     if (data?.attributes) this.attributes = data.attributes;
     if (data?.skillTree) this.skillTree = data.skillTree;
     if (data?.skills) this.skills = data.skills;
@@ -130,6 +130,7 @@ export default class FabledClass implements Serializable {
       expSources: this.expSources,
       health: this.health,
       mana: this.mana,
+      manaRegen: this.manaRegen,
       attributes: this.attributes,
       skillTree: this.skillTree,
       skills: this.skills,
@@ -208,6 +209,13 @@ export default class FabledClass implements Serializable {
       }
     }
 
+    // The Mana Regen input is a text field, so edits arrive as strings
+    let manaRegen = this.manaRegen;
+    if (typeof manaRegen === 'string') {
+      const parsed = parseFloat(manaRegen);
+      if (!isNaN(parsed)) manaRegen = parsed;
+    }
+
     const yaml = <ClassYamlData>{
       name: this.name,
       'action-bar': this.actionBar,
@@ -223,7 +231,7 @@ export default class FabledClass implements Serializable {
         'mana-base': mana.base ?? 20,
         'mana-scale': mana.scale ?? 0
       },
-      'mana-regen': this.manaRegen,
+      'mana-regen': manaRegen,
       'skill-tree': this.skillTree.toUpperCase().replace(/ /g, '_'),
       blacklist: this.unusableItems,
       skills: this.skills.map((s) => s.name),
@@ -303,7 +311,11 @@ export default class FabledClass implements Serializable {
       this.attributes = Object.values(map);
     }
 
-    if (yaml['mana-regen']) this.manaRegen = yaml['mana-regen'];
+    // Explicit null/undefined check so a regen of 0 isn't replaced by the default
+    if (yaml['mana-regen'] !== undefined && yaml['mana-regen'] !== null) {
+      const regen = Number(yaml['mana-regen']);
+      if (!isNaN(regen)) this.manaRegen = regen;
+    }
     if (yaml['skill-tree']) this.skillTree = <SkillTree>toProperCase(yaml['skill-tree']);
     if (yaml.blacklist) this.unusableItems = yaml.blacklist;
     if (yaml.skills)
@@ -313,7 +325,7 @@ export default class FabledClass implements Serializable {
     if (yaml.icon) this.icon.material = toEditorCase(yaml.icon);
     if (yaml['icon-data']) this.icon.customModelData = yaml['icon-data'];
     if (yaml['icon-lore']) this.icon.lore = yaml['icon-lore'];
-    if (yaml['exp-source'] !== null) this.expSources = yaml['exp-source'];
+    if (yaml['exp-source'] != null) this.expSources = yaml['exp-source'];
 
     if (yaml['combo-starters']) {
       // Combo starters
