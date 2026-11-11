@@ -35,6 +35,8 @@ import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.enums.Operation;
 import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.api.player.PlayerStatModifier;
+import studio.magemonkey.fabled.hook.DivinityHook;
+import studio.magemonkey.fabled.hook.PluginChecker;
 
 import java.util.HashMap;
 import java.util.List;
@@ -44,13 +46,15 @@ import java.util.Map;
  * Applies a flag to each target
  */
 public class StatMechanic extends MechanicComponent {
-    private static final String KEY       = "key";
-    private static final String OPERATION = "operation";
-    private static final String AMOUNT    = "amount";
-    private static final String SECONDS   = "seconds";
-    private static final String STACKABLE = "stackable";
+    private static final String KEY               = "key";
+    private static final String OPERATION         = "operation";
+    private static final String AMOUNT            = "amount";
+    private static final String SECONDS           = "seconds";
+    private static final String STACKABLE         = "stackable";
+    private static final String IGNORE_DIVINITY_CAP = "ignore-divinity-cap";
 
-    private final Map<Integer, Map<String, StatTask>> tasks = new HashMap<>();
+    private final Map<Integer, Map<String, StatTask>> tasks      = new HashMap<>();
+    private final Map<Integer, Map<Integer, Object>>  mobEffects = new HashMap<>();
 
     @Override
     public String getKey() {
@@ -63,6 +67,7 @@ public class StatMechanic extends MechanicComponent {
         if (casterTasks != null) {
             casterTasks.values().forEach(StatTask::stop);
         }
+        mobEffects.remove(user.getEntityId());
     }
 
     @Override
@@ -78,13 +83,25 @@ public class StatMechanic extends MechanicComponent {
         final boolean               stackable   = settings.getBool(STACKABLE, false);
         final int                   ticks       = (int) (seconds * 20);
         final String                operation   = settings.getString(OPERATION, "MULTIPLY_PERCENTAGE");
+        final boolean               ignoreCap   = settings.getBool(IGNORE_DIVINITY_CAP, false);
 
         boolean worked = false;
         for (LivingEntity target : targets) {
             if (target instanceof Player) {
                 worked = true;
                 final PlayerData data = Fabled.getData((Player) target);
-                PlayerStatModifier modifier = new PlayerStatModifier("fabled.mechanic.stat_mechanic", amount,
+
+                double effectiveAmount = amount;
+                if (!ignoreCap && PluginChecker.isDivinityActive()) {
+                    try {
+                        effectiveAmount = DivinityHook.clampStatAmount(
+                                key, Operation.valueOf(operation), amount, (Player) target);
+                    } catch (Exception ignored) {
+                        // safe fallback: use original amount
+                    }
+                }
+
+                PlayerStatModifier modifier = new PlayerStatModifier("fabled.mechanic.stat_mechanic", effectiveAmount,
                         Operation.valueOf(operation), false);
 
                 if (casterTasks.containsKey(data.getPlayerName()) && !stackable) {
@@ -94,7 +111,7 @@ public class StatMechanic extends MechanicComponent {
 
                     data.addStatModifier(key, modifier, true);
 
-                    old.cancel();
+                    old.stop(); // use stop() instead of cancel() — cancel() throws ISE when seconds:-1 (task never scheduled)
                 } else {
                     data.addStatModifier(key, modifier, true);
                 }
@@ -103,6 +120,29 @@ public class StatMechanic extends MechanicComponent {
                 casterTasks.put(data.getPlayerName(), task);
                 if (ticks >= 0) {
                     Fabled.schedule(task, ticks);
+                }
+            } else if (PluginChecker.isDivinityActive()) {
+                Object effect = DivinityHook.applyStatToMob(target, caster, key, operation, amount, seconds);
+                if (effect == null) continue;
+
+                worked = true;
+                final Map<Integer, Object> casterMobEffects =
+                        mobEffects.computeIfAbsent(caster.getEntityId(), HashMap::new);
+                final int targetId = target.getEntityId();
+
+                if (casterMobEffects.containsKey(targetId) && !stackable) {
+                    DivinityHook.removeStatFromMob(target, casterMobEffects.remove(targetId));
+                }
+
+                casterMobEffects.put(targetId, effect);
+
+                if (ticks >= 0) {
+                    Fabled.schedule(new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            casterMobEffects.remove(targetId);
+                        }
+                    }, ticks);
                 }
             }
         }

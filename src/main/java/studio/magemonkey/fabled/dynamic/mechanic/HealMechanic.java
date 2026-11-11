@@ -28,7 +28,10 @@ package studio.magemonkey.fabled.dynamic.mechanic;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.divinity.stats.EntityStats;
+import studio.magemonkey.divinity.stats.items.attributes.api.TypedStat;
 import studio.magemonkey.fabled.api.event.SkillHealEvent;
+import studio.magemonkey.fabled.hook.PluginChecker;
 
 import java.util.List;
 
@@ -36,8 +39,10 @@ import java.util.List;
  * Heals each target
  */
 public class HealMechanic extends MechanicComponent {
-    private static final String TYPE  = "type";
-    private static final String VALUE = "value";
+    private static final String TYPE                    = "type";
+    private static final String VALUE                   = "value";
+    private static final String IGNORE_HEALING_CAST     = "ignore-healing-cast";
+    private static final String IGNORE_HEALING_RECEIVED = "ignore-healing-received";
 
     @Override
     public String getKey() {
@@ -46,8 +51,10 @@ public class HealMechanic extends MechanicComponent {
 
     @Override
     public boolean execute(LivingEntity caster, int level, List<LivingEntity> targets, boolean force) {
-        boolean percent = settings.getString(TYPE, "health").toLowerCase().equals("percent");
-        double  value   = parseValues(caster, VALUE, level, 1.0);
+        boolean percent              = settings.getString(TYPE, "health").toLowerCase().equals("percent");
+        double  value                = parseValues(caster, VALUE, level, 1.0);
+        boolean ignoreHealingCast    = settings.getBool(IGNORE_HEALING_CAST, false);
+        boolean ignoreHealingReceived = settings.getBool(IGNORE_HEALING_RECEIVED, false);
         if (value < 0) {
             return false;
         }
@@ -59,6 +66,20 @@ public class HealMechanic extends MechanicComponent {
             double amount = value;
             if (percent) {
                 amount = target.getMaxHealth() * value / 100;
+            }
+
+            if (!ignoreHealingCast && PluginChecker.isDivinityActive()) {
+                try {
+                    double healCast = EntityStats.get(caster).getItemStat(TypedStat.Type.HEALING_CAST, false);
+                    if (healCast != 0) amount *= (1.0 + healCast / 100.0);
+                } catch (Throwable ignored) { /* Divinity present but incompatible/misbehaving */ }
+            }
+
+            if (!ignoreHealingReceived && PluginChecker.isDivinityActive()) {
+                try {
+                    double healReceived = EntityStats.get(target).getItemStat(TypedStat.Type.HEALING_RECEIVED, false);
+                    if (healReceived != 0) amount *= (1.0 + healReceived / 100.0);
+                } catch (Throwable ignored) { /* Divinity present but incompatible/misbehaving */ }
             }
 
             SkillHealEvent event = new SkillHealEvent(caster, target, amount);
