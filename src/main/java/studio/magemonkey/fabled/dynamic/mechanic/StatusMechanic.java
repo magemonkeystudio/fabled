@@ -27,6 +27,8 @@
 package studio.magemonkey.fabled.dynamic.mechanic;
 
 import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.divinity.stats.EntityStats;
+import studio.magemonkey.divinity.stats.items.attributes.api.TypedStat;
 import studio.magemonkey.fabled.api.util.FlagManager;
 
 import java.util.List;
@@ -35,8 +37,9 @@ import java.util.List;
  * Applies a flag to each target
  */
 public class StatusMechanic extends MechanicComponent {
-    private static final String KEY      = "status";
-    private static final String DURATION = "duration";
+    private static final String KEY            = "status";
+    private static final String DURATION       = "duration";
+    private static final String IGNORE_CC_RES  = "ignore-cc-resistance";
 
     @Override
     public String getKey() {
@@ -49,10 +52,20 @@ public class StatusMechanic extends MechanicComponent {
             return false;
         }
 
-        String key     = settings.getString(KEY, "stun").toLowerCase();
-        double seconds = parseValues(caster, DURATION, level, 3.0);
-        int    ticks   = (int) (seconds * 20);
+        String  key          = settings.getString(KEY, "stun").toLowerCase();
+        double  seconds      = parseValues(caster, DURATION, level, 3.0);
+        boolean ignoreCCRes  = settings.getBool(IGNORE_CC_RES, false);
         for (LivingEntity target : targets) {
+            int ticks = (int) (seconds * 20);
+            if (!ignoreCCRes) {
+                try {
+                    EntityStats stats      = EntityStats.get(target);
+                    double      resistance = stats.getItemStat(TypedStat.Type.CC_RESISTANCE, false);
+                    if (resistance > 0) {
+                        ticks = (int) (ticks * (1.0 - resistance / 100.0));
+                    }
+                } catch (Exception ignored) { /* Divinity not loaded */ }
+            }
             FlagManager.addFlag(target, key, ticks);
         }
         return !targets.isEmpty();

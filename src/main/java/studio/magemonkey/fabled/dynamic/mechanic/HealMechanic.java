@@ -28,6 +28,8 @@ package studio.magemonkey.fabled.dynamic.mechanic;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
+import studio.magemonkey.divinity.stats.EntityStats;
+import studio.magemonkey.divinity.stats.items.attributes.api.TypedStat;
 import studio.magemonkey.fabled.api.event.SkillHealEvent;
 
 import java.util.List;
@@ -60,6 +62,16 @@ public class HealMechanic extends MechanicComponent {
             if (percent) {
                 amount = target.getMaxHealth() * value / 100;
             }
+
+            try {
+                double healCast = EntityStats.get(caster).getItemStat(TypedStat.Type.HEALING_CAST, false);
+                if (healCast != 0) amount *= (1.0 + healCast / 100.0);
+            } catch (Exception ignored) { /* Divinity not loaded */ }
+
+            try {
+                double healReceived = EntityStats.get(target).getItemStat(TypedStat.Type.HEALING_RECEIVED, false);
+                if (healReceived != 0) amount *= (1.0 + healReceived / 100.0);
+            } catch (Exception ignored) { /* Divinity not loaded */ }
 
             SkillHealEvent event = new SkillHealEvent(caster, target, amount);
             Bukkit.getPluginManager().callEvent(event);
