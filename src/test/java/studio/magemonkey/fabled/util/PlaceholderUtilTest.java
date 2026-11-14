@@ -3,7 +3,7 @@ package studio.magemonkey.fabled.util;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.craftbukkit.MockServer;
+import org.mockbukkit.mockbukkit.ServerMock;
 import org.bukkit.entity.Player;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,7 +54,7 @@ public class PlaceholderUtilTest {
 
         bukkitMock = mockStatic(Bukkit.class);
         bukkitMock.when(() -> Bukkit.getPlayer(uuid)).thenReturn(player);
-        Server server = mock(MockServer.class);
+        Server server = mock(ServerMock.class);
         when(server.getBukkitVersion()).thenReturn("1.20.6-R0.1-SNAPSHOT");
         bukkitMock.when(Bukkit::getServer).thenReturn(server);
 
