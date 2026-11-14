@@ -477,4 +477,71 @@ public class SkillDamageRequestTest extends MockedTest {
         assertFalse(add.isIgnoreDivinity());
         assertEquals(WeaponStatsMode.ADD, add.getWeaponStats());
     }
+
+    /** What a SkillDamageEvent listener sees for the event Skill#damage fires itself */
+    private List<SkillDamageEvent> captureSkillDamageEvents(Runnable damageCall) {
+        List<SkillDamageEvent> seen = new ArrayList<>();
+        Listener capture = new Listener() {
+            @EventHandler(priority = EventPriority.MONITOR)
+            public void onSkillDamage(SkillDamageEvent event) {
+                seen.add(event);
+            }
+        };
+        server.getPluginManager().registerEvents(capture, plugin);
+        try (MockedStatic<DamageRegistry> ignored = registryFallsBack()) {
+            damageCall.run();
+        } finally {
+            HandlerList.unregisterAll(capture);
+        }
+        return seen;
+    }
+
+    @ParameterizedTest
+    @EnumSource(WeaponStatsMode.class)
+    void damage_firesTheSkillDamageEventWithTheModeGiven(WeaponStatsMode mode) {
+        List<SkillDamageEvent> seen = captureSkillDamageEvents(
+                () -> skill.damage(target, 5, caster, "physical", true, mode, CAUSE, false));
+
+        assertEquals(1, seen.size());
+        assertEquals(mode, seen.get(0).getWeaponStats());
+        assertEquals(mode == WeaponStatsMode.IGNORE || mode == WeaponStatsMode.RAW, seen.get(0).isIgnoreDivinity());
+    }
+
+    @Test
+    void damage_nullModeIsTreatedAsAddForTheEventAndTheRequest() {
+        List<SkillDamageEvent> seen = captureSkillDamageEvents(
+                () -> skill.damage(target, 5, caster, "physical", true, (WeaponStatsMode) null, CAUSE, false));
+
+        assertEquals(1, seen.size());
+        assertEquals(WeaponStatsMode.ADD, seen.get(0).getWeaponStats());
+        assertFalse(seen.get(0).isIgnoreDivinity());
+        assertEquals(WeaponStatsMode.ADD, claimed.get(0).getWeaponStats());
+    }
+
+    @Test
+    void damage_booleanOverloadsFireTheEventWithAddAndIgnore() {
+        List<SkillDamageEvent> seen = captureSkillDamageEvents(() -> {
+            skill.damage(target, 5, caster, "physical", true, false);
+            skill.damage(target, 5, caster, "physical", true, true);
+        });
+
+        assertEquals(2, seen.size());
+        assertEquals(WeaponStatsMode.ADD, seen.get(0).getWeaponStats());
+        assertFalse(seen.get(0).isIgnoreDivinity());
+        assertEquals(WeaponStatsMode.IGNORE, seen.get(1).getWeaponStats());
+        assertTrue(seen.get(1).isIgnoreDivinity());
+    }
+
+    @Test
+    void mechanics_nonStringWeaponStatsFallsBackToIgnoreDivinity() {
+        assertBothMechanics(WeaponStatsMode.IGNORE, st -> {
+            st.set("weapon-stats", true);
+            st.set("ignore-divinity", true);
+        });
+        assertBothMechanics(WeaponStatsMode.ADD, st -> {
+            st.set("weapon-stats", true);
+            st.set("ignore-divinity", false);
+        });
+        assertBothMechanics(WeaponStatsMode.ADD, st -> st.set("weapon-stats", 3));
+    }
 }
