@@ -30,6 +30,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
+import studio.magemonkey.codex.api.damage.WeaponStatsMode;
 import studio.magemonkey.codex.mccore.config.parse.NumberParser;
 
 import java.util.List;
@@ -47,7 +48,6 @@ public class DamageLoreMechanic extends MechanicComponent {
     private static final String TRUE            = "true";
     private static final String CLASSIFIER      = "classifier";
     private static final String KNOCKBACK       = "knockback";
-    private static final String IGNORE_DIVINITY = "ignore-divinity";
     private static final String CAUSE           = "cause";
 
     @Override
@@ -74,6 +74,7 @@ public class DamageLoreMechanic extends MechanicComponent {
         boolean offhand        = settings.getString(HAND).equalsIgnoreCase("offhand");
         boolean trueDmg        = settings.getBool(TRUE, false);
         String  classification = settings.getString(CLASSIFIER, "default");
+        WeaponStatsMode weaponStats = WeaponStatsSetting.read(settings);
 
         if (caster.getEquipment() == null) {
             return false;
@@ -112,10 +113,11 @@ public class DamageLoreMechanic extends MechanicComponent {
                                         caster,
                                         classification,
                                         settings.getBool(KNOCKBACK, true),
-                                        settings.getBool(IGNORE_DIVINITY, false),
+                                        weaponStats,
                                         EntityDamageEvent.DamageCause.valueOf(settings.getString(CAUSE, "Entity Attack")
                                                 .toUpperCase(Locale.US)
-                                                .replace(' ', '_')));
+                                                .replace(' ', '_')),
+                                        false);
                             }
                         }
                         worked = targets.size() > 0;
