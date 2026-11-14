@@ -41,6 +41,7 @@ import SectionMarker                                             from '$api/opti
 import SkillSelect                                               from '$api/options/skillselect.svelte';
 import StringListSelect                                          from '$api/options/stringlistselect.svelte';
 import StringSelect                                              from '$api/options/stringselect.svelte';
+import WeaponStatsSelect                                         from '$api/options/weaponstatsselect.svelte';
 import type { ComponentOption, Requirements }                    from '$api/options/options';
 import { get }                                                   from 'svelte/store';
 import { attributeStore }                                        from '../../data/attribute-store';
@@ -2907,8 +2908,8 @@ class DamageMechanic extends FabledMechanic {
 					.setTooltip('Whether the damage will inflict knockback. Ignored if it is True Damage'),
 				new BooleanSelect('No Screen Shake', 'no-shake', false)
 					.setTooltip('Whether the damage will play the hurt animation (screen shake) to the target. Ignored if it is True Damage, requires ProtocolLib to function'),
-				new BooleanSelect('Ignore Divinity', 'ignore-divinity', false)
-					.setTooltip('Whether to ignore Divinity\'s defenses and damage calculations'),
+				new WeaponStatsSelect('Weapon Stats')
+					.setTooltip('What Divinity does with the caster\'s weapon stats for this hit. Only matters when Divinity is installed. Add adds weapon damage to the skill\'s damage. Replace uses the skill\'s own amount, in its damage type, instead of weapon damage while defenses still apply. Ignore does not add weapon damage or on-hit effects. Raw leaves the hit completely alone, with no defenses or other calculations'),
 				new DropdownSelect('Damage Cause', 'cause', ['Contact', 'Custom', 'Entity Attack', 'Entity Sweep Attack', 'Projectile', 'Suffocation', 'Fall', 'Fire', 'Fire Tick', 'Melting', 'Lava', 'Drowning', 'Block Explosion', 'Entity Explosion', 'Void', 'Lightning', 'Suicide', 'Starvation', 'Poison', 'Magic', 'Wither', 'Falling Block', 'Thorns', 'Dragon Breath', 'Fly Into Wall', 'Hot Floor', 'Cramming', 'Dryout', 'Freeze', 'Sonic Boom'], 'Custom')
 					.setTooltip('Damage Cause considered by the server. This will have influence over the death message and Divinity\' defenses')
 					.requireValue('true', [false])
@@ -2963,8 +2964,8 @@ class DamageLoreMechanic extends FabledMechanic {
 					.setTooltip('The type of damage to deal. Can act as elemental damage or fake physical damage'),
 				new BooleanSelect('Apply Knockback', 'knockback', true)
 					.setTooltip('Whether the damage will inflict knockback. Ignored if it is True Damage'),
-				new BooleanSelect('Ignore Divinity', 'ignore-divinity', false)
-					.setTooltip('Whether to ignore Divinity\'s defenses and damage calculations'),
+				new WeaponStatsSelect('Weapon Stats')
+					.setTooltip('What Divinity does with the caster\'s weapon stats for this hit. Only matters when Divinity is installed. Add adds weapon damage to the skill\'s damage. Replace uses the skill\'s own amount, in its damage type, instead of weapon damage while defenses still apply. Ignore does not add weapon damage or on-hit effects. Raw leaves the hit completely alone, with no defenses or other calculations'),
 				new DropdownSelect('Damage Cause', 'cause', ['Contact', 'Entity Attack', 'Entity Sweep Attack', 'Projectile', 'Suffocation', 'Fall', 'Fire', 'Fire Tick', 'Melting', 'Lava', 'Drowning', 'Block Explosion', 'Entity Explosion', 'Void', 'Lightning', 'Suicide', 'Starvation', 'Poison', 'Magic', 'Wither', 'Falling Block', 'Thorns', 'Dragon Breath', 'Custom', 'Fly Into Wall', 'Hot Floor', 'Cramming', 'Dryout', 'Freeze', 'Sonic Boom'], 'Entity Attack')
 					.setTooltip('Damage Cause considered by the server. This will have influence over the death message and Divinity\' defenses')
 					.requireValue('true', [false])
