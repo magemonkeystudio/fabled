@@ -40,6 +40,11 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
+import studio.magemonkey.codex.api.damage.DamageContexts;
+import studio.magemonkey.codex.api.damage.DamageOrigin;
+import studio.magemonkey.codex.api.damage.DamageRequest;
+import studio.magemonkey.codex.api.damage.DamageScope;
+import studio.magemonkey.codex.api.damage.WeaponStatsMode;
 import studio.magemonkey.codex.compat.VersionManager;
 import studio.magemonkey.codex.mccore.config.Filter;
 import studio.magemonkey.codex.mccore.config.FilterType;
@@ -877,8 +882,13 @@ public abstract class Skill implements IconHolder {
             Vector velocity = target.getVelocity();
             if (noShake)
                 BuffManager.addBuff(target, BuffType.NO_SCREEN_SHAKE, new Buff("damage-" + classification, 0, false), 1);
-            if (!DamageRegistry.dealDamage(target, damage, classification, source))
-                target.damage(damage, source);
+            // Describe the hit for the damage call only. canAttack fires throwaway damage events for this
+            // target (and SkillDamageEvent handlers run) before this point, none may be matched with the request
+            try (DamageScope ignored = describeHit(target, damage, source, classification, knockback,
+                    ignoreDivinity, cause)) {
+                if (!DamageRegistry.dealDamage(target, damage, classification, source))
+                    target.damage(damage, source);
+            }
             if (!knockback)
                 target.setVelocity(velocity);
 
@@ -890,6 +900,33 @@ public abstract class Skill implements IconHolder {
         } finally {
             skillDamage = false;
         }
+    }
+
+    /**
+     * Describes a skill hit to Codex so Divinity can read what it is instead of guessing from the event.
+     * Nothing reads it on a server without Divinity (or with one that predates damage requests).
+     *
+     * @return the open scope to close after the damage call, or null if the hit cannot be described
+     *         (a null classification, which a request cannot hold)
+     */
+    private static DamageScope describeHit(LivingEntity target,
+                                           double damage,
+                                           LivingEntity source,
+                                           String classification,
+                                           boolean knockback,
+                                           boolean ignoreDivinity,
+                                           EntityDamageEvent.DamageCause cause) {
+        if (classification == null) return null;
+        // A request can't hold a negative or NaN amount, the Bukkit call still gets the damage as is
+        double amount = Double.isNaN(damage) ? 0 : Math.max(0, damage);
+        return DamageContexts.open(target, DamageRequest.builder()
+                .origin(DamageOrigin.SKILL)
+                .source(source)
+                .cause(cause)
+                .knockback(knockback)
+                .weaponStats(ignoreDivinity ? WeaponStatsMode.IGNORE : WeaponStatsMode.ADD)
+                .amount(classification, amount)
+                .build());
     }
 
     /**
