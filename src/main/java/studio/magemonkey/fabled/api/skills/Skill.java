@@ -847,6 +847,31 @@ public abstract class Skill implements IconHolder {
                        boolean ignoreDivinity,
                        EntityDamageEvent.DamageCause cause,
                        boolean noShake) {
+        damage(target, damage, source, classification, knockback,
+                ignoreDivinity ? WeaponStatsMode.IGNORE : WeaponStatsMode.ADD, cause, noShake);
+    }
+
+    /**
+     * Applies skill damage to the target, launching the skill damage event
+     *
+     * @param target         target to receive the damage
+     * @param damage         amount of damage to deal
+     * @param source         source of the damage (skill caster)
+     * @param classification type of damage to deal
+     * @param knockback      whether the damage should apply knockback
+     * @param weaponStats    how the damage combines with the caster's weapon stats
+     * @param cause          the cause of the damage, might affect death messages
+     * @param noShake        whether to disable the screen shake effect when damaged
+     */
+    public void damage(LivingEntity target,
+                       double damage,
+                       LivingEntity source,
+                       String classification,
+                       boolean knockback,
+                       WeaponStatsMode weaponStats,
+                       EntityDamageEvent.DamageCause cause,
+                       boolean noShake) {
+        if (weaponStats == null) weaponStats = WeaponStatsMode.ADD;
         if (target instanceof TempEntity) {
             return;
         }
@@ -859,7 +884,7 @@ public abstract class Skill implements IconHolder {
             return;
         }
         SkillDamageEvent event =
-                new SkillDamageEvent(this, source, target, damage, classification, knockback, ignoreDivinity, noShake);
+                new SkillDamageEvent(this, source, target, damage, classification, knockback, weaponStats, noShake);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             return;
@@ -885,7 +910,7 @@ public abstract class Skill implements IconHolder {
             // Describe the hit for the damage call only. canAttack fires throwaway damage events for this
             // target (and SkillDamageEvent handlers run) before this point, none may be matched with the request
             try (DamageScope ignored = describeHit(target, damage, source, classification, knockback,
-                    ignoreDivinity, cause)) {
+                    weaponStats, cause)) {
                 if (!DamageRegistry.dealDamage(target, damage, classification, source))
                     target.damage(damage, source);
             }
@@ -914,7 +939,7 @@ public abstract class Skill implements IconHolder {
                                            LivingEntity source,
                                            String classification,
                                            boolean knockback,
-                                           boolean ignoreDivinity,
+                                           WeaponStatsMode weaponStats,
                                            EntityDamageEvent.DamageCause cause) {
         if (classification == null) return null;
         // A request can't hold a negative or NaN amount, the Bukkit call still gets the damage as is
@@ -924,7 +949,7 @@ public abstract class Skill implements IconHolder {
                 .source(source)
                 .cause(cause)
                 .knockback(knockback)
-                .weaponStats(ignoreDivinity ? WeaponStatsMode.IGNORE : WeaponStatsMode.ADD)
+                .weaponStats(weaponStats)
                 .amount(classification, amount)
                 .build());
     }

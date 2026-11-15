@@ -29,6 +29,8 @@ package studio.magemonkey.fabled.dynamic.mechanic;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
 
+import studio.magemonkey.codex.api.damage.WeaponStatsMode;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -41,7 +43,6 @@ public class DamageMechanic extends MechanicComponent {
     private static final String TRUE            = "true";
     private static final String CLASSIFIER      = "classifier";
     private static final String KNOCKBACK       = "knockback";
-    private static final String IGNORE_DIVINITY = "ignore-divinity";
     private static final String CAUSE           = "cause";
     private static final String NO_SHAKE        = "no-shake";
 
@@ -59,7 +60,7 @@ public class DamageMechanic extends MechanicComponent {
         boolean trueDmg        = settings.getBool(TRUE, false);
         double  damage         = parseValues(caster, DAMAGE, level, 1.0);
         boolean knockback      = settings.getBool(KNOCKBACK, true);
-        boolean ignoreDivinity = settings.getBool(IGNORE_DIVINITY, false);
+        WeaponStatsMode weaponStats = WeaponStatsSetting.read(settings);
         boolean noShake        = settings.getBool(NO_SHAKE, false);
         String  classification = settings.getString(CLASSIFIER, "default");
         if (damage < 0) {
@@ -86,7 +87,7 @@ public class DamageMechanic extends MechanicComponent {
                         caster,
                         classification,
                         knockback,
-                        ignoreDivinity,
+                        weaponStats,
                         EntityDamageEvent.DamageCause.valueOf(settings.getString(CAUSE, "Entity Attack")
                                 .toUpperCase(Locale.US)
                                 .replace(' ', '_')),

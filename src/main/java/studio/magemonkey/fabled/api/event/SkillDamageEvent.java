@@ -33,6 +33,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.Nullable;
+import studio.magemonkey.codex.api.damage.WeaponStatsMode;
 import studio.magemonkey.fabled.api.skills.Skill;
 
 /**
@@ -79,8 +80,11 @@ public class SkillDamageEvent extends Event implements Cancellable {
     @Getter
     @Setter
     private              boolean      knockback;
+    /**
+     * How the damage combines with the caster's weapon stats, as chosen by the skill
+     */
     @Getter
-    private              boolean      ignoreDivinity;
+    private final        WeaponStatsMode weaponStats;
     @Getter
     @Setter
     private              boolean      noShake;
@@ -95,19 +99,49 @@ public class SkillDamageEvent extends Event implements Cancellable {
      * @param damage         the amount of damage dealt
      * @param classification the damage type to use
      * @param knockback      whether to apply knockback to the target
-     * @param ignoreDivinity whether to ignore divinity
+     * @param ignoreDivinity whether to ignore divinity (true is {@link WeaponStatsMode#IGNORE}, false is
+     *                       {@link WeaponStatsMode#ADD})
      * @param noShake        whether to prevent screen shake
      */
     public SkillDamageEvent(Skill skill, LivingEntity damager, LivingEntity target, double damage,
                             @Nullable String classification, boolean knockback, boolean ignoreDivinity, boolean noShake) {
+        this(skill, damager, target, damage, classification, knockback,
+                ignoreDivinity ? WeaponStatsMode.IGNORE : WeaponStatsMode.ADD, noShake);
+    }
+
+    /**
+     * Initializes a new event
+     *
+     * @param skill          skill used to deal damage
+     * @param damager        entity dealing the damage
+     * @param target         entity receiving the damage
+     * @param damage         the amount of damage dealt
+     * @param classification the damage type to use
+     * @param knockback      whether to apply knockback to the target
+     * @param weaponStats    how the damage combines with the caster's weapon stats
+     * @param noShake        whether to prevent screen shake
+     */
+    public SkillDamageEvent(Skill skill, LivingEntity damager, LivingEntity target, double damage,
+                            @Nullable String classification, boolean knockback, WeaponStatsMode weaponStats,
+                            boolean noShake) {
         this.skill = skill;
         this.damager = damager;
         this.target = target;
         this.damage = damage;
         this.classification = classification;
         this.knockback = knockback;
-        this.ignoreDivinity = ignoreDivinity;
+        this.weaponStats = weaponStats == null ? WeaponStatsMode.ADD : weaponStats;
         this.noShake = noShake;
+    }
+
+    /**
+     * For Divinity builds that predate weapon-stats modes. True for {@link WeaponStatsMode#IGNORE} and for
+     * {@link WeaponStatsMode#RAW} (the closest thing an old Divinity can do), false for ADD and REPLACE.
+     *
+     * @return whether the weapon stats should be ignored
+     */
+    public boolean isIgnoreDivinity() {
+        return weaponStats == WeaponStatsMode.IGNORE || weaponStats == WeaponStatsMode.RAW;
     }
 
     /**

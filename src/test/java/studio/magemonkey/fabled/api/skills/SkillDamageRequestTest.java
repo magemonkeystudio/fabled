@@ -20,7 +20,16 @@ import studio.magemonkey.codex.api.damage.DamageOrigin;
 import studio.magemonkey.codex.api.damage.DamageRequest;
 import studio.magemonkey.codex.api.damage.WeaponStatsMode;
 import studio.magemonkey.codex.registry.DamageRegistry;
+import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.api.event.SkillDamageEvent;
+import studio.magemonkey.fabled.dynamic.EffectComponent;
+import studio.magemonkey.fabled.dynamic.mechanic.DamageLoreMechanic;
+import studio.magemonkey.fabled.dynamic.mechanic.DamageMechanic;
+import studio.magemonkey.fabled.dynamic.mechanic.MechanicComponent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import studio.magemonkey.fabled.testutil.MockedTest;
 
 import java.util.ArrayList;
@@ -309,5 +318,230 @@ public class SkillDamageRequestTest extends MockedTest {
         assertFalse(request.hasKnockback());
         assertEquals(java.util.Map.of("physical", 9.0), request.getAmounts());
         verify(target).damage(9.0, caster);
+    }
+
+    // ---- weapon-stats choice ----
+
+    private void runMechanic(MechanicComponent mechanic, java.util.function.Consumer<Settings> configure) {
+        try {
+            java.lang.reflect.Field settingsField = EffectComponent.class.getDeclaredField("settings");
+            settingsField.setAccessible(true);
+            Settings settings = (Settings) settingsField.get(mechanic);
+            settings.set("value", 4);
+            settings.set("multiplier", 1);
+            settings.set("hand", "main");
+            configure.accept(settings);
+            java.lang.reflect.Field skillField = EffectComponent.class.getDeclaredField("skill");
+            skillField.setAccessible(true);
+            skillField.set(mechanic, new studio.magemonkey.fabled.dynamic.DynamicSkill("dyn"));
+        } catch (ReflectiveOperationException e) {
+            fail(e);
+        }
+        try (MockedStatic<DamageRegistry> ignored = registryFallsBack()) {
+            mechanic.execute(caster, 1, List.of(target), true);
+        }
+    }
+
+    private WeaponStatsMode damageMechanicMode(java.util.function.Consumer<Settings> configure) {
+        claimed.clear();
+        runMechanic(new DamageMechanic(), configure);
+        assertEquals(1, claimed.size(), "the mechanic did not deal damage");
+        return claimed.get(0).getWeaponStats();
+    }
+
+    private WeaponStatsMode damageLoreMechanicMode(java.util.function.Consumer<Settings> configure) {
+        ItemStack sword = new ItemStack(Material.IRON_SWORD);
+        ItemMeta meta = sword.getItemMeta();
+        meta.setLore(List.of("Damage: 4"));
+        sword.setItemMeta(meta);
+        caster.getInventory().setItemInMainHand(sword);
+        claimed.clear();
+        runMechanic(new DamageLoreMechanic(), configure);
+        assertEquals(1, claimed.size(), "the mechanic did not deal damage");
+        return claimed.get(0).getWeaponStats();
+    }
+
+    private void assertBothMechanics(WeaponStatsMode expected, java.util.function.Consumer<Settings> configure) {
+        assertEquals(expected, damageMechanicMode(configure), "damage");
+        assertEquals(expected, damageLoreMechanicMode(configure), "damage lore");
+    }
+
+    @Test
+    void mechanics_readEachWeaponStatsValue() {
+        assertBothMechanics(WeaponStatsMode.ADD, st -> st.set("weapon-stats", "add"));
+        assertBothMechanics(WeaponStatsMode.REPLACE, st -> st.set("weapon-stats", "replace"));
+        assertBothMechanics(WeaponStatsMode.IGNORE, st -> st.set("weapon-stats", "ignore"));
+        assertBothMechanics(WeaponStatsMode.RAW, st -> st.set("weapon-stats", "raw"));
+    }
+
+    @Test
+    void mechanics_weaponStatsIsCaseInsensitiveAndTrimmed() {
+        assertBothMechanics(WeaponStatsMode.RAW, st -> st.set("weapon-stats", "RaW"));
+        assertBothMechanics(WeaponStatsMode.REPLACE, st -> st.set("weapon-stats", "  REPLACE "));
+        assertBothMechanics(WeaponStatsMode.IGNORE, st -> st.set("weapon-stats", "Ignore"));
+    }
+
+    @Test
+    void mechanics_absentKeyFallsBackToIgnoreDivinity() {
+        assertBothMechanics(WeaponStatsMode.IGNORE, st -> st.set("ignore-divinity", true));
+        assertBothMechanics(WeaponStatsMode.ADD, st -> st.set("ignore-divinity", false));
+        assertBothMechanics(WeaponStatsMode.ADD, st -> {});
+    }
+
+    @Test
+    void mechanics_unknownValueFallsBackToIgnoreDivinityWithoutThrowing() {
+        assertBothMechanics(WeaponStatsMode.IGNORE, st -> {
+            st.set("weapon-stats", "bogus");
+            st.set("ignore-divinity", true);
+        });
+        assertBothMechanics(WeaponStatsMode.ADD, st -> {
+            st.set("weapon-stats", "bogus");
+            st.set("ignore-divinity", false);
+        });
+        assertBothMechanics(WeaponStatsMode.ADD, st -> st.set("weapon-stats", ""));
+    }
+
+    @Test
+    void mechanics_weaponStatsWinsOverContradictingIgnoreDivinity() {
+        assertBothMechanics(WeaponStatsMode.ADD, st -> {
+            st.set("weapon-stats", "add");
+            st.set("ignore-divinity", true);
+        });
+        assertBothMechanics(WeaponStatsMode.RAW, st -> {
+            st.set("weapon-stats", "raw");
+            st.set("ignore-divinity", false);
+        });
+        assertBothMechanics(WeaponStatsMode.REPLACE, st -> {
+            st.set("weapon-stats", "replace");
+            st.set("ignore-divinity", true);
+        });
+    }
+
+    @ParameterizedTest
+    @EnumSource(WeaponStatsMode.class)
+    void damage_modeOverloadDescribesTheHitWithThatMode(WeaponStatsMode mode) {
+        try (MockedStatic<DamageRegistry> ignored = registryFallsBack()) {
+            skill.damage(target, 5, caster, "physical", true, mode, CAUSE, false);
+        }
+
+        assertEquals(1, claimed.size());
+        assertEquals(mode, claimed.get(0).getWeaponStats());
+        assertNothingOpen();
+    }
+
+    @Test
+    void damage_booleanOverloadsStillMeanAddAndIgnore() {
+        WeaponStatsMode[] seen = new WeaponStatsMode[2];
+        for (int i = 0; i < 2; i++) {
+            boolean ignore = i == 1;
+            claimed.clear();
+            try (MockedStatic<DamageRegistry> ignored = registryFallsBack()) {
+                skill.damage(target, 5, caster, "physical", true, ignore);
+                assertEquals(1, claimed.size());
+                seen[i] = claimed.get(0).getWeaponStats();
+                claimed.clear();
+                skill.damage(target, 5, caster, "physical", true, ignore, CAUSE);
+                assertEquals(seen[i], claimed.get(0).getWeaponStats());
+                claimed.clear();
+                skill.damage(target, 5, caster, "physical", true, ignore, CAUSE, true);
+                assertEquals(seen[i], claimed.get(0).getWeaponStats());
+            }
+        }
+        assertEquals(WeaponStatsMode.ADD, seen[0]);
+        assertEquals(WeaponStatsMode.IGNORE, seen[1]);
+    }
+
+    @Test
+    void damage_legacyWrapperKeepsItsMeaning() {
+        com.sucy.skill.api.player.Skill legacy = new com.sucy.skill.api.player.Skill(skill);
+        try (MockedStatic<DamageRegistry> ignored = registryFallsBack()) {
+            legacy.damage(target, 5, caster, "physical", true, true);
+        }
+        assertEquals(WeaponStatsMode.IGNORE, claimed.get(0).getWeaponStats());
+    }
+
+    @ParameterizedTest
+    @EnumSource(WeaponStatsMode.class)
+    void event_ignoreDivinityIsTrueOnlyForIgnoreAndRaw(WeaponStatsMode mode) {
+        SkillDamageEvent event = new SkillDamageEvent(skill, caster, target, 1, "physical", true, mode, false);
+        assertEquals(mode, event.getWeaponStats());
+        assertEquals(mode == WeaponStatsMode.IGNORE || mode == WeaponStatsMode.RAW, event.isIgnoreDivinity());
+    }
+
+    @Test
+    void event_oldConstructorKeepsItsMeaning() {
+        SkillDamageEvent ignore = new SkillDamageEvent(skill, caster, target, 1, "physical", true, true, false);
+        SkillDamageEvent add = new SkillDamageEvent(skill, caster, target, 1, "physical", true, false, false);
+        assertTrue(ignore.isIgnoreDivinity());
+        assertEquals(WeaponStatsMode.IGNORE, ignore.getWeaponStats());
+        assertFalse(add.isIgnoreDivinity());
+        assertEquals(WeaponStatsMode.ADD, add.getWeaponStats());
+    }
+
+    /** What a SkillDamageEvent listener sees for the event Skill#damage fires itself */
+    private List<SkillDamageEvent> captureSkillDamageEvents(Runnable damageCall) {
+        List<SkillDamageEvent> seen = new ArrayList<>();
+        Listener capture = new Listener() {
+            @EventHandler(priority = EventPriority.MONITOR)
+            public void onSkillDamage(SkillDamageEvent event) {
+                seen.add(event);
+            }
+        };
+        server.getPluginManager().registerEvents(capture, plugin);
+        try (MockedStatic<DamageRegistry> ignored = registryFallsBack()) {
+            damageCall.run();
+        } finally {
+            HandlerList.unregisterAll(capture);
+        }
+        return seen;
+    }
+
+    @ParameterizedTest
+    @EnumSource(WeaponStatsMode.class)
+    void damage_firesTheSkillDamageEventWithTheModeGiven(WeaponStatsMode mode) {
+        List<SkillDamageEvent> seen = captureSkillDamageEvents(
+                () -> skill.damage(target, 5, caster, "physical", true, mode, CAUSE, false));
+
+        assertEquals(1, seen.size());
+        assertEquals(mode, seen.get(0).getWeaponStats());
+        assertEquals(mode == WeaponStatsMode.IGNORE || mode == WeaponStatsMode.RAW, seen.get(0).isIgnoreDivinity());
+    }
+
+    @Test
+    void damage_nullModeIsTreatedAsAddForTheEventAndTheRequest() {
+        List<SkillDamageEvent> seen = captureSkillDamageEvents(
+                () -> skill.damage(target, 5, caster, "physical", true, (WeaponStatsMode) null, CAUSE, false));
+
+        assertEquals(1, seen.size());
+        assertEquals(WeaponStatsMode.ADD, seen.get(0).getWeaponStats());
+        assertFalse(seen.get(0).isIgnoreDivinity());
+        assertEquals(WeaponStatsMode.ADD, claimed.get(0).getWeaponStats());
+    }
+
+    @Test
+    void damage_booleanOverloadsFireTheEventWithAddAndIgnore() {
+        List<SkillDamageEvent> seen = captureSkillDamageEvents(() -> {
+            skill.damage(target, 5, caster, "physical", true, false);
+            skill.damage(target, 5, caster, "physical", true, true);
+        });
+
+        assertEquals(2, seen.size());
+        assertEquals(WeaponStatsMode.ADD, seen.get(0).getWeaponStats());
+        assertFalse(seen.get(0).isIgnoreDivinity());
+        assertEquals(WeaponStatsMode.IGNORE, seen.get(1).getWeaponStats());
+        assertTrue(seen.get(1).isIgnoreDivinity());
+    }
+
+    @Test
+    void mechanics_nonStringWeaponStatsFallsBackToIgnoreDivinity() {
+        assertBothMechanics(WeaponStatsMode.IGNORE, st -> {
+            st.set("weapon-stats", true);
+            st.set("ignore-divinity", true);
+        });
+        assertBothMechanics(WeaponStatsMode.ADD, st -> {
+            st.set("weapon-stats", true);
+            st.set("ignore-divinity", false);
+        });
+        assertBothMechanics(WeaponStatsMode.ADD, st -> st.set("weapon-stats", 3));
     }
 }
