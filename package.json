@@ -21,7 +21,7 @@
 		"@typescript-eslint/parser": "^8.72.2",
 		"eslint": "^10.14.0",
 		"eslint-config-prettier": "^10.1.8",
-		"eslint-plugin-svelte": "^3.24.0",
+		"eslint-plugin-svelte": "^3.24.1",
 		"fake-indexeddb": "^6.2.7",
 		"globals": "^17.14.0",
 		"jsdom": "^30.1.3",
