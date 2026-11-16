@@ -20,7 +20,6 @@ import studio.magemonkey.fabled.log.LogType;
 import studio.magemonkey.fabled.log.Logger;
 
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -44,9 +43,9 @@ public class FabledAttribute implements IconHolder {
      */
     // Attribute description
     @Getter
-    private String   key;
-    private String   display;
-    private Supplier<ItemStack> iconFn;
+    private String    key;
+    private String    display;
+    private ItemStack icon;
     /**
      * -- GETTER --
      * Retrieves the max amount the attribute can be raised to
@@ -91,7 +90,7 @@ public class FabledAttribute implements IconHolder {
     public FabledAttribute(DataSection data, String key) {
         this.key = key.toLowerCase();
         this.display = data.getString(DISPLAY, key);
-        this.iconFn = () -> Data.parseIcon(data);
+        this.icon = Data.parseIcon(data);
         this.max = data.getInt(MAX, 999);
         // iomatix: base_cost and the modifier
         // e.g. per 0.3 increase -> 0.3=>0, 0.6=>0, 0.9=>0, 1.2=>1 (the first additional cost point) etc.
@@ -131,14 +130,23 @@ public class FabledAttribute implements IconHolder {
      */
     @Override
     public ItemStack getIcon(PlayerData data) {
-        ItemStack item     = iconFn.get();
+        ItemStack item     = new ItemStack(icon.getType());
+        ItemMeta  iconMeta = icon.getItemMeta();
         ItemMeta  meta     = item.getItemMeta();
-        if (meta != null) {
-            meta.setDisplayName(filter(data, meta.getDisplayName()));
-            List<String> iconLore = meta.getLore();
+        if (meta != null && iconMeta != null) {
+            meta.setDisplayName(filter(data, iconMeta.getDisplayName()));
+            List<String> iconLore = iconMeta.getLore();
             List<String> lore = iconLore != null
                     ? iconLore.stream().map(iconLine -> filter(data, iconLine)).collect(Collectors.toList())
                     : new ArrayList<>();
+
+            if (meta instanceof Damageable) {
+                ((Damageable) meta).setDamage(((Damageable) iconMeta).getDamage());
+            }
+
+            if (iconMeta.hasCustomModelData()) {
+                meta.setCustomModelData(iconMeta.getCustomModelData());
+            }
 
             meta.setLore(lore);
             item.setItemMeta(meta);
@@ -174,12 +182,22 @@ public class FabledAttribute implements IconHolder {
      * @return icon for the attribute for use in the GUI editor
      */
     public ItemStack getToolIcon() {
-        ItemStack icon     = this.iconFn.get();
+        ItemStack icon     = new ItemStack(this.icon.getType());
         ItemMeta  meta     = icon.getItemMeta();
-        if (meta == null) {
+        ItemMeta  iconMeta = this.icon.getItemMeta();
+        if (meta == null || iconMeta == null) {
             return icon;
         }
         meta.setDisplayName(key);
+        List<String> lore = iconMeta.hasLore()
+                ? iconMeta.getLore()
+                : null;
+        if (lore == null) {
+            lore = new ArrayList<>();
+        }
+        if (iconMeta.hasDisplayName())
+            lore.add(0, iconMeta.getDisplayName());
+        meta.setLore(lore);
         icon.setItemMeta(meta);
         return icon;
     }

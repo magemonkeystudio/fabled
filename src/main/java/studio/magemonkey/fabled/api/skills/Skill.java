@@ -76,7 +76,6 @@ import studio.magemonkey.fabled.manager.AttributeManager;
 
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.function.Supplier;
 
 /**
  * Represents a template for a skill used in the RPG system. This is
@@ -124,8 +123,14 @@ public abstract class Skill implements IconHolder {
     @Getter
     private final        String            key;
     private              List<String>      iconLore;
-
-    private Supplier<ItemStack> indicatorFn;
+    /**
+     * -- GETTER --
+     * Retrieves the indicator representing the skill for menus
+     *
+     * @return indicator for the skill
+     */
+    @Getter
+    private              ItemStack         indicator;
     /**
      * -- GETTER --
      * Retrieves the name of the skill
@@ -133,7 +138,7 @@ public abstract class Skill implements IconHolder {
      * @return skill name
      */
     @Getter
-    private String              name;
+    private              String            name;
     /**
      * -- GETTER --
      * Retrieves the descriptive type of the skill
@@ -141,7 +146,7 @@ public abstract class Skill implements IconHolder {
      * @return descriptive type of the skill
      */
     @Getter
-    private String              type;
+    private              String            type;
     /**
      * -- GETTER --
      * Retrieves the message for the skill to display when cast.
@@ -149,7 +154,7 @@ public abstract class Skill implements IconHolder {
      * @return cast message of the skill
      */
     @Getter
-    private String              message;
+    private              String            message;
     /**
      * -- GETTER --
      * Retrieves the skill required to be upgraded before this one
@@ -157,7 +162,7 @@ public abstract class Skill implements IconHolder {
      * @return required skill
      */
     @Getter
-    private String              skillReq;
+    private              String            skillReq;
     /**
      * -- GETTER --
      * Retrieves the max level the skill can reach
@@ -165,7 +170,7 @@ public abstract class Skill implements IconHolder {
      * @return max skill level
      */
     @Getter
-    private int                 maxLevel;
+    private              int               maxLevel;
     /**
      * -- GETTER --
      * Retrieves the level of the required skill needed to be obtained
@@ -174,10 +179,10 @@ public abstract class Skill implements IconHolder {
      * @return required skill level
      */
     @Getter
-    private int                 skillReqLevel;
-    private boolean             needsPermission;
-    private boolean             cooldownMessage;
-    private List<String>        incompatibleSkills;
+    private              int               skillReqLevel;
+    private              boolean           needsPermission;
+    private              boolean           cooldownMessage;
+    private              List<String>      incompatibleSkills;
     /**
      * -- GETTER --
      * Retrieves the ID of the skill's combo
@@ -189,7 +194,7 @@ public abstract class Skill implements IconHolder {
      */
     @Setter
     @Getter
-    private int                 combo;
+    private              int               combo;
 
     /**
      * Initializes a new skill that doesn't require any other skill.
@@ -291,10 +296,7 @@ public abstract class Skill implements IconHolder {
         this.key = name.toLowerCase();
         this.type = type;
         this.name = name;
-
-        ItemStack finalIndicator = indicator;
-        this.indicatorFn = () -> finalIndicator;
-
+        this.indicator = indicator;
         this.maxLevel = maxLevel;
         this.skillReq = skillReq;
         this.skillReqLevel = skillReqLevel;
@@ -302,15 +304,6 @@ public abstract class Skill implements IconHolder {
 
         this.message = Fabled.getLanguage().getMessage(NotificationNodes.CAST, true, FilterType.COLOR).get(0);
         this.iconLore = Fabled.getLanguage().getMessage(SkillNodes.LAYOUT, true, FilterType.COLOR);
-    }
-
-    /**
-     * Retrieves the indicator representing the skill for menus
-     *
-     * @return indicator for the skill
-     */
-    public ItemStack getIndicator() {
-        return indicatorFn.get();
     }
 
     /**
@@ -482,7 +475,7 @@ public abstract class Skill implements IconHolder {
      * @return GUI tool indicator
      */
     public ItemStack getToolIndicator() {
-        ItemStack item = indicatorFn.get();
+        ItemStack item = new ItemStack(indicator.getType());
         ItemMeta  meta = item.getItemMeta();
         if (meta != null) {
             List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
@@ -572,11 +565,20 @@ public abstract class Skill implements IconHolder {
     public ItemStack getIndicator(PlayerSkill skillData, boolean brief) {
         Player player = skillData.getPlayerData().getPlayer();
 
-        ItemStack item = indicatorFn.get();
+        ItemStack item = new ItemStack(indicator.getType());
         item.setAmount(Math.max(1, skillData.getLevel()));
         ItemMeta meta = item.hasItemMeta()
                 ? item.getItemMeta()
                 : Bukkit.getItemFactory().getItemMeta(item.getType());
+        ItemMeta iconMeta = indicator.getItemMeta();
+
+        if (meta instanceof Damageable) {
+            ((Damageable) meta).setDamage(((Damageable) iconMeta).getDamage());
+        }
+
+        if (iconMeta.hasCustomModelData()) {
+            meta.setCustomModelData(iconMeta.getCustomModelData());
+        }
 
         List<String> lore = new ArrayList<>();
 
@@ -1001,7 +1003,7 @@ public abstract class Skill implements IconHolder {
         if (hasMessage()) {
             config.set(MSG, message.replace(ChatColor.COLOR_CHAR, '&'));
         }
-        Data.serializeIcon(getIndicator(), config);
+        Data.serializeIcon(indicator, config);
         config.set(DESC, description);
     }
 
@@ -1027,7 +1029,7 @@ public abstract class Skill implements IconHolder {
     public void load(DataSection config) {
         name = config.getString(NAME, name);
         type = StringUT.color(config.getString(TYPE, name));
-        indicatorFn = () -> Data.parseIcon(config);
+        indicator = Data.parseIcon(config);
         maxLevel = config.getInt(MAX, maxLevel);
         skillReq = config.getString(REQ);
         if (skillReq == null || skillReq.isEmpty()) skillReq = null;
