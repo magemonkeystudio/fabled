@@ -213,6 +213,9 @@ public class Formula implements IValue {
                 if (value.getToken().equals(val))
                     return value;
             }
+            if (constants.containsKey(val)) {
+                return new ValueNum(constants.get(val));
+            }
             return new ValueNum(val);
         }
     }

@@ -45,6 +45,7 @@ import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.util.BoundingBox;
 import studio.magemonkey.fabled.Fabled;
+import studio.magemonkey.fabled.api.displayentity.DisplayEntityManager;
 import studio.magemonkey.fabled.api.enums.ExpSource;
 import studio.magemonkey.fabled.api.event.FlagApplyEvent;
 import studio.magemonkey.fabled.api.event.FlagExpireEvent;
@@ -438,7 +439,8 @@ public class MechanicListener extends FabledListener {
         List<Entity> entities = new ArrayList<>();
         for (Entity entity : event.getChunk().getEntities()) {
             if (entity.hasMetadata(WolfMechanic.SKILL_META)
-                    || entity.hasMetadata(ARMOR_STAND)) {
+                    || entity.hasMetadata(ARMOR_STAND)
+                    || entity.hasMetadata(DisplayEntityManager.DISPLAY_ENTITY_META)) {
                 entities.add(entity);
             }
         }
