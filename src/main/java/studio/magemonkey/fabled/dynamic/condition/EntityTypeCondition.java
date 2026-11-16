@@ -26,6 +26,11 @@
  */
 package studio.magemonkey.fabled.dynamic.condition;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Tag;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import studio.magemonkey.codex.mccore.config.parse.DataSection;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
@@ -38,9 +43,11 @@ import java.util.stream.Collectors;
 public class EntityTypeCondition extends ConditionComponent {
 
     private static final String TYPE      = "types";
+    private static final String TAGS      = "tags";
     private static final String BLACKLIST = "blacklist";
 
     private Set<String> types;
+    private Set<Tag<EntityType>> tags;
 
     @Override
     public String getKey() {
@@ -53,13 +60,17 @@ public class EntityTypeCondition extends ConditionComponent {
         types = settings.getStringList(TYPE).stream()
                 .map(s -> s.toUpperCase(Locale.US).replace(' ', '_'))
                 .collect(Collectors.toSet());
+        tags = settings.getStringList(TAGS).stream()
+                .map(s -> s.toLowerCase(Locale.US).replace(' ', '_'))
+                .map(s -> Bukkit.getTag("entity_types", NamespacedKey.minecraft(s), EntityType.class))
+                .collect(Collectors.toSet());
     }
 
     @Override
     boolean test(final LivingEntity caster, final int level, final LivingEntity target) {
         boolean result = target instanceof TempEntity
                 ? types.contains("LOCATION")
-                : types.contains(target.getType().name());
+                : types.contains(target.getType().name()) || tags.stream().anyMatch(entityTypeTag -> entityTypeTag.isTagged(target.getType()));
         return settings.getBool(BLACKLIST, false) != result;
     }
 }
