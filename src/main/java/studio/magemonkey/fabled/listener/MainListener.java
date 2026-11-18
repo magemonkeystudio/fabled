@@ -30,7 +30,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -43,10 +42,8 @@ import org.bukkit.scheduler.BukkitTask;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.DefaultCombatProtection;
 import studio.magemonkey.fabled.api.enums.ExpSource;
-import studio.magemonkey.fabled.api.event.PhysicalDamageEvent;
 import studio.magemonkey.fabled.api.event.PlayerLevelUpEvent;
 import studio.magemonkey.fabled.api.player.PlayerData;
-import studio.magemonkey.fabled.api.skills.Skill;
 import studio.magemonkey.fabled.api.util.BuffManager;
 import studio.magemonkey.fabled.api.util.Combat;
 import studio.magemonkey.fabled.api.util.FlagManager;
@@ -311,10 +308,9 @@ public class MainListener extends FabledListener {
         if (event.getEntity() instanceof LivingEntity && FlagManager.hasFlag((LivingEntity) event.getEntity(),
                 "immune:" + event.getCause().name())) {
             double multiplier = Fabled.getMetaDouble(event.getEntity(), ImmunityMechanic.META_KEY);
+            // A multiplier above 0 scales the final damage, see FinalDamageListener#onImmunity
             if (multiplier <= 0)
                 event.setCancelled(true);
-            else
-                event.setDamage(event.getDamage() * multiplier);
         }
     }
 
@@ -349,8 +345,8 @@ public class MainListener extends FabledListener {
 
     /**
      * Cancels EntityDamageByEntity events when the attacker and defender
-     * are not allowed to attack each other. This prevents the following method
-     * to trigger a PhysicalDamageEvent
+     * are not allowed to attack each other. This prevents FinalDamageListener
+     * from triggering a PhysicalDamageEvent
      *
      * @param event event details
      */
@@ -373,32 +369,6 @@ public class MainListener extends FabledListener {
 
         DefaultCombatProtection.externallyCancelled.put(event, event.isCancelled());
         event.setCancelled(true);
-    }
-
-    /**
-     * Launches physical damage events to differentiate skill damage from physical damage
-     *
-     * @param event event details
-     */
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onPhysicalDamage(EntityDamageByEntityEvent event) {
-        if (Skill.isSkillDamage()
-                || DefaultCombatProtection.isFakeDamageEvent(event)
-                || event.getCause() == EntityDamageEvent.DamageCause.CUSTOM
-                || !(event.getEntity() instanceof LivingEntity)
-                || event.getDamage() <= 0) {
-            return;
-        }
-
-        PhysicalDamageEvent e = new PhysicalDamageEvent(ListenerUtil.getDamager(event),
-                (LivingEntity) event.getEntity(),
-                event.getDamage(),
-                event.getDamager() instanceof Projectile);
-        Bukkit.getPluginManager().callEvent(e);
-        event.setDamage(e.getDamage());
-        if (e.isCancelled()) {
-            event.setCancelled(true);
-        }
     }
 
     /**

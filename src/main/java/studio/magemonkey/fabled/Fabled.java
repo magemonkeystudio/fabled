@@ -637,6 +637,7 @@ public class Fabled extends SkillAPI {
         listen(new BindListener(), true);
         listen(new BuffListener(), true);
         listen(new MainListener(), true);
+        listen(new FinalDamageListener(), true);
         listen(new MechanicListener(), true);
         if (protocolLib) listen(new PacketListener(), true);
         listen(new ProjectileListener(), true);

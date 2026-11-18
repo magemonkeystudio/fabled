@@ -67,13 +67,14 @@ class DependencyRequirementTest {
     }
 
     @Test
-    void currentMinimumIsTheCodexDevBuildWithDamageRequests() {
+    void currentMinimumIsTheCodexDevBuildWithFinalDamageFallback() {
         String min = DependencyRequirement.MIN_CORE_VERSION;
-        assertEquals("1.3.0-dev.1", min);
-        assertTrue(meetsVersion(min, "1.3.0-dev.1"));
-        assertTrue(meetsVersion(min, "1.3.0-dev.2"));
+        assertEquals("1.3.0-dev.5", min);
+        assertTrue(meetsVersion(min, "1.3.0-dev.5"));
+        assertTrue(meetsVersion(min, "1.3.0-dev.6"));
         assertTrue(meetsVersion(min, "1.3.0"));
         assertFalse(meetsVersion(min, "1.2.1"));
-        assertFalse(meetsVersion(min, "1.3.0-dev.0"));
+        assertFalse(meetsVersion(min, "1.3.0-dev.4"));
+        assertFalse(meetsVersion(min, "1.3.0-dev.3"));
     }
 }

@@ -30,12 +30,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import studio.magemonkey.codex.api.damage.FinalDamageEvent;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.enums.ExpSource;
 import studio.magemonkey.fabled.api.enums.ManaSource;
@@ -44,6 +44,7 @@ import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.hook.CitizensHook;
 import studio.magemonkey.fabled.hook.DivinityHook;
 import studio.magemonkey.fabled.listener.FabledListener;
+import studio.magemonkey.fabled.listener.FinalDamageListener;
 import studio.magemonkey.fabled.listener.MainListener;
 import studio.magemonkey.fabled.log.LogType;
 import studio.magemonkey.fabled.log.Logger;
@@ -193,18 +194,24 @@ public class AttributeListener extends FabledListener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onDamage(final EntityDamageEvent event) {
-        if (!(event.getEntity() instanceof Player))
+    /**
+     * Apply the defense-&lt;cause&gt; attributes to the final damage of every hit a player takes
+     *
+     * @param event event details
+     */
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onDamage(final FinalDamageEvent event) {
+        if (!(event.getVictim() instanceof Player))
             return;
 
-        final Player player = (Player) event.getEntity();
+        final Player player = (Player) event.getVictim();
         if (CitizensHook.isNPC(player)) {
             return;
         }
 
         final PlayerData data = Fabled.getData(player);
-        event.setDamage(data.scaleStat("defense-" + event.getCause().name().toLowerCase(), event.getDamage()));
+        final String     stat = "defense-" + event.getCause().name().toLowerCase();
+        FinalDamageListener.scale(event, damage -> data.scaleStat(stat, damage));
     }
 
     @EventHandler(priority = EventPriority.HIGH)
