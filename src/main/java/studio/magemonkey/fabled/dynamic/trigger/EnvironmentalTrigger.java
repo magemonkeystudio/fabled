@@ -7,6 +7,7 @@ import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.api.DefaultCombatProtection;
 import studio.magemonkey.fabled.api.Settings;
 import studio.magemonkey.fabled.dynamic.DynamicSkill;
+import studio.magemonkey.fabled.listener.FinalDamageListener;
 
 import java.util.List;
 import java.util.Locale;
@@ -89,7 +90,7 @@ public class EnvironmentalTrigger implements Trigger<EntityDamageEvent> {
      */
     @Override
     public void postProcess(final EntityDamageEvent event, final DynamicSkill skill) {
-        final double damage = skill.applyImmediateBuff(event.getDamage());
-        event.setDamage(damage);
+        // A damage plugin overwrites the Bukkit damage, so the buff goes on its final damage then
+        FinalDamageListener.scaleDamage(event, skill.takeImmediateBuff());
     }
 }

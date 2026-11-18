@@ -40,6 +40,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.scheduler.BukkitTask;
+import studio.magemonkey.codex.api.damage.FinalDamageEvent;
 import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.DefaultCombatProtection;
 import studio.magemonkey.fabled.api.enums.ExpSource;
@@ -314,7 +315,7 @@ public class MainListener extends FabledListener {
             if (multiplier <= 0)
                 event.setCancelled(true);
             else
-                event.setDamage(event.getDamage() * multiplier);
+                FinalDamageListener.scaleDamage(event, damage -> damage * multiplier);
         }
     }
 
@@ -376,13 +377,16 @@ public class MainListener extends FabledListener {
     }
 
     /**
-     * Launches physical damage events to differentiate skill damage from physical damage
+     * Launches physical damage events to differentiate skill damage from physical damage.
+     * When a damage plugin will fire a {@link FinalDamageEvent} for the hit, this leaves the hit alone and
+     * {@link FinalDamageListener} fires the physical damage event from that plugin's final damage instead.
      *
      * @param event event details
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPhysicalDamage(EntityDamageByEntityEvent event) {
         if (Skill.isSkillDamage()
+                || FinalDamageEvent.willFire(event)
                 || DefaultCombatProtection.isFakeDamageEvent(event)
                 || event.getCause() == EntityDamageEvent.DamageCause.CUSTOM
                 || !(event.getEntity() instanceof LivingEntity)

@@ -44,6 +44,7 @@ import studio.magemonkey.fabled.api.player.PlayerData;
 import studio.magemonkey.fabled.hook.CitizensHook;
 import studio.magemonkey.fabled.hook.DivinityHook;
 import studio.magemonkey.fabled.listener.FabledListener;
+import studio.magemonkey.fabled.listener.FinalDamageListener;
 import studio.magemonkey.fabled.listener.MainListener;
 import studio.magemonkey.fabled.log.LogType;
 import studio.magemonkey.fabled.log.Logger;
@@ -204,7 +205,8 @@ public class AttributeListener extends FabledListener {
         }
 
         final PlayerData data = Fabled.getData(player);
-        event.setDamage(data.scaleStat("defense-" + event.getCause().name().toLowerCase(), event.getDamage()));
+        final String     stat = "defense-" + event.getCause().name().toLowerCase();
+        FinalDamageListener.scaleDamage(event, damage -> data.scaleStat(stat, damage));
     }
 
     @EventHandler(priority = EventPriority.HIGH)

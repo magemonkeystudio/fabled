@@ -2,7 +2,7 @@ package studio.magemonkey.fabled;
 
 public class DependencyRequirement {
 
-    public static final String MIN_CORE_VERSION = "1.3.0-dev.1";
+    public static final String MIN_CORE_VERSION = "1.3.0-dev.3";
 
     /**
      * Whether providedVersion is at least requiredVersion, see {@link #compareVersions}.
