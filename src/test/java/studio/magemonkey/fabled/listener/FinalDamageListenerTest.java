@@ -3,7 +3,6 @@ package studio.magemonkey.fabled.listener;
 import org.bukkit.Location;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -44,8 +43,9 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Fabled applies its damage changes to Codex's {@link FinalDamageEvent}, which Codex fires for every hit.
  * <p>
- * Without a damage plugin, Codex's fallback fires it with one {@link FinalDamageEvent#DEFAULT_TYPE} amount
- * holding the Bukkit damage and writes the result back to the Bukkit event; {@link #hit} does the same here.
+ * Without a damage plugin, Codex's fallback listener fires it with one {@link FinalDamageEvent#DEFAULT_TYPE}
+ * amount holding the Bukkit damage and writes the result back to the Bukkit event; these tests run against
+ * that listener in the loaded Codex.
  * The expected numbers are the ones the old path (Fabled writing the Bukkit event's damage) produced.
  */
 public class FinalDamageListenerTest extends MockedTest {
@@ -80,29 +80,11 @@ public class FinalDamageListenerTest extends MockedTest {
     }
 
     /**
-     * Calls the Bukkit event, then does what Codex's fallback listener does for a hit no damage plugin
-     * handles: fire the final damage event with the Bukkit damage as the one default amount, and write
-     * the result back to the Bukkit event.
+     * Calls the Bukkit event. Codex's fallback listener (loaded before Fabled, as on a server) fires the final
+     * damage event for it and writes the result back.
      */
     private <T extends EntityDamageEvent> T hit(T event) {
         server.getPluginManager().callEvent(event);
-        if (event.isCancelled()) return event;
-
-        LivingEntity attacker   = null;
-        Projectile   projectile = null;
-        if (event instanceof EntityDamageByEntityEvent) {
-            EntityDamageByEntityEvent byEntity = (EntityDamageByEntityEvent) event;
-            attacker = ListenerUtil.getDamager(byEntity);
-            if (byEntity.getDamager() instanceof Projectile) projectile = (Projectile) byEntity.getDamager();
-        }
-        Map<String, Double> damages = new LinkedHashMap<>();
-        damages.put(FinalDamageEvent.DEFAULT_TYPE, event.getDamage());
-        FinalDamageEvent fin = new FinalDamageEvent((LivingEntity) event.getEntity(), attacker, projectile,
-                event.getCause(), event, null, DamageOrigin.EXTERNAL, WeaponStatsMode.ADD, damages);
-        server.getPluginManager().callEvent(fin);
-
-        if (fin.isCancelled()) event.setCancelled(true);
-        else if (fin.getTotalDamage() != event.getDamage()) event.setDamage(fin.getTotalDamage());
         return event;
     }
 
@@ -224,16 +206,13 @@ public class FinalDamageListenerTest extends MockedTest {
                 EntityDamageEvent.DamageCause.ENTITY_ATTACK, 5);
         DefaultCombatProtection.fakeDamageEvents.add(event);
         try {
-            // Fabled's fakeDamageClear cancels it, so Codex's fallback would skip it; fire the final event
-            // anyway, as a damage plugin's handler can run before fakeDamageClear
-            Map<String, Double> damages = new LinkedHashMap<>();
-            damages.put(FinalDamageEvent.DEFAULT_TYPE, 5D);
-            server.getPluginManager().callEvent(new FinalDamageEvent(victim, attacker, null,
-                    event.getCause(), event, null, DamageOrigin.EXTERNAL, WeaponStatsMode.ADD, damages));
+            // Codex's fallback runs before Fabled's fakeDamageClear, so it fires the final event for it
+            hit(event);
         } finally {
             DefaultCombatProtection.fakeDamageEvents.remove(event);
         }
 
+        assertEquals(1, finalEvents);
         assertEquals(0, recorder.calls);
     }
 
@@ -394,6 +373,20 @@ public class FinalDamageListenerTest extends MockedTest {
         assertEquals(20, recorder.seen, 1e-9);
         assertEquals(30, fin.getDamage("physical"), 1e-9);
         assertEquals(10, fin.getDamage("fire"), 1e-9);
+    }
+
+    @Test
+    void rawRequest_stillFiresPhysicalForNonSkillHits() {
+        // RAW only changes how a damage plugin treats weapon stats. Fabled's own RAW skill hits are excluded
+        // as skill damage; any other hit is physical, as it was before
+        EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(attacker, victim,
+                EntityDamageEvent.DamageCause.ENTITY_ATTACK, 5);
+        Map<String, Double> damages = new LinkedHashMap<>();
+        damages.put(FinalDamageEvent.DEFAULT_TYPE, 5D);
+        server.getPluginManager().callEvent(new FinalDamageEvent(victim, attacker, null, event.getCause(), event,
+                null, DamageOrigin.EXTERNAL, WeaponStatsMode.RAW, damages));
+
+        assertEquals(1, recorder.calls);
     }
 
     public static class PhysicalRecorder implements Listener {
