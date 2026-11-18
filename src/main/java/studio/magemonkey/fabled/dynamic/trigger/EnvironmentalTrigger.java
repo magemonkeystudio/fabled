@@ -2,7 +2,7 @@ package studio.magemonkey.fabled.dynamic.trigger;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import studio.magemonkey.codex.api.damage.FinalDamageEvent;
 import studio.magemonkey.fabled.api.CastData;
 import studio.magemonkey.fabled.api.DefaultCombatProtection;
 import studio.magemonkey.fabled.api.Settings;
@@ -15,9 +15,12 @@ import java.util.stream.Collectors;
 
 /**
  * © 2026 VoidEdge
- * studio.magemonkey.fabled.dynamic.trigger.BlockBreakTrigger
+ * studio.magemonkey.fabled.dynamic.trigger.EnvironmentalTrigger
+ * <p>
+ * Fires on the final damage of a hit (Codex's {@link FinalDamageEvent}), so its immediate buff applies to the
+ * damage the hit actually deals, whether a damage plugin calculated it or not.
  */
-public class EnvironmentalTrigger implements Trigger<EntityDamageEvent> {
+public class EnvironmentalTrigger implements Trigger<FinalDamageEvent> {
 
     /**
      * {@inheritDoc}
@@ -31,17 +34,17 @@ public class EnvironmentalTrigger implements Trigger<EntityDamageEvent> {
      * {@inheritDoc}
      */
     @Override
-    public Class<EntityDamageEvent> getEvent() {
-        return EntityDamageEvent.class;
+    public Class<FinalDamageEvent> getEvent() {
+        return FinalDamageEvent.class;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean shouldTrigger(final EntityDamageEvent event, final int level, final Settings settings) {
-        if (event instanceof EntityDamageByEntityEvent
-                && DefaultCombatProtection.isFakeDamageEvent((EntityDamageByEntityEvent) event)) {
+    public boolean shouldTrigger(final FinalDamageEvent event, final int level, final Settings settings) {
+        if (event.getDamageEvent() instanceof EntityDamageByEntityEvent
+                && DefaultCombatProtection.isFakeDamageEvent((EntityDamageByEntityEvent) event.getDamageEvent())) {
             return false;
         }
 
@@ -58,27 +61,23 @@ public class EnvironmentalTrigger implements Trigger<EntityDamageEvent> {
      * {@inheritDoc}
      */
     @Override
-    public void setValues(final EntityDamageEvent event, final CastData data) {
-        data.put("api-taken", event.getDamage());
+    public void setValues(final FinalDamageEvent event, final CastData data) {
+        data.put("api-taken", event.getTotalDamage());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public LivingEntity getCaster(final EntityDamageEvent event) {
-        if (event.getEntity() instanceof LivingEntity) {
-            return (LivingEntity) event.getEntity();
-        } else {
-            return null;
-        }
+    public LivingEntity getCaster(final FinalDamageEvent event) {
+        return event.getVictim();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public LivingEntity getTarget(final EntityDamageEvent event, final Settings settings) {
+    public LivingEntity getTarget(final FinalDamageEvent event, final Settings settings) {
         return getCaster(event);
     }
 
@@ -89,8 +88,7 @@ public class EnvironmentalTrigger implements Trigger<EntityDamageEvent> {
      * @param skill skill to resolve
      */
     @Override
-    public void postProcess(final EntityDamageEvent event, final DynamicSkill skill) {
-        // A damage plugin overwrites the Bukkit damage, so the buff goes on its final damage then
-        FinalDamageListener.scaleDamage(event, skill.takeImmediateBuff());
+    public void postProcess(final FinalDamageEvent event, final DynamicSkill skill) {
+        FinalDamageListener.scale(event, skill::applyImmediateBuff);
     }
 }

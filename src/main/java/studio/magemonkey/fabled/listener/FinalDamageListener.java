@@ -35,82 +35,69 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.jetbrains.annotations.NotNull;
 import studio.magemonkey.codex.api.damage.FinalDamageEvent;
+import studio.magemonkey.fabled.Fabled;
 import studio.magemonkey.fabled.api.DefaultCombatProtection;
 import studio.magemonkey.fabled.api.event.PhysicalDamageEvent;
 import studio.magemonkey.fabled.api.skills.Skill;
+import studio.magemonkey.fabled.api.util.FlagManager;
+import studio.magemonkey.fabled.dynamic.mechanic.ImmunityMechanic;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.function.DoubleUnaryOperator;
 
 /**
- * Lets Fabled act on a damage plugin's final numbers.
+ * Applies Fabled's damage changes to the final damage of a hit.
  * <p>
- * When a damage plugin (Divinity) registered as a {@link FinalDamageEvent} provider will handle a hit, it
- * recalculates the damage and writes it to the Bukkit event itself, so anything Fabled wrote to the Bukkit
- * event earlier would be lost or counted into the plugin's input. For those hits Fabled leaves the Bukkit
- * event's damage alone and instead:
- * <ul>
- *     <li>queues its own scaling of the Bukkit event (immunities, cause defenses, environmental triggers)
- *     with {@link #scaleDamage} and applies it to the final damage, and</li>
- *     <li>fires {@link PhysicalDamageEvent} from the final damage, so physical triggers, attributes, buffs
- *     and statuses see and change the plugin's numbers.</li>
- * </ul>
- * Without such a provider, {@link #scaleDamage} writes to the Bukkit event straight away and
- * {@link MainListener#onPhysicalDamage} fires {@link PhysicalDamageEvent} as it always has.
+ * Codex fires {@link FinalDamageEvent} for every hit: a damage plugin (Divinity) fires it with its calculated
+ * damage, and otherwise Codex's fallback fires it with the Bukkit event's damage and writes the result back.
+ * Fabled never writes the Bukkit event's damage itself, so its changes land on the damage the hit deals and
+ * a damage plugin neither overwrites them nor counts them into its own input.
+ * <p>
+ * In order: immunity multipliers ({@link EventPriority#NORMAL}), the defense-&lt;cause&gt; attributes
+ * ({@code AttributeListener}, {@link EventPriority#HIGH}), then {@link PhysicalDamageEvent} for physical hits
+ * ({@link EventPriority#HIGHEST}), whose listeners (physical triggers, attributes, buffs, statuses) change the
+ * final damage. Environmental triggers fire on this event at {@link EventPriority#HIGHEST} after it.
  */
 public class FinalDamageListener extends FabledListener {
-    /**
-     * Scaling queued for hits a provider will fire a {@link FinalDamageEvent} for. Weak, as a provider
-     * fires none for a hit that is dodged or cancelled first.
-     */
-    private static final Map<EntityDamageEvent, List<DoubleUnaryOperator>> PENDING = new WeakHashMap<>();
 
     /**
-     * Scales the damage of a Bukkit damage event. When a damage plugin will fire a {@link FinalDamageEvent}
-     * for it, the scaling is applied to that event's final damage instead, as the plugin overwrites the
-     * Bukkit event's damage.
+     * Scales the final damage of a hit. Negative and NaN results become 0, which the final damage can't hold.
      *
-     * @param event   the Bukkit damage event
-     * @param scaling the scaling to apply to the damage
+     * @param event   the final damage event
+     * @param scaling the scaling to apply to the total damage
      */
-    public static void scaleDamage(@NotNull EntityDamageEvent event, @NotNull DoubleUnaryOperator scaling) {
-        if (FinalDamageEvent.willFire(event)) {
-            PENDING.computeIfAbsent(event, e -> new ArrayList<>()).add(scaling);
-        } else {
-            event.setDamage(scaling.applyAsDouble(event.getDamage()));
-        }
+    public static void scale(@NotNull FinalDamageEvent event, @NotNull DoubleUnaryOperator scaling) {
+        double before = event.getTotalDamage();
+        double after  = scaling.applyAsDouble(before);
+        if (Double.compare(before, after) == 0) return;
+        event.setTotalDamage(Double.isNaN(after) ? 0 : Math.max(0, after));
     }
 
     /**
-     * Applies queued scaling, then fires {@link PhysicalDamageEvent} with the same filters as
-     * {@link MainListener#onPhysicalDamage}, and writes the result back to the final damage.
+     * Damage type immunities that reduce damage instead of blocking it. Full immunities cancel the hit
+     * before it is calculated, see {@link MainListener#onDamage}.
+     *
+     * @param event event details
+     */
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onImmunity(FinalDamageEvent event) {
+        LivingEntity victim = event.getVictim();
+        if (victim == null || !FlagManager.hasFlag(victim, "immune:" + event.getCause().name())) return;
+
+        double multiplier = Fabled.getMetaDouble(victim, ImmunityMechanic.META_KEY);
+        if (multiplier <= 0) event.setCancelled(true);
+        else scale(event, damage -> damage * multiplier);
+    }
+
+    /**
+     * Launches physical damage events to differentiate skill damage from physical damage, on the final damage,
+     * and writes their result back to it.
      *
      * @param event event details
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onFinalDamage(FinalDamageEvent event) {
-        applyPending(event);
-        firePhysical(event);
-    }
-
-    private void applyPending(FinalDamageEvent event) {
-        List<DoubleUnaryOperator> scaling = PENDING.remove(event.getDamageEvent());
-        if (scaling == null) return;
-
-        double before = event.getTotalDamage();
-        double damage = before;
-        for (DoubleUnaryOperator op : scaling) {
-            damage = op.applyAsDouble(damage);
-        }
-        writeBack(event, before, damage);
-    }
-
-    private void firePhysical(FinalDamageEvent event) {
-        // Same filters as MainListener#onPhysicalDamage. Skill damage is still flagged here, as the provider
-        // fires this event from within the Bukkit damage call the skill makes
+    public void onPhysicalDamage(FinalDamageEvent event) {
+        // Skill damage is still flagged here, as the event is fired from within the Bukkit damage call the
+        // skill makes
         if (!(event.getDamageEvent() instanceof EntityDamageByEntityEvent)) return;
         EntityDamageByEntityEvent damageEvent = (EntityDamageByEntityEvent) event.getDamageEvent();
         LivingEntity              victim      = event.getVictim();
@@ -133,17 +120,6 @@ public class FinalDamageListener extends FabledListener {
             event.setCancelled(true);
             return;
         }
-        writeBack(event, damage, physical.getDamage());
-    }
-
-    private static void writeBack(FinalDamageEvent event, double before, double after) {
-        if (Double.compare(before, after) == 0) return;
-        // The final damage can't hold a negative or NaN amount
-        event.setTotalDamage(Double.isNaN(after) ? 0 : Math.max(0, after));
-    }
-
-    @Override
-    public void cleanup() {
-        PENDING.clear();
+        scale(event, ignored -> physical.getDamage());
     }
 }

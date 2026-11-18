@@ -48,7 +48,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.DoubleUnaryOperator;
 
 /**
  * A skill implementation for the Dynamic system
@@ -171,20 +170,10 @@ public class DynamicSkill extends Skill implements SkillShot, PassiveSkill, List
     }
 
     public double applyImmediateBuff(final double damage) {
-        return takeImmediateBuff().applyAsDouble(damage);
-    }
-
-    /**
-     * Takes the pending immediate buff, resetting it, for damage that is only known later
-     *
-     * @return the immediate buff as a function of the damage
-     */
-    public DoubleUnaryOperator takeImmediateBuff() {
-        final double multiplier = this.multiplier;
-        final double bonus      = this.bonus;
-        this.multiplier = 1;
-        this.bonus = 0;
-        return damage -> damage * multiplier + bonus;
+        final double result = damage * multiplier + bonus;
+        multiplier = 1;
+        bonus = 0;
+        return result;
     }
 
     /**
