@@ -1,5 +1,5 @@
 import { Server, Socket }     from 'socket.io';
-import type { ViteDevServer } from 'vite';
+import type { PreviewServer, ViteDevServer } from 'vite';
 
 interface SocketProps {
 	serverId?: string;
@@ -13,12 +13,13 @@ type IDSocket = Socket & SocketProps;
 const serverTimeout = 30; // 30 minutes
 const clientTimeout = 15; // 15 minutes
 
-export const webSocketServer = {
-	name: 'webSocketServer',
-	configureServer(server: ViteDevServer) {
-		if (!server.httpServer) return;
+type HttpServerLike = ViteDevServer['httpServer'] | PreviewServer['httpServer'];
 
-		const io = new Server(server.httpServer,
+function attachSocketServer(httpServer: HttpServerLike) {
+	{
+		if (!httpServer) return;
+
+		const io = new Server(httpServer,
 			{
 				// Max payload size of 50MB (default is 1MB)
 				// This will allow us to send up to 10MB of data
@@ -174,5 +175,17 @@ export const webSocketServer = {
 						}
 					});
 			});
+	}
+}
+
+export const webSocketServer = {
+	name: 'webSocketServer',
+	// `vite dev`
+	configureServer(server: ViteDevServer) {
+		attachSocketServer(server.httpServer);
+	},
+	// `vite preview` (production build)
+	configurePreviewServer(server: PreviewServer) {
+		attachSocketServer(server.httpServer);
 	}
 };

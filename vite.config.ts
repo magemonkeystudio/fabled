@@ -8,7 +8,13 @@ const config = {
 		supported: {
 			'top-level-await': true
 		}
-	}
+	},
+        server: {
+                allowedHosts: [ 'synthesis.travja.dev' ]
+        },
+        preview: {
+                allowedHosts: [ 'synthesis.travja.dev' ]
+        }
 };
 
 export default config;
