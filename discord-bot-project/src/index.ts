@@ -11,7 +11,7 @@ import {
 	DMChannel
 } from 'discord.js';
 import 'dotenv/config'; // Loads .env file
-import { chatWithGemini, reloadSystemPrompt, shouldAnswer } from './llm-service.js';
+import { chatWithGemini, reloadSystemPrompt, shouldAnswer, hasActiveSession, endSession } from './llm-service.js';
 import {
 	activeChannels,
 	initializeDatabase,
@@ -86,6 +86,10 @@ client.once('clientReady', async () => {
 		{
 			name: 'reload-system-prompt',
 			description: 'Reloads the system prompt for the LLM.'
+		},
+		{
+			name: 'endsession',
+			description: 'Ends the current chat session with the bot, clearing context.'
 		}
 	];
 
@@ -191,11 +195,31 @@ client.on('interactionCreate', async (interaction: Interaction) => {
 			console.error('❌ ERROR: Failed to reload system prompt:', error);
 			await chatInteraction.editReply('❌ Failed to reload system prompt.');
 		}
+	} else if (commandName === 'endsession') {
+		if (chatInteraction.channel && chatInteraction.channel.id) {
+			const cleared = endSession(chatInteraction.channel.id);
+			if (cleared) {
+				await chatInteraction.reply({
+					content: '✅ Chat session ended. I have forgotten our recent conversation context.',
+					ephemeral: false
+				});
+			} else {
+				await chatInteraction.reply({
+					content: 'ℹ️ No active chat session found for this channel.',
+					ephemeral: true
+				});
+			}
+		} else {
+			await chatInteraction.reply({
+				content: '❌ Could not determine channel to end session.',
+				ephemeral: true
+			});
+		}
 	}
 });
 
 // Function to determine if the bot should respond to a message
-function shouldRespondToMessage(message: Message): boolean {
+async function shouldRespondToMessage(message: Message): Promise<boolean> {
 	// Ignore messages from bots or empty content
 	if (message.author.bot || !message.content) {
 		return false;
@@ -206,7 +230,33 @@ function shouldRespondToMessage(message: Message): boolean {
 	const isDM = message.channel.type === 1; // 1 is DM channel type
 	const isActiveChannel = activeChannels.has(message.channel.id);
 
-	if (botMention || isDM || isActiveChannel) {
+	// If the bot is mentioned, we always want to consider responding.
+	if (botMention) {
+		return true;
+	}
+
+	// If it's a DM, we always respond (since botMention is not required in DMs).
+	if (isDM) {
+		return true;
+	}
+
+	// If it's an active channel, we might respond, but we need to check for replies.
+	if (isActiveChannel) {
+		// If this is a reply to another user (and not the bot), we ignore it unless the bot was mentioned.
+		// (We already know botMention is false at this point).
+		if (message.reference && message.reference.messageId) {
+			try {
+				const referencedMessage = await message.fetchReference();
+				if (referencedMessage.author.id !== client.user?.id) {
+					// It's a reply to someone else.
+					return false;
+				}
+			} catch (error) {
+				console.warn(`[⚠️ WARN] Could not fetch referenced message for reply check:`, error);
+				// If we can't fetch it, we'll proceed cautiously. 
+				// In an active channel, we might still want to classify it.
+			}
+		}
 		return true;
 	}
 
@@ -214,7 +264,7 @@ function shouldRespondToMessage(message: Message): boolean {
 }
 
 client.on('messageCreate', async (message: Message) => {
-	if (!shouldRespondToMessage(message)) {
+	if (!(await shouldRespondToMessage(message))) {
 		return;
 	}
 
@@ -236,9 +286,10 @@ client.on('messageCreate', async (message: Message) => {
 		return;
 	}
 
-	if (isActiveChannel && !botMention) {
+	if (isActiveChannel && !botMention && !hasActiveSession(message.channel.id)) {
 		// If we're in an active channel, we don't necessarily want to respond to _all_ messages.
 		// Only ones that have intent for the bot to respond to.
+		// BUT: If we already have an active session, assume the user is talking to us.
 		const respondToMessage = await shouldAnswer(cleanMessageContent);
 		if (!respondToMessage) {
 			return;
@@ -257,7 +308,7 @@ client.on('messageCreate', async (message: Message) => {
 			}, 8000);
 		}
 
-		const llmResponse = await chatWithGemini(cleanMessageContent);
+		const llmResponse = await chatWithGemini(message.channel.id, cleanMessageContent);
 
 		if (isDM) {
 			await messageUtils.sendMessageInChunks(message.channel, llmResponse);

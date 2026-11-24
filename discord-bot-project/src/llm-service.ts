@@ -29,6 +29,12 @@ async function loadSystemPrompt() {
 
 export async function reloadSystemPrompt() {
 	await loadSystemPrompt();
+	// Clear all active sessions so they pick up the new prompt on next message
+	for (const [channelId, session] of activeSessions) {
+		clearTimeout(session.timeout);
+	}
+	activeSessions.clear();
+	console.log('Cleared all active sessions due to system prompt reload.');
 }
 
 // Load the system prompt on startup
@@ -49,20 +55,70 @@ const client = new Client({
 });
 await client.connect(new StreamableHTTPClientTransport(new URL(MCP_SERVER_URL)));
 
-export async function chatWithGemini(message: string): Promise<string> {
+// Session Management
+interface ChatSession {
+	chat: any;
+	timeout: NodeJS.Timeout;
+}
+
+const activeSessions = new Map<string, ChatSession>();
+const SESSION_TIMEOUT_MS = 7 * 60 * 1000; // 7 minutes
+
+function clearSession(channelId: string) {
+	const session = activeSessions.get(channelId);
+	if (session) {
+		clearTimeout(session.timeout);
+		activeSessions.delete(channelId);
+		console.log(`Session for channel ${channelId} timed out and cleared.`);
+	}
+}
+
+export function hasActiveSession(channelId: string): boolean {
+	return activeSessions.has(channelId);
+}
+
+export function endSession(channelId: string): boolean {
+	if (activeSessions.has(channelId)) {
+		clearSession(channelId);
+		return true;
+	}
+	return false;
+}
+
+async function getOrCreateSession(channelId: string): Promise<any> {
+	if (activeSessions.has(channelId)) {
+		const session = activeSessions.get(channelId)!;
+		clearTimeout(session.timeout);
+		session.timeout = setTimeout(() => clearSession(channelId), SESSION_TIMEOUT_MS);
+		return session.chat;
+	}
+
+	if (!ai) {
+		throw new Error('Google Generative AI not initialized.');
+	}
+
+	const chat = ai.chats.create({
+		model: GEMINI_MODEL_NAME,
+		config: {
+			systemInstruction: systemPrompt,
+			tools: [mcpToTool(client)]
+		}
+	});
+
+	const timeout = setTimeout(() => clearSession(channelId), SESSION_TIMEOUT_MS);
+	activeSessions.set(channelId, { chat, timeout });
+	console.log(`New session created for channel ${channelId}.`);
+	return chat;
+}
+
+export async function chatWithGemini(channelId: string, message: string): Promise<string> {
 	if (!ai) {
 		throw new Error('Google Generative AI not initialized. GEMINI_API_KEY is missing.');
 	}
 
 	try {
-		const result = await ai.models.generateContent({
-			model: GEMINI_MODEL_NAME,
-			contents: message,
-			config: {
-				systemInstruction: systemPrompt,
-				tools: [mcpToTool(client)]
-			}
-		});
+		const chat = await getOrCreateSession(channelId);
+		const result = await chat.sendMessage({ message });
 
 		if (result.usageMetadata) {
 			console.log('💸 Gemini Usage Metadata:', result.usageMetadata);
