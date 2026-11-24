@@ -37,7 +37,7 @@ export default abstract class FabledComponent extends Constructable {
 	/**
 	 * Reads all the reactive state elements to act as a chane detector
 	 */
-	public changed() {
+	public changed(): any {
 		return {
 			comment: this.comment,
 			components: get(this.components),

@@ -43,11 +43,11 @@ export default class EnchantSelect extends Requirements implements ComponentOpti
 	getSummary = (): string => this.data.enchants.map(({ name, level }) => `${name} ${level}`).join(', ');
 
 	deserialize = (yaml: Unknown) => {
-		const raw = <string[]>yaml[this.key] || [];
-
-		this.data.enchants = raw.map((str) => {
-			const [name, level] = str.split(':');
-			return { name, level: parseInt(level) };
-		});
+		const raw = <string[]>yaml[this.key];
+		if (raw !== undefined)
+			this.data.enchants = raw.map((str) => {
+				const [name, level] = str.split(':');
+				return { name, level: parseInt(level) };
+			});
 	};
 }

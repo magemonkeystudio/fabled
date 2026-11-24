@@ -2,7 +2,7 @@
 	import ClassDetails     from '$components/ClassDetails.svelte';
 	import SkillDetails     from '$components/SkillDetails.svelte';
 	import AttributeDetails from '$components/AttributeDetails.svelte';
-	import { base }         from '$app/paths';
+	import { resolve }         from '$app/paths';
 	import FabledAttribute  from '$api/fabled-attribute.svelte';
 	import FabledClass      from '../../../../../data/class-store.svelte';
 	import FabledSkill      from '../../../../../data/skill-store.svelte';
@@ -21,7 +21,7 @@
 </svelte:head>
 <h1>{data?.data?.name}
 	{#if data?.data instanceof FabledSkill}
-		<a href='{base}/skill/{data.data.name}' class='material-symbols-rounded chip edit-skill'>auto_fix</a>
+		<a href={resolve(`skill/${data.data.name}`)} class='material-symbols-rounded chip edit-skill'>auto_fix</a>
 	{/if}
 </h1>
 <hr />

@@ -36,5 +36,9 @@ export default class DoubleSelect extends Requirements implements ComponentOptio
 
 	getSummary = (): string => this.data.toString();
 
-	deserialize = (yaml: Unknown) => this.data = <number>yaml[this.key] || 0;
+	deserialize = (yaml: Unknown) => {
+		const val = <number>yaml[this.key];
+		if (val !== undefined)
+			this.data = val;
+	};
 }

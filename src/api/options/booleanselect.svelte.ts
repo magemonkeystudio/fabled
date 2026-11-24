@@ -38,5 +38,9 @@ export default class BooleanSelect extends Requirements implements ComponentOpti
 		return this.data ? 'true' : '';
 	};
 
-	deserialize = (yaml: Unknown) => this.data = parseBool(<boolean | string>yaml[this.key]);
+	deserialize = (yaml: Unknown) => {
+		const val = <boolean | string | undefined>yaml[this.key];
+		if (val !== undefined)
+			this.data = parseBool(val);
+	}
 }

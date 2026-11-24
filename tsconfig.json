@@ -1,39 +1,31 @@
 {
-  "extends": "./.svelte-kit/tsconfig.json",
-  "compilerOptions": {
-    "allowJs": true,
-    "checkJs": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "sourceMap": true,
-    "strict": true,
-    "moduleResolution": "bundler",
-    "types": ["node", "svelte"],
-    "paths": {
-      "$api": [
-        "./src/api"
-      ],
-      "$api/*": [
-        "./src/api/*"
-      ],
-      "$input": [
-        "./src/components/input"
-      ],
-      "$input/*": [
-        "./src/components/input/*"
-      ],
-      "$components": [
-        "./src/components"
-      ],
-      "$components/*": [
-        "./src/components/*"
-      ]
-    }
-  }
-  // Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
-  //
-  // If you want to overwrite includes/excludes, make sure to copy over the relevant includes/excludes
-  // from the referenced tsconfig.json - TypeScript does not merge them in
+	"extends": "$app/tsconfig",
+	"compilerOptions": {
+		"allowJs": true,
+		"checkJs": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"strict": true,
+		"moduleResolution": "bundler",
+		"types": ["$app/types", "node", "svelte"],
+		"paths": {
+			"$api": ["./src/api"],
+			"$api/*": ["./src/api/*"],
+			"$input": ["./src/components/input"],
+			"$input/*": ["./src/components/input/*"],
+			"$components": ["./src/components"],
+			"$components/*": ["./src/components/*"]
+		}
+	},
+	// Overriding include/exclude replaces SvelteKit's defaults, so these restate them. The generated
+	// javadocs are vendored static assets, not editor source, and stay out of `npm run check`.
+	"include": ["src", "test", "*"],
+	"exclude": ["src/service-worker", "static/javadocs"]
+	// Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
+	//
+	// If you want to overwrite includes/excludes, make sure to copy over the relevant includes/excludes
+	// from the referenced tsconfig.json - TypeScript does not merge them in
 }

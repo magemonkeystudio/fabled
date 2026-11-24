@@ -1,4 +1,4 @@
-import { browser }           from '$app/environment';
+import { browser }           from '$app/env';
 import { writable }          from 'svelte/store';
 import type FabledAttribute  from './fabled-attribute.svelte';
 import type FabledClass      from '../data/class-store.svelte';
@@ -58,5 +58,5 @@ export const localStore = <T>(key: string, def: T) => {
 
 export const parseBool = (val: string | boolean | undefined) => {
 	if (typeof val === 'boolean') return val;
-	return val === 'true';
+	return val?.toLowerCase().trim() === 'true';
 };

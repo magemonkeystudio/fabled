@@ -35,5 +35,9 @@ export default class ColorSelect extends Requirements implements ComponentOption
 		return this.data;
 	};
 
-	deserialize = (yaml: Unknown) => this.data = <string>yaml[this.key] || '#12cfab';
+	deserialize = (yaml: Unknown) => {
+		const val = <string>yaml[this.key];
+		if (val !== undefined)
+			this.data = val;
+	};
 }

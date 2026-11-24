@@ -165,14 +165,14 @@ export class AttributeComponent {
 	public name: string               = $state('');
 	registry?: Readable<RegistryData> = $state();
 
-	public component: FabledComponent | undefined = $derived(this.registry ? untrack(() => Object.values(get(<Readable<RegistryData>>this.registry)).find(entry => entry.name === this.name)?.component.new()) : undefined);
+	public component: FabledComponent | undefined = $derived(this.registry && this.name ? untrack(() => Object.values(get(<Readable<RegistryData>>this.registry)).find(entry => entry.name === this.name)?.component.new()) : undefined);
 	public stats: AttributeStat[]                 = $state([]);
 	public availableStats: string[]               =
-					 $derived(
-						 this.component
+					 $derived.by(() => {
+						 return this.component
 							 ? this.component.data.filter(option => option instanceof AttributeSelect && !this.stats.some(stat => stat.key === option.key)).map(option => option.key)
-							 : []
-					 );
+							 : [];
+					 });
 
 	// 	$effect(() => {
 	// 	if (this.component) this.stats.filter(stat => this.component?.data.some(option => option.key === stat.key));

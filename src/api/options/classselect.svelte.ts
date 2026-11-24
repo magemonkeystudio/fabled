@@ -17,6 +17,7 @@ export default class ClassSelect extends Requirements implements ComponentOption
 		this.name     = name;
 		this.key      = key;
 		this.multiple = multiple;
+		this.data     = multiple ? [] : '';
 	}
 
 	setTooltip = (tooltip: string): this => {
@@ -25,8 +26,8 @@ export default class ClassSelect extends Requirements implements ComponentOption
 	};
 
 	clone = (): ComponentOption => {
-		const select = new ClassSelect(this.name, this.key);
-		select.data  = this.data;
+		const select = new ClassSelect(this.name, this.key, this.multiple);
+		select.data  = this.data instanceof Array ? [...this.data] : this.data;
 		return select;
 	};
 
@@ -52,5 +53,11 @@ export default class ClassSelect extends Requirements implements ComponentOption
 		}
 	};
 
-	deserialize = (yaml: Unknown) => this.data = <string | string[]>yaml[this.key] || (this.multiple ? [] : '');
+	deserialize = (yaml: Unknown) => {
+		const val = <string | string[]>yaml[this.key];
+		// Coerce the stored value to match the select mode, as a scalar on a
+		// multi-select (or a list on a single select) breaks the dropdown
+		if (this.multiple) this.data = !val ? [] : val instanceof Array ? val : [val];
+		else this.data = (val instanceof Array ? val[0] : val) || '';
+	};
 }

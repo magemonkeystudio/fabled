@@ -38,5 +38,9 @@ export default class IntSelect extends Requirements implements ComponentOption {
 		return this.data.toString();
 	};
 
-	deserialize = (yaml: Unknown) => this.data = <number>yaml[this.key] || 0;
+	deserialize = (yaml: Unknown) => {
+		const val = <number>yaml[this.key];
+		if (val !== undefined)
+			this.data = val;
+	};
 }

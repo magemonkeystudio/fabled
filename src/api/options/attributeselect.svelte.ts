@@ -45,7 +45,11 @@ export default class AttributeSelect extends Requirements implements ComponentOp
 	};
 
 	deserialize = (yaml: Unknown) => {
-		this.data.base  = <number>yaml[`${this.key}-base`] || 0;
-		this.data.scale = <number>yaml[`${this.key}-scale`] || 0;
+		const valBase = <number>yaml[`${this.key}-base`];
+		if (valBase !== undefined)
+			this.data.base = valBase;
+		const valScale = <number>yaml[`${this.key}-scale`];
+		if (valScale !== undefined)
+			this.data.scale = valScale;
 	};
 }

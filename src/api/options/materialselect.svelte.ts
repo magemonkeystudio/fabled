@@ -36,5 +36,9 @@ export default class MaterialSelect extends Requirements implements ComponentOpt
 
 	getSummary = (): string => this.data.material;
 
-	deserialize = (yaml: Unknown) => this.data.material = <string>yaml[this.key] || 'Dirt';
+	deserialize = (yaml: Unknown) => {
+		const val = <string | undefined>yaml[this.key];
+		if (val !== undefined)
+			this.data.material = val;
+	};
 }

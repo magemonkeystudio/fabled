@@ -16,6 +16,7 @@ export default class SkillSelect extends Requirements implements ComponentOption
 		this.name     = name;
 		this.key      = key;
 		this.multiple = multiple;
+		this.data     = multiple ? [] : '';
 	}
 
 	setTooltip = (tooltip: string): this => {
@@ -24,8 +25,8 @@ export default class SkillSelect extends Requirements implements ComponentOption
 	};
 
 	clone = (): ComponentOption => {
-		const select = new SkillSelect(this.name, this.key);
-		select.data  = this.data;
+		const select = new SkillSelect(this.name, this.key, this.multiple);
+		select.data  = this.data instanceof Array ? [...this.data] : this.data;
 		return select;
 	};
 
@@ -50,11 +51,16 @@ export default class SkillSelect extends Requirements implements ComponentOption
 		const skillName = <string | string[]>yaml[this.key];
 
 		// Let's attempt to get the skill from the skill store before creating a dummy skill for display
-		if (skillName instanceof Array) {
-			this.data = skillName.map(skill => skillStore.getSkill(skill) || new FabledSkill({ name: skill }));
-		} else if (skillName)
-			this.data = skillStore.getSkill(skillName) || new FabledSkill({ name: skillName });
-		else
-			this.data = this.multiple ? [] : '';
+		const lookup = (skill: string) => skillStore.getSkill(skill) || new FabledSkill({ name: skill });
+
+		// Coerce the stored value to match the select mode, as a scalar on a
+		// multi-select (or a list on a single select) breaks the dropdown
+		if (this.multiple) {
+			const names = !skillName ? [] : skillName instanceof Array ? skillName : [skillName];
+			this.data   = names.map(lookup);
+		} else {
+			const name = skillName instanceof Array ? skillName[0] : skillName;
+			this.data  = name ? lookup(name) : '';
+		}
 	};
 }

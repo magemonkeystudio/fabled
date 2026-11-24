@@ -34,5 +34,9 @@ export default class StringListSelect extends Requirements implements ComponentO
 
 	getSummary = (): string => this.data?.value ? this.data.value.join(', ') : '';
 
-	deserialize = (yaml: Unknown) => this.data.value = <string[]>yaml[this.key] || [];
+	deserialize = (yaml: Unknown) => {
+		const val = <string[] | string>yaml[this.key];
+		if (val !== undefined)
+			this.data.value = Array.isArray(val) ? val : [val];
+	};
 }

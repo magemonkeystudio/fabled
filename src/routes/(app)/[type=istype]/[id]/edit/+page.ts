@@ -1,27 +1,23 @@
-import { socketService }                                                       from '$api/socket/socket-connector';
-import { active, shownTab }                                                    from '../../../../../data/store';
-import { get }                                                                 from 'svelte/store';
-import { redirect }                                                            from '@sveltejs/kit';
+import { socketService } from '$api/socket/socket-connector';
+import { active, shownTab } from '../../../../../data/store';
+import { get } from 'svelte/store';
+import { redirect } from '@sveltejs/kit';
 import type { MultiAttributeYamlData, MultiClassYamlData, MultiSkillYamlData } from '$api/types';
-import FabledAttribute                                                         from '$api/fabled-attribute.svelte';
-import { Tab }                                                                 from '$api/tab';
-import { parseYaml }                                                           from '$api/yaml';
-import FabledSkill, {
-	skillStore
-}                                                                              from '../../../../../data/skill-store.svelte';
-import FabledClass, {
-	classStore
-}                                                                              from '../../../../../data/class-store.svelte';
-import {
-	attributeStore
-}                                                                              from '../../../../../data/attribute-store';
+import FabledAttribute from '$api/fabled-attribute.svelte';
+import { Tab } from '$api/tab';
+import { parseYaml } from '$api/yaml';
+import FabledSkill, { skillStore } from '../../../../../data/skill-store.svelte';
+import FabledClass, { classStore } from '../../../../../data/class-store.svelte';
+import { attributeStore } from '../../../../../data/attribute-store';
+import { hydrateEditorData } from '../../../../../data/editor-session';
 
 export const ssr = false;
 
 // noinspection JSUnusedGlobalSymbols
 /** @type {import('../../../../../../.svelte-kit/types/src/routes').PageLoad} */
 export async function load({ params }) {
-	const name    = params.id;
+	await hydrateEditorData();
+	const name = params.id;
 	const isSkill = params.type === 'skill';
 
 	let data: FabledClass | FabledSkill | FabledAttribute | undefined;
@@ -61,18 +57,15 @@ export async function load({ params }) {
 	if (data) {
 		let classOrSkill = false;
 		if (!data.loaded) {
-			let yamlData: MultiSkillYamlData | MultiClassYamlData | MultiAttributeYamlData;
 			if (data.location === 'local') {
 				if (data instanceof FabledAttribute) {
-					const text = localStorage.getItem('attribs') || '';
-					if (text.split('\n').length > 2 || text.charAt(0) == '{') { // New format
-						yamlData = <MultiAttributeYamlData>parseYaml(text);
-					} else {
-						yamlData = {};
-					}
-				} else {
+					await attributeStore.loadAttribute(data);
+				} else if (data instanceof FabledSkill) {
 					classOrSkill = true;
-					yamlData     = <MultiSkillYamlData | MultiClassYamlData>parseYaml(localStorage.getItem(`sapi.${isSkill ? 'skill' : 'class'}.${data.name}`) || '');
+					await skillStore.loadSkill(data);
+				} else if (data instanceof FabledClass) {
+					classOrSkill = true;
+					await classStore.loadClass(data);
 				}
 			} else {
 				let yaml: string;
@@ -80,19 +73,23 @@ export async function load({ params }) {
 				else if (params.type === 'skill') yaml = await socketService.getSkillYaml(data.name);
 				else yaml = await socketService.getAttributeYaml();
 
-				yamlData = <MultiSkillYamlData | MultiClassYamlData | MultiAttributeYamlData>parseYaml(yaml);
-			}
-
-
-			if (yamlData && Object.keys(yamlData).length > 0) {
-				if (data instanceof FabledAttribute) {
-					data.load((<MultiAttributeYamlData>yamlData)[data.name]);
-				} else {
-					data.load(Object.values(yamlData)[0]);
+				const yamlData = <MultiSkillYamlData | MultiClassYamlData | MultiAttributeYamlData>(
+					parseYaml(yaml)
+				);
+				if (yamlData && Object.keys(yamlData).length > 0) {
+					if (data instanceof FabledAttribute) {
+						data.load((<MultiAttributeYamlData>yamlData)[data.name]);
+					} else {
+						data.load(Object.values(yamlData)[0]);
+					}
 				}
 			}
 
 			if (classOrSkill && isSkill) (<FabledSkill>data).postLoad();
+			if (classOrSkill && !isSkill) {
+				const classes = get(classStore.classes);
+				(<FabledClass>data).updateParent(classes);
+			}
 		}
 
 		if (classOrSkill && !isSkill) updateClassAttributes(<FabledClass>data);
@@ -121,8 +118,7 @@ export async function load({ params }) {
 
 const updateClassAttributes = (clazz: FabledClass) => {
 	for (const a of attributeStore.getAttributeNames()) {
-		if (clazz.attributes.find(b => b.name === a))
-			continue;
+		if (clazz.attributes.find((b) => b.name === a)) continue;
 
 		clazz.attributes.push({ name: a, base: 0, scale: 0 });
 	}

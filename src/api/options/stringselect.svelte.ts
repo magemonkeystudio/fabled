@@ -36,5 +36,9 @@ export default class StringSelect extends Requirements implements ComponentOptio
 
 	getSummary = (): string => this.data;
 
-	deserialize = (yaml: Unknown) => this.data = <string>yaml[this.key] || '';
+	deserialize = (yaml: Unknown) => {
+		const val = <string>yaml[this.key];
+		if (val !== undefined)
+			this.data = val;
+	};
 }

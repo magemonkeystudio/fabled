@@ -330,6 +330,7 @@
 								if (!comp) return;
 								skill.removeComponent(comp);
 								component.addComponent(comp);
+								onsave?.();
 							}}
 						></div>
 					{/if}

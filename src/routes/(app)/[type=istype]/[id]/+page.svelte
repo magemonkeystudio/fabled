@@ -10,7 +10,7 @@
 	import { filterParams, initialized, triggerSections } from '$api/components/registry';
 	import type FabledTrigger                             from '$api/components/triggers.svelte';
 	import FabledComponent                                from '$api/components/fabled-component.svelte';
-	import { base }                                       from '$app/paths';
+	import { resolve }                                       from '$app/paths';
 	import FabledSkill, { skillStore }                    from '../../../../data/skill-store.svelte';
 	import { blocklyMode }                                from '../../../../data/settings';
 	import { triggerAutoSync } from '../../../../data/store';
@@ -58,7 +58,7 @@
 <div class='header'>
 	<h2>
 		{skill.name}
-		<a class='material-symbols-rounded edit-skill chip' href='{base}/skill/{skill.name}/edit'
+		<a class='material-symbols-rounded edit-skill chip' href={resolve(`skill/${skill.name}/edit`)}
 			 title='Edit'>edit</a>
 		{#if !$blocklyMode}
 		<span class='add-trigger chip'

@@ -9,27 +9,37 @@ import { DATA_1_16 }        from './1.16';
 import { DATA_1_20_4 }      from './1.20.4';
 import { DATA_1_20_6 }      from './1.20.6';
 import { DATA_1_21 }        from './1.21';
+import { DATA_1_21_11 }     from './1.21.11';
 
-export const expSources = ['Mob', 'Block Break', 'Block Place', 'Craft', 'Command', 'Special', 'Exp Bottle', 'Smelt', 'Quest'];
+export const expSources = ['Mob', 'Block Break', 'Block Place', 'Craft', 'Command', 'Special', 'Exp Bottle', 'Smelt', 'Quest', 'Plugin'];
 
-type Versions = '21' | '20.6' | '20.4' | '19' | '18' | '17' | '16';
+type Versions = '21.11' | '21' | '20.6' | '20.4' | '19' | '18' | '17' | '16';
 
 export const VERSIONS                           = {
-	'21':   DATA_1_21,
-	'20.6': DATA_1_20_6,
-	'20.4': DATA_1_20_4,
-	'19':   DATA_1_19,
-	'18':   DATA_1_18,
-	'17':   DATA_1_17,
-	'16':   DATA_1_16
+	'21.11': DATA_1_21_11,
+	'21':    DATA_1_21,
+	'20.6':  DATA_1_20_6,
+	'20.4':  DATA_1_20_4,
+	'19':    DATA_1_19,
+	'18':    DATA_1_18,
+	'17':    DATA_1_17,
+	'16':    DATA_1_16
 };
-export const versionData: Writable<VersionData> = writable(VERSIONS[<Versions>Object.keys(VERSIONS)[Object.keys(VERSIONS).length - 1]]);
+// Object.keys() lists integer-like keys ('21', '16', ...) before keys with dots,
+// so sort numerically instead of relying on insertion order to find the latest version
+const compareVersions = (a: string, b: string) => {
+	const [aMajor, aMinor = 0] = a.split('.').map(Number);
+	const [bMajor, bMinor = 0] = b.split('.').map(Number);
+	return aMajor - bMajor || aMinor - bMinor;
+};
+const LATEST_VERSION = <Versions>Object.keys(VERSIONS).sort(compareVersions).pop();
 
-export const version: Writable<Versions> = localStore<Versions>('server-version', <Versions>Object.keys(VERSIONS)[Object.keys(VERSIONS).length - 1]);
+export const versionData: Writable<VersionData> = writable(VERSIONS[LATEST_VERSION]);
+
+export const version: Writable<Versions> = localStore<Versions>('server-version', LATEST_VERSION);
 version.subscribe((ver: Versions) => {
 	if (!(ver in VERSIONS)) {
-		ver = <Versions>Object.keys(VERSIONS)[0];
-		version.set(ver);
+		version.set(LATEST_VERSION);
 		return;
 	}
 
